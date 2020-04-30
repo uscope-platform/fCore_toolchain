@@ -7,13 +7,14 @@
 
 
 #include <cstdint>
+#include "code_element.hpp"
 
-class instruction {
+class instruction : public code_element{
 
     public:
         virtual uint32_t emit();
         virtual void print();
-
+        bool is_terminal() override { return true;};
 };
 
 

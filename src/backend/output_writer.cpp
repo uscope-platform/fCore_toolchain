@@ -25,16 +25,13 @@ void output_writer::write_mem(const std::string& filename) {
 }
 
 void output_writer::emit_program(const std::shared_ptr<code_element>& sub_program) {
-    if(sub_program->has_content()){
-        std::vector<std::shared_ptr<instruction>> content = sub_program->get_content();
-        for(auto &item:content){
+    std::vector<std::shared_ptr<code_element>> content = sub_program->get_content();
+    for(auto &item:content){
+        if(item->is_terminal()){
             raw_program.push_back(item->emit());
-        }
-
-    }
-    if(sub_program->has_children()){
-        for(auto &child: sub_program->get_children()){
-            emit_program(child);
+            item->print();
+        } else{
+            emit_program(item);
         }
     }
 }

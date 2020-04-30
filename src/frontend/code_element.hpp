@@ -8,7 +8,7 @@
 #include <vector>
 #include <cstdint>
 #include <memory>
-#include "instruction.h"
+
 typedef enum {
     type_reg_instr = 1,
     type_imm_instr = 2,
@@ -24,18 +24,22 @@ public:
     code_element(element_type_t block_type, std::shared_ptr<code_element>parent_element);
     std::shared_ptr<code_element> get_parent();
 
-    void add_children(std::shared_ptr<code_element> child);
-    void add_content(const std::shared_ptr<instruction>& instr);
+    void add_content(const std::shared_ptr<code_element>& element);
     bool has_content();
-    bool has_children();
-    std::vector<std::shared_ptr<code_element>>  get_children();
-    std::vector<std::shared_ptr<instruction>> get_content();
+    std::vector<std::shared_ptr<code_element>> get_content();
+
+    virtual bool is_terminal(){ return false;};
+    virtual uint32_t emit();
+    virtual void print();
 private:
     uint32_t order{};
     element_type_t type;
-    std::vector<std::shared_ptr<code_element>> children;
-    std::vector<std::shared_ptr<instruction>> content {};
+    std::vector<std::shared_ptr<code_element>> content;
+    //std::vector<std::shared_ptr<instruction>> content {};
     std::shared_ptr<code_element> parent;
+
+
+
 };
 
 

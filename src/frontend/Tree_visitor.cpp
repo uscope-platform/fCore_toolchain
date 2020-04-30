@@ -48,7 +48,7 @@ void Tree_visitor::exitFor_block(fs_grammarParser::For_blockContext *ctx) {
     }
     std::shared_ptr<code_element> this_element = current_element;
     current_element = current_element->get_parent();
-    current_element->add_children(this_element);
+    current_element->add_content(this_element);
 
 }
 
