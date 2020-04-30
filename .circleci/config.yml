@@ -16,14 +16,6 @@ jobs:
                   cmake -Bbuild -H. -DBUILD_TESTING=OFF
                   sudo cmake --build build/ --target install
                   cd ..
-                  mkdir antlr
-                  cd antlr
-                  curl https://www.antlr.org/download/antlr4-cpp-runtime-4.8-source.zip --output antlr.zip
-                  unzip antlr.zip
-                  mkdir build && mkdir run && cd build
-                  cmake ..
-                  make
-                  sudo make install
       - run:
           name: Creating Build Files
           command: 'cmake -H. -Bbuild'

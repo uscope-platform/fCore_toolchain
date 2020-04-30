@@ -3,6 +3,11 @@ project(fCore_has)
 
 list(APPEND CMAKE_MODULE_PATH "cmake")
 
+include_directories(include/antlr4-runtime)
+
+ADD_LIBRARY(antlr4 STATIC IMPORTED)
+SET_TARGET_PROPERTIES(antlr4 PROPERTIES IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/include/antlr4-runtime/libantlr4-runtime.a")
+
 find_package(Catch2 REQUIRED)
 
 set(CMAKE_CXX_STANDARD 17)
