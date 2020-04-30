@@ -26,7 +26,7 @@ TEST_CASE( "independent_instruction", "[indep_instr]" ) {
 }
 
 TEST_CASE( "complete_file", "[cmpl_file]" ) {
-    std::string input_file = "/home/fils/git/fCore_has/test/test_add.s";
+    std::string input_file = "test_add.s";
 
     std::vector<uint32_t> result = parse(input_file);
     std::vector<uint32_t> gold_standard = {0x6449, 0xc859, 0x6541,0xc};
