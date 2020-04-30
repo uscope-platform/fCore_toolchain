@@ -10,7 +10,7 @@ jobs:
           name: Installing GCC
           command: |
                   sudo apt update
-                  sudo apt install -y gcc g++ cmake pkg-config uuid uuid-dev uuid-runtime libantlr4-runtime4.8 ctest
+                  sudo apt install -y gcc g++ cmake pkg-config uuid uuid-dev uuid-runtime libantlr4-runtime4.8
                   git clone https://github.com/catchorg/Catch2.git
                   cd Catch2
                   cmake -Bbuild -H. -DBUILD_TESTING=OFF
@@ -33,5 +33,5 @@ jobs:
       - run:
           name: Point Unit Testing
           command: |
-              cd test
+              cd build/test
               ctest
