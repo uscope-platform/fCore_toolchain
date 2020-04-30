@@ -5,6 +5,7 @@ add_executable(test_target test.cpp
         ../src/independent_instruction.cpp ../src/file_parser.cpp ../src/AST_visitor.cpp)
 
 target_include_directories(test_target PUBLIC /usr/include/antlr4-runtime)
+target_include_directories(test_target PUBLIC /usr/local/include/antlr4-runtime)
 target_link_libraries(test_target fs_parser)
 target_link_libraries(test_target antlr4-runtime)
 include(CTest)
