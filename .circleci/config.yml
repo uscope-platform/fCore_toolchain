@@ -3,18 +3,27 @@ version: 2
 jobs:
   build:
     docker:
-      - image: "debian:stretch"
+      - image: "circleci/buildpack-deps:focal-curl"
     steps:
       - checkout
       - run:
-          name: Installing SUDO
-          command: 'apt-get update && apt-get install -y sudo && rm -rf /var/lib/apt/lists/*'
-      - run:
           name: Installing GCC
-          command: 'apt-get update && apt-get install -y gcc g++'
-      - run:
-          name: Install CMAKE
-          command: 'apt-get update && sudo apt-get install -y cmake'
+          command: |
+                  sudo apt update
+                  sudo apt install -y gcc g++ cmake pkg-config uuid uuid-dev uuid-runtime
+                  git clone https://github.com/catchorg/Catch2.git
+                  cd Catch2
+                  cmake -Bbuild -H. -DBUILD_TESTING=OFF
+                  sudo cmake --build build/ --target install
+                  cd ..
+                  mkdir antlr
+                  cd antlr
+                  curl https://www.antlr.org/download/antlr4-cpp-runtime-4.8-source.zip --output antlr.zip
+                  unzip antlr.zip
+                  mkdir build && mkdir run && cd build
+                  cmake ..
+                  make
+                  sudo make install
       - run:
           name: Creating Build Files
           command: 'cmake -H. -Bbuild'
