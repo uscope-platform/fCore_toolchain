@@ -5,8 +5,8 @@
 #ifndef FCORE_HAS_TREE_VISITOR_HPP
 #define FCORE_HAS_TREE_VISITOR_HPP
 
-#include "../include/fs_parser/fs_grammarBaseListener.h"
-#include "../include/fCore_isa.hpp"
+#include "../../include/fs_parser/fs_grammarBaseListener.h"
+#include "../../include/fCore_isa.hpp"
 #include "instruction.h"
 #include "immediate_instruction.h"
 #include "register_operating_instruction.h"

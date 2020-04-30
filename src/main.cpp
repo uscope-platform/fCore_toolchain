@@ -3,7 +3,8 @@
 #include <vector>
 
 #include "file_parser.h"
-#include "output_writer.hpp"
+#include "frontend/code_element.hpp"
+#include "backend/output_writer.hpp"
 #include "../include/CLI11.hpp"
 
 
@@ -20,7 +21,7 @@ int main(int argc, char **argv) {
 
     CLI11_PARSE(app, argc, argv);
 
-    std::vector<uint32_t> program = parse(input_file);
+    std::shared_ptr<code_element> program = parse(input_file);
 
     output_writer writer(program);
     if(output_hex){

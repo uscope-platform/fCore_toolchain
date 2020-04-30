@@ -24,12 +24,16 @@ public:
     code_element(element_type_t block_type, std::shared_ptr<code_element>parent_element);
     std::shared_ptr<code_element> get_parent();
 
-    void add_children(code_element *child);
+    void add_children(std::shared_ptr<code_element> child);
     void add_content(const std::shared_ptr<instruction>& instr);
+    bool has_content();
+    bool has_children();
+    std::vector<std::shared_ptr<code_element>>  get_children();
+    std::vector<std::shared_ptr<instruction>> get_content();
 private:
     uint32_t order{};
     element_type_t type;
-    std::vector<code_element*> children;
+    std::vector<std::shared_ptr<code_element>> children;
     std::vector<std::shared_ptr<instruction>> content {};
     std::shared_ptr<code_element> parent;
 };

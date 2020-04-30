@@ -46,7 +46,10 @@ void Tree_visitor::exitFor_block(fs_grammarParser::For_blockContext *ctx) {
     } else{
         advance = ctx->for_dec()->getText();
     }
+    std::shared_ptr<code_element> this_element = current_element;
     current_element = current_element->get_parent();
+    current_element->add_children(this_element);
+
 }
 
 void Tree_visitor::enterFor_block(fs_grammarParser::For_blockContext *ctx) {
@@ -58,7 +61,7 @@ void Tree_visitor::enterProgram(fs_grammarParser::ProgramContext *ctx) {
 }
 
 void Tree_visitor::exitProgram(fs_grammarParser::ProgramContext *ctx) {
-    program_head = std::make_shared<code_element>(type_program_head, nullptr);
+    program_head = current_element;
 }
 
 std::shared_ptr<code_element> Tree_visitor::get_program() {

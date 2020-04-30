@@ -8,14 +8,19 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <memory>
+#include "../frontend/code_element.hpp"
 class output_writer {
 
 public:
-    output_writer( const std::vector<uint32_t>&);
+    explicit output_writer( const std::shared_ptr<code_element>& AST);
+    void emit_program(const std::shared_ptr<code_element>& sub_program);
+    std::vector<uint32_t> get_raw_program();
     void write_hex(const std::string& filename);
     void write_mem(const std::string& filename);
 private:
-    std::vector<uint32_t> program;
+    std::shared_ptr<code_element> program;
+    std::vector<uint32_t> raw_program;
     static inline uint16_t Reverse16(uint16_t value)
     {
         return (((value & 0x00FFu) << 8u) |

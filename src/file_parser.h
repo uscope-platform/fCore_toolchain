@@ -5,7 +5,18 @@
 #ifndef FCORE_HAS_FILE_PARSER_H
 #define FCORE_HAS_FILE_PARSER_H
 
+#include <string>
+#include <vector>
 
-std::vector<uint32_t>  parse(const std::string& filename);
+#include "frontend/code_element.hpp"
+#include "frontend/Tree_visitor.hpp"
+#include "frontend/code_element.hpp"
+
+#include "antlr4-runtime.h"
+#include "../include/fs_parser/fs_grammarParser.h"
+#include "../include/fs_parser/fs_grammarLexer.h"
+
+
+std::shared_ptr<code_element> parse(const std::string& filename);
 
 #endif //FCORE_HAS_FILE_PARSER_H

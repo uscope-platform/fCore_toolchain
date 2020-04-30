@@ -1,8 +1,8 @@
 
-add_executable(fCore_has main.cpp instruction.cpp instruction.h
-        immediate_instruction.cpp immediate_instruction.h register_operating_instruction.cpp
-        register_operating_instruction.h Tree_visitor.cpp Tree_visitor.hpp ../include/fCore_isa.hpp
-        independent_instruction.cpp independent_instruction.hpp file_parser.cpp file_parser.h output_writer.cpp output_writer.hpp code_element.cpp code_element.hpp)
+add_executable(fCore_has main.cpp frontend/instruction.cpp frontend/instruction.h
+        frontend/immediate_instruction.cpp frontend/immediate_instruction.h frontend/register_operating_instruction.cpp
+        frontend/register_operating_instruction.h frontend/Tree_visitor.cpp frontend/Tree_visitor.hpp ../include/fCore_isa.hpp
+        frontend/independent_instruction.cpp frontend/independent_instruction.hpp file_parser.cpp file_parser.h backend/output_writer.cpp backend/output_writer.hpp frontend/code_element.cpp frontend/code_element.hpp)
 
 target_link_libraries(fCore_has fs_parser)
 target_link_libraries(fCore_has antlr4)
