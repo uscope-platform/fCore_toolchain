@@ -17,6 +17,10 @@ namespace fs_parser {
 class  fs_grammarBaseVisitor : public fs_grammarVisitor {
 public:
 
+  virtual antlrcpp::Any visitProgram(fs_grammarParser::ProgramContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitCode(fs_grammarParser::CodeContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -42,6 +46,26 @@ public:
   }
 
   virtual antlrcpp::Any visitFcore_reg(fs_grammarParser::Fcore_regContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitFor_block(fs_grammarParser::For_blockContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitFor_incr(fs_grammarParser::For_incrContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitFor_dec(fs_grammarParser::For_decContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitFor_decl(fs_grammarParser::For_declContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitFor_end(fs_grammarParser::For_endContext *ctx) override {
     return visitChildren(ctx);
   }
 

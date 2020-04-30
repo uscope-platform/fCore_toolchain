@@ -18,6 +18,9 @@ namespace fs_parser {
 class  fs_grammarBaseListener : public fs_grammarListener {
 public:
 
+  virtual void enterProgram(fs_grammarParser::ProgramContext * /*ctx*/) override { }
+  virtual void exitProgram(fs_grammarParser::ProgramContext * /*ctx*/) override { }
+
   virtual void enterCode(fs_grammarParser::CodeContext * /*ctx*/) override { }
   virtual void exitCode(fs_grammarParser::CodeContext * /*ctx*/) override { }
 
@@ -38,6 +41,21 @@ public:
 
   virtual void enterFcore_reg(fs_grammarParser::Fcore_regContext * /*ctx*/) override { }
   virtual void exitFcore_reg(fs_grammarParser::Fcore_regContext * /*ctx*/) override { }
+
+  virtual void enterFor_block(fs_grammarParser::For_blockContext * /*ctx*/) override { }
+  virtual void exitFor_block(fs_grammarParser::For_blockContext * /*ctx*/) override { }
+
+  virtual void enterFor_incr(fs_grammarParser::For_incrContext * /*ctx*/) override { }
+  virtual void exitFor_incr(fs_grammarParser::For_incrContext * /*ctx*/) override { }
+
+  virtual void enterFor_dec(fs_grammarParser::For_decContext * /*ctx*/) override { }
+  virtual void exitFor_dec(fs_grammarParser::For_decContext * /*ctx*/) override { }
+
+  virtual void enterFor_decl(fs_grammarParser::For_declContext * /*ctx*/) override { }
+  virtual void exitFor_decl(fs_grammarParser::For_declContext * /*ctx*/) override { }
+
+  virtual void enterFor_end(fs_grammarParser::For_endContext * /*ctx*/) override { }
+  virtual void exitFor_end(fs_grammarParser::For_endContext * /*ctx*/) override { }
 
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

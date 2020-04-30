@@ -1,11 +1,10 @@
 #include "antlr4-runtime.h"
-#include "instruction.h"
-#include "AST_visitor.hpp"
 #include "../include/fs_parser/fs_grammarParser.h"
 #include "../include/fs_parser/fs_grammarLexer.h"
 
 #include "file_parser.h"
-
+#include "Tree_visitor.hpp"
+#include "code_element.hpp"
 #include <string>
 #include <vector>
 
@@ -25,10 +24,10 @@ std::vector<uint32_t>  parse(const std::string& filename){
 
     fs_grammarParser parser(&tokens);
 
-    tree::ParseTree *AST = parser.code();
-    AST_visitor visitor;
-    tree::ParseTreeWalker::DEFAULT.walk(&visitor, AST);
-    std::vector<std::shared_ptr<instruction>> obj_program = visitor.get_program();
+    tree::ParseTree *Tree = parser.program();
+    Tree_visitor visitor;
+    tree::ParseTreeWalker::DEFAULT.walk(&visitor, Tree);
+    std::shared_ptr<code_element> obj_program = visitor.get_program();
 
     std::vector<uint32_t> program;
 
