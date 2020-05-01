@@ -7,11 +7,12 @@
 
 #include "../../include/fs_parser/fs_grammarBaseListener.h"
 #include "../../include/fCore_isa.hpp"
-#include "instruction.h"
-#include "immediate_instruction.h"
-#include "register_operating_instruction.h"
-#include "independent_instruction.hpp"
-#include "code_element.hpp"
+#include "../code_elements/instruction.h"
+#include "../code_elements/immediate_instruction.h"
+#include "../code_elements/register_operating_instruction.h"
+#include "../code_elements/independent_instruction.hpp"
+#include "../code_elements/for_loop.hpp"
+#include "../code_elements/code_element.hpp"
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -28,7 +29,8 @@ public:
     void enterFor_block(fs_grammarParser::For_blockContext * ctx) override;
     void exitFor_block(fs_grammarParser::For_blockContext * ctx) override;
     void exitProgram(fs_grammarParser::ProgramContext * ctx) override;
-    void enterProgram(fs_grammarParser::ProgramContext *ctx) override ;
+    void enterProgram(fs_grammarParser::ProgramContext *ctx) override;
+    void exitPragma(fs_grammarParser::PragmaContext *ctx) override;
     std::shared_ptr<code_element> get_program() ;
 private:
     std::shared_ptr<code_element> program_head;

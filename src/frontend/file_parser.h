@@ -8,13 +8,13 @@
 #include <string>
 #include <vector>
 
-#include "frontend/code_element.hpp"
-#include "frontend/Tree_visitor.hpp"
-#include "frontend/code_element.hpp"
+#include "../code_elements/code_element.hpp"
+#include "Tree_visitor.hpp"
+#include "../code_elements/code_element.hpp"
 
 #include "antlr4-runtime.h"
-#include "../include/fs_parser/fs_grammarParser.h"
-#include "../include/fs_parser/fs_grammarLexer.h"
+#include "../../include/fs_parser/fs_grammarParser.h"
+#include "../../include/fs_parser/fs_grammarLexer.h"
 
 
 std::shared_ptr<code_element> parse(const std::string& filename);

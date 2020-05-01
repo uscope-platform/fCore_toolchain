@@ -39,4 +39,19 @@ uint32_t code_element::emit() {
 }
 
 void code_element::print() {
+    if(type==type_pragma){
+        std::cout<<"PRAGMA -> " + directive;
+    }
+}
+
+void code_element::set_directive(std::string str) {
+    directive = std::move(str);
+}
+
+std::string code_element::get_directive() {
+    return directive;
+}
+
+void code_element::set_content(std::vector<std::shared_ptr<code_element>> c) {
+    content = std::move(c);
 }

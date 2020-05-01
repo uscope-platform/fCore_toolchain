@@ -1,5 +1,5 @@
 
-// Generated from /home/fils/git/fCore_has/src/fs_grammar.g4 by ANTLR 4.8
+// Generated from /home/fils/git/fCore_has/src/frontend/fs_grammar.g4 by ANTLR 4.8
 
 #pragma once
 
@@ -54,6 +54,12 @@ public:
 
   virtual void enterFor_end(fs_grammarParser::For_endContext *ctx) = 0;
   virtual void exitFor_end(fs_grammarParser::For_endContext *ctx) = 0;
+
+  virtual void enterFor_end_comp_type(fs_grammarParser::For_end_comp_typeContext *ctx) = 0;
+  virtual void exitFor_end_comp_type(fs_grammarParser::For_end_comp_typeContext *ctx) = 0;
+
+  virtual void enterPragma(fs_grammarParser::PragmaContext *ctx) = 0;
+  virtual void exitPragma(fs_grammarParser::PragmaContext *ctx) = 0;
 
 
 };

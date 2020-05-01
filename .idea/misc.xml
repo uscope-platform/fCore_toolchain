@@ -13,6 +13,16 @@
           <option name="language" value="Cpp" />
           <option name="generateVisitor" value="true" />
         </PerGrammarGenerationSettings>
+        <PerGrammarGenerationSettings>
+          <option name="fileName" value="$PROJECT_DIR$/src/frontend/fs_grammar.g4" />
+          <option name="autoGen" value="true" />
+          <option name="outputDir" value="include" />
+          <option name="libDir" value="" />
+          <option name="encoding" value="" />
+          <option name="pkg" value="fs_parser" />
+          <option name="language" value="Cpp" />
+          <option name="generateVisitor" value="true" />
+        </PerGrammarGenerationSettings>
       </list>
     </option>
   </component>

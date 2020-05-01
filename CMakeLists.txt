@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 project(fCore_has)
 
-list(APPEND CMAKE_MODULE_PATH "cmake")
-
 include_directories(include/antlr4-runtime)
 
 ADD_LIBRARY(antlr4 STATIC IMPORTED)

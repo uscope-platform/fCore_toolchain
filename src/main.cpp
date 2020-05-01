@@ -2,11 +2,11 @@
 #include <string>
 #include <vector>
 
-#include "file_parser.h"
-#include "frontend/code_element.hpp"
+#include "frontend/file_parser.h"
+#include "code_elements/code_element.hpp"
 #include "backend/output_writer.hpp"
 #include "../include/CLI11.hpp"
-
+#include "passes/passes.hpp"
 
 
 int main(int argc, char **argv) {
@@ -21,9 +21,12 @@ int main(int argc, char **argv) {
 
     CLI11_PARSE(app, argc, argv);
 
-    std::shared_ptr<code_element> program = parse(input_file);
+    std::shared_ptr<code_element> AST = parse(input_file);
+    pass_manager manager = create_pass_manager();
 
-    output_writer writer(program);
+    manager.run_passes(AST);
+
+    output_writer writer(AST);
     if(output_hex){
         writer.write_hex(input_file);
     }

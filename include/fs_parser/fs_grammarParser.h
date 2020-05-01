@@ -1,5 +1,5 @@
 
-// Generated from /home/fils/git/fCore_has/src/fs_grammar.g4 by ANTLR 4.8
+// Generated from /home/fils/git/fCore_has/src/frontend/fs_grammar.g4 by ANTLR 4.8
 
 #pragma once
 
@@ -19,16 +19,16 @@ public:
     T__20 = 21, T__21 = 22, T__22 = 23, T__23 = 24, T__24 = 25, T__25 = 26, 
     T__26 = 27, T__27 = 28, T__28 = 29, T__29 = 30, T__30 = 31, T__31 = 32, 
     T__32 = 33, T__33 = 34, T__34 = 35, T__35 = 36, T__36 = 37, T__37 = 38, 
-    T__38 = 39, T__39 = 40, T__40 = 41, Identifier = 42, Hexnum = 43, Integer = 44, 
-    Octalnum = 45, FloatingPointLiteral = 46, String = 47, Label = 48, WS = 49, 
-    BlockComment = 50, LineComment = 51
+    T__38 = 39, T__39 = 40, T__40 = 41, T__41 = 42, Identifier = 43, Hexnum = 44, 
+    Integer = 45, Octalnum = 46, FloatingPointLiteral = 47, String = 48, 
+    Label = 49, WS = 50, BlockComment = 51, LineComment = 52
   };
 
   enum {
     RuleProgram = 0, RuleCode = 1, RuleReg_instr = 2, RuleImm_instr = 3, 
     RuleIndep_instr = 4, RuleReg_opcode = 5, RuleImm_opcode = 6, RuleFcore_reg = 7, 
     RuleFor_block = 8, RuleFor_incr = 9, RuleFor_dec = 10, RuleFor_decl = 11, 
-    RuleFor_end = 12
+    RuleFor_end = 12, RuleFor_end_comp_type = 13, RulePragma = 14
   };
 
   fs_grammarParser(antlr4::TokenStream *input);
@@ -53,7 +53,9 @@ public:
   class For_incrContext;
   class For_decContext;
   class For_declContext;
-  class For_endContext; 
+  class For_endContext;
+  class For_end_comp_typeContext;
+  class PragmaContext; 
 
   class  ProgramContext : public antlr4::ParserRuleContext {
   public:
@@ -82,6 +84,8 @@ public:
     Indep_instrContext* indep_instr(size_t i);
     std::vector<For_blockContext *> for_block();
     For_blockContext* for_block(size_t i);
+    std::vector<PragmaContext *> pragma();
+    PragmaContext* pragma(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -254,6 +258,7 @@ public:
     For_endContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *Identifier();
+    For_end_comp_typeContext *for_end_comp_type();
     antlr4::tree::TerminalNode *Integer();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -264,6 +269,35 @@ public:
   };
 
   For_endContext* for_end();
+
+  class  For_end_comp_typeContext : public antlr4::ParserRuleContext {
+  public:
+    For_end_comp_typeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  For_end_comp_typeContext* for_end_comp_type();
+
+  class  PragmaContext : public antlr4::ParserRuleContext {
+  public:
+    PragmaContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *Identifier();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  PragmaContext* pragma();
 
 
 private:

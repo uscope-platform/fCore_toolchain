@@ -1,5 +1,5 @@
 
-// Generated from /home/fils/git/fCore_has/src/fs_grammar.g4 by ANTLR 4.8
+// Generated from /home/fils/git/fCore_has/src/frontend/fs_grammar.g4 by ANTLR 4.8
 
 #pragma once
 
@@ -66,6 +66,14 @@ public:
   }
 
   virtual antlrcpp::Any visitFor_end(fs_grammarParser::For_endContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitFor_end_comp_type(fs_grammarParser::For_end_comp_typeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitPragma(fs_grammarParser::PragmaContext *ctx) override {
     return visitChildren(ctx);
   }
 

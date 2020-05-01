@@ -1,7 +1,7 @@
 // Define a grammar called Hello
 grammar fs_grammar;
 program : code;
-code : (reg_instr | imm_instr | indep_instr | for_block)+;
+code : (reg_instr | imm_instr | indep_instr | for_block | pragma)+;
 
 reg_instr : reg_opcode  fcore_reg ',' fcore_reg ',' fcore_reg;
 imm_instr : imm_opcode fcore_reg ',' Integer | Hexnum | Octalnum;
@@ -18,8 +18,10 @@ for_block: 'for('for_decl';'for_end';'(for_incr|for_dec)')' '{'code'}';
 for_incr: Identifier ('++');
 for_dec: Identifier ('--');
 for_decl: Identifier '=' Integer;
-for_end: Identifier ('<' | '>' | '<=' | '>=')Integer;
 
+for_end: Identifier for_end_comp_type Integer;
+for_end_comp_type : ('<' | '>' | '<=' | '>=');
+pragma: '#pragma ' Identifier;
 Identifier
    : Letter ('_' | Letter | Digit)*
    ;
