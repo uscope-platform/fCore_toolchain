@@ -23,9 +23,9 @@ int main(int argc, char **argv) {
 
     std::shared_ptr<code_element> AST = parse(input_file);
     pass_manager manager = create_pass_manager();
-    //manager.run_passes(AST);
+    manager.run_passes(AST);
 
-//    output_writer writer(AST);
+    output_writer writer(AST);
 //    if(output_hex){
 //        writer.write_hex(input_file);
 //    }

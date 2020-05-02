@@ -61,6 +61,10 @@ bool code_element::is_terminal() {
     return  type == type_instr || type == type_pragma;
 }
 
+void code_element::set_parent(std::weak_ptr<code_element> new_parent) {
+    parent = new_parent;
+}
+
 pragma::pragma() = default;
 
 pragma::pragma(std::string str) {

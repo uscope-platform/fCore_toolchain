@@ -14,6 +14,8 @@ class loop_implementation_pass : public pass_base {
 public:
     std::shared_ptr<code_element> process_element_enter( std::shared_ptr<code_element> ) override;
     std::shared_ptr<code_element> process_element_exit(std::shared_ptr<code_element> ) override;
+    std::shared_ptr<code_element> deep_copy_element(std::shared_ptr<code_element>);
+
 };
 
 

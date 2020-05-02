@@ -4,6 +4,13 @@
 
 #include "loop_implementation_pass.hpp"
 
+
+
+
+
+
+
+
 std::shared_ptr<code_element> loop_implementation_pass::process_element_enter(std::shared_ptr<code_element> element) {
     bool unroll_mode = false;
     std::vector<std::shared_ptr<code_element>> loop_content;
@@ -56,4 +63,21 @@ std::shared_ptr<code_element> loop_implementation_pass::process_element_enter(st
 std::shared_ptr<code_element> loop_implementation_pass::process_element_exit(std::shared_ptr<code_element> element) {
 
     return element;
+}
+
+std::shared_ptr<code_element> loop_implementation_pass::deep_copy_element(std::shared_ptr<code_element> element) {
+    code_element copied_elem;
+    if(element->has_content()){
+        std::vector<std::shared_ptr<code_element>> childs;
+        for(auto &item:element->get_content()){
+            childs.push_back(deep_copy_element(item));
+        }
+        copied_elem.set_content(childs);
+    }
+    copied_elem.type = element->type;
+    copied_elem.loop = element->loop;
+    copied_elem.inst = element->inst;
+    copied_elem.directive = element->directive;
+
+    return std::make_shared<code_element>(copied_elem);
 }

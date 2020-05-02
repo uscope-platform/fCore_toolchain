@@ -9,7 +9,7 @@
 TEST_CASE( "simple assembly file", "[simple_file]" ) {
     std::string input_file = "test_add.s";
 
-    code_element* ast = parse(input_file);
+    std::shared_ptr<code_element> ast = parse(input_file);
     output_writer writer(ast);
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {0x6449, 0xc859, 0x6541,0xc};
