@@ -6,18 +6,36 @@
 
 #include <utility>
 
+code_element::code_element() {
+
+}
 
 code_element::code_element(element_type_t block_type, std::shared_ptr<code_element> parent_element) {
     type = block_type;
     parent = std::move(parent_element);
 }
 
-code_element::code_element() {
-    type = type_indep_instr;
-    parent = nullptr;
+
+
+code_element::code_element(element_type_t block_type, std::shared_ptr<code_element>parent_element, instruction block_spec) {
+    type = block_type;
+    parent = std::move(parent_element);
+    inst = block_spec;
 }
 
-std::shared_ptr<code_element> code_element::get_parent() {
+code_element::code_element(element_type_t block_type, std::shared_ptr<code_element>parent_element, for_loop block_spec) {
+    type = block_type;
+    parent = std::move(parent_element);
+    loop = std::move(block_spec);
+}
+
+code_element::code_element(element_type_t block_type, std::shared_ptr<code_element>parent_element, pragma block_spec) {
+    type = block_type;
+    parent = std::move(parent_element);
+    directive = std::move(block_spec);
+}
+
+std::weak_ptr<code_element> code_element::get_parent() {
     return parent;
 }
 
@@ -34,24 +52,32 @@ std::vector<std::shared_ptr<code_element>> code_element::get_content() {
     return content;
 }
 
-uint32_t code_element::emit() {
-    return 0;
+void code_element::set_content(const std::vector<std::shared_ptr<code_element>>& c) {
+    content = c;
 }
 
-void code_element::print() {
-    if(type==type_pragma){
-        std::cout<<"PRAGMA -> " + directive;
-    }
+bool code_element::is_terminal() {
+
+    return  type == type_instr || type == type_pragma;
 }
 
-void code_element::set_directive(std::string str) {
+pragma::pragma() = default;
+
+pragma::pragma(std::string str) {
     directive = std::move(str);
 }
 
-std::string code_element::get_directive() {
+void pragma::print() {
+    std::cout<<"PRAGMA -> " + directive;
+}
+
+void pragma::set_directive(std::string str) {
+    directive = std::move(str);
+}
+
+std::string pragma::get_directive() {
     return directive;
 }
 
-void code_element::set_content(std::vector<std::shared_ptr<code_element>> c) {
-    content = std::move(c);
-}
+
+

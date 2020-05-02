@@ -5,17 +5,17 @@
 #include "Tree_visitor.hpp"
 
 Tree_visitor::Tree_visitor() {
-    program_head = std::make_shared<code_element>(code_element());
-    current_element = std::make_shared<code_element>(code_element());
 }
 
 void Tree_visitor::exitImm_instr(fs_grammarParser::Imm_instrContext * ctx) {
+
     std::string opcode = ctx->imm_opcode()->getText();
     std::string imm_str = ctx->Integer()->getText();
     std::string dest = ctx->fcore_reg()->getText();
     uint16_t immediate =  std::stoi(imm_str,nullptr, 0);
-    std::shared_ptr<instruction> instr = std::make_unique<immediate_instruction>(fcore_opcodes[opcode],fcore_registers[dest], immediate);
-    current_element->add_content(instr);
+    code_element this_inst = code_element(type_instr, current_element,
+                                          instruction(fcore_opcodes[opcode],fcore_registers[dest], immediate));
+    current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
 void Tree_visitor::exitReg_instr(fs_grammarParser::Reg_instrContext *ctx) {
@@ -24,18 +24,22 @@ void Tree_visitor::exitReg_instr(fs_grammarParser::Reg_instrContext *ctx) {
     std::string op_a = ops[0]->getText();
     std::string op_b = ops[1]->getText();
     std::string dest = ops[2]->getText();
-    std::shared_ptr<instruction> instr = std::make_unique<register_operating_instruction>(fcore_opcodes[opcode],fcore_registers[op_a],fcore_registers[op_b],fcore_registers[dest]);
-    current_element->add_content(instr);
+    code_element this_inst = code_element(type_instr, current_element,
+            instruction(fcore_opcodes[opcode],fcore_registers[op_a],fcore_registers[op_b],fcore_registers[dest]));
+    current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
 void Tree_visitor::exitIndep_instr(fs_grammarParser::Indep_instrContext *ctx) {
     std::string opcode = ctx->getText();
-    std::shared_ptr<instruction> instr = std::make_unique<independent_instruction>(fcore_opcodes[opcode]);
-    current_element->add_content(instr);
+    code_element this_inst = code_element(type_instr, current_element,
+                                          instruction(fcore_opcodes[opcode]));
+    current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
 void Tree_visitor::enterFor_block(fs_grammarParser::For_blockContext *ctx) {
-    current_element = std::make_shared<for_loop>(type_for_block, current_element);
+    for_loop loop;
+    parent_elements.push(current_element);
+    current_element = std::make_shared<code_element>(type_for_block, current_element,loop);
 
 }
 void Tree_visitor::exitFor_block(fs_grammarParser::For_blockContext *ctx) {
@@ -56,15 +60,16 @@ void Tree_visitor::exitFor_block(fs_grammarParser::For_blockContext *ctx) {
     end.end_count =std::stoi(ctx->for_end()->Integer()->getText(), nullptr, 0);
 
     //Add loop properties to current element
-    current_element->set_loop_start(start);
-    current_element->set_loop_end(end);
-    current_element->set_advance(adv);
+    current_element->loop.set_loop_start(start);
+    current_element->loop.set_loop_end(end);
+    current_element->loop.set_advance(adv);
 
     //add current element to the  AST
+    std::shared_ptr<code_element> tmp_parent = parent_elements.top();
+    parent_elements.pop();
     std::shared_ptr<code_element> this_element = current_element;
-    current_element = current_element->get_parent();
+    current_element = tmp_parent;
     current_element->add_content(this_element);
-
 }
 
 
@@ -81,9 +86,7 @@ std::shared_ptr<code_element> Tree_visitor::get_program() {
 }
 
 void Tree_visitor::exitPragma(fs_grammarParser::PragmaContext *ctx) {
-    std::shared_ptr<code_element> tmp_element =  std::make_shared<code_element>(type_pragma, nullptr);
-    tmp_element->set_directive(ctx->Identifier()->getText());
-    current_element->add_content(tmp_element);
+    code_element this_inst = code_element(type_pragma, current_element,
+                                          pragma(ctx->Identifier()->getText()));
+    current_element->add_content(std::make_shared<code_element>(this_inst));
 }
-
-

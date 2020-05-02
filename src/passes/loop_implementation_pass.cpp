@@ -11,7 +11,7 @@ std::shared_ptr<code_element> loop_implementation_pass::process_element_enter(st
         std::vector<std::shared_ptr<code_element>> test = element->get_content();
         for(auto & item:element->get_content()){
             if(item->type == type_pragma)
-                unroll_mode =  item->get_directive() == "unroll";
+                unroll_mode =  item->directive.get_directive() == "unroll";
             else{
                 loop_content.push_back(item);
             }
@@ -19,29 +19,30 @@ std::shared_ptr<code_element> loop_implementation_pass::process_element_enter(st
         if(unroll_mode){
             int loop_idx = 0;
 
-            loop_end_t end_obj = element->get_loop_end();
+            loop_end_t end_obj = element->loop.get_loop_end();
             int loop_end_val = end_obj.end_count;
-            loop_advance_t advance = element->get_advance();
-            if(end_obj.condition == "<")
+            loop_advance_t advance = element->loop.get_advance();
+            if(end_obj.condition == "<=")
                 loop_end_val--;
-            else if(end_obj.condition == ">")
+            else if(end_obj.condition == ">=")
                 loop_end_val++;
             std::vector<std::shared_ptr<code_element>> new_loop_content;
             if(advance.direction){
 
-                for(loop_idx=element->get_loop_start().starting_value; loop_idx<loop_end_val; loop_idx++){
+                for(loop_idx=element->loop.get_loop_start().starting_value; loop_idx<loop_end_val; loop_idx++){
                     for(auto&item:loop_content){
                         new_loop_content.push_back(item);
                     }
                 }
-                element->set_content(new_loop_content);
+
             } else{
-                for(loop_idx=element->get_loop_start().starting_value; loop_idx>loop_end_val; loop_idx--){
+                for(loop_idx=element->loop.get_loop_start().starting_value; loop_idx>loop_end_val; loop_idx--){
                     for(auto&item:loop_content){
                         new_loop_content.push_back(item);
                     }
                 }
             }
+            element->set_content(new_loop_content);
         } else{
             throw std::runtime_error("Standard loop are not supported yet");
         }

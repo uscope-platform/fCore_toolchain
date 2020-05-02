@@ -4,7 +4,7 @@
 
 #include "output_writer.hpp"
 
-output_writer::output_writer(const std::shared_ptr<code_element>& AST) {
+output_writer::output_writer(const std::shared_ptr<code_element> & AST) {
     program = AST;
     emit_program(program);
 }
@@ -24,12 +24,12 @@ void output_writer::write_mem(const std::string& filename) {
     }
 }
 
-void output_writer::emit_program(const std::shared_ptr<code_element>& sub_program) {
+void output_writer::emit_program(std::shared_ptr<code_element> &sub_program) {
     std::vector<std::shared_ptr<code_element>> content = sub_program->get_content();
     for(auto &item:content){
-        if(item->is_terminal()){
-            raw_program.push_back(item->emit());
-            item->print();
+        if(item->type == type_instr){
+            raw_program.push_back(item->inst.emit());
+            item->inst.print();
         } else{
             emit_program(item);
         }

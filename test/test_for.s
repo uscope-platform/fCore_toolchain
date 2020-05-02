@@ -6,9 +6,10 @@ for(i=0;i<4; i++){
     #pragma unroll
     ldr r4, 100
     add r4, r5, r6
-    //for(i=0;i<4; i++){
-    //   nop
-    //}
+    for(i=0;i<4; i++){
+        #pragma unroll
+        nop
+    }
 }
 stop
 

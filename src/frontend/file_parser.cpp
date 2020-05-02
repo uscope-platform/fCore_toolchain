@@ -6,7 +6,7 @@ using namespace antlr4;
 using namespace fs_parser;
 
 
-std::shared_ptr<code_element>  parse(const std::string& filename){
+std::shared_ptr<code_element> parse(const std::string& filename){
     std::ifstream stream;
     stream.open(filename);
 

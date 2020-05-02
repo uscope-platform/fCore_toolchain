@@ -1,8 +1,6 @@
 
 add_executable(test_target test.cpp
-        Instruction_classes.cpp ../src/code_elements/immediate_instruction.cpp
-        ../src/code_elements/instruction.cpp ../src/code_elements/register_operating_instruction.cpp
-        ../src/code_elements/independent_instruction.cpp ../src/frontend/file_parser.cpp
+        Instruction_classes.cpp ../src/code_elements/instruction.cpp ../src/frontend/file_parser.cpp
         ../src/frontend/Tree_visitor.cpp ../src/backend/output_writer.cpp ../src/backend/output_writer.hpp
         ../src/code_elements/code_element.cpp ../src/passes/pass_manager.cpp ../src/passes/pass_manager.hpp
         ../src/passes/loop_implementation_pass.cpp ../src/code_elements/for_loop.cpp loop_impl_pass.cpp end_to_end.cpp)

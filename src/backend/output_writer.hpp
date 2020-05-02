@@ -13,8 +13,8 @@
 class output_writer {
 
 public:
-    explicit output_writer( const std::shared_ptr<code_element>& AST);
-    void emit_program(const std::shared_ptr<code_element>& sub_program);
+    explicit output_writer( const std::shared_ptr<code_element> &AST);
+    void emit_program(std::shared_ptr<code_element>& sub_program);
     std::vector<uint32_t> get_raw_program();
     void write_hex(const std::string& filename);
     void write_mem(const std::string& filename);

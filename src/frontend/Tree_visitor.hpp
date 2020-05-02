@@ -8,9 +8,6 @@
 #include "../../include/fs_parser/fs_grammarBaseListener.h"
 #include "../../include/fCore_isa.hpp"
 #include "../code_elements/instruction.h"
-#include "../code_elements/immediate_instruction.h"
-#include "../code_elements/register_operating_instruction.h"
-#include "../code_elements/independent_instruction.hpp"
 #include "../code_elements/for_loop.hpp"
 #include "../code_elements/code_element.hpp"
 #include <iostream>
@@ -33,8 +30,9 @@ public:
     void exitPragma(fs_grammarParser::PragmaContext *ctx) override;
     std::shared_ptr<code_element> get_program() ;
 private:
-    std::shared_ptr<code_element> program_head;
-    std::shared_ptr<code_element> current_element;
+    std::shared_ptr<code_element> program_head{};
+    std::shared_ptr<code_element> current_element{};
+    std::stack<std::shared_ptr<code_element>> parent_elements;
 };
 
 #endif //FCORE_HAS_TREE_VISITOR_HPP
