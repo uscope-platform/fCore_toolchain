@@ -10,33 +10,23 @@ code_element::code_element() {
 
 }
 
-code_element::code_element(element_type_t block_type, std::shared_ptr<code_element> parent_element) {
+code_element::code_element(element_type_t block_type) {
     type = block_type;
-    parent = std::move(parent_element);
 }
 
-
-
-code_element::code_element(element_type_t block_type, std::shared_ptr<code_element>parent_element, instruction block_spec) {
+code_element::code_element(element_type_t block_type, instruction block_spec) {
     type = block_type;
-    parent = std::move(parent_element);
     inst = block_spec;
 }
 
-code_element::code_element(element_type_t block_type, std::shared_ptr<code_element>parent_element, for_loop block_spec) {
+code_element::code_element(element_type_t block_type, for_loop block_spec) {
     type = block_type;
-    parent = std::move(parent_element);
     loop = std::move(block_spec);
 }
 
-code_element::code_element(element_type_t block_type, std::shared_ptr<code_element>parent_element, pragma block_spec) {
+code_element::code_element(element_type_t block_type, pragma block_spec) {
     type = block_type;
-    parent = std::move(parent_element);
     directive = std::move(block_spec);
-}
-
-std::weak_ptr<code_element> code_element::get_parent() {
-    return parent;
 }
 
 
@@ -61,9 +51,6 @@ bool code_element::is_terminal() {
     return  type == type_instr || type == type_pragma;
 }
 
-void code_element::set_parent(std::weak_ptr<code_element> new_parent) {
-    parent = new_parent;
-}
 
 pragma::pragma() = default;
 

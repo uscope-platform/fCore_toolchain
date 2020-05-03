@@ -37,12 +37,10 @@ class code_element {
 
 public:
     code_element();
-    code_element(element_type_t block_type, std::shared_ptr<code_element> parent_element);
-    code_element(element_type_t block_type, std::shared_ptr<code_element> parent_element, instruction block_spec);
-    code_element(element_type_t block_type, std::shared_ptr<code_element> parent_element, for_loop block_spec);
-    code_element(element_type_t block_type, std::shared_ptr<code_element>parent_element, pragma block_spec);
-    std::weak_ptr<code_element>get_parent();
-    void set_parent(std::weak_ptr<code_element> parent);
+    code_element(element_type_t block_type);
+    code_element(element_type_t block_type, instruction block_spec);
+    code_element(element_type_t block_type, for_loop block_spec);
+    code_element(element_type_t block_type, pragma block_spec);
     bool is_terminal();
     void add_content(const std::shared_ptr<code_element>& element);
     bool has_content();
@@ -55,19 +53,18 @@ public:
     pragma directive;
 private:
     std::vector<std::shared_ptr<code_element>> content;
-    std::weak_ptr<code_element> parent;
 
 };
 
 
 
-static std::shared_ptr<code_element> deep_copy_element(std::shared_ptr<code_element> element, std::shared_ptr<code_element> parent) {
+static std::shared_ptr<code_element> deep_copy_element(std::shared_ptr<code_element> element) {
     code_element copied_elem;
     std::shared_ptr<code_element> result = std::make_shared<code_element>(copied_elem);
     if(element->has_content()){
         std::vector<std::shared_ptr<code_element>> children;
         for(auto &item:element->get_content()){
-            std::shared_ptr<code_element> child = deep_copy_element(item, result);
+            std::shared_ptr<code_element> child = deep_copy_element(item);
             children.push_back(child);
         }
         result->set_content(children);
@@ -75,7 +72,6 @@ static std::shared_ptr<code_element> deep_copy_element(std::shared_ptr<code_elem
     result->type = element->type;
     result->loop = element->loop;
     result->inst = element->inst;
-    result->set_parent(parent);
     result->directive = element->directive;
     return result;
 }

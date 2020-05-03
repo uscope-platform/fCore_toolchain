@@ -12,10 +12,10 @@
 class loop_implementation_pass : public pass_base {
 
 public:
-    std::shared_ptr<code_element> process_element_enter( std::shared_ptr<code_element> ) override;
-    std::shared_ptr<code_element> process_element_exit(std::shared_ptr<code_element> ) override;
-    std::shared_ptr<code_element> deep_copy_element(std::shared_ptr<code_element>);
-
+    //std::vector<std::shared_ptr<code_element>> process_element( std::shared_ptr<code_element> ) override;
+    std::vector<std::shared_ptr<code_element>>process_node(std::shared_ptr<code_element> element) override;
+    std::shared_ptr<code_element> process_leaf(std::shared_ptr<code_element> element) override ;
+    int type = NODE_PASS;
 };
 
 

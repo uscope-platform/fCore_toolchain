@@ -4,16 +4,11 @@
 
 #include "loop_implementation_pass.hpp"
 
-
-
-
-
-
-
-
-std::shared_ptr<code_element> loop_implementation_pass::process_element_enter(std::shared_ptr<code_element> element) {
+std::vector<std::shared_ptr<code_element>>
+loop_implementation_pass::process_node(std::shared_ptr<code_element> element) {
     bool unroll_mode = false;
     std::vector<std::shared_ptr<code_element>> loop_content;
+    std::vector<std::shared_ptr<code_element>> new_loop_content;
     if(element->type == type_for_block){
         std::vector<std::shared_ptr<code_element>> test = element->get_content();
         for(auto & item:element->get_content()){
@@ -33,7 +28,6 @@ std::shared_ptr<code_element> loop_implementation_pass::process_element_enter(st
                 loop_end_val--;
             else if(end_obj.condition == ">=")
                 loop_end_val++;
-            std::vector<std::shared_ptr<code_element>> new_loop_content;
             if(advance.direction){
 
                 for(loop_idx=element->loop.get_loop_start().starting_value; loop_idx<loop_end_val; loop_idx++){
@@ -49,35 +43,17 @@ std::shared_ptr<code_element> loop_implementation_pass::process_element_enter(st
                     }
                 }
             }
-            element->set_content(new_loop_content);
         } else{
             throw std::runtime_error("Standard loop are not supported yet");
         }
 
+    } else{
+        new_loop_content.push_back(element);
     }
 
-    return element;
+    return new_loop_content;
 }
 
-
-std::shared_ptr<code_element> loop_implementation_pass::process_element_exit(std::shared_ptr<code_element> element) {
-
+std::shared_ptr<code_element> loop_implementation_pass::process_leaf(std::shared_ptr<code_element> element) {
     return element;
-}
-
-std::shared_ptr<code_element> loop_implementation_pass::deep_copy_element(std::shared_ptr<code_element> element) {
-    code_element copied_elem;
-    if(element->has_content()){
-        std::vector<std::shared_ptr<code_element>> childs;
-        for(auto &item:element->get_content()){
-            childs.push_back(deep_copy_element(item));
-        }
-        copied_elem.set_content(childs);
-    }
-    copied_elem.type = element->type;
-    copied_elem.loop = element->loop;
-    copied_elem.inst = element->inst;
-    copied_elem.directive = element->directive;
-
-    return std::make_shared<code_element>(copied_elem);
 }

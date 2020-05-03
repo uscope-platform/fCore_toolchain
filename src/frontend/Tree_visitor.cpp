@@ -13,7 +13,7 @@ void Tree_visitor::exitImm_instr(fs_grammarParser::Imm_instrContext * ctx) {
     std::string imm_str = ctx->Integer()->getText();
     std::string dest = ctx->fcore_reg()->getText();
     uint16_t immediate =  std::stoi(imm_str,nullptr, 0);
-    code_element this_inst = code_element(type_instr, current_element,
+    code_element this_inst = code_element(type_instr,
                                           instruction(fcore_opcodes[opcode],fcore_registers[dest], immediate));
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
@@ -24,14 +24,14 @@ void Tree_visitor::exitReg_instr(fs_grammarParser::Reg_instrContext *ctx) {
     std::string op_a = ops[0]->getText();
     std::string op_b = ops[1]->getText();
     std::string dest = ops[2]->getText();
-    code_element this_inst = code_element(type_instr, current_element,
+    code_element this_inst = code_element(type_instr,
             instruction(fcore_opcodes[opcode],fcore_registers[op_a],fcore_registers[op_b],fcore_registers[dest]));
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
 void Tree_visitor::exitIndep_instr(fs_grammarParser::Indep_instrContext *ctx) {
     std::string opcode = ctx->getText();
-    code_element this_inst = code_element(type_instr, current_element,
+    code_element this_inst = code_element(type_instr,
                                           instruction(fcore_opcodes[opcode]));
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
@@ -39,7 +39,7 @@ void Tree_visitor::exitIndep_instr(fs_grammarParser::Indep_instrContext *ctx) {
 void Tree_visitor::enterFor_block(fs_grammarParser::For_blockContext *ctx) {
     for_loop loop;
     parent_elements.push(current_element);
-    current_element = std::make_shared<code_element>(type_for_block, current_element,loop);
+    current_element = std::make_shared<code_element>(type_for_block,loop);
 
 }
 void Tree_visitor::exitFor_block(fs_grammarParser::For_blockContext *ctx) {
@@ -74,7 +74,7 @@ void Tree_visitor::exitFor_block(fs_grammarParser::For_blockContext *ctx) {
 
 
 void Tree_visitor::enterProgram(fs_grammarParser::ProgramContext *ctx) {
-    current_element = std::make_shared<code_element>(type_program_head, nullptr);
+    current_element = std::make_shared<code_element>(type_program_head);
 }
 
 void Tree_visitor::exitProgram(fs_grammarParser::ProgramContext *ctx) {
@@ -86,7 +86,7 @@ std::shared_ptr<code_element> Tree_visitor::get_program() {
 }
 
 void Tree_visitor::exitPragma(fs_grammarParser::PragmaContext *ctx) {
-    code_element this_inst = code_element(type_pragma, current_element,
+    code_element this_inst = code_element(type_pragma,
                                           pragma(ctx->Identifier()->getText()));
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
