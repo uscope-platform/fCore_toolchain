@@ -30,8 +30,6 @@ void output_writer::emit_program(std::shared_ptr<code_element> &sub_program) {
         if(item->type == type_instr){
             raw_program.push_back(item->inst.emit());
             item->inst.print();
-        } else{
-            emit_program(item);
         }
     }
 }

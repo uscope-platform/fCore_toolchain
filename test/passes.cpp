@@ -9,9 +9,6 @@
 
 
 TEST_CASE( "deep_copy_element") {
-
-
-
     for_loop loop;
     loop_start_t start = {"j", 36};
     loop.set_loop_start(start);
