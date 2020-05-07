@@ -24,15 +24,21 @@ public:
 
     virtual antlrcpp::Any visitCode(fs_grammarParser::CodeContext *context) = 0;
 
+    virtual antlrcpp::Any visitInstruction(fs_grammarParser::InstructionContext *context) = 0;
+
     virtual antlrcpp::Any visitReg_instr(fs_grammarParser::Reg_instrContext *context) = 0;
 
     virtual antlrcpp::Any visitImm_instr(fs_grammarParser::Imm_instrContext *context) = 0;
 
     virtual antlrcpp::Any visitIndep_instr(fs_grammarParser::Indep_instrContext *context) = 0;
 
+    virtual antlrcpp::Any visitPseudo_instr(fs_grammarParser::Pseudo_instrContext *context) = 0;
+
     virtual antlrcpp::Any visitReg_opcode(fs_grammarParser::Reg_opcodeContext *context) = 0;
 
     virtual antlrcpp::Any visitImm_opcode(fs_grammarParser::Imm_opcodeContext *context) = 0;
+
+    virtual antlrcpp::Any visitPseudo_opcode(fs_grammarParser::Pseudo_opcodeContext *context) = 0;
 
     virtual antlrcpp::Any visitFcore_reg(fs_grammarParser::Fcore_regContext *context) = 0;
 

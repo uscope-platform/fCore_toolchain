@@ -22,6 +22,9 @@ public:
   virtual void enterCode(fs_grammarParser::CodeContext *ctx) = 0;
   virtual void exitCode(fs_grammarParser::CodeContext *ctx) = 0;
 
+  virtual void enterInstruction(fs_grammarParser::InstructionContext *ctx) = 0;
+  virtual void exitInstruction(fs_grammarParser::InstructionContext *ctx) = 0;
+
   virtual void enterReg_instr(fs_grammarParser::Reg_instrContext *ctx) = 0;
   virtual void exitReg_instr(fs_grammarParser::Reg_instrContext *ctx) = 0;
 
@@ -31,11 +34,17 @@ public:
   virtual void enterIndep_instr(fs_grammarParser::Indep_instrContext *ctx) = 0;
   virtual void exitIndep_instr(fs_grammarParser::Indep_instrContext *ctx) = 0;
 
+  virtual void enterPseudo_instr(fs_grammarParser::Pseudo_instrContext *ctx) = 0;
+  virtual void exitPseudo_instr(fs_grammarParser::Pseudo_instrContext *ctx) = 0;
+
   virtual void enterReg_opcode(fs_grammarParser::Reg_opcodeContext *ctx) = 0;
   virtual void exitReg_opcode(fs_grammarParser::Reg_opcodeContext *ctx) = 0;
 
   virtual void enterImm_opcode(fs_grammarParser::Imm_opcodeContext *ctx) = 0;
   virtual void exitImm_opcode(fs_grammarParser::Imm_opcodeContext *ctx) = 0;
+
+  virtual void enterPseudo_opcode(fs_grammarParser::Pseudo_opcodeContext *ctx) = 0;
+  virtual void exitPseudo_opcode(fs_grammarParser::Pseudo_opcodeContext *ctx) = 0;
 
   virtual void enterFcore_reg(fs_grammarParser::Fcore_regContext *ctx) = 0;
   virtual void exitFcore_reg(fs_grammarParser::Fcore_regContext *ctx) = 0;

@@ -2,16 +2,12 @@
 // Created by fils on 01/05/20.
 //
 #include <fstream>
-#include <stdio.h>
-#include <stdlib.h>
 
-#include "catch.hpp"
+#include "includes/catch.hpp"
 #include "../src/code_elements/code_element.hpp"
 #include "../src/backend/output_writer.hpp"
 #include "../src/frontend/file_parser.h"
 #include "../src/passes/passes.hpp"
-
-#include "../src/backend/output_writer.hpp"
 
 static inline uint32_t Reverse32(uint32_t value)
 {

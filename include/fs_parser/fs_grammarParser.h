@@ -25,10 +25,11 @@ public:
   };
 
   enum {
-    RuleProgram = 0, RuleCode = 1, RuleReg_instr = 2, RuleImm_instr = 3, 
-    RuleIndep_instr = 4, RuleReg_opcode = 5, RuleImm_opcode = 6, RuleFcore_reg = 7, 
-    RuleFor_block = 8, RuleFor_incr = 9, RuleFor_dec = 10, RuleFor_decl = 11, 
-    RuleFor_end = 12, RuleFor_end_comp_type = 13, RulePragma = 14
+    RuleProgram = 0, RuleCode = 1, RuleInstruction = 2, RuleReg_instr = 3, 
+    RuleImm_instr = 4, RuleIndep_instr = 5, RulePseudo_instr = 6, RuleReg_opcode = 7, 
+    RuleImm_opcode = 8, RulePseudo_opcode = 9, RuleFcore_reg = 10, RuleFor_block = 11, 
+    RuleFor_incr = 12, RuleFor_dec = 13, RuleFor_decl = 14, RuleFor_end = 15, 
+    RuleFor_end_comp_type = 16, RulePragma = 17
   };
 
   fs_grammarParser(antlr4::TokenStream *input);
@@ -43,11 +44,14 @@ public:
 
   class ProgramContext;
   class CodeContext;
+  class InstructionContext;
   class Reg_instrContext;
   class Imm_instrContext;
   class Indep_instrContext;
+  class Pseudo_instrContext;
   class Reg_opcodeContext;
   class Imm_opcodeContext;
+  class Pseudo_opcodeContext;
   class Fcore_regContext;
   class For_blockContext;
   class For_incrContext;
@@ -76,12 +80,8 @@ public:
   public:
     CodeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    std::vector<Reg_instrContext *> reg_instr();
-    Reg_instrContext* reg_instr(size_t i);
-    std::vector<Imm_instrContext *> imm_instr();
-    Imm_instrContext* imm_instr(size_t i);
-    std::vector<Indep_instrContext *> indep_instr();
-    Indep_instrContext* indep_instr(size_t i);
+    std::vector<InstructionContext *> instruction();
+    InstructionContext* instruction(size_t i);
     std::vector<For_blockContext *> for_block();
     For_blockContext* for_block(size_t i);
     std::vector<PragmaContext *> pragma();
@@ -95,6 +95,24 @@ public:
   };
 
   CodeContext* code();
+
+  class  InstructionContext : public antlr4::ParserRuleContext {
+  public:
+    InstructionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Reg_instrContext *reg_instr();
+    Imm_instrContext *imm_instr();
+    Indep_instrContext *indep_instr();
+    Pseudo_instrContext *pseudo_instr();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  InstructionContext* instruction();
 
   class  Reg_instrContext : public antlr4::ParserRuleContext {
   public:
@@ -146,6 +164,23 @@ public:
 
   Indep_instrContext* indep_instr();
 
+  class  Pseudo_instrContext : public antlr4::ParserRuleContext {
+  public:
+    Pseudo_instrContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Pseudo_opcodeContext *pseudo_opcode();
+    std::vector<Fcore_regContext *> fcore_reg();
+    Fcore_regContext* fcore_reg(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Pseudo_instrContext* pseudo_instr();
+
   class  Reg_opcodeContext : public antlr4::ParserRuleContext {
   public:
     Reg_opcodeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
@@ -173,6 +208,20 @@ public:
   };
 
   Imm_opcodeContext* imm_opcode();
+
+  class  Pseudo_opcodeContext : public antlr4::ParserRuleContext {
+  public:
+    Pseudo_opcodeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Pseudo_opcodeContext* pseudo_opcode();
 
   class  Fcore_regContext : public antlr4::ParserRuleContext {
   public:

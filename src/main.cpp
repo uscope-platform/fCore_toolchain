@@ -26,13 +26,13 @@ int main(int argc, char **argv) {
     manager.run_passes(AST);
 
     output_writer writer(AST);
-//    if(output_hex){
-//        writer.write_hex(input_file);
-//    }
-//
-//    if(output_mem){
-//        writer.write_mem(input_file);
-//    }
+    if(output_hex){
+        writer.write_hex(input_file);
+    }
+
+    if(output_mem){
+        writer.write_mem(input_file);
+    }
 
     return 0;
 }

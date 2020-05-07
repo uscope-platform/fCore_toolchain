@@ -1,15 +1,20 @@
 // Define a grammar called Hello
 grammar fs_grammar;
 program : code;
-code : (reg_instr | imm_instr | indep_instr | for_block | pragma)+;
+code : ( instruction |for_block | pragma)+;
+
+instruction : reg_instr | imm_instr | indep_instr | pseudo_instr;
 
 reg_instr : reg_opcode  fcore_reg ',' fcore_reg ',' fcore_reg;
 imm_instr : imm_opcode fcore_reg ',' Integer | Hexnum | Octalnum;
 indep_instr : 'stop' | 'nop';
 
-reg_opcode : 'add' | 'sub' | 'mul' | 'mac' | 'shl' | 'shr' | 'sal' | 'sar' | 'mov';
+pseudo_instr : pseudo_opcode  fcore_reg ',' fcore_reg (',' fcore_reg)*;
 
+reg_opcode : 'add' | 'sub' | 'mul' | 'mac' | 'shl' | 'shr' | 'sal' | 'sar';
 imm_opcode : 'ldr' ;
+
+pseudo_opcode: 'mov';
 
 fcore_reg : 'r0' | 'r1' | 'r2' | 'r3' | 'r4' | 'r5' | 'r6' | 'r7'
          | 'r8' | 'r9' | 'r10' | 'r11' | 'r12' | 'r13' | 'r14' | 'r15';
