@@ -27,9 +27,6 @@ jobs:
           command: |
               cd build/test
               mkdir test-reports
-              ./test_target -r xml > test-reports/report.xml
+              ./test_target -r junit > test-reports/report.xml
       - store_test_results:
           path: ~/project/build/test/test-reports
-      - store_artifacts:
-          path: ~/project/build/test/test-reports
-          destination: test-reports
