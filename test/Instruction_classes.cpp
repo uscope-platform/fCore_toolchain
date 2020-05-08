@@ -3,23 +3,69 @@
 
 #include <memory>
 
-TEST_CASE( "immediate_instruction", "[imm_instr]" ) {
+TEST_CASE( "immediate_instruction" ) {
+
     std::vector<uint16_t> args = {9,4,100};
     instruction instr(IMMEDIATE_INSTRUCTION,args);
-    uint32_t result = instr.emit();
-    REQUIRE( result == 0x6449 );
+
+    SECTION("emit"){
+
+        uint32_t result = instr.emit();
+
+        REQUIRE( result == 0x6449 );
+    }
+    SECTION("print"){
+        std::stringstream buffer;
+        std::streambuf * old = std::cout.rdbuf(buffer.rdbuf());
+        instr.print();
+        std::string result = buffer.str();
+        std::cout.rdbuf(old);
+        std::string golden_standard = "6449 -> OPCODE: 9 DESTINATION: 4 IMMEDIATE: 64\n";
+        REQUIRE(result == golden_standard);
+    }
 }
 
-TEST_CASE( "register_instruction", "[reg_instr]" ) {
+TEST_CASE( "register_instruction" ) {
     std::vector<uint16_t> args = {5, 2, 3,4};
     instruction instr(REGISTER_INSTRUCTION,args);
-    uint32_t result = instr.emit();
-    REQUIRE( result == 0x4325);
+
+    SECTION("emit"){
+
+        uint32_t result = instr.emit();
+
+        REQUIRE( result == 0x4325 );
+    }
+    SECTION("print"){
+        std::stringstream buffer;
+        std::streambuf * old = std::cout.rdbuf(buffer.rdbuf());
+        instr.print();
+        std::string result = buffer.str();
+        std::cout.rdbuf(old);
+        std::string golden_standard = "4325 -> OPCODE: 5 OPERAND A: 2 OPERAND B: 3 DESTINATION: 4\n";
+        REQUIRE(result == golden_standard);
+    }
+
 }
 
-TEST_CASE( "independent_instruction", "[indep_instr]" ) {
+TEST_CASE( "independent_instruction" ) {
     std::vector<uint16_t> args = {12};
     instruction instr(INDEPENDENT_INSTRUCTION,args);
-    uint32_t result = instr.emit();
-    REQUIRE( result == 12);
+
+    SECTION("emit"){
+
+        uint32_t result = instr.emit();
+
+        REQUIRE( result == 0xC );
+    }
+    SECTION("print"){
+        std::stringstream buffer;
+        std::streambuf * old = std::cout.rdbuf(buffer.rdbuf());
+        instr.print();
+        std::string result = buffer.str();
+        std::cout.rdbuf(old);
+        std::string golden_standard = "000c -> OPCODE: c\n";
+        REQUIRE(result == golden_standard);
+    }
+
 }
+

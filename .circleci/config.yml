@@ -26,4 +26,6 @@ jobs:
           name: Point Unit Testing
           command: |
               cd build/test
-              ctest
+              ./test_target -r xml > report.xml
+      - store_test_results:
+          path: ~/project/build/test/report.xml

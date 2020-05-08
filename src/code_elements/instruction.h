@@ -45,7 +45,7 @@ class instruction{
         instruction(int inst_type, uint32_t complete_instr);
         instruction(int inst_type, std::string opcode, std::vector<uint16_t> operands);
 
-        uint32_t emit() const;
+        [[nodiscard]] uint32_t emit() const;
         void print();
         void specialize_pseudo();
         bool is_pseudo() { return type == PSEUDO_INSTRUCTION;};

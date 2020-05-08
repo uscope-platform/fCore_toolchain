@@ -24,10 +24,9 @@ loop_implementation_pass::process_node(std::shared_ptr<code_element> element) {
             loop_end_t end_obj = element->loop.get_loop_end();
             int loop_end_val = end_obj.end_count;
             loop_advance_t advance = element->loop.get_advance();
-            if(end_obj.condition == "<=")
+            if(end_obj.condition == "<=" | end_obj.condition == ">=")
                 loop_end_val--;
-            else if(end_obj.condition == ">=")
-                loop_end_val++;
+
             if(advance.direction){
 
                 for(loop_idx=element->loop.get_loop_start().starting_value; loop_idx<loop_end_val; loop_idx++){
@@ -54,6 +53,3 @@ loop_implementation_pass::process_node(std::shared_ptr<code_element> element) {
     return new_loop_content;
 }
 
-std::shared_ptr<code_element> loop_implementation_pass::process_leaf(std::shared_ptr<code_element> element) {
-    return element;
-}

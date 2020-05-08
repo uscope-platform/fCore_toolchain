@@ -5,10 +5,6 @@
 
 #include "pseudo_instructions_pass.hpp"
 
-std::vector<std::shared_ptr<code_element>> pseudo_instructions_pass::process_node(std::shared_ptr<code_element> element) {
-    std::vector<std::shared_ptr<code_element>> ret;
-    return ret;
-}
 
 std::shared_ptr<code_element> pseudo_instructions_pass::process_leaf(std::shared_ptr<code_element> element) {
     if (element->inst.is_pseudo()){

@@ -105,10 +105,6 @@ void instruction::print_register() const {
     " DESTINATION: " << register_instr.dest <<std::endl;
 }
 
-void instruction::print_generated() const {
-    std::cout << std::setfill('0') << std::setw(4) <<  std::hex << instr << " -> PSEUDO INSTRUCTION SUBSTITUTION";
-}
-
 void instruction::specialize_pseudo() {
     std::string target_instruction = fcore_pseudo_op[pseudo_instr.opcode];
     switch (fcore_op_types[target_instruction]) {
