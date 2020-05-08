@@ -42,7 +42,7 @@ static std::map <std::string, int>  fcore_opcodes
                 std::make_pair ("sal", 7),
                 std::make_pair ("sar", 8),
                 std::make_pair ("ldr", 9),
-                std::make_pair ("stop", 12)
+                std::make_pair ("stop", 14)
 
         };
 

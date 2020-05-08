@@ -20,7 +20,7 @@ static inline uint32_t Reverse32(uint32_t value)
 TEST_CASE( "simple assembly file", "[simple_file]" ) {
     std::string input_file = "test_add.s";
 
-    std::vector<uint32_t> gold_standard = {0x6449, 0xc859, 0x6541,0xc};
+    std::vector<uint32_t> gold_standard = {0x6449, 0xc859, 0x6541,0xe};
 
     SECTION("file parsing and processing") {
 
@@ -72,6 +72,6 @@ TEST_CASE( "for block file", "[for_file]" ) {
 
     output_writer writer(AST, false);
     std::vector<uint32_t> result = writer.get_raw_program();
-    std::vector<uint32_t> gold_standard = {0x6449, 0xc859, 0x6541, 0x6449, 0x6541, 0x0000, 0x0000, 0x6449, 0x6541, 0x0000, 0x0000, 0xc};
+    std::vector<uint32_t> gold_standard = {0x6449, 0xc859, 0x6541, 0x6449, 0x6541, 0x0000, 0x0000, 0x6449, 0x6541, 0x0000, 0x0000, 0xe};
     REQUIRE( result == gold_standard);
 }
