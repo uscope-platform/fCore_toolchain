@@ -15,10 +15,11 @@ int main(int argc, char **argv) {
     bool output_hex;
     bool output_mem;
     std::string input_file;
+    std::string output_file;
     app.add_option("input_file", input_file, "Input file path")->required()->check(CLI::ExistingFile);
-    app.add_flag("--mem", output_hex, "produce binary output file");
-    app.add_flag("--hex", output_mem, "produce verilog memory initialization output file");
-
+    app.add_flag("--mem", output_mem, "produce binary output file");
+    app.add_flag("--hex", output_hex, "produce verilog memory initialization output file");
+    app.add_option("--o", output_file, "Output file path")->check(CLI::NonexistentPath);
     CLI11_PARSE(app, argc, argv);
 
     std::shared_ptr<code_element> AST = parse(input_file);
@@ -27,11 +28,11 @@ int main(int argc, char **argv) {
 
     output_writer writer(AST);
     if(output_hex){
-        writer.write_hex(input_file);
+        writer.write_hex(output_file);
     }
 
     if(output_mem){
-        writer.write_mem(input_file);
+        writer.write_mem(output_file);
     }
 
     return 0;

@@ -10,7 +10,7 @@ output_writer::output_writer(const std::shared_ptr<code_element> & AST) {
 }
 
 void output_writer::write_hex(const std::string& filename) {
-    std::ofstream output(filename + ".hex",std::ios::binary | std::ios::out);
+    std::ofstream output(filename, std::ios::binary | std::ios::out);
     for(auto &it:raw_program){
         uint32_t reverse = Reverse32(it);
         output.write(reinterpret_cast<const char *>(&reverse),4);
@@ -18,7 +18,7 @@ void output_writer::write_hex(const std::string& filename) {
 }
 
 void output_writer::write_mem(const std::string& filename) {
-    std::ofstream output(filename + ".mem");
+    std::ofstream output(filename);
     for(auto &it:raw_program){
         output<<std::hex<<it<<std::endl;
     }
