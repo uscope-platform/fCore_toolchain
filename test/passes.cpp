@@ -22,7 +22,7 @@ TEST_CASE( "pseudo_inst_pass") {
     pass_manager manager = create_pass_manager();
     manager.run_passes(AST);
 
-    output_writer writer(AST);
+    output_writer writer(AST, false);
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {0x431};
     REQUIRE(result == gold_standard);
@@ -53,7 +53,7 @@ TEST_CASE( "loop_pass") {
     pass_manager manager = create_pass_manager();
     manager.run_passes(AST);
 
-    output_writer writer(AST);
+    output_writer writer(AST,false);
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {3, 3, 3};
     REQUIRE(result == gold_standard);

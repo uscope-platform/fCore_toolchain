@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
     pass_manager manager = create_pass_manager();
     manager.run_passes(AST);
 
-    output_writer writer(AST);
+    output_writer writer(AST, false);
     if(output_hex){
         writer.write_hex(output_file);
     }

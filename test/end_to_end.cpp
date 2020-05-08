@@ -20,21 +20,20 @@ static inline uint32_t Reverse32(uint32_t value)
 TEST_CASE( "simple assembly file", "[simple_file]" ) {
     std::string input_file = "test_add.s";
 
-
     std::vector<uint32_t> gold_standard = {0x6449, 0xc859, 0x6541,0xc};
 
     SECTION("file parsing and processing") {
 
         std::shared_ptr<code_element> ast = parse(input_file);
-        output_writer writer(ast);
+        output_writer writer(ast, false);
         std::vector<uint32_t> result = writer.get_raw_program();
 
         REQUIRE( result == gold_standard);
     }
     SECTION("verilog memfile generation") {
         std::shared_ptr<code_element> ast = parse(input_file);
-        output_writer writer(ast);
-        writer.write_mem(input_file);
+        output_writer writer(ast,false);
+        writer.write_mem(input_file+".mem");
         std::ifstream infile(input_file+".mem");
         std::string a;
         std::vector<uint32_t> result;
@@ -46,8 +45,8 @@ TEST_CASE( "simple assembly file", "[simple_file]" ) {
     }
     SECTION("hex file generation"){
         std::shared_ptr<code_element> ast = parse(input_file);
-        output_writer writer(ast);
-        writer.write_hex(input_file);
+        output_writer writer(ast, false);
+        writer.write_hex(input_file+".hex");
         std::string filename = input_file+".hex";
         FILE *fptr = fopen(filename.c_str(),"rb");
 
@@ -71,7 +70,7 @@ TEST_CASE( "for block file", "[for_file]" ) {
     pass_manager manager = create_pass_manager();
     manager.run_passes(AST);
 
-    output_writer writer(AST);
+    output_writer writer(AST, false);
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {0x6449, 0xc859, 0x6541, 0x6449, 0x6541, 0x0000, 0x0000, 0x6449, 0x6541, 0x0000, 0x0000, 0xc};
     REQUIRE( result == gold_standard);
