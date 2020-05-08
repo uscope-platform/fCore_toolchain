@@ -26,6 +26,8 @@ jobs:
           name: Point Unit Testing
           command: |
               cd build/test
-              ./test_target -r xml > report.xml
+              mkdir test-reports
+              mkdir test-reports/JUnit
+              ./test_target -r xml > test-reports/JUnit/report.xml
       - store_test_results:
-          path: ~/project/build/test/report.xml
+          path: ~/project/build/test/test-reports
