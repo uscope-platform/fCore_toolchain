@@ -37,6 +37,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitBranch_instr(fs_grammarParser::Branch_instrContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitIndep_instr(fs_grammarParser::Indep_instrContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -50,6 +54,10 @@ public:
   }
 
   virtual antlrcpp::Any visitImm_opcode(fs_grammarParser::Imm_opcodeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitBranch_opcode(fs_grammarParser::Branch_opcodeContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -86,6 +94,10 @@ public:
   }
 
   virtual antlrcpp::Any visitPragma(fs_grammarParser::PragmaContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitImmediate(fs_grammarParser::ImmediateContext *ctx) override {
     return visitChildren(ctx);
   }
 

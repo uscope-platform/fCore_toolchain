@@ -15,20 +15,8 @@
 
 class pass_base {
 public:
-
-    virtual std::vector<std::shared_ptr<code_element>>process_element(std::shared_ptr<code_element> element){
-        std::vector<std::shared_ptr<code_element>> elem;
-        elem.push_back(element);
-        return elem;
-    };
-    virtual std::vector<std::shared_ptr<code_element>>process_node(std::shared_ptr<code_element> element){
-        std::vector<std::shared_ptr<code_element>> elem;
-        elem.push_back(element);
-        return elem;
-    };
-    virtual std::shared_ptr<code_element> process_leaf(std::shared_ptr<code_element> element){
-        return element;
-    };
+    virtual std::vector<std::shared_ptr<code_element>>process_node(std::shared_ptr<code_element> element) = 0;
+    virtual std::shared_ptr<code_element> process_leaf(std::shared_ptr<code_element> element) = 0;
     virtual int get_pass_type() { return NONE_PASS;};
 };
 

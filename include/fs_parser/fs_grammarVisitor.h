@@ -30,6 +30,8 @@ public:
 
     virtual antlrcpp::Any visitImm_instr(fs_grammarParser::Imm_instrContext *context) = 0;
 
+    virtual antlrcpp::Any visitBranch_instr(fs_grammarParser::Branch_instrContext *context) = 0;
+
     virtual antlrcpp::Any visitIndep_instr(fs_grammarParser::Indep_instrContext *context) = 0;
 
     virtual antlrcpp::Any visitPseudo_instr(fs_grammarParser::Pseudo_instrContext *context) = 0;
@@ -37,6 +39,8 @@ public:
     virtual antlrcpp::Any visitReg_opcode(fs_grammarParser::Reg_opcodeContext *context) = 0;
 
     virtual antlrcpp::Any visitImm_opcode(fs_grammarParser::Imm_opcodeContext *context) = 0;
+
+    virtual antlrcpp::Any visitBranch_opcode(fs_grammarParser::Branch_opcodeContext *context) = 0;
 
     virtual antlrcpp::Any visitPseudo_opcode(fs_grammarParser::Pseudo_opcodeContext *context) = 0;
 
@@ -55,6 +59,8 @@ public:
     virtual antlrcpp::Any visitFor_end_comp_type(fs_grammarParser::For_end_comp_typeContext *context) = 0;
 
     virtual antlrcpp::Any visitPragma(fs_grammarParser::PragmaContext *context) = 0;
+
+    virtual antlrcpp::Any visitImmediate(fs_grammarParser::ImmediateContext *context) = 0;
 
 
 };

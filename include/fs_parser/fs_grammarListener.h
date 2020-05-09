@@ -31,6 +31,9 @@ public:
   virtual void enterImm_instr(fs_grammarParser::Imm_instrContext *ctx) = 0;
   virtual void exitImm_instr(fs_grammarParser::Imm_instrContext *ctx) = 0;
 
+  virtual void enterBranch_instr(fs_grammarParser::Branch_instrContext *ctx) = 0;
+  virtual void exitBranch_instr(fs_grammarParser::Branch_instrContext *ctx) = 0;
+
   virtual void enterIndep_instr(fs_grammarParser::Indep_instrContext *ctx) = 0;
   virtual void exitIndep_instr(fs_grammarParser::Indep_instrContext *ctx) = 0;
 
@@ -42,6 +45,9 @@ public:
 
   virtual void enterImm_opcode(fs_grammarParser::Imm_opcodeContext *ctx) = 0;
   virtual void exitImm_opcode(fs_grammarParser::Imm_opcodeContext *ctx) = 0;
+
+  virtual void enterBranch_opcode(fs_grammarParser::Branch_opcodeContext *ctx) = 0;
+  virtual void exitBranch_opcode(fs_grammarParser::Branch_opcodeContext *ctx) = 0;
 
   virtual void enterPseudo_opcode(fs_grammarParser::Pseudo_opcodeContext *ctx) = 0;
   virtual void exitPseudo_opcode(fs_grammarParser::Pseudo_opcodeContext *ctx) = 0;
@@ -69,6 +75,9 @@ public:
 
   virtual void enterPragma(fs_grammarParser::PragmaContext *ctx) = 0;
   virtual void exitPragma(fs_grammarParser::PragmaContext *ctx) = 0;
+
+  virtual void enterImmediate(fs_grammarParser::ImmediateContext *ctx) = 0;
+  virtual void exitImmediate(fs_grammarParser::ImmediateContext *ctx) = 0;
 
 
 };

@@ -1,12 +1,15 @@
 // Created by fils on 29/04/20.
 //
 
-#ifndef FCORE_HAS_FCORE_HPP
-#define FCORE_HAS_FCORE_HPP
+#ifndef FCORE_HAS_FCORE_ISA_HPP
+#define FCORE_HAS_FCORE_ISA_HPP
 
-#define FCORE_IMMEDIATE_INSTRUCTION 1
-#define FCORE_INDEPENDENT_INSTRUCTION 2
-#define FCORE_REGISTER_INSTRUCTION 3
+#define IMMEDIATE_INSTRUCTION 1
+#define INDEPENDENT_INSTRUCTION 2
+#define REGISTER_INSTRUCTION 3
+#define PSEUDO_INSTRUCTION 4
+#define GENERATED_INSTRUCTION 5
+#define BRANCH_INSTRUCTION 6
 
 #include <map>
 
@@ -42,23 +45,31 @@ static std::map <std::string, int>  fcore_opcodes
                 std::make_pair ("sal", 7),
                 std::make_pair ("sar", 8),
                 std::make_pair ("ldr", 9),
+                std::make_pair ("bgt", 10),
+                std::make_pair ("ble", 11),
+                std::make_pair ("beq", 12),
+                std::make_pair ("bne", 13),
                 std::make_pair ("stop", 14)
 
         };
 
 static std::map <std::string, int>  fcore_op_types
         {
-                std::make_pair ("nop", FCORE_INDEPENDENT_INSTRUCTION),
-                std::make_pair ("add", FCORE_REGISTER_INSTRUCTION),
-                std::make_pair ("sub", FCORE_REGISTER_INSTRUCTION),
-                std::make_pair ("mul", FCORE_REGISTER_INSTRUCTION),
-                std::make_pair ("mac", FCORE_REGISTER_INSTRUCTION),
-                std::make_pair ("shl", FCORE_REGISTER_INSTRUCTION),
-                std::make_pair ("shr", FCORE_IMMEDIATE_INSTRUCTION),
-                std::make_pair ("sal", FCORE_IMMEDIATE_INSTRUCTION),
-                std::make_pair ("sar", FCORE_IMMEDIATE_INSTRUCTION),
-                std::make_pair ("ldr", FCORE_IMMEDIATE_INSTRUCTION),
-                std::make_pair ("stop", FCORE_INDEPENDENT_INSTRUCTION)
+                std::make_pair ("nop", INDEPENDENT_INSTRUCTION),
+                std::make_pair ("add", REGISTER_INSTRUCTION),
+                std::make_pair ("sub", REGISTER_INSTRUCTION),
+                std::make_pair ("mul", REGISTER_INSTRUCTION),
+                std::make_pair ("mac", REGISTER_INSTRUCTION),
+                std::make_pair ("shl", REGISTER_INSTRUCTION),
+                std::make_pair ("shr", IMMEDIATE_INSTRUCTION),
+                std::make_pair ("sal", IMMEDIATE_INSTRUCTION),
+                std::make_pair ("sar", IMMEDIATE_INSTRUCTION),
+                std::make_pair ("ldr", IMMEDIATE_INSTRUCTION),
+                std::make_pair ("bgt", BRANCH_INSTRUCTION),
+                std::make_pair ("ble", BRANCH_INSTRUCTION),
+                std::make_pair ("beq", BRANCH_INSTRUCTION),
+                std::make_pair ("bne", BRANCH_INSTRUCTION),
+                std::make_pair ("stop", INDEPENDENT_INSTRUCTION)
 
         };
 
@@ -70,4 +81,4 @@ static std::map <std::string, std::string>  fcore_pseudo_op
 
 
 
-#endif //FCORE_HAS_FCORE_HPP
+#endif //FCORE_HAS_FCORE_ISA_HPP

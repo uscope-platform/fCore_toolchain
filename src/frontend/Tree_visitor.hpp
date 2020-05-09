@@ -24,6 +24,7 @@ public:
     void exitReg_instr(fs_grammarParser::Reg_instrContext * ctx) override;
     void exitPseudo_instr(fs_grammarParser::Pseudo_instrContext *ctx) override;
     void exitIndep_instr(fs_grammarParser::Indep_instrContext * ctx) override;
+    void exitBranch_instr(fs_grammarParser::Branch_instrContext * ctx) override;
     void enterFor_block(fs_grammarParser::For_blockContext * ctx) override;
     void exitFor_block(fs_grammarParser::For_blockContext * ctx) override;
     void exitProgram(fs_grammarParser::ProgramContext * ctx) override;

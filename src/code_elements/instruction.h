@@ -9,18 +9,15 @@
 #include <iomanip>
 #include <cstdint>
 #include <vector>
+#include "../../include/fCore_isa.hpp"
 
-#define IMMEDIATE_INSTRUCTION 1
-#define INDEPENDENT_INSTRUCTION 2
-#define REGISTER_INSTRUCTION 3
-#define PSEUDO_INSTRUCTION 4
-#define GENERATED_INSTRUCTION 5
+
 
 typedef struct {
-    uint16_t opcode : 4;
-    uint16_t destination: 4;
-    uint16_t immediate : 16;
-    uint16_t rsvd : 8;
+    uint16_t opcode;
+    uint16_t destination;
+    uint16_t immediate;
+    uint16_t rsvd;
 }imm_instruction_t;
 
 typedef struct {
@@ -31,11 +28,18 @@ typedef struct {
 }pseudo_instruction_t;
 
 typedef struct {
-    uint16_t opcode : 4;
-    uint16_t op_a : 4;
-    uint16_t op_b : 4;
-    uint16_t dest : 4;
+    uint16_t opcode;
+    uint16_t op_a;
+    uint16_t op_b;
+    uint16_t dest;
 }reg_instruction_t;
+
+typedef struct {
+    uint16_t opcode;
+    uint16_t op_a;
+    uint16_t op_b;
+    uint16_t offset;
+}branch_instruction_t;
 
 class instruction{
 
@@ -55,13 +59,17 @@ class instruction{
         void print_immediate() const;
         void print_independent() const;
         void print_register() const;
+        void print_branch() const;
 
         void form_indep_inst(uint8_t opcode);
         void form_reg_inst(uint8_t opcode, uint8_t op_a, uint8_t op_b, uint8_t dest);
         void form_imm_inst(uint8_t opcode,uint8_t dest, uint16_t immediate);
+        void form_branch_inst(uint8_t opcode, uint8_t op_a, uint8_t op_b, uint16_t offset);
+
         int type;
         imm_instruction_t immediate_instr;
         reg_instruction_t register_instr;
+        branch_instruction_t branch_instr;
 
         uint32_t instr;
 

@@ -33,6 +33,9 @@ public:
   virtual void enterImm_instr(fs_grammarParser::Imm_instrContext * /*ctx*/) override { }
   virtual void exitImm_instr(fs_grammarParser::Imm_instrContext * /*ctx*/) override { }
 
+  virtual void enterBranch_instr(fs_grammarParser::Branch_instrContext * /*ctx*/) override { }
+  virtual void exitBranch_instr(fs_grammarParser::Branch_instrContext * /*ctx*/) override { }
+
   virtual void enterIndep_instr(fs_grammarParser::Indep_instrContext * /*ctx*/) override { }
   virtual void exitIndep_instr(fs_grammarParser::Indep_instrContext * /*ctx*/) override { }
 
@@ -44,6 +47,9 @@ public:
 
   virtual void enterImm_opcode(fs_grammarParser::Imm_opcodeContext * /*ctx*/) override { }
   virtual void exitImm_opcode(fs_grammarParser::Imm_opcodeContext * /*ctx*/) override { }
+
+  virtual void enterBranch_opcode(fs_grammarParser::Branch_opcodeContext * /*ctx*/) override { }
+  virtual void exitBranch_opcode(fs_grammarParser::Branch_opcodeContext * /*ctx*/) override { }
 
   virtual void enterPseudo_opcode(fs_grammarParser::Pseudo_opcodeContext * /*ctx*/) override { }
   virtual void exitPseudo_opcode(fs_grammarParser::Pseudo_opcodeContext * /*ctx*/) override { }
@@ -71,6 +77,9 @@ public:
 
   virtual void enterPragma(fs_grammarParser::PragmaContext * /*ctx*/) override { }
   virtual void exitPragma(fs_grammarParser::PragmaContext * /*ctx*/) override { }
+
+  virtual void enterImmediate(fs_grammarParser::ImmediateContext * /*ctx*/) override { }
+  virtual void exitImmediate(fs_grammarParser::ImmediateContext * /*ctx*/) override { }
 
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

@@ -3,16 +3,18 @@ grammar fs_grammar;
 program : code;
 code : ( instruction |for_block | pragma)+;
 
-instruction : reg_instr | imm_instr | indep_instr | pseudo_instr;
+instruction : reg_instr | imm_instr | indep_instr | pseudo_instr | branch_instr;
 
 reg_instr : reg_opcode  fcore_reg ',' fcore_reg ',' fcore_reg;
 imm_instr : imm_opcode fcore_reg ',' Integer | Hexnum | Octalnum;
+branch_instr : branch_opcode fcore_reg ',' fcore_reg ',' immediate;
 indep_instr : 'stop' | 'nop';
 
 pseudo_instr : pseudo_opcode  fcore_reg ',' fcore_reg (',' fcore_reg)*;
 
 reg_opcode : 'add' | 'sub' | 'mul' | 'mac' | 'shl' | 'shr' | 'sal' | 'sar';
 imm_opcode : 'ldr' ;
+branch_opcode: 'ble' | 'bgt' | 'beq' | 'bne';
 
 pseudo_opcode: 'mov';
 
@@ -27,11 +29,15 @@ for_decl: Identifier '=' Integer;
 for_end: Identifier for_end_comp_type Integer;
 for_end_comp_type : ('<' | '>' | '<=' | '>=');
 pragma: '#pragma ' Identifier;
+
+immediate : Integer | Hexnum | Octalnum;
+
+
 Identifier
    : Letter ('_' | Letter | Digit)*
    ;
 Hexnum
-   : HexDigit + ('h' | 'H')
+   : '0x' HexDigit +
    ;
 Integer
    : (Digit +)

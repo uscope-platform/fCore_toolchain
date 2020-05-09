@@ -30,6 +30,9 @@ instruction::instruction(int inst_type, std::vector<uint16_t> arguments) {
         case INDEPENDENT_INSTRUCTION:
             form_indep_inst(arguments[0]);
             break;
+        case  BRANCH_INSTRUCTION:
+            form_branch_inst(arguments[0], arguments[1], arguments[2], arguments[3]);
+            break;
     }
 }
 instruction::instruction(int inst_type,std::string opcode, std::vector<uint16_t> operands) {
@@ -72,6 +75,21 @@ void instruction::form_imm_inst(uint8_t opcode, uint8_t dest, uint16_t immediate
     immediate_instr.immediate = immediate;
 }
 
+void instruction::form_branch_inst(uint8_t opcode, uint8_t op_a, uint8_t op_b, uint16_t offset) {
+    instr = 0;
+    instr += opcode & 0xfu;
+    branch_instr.opcode = opcode;
+
+    instr += (op_a & 0xfu) << 4u;
+    branch_instr.op_a = op_a;
+
+    instr += (op_b & 0xfu) << 8u;
+    branch_instr.op_b = op_b;
+
+    instr += (offset & 0xfffu) << 12u;
+    branch_instr.offset = offset;
+}
+
 uint32_t instruction::emit() const {
         return instr;
 }
@@ -87,6 +105,8 @@ void instruction::print() {
         case REGISTER_INSTRUCTION:
             print_register();
             break;
+        case BRANCH_INSTRUCTION:
+            print_branch();
     }
 }
 
@@ -104,22 +124,36 @@ void instruction::print_register() const {
     " OPERAND A: " << register_instr.op_a << " OPERAND B: " << register_instr.op_b <<
     " DESTINATION: " << register_instr.dest <<std::endl;
 }
+void instruction::print_branch() const {
+    std::cout << std::setfill('0') << std::setw(4) <<  std::hex << instr << " -> OPCODE: " << branch_instr.opcode <<
+        " OPERAND A: " << branch_instr.op_a << " OPERAND B: " << branch_instr.op_b <<
+        " OFFSET: " << branch_instr.offset <<std::endl;
+}
 
 void instruction::specialize_pseudo() {
     std::string target_instruction = fcore_pseudo_op[pseudo_instr.opcode];
+    uint16_t opcode = fcore_opcodes[target_instruction];
     switch (fcore_op_types[target_instruction]) {
         case REGISTER_INSTRUCTION:
-            form_reg_inst(fcore_opcodes[target_instruction], pseudo_instr.arg_1, pseudo_instr.arg_2, pseudo_instr.arg_3);
+            form_reg_inst(opcode, pseudo_instr.arg_1, pseudo_instr.arg_2, pseudo_instr.arg_3);
             type = REGISTER_INSTRUCTION;
             break;
         case IMMEDIATE_INSTRUCTION:
-            form_imm_inst(fcore_opcodes[target_instruction], pseudo_instr.arg_1, pseudo_instr.arg_3);
+            form_imm_inst(opcode, pseudo_instr.arg_1, pseudo_instr.arg_3);
             type = IMMEDIATE_INSTRUCTION;
             break;
         case INDEPENDENT_INSTRUCTION:
-            form_indep_inst(fcore_opcodes[target_instruction]);
+            form_indep_inst(opcode);
             type = INDEPENDENT_INSTRUCTION;
+            break;
+        case BRANCH_INSTRUCTION:
+            form_branch_inst(opcode, pseudo_instr.arg_1, pseudo_instr.arg_2, pseudo_instr.arg_3);
+            type = BRANCH_INSTRUCTION;
+            break;
+        default:
             break;
     }
 }
+
+
 

@@ -37,17 +37,29 @@ void Tree_visitor::exitReg_instr(fs_grammarParser::Reg_instrContext *ctx) {
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
-void Tree_visitor::exitPseudo_instr(fs_grammarParser::Pseudo_instrContext *ctx) {
-    std::string opcode = ctx->pseudo_opcode()->getText();
+void Tree_visitor::exitBranch_instr(fs_grammarParser::Branch_instrContext *ctx) {
+    std::string opcode = ctx->branch_opcode()->getText();
     std::vector<fs_grammarParser::Fcore_regContext*> ops = ctx->fcore_reg();
 
     std::vector<uint16_t> arguments;
     arguments.push_back(fcore_opcodes[opcode]);
     arguments.push_back(fcore_registers[ops[0]->getText()]);
     arguments.push_back(fcore_registers[ops[1]->getText()]);
+    arguments.push_back(std::stoi(ctx->immediate()->Hexnum()->getText(), nullptr, 16));
+    code_element this_inst = code_element(type_instr, instruction(BRANCH_INSTRUCTION,arguments));
+    current_element->add_content(std::make_shared<code_element>(this_inst));
+}
+
+void Tree_visitor::exitPseudo_instr(fs_grammarParser::Pseudo_instrContext *ctx) {
+    std::string opcode = ctx->pseudo_opcode()->getText();
+    std::vector<fs_grammarParser::Fcore_regContext*> ops = ctx->fcore_reg();
+
+    std::vector<uint16_t> arguments;
+    arguments.push_back(fcore_registers[ops[0]->getText()]);
+    arguments.push_back(fcore_registers[ops[1]->getText()]);
     if(ops.size()>2)
         arguments.push_back(fcore_registers[ops[2]->getText()]);
-    code_element this_inst = code_element(type_instr, instruction(PSEUDO_INSTRUCTION,arguments));
+    code_element this_inst = code_element(type_instr, instruction(PSEUDO_INSTRUCTION,opcode,arguments));
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 

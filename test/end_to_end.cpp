@@ -75,3 +75,17 @@ TEST_CASE( "for block file", "[for_file]" ) {
     std::vector<uint32_t> gold_standard = {0x6449, 0xc859, 0x6541, 0x6449, 0x6541, 0x0000, 0x0000, 0x6449, 0x6541, 0x0000, 0x0000, 0xe};
     REQUIRE( result == gold_standard);
 }
+
+TEST_CASE( "branch file", "[for_file]" ) {
+    std::string input_file = "test_branch.s";
+
+    std::shared_ptr<code_element> AST = parse(input_file);
+
+    pass_manager manager = create_pass_manager();
+    manager.run_passes(AST);
+
+    output_writer writer(AST, true);
+    std::vector<uint32_t> result = writer.get_raw_program();
+    std::vector<uint32_t> gold_standard = {0x6449, 0x6541, 0x431, 0x50032A, 0x50032B, 0x50032C, 0x50032D, 0xe};
+    REQUIRE( result == gold_standard);
+}
