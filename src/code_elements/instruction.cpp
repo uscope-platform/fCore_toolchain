@@ -33,6 +33,9 @@ instruction::instruction(int inst_type, std::vector<uint16_t> arguments) {
         case  BRANCH_INSTRUCTION:
             form_branch_inst(arguments[0], arguments[1], arguments[2], arguments[3]);
             break;
+        case ALU_IMMEDIATE_INSTRUCTION:
+            form_alu_imm_inst(arguments[0], arguments[1], arguments[2], arguments[3]);
+            break;
     }
 }
 instruction::instruction(int inst_type,std::string opcode, std::vector<uint16_t> operands) {
@@ -52,42 +55,57 @@ void instruction::form_indep_inst(uint8_t opcode){
 
 void instruction::form_reg_inst(uint8_t opcode, uint8_t op_a, uint8_t op_b, uint8_t dest){
     instr = 0;
-    instr += opcode & 0xfu;
+    instr += opcode & 0x1fu;
     register_instr.opcode = opcode;
 
-    instr += (op_a & 0xfu) << 4u;
+    instr += (op_a & 0xfu) << 5u;
     register_instr.op_a = op_a;
 
-    instr += (op_b & 0xfu) << 8u;
+    instr += (op_b & 0xfu) << 9u;
     register_instr.op_b = op_b;
 
-    instr += (dest & 0xfu) << 12u;
+    instr += (dest & 0xfu) << 13u;
     register_instr.dest = dest;
 }
 
 void instruction::form_imm_inst(uint8_t opcode, uint8_t dest, uint16_t immediate) {
     instr = 0;
-    instr += opcode & 0xfu;
+    instr += opcode & 0x1fu;
     immediate_instr.opcode = opcode;
-    instr += (dest & 0xfu) << 4u;
+    instr += (dest & 0xfu) << 5u;
     immediate_instr.destination = dest;
-    instr += (immediate & 0xfffu) << 8u;
+    instr += (immediate & 0xfffu) << 9u;
     immediate_instr.immediate = immediate;
 }
 
 void instruction::form_branch_inst(uint8_t opcode, uint8_t op_a, uint8_t op_b, uint16_t offset) {
     instr = 0;
-    instr += opcode & 0xfu;
+    instr += opcode & 0x1fu;
     branch_instr.opcode = opcode;
 
-    instr += (op_a & 0xfu) << 4u;
+    instr += (op_a & 0xfu) << 5u;
     branch_instr.op_a = op_a;
 
-    instr += (op_b & 0xfu) << 8u;
+    instr += (op_b & 0xfu) << 9u;
     branch_instr.op_b = op_b;
 
-    instr += (offset & 0xfffu) << 12u;
+    instr += (offset & 0xfffu) << 13u;
     branch_instr.offset = offset;
+}
+
+void instruction::form_alu_imm_inst(uint8_t opcode, uint8_t op_a, uint8_t dest, uint16_t immediate) {
+    instr = 0;
+    instr += opcode & 0x1fu;
+    alu_imm_instr.opcode = opcode;
+
+    instr += (op_a & 0xfu) << 5u;
+    alu_imm_instr.op_a = op_a;
+
+    instr += (dest & 0xfu) << 9u;
+    alu_imm_instr.dest = dest;
+
+    instr += (immediate & 0xfffu) << 13u;
+    alu_imm_instr.immediate = immediate;
 }
 
 uint32_t instruction::emit() const {
@@ -107,6 +125,10 @@ void instruction::print() {
             break;
         case BRANCH_INSTRUCTION:
             print_branch();
+            break;
+        case ALU_IMMEDIATE_INSTRUCTION:
+            print_alu_immediate();
+            break;
     }
 }
 
@@ -124,6 +146,13 @@ void instruction::print_register() const {
     " OPERAND A: " << register_instr.op_a << " OPERAND B: " << register_instr.op_b <<
     " DESTINATION: " << register_instr.dest <<std::endl;
 }
+
+void instruction::print_alu_immediate() const {
+    std::cout << std::setfill('0') << std::setw(4) <<  std::hex << instr << " -> OPCODE: " << alu_imm_instr.opcode <<
+              " OPERAND A: " << alu_imm_instr.op_a << " DESTINATION : " << alu_imm_instr.dest <<
+              " IMMEDIATE: " << alu_imm_instr.immediate <<std::endl;
+}
+
 void instruction::print_branch() const {
     std::cout << std::setfill('0') << std::setw(4) <<  std::hex << instr << " -> OPCODE: " << branch_instr.opcode <<
         " OPERAND A: " << branch_instr.op_a << " OPERAND B: " << branch_instr.op_b <<
@@ -150,8 +179,26 @@ void instruction::specialize_pseudo() {
             form_branch_inst(opcode, pseudo_instr.arg_1, pseudo_instr.arg_2, pseudo_instr.arg_3);
             type = BRANCH_INSTRUCTION;
             break;
+        case ALU_IMMEDIATE_INSTRUCTION:
+            form_branch_inst(opcode, pseudo_instr.arg_1, pseudo_instr.arg_2, pseudo_instr.arg_3);
+            type = ALU_IMMEDIATE_INSTRUCTION;
+            break;
         default:
             break;
+    }
+}
+
+int instruction::instruction_count() const {
+    switch(type){
+        case IMMEDIATE_INSTRUCTION:
+        case ALU_IMMEDIATE_INSTRUCTION:
+        case INDEPENDENT_INSTRUCTION:
+        case REGISTER_INSTRUCTION:
+            return 1;
+        case BRANCH_INSTRUCTION:
+            return -1;
+        default:
+            throw std::runtime_error("instruction type not recognised");
     }
 }
 

@@ -16,6 +16,8 @@ public:
     std::shared_ptr<code_element> process_leaf(std::shared_ptr<code_element> element) override {
         return element;
     };
+    void analyze_element(std::shared_ptr<code_element> element) override {};
+    std::vector<int> get_analysis_result() override {return std::vector<int>();};
     int get_pass_type() override { return NODE_PASS;};
 };
 

@@ -20,7 +20,7 @@ static inline uint32_t Reverse32(uint32_t value)
 TEST_CASE( "simple assembly file", "[simple_file]" ) {
     std::string input_file = "test_add.s";
 
-    std::vector<uint32_t> gold_standard = {0x6449, 0xc859, 0x6541,0xe};
+    std::vector<uint32_t> gold_standard = {0xc889, 0x190A9, 0xCA81,0xe};
 
     SECTION("file parsing and processing") {
 
@@ -68,11 +68,11 @@ TEST_CASE( "for block file", "[for_file]" ) {
     std::shared_ptr<code_element> AST = parse(input_file);
 
     pass_manager manager = create_pass_manager();
-    manager.run_passes(AST);
+    manager.run_morphing_passes(AST);
 
     output_writer writer(AST, false);
     std::vector<uint32_t> result = writer.get_raw_program();
-    std::vector<uint32_t> gold_standard = {0x6449, 0xc859, 0x6541, 0x6449, 0x6541, 0x0000, 0x0000, 0x6449, 0x6541, 0x0000, 0x0000, 0xe};
+    std::vector<uint32_t> gold_standard = {0xC889, 0x190a9, 0xca81, 0xC889, 0xca81, 0x0000, 0x0000, 0xC889, 0xca81, 0x0000, 0x0000, 0xe};
     REQUIRE( result == gold_standard);
 }
 
@@ -82,10 +82,10 @@ TEST_CASE( "branch file", "[for_file]" ) {
     std::shared_ptr<code_element> AST = parse(input_file);
 
     pass_manager manager = create_pass_manager();
-    manager.run_passes(AST);
+    manager.run_morphing_passes(AST);
 
     output_writer writer(AST, true);
     std::vector<uint32_t> result = writer.get_raw_program();
-    std::vector<uint32_t> gold_standard = {0x6449, 0x6541, 0x431, 0x50032A, 0x50032B, 0x50032C, 0x50032D, 0xe};
+     std::vector<uint32_t> gold_standard = {0xC889, 0xca81, 0x861, 0xa0064a, 0xa0064B, 0xa0064c, 0xa0064D, 0xe};
     REQUIRE( result == gold_standard);
 }

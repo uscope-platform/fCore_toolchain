@@ -6,6 +6,7 @@
 #define FCORE_HAS_TREE_VISITOR_HPP
 
 #include "../../include/fs_parser/fs_grammarBaseListener.h"
+#include "../../include/fs_parser/fs_grammarParser.h"
 #include "../../include/fCore_isa.hpp"
 #include "../code_elements/instruction.h"
 #include "../code_elements/for_loop.hpp"
@@ -22,6 +23,7 @@ public:
     Tree_visitor();
     void exitImm_instr(fs_grammarParser::Imm_instrContext * ctx) override;
     void exitReg_instr(fs_grammarParser::Reg_instrContext * ctx) override;
+    void exitImm_alu_instr(fs_grammarParser::Imm_alu_instrContext *ctx) override;
     void exitPseudo_instr(fs_grammarParser::Pseudo_instrContext *ctx) override;
     void exitIndep_instr(fs_grammarParser::Indep_instrContext * ctx) override;
     void exitBranch_instr(fs_grammarParser::Branch_instrContext * ctx) override;

@@ -20,18 +20,18 @@ public:
     T__26 = 27, T__27 = 28, T__28 = 29, T__29 = 30, T__30 = 31, T__31 = 32, 
     T__32 = 33, T__33 = 34, T__34 = 35, T__35 = 36, T__36 = 37, T__37 = 38, 
     T__38 = 39, T__39 = 40, T__40 = 41, T__41 = 42, T__42 = 43, T__43 = 44, 
-    T__44 = 45, T__45 = 46, Identifier = 47, Hexnum = 48, Integer = 49, 
-    Octalnum = 50, FloatingPointLiteral = 51, String = 52, Label = 53, WS = 54, 
-    BlockComment = 55, LineComment = 56
+    T__44 = 45, T__45 = 46, T__46 = 47, T__47 = 48, T__48 = 49, T__49 = 50, 
+    Identifier = 51, Hexnum = 52, Integer = 53, Octalnum = 54, FloatingPointLiteral = 55, 
+    String = 56, Label = 57, WS = 58, BlockComment = 59, LineComment = 60
   };
 
   enum {
     RuleProgram = 0, RuleCode = 1, RuleInstruction = 2, RuleReg_instr = 3, 
-    RuleImm_instr = 4, RuleBranch_instr = 5, RuleIndep_instr = 6, RulePseudo_instr = 7, 
-    RuleReg_opcode = 8, RuleImm_opcode = 9, RuleBranch_opcode = 10, RulePseudo_opcode = 11, 
-    RuleFcore_reg = 12, RuleFor_block = 13, RuleFor_incr = 14, RuleFor_dec = 15, 
-    RuleFor_decl = 16, RuleFor_end = 17, RuleFor_end_comp_type = 18, RulePragma = 19, 
-    RuleImmediate = 20
+    RuleImm_instr = 4, RuleImm_alu_instr = 5, RuleBranch_instr = 6, RuleIndep_instr = 7, 
+    RulePseudo_instr = 8, RuleReg_opcode = 9, RuleImm_alu_opcode = 10, RuleImm_opcode = 11, 
+    RuleBranch_opcode = 12, RulePseudo_opcode = 13, RuleFcore_reg = 14, 
+    RuleFor_block = 15, RuleFor_incr = 16, RuleFor_dec = 17, RuleFor_decl = 18, 
+    RuleFor_end = 19, RuleFor_end_comp_type = 20, RulePragma = 21, RuleImmediate = 22
   };
 
   fs_grammarParser(antlr4::TokenStream *input);
@@ -49,10 +49,12 @@ public:
   class InstructionContext;
   class Reg_instrContext;
   class Imm_instrContext;
+  class Imm_alu_instrContext;
   class Branch_instrContext;
   class Indep_instrContext;
   class Pseudo_instrContext;
   class Reg_opcodeContext;
+  class Imm_alu_opcodeContext;
   class Imm_opcodeContext;
   class Branch_opcodeContext;
   class Pseudo_opcodeContext;
@@ -110,6 +112,7 @@ public:
     Indep_instrContext *indep_instr();
     Pseudo_instrContext *pseudo_instr();
     Branch_instrContext *branch_instr();
+    Imm_alu_instrContext *imm_alu_instr();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -155,6 +158,26 @@ public:
   };
 
   Imm_instrContext* imm_instr();
+
+  class  Imm_alu_instrContext : public antlr4::ParserRuleContext {
+  public:
+    Imm_alu_instrContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Imm_alu_opcodeContext *imm_alu_opcode();
+    std::vector<Fcore_regContext *> fcore_reg();
+    Fcore_regContext* fcore_reg(size_t i);
+    antlr4::tree::TerminalNode *Integer();
+    antlr4::tree::TerminalNode *Hexnum();
+    antlr4::tree::TerminalNode *Octalnum();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Imm_alu_instrContext* imm_alu_instr();
 
   class  Branch_instrContext : public antlr4::ParserRuleContext {
   public:
@@ -218,6 +241,20 @@ public:
   };
 
   Reg_opcodeContext* reg_opcode();
+
+  class  Imm_alu_opcodeContext : public antlr4::ParserRuleContext {
+  public:
+    Imm_alu_opcodeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Imm_alu_opcodeContext* imm_alu_opcode();
 
   class  Imm_opcodeContext : public antlr4::ParserRuleContext {
   public:

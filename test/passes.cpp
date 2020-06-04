@@ -20,11 +20,11 @@ TEST_CASE( "pseudo_inst_pass") {
     AST->add_content(instr);
 
     pass_manager manager = create_pass_manager();
-    manager.run_passes(AST);
+    manager.run_morphing_passes(AST);
 
     output_writer writer(AST, false);
     std::vector<uint32_t> result = writer.get_raw_program();
-    std::vector<uint32_t> gold_standard = {0x431};
+    std::vector<uint32_t> gold_standard = {0x861};
     REQUIRE(result == gold_standard);
 }
 
@@ -50,7 +50,7 @@ TEST_CASE( "loop_pass") {
 
         AST->add_content(level_1);
         pass_manager manager = create_pass_manager();
-        manager.run_passes(AST);
+        manager.run_morphing_passes(AST);
 
         output_writer writer(AST,false);
         std::vector<uint32_t> result = writer.get_raw_program();
@@ -72,7 +72,7 @@ TEST_CASE( "loop_pass") {
 
         AST->add_content(level_1);
         pass_manager manager = create_pass_manager();
-        manager.run_passes(AST);
+        manager.run_morphing_passes(AST);
 
         output_writer writer(AST,false);
         std::vector<uint32_t> result = writer.get_raw_program();
@@ -94,7 +94,7 @@ TEST_CASE( "loop_pass") {
 
         AST->add_content(level_1);
         pass_manager manager = create_pass_manager();
-        manager.run_passes(AST);
+        manager.run_morphing_passes(AST);
 
         output_writer writer(AST,false);
         std::vector<uint32_t> result = writer.get_raw_program();
@@ -116,7 +116,7 @@ TEST_CASE( "loop_pass") {
 
         AST->add_content(level_1);
         pass_manager manager = create_pass_manager();
-        manager.run_passes(AST);
+        manager.run_morphing_passes(AST);
 
         output_writer writer(AST,false);
         std::vector<uint32_t> result = writer.get_raw_program();

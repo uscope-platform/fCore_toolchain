@@ -12,7 +12,7 @@ TEST_CASE( "immediate_instruction" ) {
 
         uint32_t result = instr.emit();
 
-        REQUIRE( result == 0x6449 );
+        REQUIRE( result == 0xc889 );
     }
     SECTION("print"){
         std::stringstream buffer;
@@ -20,7 +20,7 @@ TEST_CASE( "immediate_instruction" ) {
         instr.print();
         std::string result = buffer.str();
         std::cout.rdbuf(old);
-        std::string golden_standard = "6449 -> OPCODE: 9 DESTINATION: 4 IMMEDIATE: 64\n";
+        std::string golden_standard = "c889 -> OPCODE: 9 DESTINATION: 4 IMMEDIATE: 64\n";
         REQUIRE(result == golden_standard);
     }
 }
@@ -33,7 +33,7 @@ TEST_CASE( "register_instruction" ) {
 
         uint32_t result = instr.emit();
 
-        REQUIRE( result == 0x4325 );
+        REQUIRE(result == 0x8645);
     }
     SECTION("print"){
         std::stringstream buffer;
@@ -41,7 +41,7 @@ TEST_CASE( "register_instruction" ) {
         instr.print();
         std::string result = buffer.str();
         std::cout.rdbuf(old);
-        std::string golden_standard = "4325 -> OPCODE: 5 OPERAND A: 2 OPERAND B: 3 DESTINATION: 4\n";
+        std::string golden_standard = "8645 -> OPCODE: 5 OPERAND A: 2 OPERAND B: 3 DESTINATION: 4\n";
         REQUIRE(result == golden_standard);
     }
 

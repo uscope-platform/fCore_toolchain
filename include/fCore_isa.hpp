@@ -10,7 +10,7 @@
 #define PSEUDO_INSTRUCTION 4
 #define GENERATED_INSTRUCTION 5
 #define BRANCH_INSTRUCTION 6
-
+#define ALU_IMMEDIATE_INSTRUCTION 7
 #include <map>
 
 static std::map <std::string, int>  fcore_registers
@@ -49,8 +49,11 @@ static std::map <std::string, int>  fcore_opcodes
                 std::make_pair ("ble", 11),
                 std::make_pair ("beq", 12),
                 std::make_pair ("bne", 13),
-                std::make_pair ("stop", 14)
-
+                std::make_pair ("stop", 14),
+                std::make_pair ("addi", 15),
+                std::make_pair ("subi", 16),
+                std::make_pair ("muli", 17),
+                std::make_pair ("maci", 18)
         };
 
 static std::map <std::string, int>  fcore_op_types
@@ -69,7 +72,11 @@ static std::map <std::string, int>  fcore_op_types
                 std::make_pair ("ble", BRANCH_INSTRUCTION),
                 std::make_pair ("beq", BRANCH_INSTRUCTION),
                 std::make_pair ("bne", BRANCH_INSTRUCTION),
-                std::make_pair ("stop", INDEPENDENT_INSTRUCTION)
+                std::make_pair ("stop", INDEPENDENT_INSTRUCTION),
+                std::make_pair ("addi", ALU_IMMEDIATE_INSTRUCTION),
+                std::make_pair ("subi", ALU_IMMEDIATE_INSTRUCTION),
+                std::make_pair ("muli", ALU_IMMEDIATE_INSTRUCTION),
+                std::make_pair ("maci", ALU_IMMEDIATE_INSTRUCTION)
 
         };
 

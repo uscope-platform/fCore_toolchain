@@ -18,6 +18,8 @@ public:
         elem.push_back(element);
         return elem;
     };
+    std::vector<int> get_analysis_result() override {return std::vector<int>();};
+    void analyze_element(std::shared_ptr<code_element> element) override {};
     int get_pass_type() override { return LEAF_PASS;};
 };
 

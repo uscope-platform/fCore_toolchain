@@ -41,6 +41,13 @@ typedef struct {
     uint16_t offset;
 }branch_instruction_t;
 
+typedef struct {
+    uint16_t opcode;
+    uint16_t op_a;
+    uint16_t dest;
+    uint16_t immediate;
+}alu_imm_instruction_t;
+
 class instruction{
 
     public:
@@ -50,6 +57,7 @@ class instruction{
         instruction(int inst_type, std::string opcode, std::vector<uint16_t> operands);
 
         [[nodiscard]] uint32_t emit() const;
+        int instruction_count() const;
         void print();
         void specialize_pseudo();
         bool is_pseudo() { return type == PSEUDO_INSTRUCTION;};
@@ -60,16 +68,18 @@ class instruction{
         void print_independent() const;
         void print_register() const;
         void print_branch() const;
+        void print_alu_immediate() const;
 
         void form_indep_inst(uint8_t opcode);
         void form_reg_inst(uint8_t opcode, uint8_t op_a, uint8_t op_b, uint8_t dest);
         void form_imm_inst(uint8_t opcode,uint8_t dest, uint16_t immediate);
         void form_branch_inst(uint8_t opcode, uint8_t op_a, uint8_t op_b, uint16_t offset);
-
+        void form_alu_imm_inst(uint8_t opcode, uint8_t op_a, uint8_t dest, uint16_t immediate);
         int type;
         imm_instruction_t immediate_instr;
         reg_instruction_t register_instr;
         branch_instruction_t branch_instr;
+        alu_imm_instruction_t alu_imm_instr;
 
         uint32_t instr;
 

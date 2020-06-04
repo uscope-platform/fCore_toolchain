@@ -37,6 +37,20 @@ void Tree_visitor::exitReg_instr(fs_grammarParser::Reg_instrContext *ctx) {
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
+void Tree_visitor::exitImm_alu_instr(fs_grammarParser::Imm_alu_instrContext *ctx) {
+    std::string opcode = ctx->imm_alu_opcode()->getText();
+    std::vector<fs_grammarParser::Fcore_regContext*> regs = ctx->fcore_reg();
+    uint16_t imm = std::stoi(ctx->Integer()->getText(), nullptr, 0);
+    std::vector<uint16_t> arguments;
+    arguments.push_back(fcore_opcodes[opcode]);
+    arguments.push_back(fcore_registers[regs[0]->getText()]);
+    arguments.push_back(fcore_registers[regs[1]->getText()]);
+      arguments.push_back(imm);
+
+    code_element this_inst = code_element(type_instr, instruction(ALU_IMMEDIATE_INSTRUCTION,arguments));
+    current_element->add_content(std::make_shared<code_element>(this_inst));
+}
+
 void Tree_visitor::exitBranch_instr(fs_grammarParser::Branch_instrContext *ctx) {
     std::string opcode = ctx->branch_opcode()->getText();
     std::vector<fs_grammarParser::Fcore_regContext*> ops = ctx->fcore_reg();
