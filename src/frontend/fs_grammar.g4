@@ -13,8 +13,8 @@ indep_instr : 'stop' | 'nop';
 
 pseudo_instr : pseudo_opcode  fcore_reg ',' fcore_reg (',' fcore_reg)*;
 
-reg_opcode : 'add' | 'sub' | 'mul' | 'mac' | 'shl' | 'shr' | 'sal' | 'sar';
-imm_alu_opcode: 'addi' | 'subi' | 'muli' | 'maci';
+reg_opcode : 'add' | 'sub' | 'mul' | 'mac' | 'shl' | 'shr' | 'sar';
+imm_alu_opcode: 'addi' | 'subi' | 'muli' | 'maci' | 'shli' | 'shri' | 'sari';
 imm_opcode : 'ldr' ;
 branch_opcode: 'ble' | 'bgt' | 'beq' | 'bne';
 

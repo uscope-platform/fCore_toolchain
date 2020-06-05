@@ -42,7 +42,6 @@ static std::map <std::string, int>  fcore_opcodes
                 std::make_pair ("mac", 4),
                 std::make_pair ("shl", 5),
                 std::make_pair ("shr", 6),
-                std::make_pair ("sal", 7),
                 std::make_pair ("sar", 8),
                 std::make_pair ("ldr", 9),
                 std::make_pair ("bgt", 10),
@@ -53,7 +52,10 @@ static std::map <std::string, int>  fcore_opcodes
                 std::make_pair ("addi", 15),
                 std::make_pair ("subi", 16),
                 std::make_pair ("muli", 17),
-                std::make_pair ("maci", 18)
+                std::make_pair ("maci", 18),
+                std::make_pair ("shli", 19),
+                std::make_pair ("shri", 20),
+                std::make_pair ("sari", 22),
         };
 
 static std::map <std::string, int>  fcore_op_types
@@ -64,9 +66,8 @@ static std::map <std::string, int>  fcore_op_types
                 std::make_pair ("mul", REGISTER_INSTRUCTION),
                 std::make_pair ("mac", REGISTER_INSTRUCTION),
                 std::make_pair ("shl", REGISTER_INSTRUCTION),
-                std::make_pair ("shr", IMMEDIATE_INSTRUCTION),
-                std::make_pair ("sal", IMMEDIATE_INSTRUCTION),
-                std::make_pair ("sar", IMMEDIATE_INSTRUCTION),
+                std::make_pair ("shr", REGISTER_INSTRUCTION),
+                std::make_pair ("sar", REGISTER_INSTRUCTION),
                 std::make_pair ("ldr", IMMEDIATE_INSTRUCTION),
                 std::make_pair ("bgt", BRANCH_INSTRUCTION),
                 std::make_pair ("ble", BRANCH_INSTRUCTION),
@@ -76,7 +77,10 @@ static std::map <std::string, int>  fcore_op_types
                 std::make_pair ("addi", ALU_IMMEDIATE_INSTRUCTION),
                 std::make_pair ("subi", ALU_IMMEDIATE_INSTRUCTION),
                 std::make_pair ("muli", ALU_IMMEDIATE_INSTRUCTION),
-                std::make_pair ("maci", ALU_IMMEDIATE_INSTRUCTION)
+                std::make_pair ("maci", ALU_IMMEDIATE_INSTRUCTION),
+                std::make_pair ("shli", ALU_IMMEDIATE_INSTRUCTION),
+                std::make_pair ("shri", ALU_IMMEDIATE_INSTRUCTION),
+                std::make_pair ("sari", ALU_IMMEDIATE_INSTRUCTION),
 
         };
 
