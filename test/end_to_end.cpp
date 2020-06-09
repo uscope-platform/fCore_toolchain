@@ -86,6 +86,6 @@ TEST_CASE( "branch file", "[for_file]" ) {
 
     output_writer writer(AST, true);
     std::vector<uint32_t> result = writer.get_raw_program();
-     std::vector<uint32_t> gold_standard = {0xC889, 0xca81, 0x861, 0xa0064a, 0xa0064B, 0xa0064c, 0xa0064D, 0xe};
+     std::vector<uint32_t> gold_standard = {0xC889, 0xca81, 0x8061, 0xa0064a, 0xa0064B, 0xa0064c, 0xa0064D, 0xe};
     REQUIRE( result == gold_standard);
 }

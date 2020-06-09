@@ -24,7 +24,7 @@ TEST_CASE( "pseudo_inst_pass") {
 
     output_writer writer(AST, false);
     std::vector<uint32_t> result = writer.get_raw_program();
-    std::vector<uint32_t> gold_standard = {0x861};
+    std::vector<uint32_t> gold_standard = {0x8061};
     REQUIRE(result == gold_standard);
 }
 
