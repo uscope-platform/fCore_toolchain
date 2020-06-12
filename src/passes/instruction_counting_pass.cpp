@@ -4,7 +4,7 @@
 
 #include "instruction_counting_pass.hpp"
 
-void instruction_counting_pass::analyze_element(std::shared_ptr<code_element> element) {
+void instruction_counting_pass::analyze_element(ast_t element) {
     if(element->type==type_instr){
         int count = element->inst.instruction_count();
         if(count==1)

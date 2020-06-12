@@ -13,13 +13,14 @@
 class output_writer {
 
 public:
-    explicit output_writer( const std::shared_ptr<code_element> &AST, bool debug_print);
-    void emit_program(std::shared_ptr<code_element>& sub_program, bool debug_print);
+    explicit output_writer( const ast_t &AST, bool debug_print);
+    void emit_program(ast_t &sub_program, bool debug_print);
     std::vector<uint32_t> get_raw_program();
+    int get_program_size();
     void write_hex(const std::string& filename);
     void write_mem(const std::string& filename);
 private:
-    std::shared_ptr<code_element> program;
+    ast_t program;
     std::vector<uint32_t> raw_program;
     static inline uint16_t Reverse16(uint16_t value)
     {

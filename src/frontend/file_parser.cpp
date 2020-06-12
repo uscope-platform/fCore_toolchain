@@ -5,8 +5,7 @@
 using namespace antlr4;
 using namespace fs_parser;
 
-
-std::shared_ptr<code_element> parse(const std::string& filename){
+parser::parser(const std::string &filename) {
     std::ifstream stream;
     stream.open(filename);
 
@@ -21,9 +20,7 @@ std::shared_ptr<code_element> parse(const std::string& filename){
     tree::ParseTree *Tree = parser.program();
     Tree_visitor visitor;
     tree::ParseTreeWalker::DEFAULT.walk(&visitor, Tree);
-    std::shared_ptr<code_element> AST = visitor.get_program();
-
-    return AST;
+    AST = visitor.get_program();
+    var_map = visitor.get_varmap();
 
 }
-

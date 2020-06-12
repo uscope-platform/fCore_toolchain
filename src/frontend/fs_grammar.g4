@@ -1,18 +1,20 @@
 // Define a grammar called Hello
 grammar fs_grammar;
 program : code;
-code : ( instruction |for_block | pragma)+;
+code : ( instruction |for_block | pragma | variable_decl | constant_decl)+;
 
 instruction : reg_instr | imm_instr | indep_instr | pseudo_instr | branch_instr| imm_alu_instr;
 
-reg_instr : reg_opcode  fcore_reg ',' fcore_reg ',' fcore_reg;
-imm_instr : imm_opcode fcore_reg ',' Integer | Hexnum | Octalnum;
-imm_alu_instr : imm_alu_opcode fcore_reg ',' (Integer | Hexnum | Octalnum) ',' fcore_reg;
-branch_instr : branch_opcode fcore_reg ',' fcore_reg ',' immediate;
+reg_instr : reg_opcode  operand ',' operand ',' destination;
+imm_instr : imm_opcode destination ',' (Integer | Hexnum | Octalnum | Identifier);
+imm_alu_instr : imm_alu_opcode operand ',' (Integer | Hexnum | Octalnum | Identifier) ',' destination;
+branch_instr : branch_opcode operand ',' operand ',' immediate;
 indep_instr : 'stop' | 'nop';
 
-pseudo_instr : pseudo_opcode  fcore_reg ',' fcore_reg (',' fcore_reg)*;
+pseudo_instr : pseudo_opcode Identifier ',' Identifier (',' Identifier)*;
 
+operand : ( Identifier);
+destination: (Identifier);
 reg_opcode : 'add' | 'sub' | 'mul' | 'mac' | 'shl' | 'shr' | 'sar';
 imm_alu_opcode: 'addi' | 'subi' | 'muli' | 'maci' | 'shli' | 'shri' | 'sari';
 imm_opcode : 'ldr' ;
@@ -20,8 +22,6 @@ branch_opcode: 'ble' | 'bgt' | 'beq' | 'bne';
 
 pseudo_opcode: 'mov';
 
-fcore_reg : 'r0' | 'r1' | 'r2' | 'r3' | 'r4' | 'r5' | 'r6' | 'r7'
-         | 'r8' | 'r9' | 'r10' | 'r11' | 'r12' | 'r13' | 'r14' | 'r15';
 
 for_block: 'for('for_decl';'for_end';'(for_incr|for_dec)')' '{'code'}';
 for_incr: Identifier ('++');
@@ -35,6 +35,8 @@ pragma: '#pragma ' Identifier;
 immediate : Integer | Hexnum | Octalnum;
 
 
+variable_decl : 'let' Identifier;
+constant_decl : 'const' Identifier;
 Identifier
    : Letter ('_' | Letter | Digit)*
    ;

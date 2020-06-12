@@ -16,7 +16,7 @@ code_element::code_element(element_type_t block_type) {
 
 code_element::code_element(element_type_t block_type, instruction block_spec) {
     type = block_type;
-    inst = block_spec;
+    inst = std::move(block_spec);
 }
 
 code_element::code_element(element_type_t block_type, for_loop block_spec) {
@@ -27,6 +27,12 @@ code_element::code_element(element_type_t block_type, for_loop block_spec) {
 code_element::code_element(element_type_t block_type, pragma block_spec) {
     type = block_type;
     directive = std::move(block_spec);
+}
+
+
+code_element::code_element(element_type_t block_type, variable var_in) {
+    type = block_type;
+    var = var_in;
 }
 
 
@@ -49,6 +55,14 @@ void code_element::set_content(const std::vector<std::shared_ptr<code_element>>&
 bool code_element::is_terminal() {
 
     return  type == type_instr || type == type_pragma;
+}
+
+void code_element::prepend_content(const std::vector<std::shared_ptr<code_element>> &c) {
+    content.insert(content.begin(), c.begin(), c.end());
+}
+
+void code_element::append_content(const std::vector<std::shared_ptr<code_element>> &c) {
+    content.insert(content.end(), c.begin(), c.end());
 }
 
 

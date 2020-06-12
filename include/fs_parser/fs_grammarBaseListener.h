@@ -45,6 +45,12 @@ public:
   virtual void enterPseudo_instr(fs_grammarParser::Pseudo_instrContext * /*ctx*/) override { }
   virtual void exitPseudo_instr(fs_grammarParser::Pseudo_instrContext * /*ctx*/) override { }
 
+  virtual void enterOperand(fs_grammarParser::OperandContext * /*ctx*/) override { }
+  virtual void exitOperand(fs_grammarParser::OperandContext * /*ctx*/) override { }
+
+  virtual void enterDestination(fs_grammarParser::DestinationContext * /*ctx*/) override { }
+  virtual void exitDestination(fs_grammarParser::DestinationContext * /*ctx*/) override { }
+
   virtual void enterReg_opcode(fs_grammarParser::Reg_opcodeContext * /*ctx*/) override { }
   virtual void exitReg_opcode(fs_grammarParser::Reg_opcodeContext * /*ctx*/) override { }
 
@@ -59,9 +65,6 @@ public:
 
   virtual void enterPseudo_opcode(fs_grammarParser::Pseudo_opcodeContext * /*ctx*/) override { }
   virtual void exitPseudo_opcode(fs_grammarParser::Pseudo_opcodeContext * /*ctx*/) override { }
-
-  virtual void enterFcore_reg(fs_grammarParser::Fcore_regContext * /*ctx*/) override { }
-  virtual void exitFcore_reg(fs_grammarParser::Fcore_regContext * /*ctx*/) override { }
 
   virtual void enterFor_block(fs_grammarParser::For_blockContext * /*ctx*/) override { }
   virtual void exitFor_block(fs_grammarParser::For_blockContext * /*ctx*/) override { }
@@ -86,6 +89,12 @@ public:
 
   virtual void enterImmediate(fs_grammarParser::ImmediateContext * /*ctx*/) override { }
   virtual void exitImmediate(fs_grammarParser::ImmediateContext * /*ctx*/) override { }
+
+  virtual void enterVariable_decl(fs_grammarParser::Variable_declContext * /*ctx*/) override { }
+  virtual void exitVariable_decl(fs_grammarParser::Variable_declContext * /*ctx*/) override { }
+
+  virtual void enterConstant_decl(fs_grammarParser::Constant_declContext * /*ctx*/) override { }
+  virtual void exitConstant_decl(fs_grammarParser::Constant_declContext * /*ctx*/) override { }
 
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

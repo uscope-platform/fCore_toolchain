@@ -13,10 +13,10 @@
 TEST_CASE( "pseudo_inst_pass") {
 
 
-    std::shared_ptr<code_element> AST = std::make_shared<code_element>(type_program_head);
+    ast_t AST = std::make_shared<code_element>(type_program_head);
 
     std::vector<uint16_t> args = {3, 4};
-    std::shared_ptr<code_element> instr = std::make_shared<code_element>(type_instr, instruction(PSEUDO_INSTRUCTION,"mov", args));
+    ast_t instr = std::make_shared<code_element>(type_instr, instruction(PSEUDO_INSTRUCTION,"mov", args));
     AST->add_content(instr);
 
     pass_manager manager = create_pass_manager();
@@ -30,11 +30,11 @@ TEST_CASE( "pseudo_inst_pass") {
 
 
 TEST_CASE( "loop_pass") {
-    std::shared_ptr<code_element> AST = std::make_shared<code_element>(type_program_head);
-    std::shared_ptr<code_element> loop_pragma = std::make_shared<code_element>(type_pragma, pragma("unroll"));
+    ast_t AST = std::make_shared<code_element>(type_program_head);
+    ast_t loop_pragma = std::make_shared<code_element>(type_pragma, pragma("unroll"));
     std::vector<uint16_t> args = {3};
-    std::shared_ptr<code_element> loop_instr = std::make_shared<code_element>(type_instr, instruction(INDEPENDENT_INSTRUCTION, args));
-    std::vector<std::shared_ptr<code_element>> l1_content = {loop_pragma, loop_instr};
+    ast_t loop_instr = std::make_shared<code_element>(type_instr, instruction(INDEPENDENT_INSTRUCTION, args));
+    std::vector<ast_t> l1_content = {loop_pragma, loop_instr};
     SECTION("less_than_loop") {
         for_loop loop;
         loop_start_t start = {"j", 0};
@@ -45,7 +45,7 @@ TEST_CASE( "loop_pass") {
         loop.set_advance(adv);
         loop.set_loop_end(end);
 
-        std::shared_ptr<code_element> level_1 = std::make_shared<code_element>(type_for_block, loop);
+        ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
         level_1->set_content(l1_content);
 
         AST->add_content(level_1);
@@ -67,7 +67,7 @@ TEST_CASE( "loop_pass") {
         loop.set_advance(adv);
         loop.set_loop_end(end);
 
-        std::shared_ptr<code_element> level_1 = std::make_shared<code_element>(type_for_block, loop);
+        ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
         level_1->set_content(l1_content);
 
         AST->add_content(level_1);
@@ -89,7 +89,7 @@ TEST_CASE( "loop_pass") {
         loop.set_advance(adv);
         loop.set_loop_end(end);
 
-        std::shared_ptr<code_element> level_1 = std::make_shared<code_element>(type_for_block, loop);
+        ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
         level_1->set_content(l1_content);
 
         AST->add_content(level_1);
@@ -111,7 +111,7 @@ TEST_CASE( "loop_pass") {
         loop.set_advance(adv);
         loop.set_loop_end(end);
 
-        std::shared_ptr<code_element> level_1 = std::make_shared<code_element>(type_for_block, loop);
+        ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
         level_1->set_content(l1_content);
 
         AST->add_content(level_1);
@@ -133,10 +133,10 @@ TEST_CASE( "deep_copy_element") {
     loop.set_loop_start(start);
     std::vector<uint16_t> args = {3};
     instruction inst(IMMEDIATE_INSTRUCTION, args);
-    std::shared_ptr<code_element> level_1 = std::make_shared<code_element>(type_for_block, loop);
-    std::shared_ptr<code_element> level_2 = std::make_shared<code_element>(type_instr, inst);
+    ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
+    ast_t level_2 = std::make_shared<code_element>(type_instr, inst);
     level_1->add_content(level_2);
-    std::shared_ptr<code_element> result = deep_copy_element(level_1);
+    ast_t result = deep_copy_element(level_1);
     bool test_types = level_1->type == result->type && level_2->type == result->get_content()[0]->type;
     bool test_instr_content = result->get_content()[0]->inst.emit() == level_2->inst.emit();
     bool test_loop_content = result->loop.get_loop_start().starting_value == start.starting_value;

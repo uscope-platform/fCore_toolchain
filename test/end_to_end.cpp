@@ -20,18 +20,20 @@ static inline uint32_t Reverse32(uint32_t value)
 TEST_CASE( "simple assembly file", "[simple_file]" ) {
     std::string input_file = "test_add.s";
 
-    std::vector<uint32_t> gold_standard = {0xc889, 0x190A9, 0xCA81,0xe};
+    std::vector<uint32_t> gold_standard = {0xc889, 0x190A9, 0xCA81,0x3E8E8F,0xe};
 
     SECTION("file parsing and processing") {
 
-        std::shared_ptr<code_element> ast = parse(input_file);
+        parser p(input_file);
+        ast_t ast = p.AST;
         output_writer writer(ast, false);
         std::vector<uint32_t> result = writer.get_raw_program();
 
         REQUIRE( result == gold_standard);
     }
     SECTION("verilog memfile generation") {
-        std::shared_ptr<code_element> ast = parse(input_file);
+        parser p(input_file);
+        ast_t ast = p.AST;
         output_writer writer(ast,false);
         writer.write_mem(input_file+".mem");
         std::ifstream infile(input_file+".mem");
@@ -44,17 +46,19 @@ TEST_CASE( "simple assembly file", "[simple_file]" ) {
         REQUIRE(result == gold_standard);
     }
     SECTION("hex file generation"){
-        std::shared_ptr<code_element> ast = parse(input_file);
+        parser p(input_file);
+        ast_t ast = p.AST;
         output_writer writer(ast, false);
         writer.write_hex(input_file+".hex");
         std::string filename = input_file+".hex";
         FILE *fptr = fopen(filename.c_str(),"rb");
 
-        uint32_t res[4];
-        fread(res,sizeof(uint32_t), 4, fptr);
+        int program_size = writer.get_program_size();
+        uint32_t res[1000];
+        fread(res,sizeof(uint32_t), program_size, fptr);
         std::vector<uint32_t> result;
-        for(unsigned int re : res){
-            result.push_back(Reverse32(re));
+        for(int i = 0; i < program_size; i++){
+            result.push_back(Reverse32(res[i]));
         }
         REQUIRE(result == gold_standard);//result == gold_standard);
     }
@@ -65,12 +69,13 @@ TEST_CASE( "simple assembly file", "[simple_file]" ) {
 TEST_CASE( "for block file", "[for_file]" ) {
     std::string input_file = "test_for.s";
 
-    std::shared_ptr<code_element> AST = parse(input_file);
+    parser p(input_file);
+    ast_t ast = p.AST;
 
     pass_manager manager = create_pass_manager();
-    manager.run_morphing_passes(AST);
+    manager.run_morphing_passes(ast);
 
-    output_writer writer(AST, false);
+    output_writer writer(ast, false);
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {0xC889, 0x190a9, 0xca81, 0xC889, 0xca81, 0x0000, 0x0000, 0xC889, 0xca81, 0x0000, 0x0000, 0xe};
     REQUIRE( result == gold_standard);
@@ -79,12 +84,13 @@ TEST_CASE( "for block file", "[for_file]" ) {
 TEST_CASE( "branch file", "[for_file]" ) {
     std::string input_file = "test_branch.s";
 
-    std::shared_ptr<code_element> AST = parse(input_file);
+    parser p(input_file);
+    ast_t ast = p.AST;
 
     pass_manager manager = create_pass_manager();
-    manager.run_morphing_passes(AST);
+    manager.run_morphing_passes(ast);
 
-    output_writer writer(AST, true);
+    output_writer writer(ast, true);
     std::vector<uint32_t> result = writer.get_raw_program();
      std::vector<uint32_t> gold_standard = {0xC889, 0xca81, 0x8061, 0xa0064a, 0xa0064B, 0xa0064c, 0xa0064D, 0xe};
     REQUIRE( result == gold_standard);

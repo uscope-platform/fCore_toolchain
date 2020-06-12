@@ -34,7 +34,42 @@ int main(int argc, char **argv) {
         }
     }
 
-    std::shared_ptr<code_element> AST = parse(input_file);
+    std::string include_dir = "/home/fils/git/fCore_has/";
+    std::vector<std::string> include_files = {"include/registers_definitions.s"};
+
+    varmap_t variables_map;
+
+    // Parse include files
+    ast_t includes_ast;
+
+    for(auto const &item:include_files){
+        std::string name = include_dir;
+        name += item;
+        parser include_parser(name);
+        ast_t tmp_ast = include_parser.AST;
+        varmap_t tmp_varmap = include_parser.var_map;
+        if(includes_ast != nullptr){
+            includes_ast->append_content(tmp_ast->get_content());
+            variables_map.insert(tmp_varmap.begin(), tmp_varmap.end());
+
+        } else{
+            includes_ast = tmp_ast;
+            variables_map = include_parser.var_map;
+        }
+    }
+    // parse target file
+    parser target_parser(input_file);
+
+    ast_t AST = target_parser.AST;
+
+    //merge the two together (right now just concatenate them)
+    AST->prepend_content(includes_ast->get_content());
+
+    std::vector<ast_t> include_set = includes_ast->get_content();
+    includes_ast->append_content(AST->get_content());
+    AST->set_content(includes_ast->get_content());
+
+
     pass_manager manager = create_pass_manager();
     manager.run_morphing_passes(AST);
 

@@ -6,7 +6,7 @@
 #include "pseudo_instructions_pass.hpp"
 
 
-std::shared_ptr<code_element> pseudo_instructions_pass::process_leaf(std::shared_ptr<code_element> element) {
+ast_t pseudo_instructions_pass::process_leaf(ast_t element) {
     if (element->inst.is_pseudo()){
         std::string opcode = element->inst.pseudo_instr.opcode;
         if(opcode ==  "mov"){

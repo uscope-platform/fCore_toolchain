@@ -17,6 +17,13 @@
 #include "../../include/fs_parser/fs_grammarLexer.h"
 
 
-std::shared_ptr<code_element> parse(const std::string& filename);
+class parser{
+    public:
+    explicit parser(const std::string& filename);
+
+    ast_t AST;
+    varmap_t var_map;
+};
+
 
 #endif //FCORE_HAS_FILE_PARSER_H

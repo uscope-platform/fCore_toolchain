@@ -4,13 +4,12 @@
 
 #include "loop_implementation_pass.hpp"
 
-std::vector<std::shared_ptr<code_element>>
-loop_implementation_pass::process_node(std::shared_ptr<code_element> element) {
+std::vector<ast_t> loop_implementation_pass::process_node(ast_t element) {
     bool unroll_mode = false;
-    std::vector<std::shared_ptr<code_element>> loop_content;
-    std::vector<std::shared_ptr<code_element>> new_loop_content;
+    std::vector<ast_t> loop_content;
+    std::vector<ast_t> new_loop_content;
     if(element->type == type_for_block){
-        std::vector<std::shared_ptr<code_element>> test = element->get_content();
+        std::vector<ast_t> test = element->get_content();
         for(auto & item:element->get_content()){
             if(item->type == type_pragma)
                 unroll_mode =  item->directive.get_directive() == "unroll";
