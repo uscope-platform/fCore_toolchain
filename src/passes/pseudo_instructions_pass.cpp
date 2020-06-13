@@ -13,7 +13,7 @@ ast_t pseudo_instructions_pass::process_leaf(ast_t element) {
         if(opcode ==  "mov"){
             instr.arguments.push_back(instr.arguments[1]);
             variable zero(false, "r0");
-            instr.arguments[1] = zero;
+            instr.arguments[1] = std::make_shared<variable>(zero);
 
         }
 

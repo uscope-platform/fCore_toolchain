@@ -20,7 +20,7 @@ public:
     void set_used(bool status);
     [[nodiscard]] bool is_used() const;
     [[nodiscard]] std::string to_str() const { return name;};
-    uint32_t get_value() const;
+    [[nodiscard]] uint32_t get_value() const;
 private:
     unsigned int identifier;
     std::string name;

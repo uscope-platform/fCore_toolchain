@@ -9,12 +9,13 @@
 #include <iomanip>
 #include <cstdint>
 #include <vector>
+#include <memory>
 #include "../../include/fCore_isa.hpp"
 #include "variable.hpp"
 
 typedef struct {
     std::string opcode;
-    std::vector<variable> arguments;
+    std::vector<std::shared_ptr<variable>> arguments;
 } instruction_t;
 
 
@@ -22,7 +23,7 @@ class instruction{
 
     public:
         instruction();
-        instruction(int inst_type,std::string opcode, std::vector<variable> arguments);
+        instruction(int inst_type,std::string opcode, std::vector<std::shared_ptr<variable>> arguments);
 
         [[nodiscard]] uint32_t emit() const;
         [[nodiscard]] int instruction_count() const;

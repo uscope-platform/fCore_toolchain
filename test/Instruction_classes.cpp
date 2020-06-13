@@ -5,9 +5,9 @@
 
 TEST_CASE( "immediate_instruction" ) {
 
-    variable dest(false, "r4");
-    variable imm(true, "100");
-    std::vector<variable> args = {dest, imm};
+    std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r4");
+    std::shared_ptr<variable> imm = std::make_shared<variable>(true, "100");
+    std::vector<std::shared_ptr<variable>> args = {dest, imm};
     instruction instr(IMMEDIATE_INSTRUCTION,"ldr", args);
 
     SECTION("emit"){
@@ -29,10 +29,10 @@ TEST_CASE( "immediate_instruction" ) {
 
 TEST_CASE( "register_instruction" ) {
 
-    variable op_a(false, "r2");
-    variable op_b(false, "r3");
-    variable dest(false, "r4");
-    std::vector<variable> args = {op_a, op_b, dest};
+    std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r2");
+    std::shared_ptr<variable> op_b = std::make_shared<variable>(false, "r3");
+    std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r4");
+    std::vector<std::shared_ptr<variable>> args = {op_a, op_b, dest};
 
     instruction instr(REGISTER_INSTRUCTION,"shl", args);
 
@@ -55,7 +55,7 @@ TEST_CASE( "register_instruction" ) {
 }
 
 TEST_CASE( "independent_instruction" ) {
-    std::vector<variable> args = {};
+    std::vector<std::shared_ptr<variable>> args = {};
     instruction instr(INDEPENDENT_INSTRUCTION,"stop", args);
 
     SECTION("emit"){

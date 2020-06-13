@@ -4,17 +4,22 @@
 
 #include "Tree_visitor.hpp"
 
+#include <utility>
+
+
+
+
+
+
 Tree_visitor::Tree_visitor() = default;
 
-
 void Tree_visitor::exitImm_instr(fs_grammarParser::Imm_instrContext * ctx) {
-
     std::string opcode = ctx->imm_opcode()->getText();
 
-    variable dest(false, ctx->destination()->Identifier()->getText());
-    variable immediate(true, ctx->Integer()->getText());
+    std::shared_ptr<variable> dest = get_variable(ctx->destination()->Identifier()->getText(), false);
+    std::shared_ptr<variable> immediate = get_variable(ctx->Integer()->getText(), true);
 
-    std::vector<variable> arguments;
+    std::vector<std::shared_ptr<variable>> arguments;
     arguments.push_back(dest);
     arguments.push_back(immediate);
 
@@ -22,14 +27,18 @@ void Tree_visitor::exitImm_instr(fs_grammarParser::Imm_instrContext * ctx) {
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
+
+
 void Tree_visitor::exitReg_instr(fs_grammarParser::Reg_instrContext *ctx) {
     std::string opcode = ctx->reg_opcode()->getText();
 
+    std::shared_ptr<variable> op_a = get_variable(ctx->operand(0)->getText(), false);
+    op_a->set_used(true);
+    std::shared_ptr<variable> op_b = get_variable(ctx->operand(1)->getText(), false);
+    op_b->set_used(true);
+    std::shared_ptr<variable> dest = get_variable(ctx->destination()->getText(), false);
 
-    variable op_a(false,ctx->operand(0)->getText());
-    variable op_b(false,ctx->operand(1)->getText());
-    variable dest(false, ctx->destination()->getText());
-    std::vector<variable> arguments = {op_a, op_b, dest};
+    std::vector<std::shared_ptr<variable>> arguments = {op_a, op_b, dest};
 
     code_element this_inst = code_element(type_instr, instruction(REGISTER_INSTRUCTION,opcode, arguments));
     current_element->add_content(std::make_shared<code_element>(this_inst));
@@ -38,10 +47,13 @@ void Tree_visitor::exitReg_instr(fs_grammarParser::Reg_instrContext *ctx) {
 void Tree_visitor::exitImm_alu_instr(fs_grammarParser::Imm_alu_instrContext *ctx) {
     std::string opcode = ctx->imm_alu_opcode()->getText();
 
-    variable op_a(false,ctx->operand()->getText());
-    variable imm(true,ctx->Integer()->getText());
-    variable dest(false,ctx->destination()->getText());
-    std::vector<variable> arguments = {op_a, imm, dest};
+    std::shared_ptr<variable> op_a = get_variable(ctx->operand()->getText(), false);
+    op_a->set_used(true);
+    std::shared_ptr<variable> imm = get_variable(ctx->Integer()->getText(), true);
+    imm->set_used(true);
+    std::shared_ptr<variable> dest = get_variable(ctx->destination()->getText(), false);
+
+    std::vector<std::shared_ptr<variable>> arguments = {op_a, imm, dest};
 
     code_element this_inst = code_element(type_instr, instruction(ALU_IMMEDIATE_INSTRUCTION, opcode, arguments));
     current_element->add_content(std::make_shared<code_element>(this_inst));
@@ -50,11 +62,14 @@ void Tree_visitor::exitImm_alu_instr(fs_grammarParser::Imm_alu_instrContext *ctx
 void Tree_visitor::exitBranch_instr(fs_grammarParser::Branch_instrContext *ctx) {
     std::string opcode = ctx->branch_opcode()->getText();
 
-    std::vector<variable> arguments;
-    variable op_a(false,ctx->operand(0)->getText());
-    variable op_b(false,ctx->operand(1)->getText());
-    variable dest(true,ctx->immediate()->Hexnum()->getText());
-    arguments = {op_a, op_b, dest};
+    std::shared_ptr<variable> op_a = get_variable(ctx->operand(0)->getText(), false);
+    op_a->set_used(true);
+    std::shared_ptr<variable> op_b = get_variable(ctx->operand(1)->getText(), false);
+    op_b->set_used(true);
+    std::shared_ptr<variable> dest = get_variable(ctx->immediate()->Hexnum()->getText(), true);
+
+    std::vector<std::shared_ptr<variable>> arguments = {op_a, op_b, dest};
+
     code_element this_inst = code_element(type_instr, instruction(BRANCH_INSTRUCTION, opcode,arguments));
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
@@ -62,12 +77,16 @@ void Tree_visitor::exitBranch_instr(fs_grammarParser::Branch_instrContext *ctx) 
 void Tree_visitor::exitPseudo_instr(fs_grammarParser::Pseudo_instrContext *ctx) {
     std::string opcode = ctx->pseudo_opcode()->getText();
 
-    variable op_a(false,ctx->Identifier(0)->getText());
-    variable op_b(false,ctx->Identifier(1)->getText());
-    std::vector<variable> arguments = {op_a, op_b};
+
+    std::shared_ptr<variable> op_a = get_variable(ctx->Identifier(0)->getText(), false);
+    op_a->set_used(true);
+    std::shared_ptr<variable> op_b = get_variable(ctx->Identifier(1)->getText(), false);
+    op_b->set_used(true);
+
+    std::vector<std::shared_ptr<variable>> arguments = {op_a, op_b};
 
     if(ctx->Identifier().size()>2) {
-        variable dest(false,ctx->Identifier(2)->getText());
+        std::shared_ptr<variable> dest = get_variable(ctx->Identifier(2)->getText(), false);
         arguments.push_back(dest);
     }
 
@@ -77,7 +96,7 @@ void Tree_visitor::exitPseudo_instr(fs_grammarParser::Pseudo_instrContext *ctx) 
 
 void Tree_visitor::exitIndep_instr(fs_grammarParser::Indep_instrContext *ctx) {
     std::string opcode = ctx->getText();
-    std::vector<variable> arguments;
+    std::vector<std::shared_ptr<variable>> arguments;
 
     code_element this_inst = code_element(type_instr, instruction(INDEPENDENT_INSTRUCTION,opcode,arguments));
 
@@ -142,16 +161,28 @@ void Tree_visitor::exitPragma(fs_grammarParser::PragmaContext *ctx) {
 void Tree_visitor::exitConstant_decl(fs_grammarParser::Constant_declContext *ctx) {
     std::string identifier = ctx->Identifier()->getText();
     variable tmp = variable(true, identifier);
-    var_map[identifier] = std::make_shared<variable>(tmp);
+    (*var_map)[identifier] = std::make_shared<variable>(tmp);
 }
 
 void Tree_visitor::exitVariable_decl(fs_grammarParser::Variable_declContext *ctx) {
     std::string identifier = ctx->Identifier()->getText();
     variable tmp = variable(false, identifier);
-    var_map[identifier] = std::make_shared<variable>(tmp);
+    (*var_map)[identifier] = std::make_shared<variable>(tmp);
 }
 
 std::unordered_map<std::string, std::shared_ptr<variable>> Tree_visitor::get_varmap() {
-    return var_map;
+    return *var_map;
 }
 
+void Tree_visitor::set_varmap(varmap_t &new_varmap) {
+    var_map = &new_varmap;
+}
+
+std::shared_ptr<variable> Tree_visitor::get_variable(const std::string &variable_name, bool is_const) const {
+    std::shared_ptr<variable> var;
+    if(!var_map->count(variable_name))
+        var = std::make_shared<variable>(is_const, variable_name);
+    else
+        var = (*var_map)[variable_name];
+    return var;
+}

@@ -58,14 +58,12 @@ int main(int argc, char **argv) {
         }
     }
     // parse target file
-    parser target_parser(input_file);
+    parser target_parser(input_file, variables_map);
 
     ast_t AST = target_parser.AST;
-    varmap_t  target_vars = target_parser.var_map;
 
     //merge the two together (right now just concatenate them)
     AST->prepend_content(includes_ast->get_content());
-    target_vars.merge(variables_map);
 
     pass_manager manager = create_pass_manager();
     manager.run_morphing_passes(AST);

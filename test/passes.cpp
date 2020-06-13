@@ -15,10 +15,10 @@ TEST_CASE( "pseudo_inst_pass") {
 
     ast_t AST = std::make_shared<code_element>(type_program_head);
 
+    std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r3");
+    std::shared_ptr<variable> op_b = std::make_shared<variable>(false, "r4");
+    std::vector<std::shared_ptr<variable>> args = {op_a, op_b};
 
-    variable op_a(false, "r3");
-    variable op_b(false, "r4");
-    std::vector<variable> args = {op_a, op_b};
     ast_t instr = std::make_shared<code_element>(type_instr, instruction(PSEUDO_INSTRUCTION,"mov", args));
     AST->add_content(instr);
 
@@ -35,7 +35,7 @@ TEST_CASE( "pseudo_inst_pass") {
 TEST_CASE( "loop_pass") {
     ast_t AST = std::make_shared<code_element>(type_program_head);
     ast_t loop_pragma = std::make_shared<code_element>(type_pragma, pragma("unroll"));
-    std::vector<variable> args = {};
+    std::vector<std::shared_ptr<variable>> args = {};
     ast_t loop_instr = std::make_shared<code_element>(type_instr, instruction(INDEPENDENT_INSTRUCTION, "nop",args));
     std::vector<ast_t> l1_content = {loop_pragma, loop_instr};
     SECTION("less_than_loop") {
@@ -134,7 +134,7 @@ TEST_CASE( "deep_copy_element") {
     for_loop loop;
     loop_start_t start = {"j", 36};
     loop.set_loop_start(start);
-    std::vector<variable> args = {};
+    std::vector<std::shared_ptr<variable>> args = {};
     instruction inst(INDEPENDENT_INSTRUCTION, "nop", args);
     ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
     ast_t level_2 = std::make_shared<code_element>(type_instr, inst);

@@ -38,12 +38,15 @@ public:
     void exitConstant_decl(fs_grammarParser::Constant_declContext *ctx) override;
     void exitVariable_decl(fs_grammarParser::Variable_declContext *ctx) override;
     ast_t get_program();
-    std::unordered_map<std::string, std::shared_ptr<variable>> get_varmap();
+    varmap_t get_varmap();
+    void set_varmap(varmap_t &new_varmap);
 private:
     ast_t program_head{};
     ast_t current_element{};
     std::stack<ast_t> parent_elements;
-    varmap_t var_map;
+    varmap_t *var_map;
+
+    std::shared_ptr<variable> get_variable(const std::string &variable_name, bool is_const) const;
 };
 
 #endif //FCORE_HAS_TREE_VISITOR_HPP

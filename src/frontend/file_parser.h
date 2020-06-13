@@ -20,7 +20,8 @@
 class parser{
     public:
     explicit parser(const std::string& filename);
-
+    parser(const std::string& filename, varmap_t &new_varmap);
+    void construct_parser(const std::string &filename, varmap_t &existing_varmap);
     ast_t AST;
     varmap_t var_map;
 };
