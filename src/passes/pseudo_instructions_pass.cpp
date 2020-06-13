@@ -8,12 +8,18 @@
 
 ast_t pseudo_instructions_pass::process_leaf(ast_t element) {
     if (element->inst.is_pseudo()){
-        std::string opcode = element->inst.pseudo_instr.opcode;
+        instruction_t instr = element->inst.getStringInstr();
+        std::string opcode = instr.opcode;
         if(opcode ==  "mov"){
-            element->inst.pseudo_instr.arg_3 = element->inst.pseudo_instr.arg_2;
-            element->inst.pseudo_instr.arg_2 = 0;
+            instr.arguments.push_back(instr.arguments[1]);
+            variable zero(false, "r0");
+            instr.arguments[1] = zero;
+
         }
-        element->inst.specialize_pseudo();
+
+        std::string new_opcode = fcore_pseudo_op[instr.opcode];
+        instruction new_inst(fcore_op_types[new_opcode], new_opcode, instr.arguments);
+        element->inst = new_inst;
     }
     return element;
 }

@@ -4,7 +4,6 @@
 
 #include "variable.hpp"
 
-#include <utility>
 
 variable::variable() {
     identifier = 0;
@@ -26,4 +25,14 @@ void variable::set_used(bool status) {
 
 bool variable::is_used() const {
     return used;
+}
+
+uint32_t variable::get_value() const {
+    if(fcore_registers.count(name)){
+        return fcore_registers[name];
+    }else if(constant){
+        return std::stoi(name, nullptr, 0);
+    }
+
+    return 0;
 }

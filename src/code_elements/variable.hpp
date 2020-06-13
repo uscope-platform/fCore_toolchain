@@ -7,6 +7,8 @@
 
 #include <cstdint>
 #include <string>
+#include <utility>
+#include "../../include/fCore_isa.hpp"
 
 class variable {
 public:
@@ -16,7 +18,9 @@ public:
     [[nodiscard]] bool is_constant() const { return constant;};
     [[nodiscard]] unsigned int get_identifier() const {return identifier;};
     void set_used(bool status);
-    bool is_used() const;
+    [[nodiscard]] bool is_used() const;
+    [[nodiscard]] std::string to_str() const { return name;};
+    uint32_t get_value() const;
 private:
     unsigned int identifier;
     std::string name;

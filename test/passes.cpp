@@ -15,7 +15,10 @@ TEST_CASE( "pseudo_inst_pass") {
 
     ast_t AST = std::make_shared<code_element>(type_program_head);
 
-    std::vector<uint16_t> args = {3, 4};
+
+    variable op_a(false, "r3");
+    variable op_b(false, "r4");
+    std::vector<variable> args = {op_a, op_b};
     ast_t instr = std::make_shared<code_element>(type_instr, instruction(PSEUDO_INSTRUCTION,"mov", args));
     AST->add_content(instr);
 
@@ -32,8 +35,8 @@ TEST_CASE( "pseudo_inst_pass") {
 TEST_CASE( "loop_pass") {
     ast_t AST = std::make_shared<code_element>(type_program_head);
     ast_t loop_pragma = std::make_shared<code_element>(type_pragma, pragma("unroll"));
-    std::vector<uint16_t> args = {3};
-    ast_t loop_instr = std::make_shared<code_element>(type_instr, instruction(INDEPENDENT_INSTRUCTION, args));
+    std::vector<variable> args = {};
+    ast_t loop_instr = std::make_shared<code_element>(type_instr, instruction(INDEPENDENT_INSTRUCTION, "nop",args));
     std::vector<ast_t> l1_content = {loop_pragma, loop_instr};
     SECTION("less_than_loop") {
         for_loop loop;
@@ -54,7 +57,7 @@ TEST_CASE( "loop_pass") {
 
         output_writer writer(AST,false);
         std::vector<uint32_t> result = writer.get_raw_program();
-        std::vector<uint32_t> gold_standard = {3, 3, 3};
+        std::vector<uint32_t> gold_standard = {0, 0, 0};
         REQUIRE(result == gold_standard);
     }
     SECTION("less_eq_than_loop") {
@@ -76,7 +79,7 @@ TEST_CASE( "loop_pass") {
 
         output_writer writer(AST,false);
         std::vector<uint32_t> result = writer.get_raw_program();
-        std::vector<uint32_t> gold_standard = {3, 3};
+        std::vector<uint32_t> gold_standard = {0, 0};
         REQUIRE(result == gold_standard);
     }
     SECTION("more_than_loop") {
@@ -98,7 +101,7 @@ TEST_CASE( "loop_pass") {
 
         output_writer writer(AST,false);
         std::vector<uint32_t> result = writer.get_raw_program();
-        std::vector<uint32_t> gold_standard = {3, 3};
+        std::vector<uint32_t> gold_standard = {0, 0};
         REQUIRE(result == gold_standard);
     }
     SECTION("more_eq_than_loop") {
@@ -120,7 +123,7 @@ TEST_CASE( "loop_pass") {
 
         output_writer writer(AST,false);
         std::vector<uint32_t> result = writer.get_raw_program();
-        std::vector<uint32_t> gold_standard = {3,3,3};
+        std::vector<uint32_t> gold_standard = {0,0,0};
         REQUIRE(result == gold_standard);
     }
 
@@ -131,8 +134,8 @@ TEST_CASE( "deep_copy_element") {
     for_loop loop;
     loop_start_t start = {"j", 36};
     loop.set_loop_start(start);
-    std::vector<uint16_t> args = {3};
-    instruction inst(IMMEDIATE_INSTRUCTION, args);
+    std::vector<variable> args = {};
+    instruction inst(INDEPENDENT_INSTRUCTION, "nop", args);
     ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
     ast_t level_2 = std::make_shared<code_element>(type_instr, inst);
     level_1->add_content(level_2);

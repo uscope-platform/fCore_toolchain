@@ -28,7 +28,7 @@ typedef enum {
 class pragma {
 public:
     pragma();
-    pragma(std::string directive);
+    explicit pragma(std::string directive);
     void set_directive(std::string str);
     std::string get_directive();
     void print();
@@ -40,7 +40,7 @@ class code_element {
 
 public:
     code_element();
-    code_element(element_type_t block_type);
+    explicit code_element(element_type_t block_type);
     code_element(element_type_t block_type, instruction block_spec);
     code_element(element_type_t block_type, for_loop block_spec);
     code_element(element_type_t block_type, pragma block_spec);
@@ -66,7 +66,7 @@ private:
 typedef  std::shared_ptr<code_element> ast_t;
 
 
-static ast_t deep_copy_element(ast_t element) {
+static ast_t deep_copy_element(const ast_t& element) {
     code_element copied_elem;
     ast_t result = std::make_shared<code_element>(copied_elem);
     if(element->has_content()){
