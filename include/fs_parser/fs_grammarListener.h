@@ -22,6 +22,9 @@ public:
   virtual void enterCode(fs_grammarParser::CodeContext *ctx) = 0;
   virtual void exitCode(fs_grammarParser::CodeContext *ctx) = 0;
 
+  virtual void enterDeclaration(fs_grammarParser::DeclarationContext *ctx) = 0;
+  virtual void exitDeclaration(fs_grammarParser::DeclarationContext *ctx) = 0;
+
   virtual void enterInstruction(fs_grammarParser::InstructionContext *ctx) = 0;
   virtual void exitInstruction(fs_grammarParser::InstructionContext *ctx) = 0;
 
@@ -93,6 +96,12 @@ public:
 
   virtual void enterConstant_decl(fs_grammarParser::Constant_declContext *ctx) = 0;
   virtual void exitConstant_decl(fs_grammarParser::Constant_declContext *ctx) = 0;
+
+  virtual void enterInput_decl(fs_grammarParser::Input_declContext *ctx) = 0;
+  virtual void exitInput_decl(fs_grammarParser::Input_declContext *ctx) = 0;
+
+  virtual void enterOutput_decl(fs_grammarParser::Output_declContext *ctx) = 0;
+  virtual void exitOutput_decl(fs_grammarParser::Output_declContext *ctx) = 0;
 
 
 };

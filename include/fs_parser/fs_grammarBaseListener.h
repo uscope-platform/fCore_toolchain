@@ -24,6 +24,9 @@ public:
   virtual void enterCode(fs_grammarParser::CodeContext * /*ctx*/) override { }
   virtual void exitCode(fs_grammarParser::CodeContext * /*ctx*/) override { }
 
+  virtual void enterDeclaration(fs_grammarParser::DeclarationContext * /*ctx*/) override { }
+  virtual void exitDeclaration(fs_grammarParser::DeclarationContext * /*ctx*/) override { }
+
   virtual void enterInstruction(fs_grammarParser::InstructionContext * /*ctx*/) override { }
   virtual void exitInstruction(fs_grammarParser::InstructionContext * /*ctx*/) override { }
 
@@ -95,6 +98,12 @@ public:
 
   virtual void enterConstant_decl(fs_grammarParser::Constant_declContext * /*ctx*/) override { }
   virtual void exitConstant_decl(fs_grammarParser::Constant_declContext * /*ctx*/) override { }
+
+  virtual void enterInput_decl(fs_grammarParser::Input_declContext * /*ctx*/) override { }
+  virtual void exitInput_decl(fs_grammarParser::Input_declContext * /*ctx*/) override { }
+
+  virtual void enterOutput_decl(fs_grammarParser::Output_declContext * /*ctx*/) override { }
+  virtual void exitOutput_decl(fs_grammarParser::Output_declContext * /*ctx*/) override { }
 
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

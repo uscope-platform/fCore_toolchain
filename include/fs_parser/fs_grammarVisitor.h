@@ -24,6 +24,8 @@ public:
 
     virtual antlrcpp::Any visitCode(fs_grammarParser::CodeContext *context) = 0;
 
+    virtual antlrcpp::Any visitDeclaration(fs_grammarParser::DeclarationContext *context) = 0;
+
     virtual antlrcpp::Any visitInstruction(fs_grammarParser::InstructionContext *context) = 0;
 
     virtual antlrcpp::Any visitReg_instr(fs_grammarParser::Reg_instrContext *context) = 0;
@@ -71,6 +73,10 @@ public:
     virtual antlrcpp::Any visitVariable_decl(fs_grammarParser::Variable_declContext *context) = 0;
 
     virtual antlrcpp::Any visitConstant_decl(fs_grammarParser::Constant_declContext *context) = 0;
+
+    virtual antlrcpp::Any visitInput_decl(fs_grammarParser::Input_declContext *context) = 0;
+
+    virtual antlrcpp::Any visitOutput_decl(fs_grammarParser::Output_declContext *context) = 0;
 
 
 };

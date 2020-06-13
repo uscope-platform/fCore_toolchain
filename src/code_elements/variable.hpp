@@ -10,6 +10,10 @@
 #include <utility>
 #include "../../include/fCore_isa.hpp"
 
+#define TYPE_INPUT 0
+#define TYPE_OUTPUT 1
+#define TYPE_REGULAR 2
+
 class variable {
 public:
     variable();
@@ -18,9 +22,12 @@ public:
     [[nodiscard]] bool is_constant() const { return constant;};
     [[nodiscard]] unsigned int get_identifier() const {return identifier;};
     void set_used(bool status);
+    void set_type(int var_type);
     [[nodiscard]] bool is_used() const;
     [[nodiscard]] std::string to_str() const { return name;};
     [[nodiscard]] uint32_t get_value() const;
+    int type;
+
 private:
     unsigned int identifier;
     std::string name;

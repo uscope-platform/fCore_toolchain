@@ -10,8 +10,10 @@
 
 
 
+Tree_visitor::Tree_visitor(std::shared_ptr<variable_map> map) {
+    varmap = std::move(map);
+}
 
-Tree_visitor::Tree_visitor() = default;
 
 void Tree_visitor::exitImm_instr(fs_grammarParser::Imm_instrContext * ctx) {
     std::string opcode = ctx->imm_opcode()->getText();
@@ -161,28 +163,36 @@ void Tree_visitor::exitPragma(fs_grammarParser::PragmaContext *ctx) {
 void Tree_visitor::exitConstant_decl(fs_grammarParser::Constant_declContext *ctx) {
     std::string identifier = ctx->Identifier()->getText();
     variable tmp = variable(true, identifier);
-    (*var_map)[identifier] = std::make_shared<variable>(tmp);
+    varmap->insert(identifier, std::make_shared<variable>(tmp));
+
 }
 
 void Tree_visitor::exitVariable_decl(fs_grammarParser::Variable_declContext *ctx) {
     std::string identifier = ctx->Identifier()->getText();
     variable tmp = variable(false, identifier);
-    (*var_map)[identifier] = std::make_shared<variable>(tmp);
+    varmap->insert(identifier, std::make_shared<variable>(tmp));
 }
 
-std::unordered_map<std::string, std::shared_ptr<variable>> Tree_visitor::get_varmap() {
-    return *var_map;
+void Tree_visitor::exitInput_decl(fs_grammarParser::Input_declContext *ctx) {
+    std::string identifier = ctx->Identifier()->getText();
+    variable tmp = variable(false, identifier);
+    varmap->insert(identifier, std::make_shared<variable>(tmp));
 }
 
-void Tree_visitor::set_varmap(varmap_t &new_varmap) {
-    var_map = &new_varmap;
+void Tree_visitor::exitOutput_decl(fs_grammarParser::Output_declContext *ctx) {
+    std::string identifier = ctx->Identifier()->getText();
+    variable tmp = variable(false, identifier);
+    varmap->insert(identifier, std::make_shared<variable>(tmp));
 }
+
 
 std::shared_ptr<variable> Tree_visitor::get_variable(const std::string &variable_name, bool is_const) const {
     std::shared_ptr<variable> var;
-    if(!var_map->count(variable_name))
+    if(!varmap->count(variable_name))
         var = std::make_shared<variable>(is_const, variable_name);
     else
-        var = (*var_map)[variable_name];
+        var = varmap->at(variable_name);
     return var;
 }
+
+

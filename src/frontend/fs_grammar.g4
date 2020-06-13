@@ -1,7 +1,9 @@
 // Define a grammar called Hello
 grammar fs_grammar;
 program : code;
-code : ( instruction |for_block | pragma | variable_decl | constant_decl)+;
+code : ( instruction |for_block | pragma |declaration)+;
+
+declaration : (input_decl | variable_decl | constant_decl | output_decl);
 
 instruction : reg_instr | imm_instr | indep_instr | pseudo_instr | branch_instr| imm_alu_instr;
 
@@ -37,6 +39,9 @@ immediate : Integer | Hexnum | Octalnum;
 
 variable_decl : 'let' Identifier;
 constant_decl : 'const' Identifier;
+input_decl : 'input' Identifier;
+output_decl : 'output' Identifier;
+
 Identifier
    : Letter ('_' | Letter | Digit)*
    ;

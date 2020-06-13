@@ -9,8 +9,8 @@
 #include "../code_elements/code_element.hpp"
 #include "pass_manager.hpp"
 #include "../../include/fCore_isa.hpp"
-class pseudo_instructions_pass: public pass_base {
 
+class pseudo_instructions_pass: public pass_base {
 public:
     ast_t process_leaf(ast_t element) override ;
     std::vector<ast_t>process_node(ast_t element) override{

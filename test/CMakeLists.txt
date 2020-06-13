@@ -6,7 +6,8 @@ add_executable(test_target test.cpp
         ../src/passes/loop_implementation_pass.cpp ../src/code_elements/for_loop.cpp
         ../src/code_elements/variable.cpp ../src/code_elements/variable.hpp
         ../src/passes/pseudo_instructions_pass.cpp passes.cpp end_to_end.cpp
-        ../src/passes/instruction_counting_pass.cpp)
+        ../src/passes/register_allocation_pass.cpp ../src/passes/register_allocation_pass.hpp
+        ../src/passes/instruction_counting_pass.cpp ../src/frontend/variable_map.cpp ../src/frontend/variable_map.hpp)
 
 target_link_libraries(test_target fs_parser)
 include(CTest)
