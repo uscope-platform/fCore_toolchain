@@ -40,7 +40,8 @@ public:
     void exitVariable_decl(fs_grammarParser::Variable_declContext *ctx) override;
     void exitInput_decl(fs_grammarParser::Input_declContext *ctx) override;
     void exitOutput_decl(fs_grammarParser::Output_declContext *ctx) override;
-
+    void exitImmediate(fs_grammarParser::ImmediateContext *ctx) override;
+    void exitFloat_const(fs_grammarParser::Float_constContext *ctx) override;
     ast_t get_program();
 
 private:

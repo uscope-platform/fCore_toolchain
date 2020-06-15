@@ -8,15 +8,19 @@ declaration : (input_decl | variable_decl | constant_decl | output_decl);
 instruction : reg_instr | imm_instr | indep_instr | pseudo_instr | branch_instr| imm_alu_instr;
 
 reg_instr : reg_opcode  operand ',' operand ',' destination;
-imm_instr : imm_opcode destination ',' (Integer | Hexnum | Octalnum | Identifier);
-imm_alu_instr : imm_alu_opcode operand ',' (Integer | Hexnum | Octalnum | Identifier) ',' destination;
+imm_instr : imm_opcode destination ',' immediate;
+imm_alu_instr : imm_alu_opcode operand ',' (immediate | float_const) ',' destination;
 branch_instr : branch_opcode operand ',' operand ',' immediate;
 indep_instr : 'stop' | 'nop';
 
 pseudo_instr : pseudo_opcode Identifier ',' Identifier (',' Identifier)*;
 
-operand : ( Identifier);
-destination: (Identifier);
+operand : Identifier;
+destination: Identifier;
+immediate : Integer | Hexnum | Octalnum | Identifier;
+
+float_const : FloatingPointLiteral;
+
 reg_opcode : 'add' | 'sub' | 'mul' | 'mac' | 'shl' | 'shr' | 'sar';
 imm_alu_opcode: 'addi' | 'subi' | 'muli' | 'maci' | 'shli' | 'shri' | 'sari';
 imm_opcode : 'ldr' ;
@@ -33,8 +37,6 @@ for_decl: Identifier '=' Integer;
 for_end: Identifier for_end_comp_type Integer;
 for_end_comp_type : ('<' | '>' | '<=' | '>=');
 pragma: '#pragma ' Identifier;
-
-immediate : Integer | Hexnum | Octalnum;
 
 
 variable_decl : 'let' Identifier;

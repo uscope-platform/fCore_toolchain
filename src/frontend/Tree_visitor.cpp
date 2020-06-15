@@ -19,7 +19,7 @@ void Tree_visitor::exitImm_instr(fs_grammarParser::Imm_instrContext * ctx) {
     std::string opcode = ctx->imm_opcode()->getText();
 
     std::shared_ptr<variable> dest = get_variable(ctx->destination()->Identifier()->getText(), false);
-    std::shared_ptr<variable> immediate = get_variable(ctx->Integer()->getText(), true);
+    std::shared_ptr<variable> immediate = get_variable(ctx->immediate()->getText(), true);
 
     std::vector<std::shared_ptr<variable>> arguments;
     arguments.push_back(dest);
@@ -51,8 +51,16 @@ void Tree_visitor::exitImm_alu_instr(fs_grammarParser::Imm_alu_instrContext *ctx
 
     std::shared_ptr<variable> op_a = get_variable(ctx->operand()->getText(), false);
     op_a->set_used(true);
-    std::shared_ptr<variable> imm = get_variable(ctx->Integer()->getText(), true);
+
+    std::string identifier;
+    if(ctx->immediate() != nullptr)
+        identifier = ctx->immediate()->getText();
+    else if (ctx->float_const() != nullptr)
+        identifier = ctx->float_const()->getText();
+
+    std::shared_ptr<variable> imm = get_variable(identifier, true);
     imm->set_used(true);
+
     std::shared_ptr<variable> dest = get_variable(ctx->destination()->getText(), false);
 
     std::vector<std::shared_ptr<variable>> arguments = {op_a, imm, dest};
@@ -164,7 +172,6 @@ void Tree_visitor::exitConstant_decl(fs_grammarParser::Constant_declContext *ctx
     std::string identifier = ctx->Identifier()->getText();
     variable tmp = variable(true, identifier);
     varmap->insert(identifier, std::make_shared<variable>(tmp));
-
 }
 
 void Tree_visitor::exitVariable_decl(fs_grammarParser::Variable_declContext *ctx) {
@@ -187,6 +194,27 @@ void Tree_visitor::exitOutput_decl(fs_grammarParser::Output_declContext *ctx) {
 }
 
 
+void Tree_visitor::exitImmediate(fs_grammarParser::ImmediateContext *ctx) {
+    if(ctx->Identifier()== nullptr){
+        std::string identifier;
+        if(ctx->Integer() != nullptr)
+            identifier = ctx->Integer()->getText();
+        else if (ctx->Octalnum() != nullptr)
+            identifier = ctx->Octalnum()->getText();
+        else if(ctx->Hexnum() != nullptr)
+            identifier = ctx->Hexnum()->getText();
+
+        variable tmp = variable(true, identifier);
+        varmap->insert(identifier, std::make_shared<variable>(tmp));
+    }
+}
+
+void Tree_visitor::exitFloat_const(fs_grammarParser::Float_constContext *ctx) {
+    std::string identifier = ctx->FloatingPointLiteral()->getText();
+    variable tmp = variable(true, identifier, true);
+    varmap->insert(identifier, std::make_shared<variable>(tmp));
+}
+
 std::shared_ptr<variable> Tree_visitor::get_variable(const std::string &variable_name, bool is_const) const {
     std::shared_ptr<variable> var;
     if(!varmap->count(variable_name))
@@ -195,5 +223,6 @@ std::shared_ptr<variable> Tree_visitor::get_variable(const std::string &variable
         var = varmap->at(variable_name);
     return var;
 }
+
 
 
