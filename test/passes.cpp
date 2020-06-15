@@ -8,18 +8,28 @@
 #include "../src/code_elements/code_element.hpp"
 #include "../src/passes/passes.hpp"
 #include "../src/backend/output_writer.hpp"
+#include "../src/frontend/file_parser.h"
+
+
+
+
 
 
 TEST_CASE( "pseudo_inst_pass") {
 
+    ast_t AST = std::make_shared<code_element>(type_program_head);
 
-    std::shared_ptr<code_element> AST = std::make_shared<code_element>(type_program_head);
+    std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r3");
+    std::shared_ptr<variable> op_b = std::make_shared<variable>(false, "r4");
+    std::vector<std::shared_ptr<variable>> args = {op_a, op_b};
 
-    std::vector<uint16_t> args = {3, 4};
-    std::shared_ptr<code_element> instr = std::make_shared<code_element>(type_instr, instruction(PSEUDO_INSTRUCTION,"mov", args));
+    ast_t instr = std::make_shared<code_element>(type_instr, instruction(PSEUDO_INSTRUCTION,"mov", args));
     AST->add_content(instr);
 
-    pass_manager manager = create_pass_manager();
+    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+    parser p1("register_defs.s", map);
+
+    pass_manager manager = create_pass_manager(map);
     manager.run_morphing_passes(AST);
 
     output_writer writer(AST, false);
@@ -28,13 +38,12 @@ TEST_CASE( "pseudo_inst_pass") {
     REQUIRE(result == gold_standard);
 }
 
-
 TEST_CASE( "loop_pass") {
-    std::shared_ptr<code_element> AST = std::make_shared<code_element>(type_program_head);
-    std::shared_ptr<code_element> loop_pragma = std::make_shared<code_element>(type_pragma, pragma("unroll"));
-    std::vector<uint16_t> args = {3};
-    std::shared_ptr<code_element> loop_instr = std::make_shared<code_element>(type_instr, instruction(INDEPENDENT_INSTRUCTION, args));
-    std::vector<std::shared_ptr<code_element>> l1_content = {loop_pragma, loop_instr};
+    ast_t AST = std::make_shared<code_element>(type_program_head);
+    ast_t loop_pragma = std::make_shared<code_element>(type_pragma, pragma("unroll"));
+    std::vector<std::shared_ptr<variable>> args = {};
+    ast_t loop_instr = std::make_shared<code_element>(type_instr, instruction(INDEPENDENT_INSTRUCTION, "nop",args));
+    std::vector<ast_t> l1_content = {loop_pragma, loop_instr};
     SECTION("less_than_loop") {
         for_loop loop;
         loop_start_t start = {"j", 0};
@@ -45,16 +54,19 @@ TEST_CASE( "loop_pass") {
         loop.set_advance(adv);
         loop.set_loop_end(end);
 
-        std::shared_ptr<code_element> level_1 = std::make_shared<code_element>(type_for_block, loop);
+        ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
         level_1->set_content(l1_content);
 
         AST->add_content(level_1);
-        pass_manager manager = create_pass_manager();
+
+        std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+        parser p1("register_defs.s", map);
+        pass_manager manager = create_pass_manager(map);
         manager.run_morphing_passes(AST);
 
         output_writer writer(AST,false);
         std::vector<uint32_t> result = writer.get_raw_program();
-        std::vector<uint32_t> gold_standard = {3, 3, 3};
+        std::vector<uint32_t> gold_standard = {0, 0, 0};
         REQUIRE(result == gold_standard);
     }
     SECTION("less_eq_than_loop") {
@@ -67,16 +79,19 @@ TEST_CASE( "loop_pass") {
         loop.set_advance(adv);
         loop.set_loop_end(end);
 
-        std::shared_ptr<code_element> level_1 = std::make_shared<code_element>(type_for_block, loop);
+        ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
         level_1->set_content(l1_content);
 
         AST->add_content(level_1);
-        pass_manager manager = create_pass_manager();
+
+        std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+        parser p1("register_defs.s", map);
+        pass_manager manager = create_pass_manager(map);
         manager.run_morphing_passes(AST);
 
         output_writer writer(AST,false);
         std::vector<uint32_t> result = writer.get_raw_program();
-        std::vector<uint32_t> gold_standard = {3, 3};
+        std::vector<uint32_t> gold_standard = {0, 0};
         REQUIRE(result == gold_standard);
     }
     SECTION("more_than_loop") {
@@ -89,16 +104,19 @@ TEST_CASE( "loop_pass") {
         loop.set_advance(adv);
         loop.set_loop_end(end);
 
-        std::shared_ptr<code_element> level_1 = std::make_shared<code_element>(type_for_block, loop);
+        ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
         level_1->set_content(l1_content);
 
         AST->add_content(level_1);
-        pass_manager manager = create_pass_manager();
+
+        std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+        parser p1("register_defs.s", map);
+        pass_manager manager = create_pass_manager(map);
         manager.run_morphing_passes(AST);
 
         output_writer writer(AST,false);
         std::vector<uint32_t> result = writer.get_raw_program();
-        std::vector<uint32_t> gold_standard = {3, 3};
+        std::vector<uint32_t> gold_standard = {0, 0};
         REQUIRE(result == gold_standard);
     }
     SECTION("more_eq_than_loop") {
@@ -111,16 +129,19 @@ TEST_CASE( "loop_pass") {
         loop.set_advance(adv);
         loop.set_loop_end(end);
 
-        std::shared_ptr<code_element> level_1 = std::make_shared<code_element>(type_for_block, loop);
+        ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
         level_1->set_content(l1_content);
 
         AST->add_content(level_1);
-        pass_manager manager = create_pass_manager();
+
+        std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+        parser p1("register_defs.s", map);
+        pass_manager manager = create_pass_manager(map);
         manager.run_morphing_passes(AST);
 
         output_writer writer(AST,false);
         std::vector<uint32_t> result = writer.get_raw_program();
-        std::vector<uint32_t> gold_standard = {3,3,3};
+        std::vector<uint32_t> gold_standard = {0,0,0};
         REQUIRE(result == gold_standard);
     }
 
@@ -131,12 +152,12 @@ TEST_CASE( "deep_copy_element") {
     for_loop loop;
     loop_start_t start = {"j", 36};
     loop.set_loop_start(start);
-    std::vector<uint16_t> args = {3};
-    instruction inst(IMMEDIATE_INSTRUCTION, args);
-    std::shared_ptr<code_element> level_1 = std::make_shared<code_element>(type_for_block, loop);
-    std::shared_ptr<code_element> level_2 = std::make_shared<code_element>(type_instr, inst);
+    std::vector<std::shared_ptr<variable>> args = {};
+    instruction inst(INDEPENDENT_INSTRUCTION, "nop", args);
+    ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
+    ast_t level_2 = std::make_shared<code_element>(type_instr, inst);
     level_1->add_content(level_2);
-    std::shared_ptr<code_element> result = deep_copy_element(level_1);
+    ast_t result = deep_copy_element(level_1);
     bool test_types = level_1->type == result->type && level_2->type == result->get_content()[0]->type;
     bool test_instr_content = result->get_content()[0]->inst.emit() == level_2->inst.emit();
     bool test_loop_content = result->loop.get_loop_start().starting_value == start.starting_value;

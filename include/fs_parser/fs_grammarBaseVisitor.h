@@ -25,6 +25,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitDeclaration(fs_grammarParser::DeclarationContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitInstruction(fs_grammarParser::InstructionContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -53,6 +57,14 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitOperand(fs_grammarParser::OperandContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitDestination(fs_grammarParser::DestinationContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitReg_opcode(fs_grammarParser::Reg_opcodeContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -70,10 +82,6 @@ public:
   }
 
   virtual antlrcpp::Any visitPseudo_opcode(fs_grammarParser::Pseudo_opcodeContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitFcore_reg(fs_grammarParser::Fcore_regContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -106,6 +114,22 @@ public:
   }
 
   virtual antlrcpp::Any visitImmediate(fs_grammarParser::ImmediateContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitVariable_decl(fs_grammarParser::Variable_declContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitConstant_decl(fs_grammarParser::Constant_declContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitInput_decl(fs_grammarParser::Input_declContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitOutput_decl(fs_grammarParser::Output_declContext *ctx) override {
     return visitChildren(ctx);
   }
 

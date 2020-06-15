@@ -9,81 +9,46 @@
 #include <iomanip>
 #include <cstdint>
 #include <vector>
+#include <memory>
 #include "../../include/fCore_isa.hpp"
-
-
-
-typedef struct {
-    uint16_t opcode;
-    uint16_t destination;
-    uint16_t immediate;
-    uint16_t rsvd;
-}imm_instruction_t;
+#include "variable.hpp"
 
 typedef struct {
     std::string opcode;
-    uint16_t arg_1;
-    uint16_t arg_2;
-    uint16_t arg_3;
-}pseudo_instruction_t;
+    std::vector<std::shared_ptr<variable>> arguments;
+} instruction_t;
 
-typedef struct {
-    uint16_t opcode;
-    uint16_t op_a;
-    uint16_t op_b;
-    uint16_t dest;
-}reg_instruction_t;
-
-typedef struct {
-    uint16_t opcode;
-    uint16_t op_a;
-    uint16_t op_b;
-    uint16_t offset;
-}branch_instruction_t;
-
-typedef struct {
-    uint16_t opcode;
-    uint16_t op_a;
-    uint16_t dest;
-    uint16_t immediate;
-}alu_imm_instruction_t;
 
 class instruction{
 
     public:
         instruction();
-        instruction(int inst_type, std::vector<uint16_t> opcode);
-        instruction(int inst_type, uint32_t complete_instr);
-        instruction(int inst_type, std::string opcode, std::vector<uint16_t> operands);
+        instruction(int inst_type,std::string opcode, std::vector<std::shared_ptr<variable>> arguments);
 
         [[nodiscard]] uint32_t emit() const;
-        int instruction_count() const;
+        [[nodiscard]] int instruction_count() const;
         void print();
-        void specialize_pseudo();
-        bool is_pseudo() { return type == PSEUDO_INSTRUCTION;};
+        [[nodiscard]] bool is_pseudo() const { return type == PSEUDO_INSTRUCTION;};
+        [[nodiscard]] const instruction_t &getStringInstr() const;
+        void setStringInstr(const instruction_t &stringInstr);
 
-    pseudo_instruction_t pseudo_instr;
-    private:
+private:
+        [[nodiscard]] uint32_t emit_branch() const;
+        [[nodiscard]] uint32_t emit_immediate() const;
+        [[nodiscard]] uint32_t emit_independent() const;
+        [[nodiscard]] uint32_t emit_register() const;
+        [[nodiscard]] uint32_t emit_alu_immediate() const;
         void print_immediate() const;
         void print_independent() const;
         void print_register() const;
         void print_branch() const;
         void print_alu_immediate() const;
 
-        void form_indep_inst(uint8_t opcode);
-        void form_reg_inst(uint8_t opcode, uint8_t op_a, uint8_t op_b, uint8_t dest);
-        void form_imm_inst(uint8_t opcode,uint8_t dest, uint16_t immediate);
-        void form_branch_inst(uint8_t opcode, uint8_t op_a, uint8_t op_b, uint16_t offset);
-        void form_alu_imm_inst(uint8_t opcode, uint8_t op_a, uint8_t dest, uint16_t immediate);
         int type;
-        imm_instruction_t immediate_instr;
-        reg_instruction_t register_instr;
-        branch_instruction_t branch_instr;
-        alu_imm_instruction_t alu_imm_instr;
-
+        instruction_t string_instr;
         uint32_t instr;
 
-    void print_generated() const;
+
 };
 
 
