@@ -29,7 +29,6 @@ class pragma {
 public:
     pragma();
     explicit pragma(std::string directive);
-    void set_directive(std::string str);
     std::string get_directive();
     void print();
 private:

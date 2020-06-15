@@ -16,7 +16,6 @@ public:
     std::shared_ptr<variable> operator[](const std::string& key);
     std::shared_ptr<variable> at(const std::string& key);
     void insert(const std::string& key, std::shared_ptr<variable>item);
-    void merge(const variable_map& map);
     int count(const std::string& key);
 
     unsigned int n_inputs() const {return n_inputs_;};
@@ -27,8 +26,6 @@ private:
     unsigned int n_outputs_ = 0;
     unsigned int n_variables_ = 0;
     std::unordered_map<std::string, std::shared_ptr<variable>> map;
-public:
-    const std::unordered_map<std::string, std::shared_ptr<variable>> &getMap() const;
 };
 
 

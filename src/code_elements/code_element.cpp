@@ -76,10 +76,6 @@ void pragma::print() {
     std::cout<<"PRAGMA -> " + directive;
 }
 
-void pragma::set_directive(std::string str) {
-    directive = std::move(str);
-}
-
 std::string pragma::get_directive() {
     return directive;
 }

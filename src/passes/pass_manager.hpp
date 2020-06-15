@@ -16,10 +16,16 @@
 
 class pass_base {
 public:
-    virtual std::vector<ast_t>process_node(ast_t element) = 0;
-    virtual ast_t process_leaf(ast_t element) = 0;
-    virtual void analyze_element(ast_t element) = 0;
-    virtual std::vector<int> get_analysis_result() = 0;
+    virtual std::vector<ast_t>process_node(ast_t element){
+        std::vector<ast_t> elem;
+        elem.push_back(element);
+        return elem;
+    };
+    virtual ast_t process_leaf(ast_t element){
+        return element;
+    };
+    virtual void analyze_element(ast_t element) {};
+    virtual std::vector<int> get_analysis_result() {return std::vector<int>();};
     virtual int get_pass_type() { return NONE_PASS;};
 };
 

@@ -39,6 +39,5 @@ uint32_t variable::get_value() const {
     }else if(constant){
         return std::stoi(name, nullptr, 0);
     }
-
-    return 0;
+    throw std::runtime_error("Invalid operation: the compiler tried to get the numeric value of a variable");
 }

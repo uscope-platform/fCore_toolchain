@@ -100,3 +100,21 @@ TEST_CASE( "branch file", "[for_file]" ) {
      std::vector<uint32_t> gold_standard = {0xC889, 0xca81, 0x8061, 0xa0064a, 0xa0064B, 0xa0064c, 0xa0064D, 0xe};
     REQUIRE( result == gold_standard);
 }
+
+TEST_CASE( "variables file") {
+    std::string input_file = "test_variables.s";
+
+    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+    parser p1("register_defs.s", map);
+    parser p2(input_file, map);
+    ast_t ast = p2.AST;
+
+
+    pass_manager manager = create_pass_manager(map);
+    manager.run_morphing_passes(ast);
+
+    output_writer writer(ast, true);
+    std::vector<uint32_t> result = writer.get_raw_program();
+    std::vector<uint32_t> gold_standard = {0xc829, 0x190a9, 0xca81, 0x28e2f, 0xe};
+    REQUIRE( result == gold_standard);
+}

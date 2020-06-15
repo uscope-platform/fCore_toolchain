@@ -33,12 +33,3 @@ int variable_map::count(const std::string &key) {
 std::shared_ptr<variable> variable_map::at(const std::string &key) {
     return map.at(key);
 }
-
-void variable_map::merge(const variable_map& in_map) {
-    std::unordered_map<std::string, std::shared_ptr<variable>> arg_map = in_map.getMap();
-    map.insert(arg_map.begin(), arg_map.end());
-}
-
-const std::unordered_map<std::string, std::shared_ptr<variable>> &variable_map::getMap() const {
-    return map;
-}

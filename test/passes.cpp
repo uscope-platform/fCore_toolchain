@@ -11,8 +11,11 @@
 #include "../src/frontend/file_parser.h"
 
 
-TEST_CASE( "pseudo_inst_pass") {
 
+
+
+
+TEST_CASE( "pseudo_inst_pass") {
 
     ast_t AST = std::make_shared<code_element>(type_program_head);
 
@@ -34,7 +37,6 @@ TEST_CASE( "pseudo_inst_pass") {
     std::vector<uint32_t> gold_standard = {0x8061};
     REQUIRE(result == gold_standard);
 }
-
 
 TEST_CASE( "loop_pass") {
     ast_t AST = std::make_shared<code_element>(type_program_head);

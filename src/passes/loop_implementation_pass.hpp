@@ -13,11 +13,6 @@ class loop_implementation_pass : public pass_base {
 
 public:
     std::vector<ast_t>process_node(ast_t element) override;
-    ast_t process_leaf(ast_t element) override {
-        return element;
-    };
-    void analyze_element(ast_t element) override {};
-    std::vector<int> get_analysis_result() override {return std::vector<int>();};
     int get_pass_type() override { return NODE_PASS;};
 };
 

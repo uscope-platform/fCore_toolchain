@@ -119,8 +119,8 @@ void instruction::print_register() const {
 
 void instruction::print_alu_immediate() const {
     std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << string_instr.opcode <<
-              " OPERAND A: " << string_instr.arguments[0]->to_str() << " DESTINATION : " << string_instr.arguments[1]->to_str() <<
-              " IMMEDIATE: " << string_instr.arguments[2]->to_str() <<std::endl;
+              " OPERAND A: " << string_instr.arguments[0]->to_str() << " DESTINATION: " << string_instr.arguments[2]->to_str() <<
+              " IMMEDIATE: " << string_instr.arguments[1]->to_str() <<std::endl;
 }
 
 void instruction::print_branch() const {
