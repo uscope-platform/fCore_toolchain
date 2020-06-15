@@ -68,11 +68,8 @@ int main(int argc, char **argv) {
     }
 
 
-    pass_manager manager = create_pass_manager();
+    pass_manager manager = create_pass_manager(variables_map);
     manager.run_morphing_passes(AST);
-
-
-
 
     output_writer writer(AST, false);
     if(output_hex){

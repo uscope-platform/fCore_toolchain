@@ -182,6 +182,7 @@ void Tree_visitor::exitInput_decl(fs_grammarParser::Input_declContext *ctx) {
 void Tree_visitor::exitOutput_decl(fs_grammarParser::Output_declContext *ctx) {
     std::string identifier = ctx->Identifier()->getText();
     variable tmp = variable(false, identifier);
+    tmp.set_used(true);
     varmap->insert(identifier, std::make_shared<variable>(tmp));
 }
 

@@ -15,7 +15,7 @@
 
 static std::map <std::string, uint32_t>  fcore_registers
         {
-                std::make_pair ("r1", 0u),
+                std::make_pair ("r0", 0u),
                 std::make_pair ("r1", 1u),
                 std::make_pair ("r2", 2u),
                 std::make_pair ("r3", 3u),
