@@ -6,6 +6,7 @@
 #define FCORE_HAS_FILE_PARSER_H
 
 #include <string>
+#include <sstream>
 #include <vector>
 
 #include "../code_elements/code_element.hpp"
@@ -21,7 +22,7 @@ class parser{
     public:
     explicit parser(const std::string& filename);
     parser(const std::string& filename, std::shared_ptr<variable_map> new_varmap);
-    void construct_parser(const std::string &filename, std::shared_ptr<variable_map> existing_varmap);
+    void construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap);
     ast_t AST;
     varmap_t var_map;
 

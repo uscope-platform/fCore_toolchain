@@ -69,10 +69,12 @@ TEST_CASE( "simple assembly file", "[simple_file]" ) {
 TEST_CASE( "for block file", "[for_file]" ) {
     std::string input_file = "test_for.s";
 
-    parser p(input_file);
-    ast_t ast = p.AST;
+    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+    parser p1("register_defs.s", map);
+    parser p2(input_file, map);
+    ast_t ast = p2.AST;
 
-    pass_manager manager = create_pass_manager();
+    pass_manager manager = create_pass_manager(map);
     manager.run_morphing_passes(ast);
 
     output_writer writer(ast, false);
@@ -84,10 +86,13 @@ TEST_CASE( "for block file", "[for_file]" ) {
 TEST_CASE( "branch file", "[for_file]" ) {
     std::string input_file = "test_branch.s";
 
-    parser p(input_file);
-    ast_t ast = p.AST;
+    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+    parser p1("register_defs.s", map);
+    parser p2(input_file, map);
+    ast_t ast = p2.AST;
 
-    pass_manager manager = create_pass_manager();
+
+    pass_manager manager = create_pass_manager(map);
     manager.run_morphing_passes(ast);
 
     output_writer writer(ast, true);

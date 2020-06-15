@@ -8,6 +8,7 @@
 #include "../src/code_elements/code_element.hpp"
 #include "../src/passes/passes.hpp"
 #include "../src/backend/output_writer.hpp"
+#include "../src/frontend/file_parser.h"
 
 
 TEST_CASE( "pseudo_inst_pass") {
@@ -22,7 +23,10 @@ TEST_CASE( "pseudo_inst_pass") {
     ast_t instr = std::make_shared<code_element>(type_instr, instruction(PSEUDO_INSTRUCTION,"mov", args));
     AST->add_content(instr);
 
-    pass_manager manager = create_pass_manager();
+    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+    parser p1("register_defs.s", map);
+
+    pass_manager manager = create_pass_manager(map);
     manager.run_morphing_passes(AST);
 
     output_writer writer(AST, false);
@@ -52,7 +56,10 @@ TEST_CASE( "loop_pass") {
         level_1->set_content(l1_content);
 
         AST->add_content(level_1);
-        pass_manager manager = create_pass_manager();
+
+        std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+        parser p1("register_defs.s", map);
+        pass_manager manager = create_pass_manager(map);
         manager.run_morphing_passes(AST);
 
         output_writer writer(AST,false);
@@ -74,7 +81,10 @@ TEST_CASE( "loop_pass") {
         level_1->set_content(l1_content);
 
         AST->add_content(level_1);
-        pass_manager manager = create_pass_manager();
+
+        std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+        parser p1("register_defs.s", map);
+        pass_manager manager = create_pass_manager(map);
         manager.run_morphing_passes(AST);
 
         output_writer writer(AST,false);
@@ -96,7 +106,10 @@ TEST_CASE( "loop_pass") {
         level_1->set_content(l1_content);
 
         AST->add_content(level_1);
-        pass_manager manager = create_pass_manager();
+
+        std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+        parser p1("register_defs.s", map);
+        pass_manager manager = create_pass_manager(map);
         manager.run_morphing_passes(AST);
 
         output_writer writer(AST,false);
@@ -118,7 +131,10 @@ TEST_CASE( "loop_pass") {
         level_1->set_content(l1_content);
 
         AST->add_content(level_1);
-        pass_manager manager = create_pass_manager();
+
+        std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+        parser p1("register_defs.s", map);
+        pass_manager manager = create_pass_manager(map);
         manager.run_morphing_passes(AST);
 
         output_writer writer(AST,false);

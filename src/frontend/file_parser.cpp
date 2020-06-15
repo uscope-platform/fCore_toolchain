@@ -9,16 +9,20 @@ using namespace fs_parser;
 
 parser::parser(const std::string &filename) {
     variable_map varmap;
-    construct_parser(filename, std::make_shared<variable_map>(varmap));
-}
 
-parser::parser(const std::string &filename, std::shared_ptr<variable_map> existing_varmap) {
-    construct_parser(filename, std::move(existing_varmap));
-}
-
-void parser::construct_parser(const std::string &filename, std::shared_ptr<variable_map> existing_varmap){
     std::ifstream stream;
     stream.open(filename);
+    construct_parser(stream, std::make_shared<variable_map>(varmap));
+}
+parser::parser(const std::string &filename, std::shared_ptr<variable_map> existing_varmap) {
+    std::ifstream stream;
+    stream.open(filename);
+
+    construct_parser(stream, std::move(existing_varmap));
+}
+
+void parser::construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap){
+
 
     ANTLRInputStream input(stream);
     fs_grammarLexer lexer(&input);
