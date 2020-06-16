@@ -67,7 +67,7 @@ std::shared_ptr<code_element> float_const_implementation::create_block(std::vect
     //CREATE FRACT NUMERATOR DIVISION
     std::vector<std::shared_ptr<variable>> shift_args = {op_args[2], vmap->at(std::to_string(frac[2])), op_args[2]};
     instruction shift_instr = instruction(ALU_IMMEDIATE_INSTRUCTION, "sari", shift_args);
-    std::shared_ptr<code_element> shift = std::make_shared<code_element>(type_code_block, shift_instr);
+    std::shared_ptr<code_element> shift = std::make_shared<code_element>(type_instr, shift_instr);
     block_content.push_back(shift);
 
     container->set_content(block_content);

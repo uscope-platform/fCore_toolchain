@@ -31,6 +31,9 @@ void output_writer::emit_program(ast_t &sub_program, bool debug_print) {
             raw_program.push_back(item->inst.emit());
             if(debug_print) item->inst.print();
         }
+        if(item->type == type_code_block){
+            emit_program(item, debug_print);
+        }
     }
 }
 
