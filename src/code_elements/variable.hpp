@@ -28,6 +28,8 @@ public:
     [[nodiscard]] std::string to_str() const { return name;};
     [[nodiscard]] uint32_t get_value() const;
     int type;
+    unsigned int first_occurrence;
+    unsigned int last_occurrence;
 
 private:
     unsigned int identifier;

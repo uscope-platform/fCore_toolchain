@@ -48,6 +48,14 @@ std::shared_ptr<code_element> float_const_implementation::create_block(std::vect
     instruction mul_fract_instr = instruction(ALU_IMMEDIATE_INSTRUCTION, "muli", mul_fract_args);
     std::shared_ptr<code_element> mul_fract = std::make_shared<code_element>(type_instr, mul_fract_instr);
     block_content.push_back(mul_fract);
+
+    //CREATE FRACT NUMERATOR DIVISION
+    std::vector<std::shared_ptr<variable>> shift_args = {op_args[2], vmap->at(std::to_string(frac[2])), op_args[2]};
+    instruction shift_instr = instruction(ALU_IMMEDIATE_INSTRUCTION, "sari", shift_args);
+    std::shared_ptr<code_element> shift = std::make_shared<code_element>(type_instr, shift_instr);
+    block_content.push_back(shift);
+
+
     //CREATE INTEGER PART MULTIPLICATION IF NECESSARY
     if(frac[0]!=0){
         std::cout<<"multiplication by an immediate constant greater than 1 will require the use of an intermediate register"<<std::endl;
@@ -58,17 +66,17 @@ std::shared_ptr<code_element> float_const_implementation::create_block(std::vect
         vmap->insert(target_var,var);
 
         std::vector<std::shared_ptr<variable>>  mul_int_args = {op_args[0], vmap->at(std::to_string(frac[0])), var};
-        instruction mul_int_instr = instruction(ALU_IMMEDIATE_INSTRUCTION, "maci", mul_int_args);
+        instruction mul_int_instr = instruction(ALU_IMMEDIATE_INSTRUCTION, "muli", mul_int_args);
         std::shared_ptr<code_element> mul_int = std::make_shared<code_element>(type_instr, mul_int_instr);
         block_content.push_back(mul_int);
+
+        std::vector<std::shared_ptr<variable>>  final_add_args = {var, op_args[2], op_args[2]};
+        instruction  final_add_instr = instruction(REGISTER_INSTRUCTION, "add", final_add_args);
+        std::shared_ptr<code_element> final_add = std::make_shared<code_element>(type_instr, final_add_instr);
+        block_content.push_back(final_add);
     }
 
 
-    //CREATE FRACT NUMERATOR DIVISION
-    std::vector<std::shared_ptr<variable>> shift_args = {op_args[2], vmap->at(std::to_string(frac[2])), op_args[2]};
-    instruction shift_instr = instruction(ALU_IMMEDIATE_INSTRUCTION, "sari", shift_args);
-    std::shared_ptr<code_element> shift = std::make_shared<code_element>(type_instr, shift_instr);
-    block_content.push_back(shift);
 
     container->set_content(block_content);
     return container;

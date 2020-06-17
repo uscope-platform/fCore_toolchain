@@ -6,6 +6,7 @@
 
 output_writer::output_writer(const ast_t &AST, bool debug_print) {
     program = AST;
+    progress_counter = 0;
     emit_program(program, debug_print);
 }
 
@@ -29,7 +30,11 @@ void output_writer::emit_program(ast_t &sub_program, bool debug_print) {
     for(auto &item:content){
         if(item->type == type_instr){
             raw_program.push_back(item->inst.emit());
-            if(debug_print) item->inst.print();
+            progress_counter++;
+            if(debug_print) {
+                std::cout << progress_counter << std::endl;
+                item->inst.print();
+            }
         }
         if(item->type == type_code_block){
             emit_program(item, debug_print);
