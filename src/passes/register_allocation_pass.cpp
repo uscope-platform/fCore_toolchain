@@ -25,8 +25,10 @@ ast_t register_allocation_pass::process_leaf(ast_t element) {
             }else if(!fcore_registers.count(item->to_str()) && !item->is_constant()){
                 bool found = false;
                 for(int i = 0; i<16;i++){
-                    if(!used[i]){
+
+                    if(!reg_map.is_used(i, item->first_occurrence, item->last_occurrence)){
                         found = true;
+                        reg_map.insert(item->to_str(), i, item->first_occurrence, item->last_occurrence);
                         register_mapping[item] = var_map->at("r"+std::to_string(i));
                         item = register_mapping[item];
                         break;

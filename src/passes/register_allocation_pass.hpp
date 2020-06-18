@@ -8,6 +8,7 @@
 #include <memory>
 #include <unordered_map>
 #include "../frontend/variable_map.hpp"
+#include "../frontend/register_map.hpp"
 #include "../code_elements/code_element.hpp"
 #include "pass_manager.hpp"
 #include "../../include/fCore_isa.hpp"
@@ -21,6 +22,7 @@ class register_allocation_pass: public pass_base {
 private:
     bool used[16] = {false};
     std::unordered_map<std::shared_ptr<variable>, std::shared_ptr<variable>> register_mapping;
+    register_map reg_map;
     std::shared_ptr<variable_map> var_map;
 };
 

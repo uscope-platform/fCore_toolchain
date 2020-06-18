@@ -12,21 +12,14 @@ Variable_lifetime_mapping::Variable_lifetime_mapping(std::shared_ptr<variable_ma
 }
 
 ast_t Variable_lifetime_mapping::process_leaf(ast_t element) {
-
-
-        for(auto &variable:element->inst.getStringInstr().arguments){
-            if(!variable->is_constant() && variable->type ==TYPE_REGULAR){
-                if(variable_detection_ctr <= variable->first_occurrence)
-                    variable->first_occurrence = variable_detection_ctr;
-                if(variable_detection_ctr >= variable->last_occurrence)
-                    variable->last_occurrence = variable_detection_ctr;
-            }
-
+    for(auto &variable:element->inst.getStringInstr().arguments){
+        if(!variable->is_constant() && variable->type ==TYPE_REGULAR){
+            if(variable_detection_ctr <= variable->first_occurrence)
+                variable->first_occurrence = variable_detection_ctr;
+            if(variable_detection_ctr >= variable->last_occurrence)
+                variable->last_occurrence = variable_detection_ctr;
         }
-        //TODO: IMPLEMENT VARIABLE LIFETIME DETECTION HERE
-        variable_detection_ctr++;
-        int b = 0;
-
-
+    }
+    variable_detection_ctr++;
     return element;
 }
