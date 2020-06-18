@@ -10,13 +10,17 @@
 #include "pseudo_instructions_pass.hpp"
 #include "instruction_counting_pass.hpp"
 #include "register_allocation_pass.hpp"
+#include "float_const_implementation.hpp"
+#include "Variable_lifetime_mapping.hpp"
 #include "../frontend/variable_map.hpp"
 
 static pass_manager create_pass_manager(std::shared_ptr<variable_map> varmap){
     pass_manager manager;
     manager.add_pass(std::make_shared<loop_implementation_pass>());
     manager.add_pass(std::make_shared<pseudo_instructions_pass>());
-    manager.add_pass(std::make_shared<register_allocation_pass>(varmap));
+    manager.add_pass(std::make_shared<float_const_implementation>(varmap));
+    manager.add_pass(std::make_shared<Variable_lifetime_mapping>(varmap));
+    manager.add_pass(std::make_shared<register_allocation_pass>(varmap));//REGISTER ALLOCATION SHOULD ALWAYS BE THE LAST PASS
     //pass = std::make_shared<instruction_counting_pass>();
     //manager.add_pass(pass);
     return manager;

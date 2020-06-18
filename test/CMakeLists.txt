@@ -7,7 +7,10 @@ add_executable(test_target test.cpp
         ../src/code_elements/variable.cpp ../src/code_elements/variable.hpp
         ../src/passes/pseudo_instructions_pass.cpp passes.cpp end_to_end.cpp
         ../src/passes/register_allocation_pass.cpp ../src/passes/register_allocation_pass.hpp
-        ../src/passes/instruction_counting_pass.cpp ../src/frontend/variable_map.cpp ../src/frontend/variable_map.hpp)
+        ../src/passes/float_const_implementation.cpp ../src/passes/float_const_implementation.hpp
+        ../src/passes/Variable_lifetime_mapping.cpp ../src/passes/Variable_lifetime_mapping.hpp
+        ../src/passes/instruction_counting_pass.cpp ../src/frontend/variable_map.cpp
+        ../src/frontend/variable_map.hpp)
 
 target_link_libraries(test_target fs_parser)
 include(CTest)

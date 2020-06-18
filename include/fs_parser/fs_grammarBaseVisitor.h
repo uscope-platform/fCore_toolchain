@@ -65,6 +65,14 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitImmediate(fs_grammarParser::ImmediateContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitFloat_const(fs_grammarParser::Float_constContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitReg_opcode(fs_grammarParser::Reg_opcodeContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -110,10 +118,6 @@ public:
   }
 
   virtual antlrcpp::Any visitPragma(fs_grammarParser::PragmaContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitImmediate(fs_grammarParser::ImmediateContext *ctx) override {
     return visitChildren(ctx);
   }
 

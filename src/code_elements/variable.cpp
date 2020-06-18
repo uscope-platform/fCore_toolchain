@@ -11,6 +11,9 @@ variable::variable() {
     constant = false;
     used = false;
     type = TYPE_REGULAR;
+    float_const = false;
+    first_occurrence = 32768;
+    last_occurrence = 0;
 }
 
 variable::variable(bool const_status, std::string text) {
@@ -19,14 +22,25 @@ variable::variable(bool const_status, std::string text) {
     constant = const_status;
     used = false;
     type = TYPE_REGULAR;
+    float_const = false;
+    first_occurrence = 32768;
+    last_occurrence = 0;
 }
+
+variable::variable(bool const_status, std::string text, bool float_status) {
+    identifier = std::hash<std::string>{}(text);
+    name = std::move(text);
+    constant = const_status;
+    used = false;
+    type = TYPE_REGULAR;
+    float_const = float_status;
+    first_occurrence = 32768;
+    last_occurrence = 0;
+}
+
 
 void variable::set_used(bool status) {
     used = status;
-}
-
-void variable::set_type(int var_type) {
-    type = var_type;
 }
 
 bool variable::is_used() const {

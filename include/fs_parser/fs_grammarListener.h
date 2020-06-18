@@ -52,6 +52,12 @@ public:
   virtual void enterDestination(fs_grammarParser::DestinationContext *ctx) = 0;
   virtual void exitDestination(fs_grammarParser::DestinationContext *ctx) = 0;
 
+  virtual void enterImmediate(fs_grammarParser::ImmediateContext *ctx) = 0;
+  virtual void exitImmediate(fs_grammarParser::ImmediateContext *ctx) = 0;
+
+  virtual void enterFloat_const(fs_grammarParser::Float_constContext *ctx) = 0;
+  virtual void exitFloat_const(fs_grammarParser::Float_constContext *ctx) = 0;
+
   virtual void enterReg_opcode(fs_grammarParser::Reg_opcodeContext *ctx) = 0;
   virtual void exitReg_opcode(fs_grammarParser::Reg_opcodeContext *ctx) = 0;
 
@@ -87,9 +93,6 @@ public:
 
   virtual void enterPragma(fs_grammarParser::PragmaContext *ctx) = 0;
   virtual void exitPragma(fs_grammarParser::PragmaContext *ctx) = 0;
-
-  virtual void enterImmediate(fs_grammarParser::ImmediateContext *ctx) = 0;
-  virtual void exitImmediate(fs_grammarParser::ImmediateContext *ctx) = 0;
 
   virtual void enterVariable_decl(fs_grammarParser::Variable_declContext *ctx) = 0;
   virtual void exitVariable_decl(fs_grammarParser::Variable_declContext *ctx) = 0;

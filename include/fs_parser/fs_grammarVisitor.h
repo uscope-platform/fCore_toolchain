@@ -44,6 +44,10 @@ public:
 
     virtual antlrcpp::Any visitDestination(fs_grammarParser::DestinationContext *context) = 0;
 
+    virtual antlrcpp::Any visitImmediate(fs_grammarParser::ImmediateContext *context) = 0;
+
+    virtual antlrcpp::Any visitFloat_const(fs_grammarParser::Float_constContext *context) = 0;
+
     virtual antlrcpp::Any visitReg_opcode(fs_grammarParser::Reg_opcodeContext *context) = 0;
 
     virtual antlrcpp::Any visitImm_alu_opcode(fs_grammarParser::Imm_alu_opcodeContext *context) = 0;
@@ -67,8 +71,6 @@ public:
     virtual antlrcpp::Any visitFor_end_comp_type(fs_grammarParser::For_end_comp_typeContext *context) = 0;
 
     virtual antlrcpp::Any visitPragma(fs_grammarParser::PragmaContext *context) = 0;
-
-    virtual antlrcpp::Any visitImmediate(fs_grammarParser::ImmediateContext *context) = 0;
 
     virtual antlrcpp::Any visitVariable_decl(fs_grammarParser::Variable_declContext *context) = 0;
 

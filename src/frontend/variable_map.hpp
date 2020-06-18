@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include <iterator>
 #include "../code_elements/variable.hpp"
-
+#include "../code_elements/code_element.hpp"
 class variable_map {
 public:
     std::shared_ptr<variable> operator[](const std::string& key);

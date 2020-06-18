@@ -22,6 +22,7 @@ public:
 private:
     ast_t program;
     std::vector<uint32_t> raw_program;
+    int progress_counter;
     static inline uint16_t Reverse16(uint16_t value)
     {
         return (((value & 0x00FFu) << 8u) |

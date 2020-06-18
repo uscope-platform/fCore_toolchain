@@ -21,7 +21,8 @@ typedef enum {
     type_for_block = 4,
     type_program_head = 5,
     type_pragma = 6,
-    type_declaration = 7
+    type_code_block = 7,
+
 } element_type_t;
 
 

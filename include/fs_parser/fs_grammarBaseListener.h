@@ -54,6 +54,12 @@ public:
   virtual void enterDestination(fs_grammarParser::DestinationContext * /*ctx*/) override { }
   virtual void exitDestination(fs_grammarParser::DestinationContext * /*ctx*/) override { }
 
+  virtual void enterImmediate(fs_grammarParser::ImmediateContext * /*ctx*/) override { }
+  virtual void exitImmediate(fs_grammarParser::ImmediateContext * /*ctx*/) override { }
+
+  virtual void enterFloat_const(fs_grammarParser::Float_constContext * /*ctx*/) override { }
+  virtual void exitFloat_const(fs_grammarParser::Float_constContext * /*ctx*/) override { }
+
   virtual void enterReg_opcode(fs_grammarParser::Reg_opcodeContext * /*ctx*/) override { }
   virtual void exitReg_opcode(fs_grammarParser::Reg_opcodeContext * /*ctx*/) override { }
 
@@ -89,9 +95,6 @@ public:
 
   virtual void enterPragma(fs_grammarParser::PragmaContext * /*ctx*/) override { }
   virtual void exitPragma(fs_grammarParser::PragmaContext * /*ctx*/) override { }
-
-  virtual void enterImmediate(fs_grammarParser::ImmediateContext * /*ctx*/) override { }
-  virtual void exitImmediate(fs_grammarParser::ImmediateContext * /*ctx*/) override { }
 
   virtual void enterVariable_decl(fs_grammarParser::Variable_declContext * /*ctx*/) override { }
   virtual void exitVariable_decl(fs_grammarParser::Variable_declContext * /*ctx*/) override { }
