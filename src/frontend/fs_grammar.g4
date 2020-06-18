@@ -21,8 +21,8 @@ immediate : Integer | Hexnum | Octalnum | Identifier;
 
 float_const : FloatingPointLiteral;
 
-reg_opcode : 'add' | 'sub' | 'mul' | 'mac' | 'shl' | 'shr' | 'sar';
-imm_alu_opcode: 'addi' | 'subi' | 'muli' | 'maci' | 'shli' | 'shri' | 'sari';
+reg_opcode : 'add' | 'sub' | 'mul' | 'mulsr' | 'mac' |'macsr' | 'shl' | 'shr' | 'sar';
+imm_alu_opcode: 'addi' | 'subi' | 'muli' | 'mulsri' | 'maci' | 'shli' | 'macsri' | 'shri' | 'sari';
 imm_opcode : 'ldr' ;
 branch_opcode: 'ble' | 'bgt' | 'beq' | 'bne';
 

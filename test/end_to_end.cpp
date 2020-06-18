@@ -20,7 +20,7 @@ static inline uint32_t Reverse32(uint32_t value)
 TEST_CASE( "simple assembly file", "[simple_file]" ) {
     std::string input_file = "test_add.s";
 
-    std::vector<uint32_t> gold_standard = {0xc889, 0x190A9, 0xCA81,0x3E8E8F,0xe};
+    std::vector<uint32_t> gold_standard = {0xc88b, 0x190Ab, 0xCA81, 0x632a ,0x3e8e91,0x10};
 
     SECTION("file parsing and processing") {
 
@@ -79,7 +79,7 @@ TEST_CASE( "for block file", "[for_file]" ) {
 
     output_writer writer(ast, false);
     std::vector<uint32_t> result = writer.get_raw_program();
-    std::vector<uint32_t> gold_standard = {0xC889, 0x190a9, 0xca81, 0xC889, 0xca81, 0x0000, 0x0000, 0xC889, 0xca81, 0x0000, 0x0000, 0xe};
+    std::vector<uint32_t> gold_standard = {0xC88B, 0x190ab, 0xca81, 0xC88b, 0xca81, 0x0000, 0x0000, 0xC88b, 0xca81, 0x0000, 0x0000, 0x10};
     REQUIRE( result == gold_standard);
 }
 
@@ -97,7 +97,7 @@ TEST_CASE( "branch file", "[for_file]" ) {
 
     output_writer writer(ast, true);
     std::vector<uint32_t> result = writer.get_raw_program();
-     std::vector<uint32_t> gold_standard = {0xC889, 0xca81, 0x8061, 0xa0064a, 0xa0064B, 0xa0064c, 0xa0064D, 0xe};
+     std::vector<uint32_t> gold_standard = {0xC88B, 0xca81, 0x8061, 0xa0064c, 0xa0064d, 0xa0064e, 0xa0064f, 0x10};
     REQUIRE( result == gold_standard);
 }
 
@@ -115,6 +115,6 @@ TEST_CASE( "variables file") {
 
     output_writer writer(ast, true);
     std::vector<uint32_t> result = writer.get_raw_program();
-    std::vector<uint32_t> gold_standard = {0xc829, 0x190a9, 0xca81, 0x28e2f, 0xe};
+    std::vector<uint32_t> gold_standard = {0xc82b, 0x190ab, 0xca81, 0x28e31, 0x10};
     REQUIRE( result == gold_standard);
 }

@@ -14,7 +14,7 @@ TEST_CASE( "immediate_instruction" ) {
 
         uint32_t result = instr.emit();
 
-        REQUIRE( result == 0xc889 );
+        REQUIRE( result == 0xc88b );
     }
     SECTION("print"){
         std::stringstream buffer;
@@ -22,7 +22,7 @@ TEST_CASE( "immediate_instruction" ) {
         instr.print();
         std::string result = buffer.str();
         std::cout.rdbuf(old);
-        std::string golden_standard = "c889 -> OPCODE: ldr DESTINATION: r4 IMMEDIATE: 100\n";
+        std::string golden_standard = "c88b -> OPCODE: ldr DESTINATION: r4 IMMEDIATE: 100\n";
         REQUIRE(result == golden_standard);
     }
 }
@@ -68,7 +68,7 @@ TEST_CASE( "alu_immediate" ) {
 
         uint32_t result = instr.emit();
 
-        REQUIRE(result == 0xc884f);
+        REQUIRE(result == 0xc8851);
     }
     SECTION("print"){
         std::stringstream buffer;
@@ -76,7 +76,7 @@ TEST_CASE( "alu_immediate" ) {
         instr.print();
         std::string result = buffer.str();
         std::cout.rdbuf(old);
-        std::string golden_standard = "c884f -> OPCODE: addi OPERAND A: r2 DESTINATION: r4 IMMEDIATE: 100\n";
+        std::string golden_standard = "c8851 -> OPCODE: addi OPERAND A: r2 DESTINATION: r4 IMMEDIATE: 100\n";
         REQUIRE(result == golden_standard);
     }
 
@@ -92,7 +92,7 @@ TEST_CASE( "independent_instruction" ) {
 
         uint32_t result = instr.emit();
 
-        REQUIRE( result == 0xE );
+        REQUIRE( result == 0x10);
     }
     SECTION("print"){
         std::stringstream buffer;
@@ -100,7 +100,7 @@ TEST_CASE( "independent_instruction" ) {
         instr.print();
         std::string result = buffer.str();
         std::cout.rdbuf(old);
-        std::string golden_standard = "000e -> OPCODE: stop\n";
+        std::string golden_standard = "0010 -> OPCODE: stop\n";
         REQUIRE(result == golden_standard);
     }
 
