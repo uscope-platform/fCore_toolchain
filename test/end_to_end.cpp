@@ -115,6 +115,6 @@ TEST_CASE( "variables file") {
 
     output_writer writer(ast, true);
     std::vector<uint32_t> result = writer.get_raw_program();
-    std::vector<uint32_t> gold_standard = {0xc82b, 0x190ab, 0xca81, 0x28e31, 0x10};
+    std::vector<uint32_t> gold_standard = {0xc82b, 0x1904b, 0x190ab, 0xca81, 0x28e31,0x28e51,0xc82b,0x28e31, 0x10};
     REQUIRE( result == gold_standard);
 }
