@@ -46,26 +46,16 @@ void Tree_visitor::exitReg_instr(fs_grammarParser::Reg_instrContext *ctx) {
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
-void Tree_visitor::exitImm_alu_instr(fs_grammarParser::Imm_alu_instrContext *ctx) {
-    std::string opcode = ctx->imm_alu_opcode()->getText();
+void Tree_visitor::exitConv_instr(fs_grammarParser::Conv_instrContext *ctx) {
+    std::string opcode = ctx->conv_opcode()->getText();
 
-    std::shared_ptr<variable> op_a = get_variable(ctx->operand()->getText(), false);
+    std::shared_ptr<variable> op_a = get_variable(ctx->operand(0)->getText(), false);
     op_a->set_used(true);
+    std::shared_ptr<variable> op_b = get_variable(ctx->operand(1)->getText(), false);
 
-    std::string identifier;
-    if(ctx->immediate() != nullptr)
-        identifier = ctx->immediate()->getText();
-    else if (ctx->float_const() != nullptr)
-        identifier = ctx->float_const()->getText();
+    std::vector<std::shared_ptr<variable>> arguments = {op_a, op_b};
 
-    std::shared_ptr<variable> imm = get_variable(identifier, true);
-    imm->set_used(true);
-
-    std::shared_ptr<variable> dest = get_variable(ctx->destination()->getText(), false);
-
-    std::vector<std::shared_ptr<variable>> arguments = {op_a, imm, dest};
-
-    code_element this_inst = code_element(type_instr, instruction(ALU_IMMEDIATE_INSTRUCTION, opcode, arguments));
+    code_element this_inst = code_element(type_instr, instruction(CONVERSION_INSTRUCTION, opcode, arguments));
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
@@ -223,6 +213,4 @@ std::shared_ptr<variable> Tree_visitor::get_variable(const std::string &variable
         var = varmap->at(variable_name);
     return var;
 }
-
-
 

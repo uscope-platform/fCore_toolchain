@@ -5,12 +5,12 @@ code : ( instruction |for_block | pragma |declaration)+;
 
 declaration : (input_decl | variable_decl | constant_decl | output_decl);
 
-instruction : reg_instr | imm_instr | indep_instr | pseudo_instr | branch_instr| imm_alu_instr;
+instruction : reg_instr | imm_instr | indep_instr | pseudo_instr | branch_instr | conv_instr;
 
 reg_instr : reg_opcode  operand ',' operand ',' destination;
 imm_instr : imm_opcode destination ',' immediate;
-imm_alu_instr : imm_alu_opcode operand ',' (immediate | float_const) ',' destination;
 branch_instr : branch_opcode operand ',' operand ',' immediate;
+conv_instr : conv_opcode operand ',' operand;
 indep_instr : 'stop' | 'nop';
 
 pseudo_instr : pseudo_opcode Identifier ',' Identifier (',' Identifier)*;
@@ -21,8 +21,8 @@ immediate : Integer | Hexnum | Octalnum | Identifier;
 
 float_const : FloatingPointLiteral;
 
-reg_opcode : 'add' | 'sub' | 'mul' | 'mulsr' | 'mac' |'macsr' | 'shl' | 'shr' | 'sar';
-imm_alu_opcode: 'addi' | 'subi' | 'muli' | 'mulsri' | 'maci' | 'shli' | 'macsri' | 'shri' | 'sari';
+reg_opcode : 'add' | 'sub' | 'mul';
+conv_opcode: 'itf' | 'fti';
 imm_opcode : 'ldr' ;
 branch_opcode: 'ble' | 'bgt' | 'beq' | 'bne';
 

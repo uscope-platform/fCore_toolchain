@@ -8,8 +8,8 @@ ldr variable1, 100
 ldr variable3, 200
 ldr r5, 200
 add r4, r5, r6
-addi variable1, 20, r7
-addi variable3, 20, r7
+add variable1, r9, r7
+add variable3, r9, r7
 ldr variable2, 100
-addi variable2, 20, r7
+add variable2, r9, r7
 stop

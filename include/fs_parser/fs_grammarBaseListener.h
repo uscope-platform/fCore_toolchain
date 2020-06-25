@@ -36,11 +36,11 @@ public:
   virtual void enterImm_instr(fs_grammarParser::Imm_instrContext * /*ctx*/) override { }
   virtual void exitImm_instr(fs_grammarParser::Imm_instrContext * /*ctx*/) override { }
 
-  virtual void enterImm_alu_instr(fs_grammarParser::Imm_alu_instrContext * /*ctx*/) override { }
-  virtual void exitImm_alu_instr(fs_grammarParser::Imm_alu_instrContext * /*ctx*/) override { }
-
   virtual void enterBranch_instr(fs_grammarParser::Branch_instrContext * /*ctx*/) override { }
   virtual void exitBranch_instr(fs_grammarParser::Branch_instrContext * /*ctx*/) override { }
+
+  virtual void enterConv_instr(fs_grammarParser::Conv_instrContext * /*ctx*/) override { }
+  virtual void exitConv_instr(fs_grammarParser::Conv_instrContext * /*ctx*/) override { }
 
   virtual void enterIndep_instr(fs_grammarParser::Indep_instrContext * /*ctx*/) override { }
   virtual void exitIndep_instr(fs_grammarParser::Indep_instrContext * /*ctx*/) override { }
@@ -63,8 +63,8 @@ public:
   virtual void enterReg_opcode(fs_grammarParser::Reg_opcodeContext * /*ctx*/) override { }
   virtual void exitReg_opcode(fs_grammarParser::Reg_opcodeContext * /*ctx*/) override { }
 
-  virtual void enterImm_alu_opcode(fs_grammarParser::Imm_alu_opcodeContext * /*ctx*/) override { }
-  virtual void exitImm_alu_opcode(fs_grammarParser::Imm_alu_opcodeContext * /*ctx*/) override { }
+  virtual void enterConv_opcode(fs_grammarParser::Conv_opcodeContext * /*ctx*/) override { }
+  virtual void exitConv_opcode(fs_grammarParser::Conv_opcodeContext * /*ctx*/) override { }
 
   virtual void enterImm_opcode(fs_grammarParser::Imm_opcodeContext * /*ctx*/) override { }
   virtual void exitImm_opcode(fs_grammarParser::Imm_opcodeContext * /*ctx*/) override { }

@@ -37,12 +37,12 @@ private:
         [[nodiscard]] uint32_t emit_immediate() const;
         [[nodiscard]] uint32_t emit_independent() const;
         [[nodiscard]] uint32_t emit_register() const;
-        [[nodiscard]] uint32_t emit_alu_immediate() const;
+        [[nodiscard]] uint32_t emit_conversion() const;
         void print_immediate() const;
         void print_independent() const;
         void print_register() const;
         void print_branch() const;
-        void print_alu_immediate() const;
+        void print_conversion() const;
 
         int type;
         instruction_t string_instr;

@@ -14,7 +14,7 @@ TEST_CASE( "immediate_instruction" ) {
 
         uint32_t result = instr.emit();
 
-        REQUIRE( result == 0xc88b );
+        REQUIRE( result == 0xc887 );
     }
     SECTION("print"){
         std::stringstream buffer;
@@ -22,7 +22,7 @@ TEST_CASE( "immediate_instruction" ) {
         instr.print();
         std::string result = buffer.str();
         std::cout.rdbuf(old);
-        std::string golden_standard = "c88b -> OPCODE: ldr DESTINATION: r4 IMMEDIATE: 100\n";
+        std::string golden_standard = "c887 -> OPCODE: ldr DESTINATION: r4 IMMEDIATE: 100\n";
         REQUIRE(result == golden_standard);
     }
 }
@@ -34,13 +34,13 @@ TEST_CASE( "register_instruction" ) {
     std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r4");
     std::vector<std::shared_ptr<variable>> args = {op_a, op_b, dest};
 
-    instruction instr(REGISTER_INSTRUCTION,"shl", args);
+    instruction instr(REGISTER_INSTRUCTION,"add", args);
 
     SECTION("emit"){
 
         uint32_t result = instr.emit();
 
-        REQUIRE(result == 0x8645);
+        REQUIRE(result == 0x8641);
     }
     SECTION("print"){
         std::stringstream buffer;
@@ -48,35 +48,7 @@ TEST_CASE( "register_instruction" ) {
         instr.print();
         std::string result = buffer.str();
         std::cout.rdbuf(old);
-        std::string golden_standard = "8645 -> OPCODE: shl OPERAND A: r2 OPERAND B: r3 DESTINATION: r4\n";
-        REQUIRE(result == golden_standard);
-    }
-
-}
-
-
-TEST_CASE( "alu_immediate" ) {
-
-    std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r2");
-    std::shared_ptr<variable> op_b = std::make_shared<variable>(true, "100");
-    std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r4");
-    std::vector<std::shared_ptr<variable>> args = {op_a, op_b, dest};
-
-    instruction instr(ALU_IMMEDIATE_INSTRUCTION,"addi", args);
-
-    SECTION("emit"){
-
-        uint32_t result = instr.emit();
-
-        REQUIRE(result == 0xc8851);
-    }
-    SECTION("print"){
-        std::stringstream buffer;
-        std::streambuf * old = std::cout.rdbuf(buffer.rdbuf());
-        instr.print();
-        std::string result = buffer.str();
-        std::cout.rdbuf(old);
-        std::string golden_standard = "c8851 -> OPCODE: addi OPERAND A: r2 DESTINATION: r4 IMMEDIATE: 100\n";
+        std::string golden_standard = "8641 -> OPCODE: add OPERAND A: r2 OPERAND B: r3 DESTINATION: r4\n";
         REQUIRE(result == golden_standard);
     }
 
@@ -92,7 +64,7 @@ TEST_CASE( "independent_instruction" ) {
 
         uint32_t result = instr.emit();
 
-        REQUIRE( result == 0x10);
+        REQUIRE( result == 0xc);
     }
     SECTION("print"){
         std::stringstream buffer;
@@ -100,7 +72,7 @@ TEST_CASE( "independent_instruction" ) {
         instr.print();
         std::string result = buffer.str();
         std::cout.rdbuf(old);
-        std::string golden_standard = "0010 -> OPCODE: stop\n";
+        std::string golden_standard = "000c -> OPCODE: stop\n";
         REQUIRE(result == golden_standard);
     }
 

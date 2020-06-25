@@ -32,9 +32,9 @@ public:
 
     virtual antlrcpp::Any visitImm_instr(fs_grammarParser::Imm_instrContext *context) = 0;
 
-    virtual antlrcpp::Any visitImm_alu_instr(fs_grammarParser::Imm_alu_instrContext *context) = 0;
-
     virtual antlrcpp::Any visitBranch_instr(fs_grammarParser::Branch_instrContext *context) = 0;
+
+    virtual antlrcpp::Any visitConv_instr(fs_grammarParser::Conv_instrContext *context) = 0;
 
     virtual antlrcpp::Any visitIndep_instr(fs_grammarParser::Indep_instrContext *context) = 0;
 
@@ -50,7 +50,7 @@ public:
 
     virtual antlrcpp::Any visitReg_opcode(fs_grammarParser::Reg_opcodeContext *context) = 0;
 
-    virtual antlrcpp::Any visitImm_alu_opcode(fs_grammarParser::Imm_alu_opcodeContext *context) = 0;
+    virtual antlrcpp::Any visitConv_opcode(fs_grammarParser::Conv_opcodeContext *context) = 0;
 
     virtual antlrcpp::Any visitImm_opcode(fs_grammarParser::Imm_opcodeContext *context) = 0;
 

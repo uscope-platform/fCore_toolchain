@@ -15,12 +15,12 @@ ldr r14, 14
 ldr r15, 15
 nop
 nop
-nop
+itf r4, r4
+fti r5, r5
 nop
 nop
 add r4, r5, r6
-addi r4, 500, r7
-for(i=0;i<4074; i++){
+for(i=0;i<4070; i++){
         #pragma unroll
         nop
     }

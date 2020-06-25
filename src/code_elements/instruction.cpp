@@ -32,8 +32,8 @@ uint32_t instruction::emit() const {
         case BRANCH_INSTRUCTION:
             raw_instr = emit_branch();
             break;
-        case ALU_IMMEDIATE_INSTRUCTION:
-            raw_instr = emit_alu_immediate();
+        case CONVERSION_INSTRUCTION:
+            raw_instr = emit_conversion();
             break;
     }
     return raw_instr;
@@ -53,8 +53,8 @@ void instruction::print() {
         case BRANCH_INSTRUCTION:
             print_branch();
             break;
-        case ALU_IMMEDIATE_INSTRUCTION:
-            print_alu_immediate();
+        case CONVERSION_INSTRUCTION:
+            print_conversion();
             break;
     }
 }
@@ -83,15 +83,6 @@ uint32_t instruction::emit_register() const {
     return raw_instr;
 }
 
-uint32_t instruction::emit_alu_immediate() const {
-    uint32_t raw_instr = 0;
-
-    raw_instr += fcore_opcodes[string_instr.opcode] & 0x1fu;
-    raw_instr += (string_instr.arguments[0]->get_value() & 0xfu) << 5u;
-    raw_instr += (string_instr.arguments[2]->get_value() & 0xfu) << 9u;
-    raw_instr += (string_instr.arguments[1]->get_value() & 0xfffu) << 13u;
-    return raw_instr;
-}
 
 uint32_t instruction::emit_branch() const {
     uint32_t raw_instr = 0;
@@ -101,6 +92,16 @@ uint32_t instruction::emit_branch() const {
     raw_instr += (string_instr.arguments[2]->get_value() & 0xfffu) << 13u;
     return raw_instr;
 }
+
+uint32_t instruction::emit_conversion() const {
+    uint32_t raw_instr = 0;
+    raw_instr += fcore_opcodes[string_instr.opcode] & 0x1fu;
+    raw_instr += (string_instr.arguments[0]->get_value() & 0xfu) << 5u;
+    raw_instr += (string_instr.arguments[1]->get_value() & 0xfu) << 9u;
+
+    return raw_instr;
+}
+
 
 void instruction::print_immediate() const {
     std::cout << std::setfill('0') << std::setw(4) << std::hex << emit() << " -> OPCODE: " << string_instr.opcode <<
@@ -117,11 +118,6 @@ void instruction::print_register() const {
     " DESTINATION: " << string_instr.arguments[2]->to_str() <<std::endl;
 }
 
-void instruction::print_alu_immediate() const {
-    std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << string_instr.opcode <<
-              " OPERAND A: " << string_instr.arguments[0]->to_str() << " DESTINATION: " << string_instr.arguments[2]->to_str() <<
-              " IMMEDIATE: " << string_instr.arguments[1]->to_str() <<std::endl;
-}
 
 void instruction::print_branch() const {
     std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << string_instr.opcode <<
@@ -129,10 +125,16 @@ void instruction::print_branch() const {
         " OFFSET: " << string_instr.arguments[2]->to_str() <<std::endl;
 }
 
+void instruction::print_conversion() const {
+    std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << string_instr.opcode <<
+        " SOURCE: " << string_instr.arguments[0]->to_str() << " DESTINATION: " << string_instr.arguments[1]->to_str()<<std::endl;
+}
+
+
+
 int instruction::instruction_count() const {
     switch(type){
         case IMMEDIATE_INSTRUCTION:
-        case ALU_IMMEDIATE_INSTRUCTION:
         case INDEPENDENT_INSTRUCTION:
         case REGISTER_INSTRUCTION:
             return 1;

@@ -8,9 +8,9 @@
 #define INDEPENDENT_INSTRUCTION 2
 #define REGISTER_INSTRUCTION 3
 #define PSEUDO_INSTRUCTION 4
-#define GENERATED_INSTRUCTION 5
-#define BRANCH_INSTRUCTION 6
-#define ALU_IMMEDIATE_INSTRUCTION 7
+#define BRANCH_INSTRUCTION 5
+#define CONVERSION_INSTRUCTION 6
+
 #include <map>
 
 static std::map <std::string, uint32_t>  fcore_registers
@@ -40,27 +40,15 @@ static std::map <std::string, uint32_t>  fcore_opcodes
                 std::make_pair ("add", 1u),
                 std::make_pair ("sub", 2u),
                 std::make_pair ("mul", 3u),
-                std::make_pair ("mac", 4u),
-                std::make_pair ("shl", 5u),
-                std::make_pair ("shr", 6u),
-                std::make_pair ("sar", 8u),
-                std::make_pair ("mulsr", 9u),
-                std::make_pair ("macsr", 10u),
-                std::make_pair ("ldr", 11u),
-                std::make_pair ("bgt", 12u),
-                std::make_pair ("ble", 13u),
-                std::make_pair ("beq", 14u),
-                std::make_pair ("bne", 15u),
-                std::make_pair ("stop", 16u),
-                std::make_pair ("addi", 17u),
-                std::make_pair ("subi", 18u),
-                std::make_pair ("muli", 19u),
-                std::make_pair ("maci", 20u),
-                std::make_pair ("shli", 21u),
-                std::make_pair ("shri", 22u),
-                std::make_pair ("sari", 23u),
-                std::make_pair ("mulsri", 24u),
-                std::make_pair ("macsri", 25u)
+                std::make_pair ("itf", 4u),
+                std::make_pair ("fti", 5u),
+                std::make_pair ("ldc", 6u),
+                std::make_pair ("ldr", 7u),
+                std::make_pair ("bgt", 8u),
+                std::make_pair ("ble", 9u),
+                std::make_pair ("beq", 10u),
+                std::make_pair ("bne", 11u),
+                std::make_pair ("stop", 12u)
         };
 
 static std::map <std::string, uint32_t>  fcore_op_types
@@ -69,33 +57,20 @@ static std::map <std::string, uint32_t>  fcore_op_types
                 std::make_pair ("add", REGISTER_INSTRUCTION),
                 std::make_pair ("sub", REGISTER_INSTRUCTION),
                 std::make_pair ("mul", REGISTER_INSTRUCTION),
-                std::make_pair ("mac", REGISTER_INSTRUCTION),
-                std::make_pair ("shl", REGISTER_INSTRUCTION),
-                std::make_pair ("shr", REGISTER_INSTRUCTION),
-                std::make_pair ("sar", REGISTER_INSTRUCTION),
-                std::make_pair ("mulsr", REGISTER_INSTRUCTION),
-                std::make_pair ("macsr", REGISTER_INSTRUCTION),
+                std::make_pair ("itf", CONVERSION_INSTRUCTION),
+                std::make_pair ("fti", CONVERSION_INSTRUCTION),
+                std::make_pair ("ldc", IMMEDIATE_INSTRUCTION),
                 std::make_pair ("ldr", IMMEDIATE_INSTRUCTION),
                 std::make_pair ("bgt", BRANCH_INSTRUCTION),
                 std::make_pair ("ble", BRANCH_INSTRUCTION),
                 std::make_pair ("beq", BRANCH_INSTRUCTION),
                 std::make_pair ("bne", BRANCH_INSTRUCTION),
                 std::make_pair ("stop", INDEPENDENT_INSTRUCTION),
-                std::make_pair ("addi", ALU_IMMEDIATE_INSTRUCTION),
-                std::make_pair ("subi", ALU_IMMEDIATE_INSTRUCTION),
-                std::make_pair ("muli", ALU_IMMEDIATE_INSTRUCTION),
-                std::make_pair ("maci", ALU_IMMEDIATE_INSTRUCTION),
-                std::make_pair ("shli", ALU_IMMEDIATE_INSTRUCTION),
-                std::make_pair ("shri", ALU_IMMEDIATE_INSTRUCTION),
-                std::make_pair ("sari", ALU_IMMEDIATE_INSTRUCTION),
-                std::make_pair ("mulsri", ALU_IMMEDIATE_INSTRUCTION),
-                std::make_pair ("macsri", ALU_IMMEDIATE_INSTRUCTION)
         };
 
 static std::map <std::string, std::string>  fcore_pseudo_op
         {
                 std::make_pair ("mov", "add"),
-
         };
 
 

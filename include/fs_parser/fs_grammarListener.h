@@ -34,11 +34,11 @@ public:
   virtual void enterImm_instr(fs_grammarParser::Imm_instrContext *ctx) = 0;
   virtual void exitImm_instr(fs_grammarParser::Imm_instrContext *ctx) = 0;
 
-  virtual void enterImm_alu_instr(fs_grammarParser::Imm_alu_instrContext *ctx) = 0;
-  virtual void exitImm_alu_instr(fs_grammarParser::Imm_alu_instrContext *ctx) = 0;
-
   virtual void enterBranch_instr(fs_grammarParser::Branch_instrContext *ctx) = 0;
   virtual void exitBranch_instr(fs_grammarParser::Branch_instrContext *ctx) = 0;
+
+  virtual void enterConv_instr(fs_grammarParser::Conv_instrContext *ctx) = 0;
+  virtual void exitConv_instr(fs_grammarParser::Conv_instrContext *ctx) = 0;
 
   virtual void enterIndep_instr(fs_grammarParser::Indep_instrContext *ctx) = 0;
   virtual void exitIndep_instr(fs_grammarParser::Indep_instrContext *ctx) = 0;
@@ -61,8 +61,8 @@ public:
   virtual void enterReg_opcode(fs_grammarParser::Reg_opcodeContext *ctx) = 0;
   virtual void exitReg_opcode(fs_grammarParser::Reg_opcodeContext *ctx) = 0;
 
-  virtual void enterImm_alu_opcode(fs_grammarParser::Imm_alu_opcodeContext *ctx) = 0;
-  virtual void exitImm_alu_opcode(fs_grammarParser::Imm_alu_opcodeContext *ctx) = 0;
+  virtual void enterConv_opcode(fs_grammarParser::Conv_opcodeContext *ctx) = 0;
+  virtual void exitConv_opcode(fs_grammarParser::Conv_opcodeContext *ctx) = 0;
 
   virtual void enterImm_opcode(fs_grammarParser::Imm_opcodeContext *ctx) = 0;
   virtual void exitImm_opcode(fs_grammarParser::Imm_opcodeContext *ctx) = 0;
