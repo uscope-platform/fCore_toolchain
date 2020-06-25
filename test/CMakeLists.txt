@@ -8,7 +8,7 @@ add_executable(test_target test.cpp
         ../src/passes/pseudo_instructions_pass.cpp passes.cpp end_to_end.cpp
         ../src/passes/register_allocation_pass.cpp ../src/passes/register_allocation_pass.hpp
         ../src/passes/float_const_implementation.cpp ../src/passes/float_const_implementation.hpp
-        ../src/passes/Variable_lifetime_mapping.cpp ../src/passes/Variable_lifetime_mapping.hpp
+        ../src/passes/variable_lifetime_mapping.cpp ../src/passes/variable_lifetime_mapping.hpp
         ../src/passes/instruction_counting_pass.cpp ../src/frontend/variable_map.cpp
         ../src/frontend/variable_map.hpp ../src/frontend/register_map.cpp ../src/frontend/register_map.hpp)
 

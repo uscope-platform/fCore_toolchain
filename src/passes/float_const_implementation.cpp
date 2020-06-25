@@ -59,7 +59,6 @@ std::shared_ptr<code_element> float_const_implementation::create_block(std::vect
     //CREATE INTEGER PART MULTIPLICATION IF NECESSARY
     if(frac[0]!=0){
         std::cout<<"multiplication by an immediate constant greater than 1 will require the use of an intermediate register"<<std::endl;
-        std::cout<<"use the feature sparingly until lifetime tracking register allocation is implemented."<<std::endl;
 
         std::string target_var = "frac_impl"+std::to_string(rand()%100);
         std::shared_ptr<variable> var = std::make_shared<variable>(false,target_var);

@@ -2,16 +2,16 @@
 // Created by fils on 17/06/20.
 //
 
-#include "Variable_lifetime_mapping.hpp"
+#include "variable_lifetime_mapping.hpp"
 
 
 
-Variable_lifetime_mapping::Variable_lifetime_mapping(std::shared_ptr<variable_map> var_map) {
+variable_lifetime_mapping::variable_lifetime_mapping(std::shared_ptr<variable_map> var_map) {
     vmap = std::move(var_map);
     variable_detection_ctr = 0;
 }
 
-ast_t Variable_lifetime_mapping::process_leaf(ast_t element) {
+ast_t variable_lifetime_mapping::process_leaf(ast_t element) {
     for(auto &variable:element->inst.getStringInstr().arguments){
         if(!variable->is_constant() && variable->type ==TYPE_REGULAR){
             if(variable_detection_ctr <= variable->first_occurrence)
