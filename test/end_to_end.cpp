@@ -118,3 +118,21 @@ TEST_CASE( "variables file") {
     std::vector<uint32_t> gold_standard = {0xc827, 0x19047, 0x190a7, 0xca81, 0xf221,0xf241,0xc827,0xf221, 0xc};
     REQUIRE( result == gold_standard);
 }
+
+TEST_CASE( "load constant file") {
+    std::string input_file = "test_ldc.s";
+
+    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+    parser p1("register_defs.s", map);
+    parser p2(input_file, map);
+    ast_t ast = p2.AST;
+
+
+    pass_manager manager = create_pass_manager(map);
+    manager.run_morphing_passes(ast);
+
+    output_writer writer(ast, true);
+    std::vector<uint32_t> result = writer.get_raw_program();
+    std::vector<uint32_t> gold_standard = {0xc887, 0x190a7, 0x86, 0x4048f5c3, 0xc};
+    REQUIRE( result == gold_standard);
+}

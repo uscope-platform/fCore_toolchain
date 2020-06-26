@@ -32,6 +32,8 @@ public:
 
     virtual antlrcpp::Any visitImm_instr(fs_grammarParser::Imm_instrContext *context) = 0;
 
+    virtual antlrcpp::Any visitLoad_instr(fs_grammarParser::Load_instrContext *context) = 0;
+
     virtual antlrcpp::Any visitBranch_instr(fs_grammarParser::Branch_instrContext *context) = 0;
 
     virtual antlrcpp::Any visitConv_instr(fs_grammarParser::Conv_instrContext *context) = 0;

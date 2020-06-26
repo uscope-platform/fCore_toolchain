@@ -17,9 +17,9 @@ public:
     T__7 = 8, T__8 = 9, T__9 = 10, T__10 = 11, T__11 = 12, T__12 = 13, T__13 = 14, 
     T__14 = 15, T__15 = 16, T__16 = 17, T__17 = 18, T__18 = 19, T__19 = 20, 
     T__20 = 21, T__21 = 22, T__22 = 23, T__23 = 24, T__24 = 25, T__25 = 26, 
-    T__26 = 27, T__27 = 28, T__28 = 29, T__29 = 30, T__30 = 31, Identifier = 32, 
-    Hexnum = 33, Integer = 34, Octalnum = 35, FloatingPointLiteral = 36, 
-    String = 37, Label = 38, WS = 39, BlockComment = 40, LineComment = 41
+    T__26 = 27, T__27 = 28, T__28 = 29, T__29 = 30, T__30 = 31, T__31 = 32, 
+    Identifier = 33, Hexnum = 34, Integer = 35, Octalnum = 36, FloatingPointLiteral = 37, 
+    String = 38, Label = 39, WS = 40, BlockComment = 41, LineComment = 42
   };
 
   fs_grammarLexer(antlr4::CharStream *input);

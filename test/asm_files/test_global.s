@@ -18,6 +18,7 @@ nop
 itf r4, r4
 fti r5, r5
 nop
+ldc r9, 1.7843
 nop
 add r4, r5, r6
 for(i=0;i<4070; i++){

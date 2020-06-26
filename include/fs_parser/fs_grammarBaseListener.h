@@ -36,6 +36,9 @@ public:
   virtual void enterImm_instr(fs_grammarParser::Imm_instrContext * /*ctx*/) override { }
   virtual void exitImm_instr(fs_grammarParser::Imm_instrContext * /*ctx*/) override { }
 
+  virtual void enterLoad_instr(fs_grammarParser::Load_instrContext * /*ctx*/) override { }
+  virtual void exitLoad_instr(fs_grammarParser::Load_instrContext * /*ctx*/) override { }
+
   virtual void enterBranch_instr(fs_grammarParser::Branch_instrContext * /*ctx*/) override { }
   virtual void exitBranch_instr(fs_grammarParser::Branch_instrContext * /*ctx*/) override { }
 

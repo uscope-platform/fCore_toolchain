@@ -8,6 +8,7 @@ add_executable(test_target test.cpp
         ../src/passes/pseudo_instructions_pass.cpp passes.cpp end_to_end.cpp
         ../src/passes/register_allocation_pass.cpp ../src/passes/register_allocation_pass.hpp
         ../src/passes/variable_lifetime_mapping.cpp ../src/passes/variable_lifetime_mapping.hpp
+        ../src/passes/load_intercalation_pass.cpp ../src/passes/load_intercalation_pass.hpp
         ../src/passes/instruction_counting_pass.cpp ../src/frontend/variable_map.cpp
         ../src/frontend/variable_map.hpp ../src/frontend/register_map.cpp ../src/frontend/register_map.hpp)
 
@@ -21,4 +22,5 @@ file(COPY asm_files/test_for.s DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY asm_files/test_global.s DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY asm_files/test_variables.s DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY asm_files/test_branch.s DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY asm_files/test_ldc.s DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY asm_files/register_defs.s DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

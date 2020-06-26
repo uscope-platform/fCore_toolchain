@@ -10,7 +10,8 @@
 #define PSEUDO_INSTRUCTION 4
 #define BRANCH_INSTRUCTION 5
 #define CONVERSION_INSTRUCTION 6
-
+#define LOAD_CONSTANT_INSTRUCTION 7
+#define INTERCALATED_CONSTANT 8
 #include <map>
 
 static std::map <std::string, uint32_t>  fcore_registers

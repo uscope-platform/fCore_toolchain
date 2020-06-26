@@ -5,10 +5,11 @@ code : ( instruction |for_block | pragma |declaration)+;
 
 declaration : (input_decl | variable_decl | constant_decl | output_decl);
 
-instruction : reg_instr | imm_instr | indep_instr | pseudo_instr | branch_instr | conv_instr;
+instruction : reg_instr | imm_instr | indep_instr | pseudo_instr | branch_instr | conv_instr | load_instr;
 
 reg_instr : reg_opcode  operand ',' operand ',' destination;
 imm_instr : imm_opcode destination ',' immediate;
+load_instr: 'ldc' destination ',' FloatingPointLiteral;
 branch_instr : branch_opcode operand ',' operand ',' immediate;
 conv_instr : conv_opcode operand ',' operand;
 indep_instr : 'stop' | 'nop';

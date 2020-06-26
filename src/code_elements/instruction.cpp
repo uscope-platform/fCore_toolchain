@@ -6,10 +6,11 @@
 #include "../../include/fCore_isa.hpp"
 #include <utility>
 
-instruction::instruction() {
 
+instruction::instruction(int inst_type, float constant) {
+    type = inst_type;
+    string_instr.intercalated_constant = constant;
 }
-
 
 instruction::instruction(int inst_type, std::string opcode, std::vector<std::shared_ptr<variable>> arguments) {
     type = inst_type;
@@ -35,6 +36,12 @@ uint32_t instruction::emit() const {
         case CONVERSION_INSTRUCTION:
             raw_instr = emit_conversion();
             break;
+        case LOAD_CONSTANT_INSTRUCTION:
+            raw_instr = emit_load_const();
+            break;
+        case INTERCALATED_CONSTANT:
+            raw_instr = emit_intercalated_const();
+            break;
     }
     return raw_instr;
 }
@@ -55,6 +62,9 @@ void instruction::print() {
             break;
         case CONVERSION_INSTRUCTION:
             print_conversion();
+            break;
+        case LOAD_CONSTANT_INSTRUCTION:
+            print_load_const();
             break;
     }
 }
@@ -98,10 +108,25 @@ uint32_t instruction::emit_conversion() const {
     raw_instr += fcore_opcodes[string_instr.opcode] & 0x1fu;
     raw_instr += (string_instr.arguments[0]->get_value() & 0xfu) << 5u;
     raw_instr += (string_instr.arguments[1]->get_value() & 0xfu) << 9u;
-
     return raw_instr;
 }
 
+uint32_t instruction::emit_intercalated_const() const {
+    uint32_t  raw_instr = 0;
+    float constant = string_instr.intercalated_constant;
+    memcpy(&raw_instr, &constant, sizeof(raw_instr));
+    return raw_instr;
+}
+
+
+
+
+uint32_t instruction::emit_load_const() const {
+    uint32_t raw_instr = 0;
+    raw_instr += fcore_opcodes[string_instr.opcode] & 0x1fu;
+    raw_instr += (string_instr.arguments[0]->get_value() & 0xfu) << 5u;
+    return raw_instr;
+}
 
 void instruction::print_immediate() const {
     std::cout << std::setfill('0') << std::setw(4) << std::hex << emit() << " -> OPCODE: " << string_instr.opcode <<
@@ -130,7 +155,10 @@ void instruction::print_conversion() const {
         " SOURCE: " << string_instr.arguments[0]->to_str() << " DESTINATION: " << string_instr.arguments[1]->to_str()<<std::endl;
 }
 
-
+void instruction::print_load_const() const {
+    std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << string_instr.opcode <<
+              " DESTINATION: " << string_instr.arguments[0]->to_str() << " CONSTANT(NEXT INSTRUCTION): " << string_instr.arguments[1]->to_str()<<std::endl;
+}
 
 int instruction::instruction_count() const {
     switch(type){

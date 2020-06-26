@@ -8,7 +8,7 @@ add_executable(fCore_has main.cpp code_elements/instruction.cpp code_elements/in
         passes/pseudo_instructions_pass.hpp passes/instruction_counting_pass.cpp passes/instruction_counting_pass.hpp
         code_elements/variable.cpp code_elements/variable.hpp passes/register_allocation_pass.cpp
         passes/register_allocation_pass.hpp frontend/variable_map.cpp frontend/variable_map.hpp
-        passes/variable_lifetime_mapping.cpp passes/variable_lifetime_mapping.hpp frontend/register_map.cpp frontend/register_map.hpp)
+        passes/variable_lifetime_mapping.cpp passes/variable_lifetime_mapping.hpp frontend/register_map.cpp frontend/register_map.hpp passes/load_intercalation_pass.cpp passes/load_intercalation_pass.hpp)
 
 target_link_libraries(fCore_has fs_parser)
 target_link_libraries(fCore_has antlr4)

@@ -10,21 +10,24 @@
 #include <cstdint>
 #include <vector>
 #include <memory>
+#include <bitset>
+#include <cstring>
 #include "../../include/fCore_isa.hpp"
 #include "variable.hpp"
 
 typedef struct {
     std::string opcode;
     std::vector<std::shared_ptr<variable>> arguments;
+    float intercalated_constant;
 } instruction_t;
 
 
 class instruction{
 
     public:
-        instruction();
+        instruction() = default;
         instruction(int inst_type,std::string opcode, std::vector<std::shared_ptr<variable>> arguments);
-
+        instruction(int inst_type, float constant);
         [[nodiscard]] uint32_t emit() const;
         [[nodiscard]] int instruction_count() const;
         void print();
@@ -38,15 +41,16 @@ private:
         [[nodiscard]] uint32_t emit_independent() const;
         [[nodiscard]] uint32_t emit_register() const;
         [[nodiscard]] uint32_t emit_conversion() const;
+        [[nodiscard]] uint32_t emit_load_const() const;
+        [[nodiscard]] uint32_t emit_intercalated_const() const;
         void print_immediate() const;
         void print_independent() const;
         void print_register() const;
         void print_branch() const;
         void print_conversion() const;
-
+        void print_load_const() const;
         int type;
         instruction_t string_instr;
-        uint32_t instr;
 
 
 };

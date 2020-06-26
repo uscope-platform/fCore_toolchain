@@ -103,6 +103,19 @@ void Tree_visitor::exitIndep_instr(fs_grammarParser::Indep_instrContext *ctx) {
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
+void Tree_visitor::exitLoad_instr(fs_grammarParser::Load_instrContext *ctx) {
+
+    std::shared_ptr<variable> dest = get_variable(ctx->destination()->Identifier()->getText(), false);
+    std::shared_ptr<variable> immediate = get_variable(ctx->FloatingPointLiteral()->getText(), true);
+
+    std::vector<std::shared_ptr<variable>> arguments;
+    arguments.push_back(dest);
+    arguments.push_back(immediate);
+
+    code_element this_inst = code_element(type_instr, instruction(LOAD_CONSTANT_INSTRUCTION,"ldc", arguments));
+    current_element->add_content(std::make_shared<code_element>(this_inst));
+}
+
 void Tree_visitor::enterFor_block(fs_grammarParser::For_blockContext *ctx) {
     for_loop loop;
     parent_elements.push(current_element);

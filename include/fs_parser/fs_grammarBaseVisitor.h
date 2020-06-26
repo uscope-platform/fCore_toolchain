@@ -41,6 +41,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitLoad_instr(fs_grammarParser::Load_instrContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitBranch_instr(fs_grammarParser::Branch_instrContext *ctx) override {
     return visitChildren(ctx);
   }
