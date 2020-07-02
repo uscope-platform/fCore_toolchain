@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <vector>
+#include <unordered_map>
 #include "../code_elements/code_element.hpp"
 
 #define NONE_PASS 0
@@ -37,6 +38,7 @@ public:
     void analyze_tree(const ast_t &subtree, const std::shared_ptr<pass_base>& pass);
     std::vector<ast_t> process_nodes(const ast_t &subtree, const std::shared_ptr<pass_base>& pass);
     ast_t process_leaves(const ast_t &subtree, const std::shared_ptr<pass_base>& pass);
+    std::unordered_map<std::string, std::shared_ptr<pass_base>> analysis_passes;
 private:
     std::vector<std::shared_ptr<pass_base>> passes = {};
 };

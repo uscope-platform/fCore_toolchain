@@ -38,6 +38,55 @@ TEST_CASE( "pseudo_inst_pass") {
     REQUIRE(result == gold_standard);
 }
 
+
+TEST_CASE( "instruction_count_pass") {
+    ast_t AST = std::make_shared<code_element>(type_program_head);
+    std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r3");
+    std::shared_ptr<variable> op_b = std::make_shared<variable>(false, "r4");
+    std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r5");
+    std::shared_ptr<variable> imm = std::make_shared<variable>(true, "100");
+    std::shared_ptr<variable> fltc = std::make_shared<variable>(true, "1.5464", true);
+    std::vector<std::shared_ptr<variable>> args = {};
+    ast_t instr = std::make_shared<code_element>(type_instr, instruction(INDEPENDENT_INSTRUCTION, "nop",args));
+    AST->add_content(instr);
+
+    args = {op_a, op_b};
+    instr = std::make_shared<code_element>(type_instr, instruction(PSEUDO_INSTRUCTION,"mov", args)); // +1
+    AST->add_content(instr);
+
+    args = {dest, imm};
+    instr = std::make_shared<code_element>(type_instr, instruction(IMMEDIATE_INSTRUCTION,"ldr", args)); // +1
+    AST->add_content(instr);
+
+    args = {op_a, op_b,dest};
+    instr = std::make_shared<code_element>(type_instr, instruction(REGISTER_INSTRUCTION,"add", args)); // +1
+    AST->add_content(instr);
+
+    args = {dest};
+    instr = std::make_shared<code_element>(type_instr, instruction(LOAD_CONSTANT_INSTRUCTION,"ldc", args));// +2
+    AST->add_content(instr);
+
+    instr = std::make_shared<code_element>(type_instr, instruction(INTERCALATED_CONSTANT,1.456));// +0
+    AST->add_content(instr);
+
+    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+    parser p1("register_defs.s", map);
+    pass_manager manager = create_pass_manager(map);
+    manager.run_analysis_passes(AST);
+    int count = manager.analysis_passes["instruction_counting"]->get_analysis_result()[0];
+
+
+    REQUIRE( count == 6);
+}
+
+
+
+
+
+
+
+
+
 TEST_CASE( "loop_pass") {
     ast_t AST = std::make_shared<code_element>(type_program_head);
     ast_t loop_pragma = std::make_shared<code_element>(type_pragma, pragma("unroll"));
@@ -146,6 +195,7 @@ TEST_CASE( "loop_pass") {
     }
 
 }
+
 
 
 TEST_CASE( "deep_copy_element") {

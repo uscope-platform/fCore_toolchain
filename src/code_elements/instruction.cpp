@@ -118,9 +118,6 @@ uint32_t instruction::emit_intercalated_const() const {
     return raw_instr;
 }
 
-
-
-
 uint32_t instruction::emit_load_const() const {
     uint32_t raw_instr = 0;
     raw_instr += fcore_opcodes[string_instr.opcode] & 0x1fu;
@@ -163,9 +160,15 @@ void instruction::print_load_const() const {
 int instruction::instruction_count() const {
     switch(type){
         case IMMEDIATE_INSTRUCTION:
+        case PSEUDO_INSTRUCTION:
         case INDEPENDENT_INSTRUCTION:
         case REGISTER_INSTRUCTION:
+        case CONVERSION_INSTRUCTION:
             return 1;
+        case LOAD_CONSTANT_INSTRUCTION:
+            return 2;
+        case INTERCALATED_CONSTANT:
+            return 0;
         case BRANCH_INSTRUCTION:
             return -1;
         default:

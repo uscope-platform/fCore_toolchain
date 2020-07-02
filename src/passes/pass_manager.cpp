@@ -24,11 +24,6 @@ ast_t pass_manager::run_morphing_passes(ast_t AST) {
                 working_tree = process_leaves(working_tree, pass);
                 break;
             }
-            case ANALYSIS_PASS:{
-                analyze_tree(working_tree, pass);
-                std::vector<int> result = pass->get_analysis_result();
-                break;
-            }
             default:
                 break;
         }

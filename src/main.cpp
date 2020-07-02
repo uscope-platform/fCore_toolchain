@@ -71,7 +71,12 @@ int main(int argc, char **argv) {
     pass_manager manager = create_pass_manager(variables_map);
     manager.run_morphing_passes(AST);
 
+    manager.run_analysis_passes(AST);
 
+    int program_lenght = manager.analysis_passes["instruction_counting"]->get_analysis_result()[0];
+    float program_runtime = (float) program_lenght*0.01f;
+    std::cout << "The compiled program is " << program_lenght << "instructions long"<< std::endl;
+    std::cout << "Runtime at the standard frequency of 100 MHz will be of " << program_runtime << " µS"<< std::endl;
     output_writer writer(AST, false);
     if(output_hex){
         writer.write_hex(output_file);

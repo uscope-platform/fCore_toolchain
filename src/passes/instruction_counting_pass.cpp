@@ -7,7 +7,7 @@
 void instruction_counting_pass::analyze_element(ast_t element) {
     if(element->type==type_instr){
         int count = element->inst.instruction_count();
-        if(count==1)
+        if(count>=0)
             instruction_count += count;
         else
             throw std::runtime_error("Instruction counting in brancing code is not supported");
