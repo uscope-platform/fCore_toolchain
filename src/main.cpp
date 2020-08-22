@@ -3,12 +3,8 @@
 #include <vector>
 #include <filesystem>
 
-#include "frontend/file_parser.h"
-#include "code_elements/code_element.hpp"
-#include "backend/output_writer.hpp"
 #include "../include/CLI11.hpp"
-#include "passes/passes.hpp"
-
+#include "fcore_has.hpp"
 
 int main(int argc, char **argv) {
     CLI::App app{"fCore High level assembler"};
@@ -37,53 +33,17 @@ int main(int argc, char **argv) {
     std::string include_dir = "/home/fils/git/fCore_has/";
     std::vector<std::string> include_files = {"include/registers_definitions.s"};
 
-    variable_map tmp_map;
-    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>(tmp_map);
-    // Parse include files
-    ast_t includes_ast;
+    std::ifstream stream;
+    stream.open(input_file);
 
-    for(auto const &item:include_files){
-        std::string name = include_dir;
-        name += item;
-        parser include_parser(name, variables_map);
-        ast_t tmp_ast = include_parser.AST;
-        if(includes_ast != nullptr){
-            includes_ast->append_content(tmp_ast->get_content());
-        } else{
-            includes_ast = tmp_ast;
-        }
-    }
-    // parse target file
-    parser target_parser(input_file, variables_map);
+    fcore_has has_engine(stream,include_files, include_dir);
 
-    ast_t AST = target_parser.AST;
-
-    //merge the two together (right now just concatenate them)
-    AST->prepend_content(includes_ast->get_content());
-
-
-    if(variables_map->n_inputs()+variables_map->n_outputs()+variables_map->n_variables()>15){
-        std::cout << "This version of the fCore HAS does not support variable lifetime tracking, thus the total of";
-        std::cout << "inputs, outputs and variables must be less than 15"<< std::endl;
-    }
-
-
-    pass_manager manager = create_pass_manager(variables_map);
-    manager.run_morphing_passes(AST);
-
-    manager.run_analysis_passes(AST);
-
-    int program_lenght = manager.analysis_passes["instruction_counting"]->get_analysis_result()[0];
-    float program_runtime = (float) program_lenght*0.01f;
-    std::cout << "The compiled program is " << program_lenght << "instructions long"<< std::endl;
-    std::cout << "Runtime at the standard frequency of 100 MHz will be of " << program_runtime << " µS"<< std::endl;
-    output_writer writer(AST, false);
     if(output_hex){
-        writer.write_hex(output_file);
+        has_engine.write_hexfile(output_file);
     }
 
     if(output_mem){
-        writer.write_mem(output_file);
+        has_engine.write_verilog_memfile(output_file);
     }
 
     return 0;

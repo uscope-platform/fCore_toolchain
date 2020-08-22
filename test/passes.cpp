@@ -7,7 +7,7 @@
 #include "../src/code_elements/instruction.h"
 #include "../src/code_elements/code_element.hpp"
 #include "../src/passes/passes.hpp"
-#include "../src/backend/output_writer.hpp"
+#include "../src/backend/output_generator.hpp"
 #include "../src/frontend/file_parser.h"
 
 
@@ -27,12 +27,14 @@ TEST_CASE( "pseudo_inst_pass") {
     AST->add_content(instr);
 
     std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
-    parser p1("register_defs.s", map);
+    std::ifstream stream;
+    stream.open("register_defs.s");
+    parser p1(stream, map);
 
     pass_manager manager = create_pass_manager(map);
     manager.run_morphing_passes(AST);
 
-    output_writer writer(AST, false);
+    output_generator writer(AST, false);
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {0x8061};
     REQUIRE(result == gold_standard);
@@ -70,7 +72,9 @@ TEST_CASE( "instruction_count_pass") {
     AST->add_content(instr);
 
     std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
-    parser p1("register_defs.s", map);
+    std::ifstream stream;
+    stream.open("register_defs.s");
+    parser p1(stream, map);
     pass_manager manager = create_pass_manager(map);
     manager.run_analysis_passes(AST);
     int count = manager.analysis_passes["instruction_counting"]->get_analysis_result()[0];
@@ -109,11 +113,14 @@ TEST_CASE( "loop_pass") {
         AST->add_content(level_1);
 
         std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
-        parser p1("register_defs.s", map);
+        std::ifstream stream;
+        stream.open("register_defs.s");
+        parser p1(stream, map);
+
         pass_manager manager = create_pass_manager(map);
         manager.run_morphing_passes(AST);
 
-        output_writer writer(AST,false);
+        output_generator writer(AST, false);
         std::vector<uint32_t> result = writer.get_raw_program();
         std::vector<uint32_t> gold_standard = {0, 0, 0};
         REQUIRE(result == gold_standard);
@@ -134,11 +141,13 @@ TEST_CASE( "loop_pass") {
         AST->add_content(level_1);
 
         std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
-        parser p1("register_defs.s", map);
+        std::ifstream stream;
+        stream.open("register_defs.s");
+        parser p1(stream, map);
         pass_manager manager = create_pass_manager(map);
         manager.run_morphing_passes(AST);
 
-        output_writer writer(AST,false);
+        output_generator writer(AST, false);
         std::vector<uint32_t> result = writer.get_raw_program();
         std::vector<uint32_t> gold_standard = {0, 0};
         REQUIRE(result == gold_standard);
@@ -159,11 +168,13 @@ TEST_CASE( "loop_pass") {
         AST->add_content(level_1);
 
         std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
-        parser p1("register_defs.s", map);
+        std::ifstream stream;
+        stream.open("register_defs.s");
+        parser p1(stream, map);
         pass_manager manager = create_pass_manager(map);
         manager.run_morphing_passes(AST);
 
-        output_writer writer(AST,false);
+        output_generator writer(AST, false);
         std::vector<uint32_t> result = writer.get_raw_program();
         std::vector<uint32_t> gold_standard = {0, 0};
         REQUIRE(result == gold_standard);
@@ -184,11 +195,13 @@ TEST_CASE( "loop_pass") {
         AST->add_content(level_1);
 
         std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
-        parser p1("register_defs.s", map);
+        std::ifstream stream;
+        stream.open("register_defs.s");
+        parser p1(stream, map);
         pass_manager manager = create_pass_manager(map);
         manager.run_morphing_passes(AST);
 
-        output_writer writer(AST,false);
+        output_generator writer(AST, false);
         std::vector<uint32_t> result = writer.get_raw_program();
         std::vector<uint32_t> gold_standard = {0,0,0};
         REQUIRE(result == gold_standard);

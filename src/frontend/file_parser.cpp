@@ -7,16 +7,12 @@
 using namespace antlr4;
 using namespace fs_parser;
 
-parser::parser(const std::string &filename) {
+parser::parser(std::istream &stream) {
     variable_map varmap;
 
-    std::ifstream stream;
-    stream.open(filename);
     construct_parser(stream, std::make_shared<variable_map>(varmap));
 }
-parser::parser(const std::string &filename, std::shared_ptr<variable_map> existing_varmap) {
-    std::ifstream stream;
-    stream.open(filename);
+parser::parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap) {
 
     construct_parser(stream, std::move(existing_varmap));
 }

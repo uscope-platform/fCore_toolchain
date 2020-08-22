@@ -1,7 +1,7 @@
 
 add_executable(test_target test.cpp
         Instruction_classes.cpp ../src/code_elements/instruction.cpp ../src/frontend/file_parser.cpp
-        ../src/frontend/Tree_visitor.cpp ../src/backend/output_writer.cpp ../src/backend/output_writer.hpp
+        ../src/frontend/Tree_visitor.cpp ../src/backend/output_generator.cpp ../src/backend/output_generator.hpp
         ../src/code_elements/code_element.cpp ../src/passes/pass_manager.cpp ../src/passes/pass_manager.hpp
         ../src/passes/loop_implementation_pass.cpp ../src/code_elements/for_loop.cpp
         ../src/code_elements/variable.cpp ../src/code_elements/variable.hpp
@@ -10,7 +10,8 @@ add_executable(test_target test.cpp
         ../src/passes/variable_lifetime_mapping.cpp ../src/passes/variable_lifetime_mapping.hpp
         ../src/passes/load_intercalation_pass.cpp ../src/passes/load_intercalation_pass.hpp
         ../src/passes/instruction_counting_pass.cpp ../src/frontend/variable_map.cpp
-        ../src/frontend/variable_map.hpp ../src/frontend/register_map.cpp ../src/frontend/register_map.hpp)
+        ../src/frontend/variable_map.hpp ../src/frontend/register_map.cpp ../src/frontend/register_map.hpp
+        ../src/fcore_has.cpp ../src/fcore_has.hpp)
 
 target_link_libraries(test_target fs_parser)
 include(CTest)

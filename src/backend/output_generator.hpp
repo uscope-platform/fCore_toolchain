@@ -2,23 +2,25 @@
 // Created by fils on 30/04/20.
 //
 
-#ifndef FCORE_HAS_OUTPUT_WRITER_HPP
-#define FCORE_HAS_OUTPUT_WRITER_HPP
+#ifndef FCORE_HAS_OUTPUT_GENERATOR_HPP
+#define FCORE_HAS_OUTPUT_GENERATOR_HPP
 
 #include <string>
 #include <vector>
 #include <fstream>
 #include <memory>
 #include "../code_elements/code_element.hpp"
-class output_writer {
+class output_generator {
 
 public:
-    explicit output_writer( const ast_t &AST, bool debug_print);
+    explicit output_generator(const ast_t &AST, bool debug_print);
     void emit_program(ast_t &sub_program, bool debug_print);
     std::vector<uint32_t> get_raw_program();
     int get_program_size();
-    void write_hex(const std::string& filename);
-    void write_mem(const std::string& filename);
+    void write_hex_file(const std::string& filename);
+    void write_mem_file(const std::string& filename);
+    std::vector<uint32_t> generate_hex(bool endian_swap);
+    std::vector<std::string> generate_mem();
 private:
     ast_t program;
     std::vector<uint32_t> raw_program;
@@ -39,4 +41,4 @@ private:
 };
 
 
-#endif //FCORE_HAS_OUTPUT_WRITER_HPP
+#endif //FCORE_HAS_OUTPUT_GENERATOR_HPP

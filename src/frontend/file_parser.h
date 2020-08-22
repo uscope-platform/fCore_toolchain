@@ -20,8 +20,8 @@
 
 class parser{
     public:
-    explicit parser(const std::string& filename);
-    parser(const std::string& filename, std::shared_ptr<variable_map> new_varmap);
+    explicit parser(std::istream &stream);
+    parser(std::istream &stream, std::shared_ptr<variable_map> new_varmap);
     void construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap);
     ast_t AST;
     varmap_t var_map;
