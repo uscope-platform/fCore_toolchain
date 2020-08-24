@@ -1,5 +1,4 @@
-
-add_library(fCore_lib code_elements/instruction.cpp code_elements/instruction.h
+set(FCORE_LIB_SRCS code_elements/instruction.cpp code_elements/instruction.h
         frontend/Tree_visitor.cpp frontend/Tree_visitor.hpp ../include/fCore_isa.hpp
         frontend/file_parser.cpp frontend/file_parser.h backend/output_generator.cpp backend/output_generator.hpp
         code_elements/code_element.cpp code_elements/code_element.hpp passes/pass_manager.cpp passes/pass_manager.hpp
@@ -11,6 +10,12 @@ add_library(fCore_lib code_elements/instruction.cpp code_elements/instruction.h
         passes/variable_lifetime_mapping.cpp passes/variable_lifetime_mapping.hpp
         frontend/register_map.cpp frontend/register_map.hpp passes/load_intercalation_pass.cpp
         passes/load_intercalation_pass.hpp fcore_has.cpp fcore_has.hpp frontend/ErrorHandling.cpp frontend/ErrorHandling.hpp)
+
+add_library(fCore_lib ${FCORE_LIB_SRCS})
+
+
+add_library(fCore_lib_so SHARED ${FCORE_LIB_SRCS})
+set_property(TARGET fCore_lib_so PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 target_link_libraries(fCore_lib fs_parser)
 target_link_libraries(fCore_lib antlr4)
