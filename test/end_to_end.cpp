@@ -125,3 +125,18 @@ TEST_CASE( "load constant file") {
     std::vector<uint32_t> gold_standard = {0xc887, 0x190a7, 0x86, 0x4048f5c3, 0xc};
     REQUIRE( result == gold_standard);
 }
+
+TEST_CASE( "Embeddable C wrapper") {
+    std::string input_file = "test_ldc.s";
+    int hex_size;
+    uint32_t *hex_result = (uint32_t*) malloc(4096*sizeof(uint32_t));
+    int res_code = fCore_has_embeddable(input_file.c_str(),hex_result, &hex_size);
+
+    std::vector<uint32_t> result;
+    for(int i = 0; i<hex_size;i++){
+        result.push_back(hex_result[i]);
+    }
+    free(hex_result);
+    std::vector<uint32_t> gold_standard = {0xc887, 0x190a7, 0x86, 0x4048f5c3, 0xc};
+    REQUIRE( result == gold_standard);
+}

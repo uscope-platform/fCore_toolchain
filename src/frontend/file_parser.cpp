@@ -25,12 +25,12 @@ void parser::construct_parser(std::istream &stream, std::shared_ptr<variable_map
     CommonTokenStream tokens(&lexer);
 
     tokens.fill();
-
     fs_grammarParser parser(&tokens);
-
+    ErrorHandling handler;
+    parser.addErrorListener(&handler);
     tree::ParseTree *Tree = parser.program();
     Tree_visitor visitor(std::move(existing_varmap));
     tree::ParseTreeWalker::DEFAULT.walk(&visitor, Tree);
     AST = visitor.get_program();
-}
 
+}

@@ -10,7 +10,7 @@ add_library(fCore_lib code_elements/instruction.cpp code_elements/instruction.h
         passes/register_allocation_pass.hpp frontend/variable_map.cpp frontend/variable_map.hpp
         passes/variable_lifetime_mapping.cpp passes/variable_lifetime_mapping.hpp
         frontend/register_map.cpp frontend/register_map.hpp passes/load_intercalation_pass.cpp
-        passes/load_intercalation_pass.hpp fcore_has.cpp fcore_has.hpp)
+        passes/load_intercalation_pass.hpp fcore_has.cpp fcore_has.hpp frontend/ErrorHandling.cpp frontend/ErrorHandling.hpp)
 
 target_link_libraries(fCore_lib fs_parser)
 target_link_libraries(fCore_lib antlr4)

@@ -13,9 +13,21 @@
 #include "backend/output_generator.hpp"
 #include "passes/passes.hpp"
 
+
+#define REGISTER_DEFINITION_STRING "const r0\nlet r1\nlet r2\nlet r3\nlet r4\nlet r5\nlet r6\nlet r7\nlet r8\nlet r9\nlet r10\nlet r11\nlet r12\nlet r13\nlet r14\nlet r15"
+
+extern "C"{
+    int fCore_has_embeddable(const char * filename, uint32_t *hex, int *hex_size);
+};
+
 class fcore_has {
 public:
-    fcore_has(std::istream &input,  const std::vector<std::string>& include_files, const std::string& include_directory);
+    fcore_has(std::istream &input,   std::vector<std::istream*> &includes);
+    fcore_has(std::istream &input,   const std::vector<std::string>& include_files,  const std::string& include_directory);
+    void construct_assembler(std::istream &input, std::vector<std::istream*> &includes);
+
+    static std::vector<std::istream*> process_includes(const std::vector<std::string>& include_files, const std::string& include_directory);
+
     std::vector<uint32_t> get_hexfile(bool endian_swap);
     std::vector<std::string> get_verilog_memfile();
     void write_hexfile(const std::string& ouput_file);

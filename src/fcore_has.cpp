@@ -4,29 +4,64 @@
 
 #include "fcore_has.hpp"
 
-fcore_has::fcore_has(std::istream &input,  const std::vector<std::string>& include_files, const std::string& include_directory) {
+
+
+
+
+int fCore_has_embeddable(const char * path, uint32_t *hex, int *hex_size){
+
+    std::ifstream stream;
+    stream.open(path);
+    std::vector<std::string> include_files;
+    auto *iss = new std::istringstream(REGISTER_DEFINITION_STRING);
+    std::vector<std::istream*> includes = {iss};
+    fcore_has assembler(stream,includes);
+    std::vector<uint32_t> data = assembler.get_hexfile(false);
+    int int_size = assembler.get_program_size();
+    memcpy(hex_size, &int_size, sizeof(int));
+    for(int i = 0; i < assembler.get_program_size(); i++){
+        hex[i] = data[i];
+    }
+
+    return 0;
+}
+
+fcore_has::fcore_has(std::istream &input, std::vector<std::istream *> &includes) {
+    construct_assembler(input, includes);
+}
+
+fcore_has::fcore_has(std::istream &input, const std::vector<std::string>& include_files, const std::string& include_directory) {
+
+    std::vector<std::istream*> includes = process_includes(include_files, include_directory);
+
+    construct_assembler(input, includes);
+}
+
+void fcore_has::construct_assembler(std::istream &input, std::vector<std::istream*> &includes) {
     variable_map tmp_map;
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>(tmp_map);
     // Parse include files
     ast_t includes_ast;
-    std::ifstream stream;
-    for(auto const &item:include_files){
-        std::string name = include_directory;
-        name += item;
-        stream.open(name);
-        parser include_parser(stream, variables_map);
+
+    for(auto &item:includes){
+        parser include_parser(*item, variables_map);
         ast_t tmp_ast = include_parser.AST;
         if(includes_ast != nullptr){
             includes_ast->append_content(tmp_ast->get_content());
         } else{
             includes_ast = tmp_ast;
         }
+        delete item;
     }
 
+    std::string error;
     // parse target file
-    parser target_parser(input, variables_map);
-
-    AST = target_parser.AST;
+    try{
+        parser target_parser(input, variables_map);
+        AST = target_parser.AST;
+    } catch (const std::exception &e) {
+        error = e.what();
+    }
 
     //merge the two together (right now just concatenate them)
     AST->prepend_content(includes_ast->get_content());
@@ -37,8 +72,9 @@ fcore_has::fcore_has(std::istream &input,  const std::vector<std::string>& inclu
 
     //manager.run_analysis_passes(AST);
     writer = new output_generator(AST, false);
-
 }
+
+
 
 std::vector<uint32_t> fcore_has::get_hexfile(bool endian_swap) {
     return writer->generate_hex(endian_swap);
@@ -72,4 +108,18 @@ void fcore_has::write_verilog_memfile(const std::string& ouput_file) {
 
 uint32_t fcore_has::get_program_size() {
     return writer->get_program_size();
+}
+
+std::vector<std::istream*>
+fcore_has::process_includes(const std::vector<std::string> &include_files, const std::string &include_directory) {
+    std::vector<std::istream*> input_streams;
+
+    for(auto const &item:include_files){
+        std::string name = include_directory;
+        name += item;
+        auto *ifstr = new std::ifstream(name);
+        input_streams.push_back(ifstr);
+    }
+
+    return input_streams;
 }
