@@ -28,8 +28,8 @@
 #include "ErrorHandling.hpp"
 
 #include "antlr4-runtime.h"
-#include "../../include/fs_parser/fs_grammarParser.h"
-#include "../../include/fs_parser/fs_grammarLexer.h"
+#include "fcore_has/fs_parser/fs_grammarParser.h"
+#include "fcore_has/fs_parser/fs_grammarLexer.h"
 
 
 class parser{

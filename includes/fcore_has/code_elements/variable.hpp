@@ -21,7 +21,7 @@
 #include <cstdint>
 #include <string>
 #include <utility>
-#include "../../include/fCore_isa.hpp"
+#include "fcore_has/fCore_isa.hpp"
 
 #define TYPE_INPUT 0
 #define TYPE_OUTPUT 1

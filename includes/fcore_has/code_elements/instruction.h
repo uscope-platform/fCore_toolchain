@@ -25,7 +25,7 @@
 #include <memory>
 #include <bitset>
 #include <cstring>
-#include "../../include/fCore_isa.hpp"
+#include "fcore_has/fCore_isa.hpp"
 #include "variable.hpp"
 
 typedef struct {

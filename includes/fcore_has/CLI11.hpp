@@ -141,7 +141,7 @@
 #endif
 
 #if CLI11_BOOST_OPTIONAL
-#include <boost/version.hpp>
+#includes <boost/version.hpp>
 #if BOOST_VERSION < 106100
 #error "This boost::optional version is not supported, use 1.61 or better"
 #endif
@@ -151,11 +151,11 @@
 #include <optional>
 #endif
 #if CLI11_EXPERIMENTAL_OPTIONAL
-#include <experimental/optional>
+#includes <experimental/optional>
 #endif
 #if CLI11_BOOST_OPTIONAL
-#include <boost/optional.hpp>
-#include <boost/optional/optional_io.hpp>
+#includes <boost/optional.hpp>
+#includes <boost/optional/optional_io.hpp>
 #endif
 
 
@@ -913,7 +913,7 @@ namespace CLI {
 /// A copy of enable_if_t from C++14, compatible with C++11.
 ///
 /// We could check to see if C++14 is being used, but it does not hurt to redefine this
-/// (even Google does this: https://github.com/google/skia/blob/master/include/private/SkTLogic.h)
+/// (even Google does this: https://github.com/google/skia/blob/master/includes/private/SkTLogic.h)
 /// It is not in the std namespace anyway, so no harm done.
     template <bool B, class T = void> using enable_if_t = typename std::enable_if<B, T>::type;
 
@@ -3256,7 +3256,7 @@ namespace CLI {
         ///@{
 
         /// \brief Gets a comma separated list of names.
-        /// Will include / prefer the positional name if positional is true.
+        /// Will includes / prefer the positional name if positional is true.
         /// If all_options is false, pick just the most descriptive name to show.
         /// Use `get_name(true)` to get the positional name (replaces `get_pname`)
         std::string get_name(bool positional = false, //<[input] Show the positional name
@@ -3267,7 +3267,7 @@ namespace CLI {
 
                 std::vector<std::string> name_list;
 
-                /// The all list will never include a positional unless asked or that's the only name.
+                /// The all list will never includes a positional unless asked or that's the only name.
                 if((positional && pname_.length()) || (snames_.empty() && lnames_.empty()))
                     name_list.push_back(pname_);
                 if((get_items_expected() == 0) && (!fnames_.empty())) {
@@ -5142,7 +5142,7 @@ namespace CLI {
         }
 
         /// Produce a string that could be read in as a config of the current values of the App. Set default_also to
-        /// include default arguments. Prefix will add a string to the beginning of each option.
+        /// includes default arguments. Prefix will add a string to the beginning of each option.
         std::string config_to_str(bool default_also = false, bool write_description = false) const {
             return config_formatter_->to_config(this, default_also, write_description, "");
         }

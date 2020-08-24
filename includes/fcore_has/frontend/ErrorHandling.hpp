@@ -18,7 +18,7 @@
 #ifndef FCORE_HAS_ERRORHANDLING_HPP
 #define FCORE_HAS_ERRORHANDLING_HPP
 
-#include "../../include/antlr4-runtime/ANTLRErrorListener.h"
+#include "ANTLRErrorListener.h"
 #include "antlr4-runtime.h"
 
 class ErrorHandling : public  antlr4::ANTLRErrorListener {
