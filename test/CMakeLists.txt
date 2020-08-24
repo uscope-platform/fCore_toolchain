@@ -1,18 +1,18 @@
 
 add_executable(test_target test.cpp
         Instruction_classes.cpp ../src/code_elements/instruction.cpp ../src/frontend/file_parser.cpp
-        ../src/frontend/Tree_visitor.cpp ../src/backend/output_generator.cpp ../src/backend/output_generator.hpp
-        ../src/code_elements/code_element.cpp ../src/passes/pass_manager.cpp ../src/passes/pass_manager.hpp
+        ../src/frontend/Tree_visitor.cpp ../src/backend/output_generator.cpp ../includes/fcore_has/backend/output_generator.hpp
+        ../src/code_elements/code_element.cpp ../src/passes/pass_manager.cpp ../includes/fcore_has/passes/pass_manager.hpp
         ../src/passes/loop_implementation_pass.cpp ../src/code_elements/for_loop.cpp
-        ../src/code_elements/variable.cpp ../src/code_elements/variable.hpp
+        ../src/code_elements/variable.cpp ../includes/fcore_has/code_elements/variable.hpp
         ../src/passes/pseudo_instructions_pass.cpp passes.cpp end_to_end.cpp
-        ../src/passes/register_allocation_pass.cpp ../src/passes/register_allocation_pass.hpp
-        ../src/passes/variable_lifetime_mapping.cpp ../src/passes/variable_lifetime_mapping.hpp
-        ../src/passes/load_intercalation_pass.cpp ../src/passes/load_intercalation_pass.hpp
+        ../src/passes/register_allocation_pass.cpp ../includes/fcore_has/passes/register_allocation_pass.hpp
+        ../src/passes/variable_lifetime_mapping.cpp ../includes/fcore_has/passes/variable_lifetime_mapping.hpp
+        ../src/passes/load_intercalation_pass.cpp ../includes/fcore_has/passes/load_intercalation_pass.hpp
         ../src/passes/instruction_counting_pass.cpp ../src/frontend/variable_map.cpp
-        ../src/frontend/variable_map.hpp ../src/frontend/register_map.cpp ../src/frontend/register_map.hpp
-        ../src/fcore_has.cpp ../src/fcore_has.hpp
-        ../src/frontend/ErrorHandling.cpp ../src/frontend/ErrorHandling.hpp)
+        ../includes/fcore_has/frontend/variable_map.hpp ../src/frontend/register_map.cpp ../includes/fcore_has/frontend/register_map.hpp
+        ../src/fcore_has.cpp ../includes/fcore_has/fcore_has.hpp
+        ../src/frontend/ErrorHandling.cpp ../includes/fcore_has/frontend/ErrorHandling.hpp)
 
 target_link_libraries(test_target fs_parser)
 include(CTest)

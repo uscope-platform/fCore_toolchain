@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "fcore_has.hpp"
+#include "fcore_has/fcore_has.hpp"
 
 
 
@@ -53,7 +53,7 @@ fcore_has::fcore_has(std::istream &input, const std::vector<std::string>& includ
 void fcore_has::construct_assembler(std::istream &input, std::vector<std::istream*> &includes) {
     variable_map tmp_map;
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>(tmp_map);
-    // Parse include files
+    // Parse includes files
     ast_t includes_ast;
 
     for(auto &item:includes){

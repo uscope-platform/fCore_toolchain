@@ -16,12 +16,12 @@
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "includes/catch.hpp"
-#include "../src/code_elements/for_loop.hpp"
-#include "../src/code_elements/instruction.h"
-#include "../src/code_elements/code_element.hpp"
-#include "../src/passes/passes.hpp"
-#include "../src/backend/output_generator.hpp"
-#include "../src/frontend/file_parser.h"
+#include "fcore_has/code_elements/for_loop.hpp"
+#include "fcore_has/code_elements/instruction.h"
+#include "fcore_has/code_elements/code_element.hpp"
+#include "fcore_has/passes/passes.hpp"
+#include "fcore_has/backend/output_generator.hpp"
+#include "fcore_has/frontend/file_parser.h"
 
 
 TEST_CASE( "pseudo_inst_pass") {

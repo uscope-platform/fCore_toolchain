@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "instruction.h"
-#include "../../include/fCore_isa.hpp"
+#include "fcore_has/code_elements/instruction.h"
+#include "fcore_has/fCore_isa.hpp"
 #include <utility>
 
 

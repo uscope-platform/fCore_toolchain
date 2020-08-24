@@ -20,8 +20,8 @@
 #include <vector>
 #include <filesystem>
 
-#include "../include/CLI11.hpp"
-#include "fcore_has.hpp"
+#include "fcore_has/CLI11.hpp"
+#include "fcore_has/fcore_has.hpp"
 
 int main(int argc, char **argv) {
     CLI::App app{"fCore High level assembler"};
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
     }
 
     std::string include_dir = "/home/fils/git/fCore_has/";
-    std::vector<std::string> include_files = {"include/registers_definitions.s"};
+    std::vector<std::string> include_files = {"includes/registers_definitions.s"};
 
     std::ifstream stream;
     stream.open(input_file);

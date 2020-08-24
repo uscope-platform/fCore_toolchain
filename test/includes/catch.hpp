@@ -67,7 +67,7 @@
 // start catch_platform.h
 
 #ifdef __APPLE__
-# include <TargetConditionals.h>
+# includes <TargetConditionals.h>
 # if TARGET_OS_OSX == 1
 #  define CATCH_PLATFORM_MAC
 # elif TARGET_OS_IPHONE == 1
@@ -338,7 +338,7 @@ namespace Catch {
   #    if defined(__clang__) && (__clang_major__ < 8)
          // work around clang bug with libstdc++ https://bugs.llvm.org/show_bug.cgi?id=31852
          // fix should be in clang 8, workaround in libstdc++ 8.2
-  #      include <ciso646>
+  #      includes <ciso646>
   #      if defined(__GLIBCXX__) && defined(_GLIBCXX_RELEASE) && (_GLIBCXX_RELEASE < 9)
   #        define CATCH_CONFIG_NO_CPP17_VARIANT
   #      else
@@ -3715,7 +3715,7 @@ namespace Matchers {
             UnorderedEqualsMatcher(std::vector<T, AllocComp> const& target) : m_target(target) {}
             bool match(std::vector<T, AllocMatch> const& vec) const override {
                 // Note: This is a reimplementation of std::is_permutation,
-                //       because I don't want to include <algorithm> inside the common path
+                //       because I don't want to includes <algorithm> inside the common path
                 if (m_target.size() != vec.size()) {
                     return false;
                 }
@@ -6414,7 +6414,7 @@ namespace Catch {
 // start catch_benchmarking_all.hpp
 
 // A proxy header that includes all of the benchmarking headers to allow
-// concise include of the benchmarking features. You should prefer the
+// concise includes of the benchmarking features. You should prefer the
 // individual includes in standard use.
 
 // start catch_benchmark.hpp
@@ -6464,7 +6464,7 @@ namespace Catch {
 
 
 #if defined(_MSC_VER)
-#   include <atomic> // atomic_thread_fence
+#   includes <atomic> // atomic_thread_fence
 #endif
 
 namespace Catch {
@@ -9806,7 +9806,7 @@ namespace Catch {
                 ( "list all/matching tags" )
             | Opt( config.showSuccessfulTests )
                 ["-s"]["--success"]
-                ( "include successful tests in output" )
+                ( "includes successful tests in output" )
             | Opt( config.shouldDebugBreak )
                 ["-b"]["--break"]
                 ( "break into debugger on failure" )
@@ -10348,16 +10348,16 @@ namespace Catch {
 
 #if defined(CATCH_PLATFORM_MAC) || defined(CATCH_PLATFORM_IPHONE)
 
-#  include <cassert>
-#  include <sys/types.h>
-#  include <unistd.h>
-#  include <cstddef>
-#  include <ostream>
+#  includes <cassert>
+#  includes <sys/types.h>
+#  includes <unistd.h>
+#  includes <cstddef>
+#  includes <ostream>
 
 #ifdef __apple_build_version__
     // These headers will only compile with AppleClang (XCode)
     // For other compilers (Clang, GCC, ... ) we need to exclude them
-#  include <sys/sysctl.h>
+#  includes <sys/sysctl.h>
 #endif
 
     namespace Catch {

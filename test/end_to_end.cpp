@@ -18,11 +18,11 @@
 #include <fstream>
 
 #include "includes/catch.hpp"
-#include "../src/code_elements/code_element.hpp"
-#include "../src/backend/output_generator.hpp"
-#include "../src/passes/passes.hpp"
+#include "fcore_has/code_elements/code_element.hpp"
+#include "fcore_has/backend/output_generator.hpp"
+#include "fcore_has/passes/passes.hpp"
 
-#include "../src/fcore_has.hpp"
+#include "fcore_has/fcore_has.hpp"
 
 static inline uint32_t Reverse32(uint32_t value)
 {

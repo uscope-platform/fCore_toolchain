@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "register_map.hpp"
+#include "fcore_has/frontend/register_map.hpp"
 
 
 register_map::register_map() {

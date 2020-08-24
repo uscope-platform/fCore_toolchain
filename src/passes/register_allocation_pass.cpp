@@ -14,7 +14,7 @@
 
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
-#include "register_allocation_pass.hpp"
+#include "fcore_has/passes/register_allocation_pass.hpp"
 
 #include <utility>
 

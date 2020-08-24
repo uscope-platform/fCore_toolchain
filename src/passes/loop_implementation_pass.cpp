@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "loop_implementation_pass.hpp"
+#include "fcore_has/passes/loop_implementation_pass.hpp"
 
 std::vector<ast_t> loop_implementation_pass::process_node(ast_t element) {
     bool unroll_mode = false;
