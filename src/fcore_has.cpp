@@ -20,14 +20,32 @@
 
 
 
+void fCore_has_embeddable_s(std::string content, uint32_t *hex, int *hex_size){
+    std::string ret_val = "";
+    std::istringstream stream(content);
+    std::vector<std::string> include_files;
+    auto *iss = new std::istringstream(REGISTER_DEFINITION_STRING);
+    std::vector<std::istream*> includes = {iss};
 
-int fCore_has_embeddable(const char * path, uint32_t *hex, int *hex_size){
+    fcore_has assembler(stream,includes);
+    std::vector<uint32_t> data = assembler.get_hexfile(false);
+    int int_size = assembler.get_program_size();
+    memcpy(hex_size, &int_size, sizeof(int));
+    for(int i = 0; i < assembler.get_program_size(); i++){
+        hex[i] = data[i];
+    }
+}
 
+
+void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size){
+    std::string ret_val = "";
     std::ifstream stream;
     stream.open(path);
     std::vector<std::string> include_files;
     auto *iss = new std::istringstream(REGISTER_DEFINITION_STRING);
     std::vector<std::istream*> includes = {iss};
+    // parse target file
+
     fcore_has assembler(stream,includes);
     std::vector<uint32_t> data = assembler.get_hexfile(false);
     int int_size = assembler.get_program_size();
@@ -36,7 +54,6 @@ int fCore_has_embeddable(const char * path, uint32_t *hex, int *hex_size){
         hex[i] = data[i];
     }
 
-    return 0;
 }
 
 fcore_has::fcore_has(std::istream &input, std::vector<std::istream *> &includes) {
@@ -67,14 +84,10 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
         delete item;
     }
 
-    std::string error;
-    // parse target file
-    try{
-        parser target_parser(input, variables_map);
-        AST = target_parser.AST;
-    } catch (const std::exception &e) {
-        error = e.what();
-    }
+
+    parser target_parser(input, variables_map);
+    AST = target_parser.AST;
+
 
     //merge the two together (right now just concatenate them)
     AST->prepend_content(includes_ast->get_content());
@@ -135,4 +148,8 @@ fcore_has::process_includes(const std::vector<std::string> &include_files, const
     }
 
     return input_streams;
+}
+
+std::string fcore_has::get_errors() {
+    return  error_code;
 }
