@@ -31,3 +31,9 @@ To build the software from sources run the following steps:
 ```
     
  The resulting binary will be found in the build/src directory
+
+## Dependencies
+
+The following libraries are required to build and run the software:
+- antlr-cpp-runtime 4.8
+- catch2 (tests)
