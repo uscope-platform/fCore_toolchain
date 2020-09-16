@@ -21,6 +21,9 @@
 #include <string>
 #include <vector>
 
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
 #include "fcore_has/frontend/variable_map.hpp"
 #include "fcore_has/frontend/file_parser.h"
 #include "fcore_has/backend/output_generator.hpp"
@@ -30,7 +33,7 @@
 #define REGISTER_DEFINITION_STRING "const r0\nlet r1\nlet r2\nlet r3\nlet r4\nlet r5\nlet r6\nlet r7\nlet r8\nlet r9\nlet r10\nlet r11\nlet r12\nlet r13\nlet r14\nlet r15"
 
 extern "C"{
-void fCore_has_embeddable_s(std::string content, uint32_t *hex, int *hex_size);
+std::tuple<std::vector<uint32_t>, int> fCore_has_embeddable_s(std::string content);
 void fCore_has_embeddable_f(const char * filename, uint32_t *hex, int *hex_size);
 };
 

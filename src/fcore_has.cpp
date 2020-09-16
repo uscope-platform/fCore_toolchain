@@ -17,10 +17,12 @@
 
 #include "fcore_has/fcore_has.hpp"
 
+using namespace pybind11;
 
-
-
-void fCore_has_embeddable_s(std::string content, uint32_t *hex, int *hex_size){
+// Pybind does treat pointers to integers as python ints, and not arrays
+// a smart pointer it doing that
+std::tuple<std::vector<uint32_t>, int> fCore_has_embeddable_s(std::string content){
+    std::cout<<"TEST FUNCTION CALL BINDING"<<std::endl;
     std::string ret_val = "";
     std::istringstream stream(content);
     std::vector<std::string> include_files;
@@ -28,14 +30,16 @@ void fCore_has_embeddable_s(std::string content, uint32_t *hex, int *hex_size){
     std::vector<std::istream*> includes = {iss};
 
     fcore_has assembler(stream,includes);
-    std::vector<uint32_t> data = assembler.get_hexfile(false);
+    std::vector<uint32_t> hex = assembler.get_hexfile(false);
     int int_size = assembler.get_program_size();
-    memcpy(hex_size, &int_size, sizeof(int));
-    for(int i = 0; i < assembler.get_program_size(); i++){
-        hex[i] = data[i];
-    }
+    std::cout<<int_size<<std::endl;
+    std::tuple<std::vector<uint32_t>, int> ret(hex, int_size);
+    return ret;
 }
 
+PYBIND11_MODULE(fCore_has_py, m) {
+    m.def("fCore_has_embeddable_s", fCore_has_embeddable_s, "Compile an fcore program to hex");
+}
 
 void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size){
     std::string ret_val = "";
