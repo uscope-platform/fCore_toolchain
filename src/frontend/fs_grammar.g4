@@ -26,7 +26,7 @@ instruction : reg_instr | imm_instr | indep_instr | pseudo_instr | branch_instr 
 reg_instr : reg_opcode  operand ',' operand ',' destination;
 imm_instr : imm_opcode destination ',' immediate;
 load_instr: 'ldc' destination ',' FloatingPointLiteral;
-branch_instr : branch_opcode operand ',' operand ',' immediate;
+branch_instr : branch_opcode operand ',' operand ',' operand;
 conv_instr : conv_opcode operand ',' operand;
 indep_instr : 'stop' | 'nop';
 
@@ -77,7 +77,7 @@ fragment HexDigit
    : ('0' .. '9' | 'a' .. 'f' | 'A' .. 'F')
    ;
 FloatingPointLiteral
-   : ('0' .. '9') + '.' ('0' .. '9')* Exponent? | '.' ('0' .. '9') + Exponent? | ('0' .. '9') + Exponent
+   : '-'? ('0' .. '9') + '.' ('0' .. '9')* Exponent? | '.' ('0' .. '9') + Exponent? | ('0' .. '9') + Exponent
    ;
 fragment Exponent
    : ('e' | 'E') ('+' | '-')? ('0' .. '9') +

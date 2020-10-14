@@ -79,11 +79,11 @@ void Tree_visitor::exitBranch_instr(fs_grammarParser::Branch_instrContext *ctx) 
     op_a->set_used(true);
     std::shared_ptr<variable> op_b = get_variable(ctx->operand(1)->getText(), false);
     op_b->set_used(true);
-    std::shared_ptr<variable> dest = get_variable(ctx->immediate()->Hexnum()->getText(), true);
+    std::shared_ptr<variable> dest = get_variable(ctx->operand(2)->getText(), false);
 
     std::vector<std::shared_ptr<variable>> arguments = {op_a, op_b, dest};
 
-    code_element this_inst = code_element(type_instr, instruction(BRANCH_INSTRUCTION, opcode,arguments));
+    code_element this_inst = code_element(type_instr, instruction(REGISTER_INSTRUCTION, opcode,arguments));
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 

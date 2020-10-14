@@ -1,4 +1,6 @@
 
+find_package(Catch2 REQUIRED PATH)
+
 add_executable(test_target test.cpp
         Instruction_classes.cpp ../src/code_elements/instruction.cpp ../src/frontend/file_parser.cpp
         ../src/frontend/Tree_visitor.cpp ../src/backend/output_generator.cpp ../includes/fcore_has/backend/output_generator.hpp
@@ -14,10 +16,10 @@ add_executable(test_target test.cpp
         ../src/fcore_has.cpp ../includes/fcore_has/fcore_has.hpp
         ../src/frontend/ErrorHandling.cpp ../includes/fcore_has/frontend/ErrorHandling.hpp)
 
+target_link_libraries(test_target Catch2::Catch2)
 target_link_libraries(test_target fs_parser)
-include(CTest)
-include(Catch)
-catch_discover_tests(test_target)
+
+
 
 file(COPY asm_files/test_add.s DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY asm_files/test_for.s DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

@@ -16,13 +16,13 @@
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "fcore_has/fcore_has.hpp"
-
-using namespace pybind11;
+#ifdef PYTHON_MODULE
+    using namespace pybind11;
+#endif
 
 // Pybind does treat pointers to integers as python ints, and not arrays
 // a smart pointer it doing that
 std::tuple<std::vector<uint32_t>, int> fCore_has_embeddable_s(std::string content){
-    std::cout<<"TEST FUNCTION CALL BINDING"<<std::endl;
     std::string ret_val = "";
     std::istringstream stream(content);
     std::vector<std::string> include_files;
@@ -36,10 +36,11 @@ std::tuple<std::vector<uint32_t>, int> fCore_has_embeddable_s(std::string conten
     std::tuple<std::vector<uint32_t>, int> ret(hex, int_size);
     return ret;
 }
-
-PYBIND11_MODULE(fCore_has_py, m) {
-    m.def("fCore_has_embeddable_s", fCore_has_embeddable_s, "Compile an fcore program to hex");
-}
+#ifdef PYTHON_MODULE
+    PYBIND11_MODULE(fCore_has_py, m) {
+        m.def("fCore_has_embeddable_s", fCore_has_embeddable_s, "Compile an fcore program to hex");
+    }
+#endif
 
 void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size){
     std::string ret_val = "";

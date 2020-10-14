@@ -21,8 +21,10 @@
 #include <string>
 #include <vector>
 
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
+#ifdef PYTHON_MODULE
+    #include <pybind11/pybind11.h>
+    #include <pybind11/stl.h>
+#endif
 
 #include "fcore_has/frontend/variable_map.hpp"
 #include "fcore_has/frontend/file_parser.h"

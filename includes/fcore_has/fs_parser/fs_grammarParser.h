@@ -209,7 +209,6 @@ public:
     Branch_opcodeContext *branch_opcode();
     std::vector<OperandContext *> operand();
     OperandContext* operand(size_t i);
-    ImmediateContext *immediate();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;

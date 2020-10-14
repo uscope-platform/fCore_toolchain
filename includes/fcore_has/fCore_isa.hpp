@@ -76,10 +76,10 @@ static std::map <std::string, uint32_t>  fcore_op_types
                 std::make_pair ("fti", CONVERSION_INSTRUCTION),
                 std::make_pair ("ldc", IMMEDIATE_INSTRUCTION),
                 std::make_pair ("ldr", IMMEDIATE_INSTRUCTION),
-                std::make_pair ("bgt", BRANCH_INSTRUCTION),
-                std::make_pair ("ble", BRANCH_INSTRUCTION),
-                std::make_pair ("beq", BRANCH_INSTRUCTION),
-                std::make_pair ("bne", BRANCH_INSTRUCTION),
+                std::make_pair ("bgt", REGISTER_INSTRUCTION),
+                std::make_pair ("ble", REGISTER_INSTRUCTION),
+                std::make_pair ("beq", REGISTER_INSTRUCTION),
+                std::make_pair ("bne", REGISTER_INSTRUCTION),
                 std::make_pair ("stop", INDEPENDENT_INSTRUCTION),
         };
 
