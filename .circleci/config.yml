@@ -18,7 +18,7 @@ jobs:
                   cd ..
       - run:
           name: Creating Build Files
-          command: 'cmake -H. -Bbuild'
+          command: 'cmake -H. -Bbuild -DPY_MODULE_EXCLUDE=ON'
       - run:
           name: Creating Binary Files
           command: 'cmake --build build'

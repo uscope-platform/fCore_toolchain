@@ -33,9 +33,10 @@ install(DIRECTORY ../includes/fcore_has # source directory
         DESTINATION /usr/local/include # target directory
         FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
         )
+
 if(NOT ${PY_MODULE_EXCLUDE})
+    add_definitions(-DPYTHON_MODULE)
     pybind11_add_module(fCore_has_py  ${FCORE_LIB_SRCS})
     target_link_libraries(fCore_has_py PRIVATE fcparser)
     target_link_libraries(fCore_has_py PRIVATE antlr4-runtime)
-endif({${PY_MODULE_EXCLUDE})
-
+endif(NOT ${PY_MODULE_EXCLUDE})
