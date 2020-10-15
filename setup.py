@@ -49,7 +49,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name='fCore_has_py',
-    version='0.0.1',
+    version='0.0.2',
     author='Filippo Savi',
     author_email='filssavi@gmail.com',
     description='fCore assembler bridge',
