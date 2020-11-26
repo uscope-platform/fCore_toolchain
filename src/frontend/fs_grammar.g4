@@ -38,8 +38,8 @@ immediate : Integer | Hexnum | Octalnum | Identifier;
 
 float_const : FloatingPointLiteral;
 
-reg_opcode : 'add' | 'sub' | 'mul';
-conv_opcode: 'itf' | 'fti';
+reg_opcode : 'add' | 'sub' | 'mul' | 'and' | 'or';
+conv_opcode: 'itf' | 'fti' | 'not' ;
 imm_opcode : 'ldr' ;
 branch_opcode: 'ble' | 'bgt' | 'beq' | 'bne';
 

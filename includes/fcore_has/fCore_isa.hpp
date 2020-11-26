@@ -63,7 +63,10 @@ static std::map <std::string, uint32_t>  fcore_opcodes
                 std::make_pair ("ble", 9u),
                 std::make_pair ("beq", 10u),
                 std::make_pair ("bne", 11u),
-                std::make_pair ("stop", 12u)
+                std::make_pair ("stop", 12u),
+                std::make_pair ("and", 13u),
+                std::make_pair ("or", 14u),
+                std::make_pair ("not", 15u)
         };
 
 static std::map <std::string, uint32_t>  fcore_op_types
@@ -81,6 +84,9 @@ static std::map <std::string, uint32_t>  fcore_op_types
                 std::make_pair ("beq", REGISTER_INSTRUCTION),
                 std::make_pair ("bne", REGISTER_INSTRUCTION),
                 std::make_pair ("stop", INDEPENDENT_INSTRUCTION),
+                std::make_pair ("and", REGISTER_INSTRUCTION),
+                std::make_pair ("or", REGISTER_INSTRUCTION),
+                std::make_pair ("not", CONVERSION_INSTRUCTION)
         };
 
 static std::map <std::string, std::string>  fcore_pseudo_op

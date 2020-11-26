@@ -1,10 +1,10 @@
 
-find_package(Catch2 REQUIRED PATH)
+
 
 add_executable(test_target test.cpp
         Instruction_classes.cpp ../src/code_elements/instruction.cpp ../src/frontend/file_parser.cpp
         ../src/frontend/Tree_visitor.cpp ../src/backend/output_generator.cpp ../includes/fcore_has/backend/output_generator.hpp
-        ../src/code_elements/code_element.cpp ../src/passes/pass_manager.cpp ../includes/fcore_has/passes/pass_manager.hpp
+        ../rc/code_elements/code_element.cpp ../src/passes/pass_manager.cpp ../includes/fcore_has/passes/pass_manager.hpp
         ../src/passes/loop_implementation_pass.cpp ../src/code_elements/for_loop.cpp
         ../src/code_elements/variable.cpp ../includes/fcore_has/code_elements/variable.hpp
         ../src/passes/pseudo_instructions_pass.cpp passes.cpp end_to_end.cpp
@@ -18,6 +18,11 @@ add_executable(test_target test.cpp
 
 target_link_libraries(test_target Catch2::Catch2)
 target_link_libraries(test_target fs_parser)
+
+include(CTest)
+include(Catch)
+
+catch_discover_tests(test_target)
 
 
 

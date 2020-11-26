@@ -20,9 +20,10 @@ endif(NOT ${PY_MODULE_EXCLUDE})
 add_subdirectory(includes/fcore_has/fs_parser)
 add_subdirectory(src)
 
-if(BUILD_TESTS)
-add_subdirectory(test)
-endif(BUILD_TESTS)
+if(${BUILD_TESTS})
+    find_package(Catch2 REQUIRED PATH)
+    add_subdirectory(test)
+endif(${BUILD_TESTS})
 unset(BUILD_TESTS CACHE)
 
 
