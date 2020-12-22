@@ -1,5 +1,5 @@
 
-// Generated from /home/fils/git/fCore_has/src/frontend/fs_grammar.g4 by ANTLR 4.8
+// Generated from /home/fils/git/fCore_has/src/frontend/fs_grammar.g4 by ANTLR 4.9
 
 #pragma once
 
@@ -18,9 +18,9 @@ public:
     T__14 = 15, T__15 = 16, T__16 = 17, T__17 = 18, T__18 = 19, T__19 = 20, 
     T__20 = 21, T__21 = 22, T__22 = 23, T__23 = 24, T__24 = 25, T__25 = 26, 
     T__26 = 27, T__27 = 28, T__28 = 29, T__29 = 30, T__30 = 31, T__31 = 32, 
-    T__32 = 33, T__33 = 34, T__34 = 35, Identifier = 36, Hexnum = 37, Integer = 38, 
-    Octalnum = 39, FloatingPointLiteral = 40, String = 41, Label = 42, WS = 43, 
-    BlockComment = 44, LineComment = 45
+    T__32 = 33, T__33 = 34, T__34 = 35, T__35 = 36, T__36 = 37, Identifier = 38, 
+    Hexnum = 39, Integer = 40, Octalnum = 41, FloatingPointLiteral = 42, 
+    String = 43, Label = 44, WS = 45, BlockComment = 46, LineComment = 47
   };
 
   enum {
@@ -34,7 +34,7 @@ public:
     RuleConstant_decl = 28, RuleInput_decl = 29, RuleOutput_decl = 30
   };
 
-  fs_grammarParser(antlr4::TokenStream *input);
+  explicit fs_grammarParser(antlr4::TokenStream *input);
   ~fs_grammarParser();
 
   virtual std::string getGrammarFileName() const override;

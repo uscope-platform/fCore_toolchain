@@ -38,7 +38,7 @@ immediate : Integer | Hexnum | Octalnum | Identifier;
 
 float_const : FloatingPointLiteral;
 
-reg_opcode : 'add' | 'sub' | 'mul' | 'and' | 'or';
+reg_opcode : 'add' | 'sub' | 'mul' | 'and' | 'or' | 'satp' | 'satn';
 conv_opcode: 'itf' | 'fti' | 'not' ;
 imm_opcode : 'ldr' ;
 branch_opcode: 'ble' | 'bgt' | 'beq' | 'bne';
