@@ -32,9 +32,13 @@ ast_t register_allocation_pass::process_leaf(ast_t element) {
     if(element->type == type_instr){
         instruction_t current_instr = element->inst.getStringInstr();
         for(auto &item:current_instr.arguments){
+            std::regex re("r(\\d\\d?)");
+            std::smatch m;
+            std::string s = item->to_str();
+            std::regex_match(s, m, re);
             if(register_mapping.count(item)){
                 item = register_mapping[item];
-            }else if(!fcore_registers.count(item->to_str()) && !item->is_constant()){
+            }else if(m.empty() && !item->is_constant()){
                 bool found = false;
                 for(int i = 0; i<16;i++){
 

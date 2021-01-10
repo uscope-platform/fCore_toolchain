@@ -21,6 +21,7 @@
 #include <cstdint>
 #include <string>
 #include <utility>
+#include <regex>
 #include "fcore_has/fCore_isa.hpp"
 
 #define TYPE_INPUT 0

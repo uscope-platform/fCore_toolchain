@@ -28,6 +28,7 @@ parser::parser(std::istream &stream) {
 
     construct_parser(stream, std::make_shared<variable_map>(varmap));
 }
+
 parser::parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap) {
 
     construct_parser(stream, std::move(existing_varmap));

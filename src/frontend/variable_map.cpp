@@ -24,12 +24,15 @@ std::shared_ptr<variable> variable_map::operator[](const std::string& key) {
 }
 
 void variable_map::insert(const std::string& key, std::shared_ptr<variable>item) {
+    std::regex re("r(\\d\\d?)");
+    std::smatch m;
     switch (item->type) {
         case TYPE_INPUT:
             n_inputs_++;
             break;
         case TYPE_REGULAR:
-            if(!fcore_registers.count(key))
+            std::regex_match(key, m, re);
+            if(m.empty())
                 n_variables_++;
             break;
         case TYPE_OUTPUT:

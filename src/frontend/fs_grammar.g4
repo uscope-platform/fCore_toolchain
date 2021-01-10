@@ -30,17 +30,19 @@ branch_instr : branch_opcode operand ',' operand ',' operand;
 conv_instr : conv_opcode operand ',' operand;
 indep_instr : 'stop' | 'nop';
 
-pseudo_instr : pseudo_opcode Identifier ',' Identifier (',' Identifier)*;
+pseudo_instr : pseudo_opcode operand ',' operand  (',' operand)*;
 
-operand : Identifier;
-destination: Identifier;
+operand : Register | Identifier;
+
+
+destination: Register | Identifier;
 immediate : Integer | Hexnum | Octalnum | Identifier;
 
 float_const : FloatingPointLiteral;
 
 reg_opcode : 'add' | 'sub' | 'mul' | 'and' | 'or' | 'satp' | 'satn';
 conv_opcode: 'itf' | 'fti' | 'not' ;
-imm_opcode : 'ldr' ;
+imm_opcode : 'ldr';
 branch_opcode: 'ble' | 'bgt' | 'beq' | 'bne';
 
 pseudo_opcode: 'mov';
@@ -56,10 +58,12 @@ for_end_comp_type : ('<' | '>' | '<=' | '>=');
 pragma: '#pragma ' Identifier;
 
 
-variable_decl : 'let' Identifier;
-constant_decl : 'const' Identifier;
-input_decl : 'input' Identifier;
-output_decl : 'output' Identifier;
+variable_decl : 'let' (Register | Identifier);
+constant_decl : 'const' (Register | Identifier);
+input_decl : 'input' (Register | Identifier);
+output_decl : 'output' (Register | Identifier);
+
+Register: 'r' (Digit +);
 
 Identifier
    : Letter ('_' | Letter | Digit)*

@@ -31,7 +31,15 @@ Tree_visitor::Tree_visitor(std::shared_ptr<variable_map> map) {
 void Tree_visitor::exitImm_instr(fs_grammarParser::Imm_instrContext * ctx) {
     std::string opcode = ctx->imm_opcode()->getText();
 
-    std::shared_ptr<variable> dest = get_variable(ctx->destination()->Identifier()->getText(), false);
+
+
+    std::string dest_str;
+    if(ctx->destination()->Identifier() != nullptr)
+        dest_str = ctx->destination()->Identifier()->getText();
+    else if (ctx->destination()->Register() != nullptr)
+        dest_str = ctx->destination()->Register()->getText();
+
+    std::shared_ptr<variable> dest = get_variable(dest_str, false);
     std::shared_ptr<variable> immediate = get_variable(ctx->immediate()->getText(), true);
 
     std::vector<std::shared_ptr<variable>> arguments;
@@ -47,11 +55,29 @@ void Tree_visitor::exitImm_instr(fs_grammarParser::Imm_instrContext * ctx) {
 void Tree_visitor::exitReg_instr(fs_grammarParser::Reg_instrContext *ctx) {
     std::string opcode = ctx->reg_opcode()->getText();
 
-    std::shared_ptr<variable> op_a = get_variable(ctx->operand(0)->getText(), false);
+    std::string op_a_str;
+    if(ctx->operand(0)->Identifier() != nullptr)
+        op_a_str = ctx->operand(0)->Identifier()->getText();
+    else if (ctx->operand(0)->Register() != nullptr)
+        op_a_str = ctx->operand(0)->Register()->getText();
+
+    std::string op_b_str;
+    if(ctx->operand(1)->Identifier() != nullptr)
+        op_b_str = ctx->operand(1)->Identifier()->getText();
+    else if (ctx->operand(1)->Register() != nullptr)
+        op_b_str = ctx->operand(1)->Register()->getText();
+
+    std::string dest_str;
+    if(ctx->destination()->Identifier() != nullptr)
+        dest_str = ctx->destination()->Identifier()->getText();
+    else if (ctx->destination()->Register() != nullptr)
+        dest_str = ctx->destination()->Register()->getText();
+
+    std::shared_ptr<variable> op_a = get_variable(op_a_str, false);
     op_a->set_used(true);
-    std::shared_ptr<variable> op_b = get_variable(ctx->operand(1)->getText(), false);
+    std::shared_ptr<variable> op_b = get_variable(op_b_str, false);
     op_b->set_used(true);
-    std::shared_ptr<variable> dest = get_variable(ctx->destination()->getText(), false);
+    std::shared_ptr<variable> dest = get_variable(dest_str, false);
 
     std::vector<std::shared_ptr<variable>> arguments = {op_a, op_b, dest};
 
@@ -90,16 +116,34 @@ void Tree_visitor::exitBranch_instr(fs_grammarParser::Branch_instrContext *ctx) 
 void Tree_visitor::exitPseudo_instr(fs_grammarParser::Pseudo_instrContext *ctx) {
     std::string opcode = ctx->pseudo_opcode()->getText();
 
+    std::string op_a_str;
+    if(ctx->operand(0)->Identifier() != nullptr)
+        op_a_str = ctx->operand(0)->Identifier()->getText();
+    else if (ctx->operand(0)->Register() != nullptr)
+        op_a_str = ctx->operand(0)->Register()->getText();
 
-    std::shared_ptr<variable> op_a = get_variable(ctx->Identifier(0)->getText(), false);
+    std::string op_b_str;
+    if(ctx->operand(1)->Identifier() != nullptr)
+        op_b_str = ctx->operand(1)->Identifier()->getText();
+    else if (ctx->operand(1)->Register() != nullptr)
+        op_b_str = ctx->operand(1)->Register()->getText();
+
+
+
+    std::shared_ptr<variable> op_a = get_variable(op_a_str, false);
     op_a->set_used(true);
-    std::shared_ptr<variable> op_b = get_variable(ctx->Identifier(1)->getText(), false);
+    std::shared_ptr<variable> op_b = get_variable(op_b_str, false);
     op_b->set_used(true);
 
     std::vector<std::shared_ptr<variable>> arguments = {op_a, op_b};
 
-    if(ctx->Identifier().size()>2) {
-        std::shared_ptr<variable> dest = get_variable(ctx->Identifier(2)->getText(), false);
+    if(ctx->operand().size()>2) {
+        std::string dest_str;
+        if(ctx->operand(2)->Identifier() != nullptr)
+            dest_str = ctx->operand(2)->Identifier()->getText();
+        else if (ctx->operand(2)->Register() != nullptr)
+            dest_str = ctx->operand(2)->Register()->getText();
+        std::shared_ptr<variable> dest = get_variable(dest_str, false);
         arguments.push_back(dest);
     }
 
@@ -118,7 +162,13 @@ void Tree_visitor::exitIndep_instr(fs_grammarParser::Indep_instrContext *ctx) {
 
 void Tree_visitor::exitLoad_instr(fs_grammarParser::Load_instrContext *ctx) {
 
-    std::shared_ptr<variable> dest = get_variable(ctx->destination()->Identifier()->getText(), false);
+    std::string dest_str;
+    if(ctx->destination()->Identifier() != nullptr)
+        dest_str = ctx->destination()->Identifier()->getText();
+    else if (ctx->destination()->Register() != nullptr)
+        dest_str = ctx->destination()->Register()->getText();
+
+    std::shared_ptr<variable> dest = get_variable(dest_str, false);
     std::shared_ptr<variable> immediate = get_variable(ctx->FloatingPointLiteral()->getText(), true);
 
     std::vector<std::shared_ptr<variable>> arguments;
@@ -185,13 +235,23 @@ void Tree_visitor::exitPragma(fs_grammarParser::PragmaContext *ctx) {
 }
 
 void Tree_visitor::exitConstant_decl(fs_grammarParser::Constant_declContext *ctx) {
-    std::string identifier = ctx->Identifier()->getText();
+    std::string identifier;
+    if(ctx->Identifier() != nullptr)
+        identifier = ctx->Identifier()->getText();
+    else if (ctx->Register() != nullptr)
+        identifier = ctx->Register()->getText();
+
     variable tmp = variable(true, identifier);
     varmap->insert(identifier, std::make_shared<variable>(tmp));
 }
 
 void Tree_visitor::exitVariable_decl(fs_grammarParser::Variable_declContext *ctx) {
-    std::string identifier = ctx->Identifier()->getText();
+    std::string identifier;
+    if(ctx->Identifier() != nullptr)
+        identifier = ctx->Identifier()->getText();
+    else if (ctx->Register() != nullptr)
+        identifier = ctx->Register()->getText();
+
     variable tmp = variable(false, identifier);
     varmap->insert(identifier, std::make_shared<variable>(tmp));
 }

@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
+#include <iostream>
 #include "fcore_has/code_elements/variable.hpp"
 
 
@@ -61,9 +62,15 @@ bool variable::is_used() const {
 }
 
 uint32_t variable::get_value() const {
-    if(fcore_registers.count(name)){
-        return fcore_registers[name];
-    }else if(constant){
+
+    std::regex re("r(\\d\\d?)");
+    std::smatch m;
+
+    if(std::regex_match(name, m, re)) {
+        return std::stoi(m[1]);
+    }
+
+    if(constant){
         return std::stoi(name, nullptr, 0);
     }
     throw std::runtime_error("Invalid operation: the compiler tried to get the numeric value of a variable");
