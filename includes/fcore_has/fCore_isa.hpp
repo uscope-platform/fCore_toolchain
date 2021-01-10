@@ -33,6 +33,8 @@
 
 #include <map>
 
+static const int fcore_register_address_width = 6;
+static const int fcore_opcode_width = 5;
 static std::map <std::string, uint32_t>  fcore_opcodes {
                 std::make_pair ("nop", 0u),
                 std::make_pair ("add", 1u),

@@ -28,14 +28,14 @@ TEST(InstructionClasses, immediate_instruction ) {
     std::vector<std::shared_ptr<variable>> args = {dest, imm};
     instruction instr(IMMEDIATE_INSTRUCTION,"ldr", args);
 
-    ASSERT_EQ( instr.emit(),  0xc887 );
+    ASSERT_EQ( instr.emit(),  0x32087);
 
     std::stringstream buffer;
     std::streambuf * old = std::cout.rdbuf(buffer.rdbuf());
     instr.print();
     std::string result = buffer.str();
     std::cout.rdbuf(old);
-    std::string golden_standard = "c887 -> OPCODE: ldr DESTINATION: r4 IMMEDIATE: 100\n";
+    std::string golden_standard = "32087 -> OPCODE: ldr DESTINATION: r4 IMMEDIATE: 100\n";
     ASSERT_EQ(result, golden_standard);
 }
 
@@ -48,14 +48,14 @@ TEST(InstructionClasses, register_instruction ) {
 
     instruction instr(REGISTER_INSTRUCTION,"add", args);
 
-    ASSERT_EQ(instr.emit(), 0x8641);
+    ASSERT_EQ(instr.emit(), 0x81841);
 
     std::stringstream buffer;
     std::streambuf * old = std::cout.rdbuf(buffer.rdbuf());
     instr.print();
     std::string result = buffer.str();
     std::cout.rdbuf(old);
-    std::string golden_standard = "8641 -> OPCODE: add OPERAND A: r2 OPERAND B: r3 DESTINATION: r4\n";
+    std::string golden_standard = "81841 -> OPCODE: add OPERAND A: r2 OPERAND B: r3 DESTINATION: r4\n";
     ASSERT_EQ(result,  golden_standard);
 
 }

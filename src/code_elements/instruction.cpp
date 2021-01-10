@@ -17,7 +17,7 @@
 
 #include "fcore_has/code_elements/instruction.h"
 #include "fcore_has/fCore_isa.hpp"
-#include <utility>
+
 
 
 instruction::instruction(int inst_type, float constant) {
@@ -84,24 +84,29 @@ void instruction::print() {
 
 uint32_t instruction::emit_immediate() const {
     uint32_t raw_instr = 0;
-    raw_instr += fcore_opcodes[string_instr.opcode] & 0x1fu;
-    raw_instr += (string_instr.arguments[0]->get_value() & 0xfu) << 5u;
-    raw_instr += (string_instr.arguments[1]->get_value() & 0xfffu) << 9u;
+    uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
+    uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
+    raw_instr += fcore_opcodes[string_instr.opcode] & opcode_mask;
+    raw_instr += (string_instr.arguments[0]->get_value() & register_mask) << fcore_opcode_width;
+    raw_instr += (string_instr.arguments[1]->get_value() & 0xfffu) << (fcore_opcode_width+fcore_register_address_width);
     return raw_instr;
 }
 
 uint32_t instruction::emit_independent() const {
     uint32_t raw_instr = 0;
-    raw_instr += fcore_opcodes[string_instr.opcode] & 0x1fu;
+    uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
+    raw_instr += fcore_opcodes[string_instr.opcode] & opcode_mask;
     return raw_instr;
 }
 
 uint32_t instruction::emit_register() const {
     uint32_t raw_instr = 0;
-    raw_instr += fcore_opcodes[string_instr.opcode] & 0x1fu;
-    raw_instr += (string_instr.arguments[0]->get_value() & 0xfu) << 5u;
-    raw_instr += (string_instr.arguments[1]->get_value() & 0xfu) << 9u;
-    raw_instr += (string_instr.arguments[2]->get_value() & 0xfu) << 13u;
+    uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
+    uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
+    raw_instr += fcore_opcodes[string_instr.opcode] & opcode_mask;
+    raw_instr += (string_instr.arguments[0]->get_value() & register_mask) << fcore_opcode_width;
+    raw_instr += (string_instr.arguments[1]->get_value() & register_mask) << (fcore_opcode_width+fcore_register_address_width);
+    raw_instr += (string_instr.arguments[2]->get_value() & register_mask) << (fcore_opcode_width+2*fcore_register_address_width);
 
     return raw_instr;
 }
@@ -109,18 +114,22 @@ uint32_t instruction::emit_register() const {
 
 uint32_t instruction::emit_branch() const {
     uint32_t raw_instr = 0;
-    raw_instr += fcore_opcodes[string_instr.opcode] & 0x1fu;
-    raw_instr += (string_instr.arguments[0]->get_value() & 0xfu) << 5u;
-    raw_instr += (string_instr.arguments[1]->get_value() & 0xfu) << 9u;
-    raw_instr += (string_instr.arguments[2]->get_value() & 0xfffu) << 13u;
+    uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
+    uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
+    raw_instr += fcore_opcodes[string_instr.opcode] & opcode_mask;
+    raw_instr += (string_instr.arguments[0]->get_value() & register_mask) << fcore_opcode_width;
+    raw_instr += (string_instr.arguments[1]->get_value() & register_mask) << (fcore_opcode_width+fcore_register_address_width);
+    raw_instr += (string_instr.arguments[2]->get_value() & register_mask) << (fcore_opcode_width+2*fcore_register_address_width);
     return raw_instr;
 }
 
 uint32_t instruction::emit_conversion() const {
     uint32_t raw_instr = 0;
-    raw_instr += fcore_opcodes[string_instr.opcode] & 0x1fu;
-    raw_instr += (string_instr.arguments[0]->get_value() & 0xfu) << 5u;
-    raw_instr += (string_instr.arguments[1]->get_value() & 0xfu) << 9u;
+    uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
+    uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
+    raw_instr += fcore_opcodes[string_instr.opcode] & opcode_mask;
+    raw_instr += (string_instr.arguments[0]->get_value() & register_mask) << fcore_opcode_width;
+    raw_instr += (string_instr.arguments[1]->get_value() & register_mask) << (fcore_opcode_width+fcore_register_address_width);
     return raw_instr;
 }
 
@@ -133,8 +142,10 @@ uint32_t instruction::emit_intercalated_const() const {
 
 uint32_t instruction::emit_load_const() const {
     uint32_t raw_instr = 0;
-    raw_instr += fcore_opcodes[string_instr.opcode] & 0x1fu;
-    raw_instr += (string_instr.arguments[0]->get_value() & 0xfu) << 5u;
+    uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
+    uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
+    raw_instr += fcore_opcodes[string_instr.opcode] & opcode_mask;
+    raw_instr += (string_instr.arguments[0]->get_value() & register_mask) << fcore_opcode_width;
     return raw_instr;
 }
 

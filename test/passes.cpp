@@ -46,7 +46,7 @@ TEST(PassesTest, pseudo_inst_pass) {
 
     output_generator writer(AST, false);
     std::vector<uint32_t> result = writer.get_raw_program();
-    std::vector<uint32_t> gold_standard = {0x8061};
+    std::vector<uint32_t> gold_standard = {0x80061};
     ASSERT_EQ(result, gold_standard);
 }
 

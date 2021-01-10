@@ -39,7 +39,7 @@ TEST( EndToEnd, simple_file ) {
     std::ifstream stream(input_file);
     fcore_has uut(stream,include_files,include_dir);
 
-    std::vector<uint32_t> gold_standard = {0xc887, 0x190A7, 0xCA81,0xc};
+    std::vector<uint32_t> gold_standard = {0x32087, 0x640A7, 0xc2b01, 0xc};
 
     // file parsing and processing
 
@@ -89,7 +89,7 @@ TEST( EndToEnd, for_file ) {
 
     std::vector<uint32_t> result = uut.get_hexfile(false);
 
-    std::vector<uint32_t> gold_standard = {0xC887, 0x190a7, 0xca81, 0xC887, 0xca81, 0x0000, 0x0000, 0xC887, 0xca81, 0x0000, 0x0000, 0xc};
+    std::vector<uint32_t> gold_standard = {0x32087, 0x640A7, 0xc2881, 0x32087, 0xc2881, 0x0000, 0x0000, 0x32087, 0xc2881, 0x0000, 0x0000, 0xc};
     ASSERT_EQ( result, gold_standard);
 }
 
@@ -104,7 +104,7 @@ TEST( EndToEnd, branch_file ) {
 
     std::vector<uint32_t> result = uut.get_hexfile(false);
 
-     std::vector<uint32_t> gold_standard = {0xC887, 0xca81, 0x8061, 0x2648, 0x2649, 0x264a, 0x264b, 0xC};
+     std::vector<uint32_t> gold_standard = {0x32087, 0xc2881, 0x80061, 0x21848, 0x21849, 0x2184a, 0x2184b, 0xC};
     ASSERT_EQ( result, gold_standard);
 }
 
@@ -118,7 +118,7 @@ TEST(EndToEnd, variables_file) {
     fcore_has uut(stream,include_files,include_dir);
 
     std::vector<uint32_t> result = uut.get_hexfile(false);
-    std::vector<uint32_t> gold_standard = {0xc827, 0x19047, 0x190a7, 0xca81, 0xf221,0xf241,0xc827,0xf221, 0xc};
+    std::vector<uint32_t> gold_standard = {0x32027, 0x64047, 0x640A7, 0xc2881, 0xe4821,0xe4841,0x32027,0xe4821, 0xc};
     ASSERT_EQ( result, gold_standard);
 }
 
@@ -133,7 +133,7 @@ TEST(EndToEnd, load_constant_file) {
 
     std::vector<uint32_t> result = uut.get_hexfile(false);
 
-    std::vector<uint32_t> gold_standard = {0xc887, 0x190a7, 0x86, 0x4048f5c3, 0xc};
+    std::vector<uint32_t> gold_standard = {0x32087, 0x640A7, 0x86, 0x4048f5c3, 0xc};
     ASSERT_EQ( result, gold_standard);
 }
 
@@ -149,7 +149,7 @@ TEST(EndToEnd, embeddable_wrapper_pass) {
         result.push_back(hex_result[i]);
     }
     free(hex_result);
-    std::vector<uint32_t> gold_standard = {0xc887, 0x190a7, 0x86, 0x4048f5c3, 0xc};
+    std::vector<uint32_t> gold_standard = {0x32087, 0x640A7, 0x86, 0x4048f5c3, 0xc};
     ASSERT_EQ( result, gold_standard);
 }
 

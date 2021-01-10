@@ -24,6 +24,8 @@
 #include <vector>
 #include <memory>
 #include <bitset>
+#include <utility>
+#include <cmath>
 #include <cstring>
 #include "fcore_has/fCore_isa.hpp"
 #include "variable.hpp"
