@@ -6,7 +6,5 @@ bgt r2, r3, r1
 ble r2, r3, r1
 beq r2, r3, r1
 bne r2, r3, r1
-
-and r1, r2, r3
 stop
 

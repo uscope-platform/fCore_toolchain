@@ -17,10 +17,9 @@
 
 #include <fstream>
 
-#include "includes/catch.hpp"
+#include <gtest/gtest.h>
 #include "fcore_has/code_elements/code_element.hpp"
-#include "fcore_has/backend/output_generator.hpp"
-#include "fcore_has/passes/passes.hpp"
+
 
 #include "fcore_has/fcore_has.hpp"
 
@@ -32,7 +31,7 @@ static inline uint32_t Reverse32(uint32_t value)
             ((value & 0xFF000000u) >> 24u));
 }
 
-TEST_CASE( "simple assembly file", "[simple_file]" ) {
+TEST( EndToEnd, simple_file ) {
     std::string input_file = "test_add.s";
 
     std::string include_dir = "";
@@ -42,46 +41,44 @@ TEST_CASE( "simple assembly file", "[simple_file]" ) {
 
     std::vector<uint32_t> gold_standard = {0xc887, 0x190A7, 0xCA81,0xc};
 
-    SECTION("file parsing and processing") {
+    // file parsing and processing
 
-        std::vector<uint32_t> result = uut.get_hexfile(false);
+    std::vector<uint32_t> result = uut.get_hexfile(false);
+    ASSERT_EQ(result, gold_standard);
 
-        REQUIRE( result == gold_standard);
+    //verilog memfile generation
+
+    uut.write_verilog_memfile(input_file+".mem");
+
+    std::ifstream infile(input_file+".mem");
+    std::string a;
+    result.clear();
+    while (infile >> a)
+    {
+        result.push_back(std::stoi(a, nullptr, 16));
     }
-    SECTION("verilog memfile generation") {
+    ASSERT_EQ(result, gold_standard);
 
-        uut.write_verilog_memfile(input_file+".mem");
+    // hex file generation
 
-        std::ifstream infile(input_file+".mem");
-        std::string a;
-        std::vector<uint32_t> result;
-        while (infile >> a)
-        {
-            result.push_back(std::stoi(a, nullptr, 16));
-        }
-        REQUIRE(result == gold_standard);
+    uut.write_hexfile(input_file+".hex");
+
+    std::string filename = input_file+".hex";
+    FILE *fptr = fopen(filename.c_str(),"rb");
+
+    int program_size = uut.get_program_size();
+    uint32_t res[1000];
+    fread(res,sizeof(uint32_t), program_size, fptr);
+    result.clear();
+    for(int i = 0; i < program_size; i++){
+        result.push_back(Reverse32(res[i]));
     }
-    SECTION("hex file generation"){
-
-        uut.write_hexfile(input_file+".hex");
-
-        std::string filename = input_file+".hex";
-        FILE *fptr = fopen(filename.c_str(),"rb");
-
-        int program_size = uut.get_program_size();
-        uint32_t res[1000];
-        fread(res,sizeof(uint32_t), program_size, fptr);
-        std::vector<uint32_t> result;
-        for(int i = 0; i < program_size; i++){
-            result.push_back(Reverse32(res[i]));
-        }
-        REQUIRE(result == gold_standard);//result == gold_standard);
-    }
+    ASSERT_EQ(result, gold_standard);//result == gold_standard);
 
 
 }
 
-TEST_CASE( "for block file", "[for_file]" ) {
+TEST( EndToEnd, for_file ) {
     std::string input_file = "test_for.s";
 
     std::string include_dir = "";
@@ -93,10 +90,10 @@ TEST_CASE( "for block file", "[for_file]" ) {
     std::vector<uint32_t> result = uut.get_hexfile(false);
 
     std::vector<uint32_t> gold_standard = {0xC887, 0x190a7, 0xca81, 0xC887, 0xca81, 0x0000, 0x0000, 0xC887, 0xca81, 0x0000, 0x0000, 0xc};
-    REQUIRE( result == gold_standard);
+    ASSERT_EQ( result, gold_standard);
 }
 
-TEST_CASE( "branch file", "[branch_file]" ) {
+TEST( EndToEnd, branch_file ) {
     std::string input_file = "test_branch.s";
 
     std::string include_dir = "";
@@ -108,10 +105,10 @@ TEST_CASE( "branch file", "[branch_file]" ) {
     std::vector<uint32_t> result = uut.get_hexfile(false);
 
      std::vector<uint32_t> gold_standard = {0xC887, 0xca81, 0x8061, 0x2648, 0x2649, 0x264a, 0x264b, 0xC};
-    REQUIRE( result == gold_standard);
+    ASSERT_EQ( result, gold_standard);
 }
 
-TEST_CASE( "variables file") {
+TEST(EndToEnd, variables_file) {
     std::string input_file = "test_variables.s";
 
     std::string include_dir = "";
@@ -122,10 +119,10 @@ TEST_CASE( "variables file") {
 
     std::vector<uint32_t> result = uut.get_hexfile(false);
     std::vector<uint32_t> gold_standard = {0xc827, 0x19047, 0x190a7, 0xca81, 0xf221,0xf241,0xc827,0xf221, 0xc};
-    REQUIRE( result == gold_standard);
+    ASSERT_EQ( result, gold_standard);
 }
 
-TEST_CASE( "load constant file") {
+TEST(EndToEnd, load_constant_file) {
     std::string input_file = "test_ldc.s";
 
     std::string include_dir = "";
@@ -137,10 +134,10 @@ TEST_CASE( "load constant file") {
     std::vector<uint32_t> result = uut.get_hexfile(false);
 
     std::vector<uint32_t> gold_standard = {0xc887, 0x190a7, 0x86, 0x4048f5c3, 0xc};
-    REQUIRE( result == gold_standard);
+    ASSERT_EQ( result, gold_standard);
 }
 
-TEST_CASE( "Embeddable C wrapper pass") {
+TEST(EndToEnd, embeddable_wrapper_pass) {
     std::string input_file = "test_ldc.s";
     int hex_size;
     uint32_t *hex_result = (uint32_t*) malloc(4096*sizeof(uint32_t));
@@ -153,7 +150,7 @@ TEST_CASE( "Embeddable C wrapper pass") {
     }
     free(hex_result);
     std::vector<uint32_t> gold_standard = {0xc887, 0x190a7, 0x86, 0x4048f5c3, 0xc};
-    REQUIRE( result == gold_standard);
+    ASSERT_EQ( result, gold_standard);
 }
 
 /*
@@ -167,3 +164,9 @@ TEST_CASE( "Embeddable C wrapper fail") {
     std::string gold_standard = "mismatched input '<EOF>' expecting {'ldc', 'stop', 'nop', 'add', 'sub', 'mul', 'itf', 'fti', 'ldr', 'ble', 'bgt', 'beq', 'bne', 'mov', 'for(', '#pragma ', 'let', 'const', 'input', 'output'}";
     REQUIRE_THROWS_WITH( fCore_has_embeddable_s(content), gold_standard);
 }*/
+
+
+int main(int argc, char **argv) {
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}

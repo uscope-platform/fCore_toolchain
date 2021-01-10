@@ -15,7 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "includes/catch.hpp"
+
+#include <gtest/gtest.h>
 #include "fcore_has/code_elements/for_loop.hpp"
 #include "fcore_has/code_elements/instruction.h"
 #include "fcore_has/code_elements/code_element.hpp"
@@ -24,7 +25,7 @@
 #include "fcore_has/frontend/file_parser.h"
 
 
-TEST_CASE( "pseudo_inst_pass") {
+TEST(PassesTest, pseudo_inst_pass) {
 
     ast_t AST = std::make_shared<code_element>(type_program_head);
 
@@ -46,11 +47,11 @@ TEST_CASE( "pseudo_inst_pass") {
     output_generator writer(AST, false);
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {0x8061};
-    REQUIRE(result == gold_standard);
+    ASSERT_EQ(result, gold_standard);
 }
 
 
-TEST_CASE( "instruction_count_pass") {
+TEST(PassesTest, instruction_count_pass) {
     ast_t AST = std::make_shared<code_element>(type_program_head);
     std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r3");
     std::shared_ptr<variable> op_b = std::make_shared<variable>(false, "r4");
@@ -89,138 +90,149 @@ TEST_CASE( "instruction_count_pass") {
     int count = manager.analysis_passes["instruction_counting"]->get_analysis_result()[0];
 
 
-    REQUIRE( count == 6);
+    ASSERT_EQ( count, 6);
 }
 
-
-
-
-
-
-
-
-
-TEST_CASE( "loop_pass") {
+TEST(PassesTest, loop_less) {
     ast_t AST = std::make_shared<code_element>(type_program_head);
     ast_t loop_pragma = std::make_shared<code_element>(type_pragma, pragma("unroll"));
     std::vector<std::shared_ptr<variable>> args = {};
     ast_t loop_instr = std::make_shared<code_element>(type_instr, instruction(INDEPENDENT_INSTRUCTION, "nop",args));
     std::vector<ast_t> l1_content = {loop_pragma, loop_instr};
-    SECTION("less_than_loop") {
-        for_loop loop;
-        loop_start_t start = {"j", 0};
-        loop_advance_t  adv = {true,1};
-        loop_end_t end = {3, "<"};
 
-        loop.set_loop_start(start);
-        loop.set_advance(adv);
-        loop.set_loop_end(end);
+    for_loop loop;
+    loop_start_t start = {"j", 0};
+    loop_advance_t  adv = {true,1};
+    loop_end_t end = {3, "<"};
 
-        ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
-        level_1->set_content(l1_content);
+    loop.set_loop_start(start);
+    loop.set_advance(adv);
+    loop.set_loop_end(end);
 
-        AST->add_content(level_1);
+    ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
+    level_1->set_content(l1_content);
 
-        std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
-        std::ifstream stream;
-        stream.open("register_defs.s");
-        parser p1(stream, map);
+    AST->add_content(level_1);
 
-        pass_manager manager = create_pass_manager(map);
-        manager.run_morphing_passes(AST);
+    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+    std::ifstream stream;
+    stream.open("register_defs.s");
+    parser p1(stream, map);
 
-        output_generator writer(AST, false);
-        std::vector<uint32_t> result = writer.get_raw_program();
-        std::vector<uint32_t> gold_standard = {0, 0, 0};
-        REQUIRE(result == gold_standard);
-    }
-    SECTION("less_eq_than_loop") {
-        for_loop loop;
-        loop_start_t start = {"j", 0};
-        loop_advance_t  adv = {true,1};
-        loop_end_t end = {3, "<="};
+    pass_manager manager = create_pass_manager(map);
+    manager.run_morphing_passes(AST);
 
-        loop.set_loop_start(start);
-        loop.set_advance(adv);
-        loop.set_loop_end(end);
+    output_generator writer(AST, false);
+    std::vector<uint32_t> result = writer.get_raw_program();
+    std::vector<uint32_t> gold_standard = {0, 0, 0};
+    ASSERT_TRUE(result == gold_standard);
+}
 
-        ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
-        level_1->set_content(l1_content);
+TEST(PassesTest, loop_less_equal) {
+    ast_t AST = std::make_shared<code_element>(type_program_head);
+    ast_t loop_pragma = std::make_shared<code_element>(type_pragma, pragma("unroll"));
+    std::vector<std::shared_ptr<variable>> args = {};
+    ast_t loop_instr = std::make_shared<code_element>(type_instr, instruction(INDEPENDENT_INSTRUCTION, "nop",args));
+    std::vector<ast_t> l1_content = {loop_pragma, loop_instr};
 
-        AST->add_content(level_1);
+    for_loop loop;
+    loop_start_t start = {"j", 0};
+    loop_advance_t  adv = {true,1};
+    loop_end_t end = {3, "<="};
 
-        std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
-        std::ifstream stream;
-        stream.open("register_defs.s");
-        parser p1(stream, map);
-        pass_manager manager = create_pass_manager(map);
-        manager.run_morphing_passes(AST);
+    loop.set_loop_start(start);
+    loop.set_advance(adv);
+    loop.set_loop_end(end);
 
-        output_generator writer(AST, false);
-        std::vector<uint32_t> result = writer.get_raw_program();
-        std::vector<uint32_t> gold_standard = {0, 0};
-        REQUIRE(result == gold_standard);
-    }
-    SECTION("more_than_loop") {
-        for_loop loop;
-        loop_start_t start = {"j", 3};
-        loop_advance_t  adv = {false,1};
-        loop_end_t end = {1, ">"};
+    ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
+    level_1->set_content(l1_content);
 
-        loop.set_loop_start(start);
-        loop.set_advance(adv);
-        loop.set_loop_end(end);
+    AST->add_content(level_1);
 
-        ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
-        level_1->set_content(l1_content);
+    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+    std::ifstream stream;
+    stream.open("register_defs.s");
+    parser p1(stream, map);
+    pass_manager manager = create_pass_manager(map);
+    manager.run_morphing_passes(AST);
 
-        AST->add_content(level_1);
+    output_generator writer(AST, false);
+    std::vector<uint32_t> result = writer.get_raw_program();
+    std::vector<uint32_t> gold_standard = {0, 0};
+    ASSERT_TRUE(result == gold_standard);
+}
 
-        std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
-        std::ifstream stream;
-        stream.open("register_defs.s");
-        parser p1(stream, map);
-        pass_manager manager = create_pass_manager(map);
-        manager.run_morphing_passes(AST);
+TEST(PassesTest, loop_more) {
+    ast_t AST = std::make_shared<code_element>(type_program_head);
+    ast_t loop_pragma = std::make_shared<code_element>(type_pragma, pragma("unroll"));
+    std::vector<std::shared_ptr<variable>> args = {};
+    ast_t loop_instr = std::make_shared<code_element>(type_instr, instruction(INDEPENDENT_INSTRUCTION, "nop",args));
+    std::vector<ast_t> l1_content = {loop_pragma, loop_instr};
 
-        output_generator writer(AST, false);
-        std::vector<uint32_t> result = writer.get_raw_program();
-        std::vector<uint32_t> gold_standard = {0, 0};
-        REQUIRE(result == gold_standard);
-    }
-    SECTION("more_eq_than_loop") {
-        for_loop loop;
-        loop_start_t start = {"j", 3};
-        loop_advance_t  adv = {false,1};
-        loop_end_t end = {1, ">="};
+    for_loop loop;
+    loop_start_t start = {"j", 3};
+    loop_advance_t  adv = {false,1};
+    loop_end_t end = {1, ">"};
 
-        loop.set_loop_start(start);
-        loop.set_advance(adv);
-        loop.set_loop_end(end);
+    loop.set_loop_start(start);
+    loop.set_advance(adv);
+    loop.set_loop_end(end);
 
-        ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
-        level_1->set_content(l1_content);
+    ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
+    level_1->set_content(l1_content);
 
-        AST->add_content(level_1);
+    AST->add_content(level_1);
 
-        std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
-        std::ifstream stream;
-        stream.open("register_defs.s");
-        parser p1(stream, map);
-        pass_manager manager = create_pass_manager(map);
-        manager.run_morphing_passes(AST);
+    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+    std::ifstream stream;
+    stream.open("register_defs.s");
+    parser p1(stream, map);
+    pass_manager manager = create_pass_manager(map);
+    manager.run_morphing_passes(AST);
 
-        output_generator writer(AST, false);
-        std::vector<uint32_t> result = writer.get_raw_program();
-        std::vector<uint32_t> gold_standard = {0,0,0};
-        REQUIRE(result == gold_standard);
-    }
-
+    output_generator writer(AST, false);
+    std::vector<uint32_t> result = writer.get_raw_program();
+    std::vector<uint32_t> gold_standard = {0, 0};
+    ASSERT_TRUE(result == gold_standard);
 }
 
 
+TEST(PassesTest, loop_more_equal) {
+    ast_t AST = std::make_shared<code_element>(type_program_head);
+    ast_t loop_pragma = std::make_shared<code_element>(type_pragma, pragma("unroll"));
+    std::vector<std::shared_ptr<variable>> args = {};
+    ast_t loop_instr = std::make_shared<code_element>(type_instr, instruction(INDEPENDENT_INSTRUCTION, "nop",args));
+    std::vector<ast_t> l1_content = {loop_pragma, loop_instr};
 
-TEST_CASE( "deep_copy_element") {
+    for_loop loop;
+    loop_start_t start = {"j", 3};
+    loop_advance_t  adv = {false,1};
+    loop_end_t end = {1, ">="};
+
+    loop.set_loop_start(start);
+    loop.set_advance(adv);
+    loop.set_loop_end(end);
+
+    ast_t level_1 = std::make_shared<code_element>(type_for_block, loop);
+    level_1->set_content(l1_content);
+
+    AST->add_content(level_1);
+
+    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
+    std::ifstream stream;
+    stream.open("register_defs.s");
+    parser p1(stream, map);
+    pass_manager manager = create_pass_manager(map);
+    manager.run_morphing_passes(AST);
+
+    output_generator writer(AST, false);
+    std::vector<uint32_t> result = writer.get_raw_program();
+    std::vector<uint32_t> gold_standard = {0,0,0};
+    ASSERT_TRUE(result == gold_standard);
+}
+
+
+TEST(PassesTest, deep_copy_element) {
     for_loop loop;
     loop_start_t start = {"j", 36};
     loop.set_loop_start(start);
@@ -234,5 +246,5 @@ TEST_CASE( "deep_copy_element") {
     bool test_instr_content = result->get_content()[0]->inst.emit() == level_2->inst.emit();
     bool test_loop_content = result->loop.get_loop_start().starting_value == start.starting_value;
     bool result_check = test_types && test_instr_content && test_loop_content;
-    REQUIRE(result_check);
+    ASSERT_TRUE(result_check);
 }
