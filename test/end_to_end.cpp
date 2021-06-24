@@ -118,7 +118,7 @@ TEST(EndToEnd, variables_file) {
     fcore_has uut(stream,include_files,include_dir);
 
     std::vector<uint32_t> result = uut.get_hexfile(false);
-    std::vector<uint32_t> gold_standard = {0x32027, 0x64047, 0x640A7, 0xc2881, 0xe4821,0xe4841,0x32027,0xe4821, 0xc};
+    std::vector<uint32_t> gold_standard = {0x32027, 0x64047, 0x640A7, 0xc2881, 0xe4821,0xe4841,0x32027,0xe4821, 0x50B2, 0xc};
     ASSERT_EQ( result, gold_standard);
 }
 

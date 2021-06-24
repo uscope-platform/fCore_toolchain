@@ -53,7 +53,8 @@ static std::map <std::string, uint32_t>  fcore_opcodes {
                 std::make_pair ("or", 14u),
                 std::make_pair ("not", 15u),
                 std::make_pair ("satp", 16u),
-                std::make_pair ("satn", 17u)
+                std::make_pair ("satn", 17u),
+                std::make_pair ("rec", 18u),
         };
 
 static std::map <std::string, uint32_t>  fcore_op_types {
@@ -75,6 +76,7 @@ static std::map <std::string, uint32_t>  fcore_op_types {
                 std::make_pair ("not", CONVERSION_INSTRUCTION),
                 std::make_pair ("satp", REGISTER_INSTRUCTION),
                 std::make_pair ("satn", REGISTER_INSTRUCTION),
+                std::make_pair ("rec", REGISTER_INSTRUCTION),
         };
 
 static std::map <std::string, std::string>  fcore_pseudo_op {

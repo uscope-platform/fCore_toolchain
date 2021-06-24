@@ -1,5 +1,5 @@
 
-// Generated from /home/fils/git/fCore_has/src/frontend/fs_grammar.g4 by ANTLR 4.9
+// Generated from /home/fils/git/fCore_has/src/frontend/fs_grammar.g4 by ANTLR 4.9.1
 
 #pragma once
 
@@ -18,9 +18,10 @@ public:
     T__14 = 15, T__15 = 16, T__16 = 17, T__17 = 18, T__18 = 19, T__19 = 20, 
     T__20 = 21, T__21 = 22, T__22 = 23, T__23 = 24, T__24 = 25, T__25 = 26, 
     T__26 = 27, T__27 = 28, T__28 = 29, T__29 = 30, T__30 = 31, T__31 = 32, 
-    T__32 = 33, T__33 = 34, T__34 = 35, T__35 = 36, T__36 = 37, Register = 38, 
-    Identifier = 39, Hexnum = 40, Integer = 41, Octalnum = 42, FloatingPointLiteral = 43, 
-    String = 44, Label = 45, WS = 46, BlockComment = 47, LineComment = 48
+    T__32 = 33, T__33 = 34, T__34 = 35, T__35 = 36, T__36 = 37, T__37 = 38, 
+    Register = 39, Identifier = 40, Hexnum = 41, Integer = 42, Octalnum = 43, 
+    FloatingPointLiteral = 44, String = 45, Label = 46, WS = 47, BlockComment = 48, 
+    LineComment = 49
   };
 
   explicit fs_grammarLexer(antlr4::CharStream *input);

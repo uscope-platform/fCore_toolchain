@@ -24,11 +24,13 @@ include_directories(${GTEST_INCLUDE_DIRS})
 target_link_libraries(test_target ${GTEST_LIBRARIES} pthread fs_parser)
 
 
+configure_file(asm_files/test_add.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(asm_files/test_for.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(asm_files/test_global.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(asm_files/test_variables.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(asm_files/test_branch.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(asm_files/test_ldc.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(asm_files/register_defs.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
-file(COPY asm_files/test_add.s DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY asm_files/test_for.s DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY asm_files/test_global.s DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY asm_files/test_variables.s DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY asm_files/test_branch.s DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY asm_files/test_ldc.s DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY asm_files/register_defs.s DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+

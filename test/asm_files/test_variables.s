@@ -12,4 +12,5 @@ add variable1, r9, r7
 add variable3, r9, r7
 ldr variable2, 100
 add variable2, r9, r7
+rec r5, r10
 stop
