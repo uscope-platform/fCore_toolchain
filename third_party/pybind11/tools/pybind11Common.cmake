@@ -187,12 +187,12 @@ elseif(
   OR Python2_FOUND
   OR Python3_FOUND)
   # New mode
-  include("${CMAKE_CURRENT_LIST_DIR}/pybind11NewTools.cmake")
+  include("pybind11NewTools.cmake")
 
 else()
 
   # Classic mode
-  include("${CMAKE_CURRENT_LIST_DIR}/pybind11Tools.cmake")
+  include("pybind11Tools.cmake")
 
 endif()
 

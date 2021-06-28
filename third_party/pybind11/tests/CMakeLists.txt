@@ -49,7 +49,7 @@ endif()
 project(pybind11_tests CXX)
 
 # Access FindCatch and more
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../tools")
+list(APPEND CMAKE_MODULE_PATH "../tools")
 
 option(PYBIND11_WERROR "Report all warnings as errors" OFF)
 option(DOWNLOAD_EIGEN "Download EIGEN (requires CMake 3.11+)" OFF)
@@ -86,43 +86,43 @@ endif()
 
 # Full set of test files (you can override these; see below)
 set(PYBIND11_TEST_FILES
-    test_async.cpp
-    test_buffers.cpp
-    test_builtin_casters.cpp
-    test_call_policies.cpp
-    test_callbacks.cpp
-    test_chrono.cpp
-    test_class.cpp
-    test_constants_and_functions.cpp
-    test_copy_move.cpp
-    test_custom_type_casters.cpp
-    test_docstring_options.cpp
-    test_eigen.cpp
-    test_enum.cpp
-    test_eval.cpp
-    test_exceptions.cpp
-    test_factory_constructors.cpp
-    test_gil_scoped.cpp
-    test_iostream.cpp
-    test_kwargs_and_defaults.cpp
-    test_local_bindings.cpp
-    test_methods_and_attributes.cpp
-    test_modules.cpp
-    test_multiple_inheritance.cpp
-    test_numpy_array.cpp
-    test_numpy_dtypes.cpp
-    test_numpy_vectorize.cpp
-    test_opaque_types.cpp
-    test_operator_overloading.cpp
-    test_pickling.cpp
-    test_pytypes.cpp
-    test_sequences_and_iterators.cpp
-    test_smart_ptr.cpp
-    test_stl.cpp
-    test_stl_binders.cpp
-    test_tagbased_polymorphic.cpp
-    test_union.cpp
-    test_virtual_functions.cpp)
+        test_async.cpp
+        test_buffers.cpp
+        test_builtin_casters.cpp
+        test_call_policies.cpp
+        test_callbacks.cpp
+        test_chrono.cpp
+        test_class.cpp
+        test_constants_and_functions.cpp
+        test_copy_move.cpp
+        test_custom_type_casters.cpp
+        test_docstring_options.cpp
+        test_eigen.cpp
+        test_enum.cpp
+        test_eval.cpp
+        test_exceptions.cpp
+        test_factory_constructors.cpp
+        test_gil_scoped.cpp
+        test_iostream.cpp
+        test_kwargs_and_defaults.cpp
+        test_local_bindings.cpp
+        test_methods_and_attributes.cpp
+        test_modules.cpp
+        test_multiple_inheritance.cpp
+        test_numpy_array.cpp
+        test_numpy_dtypes.cpp
+        test_numpy_vectorize.cpp
+        test_opaque_types.cpp
+        test_operator_overloading.cpp
+        test_pickling.cpp
+        test_pytypes.cpp
+        test_sequences_and_iterators.cpp
+        test_smart_ptr.cpp
+        test_stl.cpp
+        test_stl_binders.cpp
+        test_tagbased_polymorphic.cpp
+        test_union.cpp
+        test_virtual_functions.cpp)
 
 # Invoking cmake with something like:
 #     cmake -DPYBIND11_TEST_OVERRIDE="test_callbacks.cpp;test_pickling.cpp" ..
@@ -157,7 +157,7 @@ string(REPLACE ".cpp" ".py" PYBIND11_PYTEST_FILES "${PYBIND11_TEST_FILES}")
 # built; if none of these are built (i.e. because TEST_OVERRIDE is used and
 # doesn't include them) the second module doesn't get built.
 set(PYBIND11_CROSS_MODULE_TESTS test_exceptions.py test_local_bindings.py test_stl.py
-                                test_stl_binders.py)
+        test_stl_binders.py)
 
 set(PYBIND11_CROSS_MODULE_GIL_TESTS test_gil_scoped.py)
 
@@ -368,7 +368,7 @@ endif()
 
 if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
   # This is not used later in the build, so it's okay to regenerate each time.
-  configure_file("${CMAKE_CURRENT_SOURCE_DIR}/pytest.ini" "${CMAKE_CURRENT_BINARY_DIR}/pytest.ini"
+  configure_file("pytest.ini" "${CMAKE_CURRENT_BINARY_DIR}/pytest.ini"
                  COPYONLY)
   file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/pytest.ini"
        "\ntestpaths = \"${CMAKE_CURRENT_SOURCE_DIR}\"")
@@ -410,7 +410,7 @@ add_custom_command(
   TARGET pybind11_tests
   POST_BUILD
   COMMAND
-    ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../tools/libsize.py
+    ${PYTHON_EXECUTABLE} ../tools/libsize.py
     $<TARGET_FILE:pybind11_tests>
     ${CMAKE_CURRENT_BINARY_DIR}/sosize-$<TARGET_FILE_NAME:pybind11_tests>.txt)
 

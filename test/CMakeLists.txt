@@ -23,8 +23,8 @@ set(TESTED_SOURCES
 set(TEST_SOURCES
         Instruction_classes.cpp
         passes.cpp
-        end_to_end.cpp
-        )
+        end_to_end_asm.cpp
+        testing_main.cpp)
 
 add_executable(test_target ${TESTED_SOURCES} ${TEST_SOURCES})
 

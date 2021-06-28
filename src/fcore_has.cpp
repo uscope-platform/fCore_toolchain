@@ -72,6 +72,7 @@ fcore_has::fcore_has(std::istream &input, const std::vector<std::string>& includ
     construct_assembler(input, includes);
 }
 
+
 void fcore_has::construct_assembler(std::istream &input, std::vector<std::istream*> &includes) {
     variable_map tmp_map;
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>(tmp_map);

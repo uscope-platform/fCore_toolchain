@@ -164,9 +164,3 @@ TEST_CASE( "Embeddable C wrapper fail") {
     std::string gold_standard = "mismatched input '<EOF>' expecting {'ldc', 'stop', 'nop', 'add', 'sub', 'mul', 'itf', 'fti', 'ldr', 'ble', 'bgt', 'beq', 'bne', 'mov', 'for(', '#pragma ', 'let', 'const', 'input', 'output'}";
     REQUIRE_THROWS_WITH( fCore_has_embeddable_s(content), gold_standard);
 }*/
-
-
-int main(int argc, char **argv) {
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}

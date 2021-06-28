@@ -14,7 +14,7 @@ add_link_options(-fprofile-arcs -ftest-coverage)
 
 if(NOT ${PY_MODULE_EXCLUDE})
     add_definitions(-DPYTHON_MODULE)
-    add_subdirectory(includes/pybind11)
+    add_subdirectory(third_party/pybind11)
 endif(NOT ${PY_MODULE_EXCLUDE})
 
 add_subdirectory(includes/fcore_has/asm_parser)
@@ -22,7 +22,6 @@ add_subdirectory(includes/fcore_has/C_parser)
 add_subdirectory(src)
 
 if(${BUILD_TESTS})
-
     add_subdirectory(test)
 endif(${BUILD_TESTS})
 

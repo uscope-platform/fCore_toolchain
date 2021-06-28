@@ -17,7 +17,7 @@ else()
 endif()
 
 # Extract project version from source
-file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/include/pybind11/detail/common.h"
+file(STRINGS "include/pybind11/detail/common.h"
      pybind11_version_defines REGEX "#define PYBIND11_VERSION_(MAJOR|MINOR|PATCH) ")
 
 foreach(ver ${pybind11_version_defines})
@@ -32,7 +32,7 @@ endif()
 string(REGEX MATCH "[0-9]+" PYBIND11_VERSION_PATCH "${PYBIND11_VERSION_PATCH}")
 
 project(
-  pybind11
+        pybind11
   LANGUAGES CXX
   VERSION "${PYBIND11_VERSION_MAJOR}.${PYBIND11_VERSION_MINOR}.${PYBIND11_VERSION_PATCH}")
 
@@ -93,37 +93,37 @@ cmake_dependent_option(PYBIND11_FINDPYTHON "Force new FindPython" OFF
 
 # NB: when adding a header don't forget to also add it to setup.py
 set(PYBIND11_HEADERS
-    include/pybind11/detail/class.h
-    include/pybind11/detail/common.h
-    include/pybind11/detail/descr.h
-    include/pybind11/detail/init.h
-    include/pybind11/detail/internals.h
-    include/pybind11/detail/typeid.h
-    include/pybind11/attr.h
-    include/pybind11/buffer_info.h
-    include/pybind11/cast.h
-    include/pybind11/chrono.h
-    include/pybind11/common.h
-    include/pybind11/complex.h
-    include/pybind11/options.h
-    include/pybind11/eigen.h
-    include/pybind11/embed.h
-    include/pybind11/eval.h
-    include/pybind11/iostream.h
-    include/pybind11/functional.h
-    include/pybind11/numpy.h
-    include/pybind11/operators.h
-    include/pybind11/pybind11.h
-    include/pybind11/pytypes.h
-    include/pybind11/stl.h
-    include/pybind11/stl_bind.h)
+        include/pybind11/detail/class.h
+        include/pybind11/detail/common.h
+        include/pybind11/detail/descr.h
+        include/pybind11/detail/init.h
+        include/pybind11/detail/internals.h
+        include/pybind11/detail/typeid.h
+        include/pybind11/attr.h
+        include/pybind11/buffer_info.h
+        include/pybind11/cast.h
+        include/pybind11/chrono.h
+        include/pybind11/common.h
+        include/pybind11/complex.h
+        include/pybind11/options.h
+        include/pybind11/eigen.h
+        include/pybind11/embed.h
+        include/pybind11/eval.h
+        include/pybind11/iostream.h
+        include/pybind11/functional.h
+        include/pybind11/numpy.h
+        include/pybind11/operators.h
+        include/pybind11/pybind11.h
+        include/pybind11/pytypes.h
+        include/pybind11/stl.h
+        include/pybind11/stl_bind.h)
 
 # Compare with grep and warn if mismatched
 if(PYBIND11_MASTER_PROJECT AND NOT CMAKE_VERSION VERSION_LESS 3.12)
   file(
     GLOB_RECURSE _pybind11_header_check
     LIST_DIRECTORIES false
-    RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    RELATIVE "."
     CONFIGURE_DEPENDS "include/pybind11/*.h")
   set(_pybind11_here_only ${PYBIND11_HEADERS})
   set(_pybind11_disk_only ${_pybind11_header_check})
@@ -139,12 +139,12 @@ endif()
 
 # CMake 3.12 added list(TRANSFORM <list> PREPEND
 # But we can't use it yet
-string(REPLACE "include/" "${CMAKE_CURRENT_SOURCE_DIR}/include/" PYBIND11_HEADERS
+string(REPLACE "include" "include" PYBIND11_HEADERS
                "${PYBIND11_HEADERS}")
 
 # Cache variables so pybind11_add_module can be used in parent projects
 set(PYBIND11_INCLUDE_DIR
-    "${CMAKE_CURRENT_LIST_DIR}/include"
+    "include"
     CACHE INTERNAL "")
 
 # Note: when creating targets, you cannot use if statements at configure time -
@@ -159,7 +159,7 @@ add_library(pybind11_headers INTERFACE)
 add_library(pybind11::pybind11_headers ALIAS pybind11_headers) # to match exported target
 add_library(pybind11::headers ALIAS pybind11_headers) # easier to use/remember
 
-include("${CMAKE_CURRENT_SOURCE_DIR}/tools/pybind11Common.cmake")
+include("tools/pybind11Common.cmake")
 
 # Relative directory setting
 if(USE_PYTHON_INCLUDE_DIR AND DEFINED Python_INCLUDE_DIRS)
@@ -229,7 +229,7 @@ if(PYBIND11_INSTALL)
 
   # Uninstall target
   if(PYBIND11_MASTER_PROJECT)
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/cmake_uninstall.cmake.in"
+    configure_file("tools/cmake_uninstall.cmake.in"
                    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" IMMEDIATE @ONLY)
 
     add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P
