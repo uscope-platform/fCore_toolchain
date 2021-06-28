@@ -25,7 +25,7 @@
 #include "fcore_has/code_elements/for_loop.hpp"
 #include "fcore_has/code_elements/code_element.hpp"
 #include "fcore_has/code_elements/variable.hpp"
-#include "variable_map.hpp"
+#include "fcore_has/frontend/variable_map.hpp"
 #include <iostream>
 #include <memory>
 #include <vector>

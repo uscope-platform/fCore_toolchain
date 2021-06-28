@@ -25,7 +25,7 @@
 #include "register_allocation_pass.hpp"
 #include "variable_lifetime_mapping.hpp"
 #include "load_intercalation_pass.hpp"
-#include "fcore_has/frontend/asm/variable_map.hpp"
+#include "fcore_has/frontend/variable_map.hpp"
 
 static pass_manager create_pass_manager(std::shared_ptr<variable_map> varmap){
     pass_manager manager;

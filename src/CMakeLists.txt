@@ -11,7 +11,7 @@ set(FCORE_LIB_SRCS code_elements/instruction.cpp ../includes/fcore_has/code_elem
         ../includes/fcore_has/passes/pseudo_instructions_pass.hpp passes/instruction_counting_pass.cpp ../includes/fcore_has/passes/instruction_counting_pass.hpp
         code_elements/variable.cpp ../includes/fcore_has/code_elements/variable.hpp
         passes/register_allocation_pass.cpp ../includes/fcore_has/passes/register_allocation_pass.hpp
-        frontend/asm/variable_map.cpp ../includes/fcore_has/frontend/asm/variable_map.hpp
+        frontend/variable_map.cpp ../includes/fcore_has/frontend/variable_map.hpp
         passes/variable_lifetime_mapping.cpp ../includes/fcore_has/passes/variable_lifetime_mapping.hpp
         frontend/asm/register_map.cpp ../includes/fcore_has/frontend/asm/register_map.hpp
         passes/load_intercalation_pass.cpp ../includes/fcore_has/passes/load_intercalation_pass.hpp

@@ -11,8 +11,8 @@ add_executable(test_target
         ../src/passes/register_allocation_pass.cpp ../includes/fcore_has/passes/register_allocation_pass.hpp
         ../src/passes/variable_lifetime_mapping.cpp ../includes/fcore_has/passes/variable_lifetime_mapping.hpp
         ../src/passes/load_intercalation_pass.cpp ../includes/fcore_has/passes/load_intercalation_pass.hpp
-        ../src/passes/instruction_counting_pass.cpp ../src/frontend/asm/variable_map.cpp
-        ../includes/fcore_has/frontend/asm/variable_map.hpp ../src/frontend/asm/register_map.cpp ../includes/fcore_has/frontend/asm/register_map.hpp
+        ../src/passes/instruction_counting_pass.cpp ../src/frontend/variable_map.cpp
+        ../includes/fcore_has/frontend/variable_map.hpp ../src/frontend/asm/register_map.cpp ../includes/fcore_has/frontend/asm/register_map.hpp
         ../src/fcore_has.cpp ../includes/fcore_has/fcore_has.hpp
         ../src/frontend/asm/ErrorHandling.cpp ../includes/fcore_has/frontend/asm/ErrorHandling.hpp)
 
