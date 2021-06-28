@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "fcore_has/passes/load_intercalation_pass.hpp"
+#include "passes/load_intercalation_pass.hpp"
 
 ast_t load_intercalation_pass::process_leaf(ast_t element) {
     std::shared_ptr<code_element> container = std::make_shared<code_element>(type_code_block);

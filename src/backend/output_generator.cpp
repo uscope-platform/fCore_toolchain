@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "fcore_has/backend/output_generator.hpp"
+#include "backend/output_generator.hpp"
 
 output_generator::output_generator(const ast_t &AST, bool debug_print) {
     program = AST;

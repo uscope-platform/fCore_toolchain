@@ -18,7 +18,7 @@
 #include <fstream>
 
 #include <gtest/gtest.h>
-#include "fcore_has/fcore_has.hpp"
+#include "fcore_has.hpp"
 
 
 TEST( EndToEnd, simple_file ) {#include "fcore_has/code_elements/code_element.hpp"

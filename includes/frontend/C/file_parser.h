@@ -23,19 +23,19 @@
 #include <vector>
 #include <utility>
 
-#include "fcore_has/code_elements/code_element.hpp"
+#include "code_elements/code_element.hpp"
 #include "Tree_visitor.hpp"
-#include "fcore_has/code_elements/code_element.hpp"
+#include "code_elements/code_element.hpp"
 #include "ErrorHandling.hpp"
 
 #include "antlr4-runtime.h"
-#include "fcore_has/asm_parser/asm_grammarLexer.h"
-#include "fcore_has/asm_parser/asm_grammarParser.h"
+#include "C_parser/C_grammarLexer.h"
+#include "C_parser/C_grammarParser.h"
 
-class asm_language_parser{
+class c_language_parser{
     public:
-    explicit asm_language_parser(std::istream &stream);
-    asm_language_parser(std::istream &stream, std::shared_ptr<variable_map> new_varmap);
+    explicit c_language_parser(std::istream &stream);
+    c_language_parser(std::istream &stream, std::shared_ptr<variable_map> new_varmap);
     void construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap);
 
     unsigned int n_inputs() const {return n_inputs_;};

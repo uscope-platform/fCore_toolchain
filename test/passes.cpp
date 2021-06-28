@@ -17,12 +17,13 @@
 
 
 #include <gtest/gtest.h>
-#include "fcore_has/code_elements/for_loop.hpp"
-#include "fcore_has/code_elements/instruction.h"
-#include "fcore_has/code_elements/code_element.hpp"
-#include "fcore_has/passes/passes.hpp"
-#include "fcore_has/backend/output_generator.hpp"
-#include "fcore_has/frontend/asm/file_parser.h"
+
+#include "code_elements/for_loop.hpp"
+#include "code_elements/instruction.h"
+#include "code_elements/code_element.hpp"
+#include "passes/passes.hpp"
+#include "backend/output_generator.hpp"
+#include "frontend/asm/file_parser.h"
 
 
 TEST(PassesTest, pseudo_inst_pass) {

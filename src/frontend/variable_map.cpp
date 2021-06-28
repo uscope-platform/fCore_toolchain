@@ -15,9 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "fcore_has/frontend/variable_map.hpp"
+#include "frontend/variable_map.hpp"
 
-#include <utility>
+
 
 std::shared_ptr<variable> variable_map::operator[](const std::string& key) {
     return map[key];

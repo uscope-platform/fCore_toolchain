@@ -24,14 +24,14 @@
 #include <string>
 #include <utility>
 
-#include "fcore_has/C_parser/C_grammarBaseListener.h"
-#include "fcore_has/C_parser/C_grammarParser.h"
-#include "fcore_has/fCore_isa.hpp"
-#include "fcore_has/code_elements/instruction.h"
-#include "fcore_has/code_elements/for_loop.hpp"
-#include "fcore_has/code_elements/code_element.hpp"
-#include "fcore_has/code_elements/variable.hpp"
-#include "fcore_has/frontend/variable_map.hpp"
+#include "C_parser/C_grammarBaseListener.h"
+#include "C_parser/C_grammarParser.h"
+#include "fCore_isa.hpp"
+#include "code_elements/instruction.h"
+#include "code_elements/for_loop.hpp"
+#include "code_elements/code_element.hpp"
+#include "code_elements/variable.hpp"
+#include "frontend/variable_map.hpp"
 
 
 

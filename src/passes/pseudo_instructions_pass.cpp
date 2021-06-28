@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "fcore_has/passes/pseudo_instructions_pass.hpp"
+#include "passes/pseudo_instructions_pass.hpp"
 
 
 ast_t pseudo_instructions_pass::process_leaf(ast_t element) {

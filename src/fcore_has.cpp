@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "fcore_has/fcore_has.hpp"
+#include "fcore_has.hpp"
 #ifdef PYTHON_MODULE
     using namespace pybind11;
 #endif

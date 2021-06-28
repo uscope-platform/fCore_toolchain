@@ -26,10 +26,10 @@
     #include <pybind11/stl.h>
 #endif
 
-#include "fcore_has/frontend/variable_map.hpp"
-#include "fcore_has/frontend/asm/file_parser.h"
-#include "fcore_has/backend/output_generator.hpp"
-#include "fcore_has/passes/passes.hpp"
+#include "frontend/variable_map.hpp"
+#include "frontend/asm/file_parser.h"
+#include "backend/output_generator.hpp"
+#include "passes/passes.hpp"
 
 
 #define REGISTER_DEFINITION_STRING "const r0\nlet r1\nlet r2\nlet r3\nlet r4\nlet r5\nlet r6\nlet r7\nlet r8\nlet r9\nlet r10\nlet r11\nlet r12\nlet r13\nlet r14\nlet r15"

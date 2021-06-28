@@ -20,8 +20,8 @@
 #include <vector>
 #include <filesystem>
 
-#include "fcore_has/CLI11.hpp"
-#include "fcore_has/fcore_has.hpp"
+#include "CLI11.hpp"
+#include "fcore_has.hpp"
 
 int main(int argc, char **argv) {
     CLI::App app{"fCore High level assembler"};

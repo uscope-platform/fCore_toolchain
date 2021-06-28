@@ -14,19 +14,18 @@
 
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
-#ifndef FCORE_HAS_PSEUDO_INSTRUCTIONS_PASS_HPP
-#define FCORE_HAS_PSEUDO_INSTRUCTIONS_PASS_HPP
+#ifndef FCORE_HAS_LOAD_INTERCALATION_PASS_HPP
+#define FCORE_HAS_LOAD_INTERCALATION_PASS_HPP
 
-#include <memory>
-#include "../code_elements/code_element.hpp"
+#include "code_elements/code_element.hpp"
+#include "frontend/variable_map.hpp"
 #include "pass_manager.hpp"
-#include "fcore_has/fCore_isa.hpp"
 
-class pseudo_instructions_pass: public pass_base {
+
+class load_intercalation_pass: public pass_base {
 public:
     ast_t process_leaf(ast_t element) override ;
     int get_pass_type() override { return LEAF_PASS;};
 };
 
-
-#endif //FCORE_HAS_PSEUDO_INSTRUCTIONS_PASS_HPP
+#endif //FCORE_HAS_LOAD_INTERCALATION_PASS_HPP

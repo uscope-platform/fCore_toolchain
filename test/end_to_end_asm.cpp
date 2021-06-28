@@ -16,12 +16,12 @@
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <fstream>
-
 #include <gtest/gtest.h>
-#include "fcore_has/code_elements/code_element.hpp"
+
+#include "fcore_has.hpp"
+#include "code_elements/code_element.hpp"
 
 
-#include "fcore_has/fcore_has.hpp"
 
 static inline uint32_t Reverse32(uint32_t value)
 {

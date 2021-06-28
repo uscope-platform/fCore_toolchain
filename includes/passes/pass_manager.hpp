@@ -21,7 +21,7 @@
 #include <memory>
 #include <vector>
 #include <unordered_map>
-#include "../code_elements/code_element.hpp"
+#include "code_elements/code_element.hpp"
 
 #define NONE_PASS 0
 #define NODE_PASS 1

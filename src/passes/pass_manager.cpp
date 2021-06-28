@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "fcore_has/passes/pass_manager.hpp"
+#include "passes/pass_manager.hpp"
 
 #include <utility>
 

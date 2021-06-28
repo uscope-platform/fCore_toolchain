@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "fcore_has/passes/instruction_counting_pass.hpp"
+#include "passes/instruction_counting_pass.hpp"
 
 void instruction_counting_pass::analyze_element(ast_t element) {
     if(element->type==type_instr){

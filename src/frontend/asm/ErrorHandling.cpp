@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "fcore_has/frontend/asm/ErrorHandling.hpp"
+#include "frontend/asm/ErrorHandling.hpp"
 
 void ErrorHandling::syntaxError(antlr4::Recognizer *recognizer, antlr4::Token *offendingSymbol, size_t line,
                                 size_t charPositionInLine, const std::string &msg, std::exception_ptr e) {

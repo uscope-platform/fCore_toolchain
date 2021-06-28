@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <iostream>
-#include "fcore_has/code_elements/variable.hpp"
+
+#include "code_elements/variable.hpp"
 
 
 variable::variable() {
