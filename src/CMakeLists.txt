@@ -1,27 +1,27 @@
-set(FCORE_LIB_SRCS code_elements/instruction.cpp ../includes/fcore_has/code_elements/instruction.h
-        frontend/asm/Tree_visitor.cpp ../includes/fcore_has/frontend/asm/Tree_visitor.hpp
-        ../includes/fcore_has/fCore_isa.hpp
-        frontend/asm/file_parser.cpp ../includes/fcore_has/frontend/asm/file_parser.h
-        backend/output_generator.cpp ../includes/fcore_has/backend/output_generator.hpp
-        code_elements/code_element.cpp ../includes/fcore_has/code_elements/code_element.hpp
-        passes/pass_manager.cpp ../includes/fcore_has/passes/pass_manager.hpp
-        passes/loop_implementation_pass.cpp ../includes/fcore_has/passes/loop_implementation_pass.hpp
-        code_elements/for_loop.cpp ../includes/fcore_has/code_elements/for_loop.hpp
-        ../includes/fcore_has/passes/passes.hpp passes/pseudo_instructions_pass.cpp
-        ../includes/fcore_has/passes/pseudo_instructions_pass.hpp passes/instruction_counting_pass.cpp ../includes/fcore_has/passes/instruction_counting_pass.hpp
-        code_elements/variable.cpp ../includes/fcore_has/code_elements/variable.hpp
-        passes/register_allocation_pass.cpp ../includes/fcore_has/passes/register_allocation_pass.hpp
-        frontend/variable_map.cpp ../includes/fcore_has/frontend/variable_map.hpp
-        passes/variable_lifetime_mapping.cpp ../includes/fcore_has/passes/variable_lifetime_mapping.hpp
-        frontend/asm/register_map.cpp ../includes/fcore_has/frontend/asm/register_map.hpp
-        passes/load_intercalation_pass.cpp ../includes/fcore_has/passes/load_intercalation_pass.hpp
-        fcore_has.cpp ../includes/fcore_has/fcore_has.hpp
-        frontend/asm/ErrorHandling.cpp ../includes/fcore_has/frontend/asm/ErrorHandling.hpp)
+set(FCORE_LIB_SRCS code_elements/instruction.cpp
+        frontend/asm/Tree_visitor.cpp
+        frontend/asm/file_parser.cpp
+        backend/output_generator.cpp
+        code_elements/code_element.cpp
+        passes/pass_manager.cpp
+        passes/loop_implementation_pass.cpp
+        code_elements/for_loop.cpp
+        passes/pseudo_instructions_pass.cpp
+        passes/instruction_counting_pass.cpp
+        code_elements/variable.cpp
+        passes/register_allocation_pass.cpp
+        frontend/variable_map.cpp
+        passes/variable_lifetime_mapping.cpp
+        frontend/asm/register_map.cpp
+        passes/load_intercalation_pass.cpp
+        fcore_has.cpp
+        frontend/asm/ErrorHandling.cpp
+        frontend/C/file_parser.cpp )
 
 add_library(fCore_lib_internal ${FCORE_LIB_SRCS})
 
 target_link_libraries(fCore_lib_internal asm_parser_lib)
-
+target_link_libraries(fCore_lib_internal c_parser)
 
 add_executable(fCore_has main.cpp)
 target_link_libraries(fCore_has fCore_lib_internal)

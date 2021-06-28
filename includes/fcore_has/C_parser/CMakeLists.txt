@@ -1,8 +1,8 @@
 set(C_PARSER_LIB_SRCS /
         C_grammarBaseListener.cpp /
         C_grammarBaseVisitor.cpp /
-        C_grammarLexer.h /
-        C_grammarListener.h /
+        C_grammarLexer.cpp /
+        C_grammarListener.cpp /
         C_grammarParser.cpp /
         C_grammarVisitor.cpp)
 

@@ -39,14 +39,14 @@ void c_language_parser::construct_parser(std::istream &stream, std::shared_ptr<v
 
     ANTLRInputStream input(stream);
 
-    fs_grammarLexer lexer(&input);
+    C_parser::C_grammarLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
 
     tokens.fill();
-    fs_grammarParser parser(&tokens);
+    C_parser::C_grammarParser parser(&tokens);
     ErrorHandling handler;
     parser.addErrorListener(&handler);
-    tree::ParseTree *Tree = parser.program();
+    tree::ParseTree *Tree = parser.compilationUnit();
     Tree_visitor visitor(std::move(existing_varmap));
     tree::ParseTreeWalker::DEFAULT.walk(&visitor, Tree);
     AST = visitor.get_program();

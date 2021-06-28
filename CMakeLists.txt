@@ -18,6 +18,7 @@ if(NOT ${PY_MODULE_EXCLUDE})
 endif(NOT ${PY_MODULE_EXCLUDE})
 
 add_subdirectory(includes/fcore_has/asm_parser)
+add_subdirectory(includes/fcore_has/C_parser)
 add_subdirectory(src)
 
 if(${BUILD_TESTS})

@@ -24,6 +24,7 @@
 #include <iterator>
 #include "fcore_has/code_elements/variable.hpp"
 #include "fcore_has/code_elements/code_element.hpp"
+
 class variable_map {
 public:
     std::shared_ptr<variable> operator[](const std::string& key);
