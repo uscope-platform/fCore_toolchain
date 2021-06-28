@@ -15,35 +15,41 @@ set(FCORE_LIB_SRCS code_elements/instruction.cpp
         frontend/asm/register_map.cpp
         passes/load_intercalation_pass.cpp
         fcore_has.cpp
+        fcore_cc.cpp
         frontend/asm/ErrorHandling.cpp
         frontend/C/file_parser.cpp )
 
+# Regular library for regular use
 add_library(fCore_lib_internal ${FCORE_LIB_SRCS})
-
 target_link_libraries(fCore_lib_internal asm_parser_lib)
 target_link_libraries(fCore_lib_internal c_parser)
 
-add_executable(fCore_has main.cpp)
-target_link_libraries(fCore_has fCore_lib_internal)
+# Static library for use with uscope server
+add_library(fCore_lib_internal_s SHARED ${FCORE_LIB_SRCS})
+target_link_libraries(fCore_lib_internal_s asm_parser_libs)
+set_property(TARGET fCore_lib_internal_s PROPERTY POSITION_INDEPENDENT_CODE 1)
 
-#make shared library for use with uscope server
-
-
-add_library(fchas SHARED ${FCORE_LIB_SRCS})
-target_link_libraries(fchas asm_parser_libs)
-set_property(TARGET fchas PROPERTY POSITION_INDEPENDENT_CODE 1)
-
-install(TARGETS fchas
-        LIBRARY DESTINATION /usr/local/lib/fcore_has)
-
-install(DIRECTORY ../includes/fcore_has # source directory
-        DESTINATION /usr/local/include # target directory
-        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
-        )
-
+# Python module
 if(NOT ${PY_MODULE_EXCLUDE})
     add_definitions(-DPYTHON_MODULE)
     pybind11_add_module(fCore_has_py  ${FCORE_LIB_SRCS})
     target_link_libraries(fCore_has_py PRIVATE asm_parser_libs)
     target_link_libraries(fCore_has_py PRIVATE antlr4-runtime)
 endif(NOT ${PY_MODULE_EXCLUDE})
+
+# Standalone assembler executable
+add_executable(fCore_has fcore_has_main.cpp)
+target_link_libraries(fCore_has fCore_lib_internal)
+
+# Standalone assembler executable
+add_executable(fCore_cc fcore_cc_main.cpp)
+target_link_libraries(fCore_cc fCore_lib_internal)
+
+# Install
+install(TARGETS fCore_lib_internal_s
+        LIBRARY DESTINATION /usr/local/lib/fcore_has)
+
+install(DIRECTORY ../includes # source directory
+        DESTINATION /usr/local/include # target directory
+        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
+        )
