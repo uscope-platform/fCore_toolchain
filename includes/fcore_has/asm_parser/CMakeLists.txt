@@ -1,4 +1,12 @@
-set(FCORE_PARSER_LIB_SRCS asm_grammarBaseListener.cpp asm_grammarBaseVisitor.cpp asm_grammarLexer.cpp asm_grammarListener.cpp asm_grammarParser.cpp asm_grammarVisitor.cpp)
+set(FCORE_PARSER_LIB_SRCS
+        asm_grammarBaseListener.cpp
+        asm_grammarBaseVisitor.cpp
+        asm_grammarLexer.cpp
+        asm_grammarListener.cpp
+        asm_grammarParser.cpp
+        asm_grammarVisitor.cpp
+        )
+
 add_library(asm_parser_lib ${FCORE_PARSER_LIB_SRCS})
 target_link_libraries(asm_parser_lib antlr4-runtime)
 
