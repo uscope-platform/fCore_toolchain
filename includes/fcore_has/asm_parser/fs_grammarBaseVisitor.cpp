@@ -5,5 +5,5 @@
 #include "fs_grammarBaseVisitor.h"
 
 
-using namespace fs_parser;
+using namespace asm_parser;
 

@@ -7,7 +7,7 @@
 
 using namespace antlr4;
 
-using namespace fs_parser;
+using namespace asm_parser;
 
 fs_grammarLexer::fs_grammarLexer(CharStream *input) : Lexer(input) {
   _interpreter = new atn::LexerATNSimulator(this, _atn, _decisionToDFA, _sharedContextCache);

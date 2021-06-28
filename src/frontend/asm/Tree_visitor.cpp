@@ -28,7 +28,7 @@ Tree_visitor::Tree_visitor(std::shared_ptr<variable_map> map) {
 }
 
 
-void Tree_visitor::exitImm_instr(fs_grammarParser::Imm_instrContext * ctx) {
+void Tree_visitor::exitImm_instr(asm_parser::fs_grammarParser::Imm_instrContext * ctx) {
     std::string opcode = ctx->imm_opcode()->getText();
 
 
@@ -52,7 +52,7 @@ void Tree_visitor::exitImm_instr(fs_grammarParser::Imm_instrContext * ctx) {
 
 
 
-void Tree_visitor::exitReg_instr(fs_grammarParser::Reg_instrContext *ctx) {
+void Tree_visitor::exitReg_instr(asm_parser::fs_grammarParser::Reg_instrContext *ctx) {
     std::string opcode = ctx->reg_opcode()->getText();
 
     std::string op_a_str;
@@ -85,7 +85,7 @@ void Tree_visitor::exitReg_instr(fs_grammarParser::Reg_instrContext *ctx) {
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
-void Tree_visitor::exitConv_instr(fs_grammarParser::Conv_instrContext *ctx) {
+void Tree_visitor::exitConv_instr(asm_parser::fs_grammarParser::Conv_instrContext *ctx) {
     std::string opcode = ctx->conv_opcode()->getText();
 
     std::shared_ptr<variable> op_a = get_variable(ctx->operand(0)->getText(), false);
@@ -98,7 +98,7 @@ void Tree_visitor::exitConv_instr(fs_grammarParser::Conv_instrContext *ctx) {
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
-void Tree_visitor::exitBranch_instr(fs_grammarParser::Branch_instrContext *ctx) {
+void Tree_visitor::exitBranch_instr(asm_parser::fs_grammarParser::Branch_instrContext *ctx) {
     std::string opcode = ctx->branch_opcode()->getText();
 
     std::shared_ptr<variable> op_a = get_variable(ctx->operand(0)->getText(), false);
@@ -113,7 +113,7 @@ void Tree_visitor::exitBranch_instr(fs_grammarParser::Branch_instrContext *ctx) 
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
-void Tree_visitor::exitPseudo_instr(fs_grammarParser::Pseudo_instrContext *ctx) {
+void Tree_visitor::exitPseudo_instr(asm_parser::fs_grammarParser::Pseudo_instrContext *ctx) {
     std::string opcode = ctx->pseudo_opcode()->getText();
 
     std::string op_a_str;
@@ -151,7 +151,7 @@ void Tree_visitor::exitPseudo_instr(fs_grammarParser::Pseudo_instrContext *ctx) 
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
-void Tree_visitor::exitIndep_instr(fs_grammarParser::Indep_instrContext *ctx) {
+void Tree_visitor::exitIndep_instr(asm_parser::fs_grammarParser::Indep_instrContext *ctx) {
     std::string opcode = ctx->getText();
     std::vector<std::shared_ptr<variable>> arguments;
 
@@ -160,7 +160,7 @@ void Tree_visitor::exitIndep_instr(fs_grammarParser::Indep_instrContext *ctx) {
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
-void Tree_visitor::exitLoad_instr(fs_grammarParser::Load_instrContext *ctx) {
+void Tree_visitor::exitLoad_instr(asm_parser::fs_grammarParser::Load_instrContext *ctx) {
 
     std::string dest_str;
     if(ctx->destination()->Identifier() != nullptr)
@@ -179,20 +179,20 @@ void Tree_visitor::exitLoad_instr(fs_grammarParser::Load_instrContext *ctx) {
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
-void Tree_visitor::enterFor_block(fs_grammarParser::For_blockContext *ctx) {
+void Tree_visitor::enterFor_block(asm_parser::fs_grammarParser::For_blockContext *ctx) {
     for_loop loop;
     parent_elements.push(current_element);
     current_element = std::make_shared<code_element>(type_for_block,loop);
 
 }
-void Tree_visitor::exitFor_block(fs_grammarParser::For_blockContext *ctx) {
+void Tree_visitor::exitFor_block(asm_parser::fs_grammarParser::For_blockContext *ctx) {
     //Process loop initialization
     loop_start_t start;
     start.variable = ctx->for_decl()->Identifier()->getText();
     start.starting_value = std::stoi(ctx->for_decl()->Integer()->getText(), nullptr, 0);
 
     //Process advancement expression
-    fs_grammarParser::For_incrContext *for_incr = ctx->for_incr();
+    asm_parser::fs_grammarParser::For_incrContext *for_incr = ctx->for_incr();
     loop_advance_t adv;
     adv.loop_increment = 1;
     adv.direction = for_incr != nullptr; // variable increment -> direction true; variable decrement -> direction false;
@@ -216,11 +216,11 @@ void Tree_visitor::exitFor_block(fs_grammarParser::For_blockContext *ctx) {
 }
 
 
-void Tree_visitor::enterProgram(fs_grammarParser::ProgramContext *ctx) {
+void Tree_visitor::enterProgram(asm_parser::fs_grammarParser::ProgramContext *ctx) {
     current_element = std::make_shared<code_element>(type_program_head);
 }
 
-void Tree_visitor::exitProgram(fs_grammarParser::ProgramContext *ctx) {
+void Tree_visitor::exitProgram(asm_parser::fs_grammarParser::ProgramContext *ctx) {
     program_head = current_element;
 }
 
@@ -228,13 +228,13 @@ ast_t Tree_visitor::get_program() {
     return program_head;
 }
 
-void Tree_visitor::exitPragma(fs_grammarParser::PragmaContext *ctx) {
+void Tree_visitor::exitPragma(asm_parser::fs_grammarParser::PragmaContext *ctx) {
     code_element this_inst = code_element(type_pragma,
                                           pragma(ctx->Identifier()->getText()));
     current_element->add_content(std::make_shared<code_element>(this_inst));
 }
 
-void Tree_visitor::exitConstant_decl(fs_grammarParser::Constant_declContext *ctx) {
+void Tree_visitor::exitConstant_decl(asm_parser::fs_grammarParser::Constant_declContext *ctx) {
     std::string identifier;
     if(ctx->Identifier() != nullptr)
         identifier = ctx->Identifier()->getText();
@@ -245,7 +245,7 @@ void Tree_visitor::exitConstant_decl(fs_grammarParser::Constant_declContext *ctx
     varmap->insert(identifier, std::make_shared<variable>(tmp));
 }
 
-void Tree_visitor::exitVariable_decl(fs_grammarParser::Variable_declContext *ctx) {
+void Tree_visitor::exitVariable_decl(asm_parser::fs_grammarParser::Variable_declContext *ctx) {
     std::string identifier;
     if(ctx->Identifier() != nullptr)
         identifier = ctx->Identifier()->getText();
@@ -256,13 +256,13 @@ void Tree_visitor::exitVariable_decl(fs_grammarParser::Variable_declContext *ctx
     varmap->insert(identifier, std::make_shared<variable>(tmp));
 }
 
-void Tree_visitor::exitInput_decl(fs_grammarParser::Input_declContext *ctx) {
+void Tree_visitor::exitInput_decl(asm_parser::fs_grammarParser::Input_declContext *ctx) {
     std::string identifier = ctx->Identifier()->getText();
     variable tmp = variable(false, identifier);
     varmap->insert(identifier, std::make_shared<variable>(tmp));
 }
 
-void Tree_visitor::exitOutput_decl(fs_grammarParser::Output_declContext *ctx) {
+void Tree_visitor::exitOutput_decl(asm_parser::fs_grammarParser::Output_declContext *ctx) {
     std::string identifier = ctx->Identifier()->getText();
     variable tmp = variable(false, identifier);
     tmp.set_used(true);
@@ -270,7 +270,7 @@ void Tree_visitor::exitOutput_decl(fs_grammarParser::Output_declContext *ctx) {
 }
 
 
-void Tree_visitor::exitImmediate(fs_grammarParser::ImmediateContext *ctx) {
+void Tree_visitor::exitImmediate(asm_parser::fs_grammarParser::ImmediateContext *ctx) {
     if(ctx->Identifier()== nullptr){
         std::string identifier;
         if(ctx->Integer() != nullptr)
@@ -285,7 +285,7 @@ void Tree_visitor::exitImmediate(fs_grammarParser::ImmediateContext *ctx) {
     }
 }
 
-void Tree_visitor::exitFloat_const(fs_grammarParser::Float_constContext *ctx) {
+void Tree_visitor::exitFloat_const(asm_parser::fs_grammarParser::Float_constContext *ctx) {
     std::string identifier = ctx->FloatingPointLiteral()->getText();
     variable tmp = variable(true, identifier, true);
     varmap->insert(identifier, std::make_shared<variable>(tmp));

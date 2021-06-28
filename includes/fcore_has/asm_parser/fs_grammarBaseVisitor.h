@@ -8,7 +8,7 @@
 #include "fs_grammarVisitor.h"
 
 
-namespace fs_parser {
+namespace asm_parser {
 
 /**
  * This class provides an empty implementation of fs_grammarVisitor, which can be
@@ -144,4 +144,4 @@ public:
 
 };
 
-}  // namespace fs_parser
+}  // namespace asm_parser

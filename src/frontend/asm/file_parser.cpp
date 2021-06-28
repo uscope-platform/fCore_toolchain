@@ -20,7 +20,7 @@
 
 
 using namespace antlr4;
-using namespace fs_parser;
+
 
 asm_language_parser::asm_language_parser(std::istream &stream) {
     variable_map varmap;
@@ -37,11 +37,11 @@ void asm_language_parser::construct_parser(std::istream &stream, std::shared_ptr
 
 
     ANTLRInputStream input(stream);
-    fs_parser::fs_grammarLexer lexer(&input);
+    asm_parser::fs_grammarLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
 
     tokens.fill();
-    fs_grammarParser parser(&tokens);
+    asm_parser::fs_grammarParser parser(&tokens);
     ErrorHandling handler;
     parser.addErrorListener(&handler);
     tree::ParseTree *Tree = parser.program();

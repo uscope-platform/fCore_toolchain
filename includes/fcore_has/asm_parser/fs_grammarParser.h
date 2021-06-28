@@ -7,7 +7,7 @@
 #include "antlr4-runtime.h"
 
 
-namespace fs_parser {
+namespace asm_parser {
 
 
 class  fs_grammarParser : public antlr4::Parser {
@@ -599,4 +599,4 @@ private:
   static Initializer _init;
 };
 
-}  // namespace fs_parser
+}  // namespace asm_parser

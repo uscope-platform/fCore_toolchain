@@ -8,7 +8,7 @@
 #include "fs_grammarParser.h"
 
 
-namespace fs_parser {
+namespace asm_parser {
 
 /**
  * This interface defines an abstract listener for a parse tree produced by fs_grammarParser.
@@ -112,4 +112,4 @@ public:
 
 };
 
-}  // namespace fs_parser
+}  // namespace asm_parser

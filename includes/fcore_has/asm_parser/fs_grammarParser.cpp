@@ -9,7 +9,7 @@
 
 
 using namespace antlrcpp;
-using namespace fs_parser;
+using namespace asm_parser;
 using namespace antlr4;
 
 fs_grammarParser::fs_grammarParser(TokenStream *input) : Parser(input) {

@@ -8,7 +8,7 @@
 #include "fs_grammarParser.h"
 
 
-namespace fs_parser {
+namespace asm_parser {
 
 /**
  * This class defines an abstract visitor for a parse tree
@@ -85,4 +85,4 @@ public:
 
 };
 
-}  // namespace fs_parser
+}  // namespace asm_parser

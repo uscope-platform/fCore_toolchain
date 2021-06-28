@@ -19,7 +19,7 @@
           <option name="outputDir" value="$PROJECT_DIR$/includes/fcore_has" />
           <option name="libDir" value="" />
           <option name="encoding" value="" />
-          <option name="pkg" value="fs_parser" />
+          <option name="pkg" value="asm_parser" />
           <option name="language" value="Cpp" />
           <option name="generateVisitor" value="true" />
         </PerGrammarGenerationSettings>

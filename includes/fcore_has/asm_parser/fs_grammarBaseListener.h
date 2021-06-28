@@ -8,7 +8,7 @@
 #include "fs_grammarListener.h"
 
 
-namespace fs_parser {
+namespace asm_parser {
 
 /**
  * This class provides an empty implementation of fs_grammarListener,
@@ -119,4 +119,4 @@ public:
 
 };
 
-}  // namespace fs_parser
+}  // namespace asm_parser
