@@ -29,8 +29,8 @@
 #include "ErrorHandling.hpp"
 
 #include "antlr4-runtime.h"
-#include "fcore_has/fs_parser/fs_grammarLexer.h"
-#include "fcore_has/fs_parser/fs_grammarParser.h"
+#include "fcore_has/asm_parser/fs_grammarLexer.h"
+#include "fcore_has/asm_parser/fs_grammarParser.h"
 
 class asm_language_parser{
     public:

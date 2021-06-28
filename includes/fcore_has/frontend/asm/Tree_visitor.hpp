@@ -18,8 +18,8 @@
 #ifndef FCORE_HAS_TREE_VISITOR_HPP
 #define FCORE_HAS_TREE_VISITOR_HPP
 
-#include "fcore_has/fs_parser/fs_grammarBaseListener.h"
-#include "fcore_has/fs_parser/fs_grammarParser.h"
+#include "fcore_has/asm_parser/fs_grammarBaseListener.h"
+#include "fcore_has/asm_parser/fs_grammarParser.h"
 #include "fcore_has/fCore_isa.hpp"
 #include "fcore_has/code_elements/instruction.h"
 #include "fcore_has/code_elements/for_loop.hpp"
