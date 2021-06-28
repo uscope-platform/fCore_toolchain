@@ -20,8 +20,9 @@
 #include <vector>
 #include <filesystem>
 
+
 #include "../third_party/CLI11.hpp"
-#include "fcore_has.hpp"
+#include "fcore_cc.h"
 
 int main(int argc, char **argv) {
     CLI::App app{"fCore High level assembler"};
@@ -37,9 +38,7 @@ int main(int argc, char **argv) {
     app.add_flag("--f", output_force, "force the rewriting of an existing product file");
     app.add_option("--o", output_file, "Output file path");
     CLI11_PARSE(app, argc, argv);
-
-
-
+    
     if(!output_file.empty() & !output_force){
         if(std::filesystem::exists(output_file)){
             std::cout<< "ERROR: The Specified output file already exists, to force the file to be rewritten use the --f flag"<<std::endl;
@@ -47,13 +46,11 @@ int main(int argc, char **argv) {
         }
     }
 
-    std::string include_dir = "/home/fils/git/fCore_has/";
-    std::vector<std::string> include_files = {"includes/registers_definitions.s"};
-
     std::ifstream stream;
     stream.open(input_file);
 
-    fcore_has has_engine(stream,include_files, include_dir);
+    std::vector<std::string> include_files = {""};
+    fcore_cc has_engine(stream, include_files);
 
     if(output_hex){
         has_engine.write_hexfile(output_file);

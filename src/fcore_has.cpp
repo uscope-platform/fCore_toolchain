@@ -107,6 +107,19 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
 }
 
 
+std::vector<std::istream*>
+fcore_has::process_includes(const std::vector<std::string> &include_files, const std::string &include_directory) {
+    std::vector<std::istream*> input_streams;
+
+    for(auto const &item:include_files){
+        std::string name = include_directory;
+        name += item;
+        auto *ifstr = new std::ifstream(name);
+        input_streams.push_back(ifstr);
+    }
+
+    return input_streams;
+}
 
 std::vector<uint32_t> fcore_has::get_hexfile(bool endian_swap) {
     return writer->generate_hex(endian_swap);
@@ -115,8 +128,6 @@ std::vector<uint32_t> fcore_has::get_hexfile(bool endian_swap) {
 std::vector<std::string> fcore_has::get_verilog_memfile() {
     return writer->generate_mem();
 }
-
-
 
 fcore_has::~fcore_has() {
     delete writer;
@@ -140,20 +151,6 @@ void fcore_has::write_verilog_memfile(const std::string& ouput_file) {
 
 uint32_t fcore_has::get_program_size() {
     return writer->get_program_size();
-}
-
-std::vector<std::istream*>
-fcore_has::process_includes(const std::vector<std::string> &include_files, const std::string &include_directory) {
-    std::vector<std::istream*> input_streams;
-
-    for(auto const &item:include_files){
-        std::string name = include_directory;
-        name += item;
-        auto *ifstr = new std::ifstream(name);
-        input_streams.push_back(ifstr);
-    }
-
-    return input_streams;
 }
 
 std::string fcore_has::get_errors() {
