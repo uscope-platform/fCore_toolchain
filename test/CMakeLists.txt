@@ -2,8 +2,8 @@
 
 
 add_executable(test_target
-        Instruction_classes.cpp ../src/code_elements/instruction.cpp ../src/frontend/file_parser.cpp
-        ../src/frontend/Tree_visitor.cpp ../src/backend/output_generator.cpp ../includes/fcore_has/backend/output_generator.hpp
+        Instruction_classes.cpp ../src/code_elements/instruction.cpp ../src/frontend/asm/file_parser.cpp
+        ../src/frontend/asm/Tree_visitor.cpp ../src/backend/output_generator.cpp ../includes/fcore_has/backend/output_generator.hpp
         ../src/code_elements/code_element.cpp ../src/passes/pass_manager.cpp ../includes/fcore_has/passes/pass_manager.hpp
         ../src/passes/loop_implementation_pass.cpp ../src/code_elements/for_loop.cpp
         ../src/code_elements/variable.cpp ../includes/fcore_has/code_elements/variable.hpp
@@ -11,10 +11,10 @@ add_executable(test_target
         ../src/passes/register_allocation_pass.cpp ../includes/fcore_has/passes/register_allocation_pass.hpp
         ../src/passes/variable_lifetime_mapping.cpp ../includes/fcore_has/passes/variable_lifetime_mapping.hpp
         ../src/passes/load_intercalation_pass.cpp ../includes/fcore_has/passes/load_intercalation_pass.hpp
-        ../src/passes/instruction_counting_pass.cpp ../src/frontend/variable_map.cpp
-        ../includes/fcore_has/frontend/variable_map.hpp ../src/frontend/register_map.cpp ../includes/fcore_has/frontend/register_map.hpp
+        ../src/passes/instruction_counting_pass.cpp ../src/frontend/asm/variable_map.cpp
+        ../includes/fcore_has/frontend/asm/variable_map.hpp ../src/frontend/asm/register_map.cpp ../includes/fcore_has/frontend/asm/register_map.hpp
         ../src/fcore_has.cpp ../includes/fcore_has/fcore_has.hpp
-        ../src/frontend/ErrorHandling.cpp ../includes/fcore_has/frontend/ErrorHandling.hpp)
+        ../src/frontend/asm/ErrorHandling.cpp ../includes/fcore_has/frontend/asm/ErrorHandling.hpp)
 
 # Locate GTest
 find_package(GTest REQUIRED)

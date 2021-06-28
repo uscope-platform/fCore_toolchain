@@ -18,7 +18,7 @@
 #define FCORE_HAS_LOAD_INTERCALATION_PASS_HPP
 
 #include "../code_elements/code_element.hpp"
-#include "../frontend/variable_map.hpp"
+#include "fcore_has/frontend/asm/variable_map.hpp"
 #include "pass_manager.hpp"
 
 

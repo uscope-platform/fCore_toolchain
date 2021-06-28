@@ -15,31 +15,45 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_HAS_VARIABLE_MAP_HPP
-#define FCORE_HAS_VARIABLE_MAP_HPP
+#ifndef FCORE_HAS_FILE_PARSER_H
+#define FCORE_HAS_FILE_PARSER_H
 
-#include <memory>
 #include <string>
-#include <unordered_map>
-#include <iterator>
-#include "../code_elements/variable.hpp"
-#include "../code_elements/code_element.hpp"
-class variable_map {
-public:
-    std::shared_ptr<variable> operator[](const std::string& key);
-    std::shared_ptr<variable> at(const std::string& key);
-    void insert(const std::string& key, std::shared_ptr<variable>item);
-    int count(const std::string& key);
+#include <sstream>
+#include <vector>
+#include <utility>
+
+#include "fcore_has/code_elements/code_element.hpp"
+#include "Tree_visitor.hpp"
+#include "fcore_has/code_elements/code_element.hpp"
+#include "ErrorHandling.hpp"
+
+#include "antlr4-runtime.h"
+#include "fcore_has/C_parser/C_grammarLexer.h"
+#include "fcore_has/C_parser/C_grammarParser.h"
+
+class c_language_parser{
+    public:
+    explicit c_language_parser(std::istream &stream);
+    c_language_parser(std::istream &stream, std::shared_ptr<variable_map> new_varmap);
+    void construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap);
 
     unsigned int n_inputs() const {return n_inputs_;};
     unsigned int n_outputs() const {return n_outputs_;};
     unsigned int n_variables() const {return n_variables_;};
-private:
+
+    ast_t AST;
+    varmap_t var_map;
+
+    std::string error;
+
+
+    private:
+
     unsigned int n_inputs_ = 0;
     unsigned int n_outputs_ = 0;
     unsigned int n_variables_ = 0;
-    std::unordered_map<std::string, std::shared_ptr<variable>> map;
 };
 
 
-#endif //FCORE_HAS_VARIABLE_MAP_HPP
+#endif //FCORE_HAS_FILE_PARSER_H

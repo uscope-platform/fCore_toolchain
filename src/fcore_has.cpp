@@ -79,7 +79,7 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
     ast_t includes_ast;
 
     for(auto &item:includes){
-        parser include_parser(*item, variables_map);
+        asm_language_parser include_parser(*item, variables_map);
         ast_t tmp_ast = include_parser.AST;
         if(includes_ast != nullptr){
             includes_ast->append_content(tmp_ast->get_content());
@@ -90,7 +90,7 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
     }
 
 
-    parser target_parser(input, variables_map);
+    asm_language_parser target_parser(input, variables_map);
     AST = target_parser.AST;
 
 

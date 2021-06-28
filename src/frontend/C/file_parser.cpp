@@ -15,29 +15,30 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "fcore_has/frontend/file_parser.h"
+#include "fcore_has/frontend/asm/file_parser.h"
 
 #include <utility>
 
 
 using namespace antlr4;
-using namespace fs_parser;
 
-parser::parser(std::istream &stream) {
+
+c_language_parser::c_language_parser(std::istream &stream) {
     variable_map varmap;
 
     construct_parser(stream, std::make_shared<variable_map>(varmap));
 }
 
-parser::parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap) {
+c_language_parser::c_language_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap) {
 
     construct_parser(stream, std::move(existing_varmap));
 }
 
-void parser::construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap){
+void c_language_parser::construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap){
 
 
     ANTLRInputStream input(stream);
+
     fs_grammarLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
 

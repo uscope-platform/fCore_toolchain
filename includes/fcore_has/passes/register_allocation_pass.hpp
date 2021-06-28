@@ -20,8 +20,8 @@
 
 #include <memory>
 #include <unordered_map>
-#include "fcore_has/frontend/variable_map.hpp"
-#include "fcore_has/frontend/register_map.hpp"
+#include "fcore_has/frontend/asm/variable_map.hpp"
+#include "fcore_has/frontend/asm/register_map.hpp"
 #include "fcore_has/code_elements/code_element.hpp"
 #include "pass_manager.hpp"
 #include "fcore_has/fCore_isa.hpp"

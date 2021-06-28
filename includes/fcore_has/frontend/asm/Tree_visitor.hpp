@@ -21,10 +21,10 @@
 #include "fcore_has/fs_parser/fs_grammarBaseListener.h"
 #include "fcore_has/fs_parser/fs_grammarParser.h"
 #include "fcore_has/fCore_isa.hpp"
-#include "../code_elements/instruction.h"
-#include "../code_elements/for_loop.hpp"
-#include "../code_elements/code_element.hpp"
-#include "../code_elements/variable.hpp"
+#include "fcore_has/code_elements/instruction.h"
+#include "fcore_has/code_elements/for_loop.hpp"
+#include "fcore_has/code_elements/code_element.hpp"
+#include "fcore_has/code_elements/variable.hpp"
 #include "variable_map.hpp"
 #include <iostream>
 #include <memory>

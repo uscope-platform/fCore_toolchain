@@ -26,8 +26,8 @@
     #include <pybind11/stl.h>
 #endif
 
-#include "fcore_has/frontend/variable_map.hpp"
-#include "fcore_has/frontend/file_parser.h"
+#include "fcore_has/frontend/asm/variable_map.hpp"
+#include "fcore_has/frontend/asm/file_parser.h"
 #include "fcore_has/backend/output_generator.hpp"
 #include "fcore_has/passes/passes.hpp"
 

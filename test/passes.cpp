@@ -22,7 +22,7 @@
 #include "fcore_has/code_elements/code_element.hpp"
 #include "fcore_has/passes/passes.hpp"
 #include "fcore_has/backend/output_generator.hpp"
-#include "fcore_has/frontend/file_parser.h"
+#include "fcore_has/frontend/asm/file_parser.h"
 
 
 TEST(PassesTest, pseudo_inst_pass) {
@@ -39,7 +39,7 @@ TEST(PassesTest, pseudo_inst_pass) {
     std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
     std::ifstream stream;
     stream.open("register_defs.s");
-    parser p1(stream, map);
+    asm_language_parser p1(stream, map);
 
     pass_manager manager = create_pass_manager(map);
     manager.run_morphing_passes(AST);
@@ -84,7 +84,7 @@ TEST(PassesTest, instruction_count_pass) {
     std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
     std::ifstream stream;
     stream.open("register_defs.s");
-    parser p1(stream, map);
+    asm_language_parser p1(stream, map);
     pass_manager manager = create_pass_manager(map);
     manager.run_analysis_passes(AST);
     int count = manager.analysis_passes["instruction_counting"]->get_analysis_result()[0];
@@ -117,7 +117,7 @@ TEST(PassesTest, loop_less) {
     std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
     std::ifstream stream;
     stream.open("register_defs.s");
-    parser p1(stream, map);
+    asm_language_parser p1(stream, map);
 
     pass_manager manager = create_pass_manager(map);
     manager.run_morphing_passes(AST);
@@ -152,7 +152,7 @@ TEST(PassesTest, loop_less_equal) {
     std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
     std::ifstream stream;
     stream.open("register_defs.s");
-    parser p1(stream, map);
+    asm_language_parser p1(stream, map);
     pass_manager manager = create_pass_manager(map);
     manager.run_morphing_passes(AST);
 
@@ -186,7 +186,7 @@ TEST(PassesTest, loop_more) {
     std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
     std::ifstream stream;
     stream.open("register_defs.s");
-    parser p1(stream, map);
+    asm_language_parser p1(stream, map);
     pass_manager manager = create_pass_manager(map);
     manager.run_morphing_passes(AST);
 
@@ -221,7 +221,7 @@ TEST(PassesTest, loop_more_equal) {
     std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
     std::ifstream stream;
     stream.open("register_defs.s");
-    parser p1(stream, map);
+    asm_language_parser p1(stream, map);
     pass_manager manager = create_pass_manager(map);
     manager.run_morphing_passes(AST);
 

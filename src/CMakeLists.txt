@@ -1,15 +1,22 @@
 set(FCORE_LIB_SRCS code_elements/instruction.cpp ../includes/fcore_has/code_elements/instruction.h
-        frontend/Tree_visitor.cpp ../includes/fcore_has/frontend/Tree_visitor.hpp ../includes/fcore_has/fCore_isa.hpp
-        frontend/file_parser.cpp ../includes/fcore_has/frontend/file_parser.h backend/output_generator.cpp ../includes/fcore_has/backend/output_generator.hpp
-        code_elements/code_element.cpp ../includes/fcore_has/code_elements/code_element.hpp passes/pass_manager.cpp ../includes/fcore_has/passes/pass_manager.hpp
+        frontend/asm/Tree_visitor.cpp ../includes/fcore_has/frontend/asm/Tree_visitor.hpp
+        ../includes/fcore_has/fCore_isa.hpp
+        frontend/asm/file_parser.cpp ../includes/fcore_has/frontend/asm/file_parser.h
+        backend/output_generator.cpp ../includes/fcore_has/backend/output_generator.hpp
+        code_elements/code_element.cpp ../includes/fcore_has/code_elements/code_element.hpp
+        passes/pass_manager.cpp ../includes/fcore_has/passes/pass_manager.hpp
         passes/loop_implementation_pass.cpp ../includes/fcore_has/passes/loop_implementation_pass.hpp
-        code_elements/for_loop.cpp ../includes/fcore_has/code_elements/for_loop.hpp ../includes/fcore_has/passes/passes.hpp passes/pseudo_instructions_pass.cpp
+        code_elements/for_loop.cpp ../includes/fcore_has/code_elements/for_loop.hpp
+        ../includes/fcore_has/passes/passes.hpp passes/pseudo_instructions_pass.cpp
         ../includes/fcore_has/passes/pseudo_instructions_pass.hpp passes/instruction_counting_pass.cpp ../includes/fcore_has/passes/instruction_counting_pass.hpp
-        code_elements/variable.cpp ../includes/fcore_has/code_elements/variable.hpp passes/register_allocation_pass.cpp
-        ../includes/fcore_has/passes/register_allocation_pass.hpp frontend/variable_map.cpp ../includes/fcore_has/frontend/variable_map.hpp
+        code_elements/variable.cpp ../includes/fcore_has/code_elements/variable.hpp
+        passes/register_allocation_pass.cpp ../includes/fcore_has/passes/register_allocation_pass.hpp
+        frontend/asm/variable_map.cpp ../includes/fcore_has/frontend/asm/variable_map.hpp
         passes/variable_lifetime_mapping.cpp ../includes/fcore_has/passes/variable_lifetime_mapping.hpp
-        frontend/register_map.cpp ../includes/fcore_has/frontend/register_map.hpp passes/load_intercalation_pass.cpp
-        ../includes/fcore_has/passes/load_intercalation_pass.hpp fcore_has.cpp ../includes/fcore_has/fcore_has.hpp frontend/ErrorHandling.cpp ../includes/fcore_has/frontend/ErrorHandling.hpp)
+        frontend/asm/register_map.cpp ../includes/fcore_has/frontend/asm/register_map.hpp
+        passes/load_intercalation_pass.cpp ../includes/fcore_has/passes/load_intercalation_pass.hpp
+        fcore_has.cpp ../includes/fcore_has/fcore_has.hpp
+        frontend/asm/ErrorHandling.cpp ../includes/fcore_has/frontend/asm/ErrorHandling.hpp)
 
 add_library(fCore_lib_internal ${FCORE_LIB_SRCS})
 

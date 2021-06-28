@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "fcore_has/frontend/variable_map.hpp"
+#include "fcore_has/frontend/asm/variable_map.hpp"
 
 #include <utility>
 
