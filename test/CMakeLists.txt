@@ -21,7 +21,7 @@ find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
 # Link runTests with what we want to test and the GTest and pthread library
-target_link_libraries(test_target ${GTEST_LIBRARIES} pthread fs_parser)
+target_link_libraries(test_target ${GTEST_LIBRARIES} pthread asm_parser_lib)
 
 
 configure_file(asm_files/test_add.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

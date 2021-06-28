@@ -20,7 +20,7 @@ set(FCORE_LIB_SRCS code_elements/instruction.cpp ../includes/fcore_has/code_elem
 
 add_library(fCore_lib_internal ${FCORE_LIB_SRCS})
 
-target_link_libraries(fCore_lib_internal fs_parser)
+target_link_libraries(fCore_lib_internal asm_parser_lib)
 
 
 add_executable(fCore_has main.cpp)
@@ -30,7 +30,7 @@ target_link_libraries(fCore_has fCore_lib_internal)
 
 
 add_library(fchas SHARED ${FCORE_LIB_SRCS})
-target_link_libraries(fchas fcparser)
+target_link_libraries(fchas asm_parser_libs)
 set_property(TARGET fchas PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 install(TARGETS fchas
@@ -44,6 +44,6 @@ install(DIRECTORY ../includes/fcore_has # source directory
 if(NOT ${PY_MODULE_EXCLUDE})
     add_definitions(-DPYTHON_MODULE)
     pybind11_add_module(fCore_has_py  ${FCORE_LIB_SRCS})
-    target_link_libraries(fCore_has_py PRIVATE fcparser)
+    target_link_libraries(fCore_has_py PRIVATE asm_parser_libs)
     target_link_libraries(fCore_has_py PRIVATE antlr4-runtime)
 endif(NOT ${PY_MODULE_EXCLUDE})
