@@ -1,51 +1,51 @@
 
-// Generated from /home/fils/git/fCore_has/src/frontend/fs_grammar.g4 by ANTLR 4.9.1
+// Generated from /home/fils/git/fCore_has/src/frontend/asm_grammar.g4 by ANTLR 4.9.1
 
 
-#include "fs_grammarLexer.h"
+#include "asm_grammarLexer.h"
 
 
 using namespace antlr4;
 
 using namespace asm_parser;
 
-fs_grammarLexer::fs_grammarLexer(CharStream *input) : Lexer(input) {
+asm_grammarLexer::asm_grammarLexer(CharStream *input) : Lexer(input) {
   _interpreter = new atn::LexerATNSimulator(this, _atn, _decisionToDFA, _sharedContextCache);
 }
 
-fs_grammarLexer::~fs_grammarLexer() {
+asm_grammarLexer::~asm_grammarLexer() {
   delete _interpreter;
 }
 
-std::string fs_grammarLexer::getGrammarFileName() const {
-  return "fs_grammar.g4";
+std::string asm_grammarLexer::getGrammarFileName() const {
+  return "asm_grammar.g4";
 }
 
-const std::vector<std::string>& fs_grammarLexer::getRuleNames() const {
+const std::vector<std::string>& asm_grammarLexer::getRuleNames() const {
   return _ruleNames;
 }
 
-const std::vector<std::string>& fs_grammarLexer::getChannelNames() const {
+const std::vector<std::string>& asm_grammarLexer::getChannelNames() const {
   return _channelNames;
 }
 
-const std::vector<std::string>& fs_grammarLexer::getModeNames() const {
+const std::vector<std::string>& asm_grammarLexer::getModeNames() const {
   return _modeNames;
 }
 
-const std::vector<std::string>& fs_grammarLexer::getTokenNames() const {
+const std::vector<std::string>& asm_grammarLexer::getTokenNames() const {
   return _tokenNames;
 }
 
-dfa::Vocabulary& fs_grammarLexer::getVocabulary() const {
+dfa::Vocabulary& asm_grammarLexer::getVocabulary() const {
   return _vocabulary;
 }
 
-const std::vector<uint16_t> fs_grammarLexer::getSerializedATN() const {
+const std::vector<uint16_t> asm_grammarLexer::getSerializedATN() const {
   return _serializedATN;
 }
 
-const atn::ATN& fs_grammarLexer::getATN() const {
+const atn::ATN& asm_grammarLexer::getATN() const {
   return _atn;
 }
 
@@ -53,14 +53,14 @@ const atn::ATN& fs_grammarLexer::getATN() const {
 
 
 // Static vars and initialization.
-std::vector<dfa::DFA> fs_grammarLexer::_decisionToDFA;
-atn::PredictionContextCache fs_grammarLexer::_sharedContextCache;
+std::vector<dfa::DFA> asm_grammarLexer::_decisionToDFA;
+atn::PredictionContextCache asm_grammarLexer::_sharedContextCache;
 
 // We own the ATN which in turn owns the ATN states.
-atn::ATN fs_grammarLexer::_atn;
-std::vector<uint16_t> fs_grammarLexer::_serializedATN;
+atn::ATN asm_grammarLexer::_atn;
+std::vector<uint16_t> asm_grammarLexer::_serializedATN;
 
-std::vector<std::string> fs_grammarLexer::_ruleNames = {
+std::vector<std::string> asm_grammarLexer::_ruleNames = {
   "T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", "T__7", "T__8", 
   "T__9", "T__10", "T__11", "T__12", "T__13", "T__14", "T__15", "T__16", 
   "T__17", "T__18", "T__19", "T__20", "T__21", "T__22", "T__23", "T__24", 
@@ -70,15 +70,15 @@ std::vector<std::string> fs_grammarLexer::_ruleNames = {
   "String", "Letter", "Digit", "Label", "WS", "BlockComment", "LineComment"
 };
 
-std::vector<std::string> fs_grammarLexer::_channelNames = {
+std::vector<std::string> asm_grammarLexer::_channelNames = {
   "DEFAULT_TOKEN_CHANNEL", "HIDDEN"
 };
 
-std::vector<std::string> fs_grammarLexer::_modeNames = {
+std::vector<std::string> asm_grammarLexer::_modeNames = {
   "DEFAULT_MODE"
 };
 
-std::vector<std::string> fs_grammarLexer::_literalNames = {
+std::vector<std::string> asm_grammarLexer::_literalNames = {
   "", "','", "'ldc'", "'stop'", "'nop'", "'add'", "'sub'", "'mul'", "'and'", 
   "'or'", "'satp'", "'satn'", "'itf'", "'fti'", "'not'", "'rec'", "'ldr'", 
   "'ble'", "'bgt'", "'beq'", "'bne'", "'mov'", "'for('", "';'", "')'", "'{'", 
@@ -86,18 +86,18 @@ std::vector<std::string> fs_grammarLexer::_literalNames = {
   "'let'", "'const'", "'input'", "'output'"
 };
 
-std::vector<std::string> fs_grammarLexer::_symbolicNames = {
+std::vector<std::string> asm_grammarLexer::_symbolicNames = {
   "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
   "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
   "", "", "", "Register", "Identifier", "Hexnum", "Integer", "Octalnum", 
   "FloatingPointLiteral", "String", "Label", "WS", "BlockComment", "LineComment"
 };
 
-dfa::Vocabulary fs_grammarLexer::_vocabulary(_literalNames, _symbolicNames);
+dfa::Vocabulary asm_grammarLexer::_vocabulary(_literalNames, _symbolicNames);
 
-std::vector<std::string> fs_grammarLexer::_tokenNames;
+std::vector<std::string> asm_grammarLexer::_tokenNames;
 
-fs_grammarLexer::Initializer::Initializer() {
+asm_grammarLexer::Initializer::Initializer() {
   // This code could be in a static initializer lambda, but VS doesn't allow access to private class members from there.
 	for (size_t i = 0; i < _symbolicNames.size(); ++i) {
 		std::string name = _vocabulary.getLiteralName(i);
@@ -393,4 +393,4 @@ fs_grammarLexer::Initializer::Initializer() {
   }
 }
 
-fs_grammarLexer::Initializer fs_grammarLexer::_init;
+asm_grammarLexer::Initializer asm_grammarLexer::_init;

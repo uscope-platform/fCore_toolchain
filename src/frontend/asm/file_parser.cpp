@@ -37,11 +37,11 @@ void asm_language_parser::construct_parser(std::istream &stream, std::shared_ptr
 
 
     ANTLRInputStream input(stream);
-    asm_parser::fs_grammarLexer lexer(&input);
+    asm_parser::asm_grammarLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
 
     tokens.fill();
-    asm_parser::fs_grammarParser parser(&tokens);
+    asm_parser::asm_grammarParser parser(&tokens);
     ErrorHandling handler;
     parser.addErrorListener(&handler);
     tree::ParseTree *Tree = parser.program();

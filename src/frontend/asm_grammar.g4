@@ -15,7 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-grammar fs_grammar;
+grammar asm_grammar;
+
 program : code;
 code : ( instruction |for_block | pragma |declaration)+;
 

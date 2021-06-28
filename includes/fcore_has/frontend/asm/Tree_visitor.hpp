@@ -18,8 +18,8 @@
 #ifndef FCORE_HAS_TREE_VISITOR_HPP
 #define FCORE_HAS_TREE_VISITOR_HPP
 
-#include "fcore_has/asm_parser/fs_grammarBaseListener.h"
-#include "fcore_has/asm_parser/fs_grammarParser.h"
+#include "fcore_has/asm_parser/asm_grammarBaseListener.h"
+#include "fcore_has/asm_parser/asm_grammarParser.h"
 #include "fcore_has/fCore_isa.hpp"
 #include "fcore_has/code_elements/instruction.h"
 #include "fcore_has/code_elements/for_loop.hpp"
@@ -35,27 +35,27 @@
 
 typedef std::unordered_map<std::string, std::shared_ptr<variable>>  varmap_t;
 
-class Tree_visitor : public  asm_parser::fs_grammarBaseListener{
+class Tree_visitor : public  asm_parser::asm_grammarBaseListener{
 public:
     explicit Tree_visitor(std::shared_ptr<variable_map> map);
-    void exitImm_instr(asm_parser::fs_grammarParser::Imm_instrContext * ctx) override;
-    void exitReg_instr(asm_parser::fs_grammarParser::Reg_instrContext * ctx) override;
-    void exitPseudo_instr(asm_parser::fs_grammarParser::Pseudo_instrContext *ctx) override;
-    void exitIndep_instr(asm_parser::fs_grammarParser::Indep_instrContext * ctx) override;
-    void exitBranch_instr(asm_parser::fs_grammarParser::Branch_instrContext * ctx) override;
-    void exitConv_instr(asm_parser::fs_grammarParser::Conv_instrContext *ctx) override;
-    void exitLoad_instr(asm_parser::fs_grammarParser::Load_instrContext *ctx) override;
-    void enterFor_block(asm_parser::fs_grammarParser::For_blockContext * ctx) override;
-    void exitFor_block(asm_parser::fs_grammarParser::For_blockContext * ctx) override;
-    void exitProgram(asm_parser::fs_grammarParser::ProgramContext * ctx) override;
-    void enterProgram(asm_parser::fs_grammarParser::ProgramContext *ctx) override;
-    void exitPragma(asm_parser::fs_grammarParser::PragmaContext *ctx) override;
-    void exitConstant_decl(asm_parser::fs_grammarParser::Constant_declContext *ctx) override;
-    void exitVariable_decl(asm_parser::fs_grammarParser::Variable_declContext *ctx) override;
-    void exitInput_decl(asm_parser::fs_grammarParser::Input_declContext *ctx) override;
-    void exitOutput_decl(asm_parser::fs_grammarParser::Output_declContext *ctx) override;
-    void exitImmediate(asm_parser::fs_grammarParser::ImmediateContext *ctx) override;
-    void exitFloat_const(asm_parser::fs_grammarParser::Float_constContext *ctx) override;
+    void exitImm_instr(asm_parser::asm_grammarParser::Imm_instrContext * ctx) override;
+    void exitReg_instr(asm_parser::asm_grammarParser::Reg_instrContext * ctx) override;
+    void exitPseudo_instr(asm_parser::asm_grammarParser::Pseudo_instrContext *ctx) override;
+    void exitIndep_instr(asm_parser::asm_grammarParser::Indep_instrContext * ctx) override;
+    void exitBranch_instr(asm_parser::asm_grammarParser::Branch_instrContext * ctx) override;
+    void exitConv_instr(asm_parser::asm_grammarParser::Conv_instrContext *ctx) override;
+    void exitLoad_instr(asm_parser::asm_grammarParser::Load_instrContext *ctx) override;
+    void enterFor_block(asm_parser::asm_grammarParser::For_blockContext * ctx) override;
+    void exitFor_block(asm_parser::asm_grammarParser::For_blockContext * ctx) override;
+    void exitProgram(asm_parser::asm_grammarParser::ProgramContext * ctx) override;
+    void enterProgram(asm_parser::asm_grammarParser::ProgramContext *ctx) override;
+    void exitPragma(asm_parser::asm_grammarParser::PragmaContext *ctx) override;
+    void exitConstant_decl(asm_parser::asm_grammarParser::Constant_declContext *ctx) override;
+    void exitVariable_decl(asm_parser::asm_grammarParser::Variable_declContext *ctx) override;
+    void exitInput_decl(asm_parser::asm_grammarParser::Input_declContext *ctx) override;
+    void exitOutput_decl(asm_parser::asm_grammarParser::Output_declContext *ctx) override;
+    void exitImmediate(asm_parser::asm_grammarParser::ImmediateContext *ctx) override;
+    void exitFloat_const(asm_parser::asm_grammarParser::Float_constContext *ctx) override;
     ast_t get_program();
 
 private:

@@ -1,5 +1,5 @@
 
-// Generated from /home/fils/git/fCore_has/src/frontend/fs_grammar.g4 by ANTLR 4.9.1
+// Generated from /home/fils/git/fCore_has/src/frontend/asm_grammar.g4 by ANTLR 4.9.1
 
 #pragma once
 
@@ -10,7 +10,7 @@
 namespace asm_parser {
 
 
-class  fs_grammarLexer : public antlr4::Lexer {
+class  asm_grammarLexer : public antlr4::Lexer {
 public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
@@ -24,8 +24,8 @@ public:
     LineComment = 49
   };
 
-  explicit fs_grammarLexer(antlr4::CharStream *input);
-  ~fs_grammarLexer();
+  explicit asm_grammarLexer(antlr4::CharStream *input);
+  ~asm_grammarLexer();
 
   virtual std::string getGrammarFileName() const override;
   virtual const std::vector<std::string>& getRuleNames() const override;

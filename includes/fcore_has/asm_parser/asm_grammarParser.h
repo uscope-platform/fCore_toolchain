@@ -1,5 +1,5 @@
 
-// Generated from /home/fils/git/fCore_has/src/frontend/fs_grammar.g4 by ANTLR 4.9.1
+// Generated from /home/fils/git/fCore_has/src/frontend/asm_grammar.g4 by ANTLR 4.9.1
 
 #pragma once
 
@@ -10,7 +10,7 @@
 namespace asm_parser {
 
 
-class  fs_grammarParser : public antlr4::Parser {
+class  asm_grammarParser : public antlr4::Parser {
 public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
@@ -35,8 +35,8 @@ public:
     RuleConstant_decl = 28, RuleInput_decl = 29, RuleOutput_decl = 30
   };
 
-  explicit fs_grammarParser(antlr4::TokenStream *input);
-  ~fs_grammarParser();
+  explicit asm_grammarParser(antlr4::TokenStream *input);
+  ~asm_grammarParser();
 
   virtual std::string getGrammarFileName() const override;
   virtual const antlr4::atn::ATN& getATN() const override { return _atn; };
