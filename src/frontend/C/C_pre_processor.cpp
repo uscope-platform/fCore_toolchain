@@ -5,11 +5,13 @@
 
 #include "frontend/C/C_pre_processor.h"
 
-C_pre_processor::C_pre_processor(std::istream &file, std::shared_ptr<variable_map> varmap) {
+C_pre_processor::C_pre_processor(std::istream &file, std::shared_ptr<variable_map> varmap, std::shared_ptr<define_map> defmap) {
     working_content = std::string((std::istreambuf_iterator<char>(file)),std::istreambuf_iterator<char>());
+    dmap = defmap;
     vmap = varmap;
     remove_comments();
     process_pragmas();
+    process_define();
 }
 
 std::string  C_pre_processor::get_preprocessed_file() {
@@ -69,5 +71,19 @@ void C_pre_processor::process_pragmas() {
         }
 
     }
-    int i = 0;
+}
+
+void C_pre_processor::process_define() {
+    std::regex define_regex(R"(#define\s+([A-Za-z0-9_]*)\s+(.*))");
+    std::istringstream ss(working_content);
+    std::string line;
+    std::smatch match;
+    while (std::getline(ss,line)){
+        if(std::regex_match( line,match,define_regex)){
+            std::string name = match.str(1);
+            std::string value = match.str(2);
+            std::shared_ptr<define> def = std::make_shared<define>(0, name, value);
+            dmap->insert(name, def);
+        }
+    }
 }

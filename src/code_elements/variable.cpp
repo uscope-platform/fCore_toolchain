@@ -77,13 +77,13 @@ uint32_t variable::get_value() const {
 
 bool operator==(const variable &lhs, const variable &rhs) {
     bool cond = lhs.type == rhs.type;
-    cond |= lhs.first_occurrence == rhs.first_occurrence;
-    cond |= lhs.last_occurrence == rhs.last_occurrence;
-    cond |= lhs.name == rhs.name;
-    cond |= lhs.bound_register == rhs.bound_register;
-    cond |= lhs.float_const == rhs.float_const;
-    cond |= lhs.constant == rhs.constant;
-    cond |= lhs.used == rhs.used;
+    cond &= lhs.first_occurrence == rhs.first_occurrence;
+    cond &= lhs.last_occurrence == rhs.last_occurrence;
+    cond &= lhs.name == rhs.name;
+    cond &= lhs.bound_register == rhs.bound_register;
+    cond &= lhs.float_const == rhs.float_const;
+    cond &= lhs.constant == rhs.constant;
+    cond &= lhs.used == rhs.used;
 
     return cond;
 }

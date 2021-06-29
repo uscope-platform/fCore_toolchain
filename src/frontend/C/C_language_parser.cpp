@@ -17,21 +17,25 @@
 
 #include "frontend/C/C_language_parser.h"
 
+#include <utility>
+
 using namespace antlr4;
 
 C_language_parser::C_language_parser(std::istream &stream) {
     std::shared_ptr<variable_map> varmap = std::make_shared<variable_map>();
-    construct_parser(stream, varmap);
+    std::shared_ptr<define_map> defmap = std::make_shared<define_map>();
+    construct_parser(stream, varmap, defmap);
 }
 
-C_language_parser::C_language_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap) {
+C_language_parser::C_language_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap, std::shared_ptr<define_map> existing_defmap) {
 
-    construct_parser(stream, existing_varmap);
+
+    construct_parser(stream, existing_varmap, std::move(existing_defmap));
 }
 
-void C_language_parser::construct_parser(std::istream &stream, std::shared_ptr<variable_map> &existing_varmap){
+void C_language_parser::construct_parser(std::istream &stream, std::shared_ptr<variable_map> &existing_varmap, const std::shared_ptr<define_map>& existing_defmap){
 
-    pre_processor(stream, existing_varmap);
+    pre_processor(stream, existing_varmap, existing_defmap);
 
     ANTLRInputStream input(stream);
 
@@ -49,7 +53,7 @@ void C_language_parser::construct_parser(std::istream &stream, std::shared_ptr<v
 
 }
 
-void C_language_parser::pre_processor(std::istream &stream, const std::shared_ptr<variable_map>& existing_varmap) {
-    C_pre_processor preproc(stream, existing_varmap);
+void C_language_parser::pre_processor(std::istream &stream, const std::shared_ptr<variable_map>& existing_varmap, const std::shared_ptr<define_map>& existing_defmap) {
+    C_pre_processor preproc(stream, existing_varmap, existing_defmap);
     preprocessed_content = preproc.get_preprocessed_file();
 }

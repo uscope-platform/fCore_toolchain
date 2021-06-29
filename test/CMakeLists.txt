@@ -3,6 +3,7 @@ set(TESTED_SOURCES
         ../src/code_elements/code_element.cpp
         ../src/code_elements/for_loop.cpp
         ../src/code_elements/variable.cpp
+        ../src/code_elements/define.cpp
         ../src/code_elements/instruction.cpp
         ../src/passes/pass_manager.cpp
         ../src/passes/loop_implementation_pass.cpp
@@ -12,6 +13,7 @@ set(TESTED_SOURCES
         ../src/passes/load_intercalation_pass.cpp
         ../src/passes/instruction_counting_pass.cpp
         ../src/frontend/variable_map.cpp
+        ../src/frontend/define_map.cpp
         ../src/frontend/asm/register_map.cpp
         ../src/frontend/asm/AsmErrorHandling.cpp
         ../src/frontend/asm/asm_language_parser.cpp
@@ -58,6 +60,7 @@ configure_file(asm_files/register_defs.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_main_add.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_preproc_comments.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_preproc_pragmas.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/test_preproc_define.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
 
 

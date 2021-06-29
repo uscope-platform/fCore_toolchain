@@ -38,10 +38,10 @@
 class C_language_parser{
     public:
     explicit C_language_parser(std::istream &stream);
-    C_language_parser(std::istream &stream, std::shared_ptr<variable_map> new_varmap);
+    C_language_parser(std::istream &stream, std::shared_ptr<variable_map> new_varmap, std::shared_ptr<define_map> new_defmap);
 
-    void construct_parser(std::istream &stream, std::shared_ptr<variable_map> &existing_varmap);
-    void pre_processor(std::istream &stream, const std::shared_ptr<variable_map>& existing_varmap);
+    void construct_parser(std::istream &stream, std::shared_ptr<variable_map> &existing_varmap, const std::shared_ptr<define_map>& existing_defmap);
+    void pre_processor(std::istream &stream, const std::shared_ptr<variable_map>& existing_varmap, const std::shared_ptr<define_map>& existing_defmap);
 
     unsigned int n_inputs() const {return n_inputs_;};
     unsigned int n_outputs() const {return n_outputs_;};

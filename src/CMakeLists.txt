@@ -1,24 +1,27 @@
 set(FCORE_LIB_SRCS code_elements/instruction.cpp
         frontend/asm/AsmTree_visitor.cpp
         frontend/asm/asm_language_parser.cpp
+        frontend/asm/AsmErrorHandling.cpp
+        frontend/C/C_language_parser.cpp
+        frontend/C/C_pre_processor.cpp
+        frontend/variable_map.cpp
+        frontend/define_map.cpp
+        frontend/asm/register_map.cpp
         backend/output_generator.cpp
         code_elements/code_element.cpp
+        code_elements/define.cpp
+        code_elements/variable.cpp
+        code_elements/for_loop.cpp
         passes/pass_manager.cpp
         passes/loop_implementation_pass.cpp
-        code_elements/for_loop.cpp
         passes/pseudo_instructions_pass.cpp
         passes/instruction_counting_pass.cpp
-        code_elements/variable.cpp
         passes/register_allocation_pass.cpp
-        frontend/variable_map.cpp
         passes/variable_lifetime_mapping.cpp
-        frontend/asm/register_map.cpp
         passes/load_intercalation_pass.cpp
         fcore_has.cpp
         fcore_cc.cpp
-        frontend/asm/AsmErrorHandling.cpp
-        frontend/C/C_language_parser.cpp
-        frontend/C/C_pre_processor.cpp)
+        )
 
 # Regular library for regular use
 add_library(fCore_lib_internal ${FCORE_LIB_SRCS})
