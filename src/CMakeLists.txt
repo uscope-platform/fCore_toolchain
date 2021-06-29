@@ -4,6 +4,8 @@ set(FCORE_LIB_SRCS code_elements/instruction.cpp
         frontend/asm/AsmErrorHandling.cpp
         frontend/C/C_language_parser.cpp
         frontend/C/C_pre_processor.cpp
+        frontend/C/C_ErrorHandling.cpp
+        frontend/C/C_Tree_visitor.cpp
         frontend/variable_map.cpp
         frontend/define_map.cpp
         frontend/asm/register_map.cpp
