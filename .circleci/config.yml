@@ -7,15 +7,10 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Installing GCC
+          name: Installing dependencies
           command: |
                   sudo apt update
-                  sudo apt install -y gcc g++ cmake pkg-config uuid uuid-dev uuid-runtime libantlr4-runtime4.8 libantlr4-runtime-dev
-                  git clone https://github.com/catchorg/Catch2.git
-                  cd Catch2
-                  cmake -Bbuild -H. -DBUILD_TESTING=OFF
-                  sudo cmake --build build/ --target install
-                  cd ..
+                  sudo apt install -y gcc g++ cmake pkg-config uuid uuid-dev uuid-runtime libantlr4-runtime4.8 libantlr4-runtime-dev libgtest-dev
       - run:
           name: Creating Build Files
           command: 'cmake -H. -Bbuild -DPY_MODULE_EXCLUDE=ON'
@@ -27,6 +22,6 @@ jobs:
           command: |
               cd build/test
               mkdir test-reports
-              ./test_target -r junit > test-reports/report.xml
+              ./test_target -gtest_output="xml:report.xml"
       - store_test_results:
           path: ~/project/build/test/test-reports
