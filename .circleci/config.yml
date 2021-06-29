@@ -22,6 +22,6 @@ jobs:
           command: |
               cd build/test
               mkdir test-reports
-              ./test_target -gtest_output="xml:report.xml"
+              ./test_target --gtest_output="xml:test-reports/report.xml"
       - store_test_results:
           path: ~/project/build/test/test-reports
