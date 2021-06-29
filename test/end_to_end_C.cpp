@@ -28,6 +28,7 @@ TEST( EndToEndC, simple_file ) {
     std::vector<std::string> include_files = {};
     std::ifstream ifs(input_file);
 
-    fcore_cc compiler_engine(ifs, include_files);
+   // fcore_cc compiler_engine(ifs, include_files);
 
 }
+

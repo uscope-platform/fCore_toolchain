@@ -29,7 +29,10 @@ set(TEST_SOURCES
         passes.cpp
         end_to_end_asm.cpp
         testing_main.cpp
-        end_to_end_C.cpp)
+        end_to_end_C.cpp
+        C_frontend.cpp
+        )
+
 
 add_executable(test_target ${TESTED_SOURCES} ${TEST_SOURCES})
 
@@ -52,6 +55,7 @@ configure_file(asm_files/register_defs.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
 #  C TESTING FILES
 configure_file(C_files/test_main_add.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/test_preproc.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
 
 

@@ -23,6 +23,7 @@
 #include <vector>
 #include <utility>
 #include <regex>
+#include <gtest/gtest_prod.h>
 
 #include "code_elements/code_element.hpp"
 #include "C_Tree_visitor.hpp"
@@ -45,15 +46,17 @@ class C_language_parser{
     unsigned int n_variables() const {return n_variables_;};
 
     ast_t AST;
-
     std::string error;
 
-
     private:
+
+    FRIEND_TEST(cFrontend, preprocessor_decomment );
+
 
     unsigned int n_inputs_ = 0;
     unsigned int n_outputs_ = 0;
     unsigned int n_variables_ = 0;
+    std::string preprocessed_content;
 };
 
 
