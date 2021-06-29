@@ -15,9 +15,9 @@ set(TESTED_SOURCES
         ../src/frontend/asm/register_map.cpp
         ../src/frontend/asm/AsmErrorHandling.cpp
         ../src/frontend/asm/asm_language_parser.cpp
-        ../src/frontend/C/c_language_parser.cpp
-        ../src/frontend/C/CErrorHandling.cpp
-        ../src/frontend/C/CTree_visitor.cpp
+        ../src/frontend/C/C_language_parser.cpp
+        ../src/frontend/C/C_ErrorHandling.cpp
+        ../src/frontend/C/C_Tree_visitor.cpp
         ../src/frontend/asm/AsmTree_visitor.cpp
         ../src/fcore_has.cpp
         ../src/fcore_cc.cpp

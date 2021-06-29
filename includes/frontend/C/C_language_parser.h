@@ -22,28 +22,29 @@
 #include <sstream>
 #include <vector>
 #include <utility>
+#include <regex>
 
 #include "code_elements/code_element.hpp"
-#include "CTree_visitor.hpp"
-#include "code_elements/code_element.hpp"
-#include "CErrorHandling.hpp"
+#include "C_Tree_visitor.hpp"
+#include "C_ErrorHandling.hpp"
 
 #include "antlr4-runtime.h"
 #include "C_parser/C_grammarLexer.h"
 #include "C_parser/C_grammarParser.h"
 
-class c_language_parser{
+class C_language_parser{
     public:
-    explicit c_language_parser(std::istream &stream);
-    c_language_parser(std::istream &stream, std::shared_ptr<variable_map> new_varmap);
+    explicit C_language_parser(std::istream &stream);
+    C_language_parser(std::istream &stream, std::shared_ptr<variable_map> new_varmap);
+
     void construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap);
+    void pre_processor(std::istream &stream, const std::shared_ptr<variable_map>& existing_varmap);
 
     unsigned int n_inputs() const {return n_inputs_;};
     unsigned int n_outputs() const {return n_outputs_;};
     unsigned int n_variables() const {return n_variables_;};
 
     ast_t AST;
-    varmap_t var_map;
 
     std::string error;
 

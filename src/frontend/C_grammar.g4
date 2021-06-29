@@ -432,6 +432,7 @@ blockItemList
 blockItem
     :   statement
     |   declaration
+    |   PragmaDirective
     ;
 
 expressionStatement
@@ -835,8 +836,8 @@ SChar
     ;
 
 ComplexDefine
-    :   '#' Whitespace? 'define'  ~[#\r\n]*
-        -> skip
+    :   '#' Whitespace? 'define'  ~[\r\n]*
+    -> skip
     ;
 
 IncludeDirective
@@ -870,7 +871,6 @@ LineDirective
 
 PragmaDirective
     :   '#' Whitespace? 'pragma' Whitespace ~[\r\n]*
-        -> skip
     ;
 
 Whitespace

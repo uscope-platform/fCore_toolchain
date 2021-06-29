@@ -15,27 +15,24 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "frontend/C/c_language_parser.h"
-
-
-
+#include "frontend/C/C_language_parser.h"
 
 using namespace antlr4;
 
-
-c_language_parser::c_language_parser(std::istream &stream) {
+C_language_parser::C_language_parser(std::istream &stream) {
     variable_map varmap;
 
     construct_parser(stream, std::make_shared<variable_map>(varmap));
 }
 
-c_language_parser::c_language_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap) {
+C_language_parser::C_language_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap) {
 
     construct_parser(stream, std::move(existing_varmap));
 }
 
-void c_language_parser::construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap){
+void C_language_parser::construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap){
 
+    pre_processor(stream, existing_varmap);
 
     ANTLRInputStream input(stream);
 
@@ -44,11 +41,25 @@ void c_language_parser::construct_parser(std::istream &stream, std::shared_ptr<v
 
     tokens.fill();
     C_parser::C_grammarParser parser(&tokens);
-    CErrorHandling handler;
+    C_ErrorHandling handler;
     parser.addErrorListener(&handler);
     tree::ParseTree *Tree = parser.compilationUnit();
-    CTree_visitor visitor(std::move(existing_varmap));
+    C_Tree_visitor visitor(std::move(existing_varmap));
     tree::ParseTreeWalker::DEFAULT.walk(&visitor, Tree);
     AST = visitor.get_program();
+
+}
+
+void C_language_parser::pre_processor(std::istream &stream, const std::shared_ptr<variable_map>& existing_varmap) {
+    std::string line;
+    std::ostringstream decommented_file;
+
+    std::regex multiline_comment_start("^\\/\\*");
+    std::regex multiline_comment_end("^\\*\\/");
+    std::regex line_comment("^\\*\\/");
+    while (std::getline(stream,line)){
+
+        decommented_file << line + "/n";
+    }
 
 }

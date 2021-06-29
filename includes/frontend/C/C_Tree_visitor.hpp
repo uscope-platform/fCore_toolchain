@@ -38,9 +38,9 @@
 
 typedef std::unordered_map<std::string, std::shared_ptr<variable>>  varmap_t;
 
-class CTree_visitor : public  C_parser::C_grammarBaseListener{
+class C_Tree_visitor : public  C_parser::C_grammarBaseListener{
 public:
-    explicit CTree_visitor(std::shared_ptr<variable_map> map);
+    explicit C_Tree_visitor(std::shared_ptr<variable_map> map);
     ast_t get_program();
 
 private:

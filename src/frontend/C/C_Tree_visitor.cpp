@@ -15,19 +15,19 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "frontend/C/CTree_visitor.hpp"
+#include "frontend/C/C_Tree_visitor.hpp"
 
 
-CTree_visitor::CTree_visitor(std::shared_ptr<variable_map> map) {
+C_Tree_visitor::C_Tree_visitor(std::shared_ptr<variable_map> map) {
     varmap = std::move(map);
 }
 
 
-ast_t CTree_visitor::get_program() {
+ast_t C_Tree_visitor::get_program() {
     return program_head;
 }
 
-std::shared_ptr<variable> CTree_visitor::get_variable(const std::string &variable_name, bool is_const) const {
+std::shared_ptr<variable> C_Tree_visitor::get_variable(const std::string &variable_name, bool is_const) const {
     std::shared_ptr<variable> var;
     if(!varmap->count(variable_name))
         var = std::make_shared<variable>(is_const, variable_name);

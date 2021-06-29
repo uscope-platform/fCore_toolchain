@@ -21,7 +21,7 @@
 #include "ANTLRErrorListener.h"
 #include "antlr4-runtime.h"
 
-class CErrorHandling : public  antlr4::ANTLRErrorListener {
+class C_ErrorHandling : public  antlr4::ANTLRErrorListener {
 
     /// <summary>
     /// Upon syntax error, notify any interested parties. This is not how to

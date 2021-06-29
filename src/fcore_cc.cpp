@@ -10,7 +10,7 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes) {
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>(tmp_map);
 
 
-    c_language_parser target_parser(input, variables_map);
+    C_language_parser target_parser(input, variables_map);
     AST = target_parser.AST;
 
     manager = create_pass_manager(variables_map);
