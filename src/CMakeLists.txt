@@ -17,7 +17,8 @@ set(FCORE_LIB_SRCS code_elements/instruction.cpp
         fcore_has.cpp
         fcore_cc.cpp
         frontend/asm/AsmErrorHandling.cpp
-        frontend/C/C_language_parser.cpp)
+        frontend/C/C_language_parser.cpp
+        frontend/C/C_pre_processor.cpp)
 
 # Regular library for regular use
 add_library(fCore_lib_internal ${FCORE_LIB_SRCS})

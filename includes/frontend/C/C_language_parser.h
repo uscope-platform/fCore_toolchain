@@ -28,17 +28,19 @@
 #include "code_elements/code_element.hpp"
 #include "C_Tree_visitor.hpp"
 #include "C_ErrorHandling.hpp"
+#include "C_pre_processor.h"
 
 #include "antlr4-runtime.h"
 #include "C_parser/C_grammarLexer.h"
 #include "C_parser/C_grammarParser.h"
+
 
 class C_language_parser{
     public:
     explicit C_language_parser(std::istream &stream);
     C_language_parser(std::istream &stream, std::shared_ptr<variable_map> new_varmap);
 
-    void construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap);
+    void construct_parser(std::istream &stream, std::shared_ptr<variable_map> &existing_varmap);
     void pre_processor(std::istream &stream, const std::shared_ptr<variable_map>& existing_varmap);
 
     unsigned int n_inputs() const {return n_inputs_;};
@@ -50,7 +52,8 @@ class C_language_parser{
 
     private:
 
-    FRIEND_TEST(cFrontend, preprocessor_decomment );
+    FRIEND_TEST(cFrontend, preprocessor_decomment);
+    FRIEND_TEST(cFrontend, preprocessor_pragma);
 
 
     unsigned int n_inputs_ = 0;

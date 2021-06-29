@@ -20,17 +20,16 @@
 using namespace antlr4;
 
 C_language_parser::C_language_parser(std::istream &stream) {
-    variable_map varmap;
-
-    construct_parser(stream, std::make_shared<variable_map>(varmap));
+    std::shared_ptr<variable_map> varmap = std::make_shared<variable_map>();
+    construct_parser(stream, varmap);
 }
 
 C_language_parser::C_language_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap) {
 
-    construct_parser(stream, std::move(existing_varmap));
+    construct_parser(stream, existing_varmap);
 }
 
-void C_language_parser::construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap){
+void C_language_parser::construct_parser(std::istream &stream, std::shared_ptr<variable_map> &existing_varmap){
 
     pre_processor(stream, existing_varmap);
 
@@ -51,33 +50,6 @@ void C_language_parser::construct_parser(std::istream &stream, std::shared_ptr<v
 }
 
 void C_language_parser::pre_processor(std::istream &stream, const std::shared_ptr<variable_map>& existing_varmap) {
-    std::string line;
-    std::ostringstream decommented_file;
-
-    std::regex line_comment("\\/\\/.*");
-    std::regex multiline_start("\\/\\*(.*)");
-    std::regex multiline_stop("(.*)\\*\\/");
-
-    bool in_muliline_comment = false;
-
-    while (std::getline(stream,line)){
-        bool ignore_cond_1 = std::regex_match(line, line_comment);
-        bool ignore_cond_2 = line=="";
-        bool contain_multiline_start = std::regex_search(line, multiline_start);
-        bool contain_multiline_stop = std::regex_search(line, multiline_stop);
-        if(contain_multiline_start & !contain_multiline_stop){
-            in_muliline_comment = true;
-            std::string tmp =  std::regex_replace(line, std::regex(multiline_start), "");
-            decommented_file << tmp + "\n";
-        } else if(!contain_multiline_start & contain_multiline_stop){
-            in_muliline_comment = false;
-            std::string tmp =  std::regex_replace(line, std::regex(multiline_stop), "");
-            decommented_file << tmp + "\n";
-        }else if(!(ignore_cond_1 | ignore_cond_2 | in_muliline_comment)){
-            std::string tmp = std::regex_replace(line, std::regex("\\/\\*(.*)\\*\\/"), "");
-            decommented_file << tmp + "\n";
-
-        }
-    }
-    preprocessed_content = decommented_file.str();
+    C_pre_processor preproc(stream, existing_varmap);
+    preprocessed_content = preproc.get_preprocessed_file();
 }

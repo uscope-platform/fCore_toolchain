@@ -20,7 +20,7 @@
 
 
 variable::variable() {
-    identifier = 0;
+
     name = "invalid-variable";
     constant = false;
     used = false;
@@ -31,7 +31,6 @@ variable::variable() {
 }
 
 variable::variable(bool const_status, std::string text) {
-    identifier = std::hash<std::string>{}(text);
     name = std::move(text);
     constant = const_status;
     used = false;
@@ -42,7 +41,7 @@ variable::variable(bool const_status, std::string text) {
 }
 
 variable::variable(bool const_status, std::string text, bool float_status) {
-    identifier = std::hash<std::string>{}(text);
+
     name = std::move(text);
     constant = const_status;
     used = false;
@@ -74,4 +73,17 @@ uint32_t variable::get_value() const {
         return std::stoi(name, nullptr, 0);
     }
     throw std::runtime_error("Invalid operation: the compiler tried to get the numeric value of a variable");
+}
+
+bool operator==(const variable &lhs, const variable &rhs) {
+    bool cond = lhs.type == rhs.type;
+    cond |= lhs.first_occurrence == rhs.first_occurrence;
+    cond |= lhs.last_occurrence == rhs.last_occurrence;
+    cond |= lhs.name == rhs.name;
+    cond |= lhs.bound_register == rhs.bound_register;
+    cond |= lhs.float_const == rhs.float_const;
+    cond |= lhs.constant == rhs.constant;
+    cond |= lhs.used == rhs.used;
+
+    return cond;
 }

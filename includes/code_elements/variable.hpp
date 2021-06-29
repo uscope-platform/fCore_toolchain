@@ -34,24 +34,30 @@ public:
     variable();
     variable(bool const_status, std::string text);
     variable(bool const_status, std::string text, bool is_float);
+
+
     static bool is_terminal() { return true;};
     [[nodiscard]] bool is_constant() const { return constant;};
-    [[nodiscard]] unsigned int get_identifier() const {return identifier;};
     void set_used(bool status);
     [[nodiscard]] bool is_used() const;
     [[nodiscard]] bool is_float() const {return float_const;};
+    [[nodiscard]]  unsigned int get_bound_reg() const { return bound_register;};
+    [[nodiscard]]  void set_bound_reg(unsigned int reg) { bound_register = reg;};
     [[nodiscard]] std::string to_str() const { return name;};
     [[nodiscard]] uint32_t get_value() const;
+    friend bool operator==(const variable& lhs, const variable& rhs);
+
     int type;
     unsigned int first_occurrence;
     unsigned int last_occurrence;
 
 private:
-    unsigned int identifier;
+    unsigned int bound_register;
     std::string name;
     bool float_const;
     bool constant;
     bool used;
+
 };
 
 

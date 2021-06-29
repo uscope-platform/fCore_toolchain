@@ -15,10 +15,11 @@ set(TESTED_SOURCES
         ../src/frontend/asm/register_map.cpp
         ../src/frontend/asm/AsmErrorHandling.cpp
         ../src/frontend/asm/asm_language_parser.cpp
+        ../src/frontend/asm/AsmTree_visitor.cpp
         ../src/frontend/C/C_language_parser.cpp
         ../src/frontend/C/C_ErrorHandling.cpp
         ../src/frontend/C/C_Tree_visitor.cpp
-        ../src/frontend/asm/AsmTree_visitor.cpp
+        ../src/frontend/C/C_pre_processor.cpp
         ../src/fcore_has.cpp
         ../src/fcore_cc.cpp
         )
@@ -55,7 +56,8 @@ configure_file(asm_files/register_defs.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
 #  C TESTING FILES
 configure_file(C_files/test_main_add.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_preproc.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/test_preproc_comments.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/test_preproc_pragmas.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
 
 

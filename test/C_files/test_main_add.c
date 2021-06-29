@@ -1,8 +1,8 @@
 //
 // Created by fils on 29/06/2021.
-//
+//`
 
-void main(void){
+int main(void){
 
     #pragma input(a, r1)
     int a;
