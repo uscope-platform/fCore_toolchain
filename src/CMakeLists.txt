@@ -1,6 +1,6 @@
 set(FCORE_LIB_SRCS code_elements/instruction.cpp
-        frontend/asm/Tree_visitor.cpp
-        frontend/asm/file_parser.cpp
+        frontend/asm/AsmTree_visitor.cpp
+        frontend/asm/asm_language_parser.cpp
         backend/output_generator.cpp
         code_elements/code_element.cpp
         passes/pass_manager.cpp
@@ -16,8 +16,8 @@ set(FCORE_LIB_SRCS code_elements/instruction.cpp
         passes/load_intercalation_pass.cpp
         fcore_has.cpp
         fcore_cc.cpp
-        frontend/asm/ErrorHandling.cpp
-        frontend/C/file_parser.cpp )
+        frontend/asm/AsmErrorHandling.cpp
+        frontend/C/c_language_parser.cpp)
 
 # Regular library for regular use
 add_library(fCore_lib_internal ${FCORE_LIB_SRCS})

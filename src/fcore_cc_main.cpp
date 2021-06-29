@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
     app.add_flag("--f", output_force, "force the rewriting of an existing product file");
     app.add_option("--o", output_file, "Output file path");
     CLI11_PARSE(app, argc, argv);
-    
+
     if(!output_file.empty() & !output_force){
         if(std::filesystem::exists(output_file)){
             std::cout<< "ERROR: The Specified output file already exists, to force the file to be rewritten use the --f flag"<<std::endl;

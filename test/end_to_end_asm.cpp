@@ -31,7 +31,7 @@ static inline uint32_t Reverse32(uint32_t value)
             ((value & 0xFF000000u) >> 24u));
 }
 
-TEST( EndToEnd, simple_file ) {
+TEST( EndToEndAsm, simple_file ) {
     std::string input_file = "test_add.s";
 
     std::string include_dir = "";
@@ -78,7 +78,7 @@ TEST( EndToEnd, simple_file ) {
 
 }
 
-TEST( EndToEnd, for_file ) {
+TEST( EndToEndAsm, for_file ) {
     std::string input_file = "test_for.s";
 
     std::string include_dir = "";
@@ -93,7 +93,7 @@ TEST( EndToEnd, for_file ) {
     ASSERT_EQ( result, gold_standard);
 }
 
-TEST( EndToEnd, branch_file ) {
+TEST( EndToEndAsm, branch_file ) {
     std::string input_file = "test_branch.s";
 
     std::string include_dir = "";
@@ -108,7 +108,7 @@ TEST( EndToEnd, branch_file ) {
     ASSERT_EQ( result, gold_standard);
 }
 
-TEST(EndToEnd, variables_file) {
+TEST(EndToEndAsm, variables_file) {
     std::string input_file = "test_variables.s";
 
     std::string include_dir = "";
@@ -122,7 +122,7 @@ TEST(EndToEnd, variables_file) {
     ASSERT_EQ( result, gold_standard);
 }
 
-TEST(EndToEnd, load_constant_file) {
+TEST(EndToEndAsm, load_constant_file) {
     std::string input_file = "test_ldc.s";
 
     std::string include_dir = "";
@@ -137,7 +137,7 @@ TEST(EndToEnd, load_constant_file) {
     ASSERT_EQ( result, gold_standard);
 }
 
-TEST(EndToEnd, embeddable_wrapper_pass) {
+TEST(EndToEndAsm, embeddable_wrapper_pass) {
     std::string input_file = "test_ldc.s";
     int hex_size;
     uint32_t *hex_result = (uint32_t*) malloc(4096*sizeof(uint32_t));

@@ -23,7 +23,7 @@
 #include "code_elements/code_element.hpp"
 #include "passes/passes.hpp"
 #include "backend/output_generator.hpp"
-#include "frontend/asm/file_parser.h"
+#include "frontend/asm/asm_language_parser.h"
 
 
 TEST(PassesTest, pseudo_inst_pass) {

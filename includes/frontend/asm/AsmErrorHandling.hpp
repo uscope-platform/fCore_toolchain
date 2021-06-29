@@ -15,13 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_HAS_ERRORHANDLING_HPP
-#define FCORE_HAS_ERRORHANDLING_HPP
+#ifndef FCORE_HAS_ASMERRORHANDLING_HPP
+#define FCORE_HAS_ASMERRORHANDLING_HPP
 
 #include "ANTLRErrorListener.h"
 #include "antlr4-runtime.h"
 
-class ErrorHandling : public  antlr4::ANTLRErrorListener {
+class AsmErrorHandling : public  antlr4::ANTLRErrorListener {
 
     /// <summary>
     /// Upon syntax error, notify any interested parties. This is not how to
@@ -171,4 +171,4 @@ class ErrorHandling : public  antlr4::ANTLRErrorListener {
 
 
 
-#endif //FCORE_HAS_ERRORHANDLING_HPP
+#endif //FCORE_HAS_ASMERRORHANDLING_HPP

@@ -27,7 +27,7 @@
 #endif
 
 #include "frontend/variable_map.hpp"
-#include "frontend/asm/file_parser.h"
+#include "frontend/asm/asm_language_parser.h"
 #include "backend/output_generator.hpp"
 #include "passes/passes.hpp"
 

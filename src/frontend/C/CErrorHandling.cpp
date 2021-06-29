@@ -15,14 +15,14 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "fcore_has/frontend/C/ErrorHandling.hpp"
+#include "frontend/C/CErrorHandling.hpp"
 
-void ErrorHandling::syntaxError(antlr4::Recognizer *recognizer, antlr4::Token *offendingSymbol, size_t line,
+void CErrorHandling::syntaxError(antlr4::Recognizer *recognizer, antlr4::Token *offendingSymbol, size_t line,
                                 size_t charPositionInLine, const std::string &msg, std::exception_ptr e) {
     throw std::runtime_error(msg);
 }
 
-void ErrorHandling::reportAmbiguity(antlr4::Parser *recognizer, const antlr4::dfa::DFA &dfa, size_t startIndex,
+void CErrorHandling::reportAmbiguity(antlr4::Parser *recognizer, const antlr4::dfa::DFA &dfa, size_t startIndex,
                                     size_t stopIndex, bool exact, const antlrcpp::BitSet &ambigAlts,
                                     antlr4::atn::ATNConfigSet *configs) {
     int i = 0;
@@ -30,14 +30,14 @@ void ErrorHandling::reportAmbiguity(antlr4::Parser *recognizer, const antlr4::df
 }
 
 void
-ErrorHandling::reportAttemptingFullContext(antlr4::Parser *recognizer, const antlr4::dfa::DFA &dfa, size_t startIndex,
+CErrorHandling::reportAttemptingFullContext(antlr4::Parser *recognizer, const antlr4::dfa::DFA &dfa, size_t startIndex,
                                            size_t stopIndex, const antlrcpp::BitSet &conflictingAlts,
                                            antlr4::atn::ATNConfigSet *configs) {
     int i = 0;
     i++;
 }
 
-void ErrorHandling::reportContextSensitivity(antlr4::Parser *recognizer, const antlr4::dfa::DFA &dfa, size_t startIndex,
+void CErrorHandling::reportContextSensitivity(antlr4::Parser *recognizer, const antlr4::dfa::DFA &dfa, size_t startIndex,
                                              size_t stopIndex, size_t prediction, antlr4::atn::ATNConfigSet *configs) {
     int i = 0;
     i++;

@@ -11,7 +11,7 @@
 
 
 #include "frontend/variable_map.hpp"
-#include "frontend/C/file_parser.h"
+#include "frontend/C/c_language_parser.h"
 #include "backend/output_generator.hpp"
 #include "passes/passes.hpp"
 

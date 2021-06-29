@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "frontend/asm/file_parser.h"
+#include "frontend/asm/asm_language_parser.h"
 
 
 
@@ -42,10 +42,10 @@ void asm_language_parser::construct_parser(std::istream &stream, std::shared_ptr
 
     tokens.fill();
     asm_parser::asm_grammarParser parser(&tokens);
-    ErrorHandling handler;
+    AsmErrorHandling handler;
     parser.addErrorListener(&handler);
     tree::ParseTree *Tree = parser.program();
-    Tree_visitor visitor(std::move(existing_varmap));
+    AsmTree_visitor visitor(std::move(existing_varmap));
     tree::ParseTreeWalker::DEFAULT.walk(&visitor, Tree);
     AST = visitor.get_program();
 

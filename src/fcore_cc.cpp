@@ -6,7 +6,18 @@
 
 
 fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes) {
+    variable_map tmp_map;
+    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>(tmp_map);
 
+
+    c_language_parser target_parser(input, variables_map);
+    AST = target_parser.AST;
+
+    manager = create_pass_manager(variables_map);
+    manager.run_morphing_passes(AST);
+
+    //manager.run_analysis_passes(AST);
+    writer = new output_generator(AST, false);
 }
 
 

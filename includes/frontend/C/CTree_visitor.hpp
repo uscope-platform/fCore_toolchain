@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_HAS_TREE_VISITOR_HPP
+#ifndef FCORE_HAS_ASMTREE_VISITOR_HPP
 #define FCORE_HAS_TREE_VISITOR_HPP
 
 #include <iostream>
@@ -38,9 +38,9 @@
 
 typedef std::unordered_map<std::string, std::shared_ptr<variable>>  varmap_t;
 
-class Tree_visitor : public  C_parser::C_grammarBaseListener{
+class CTree_visitor : public  C_parser::C_grammarBaseListener{
 public:
-    explicit Tree_visitor(std::shared_ptr<variable_map> map);
+    explicit CTree_visitor(std::shared_ptr<variable_map> map);
     ast_t get_program();
 
 private:
@@ -52,4 +52,4 @@ private:
     std::shared_ptr<variable> get_variable(const std::string &variable_name, bool is_const) const;
 };
 
-#endif //FCORE_HAS_TREE_VISITOR_HPP
+#endif //FCORE_HAS_ASMTREE_VISITOR_HPP

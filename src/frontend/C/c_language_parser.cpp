@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "frontend/C/file_parser.h"
+#include "frontend/C/c_language_parser.h"
 
 
 
@@ -44,10 +44,10 @@ void c_language_parser::construct_parser(std::istream &stream, std::shared_ptr<v
 
     tokens.fill();
     C_parser::C_grammarParser parser(&tokens);
-    ErrorHandling handler;
+    CErrorHandling handler;
     parser.addErrorListener(&handler);
     tree::ParseTree *Tree = parser.compilationUnit();
-    Tree_visitor visitor(std::move(existing_varmap));
+    CTree_visitor visitor(std::move(existing_varmap));
     tree::ParseTreeWalker::DEFAULT.walk(&visitor, Tree);
     AST = visitor.get_program();
 
