@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_HAS_FOR_LOOP_HPP
-#define FCORE_HAS_FOR_LOOP_HPP
+#ifndef FCORE_HAS_LL_LOOP_HPP
+#define FCORE_HAS_LL_LOOP_HPP
 
 
 #include <string>
@@ -38,10 +38,10 @@ typedef struct {
 }loop_advance_t;
 
 
-class for_loop{
+class ll_loop{
 
 public:
-    for_loop();
+    ll_loop();
 
     bool is_terminal() { return false;};
     void set_loop_start(loop_start_t start);
@@ -57,4 +57,4 @@ private:
 };
 
 
-#endif //FCORE_HAS_FOR_LOOP_HPP
+#endif //FCORE_HAS_LL_LOOP_HPP

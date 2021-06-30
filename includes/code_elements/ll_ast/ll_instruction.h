@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_HAS_INSTRUCTION_H
-#define FCORE_HAS_INSTRUCTION_H
+#ifndef FCORE_HAS_LL_INSTRUCTION_H
+#define FCORE_HAS_LL_INSTRUCTION_H
 
 #include <iostream>
 #include <iomanip>
@@ -28,7 +28,7 @@
 #include <cmath>
 #include <cstring>
 #include "fCore_isa.hpp"
-#include "variable.hpp"
+#include "code_elements/variable.hpp"
 
 typedef struct {
     std::string opcode;
@@ -37,12 +37,12 @@ typedef struct {
 } instruction_t;
 
 
-class instruction{
+class ll_instruction{
 
     public:
-        instruction() = default;
-        instruction(int inst_type,std::string opcode, std::vector<std::shared_ptr<variable>> arguments);
-        instruction(int inst_type, float constant);
+        ll_instruction() = default;
+        ll_instruction(int inst_type,std::string opcode, std::vector<std::shared_ptr<variable>> arguments);
+        ll_instruction(int inst_type, float constant);
         [[nodiscard]] uint32_t emit() const;
         [[nodiscard]] int instruction_count() const;
         void print();
@@ -71,4 +71,4 @@ private:
 };
 
 
-#endif //FCORE_HAS_INSTRUCTION_H
+#endif //FCORE_HAS_LL_INSTRUCTION_H

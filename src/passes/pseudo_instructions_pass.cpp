@@ -30,7 +30,7 @@ ast_t pseudo_instructions_pass::process_leaf(ast_t element) {
         }
 
         std::string new_opcode = fcore_pseudo_op[instr.opcode];
-        instruction new_inst(fcore_op_types[new_opcode], new_opcode, instr.arguments);
+        ll_instruction new_inst(fcore_op_types[new_opcode], new_opcode, instr.arguments);
         element->inst = new_inst;
     }
     return element;

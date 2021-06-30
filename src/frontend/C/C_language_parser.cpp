@@ -44,9 +44,10 @@ void C_language_parser::pre_process(const std::vector<std::string> &abs_includes
     preprocessed_content = preproc->get_preprocessed_file();
 }
 
-void C_language_parser::parse(std::istream &stream) {
+void C_language_parser::parse() {
 
-    ANTLRInputStream input(stream);
+    std::istringstream ss(preprocessed_content);
+    ANTLRInputStream input(ss);
 
     C_parser::C_grammarLexer lexer(&input);
     CommonTokenStream tokens(&lexer);

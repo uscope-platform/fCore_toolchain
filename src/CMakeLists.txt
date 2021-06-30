@@ -1,4 +1,4 @@
-set(FCORE_LIB_SRCS code_elements/instruction.cpp
+set(FCORE_LIB_SRCS code_elements/ll_instruction.cpp
         frontend/asm/AsmTree_visitor.cpp
         frontend/asm/asm_language_parser.cpp
         frontend/asm/AsmErrorHandling.cpp
@@ -10,10 +10,10 @@ set(FCORE_LIB_SRCS code_elements/instruction.cpp
         frontend/define_map.cpp
         frontend/asm/register_map.cpp
         backend/output_generator.cpp
-        code_elements/code_element.cpp
+        code_elements/ll_ast_node.cpp
         code_elements/define.cpp
         code_elements/variable.cpp
-        code_elements/for_loop.cpp
+        code_elements/ll_loop.cpp
         passes/pass_manager.cpp
         passes/loop_implementation_pass.cpp
         passes/pseudo_instructions_pass.cpp

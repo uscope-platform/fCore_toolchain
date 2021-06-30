@@ -19,7 +19,7 @@
 #define FCORE_HAS_LOOP_IMPLEMENTATION_PASS_HPP
 
 #include <memory>
-#include "code_elements/code_element.hpp"
+#include "code_elements/ll_ast/ll_ast_node.hpp"
 #include "pass_manager.hpp"
 
 class loop_implementation_pass : public pass_base {

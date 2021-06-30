@@ -25,7 +25,7 @@
 #include <regex>
 #include <gtest/gtest_prod.h>
 
-#include "code_elements/code_element.hpp"
+#include "code_elements/ll_ast/ll_ast_node.hpp"
 #include "C_Tree_visitor.hpp"
 #include "C_ErrorHandling.hpp"
 #include "C_pre_processor.h"
@@ -41,7 +41,7 @@ class C_language_parser{
     C_language_parser(std::istream &stream, std::shared_ptr<variable_map> &new_varmap, std::shared_ptr<define_map> &new_defmap);
 
     void pre_process(const std::vector<std::string> &abs_includes, const std::vector<std::string> &rel_includes);
-    void parse(std::istream &stream);
+    void parse();
 
     unsigned int n_inputs() const {return n_inputs_;};
     unsigned int n_outputs() const {return n_outputs_;};

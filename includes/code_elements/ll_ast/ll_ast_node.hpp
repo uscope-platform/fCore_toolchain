@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_HAS_CODE_ELEMENT_HPP
-#define FCORE_HAS_CODE_ELEMENT_HPP
+#ifndef FCORE_HAS_LL_AST_NODE_HPP
+#define FCORE_HAS_LL_AST_NODE_HPP
 
 #include <vector>
 #include <cstdint>
@@ -24,9 +24,9 @@
 #include <iostream>
 #include <utility>
 
-#include "instruction.h"
-#include "for_loop.hpp"
-#include "variable.hpp"
+#include "ll_instruction.h"
+#include "ll_loop.hpp"
+#include "code_elements/variable.hpp"
 
 
 typedef enum {
@@ -49,39 +49,39 @@ private:
     std::string directive;
 };
 
-class code_element {
+class ll_ast_node {
 
 public:
-    code_element();
-    explicit code_element(element_type_t block_type);
-    code_element(element_type_t block_type, instruction block_spec);
-    code_element(element_type_t block_type, for_loop block_spec);
-    code_element(element_type_t block_type, pragma block_spec);
-    code_element(element_type_t block_type, variable);
+    ll_ast_node();
+    explicit ll_ast_node(element_type_t block_type);
+    ll_ast_node(element_type_t block_type, ll_instruction block_spec);
+    ll_ast_node(element_type_t block_type, ll_loop block_spec);
+    ll_ast_node(element_type_t block_type, pragma block_spec);
+    ll_ast_node(element_type_t block_type, variable);
     bool is_terminal();
-    void add_content(const std::shared_ptr<code_element>& element);
+    void add_content(const std::shared_ptr<ll_ast_node>& element);
     bool has_content();
-    std::vector<std::shared_ptr<code_element>> get_content();
-    void set_content(const std::vector<std::shared_ptr<code_element>>& c);
-    void prepend_content(const std::vector<std::shared_ptr<code_element>>& c);
-    void append_content(const std::vector<std::shared_ptr<code_element>>& c);
+    std::vector<std::shared_ptr<ll_ast_node>> get_content();
+    void set_content(const std::vector<std::shared_ptr<ll_ast_node>>& c);
+    void prepend_content(const std::vector<std::shared_ptr<ll_ast_node>>& c);
+    void append_content(const std::vector<std::shared_ptr<ll_ast_node>>& c);
 
     element_type_t type;
-    for_loop loop;
-    instruction inst;
+    ll_loop loop;
+    ll_instruction inst;
     pragma directive;
     variable var;
 private:
-    std::vector<std::shared_ptr<code_element>> content;
+    std::vector<std::shared_ptr<ll_ast_node>> content;
 
 };
 
-typedef  std::shared_ptr<code_element> ast_t;
+typedef  std::shared_ptr<ll_ast_node> ast_t;
 
 
 static ast_t deep_copy_element(const ast_t& element) {
-    code_element copied_elem;
-    ast_t result = std::make_shared<code_element>(copied_elem);
+    ll_ast_node copied_elem;
+    ast_t result = std::make_shared<ll_ast_node>(copied_elem);
     if(element->has_content()){
         std::vector<ast_t> children;
         for(auto &item:element->get_content()){
@@ -101,4 +101,4 @@ static ast_t deep_copy_element(const ast_t& element) {
 
 
 
-#endif //FCORE_HAS_CODE_ELEMENT_HPP
+#endif //FCORE_HAS_LL_AST_NODE_HPP

@@ -15,66 +15,66 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "code_elements/code_element.hpp"
+#include "code_elements/ll_ast/ll_ast_node.hpp"
 
 #include <utility>
 
-code_element::code_element() {
+ll_ast_node::ll_ast_node() {
 
 }
 
-code_element::code_element(element_type_t block_type) {
+ll_ast_node::ll_ast_node(element_type_t block_type) {
     type = block_type;
 }
 
-code_element::code_element(element_type_t block_type, instruction block_spec) {
+ll_ast_node::ll_ast_node(element_type_t block_type, ll_instruction block_spec) {
     type = block_type;
     inst = std::move(block_spec);
 }
 
-code_element::code_element(element_type_t block_type, for_loop block_spec) {
+ll_ast_node::ll_ast_node(element_type_t block_type, ll_loop block_spec) {
     type = block_type;
     loop = std::move(block_spec);
 }
 
-code_element::code_element(element_type_t block_type, pragma block_spec) {
+ll_ast_node::ll_ast_node(element_type_t block_type, pragma block_spec) {
     type = block_type;
     directive = std::move(block_spec);
 }
 
 
-code_element::code_element(element_type_t block_type, variable var_in) {
+ll_ast_node::ll_ast_node(element_type_t block_type, variable var_in) {
     type = block_type;
     var = var_in;
 }
 
 
-void code_element::add_content(const std::shared_ptr<code_element>& element) {
+void ll_ast_node::add_content(const std::shared_ptr<ll_ast_node>& element) {
     content.push_back(element);
 }
 
-bool code_element::has_content() {
+bool ll_ast_node::has_content() {
     return !content.empty();
 }
 
-std::vector<std::shared_ptr<code_element>> code_element::get_content() {
+std::vector<std::shared_ptr<ll_ast_node>> ll_ast_node::get_content() {
     return content;
 }
 
-void code_element::set_content(const std::vector<std::shared_ptr<code_element>>& c) {
+void ll_ast_node::set_content(const std::vector<std::shared_ptr<ll_ast_node>>& c) {
     content = c;
 }
 
-bool code_element::is_terminal() {
+bool ll_ast_node::is_terminal() {
 
     return  type == type_instr || type == type_pragma;
 }
 
-void code_element::prepend_content(const std::vector<std::shared_ptr<code_element>> &c) {
+void ll_ast_node::prepend_content(const std::vector<std::shared_ptr<ll_ast_node>> &c) {
     content.insert(content.begin(), c.begin(), c.end());
 }
 
-void code_element::append_content(const std::vector<std::shared_ptr<code_element>> &c) {
+void ll_ast_node::append_content(const std::vector<std::shared_ptr<ll_ast_node>> &c) {
     content.insert(content.end(), c.begin(), c.end());
 }
 

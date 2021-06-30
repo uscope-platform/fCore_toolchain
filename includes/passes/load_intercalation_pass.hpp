@@ -17,7 +17,7 @@
 #ifndef FCORE_HAS_LOAD_INTERCALATION_PASS_HPP
 #define FCORE_HAS_LOAD_INTERCALATION_PASS_HPP
 
-#include "code_elements/code_element.hpp"
+#include "code_elements/ll_ast/ll_ast_node.hpp"
 #include "frontend/variable_map.hpp"
 #include "pass_manager.hpp"
 

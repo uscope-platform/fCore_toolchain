@@ -87,7 +87,6 @@ TEST( cFrontend, preprocessor_include) {
     EXPECT_EQ(gold_standard, result);
 }
 
-
 TEST( cFrontend, preprocessor_include_fail) {
     std::string input_file = "test_preproc_include_fail.c";
     std::ifstream ifs(input_file);
@@ -97,4 +96,16 @@ TEST( cFrontend, preprocessor_include_fail) {
     C_language_parser parser(ifs, result_var,result_def);
     EXPECT_THROW(parser.pre_process({}, {}), std::runtime_error);
 
+}
+
+TEST( cFrontend, parser_main) {
+    std::string input_file = "test_preproc_pragmas.c";
+    std::ifstream ifs(input_file);
+
+    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(ifs, result_var, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
 }

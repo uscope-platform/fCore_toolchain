@@ -18,7 +18,7 @@
 #define FCORE_HAS_PSEUDO_INSTRUCTIONS_PASS_HPP
 
 #include <memory>
-#include "code_elements/code_element.hpp"
+#include "code_elements/ll_ast/ll_ast_node.hpp"
 #include "pass_manager.hpp"
 #include "fCore_isa.hpp"
 

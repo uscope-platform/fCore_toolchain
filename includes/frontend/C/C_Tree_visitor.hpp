@@ -27,9 +27,9 @@
 #include "C_parser/C_grammarBaseListener.h"
 #include "C_parser/C_grammarParser.h"
 #include "fCore_isa.hpp"
-#include "code_elements/instruction.h"
-#include "code_elements/for_loop.hpp"
-#include "code_elements/code_element.hpp"
+#include "code_elements/ll_ast/ll_instruction.h"
+#include "code_elements/ll_ast/ll_loop.hpp"
+#include "code_elements/ll_ast/ll_ast_node.hpp"
 #include "code_elements/variable.hpp"
 #include "frontend/variable_map.hpp"
 

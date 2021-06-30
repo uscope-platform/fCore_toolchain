@@ -21,9 +21,9 @@
 #include "asm_parser/asm_grammarBaseListener.h"
 #include "asm_parser/asm_grammarParser.h"
 #include "fCore_isa.hpp"
-#include "code_elements/instruction.h"
-#include "code_elements/for_loop.hpp"
-#include "code_elements/code_element.hpp"
+#include "code_elements/ll_ast/ll_instruction.h"
+#include "code_elements/ll_ast/ll_loop.hpp"
+#include "code_elements/ll_ast/ll_ast_node.hpp"
 #include "code_elements/variable.hpp"
 #include "frontend/variable_map.hpp"
 #include <iostream>
