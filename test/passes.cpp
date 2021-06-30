@@ -242,7 +242,7 @@ TEST(PassesTest, deep_copy_element) {
     ast_t level_1 = std::make_shared<ll_ast_node>(type_for_block, loop);
     ast_t level_2 = std::make_shared<ll_ast_node>(type_instr, inst);
     level_1->add_content(level_2);
-    ast_t result = deep_copy_element(level_1);
+    ast_t result = ll_ast_node::deep_copy_element(level_1);
     bool test_types = level_1->type == result->type && level_2->type == result->get_content()[0]->type;
     bool test_instr_content = result->get_content()[0]->inst.emit() == level_2->inst.emit();
     bool test_loop_content = result->loop.get_loop_start().starting_value == start.starting_value;

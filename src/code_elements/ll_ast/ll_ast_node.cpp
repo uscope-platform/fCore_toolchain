@@ -17,7 +17,7 @@
 
 #include "code_elements/ll_ast/ll_ast_node.hpp"
 
-#include <utility>
+
 
 ll_ast_node::ll_ast_node() {
 
@@ -49,35 +49,28 @@ ll_ast_node::ll_ast_node(element_type_t block_type, variable var_in) {
 }
 
 
-void ll_ast_node::add_content(const std::shared_ptr<ll_ast_node>& element) {
-    content.push_back(element);
-}
-
-bool ll_ast_node::has_content() {
-    return !content.empty();
-}
-
-std::vector<std::shared_ptr<ll_ast_node>> ll_ast_node::get_content() {
-    return content;
-}
-
-void ll_ast_node::set_content(const std::vector<std::shared_ptr<ll_ast_node>>& c) {
-    content = c;
-}
-
 bool ll_ast_node::is_terminal() {
 
     return  type == type_instr || type == type_pragma;
 }
 
-void ll_ast_node::prepend_content(const std::vector<std::shared_ptr<ll_ast_node>> &c) {
-    content.insert(content.begin(), c.begin(), c.end());
+std::shared_ptr<ll_ast_node> ll_ast_node::deep_copy_element(const std::shared_ptr<ll_ast_node> &element) {
+    ll_ast_node copied_elem;
+    std::shared_ptr<ll_ast_node> result = std::make_shared<ll_ast_node>(copied_elem);
+    if(element->has_content()){
+        std::vector<std::shared_ptr<ll_ast_node>> children;
+        for(auto &item:element->get_content()){
+            std::shared_ptr<ll_ast_node> child = deep_copy_element(item);
+            children.push_back(child);
+        }
+        result->set_content(children);
+    }
+    result->type = element->type;
+    result->loop = element->loop;
+    result->inst = element->inst;
+    result->directive = element->directive;
+    return result;
 }
-
-void ll_ast_node::append_content(const std::vector<std::shared_ptr<ll_ast_node>> &c) {
-    content.insert(content.end(), c.begin(), c.end());
-}
-
 
 pragma::pragma() = default;
 

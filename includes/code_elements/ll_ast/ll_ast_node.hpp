@@ -27,6 +27,7 @@
 #include "ll_instruction.h"
 #include "ll_loop.hpp"
 #include "code_elements/variable.hpp"
+#include "code_elements/ast_node_base.h"
 
 
 typedef enum {
@@ -49,7 +50,7 @@ private:
     std::string directive;
 };
 
-class ll_ast_node {
+class ll_ast_node : public ast_node_base<ll_ast_node> {
 
 public:
     ll_ast_node();
@@ -59,43 +60,18 @@ public:
     ll_ast_node(element_type_t block_type, pragma block_spec);
     ll_ast_node(element_type_t block_type, variable);
     bool is_terminal();
-    void add_content(const std::shared_ptr<ll_ast_node>& element);
-    bool has_content();
-    std::vector<std::shared_ptr<ll_ast_node>> get_content();
-    void set_content(const std::vector<std::shared_ptr<ll_ast_node>>& c);
-    void prepend_content(const std::vector<std::shared_ptr<ll_ast_node>>& c);
-    void append_content(const std::vector<std::shared_ptr<ll_ast_node>>& c);
+    static std::shared_ptr<ll_ast_node> deep_copy_element(const std::shared_ptr<ll_ast_node>& element);
 
     element_type_t type;
     ll_loop loop;
     ll_instruction inst;
     pragma directive;
     variable var;
-private:
-    std::vector<std::shared_ptr<ll_ast_node>> content;
+
 
 };
 
 typedef  std::shared_ptr<ll_ast_node> ast_t;
-
-
-static ast_t deep_copy_element(const ast_t& element) {
-    ll_ast_node copied_elem;
-    ast_t result = std::make_shared<ll_ast_node>(copied_elem);
-    if(element->has_content()){
-        std::vector<ast_t> children;
-        for(auto &item:element->get_content()){
-            ast_t child = deep_copy_element(item);
-            children.push_back(child);
-        }
-        result->set_content(children);
-    }
-    result->type = element->type;
-    result->loop = element->loop;
-    result->inst = element->inst;
-    result->directive = element->directive;
-    return result;
-}
 
 
 
