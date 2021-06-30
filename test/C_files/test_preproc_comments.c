@@ -7,6 +7,6 @@
 
 #define TESTT 1 /* comment
  *
- *  TETTE GROSSE
+ *  test GROSSO
  *
   comment*/ #define TESTQ 5

@@ -5,7 +5,7 @@
 #ifndef FCORE_HAS_DEFINE_MAP_H
 #define FCORE_HAS_DEFINE_MAP_H
 
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <memory>
 #include <utility>
@@ -22,7 +22,7 @@ public:
 
 
 private:
-    std::map<std::string, std::shared_ptr<define>> defines;
+    std::unordered_map<std::string, std::shared_ptr<define>> defines;
 };
 
 

@@ -37,11 +37,11 @@
 
 class C_language_parser{
     public:
-    explicit C_language_parser(std::istream &stream);
-    C_language_parser(std::istream &stream, std::shared_ptr<variable_map> new_varmap, std::shared_ptr<define_map> new_defmap);
+    explicit C_language_parser();
+    C_language_parser(std::istream &stream, std::shared_ptr<variable_map> &new_varmap, std::shared_ptr<define_map> &new_defmap);
 
-    void construct_parser(std::istream &stream, std::shared_ptr<variable_map> &existing_varmap, const std::shared_ptr<define_map>& existing_defmap);
-    void pre_processor(std::istream &stream, const std::shared_ptr<variable_map>& existing_varmap, const std::shared_ptr<define_map>& existing_defmap);
+    void pre_process(const std::vector<std::string> &abs_includes, const std::vector<std::string> &rel_includes);
+    void parse(std::istream &stream);
 
     unsigned int n_inputs() const {return n_inputs_;};
     unsigned int n_outputs() const {return n_outputs_;};
@@ -52,9 +52,11 @@ class C_language_parser{
 
     private:
 
-    FRIEND_TEST(cFrontend, preprocessor_decomment);
-    FRIEND_TEST(cFrontend, preprocessor_pragma);
+    std::unique_ptr<C_pre_processor> preproc;
+    std::shared_ptr<variable_map> vmap;
+    std::shared_ptr<define_map> dmap;
 
+    FRIEND_TEST( cFrontend, preprocessor_include);
 
     unsigned int n_inputs_ = 0;
     unsigned int n_outputs_ = 0;

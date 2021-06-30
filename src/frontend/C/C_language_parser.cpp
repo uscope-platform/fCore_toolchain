@@ -19,23 +19,32 @@
 
 #include <utility>
 
+
+
 using namespace antlr4;
 
-C_language_parser::C_language_parser(std::istream &stream) {
-    std::shared_ptr<variable_map> varmap = std::make_shared<variable_map>();
-    std::shared_ptr<define_map> defmap = std::make_shared<define_map>();
-    construct_parser(stream, varmap, defmap);
+C_language_parser::C_language_parser() {
+    vmap = std::make_shared<variable_map>();
+    dmap = std::make_shared<define_map>();
+
 }
 
-C_language_parser::C_language_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap, std::shared_ptr<define_map> existing_defmap) {
+C_language_parser::C_language_parser(std::istream &stream, std::shared_ptr<variable_map> &existing_varmap, std::shared_ptr<define_map> &existing_defmap) {
 
-
-    construct_parser(stream, existing_varmap, std::move(existing_defmap));
+    vmap = existing_varmap;
+    dmap = existing_defmap;
+    preproc = std::make_unique<C_pre_processor>(stream, vmap,dmap);
 }
 
-void C_language_parser::construct_parser(std::istream &stream, std::shared_ptr<variable_map> &existing_varmap, const std::shared_ptr<define_map>& existing_defmap){
 
-    pre_processor(stream, existing_varmap, existing_defmap);
+void C_language_parser::pre_process(const std::vector<std::string> &abs_includes, const std::vector<std::string> &rel_includes) {
+    preproc->set_absolute_includes(abs_includes);
+    preproc->set_relative_includes(rel_includes);
+    preproc->process_file();
+    preprocessed_content = preproc->get_preprocessed_file();
+}
+
+void C_language_parser::parse(std::istream &stream) {
 
     ANTLRInputStream input(stream);
 
@@ -47,13 +56,7 @@ void C_language_parser::construct_parser(std::istream &stream, std::shared_ptr<v
     C_ErrorHandling handler;
     parser.addErrorListener(&handler);
     tree::ParseTree *Tree = parser.compilationUnit();
-    C_Tree_visitor visitor(std::move(existing_varmap));
+    C_Tree_visitor visitor(vmap);
     tree::ParseTreeWalker::DEFAULT.walk(&visitor, Tree);
     AST = visitor.get_program();
-
-}
-
-void C_language_parser::pre_processor(std::istream &stream, const std::shared_ptr<variable_map>& existing_varmap, const std::shared_ptr<define_map>& existing_defmap) {
-    C_pre_processor preproc(stream, existing_varmap, existing_defmap);
-    preprocessed_content = preproc.get_preprocessed_file();
 }
