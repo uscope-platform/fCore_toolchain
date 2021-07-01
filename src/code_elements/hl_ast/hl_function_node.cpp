@@ -14,3 +14,7 @@ hl_function_node::hl_function_node(hl_ast_node_type_t t, c_types_t ret_val, std:
 void hl_function_node::set_parameters_list(std::vector<std::shared_ptr<hl_identifier_node>> list) {
     parameters_list = std::move(list);
 }
+
+void hl_function_node::set_body(std::vector<std::shared_ptr<hl_ast_node>> b) {
+    function_body = std::move(b);
+}

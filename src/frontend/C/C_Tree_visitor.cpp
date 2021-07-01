@@ -21,6 +21,7 @@
 C_Tree_visitor::C_Tree_visitor(std::shared_ptr<variable_map> map) {
     varmap = std::move(map);
     in_function_declaration = false;
+    in_function_body = false;
 }
 
 
@@ -46,12 +47,13 @@ void C_Tree_visitor::exitFunctionDefinition(C_parser::C_grammarParser::FunctionD
             if(param_type_item->functionSpecifier() != nullptr)  content = param_type_item->functionSpecifier()->toString();
             if(param_type_item->alignmentSpecifier() != nullptr)  content = param_type_item->alignmentSpecifier()->toString();
         }
-        int i = 0;
     }
     std::string type = declaration_type.top();
     declaration_type.pop();
     std::shared_ptr<hl_function_node> node = std::make_shared<hl_function_node>(type_function, hl_ast_node::string_to_type(type), func_name);
     node->set_parameters_list(parameters_list);
+    node->set_body(function_body);
+    function_body.clear();
     in_function_declaration = false;
     functions.push_back(node);
 }
@@ -66,7 +68,7 @@ void C_Tree_visitor::exitDeclarationSpecifiers(C_parser::C_grammarParser::Declar
         if(item->functionSpecifier() != nullptr)  content = item->functionSpecifier()->toString();
         if(item->alignmentSpecifier() != nullptr)  content = item->alignmentSpecifier()->toString();
     }
-    declaration_type.push(type);
+        declaration_type.push(type);
 }
 
 void C_Tree_visitor::exitParameterDeclaration(C_parser::C_grammarParser::ParameterDeclarationContext *ctx) {
@@ -74,5 +76,62 @@ void C_Tree_visitor::exitParameterDeclaration(C_parser::C_grammarParser::Paramet
     std::string type = declaration_type.top();
     declaration_type.pop();
     std::shared_ptr<hl_identifier_node> identifier = std::make_shared<hl_identifier_node>(type_identifier, id_name, hl_ast_node::string_to_type(type));
-    if(in_function_declaration) parameters_list.push_back(identifier);
+    if(in_function_declaration) {
+        parameters_list.push_back(identifier);
+    }
 }
+
+void C_Tree_visitor::enterCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) {
+    in_function_body = true;
+}
+
+void C_Tree_visitor::exitInitDeclarator(C_parser::C_grammarParser::InitDeclaratorContext *ctx) {
+    std::string id_name = ctx->declarator()->directDeclarator()->getText();
+
+    std::string type = declaration_type.top();
+    declaration_type.pop();
+
+    std::shared_ptr<hl_identifier_node> identifier = std::make_shared<hl_identifier_node>(type_identifier, id_name, hl_ast_node::string_to_type(type));
+
+    if(in_function_body) {
+        function_body.push_back(identifier);
+    }
+
+}
+
+void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationContext *ctx) {
+    if(ctx->initDeclaratorList() == nullptr){
+        std::string id_name = "ERROR_WRONG_NAME_DETECTED";
+        for(auto item : ctx->declarationSpecifiers()->declarationSpecifier()){
+            if(item->typeSpecifier() != nullptr){
+                id_name = item->typeSpecifier()->getText();
+            }
+        }
+        std::string type = declaration_type.top();
+        declaration_type.pop();
+        std::shared_ptr<hl_identifier_node> identifier = std::make_shared<hl_identifier_node>(type_identifier, id_name, hl_ast_node::string_to_type(type));
+        if(in_function_body) {
+            function_body.push_back(identifier);
+        }
+    }
+
+}
+
+
+void C_Tree_visitor::exitCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) {
+    std::shared_ptr<hl_identifier_node> id = std::static_pointer_cast<hl_identifier_node>(function_body[0]);
+    id = std::static_pointer_cast<hl_identifier_node>(function_body[1]);
+    id = std::static_pointer_cast<hl_identifier_node>(function_body[2]);
+    id = std::static_pointer_cast<hl_identifier_node>(function_body[3]);
+    in_function_body = false;
+}
+
+
+void C_Tree_visitor::exitBlockItem(C_parser::C_grammarParser::BlockItemContext *ctx) {
+    if(ctx->statement() != nullptr){
+
+    } else if(ctx->declaration() != nullptr){
+
+    }
+}
+

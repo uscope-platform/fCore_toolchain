@@ -44,9 +44,18 @@ public:
     void enterFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) override;
     void exitFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) override;
 
-    void exitParameterDeclaration(C_parser::C_grammarParser::ParameterDeclarationContext *ctx) override;
 
+    void enterCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) override;
+    void exitCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) override;
+
+
+    void exitParameterDeclaration(C_parser::C_grammarParser::ParameterDeclarationContext *ctx) override;
     void exitDeclarationSpecifiers(C_parser::C_grammarParser::DeclarationSpecifiersContext *ctx) override;
+
+     void exitBlockItem(C_parser::C_grammarParser::BlockItemContext *ctx) override;
+
+     void exitDeclaration(C_parser::C_grammarParser::DeclarationContext *ctx) override;
+     void exitInitDeclarator(C_parser::C_grammarParser::InitDeclaratorContext *ctx) override;
 
 private:
 
@@ -55,7 +64,9 @@ private:
     std::stack<std::string> declaration_type;
     std::vector<std::shared_ptr<hl_identifier_node>> parameters_list;
     std::vector<std::shared_ptr<hl_function_node>> functions;
+    std::vector<std::shared_ptr<hl_ast_node>> function_body;
     bool in_function_declaration;
+    bool in_function_body;
 };
 
 #endif //FCORE_HAS_ASMTREE_VISITOR_HPP

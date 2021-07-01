@@ -10,8 +10,10 @@ int main(int arg1, float arg2){
     #pragma input(b, r2)
     int b;
 
-    int c = a + b;
+    int c;
+
+    c = a + b;
 
     #pragma output (test, r10);
-    int test = C;
+    int test = c;
 }
