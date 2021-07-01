@@ -13,24 +13,22 @@ namespace C_parser {
 class  C_grammarParser : public antlr4::Parser {
 public:
   enum {
-    Auto = 1, Break = 2, Case = 3, Char = 4, Const = 5, Continue = 6, Default = 7, 
-    Do = 8, Double = 9, Else = 10, Enum = 11, Extern = 12, Float = 13, For = 14, 
-    Goto = 15, If = 16, Inline = 17, Int = 18, Long = 19, Register = 20, 
-    Restrict = 21, Return = 22, Short = 23, Signed = 24, Static = 25, Struct = 26, 
-    Switch = 27, Typedef = 28, Unsigned = 29, Void = 30, Volatile = 31, 
-    While = 32, LeftParen = 33, RightParen = 34, LeftBracket = 35, RightBracket = 36, 
-    LeftBrace = 37, RightBrace = 38, Less = 39, LessEqual = 40, Greater = 41, 
-    GreaterEqual = 42, LeftShift = 43, RightShift = 44, Plus = 45, PlusPlus = 46, 
-    Minus = 47, MinusMinus = 48, Star = 49, Div = 50, Mod = 51, And = 52, 
-    Or = 53, AndAnd = 54, OrOr = 55, Caret = 56, Not = 57, Tilde = 58, Question = 59, 
-    Colon = 60, Semi = 61, Comma = 62, Assign = 63, StarAssign = 64, DivAssign = 65, 
-    ModAssign = 66, PlusAssign = 67, MinusAssign = 68, LeftShiftAssign = 69, 
-    RightShiftAssign = 70, AndAssign = 71, XorAssign = 72, OrAssign = 73, 
-    Equal = 74, NotEqual = 75, Arrow = 76, Dot = 77, Ellipsis = 78, Identifier = 79, 
-    Constant = 80, DigitSequence = 81, StringLiteral = 82, ComplexDefine = 83, 
-    IncludeDirective = 84, AsmBlock = 85, LineAfterPreprocessing = 86, LineDirective = 87, 
-    PragmaDirective = 88, Whitespace = 89, Newline = 90, BlockComment = 91, 
-    LineComment = 92
+    T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, Case = 6, Char = 7, 
+    Const = 8, Else = 9, Float = 10, For = 11, If = 12, Int = 13, Long = 14, 
+    Return = 15, Short = 16, Signed = 17, Typedef = 18, Unsigned = 19, Void = 20, 
+    Volatile = 21, While = 22, LeftParen = 23, RightParen = 24, LeftBracket = 25, 
+    RightBracket = 26, LeftBrace = 27, RightBrace = 28, Less = 29, LessEqual = 30, 
+    Greater = 31, GreaterEqual = 32, LeftShift = 33, RightShift = 34, Plus = 35, 
+    PlusPlus = 36, Minus = 37, MinusMinus = 38, Star = 39, Div = 40, Mod = 41, 
+    And = 42, Or = 43, AndAnd = 44, OrOr = 45, Caret = 46, Not = 47, Tilde = 48, 
+    Question = 49, Colon = 50, Semi = 51, Comma = 52, Assign = 53, StarAssign = 54, 
+    DivAssign = 55, ModAssign = 56, PlusAssign = 57, MinusAssign = 58, LeftShiftAssign = 59, 
+    RightShiftAssign = 60, AndAssign = 61, XorAssign = 62, OrAssign = 63, 
+    Equal = 64, NotEqual = 65, Arrow = 66, Dot = 67, Ellipsis = 68, Identifier = 69, 
+    Constant = 70, DigitSequence = 71, StringLiteral = 72, ComplexDefine = 73, 
+    IncludeDirective = 74, AsmBlock = 75, LineAfterPreprocessing = 76, LineDirective = 77, 
+    PragmaDirective = 78, Whitespace = 79, Newline = 80, BlockComment = 81, 
+    LineComment = 82
   };
 
   enum {
@@ -43,20 +41,17 @@ public:
     RuleAssignmentOperator = 18, RuleExpression = 19, RuleConstantExpression = 20, 
     RuleDeclaration = 21, RuleDeclarationSpecifiers = 22, RuleDeclarationSpecifier = 23, 
     RuleInitDeclaratorList = 24, RuleInitDeclarator = 25, RuleStorageClassSpecifier = 26, 
-    RuleTypeSpecifier = 27, RuleStructSpecifier = 28, RuleStructDeclarationList = 29, 
-    RuleStructDeclaration = 30, RuleSpecifierQualifierList = 31, RuleStructDeclaratorList = 32, 
-    RuleStructDeclarator = 33, RuleEnumSpecifier = 34, RuleEnumeratorList = 35, 
-    RuleEnumerator = 36, RuleEnumerationConstant = 37, RuleTypeQualifier = 38, 
-    RuleDeclarator = 39, RuleDirectDeclarator = 40, RuleNestedParenthesesBlock = 41, 
-    RuleTypeQualifierList = 42, RuleParameterTypeList = 43, RuleParameterList = 44, 
-    RuleParameterDeclaration = 45, RuleIdentifierList = 46, RuleTypeName = 47, 
-    RuleTypedefName = 48, RuleInitializer = 49, RuleInitializerList = 50, 
-    RuleDesignation = 51, RuleDesignatorList = 52, RuleDesignator = 53, 
-    RuleStatement = 54, RuleCompoundStatement = 55, RuleBlockItemList = 56, 
-    RuleBlockItem = 57, RuleExpressionStatement = 58, RuleSelectionStatement = 59, 
-    RuleIterationStatement = 60, RuleForCondition = 61, RuleForDeclaration = 62, 
-    RuleForExpression = 63, RuleReturnStatement = 64, RuleTranslationUnit = 65, 
-    RuleExternalDeclaration = 66, RuleFunctionDefinition = 67, RuleDeclarationList = 68
+    RuleTypeSpecifier = 27, RuleSpecifierQualifierList = 28, RuleTypeQualifier = 29, 
+    RuleDeclarator = 30, RuleDirectDeclarator = 31, RuleNestedParenthesesBlock = 32, 
+    RuleTypeQualifierList = 33, RuleParameterTypeList = 34, RuleParameterList = 35, 
+    RuleParameterDeclaration = 36, RuleIdentifierList = 37, RuleTypeName = 38, 
+    RuleTypedefName = 39, RuleInitializer = 40, RuleInitializerList = 41, 
+    RuleDesignation = 42, RuleDesignatorList = 43, RuleDesignator = 44, 
+    RuleStatement = 45, RuleCompoundStatement = 46, RuleBlockItemList = 47, 
+    RuleBlockItem = 48, RuleExpressionStatement = 49, RuleSelectionStatement = 50, 
+    RuleIterationStatement = 51, RuleForCondition = 52, RuleForDeclaration = 53, 
+    RuleForExpression = 54, RuleReturnStatement = 55, RuleTranslationUnit = 56, 
+    RuleExternalDeclaration = 57, RuleFunctionDefinition = 58, RuleDeclarationList = 59
   };
 
   explicit C_grammarParser(antlr4::TokenStream *input);
@@ -97,16 +92,7 @@ public:
   class InitDeclaratorContext;
   class StorageClassSpecifierContext;
   class TypeSpecifierContext;
-  class StructSpecifierContext;
-  class StructDeclarationListContext;
-  class StructDeclarationContext;
   class SpecifierQualifierListContext;
-  class StructDeclaratorListContext;
-  class StructDeclaratorContext;
-  class EnumSpecifierContext;
-  class EnumeratorListContext;
-  class EnumeratorContext;
-  class EnumerationConstantContext;
   class TypeQualifierContext;
   class DeclaratorContext;
   class DirectDeclaratorContext;
@@ -641,10 +627,6 @@ public:
     StorageClassSpecifierContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *Typedef();
-    antlr4::tree::TerminalNode *Extern();
-    antlr4::tree::TerminalNode *Static();
-    antlr4::tree::TerminalNode *Auto();
-    antlr4::tree::TerminalNode *Register();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -665,11 +647,8 @@ public:
     antlr4::tree::TerminalNode *Int();
     antlr4::tree::TerminalNode *Long();
     antlr4::tree::TerminalNode *Float();
-    antlr4::tree::TerminalNode *Double();
     antlr4::tree::TerminalNode *Signed();
     antlr4::tree::TerminalNode *Unsigned();
-    StructSpecifierContext *structSpecifier();
-    EnumSpecifierContext *enumSpecifier();
     TypedefNameContext *typedefName();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -680,58 +659,6 @@ public:
   };
 
   TypeSpecifierContext* typeSpecifier();
-
-  class  StructSpecifierContext : public antlr4::ParserRuleContext {
-  public:
-    StructSpecifierContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *Struct();
-    antlr4::tree::TerminalNode *LeftBrace();
-    StructDeclarationListContext *structDeclarationList();
-    antlr4::tree::TerminalNode *RightBrace();
-    antlr4::tree::TerminalNode *Identifier();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  StructSpecifierContext* structSpecifier();
-
-  class  StructDeclarationListContext : public antlr4::ParserRuleContext {
-  public:
-    StructDeclarationListContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    std::vector<StructDeclarationContext *> structDeclaration();
-    StructDeclarationContext* structDeclaration(size_t i);
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  StructDeclarationListContext* structDeclarationList();
-
-  class  StructDeclarationContext : public antlr4::ParserRuleContext {
-  public:
-    StructDeclarationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    SpecifierQualifierListContext *specifierQualifierList();
-    antlr4::tree::TerminalNode *Semi();
-    StructDeclaratorListContext *structDeclaratorList();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  StructDeclarationContext* structDeclaration();
 
   class  SpecifierQualifierListContext : public antlr4::ParserRuleContext {
   public:
@@ -750,117 +677,11 @@ public:
 
   SpecifierQualifierListContext* specifierQualifierList();
 
-  class  StructDeclaratorListContext : public antlr4::ParserRuleContext {
-  public:
-    StructDeclaratorListContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    std::vector<StructDeclaratorContext *> structDeclarator();
-    StructDeclaratorContext* structDeclarator(size_t i);
-    std::vector<antlr4::tree::TerminalNode *> Comma();
-    antlr4::tree::TerminalNode* Comma(size_t i);
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  StructDeclaratorListContext* structDeclaratorList();
-
-  class  StructDeclaratorContext : public antlr4::ParserRuleContext {
-  public:
-    StructDeclaratorContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    DeclaratorContext *declarator();
-    antlr4::tree::TerminalNode *Colon();
-    ConstantExpressionContext *constantExpression();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  StructDeclaratorContext* structDeclarator();
-
-  class  EnumSpecifierContext : public antlr4::ParserRuleContext {
-  public:
-    EnumSpecifierContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *Enum();
-    antlr4::tree::TerminalNode *LeftBrace();
-    EnumeratorListContext *enumeratorList();
-    antlr4::tree::TerminalNode *RightBrace();
-    antlr4::tree::TerminalNode *Identifier();
-    antlr4::tree::TerminalNode *Comma();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  EnumSpecifierContext* enumSpecifier();
-
-  class  EnumeratorListContext : public antlr4::ParserRuleContext {
-  public:
-    EnumeratorListContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    std::vector<EnumeratorContext *> enumerator();
-    EnumeratorContext* enumerator(size_t i);
-    std::vector<antlr4::tree::TerminalNode *> Comma();
-    antlr4::tree::TerminalNode* Comma(size_t i);
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  EnumeratorListContext* enumeratorList();
-
-  class  EnumeratorContext : public antlr4::ParserRuleContext {
-  public:
-    EnumeratorContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    EnumerationConstantContext *enumerationConstant();
-    antlr4::tree::TerminalNode *Assign();
-    ConstantExpressionContext *constantExpression();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  EnumeratorContext* enumerator();
-
-  class  EnumerationConstantContext : public antlr4::ParserRuleContext {
-  public:
-    EnumerationConstantContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *Identifier();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  EnumerationConstantContext* enumerationConstant();
-
   class  TypeQualifierContext : public antlr4::ParserRuleContext {
   public:
     TypeQualifierContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *Const();
-    antlr4::tree::TerminalNode *Restrict();
     antlr4::tree::TerminalNode *Volatile();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -902,7 +723,6 @@ public:
     antlr4::tree::TerminalNode *RightBracket();
     TypeQualifierListContext *typeQualifierList();
     AssignmentExpressionContext *assignmentExpression();
-    antlr4::tree::TerminalNode *Static();
     antlr4::tree::TerminalNode *Star();
     ParameterTypeListContext *parameterTypeList();
     IdentifierListContext *identifierList();

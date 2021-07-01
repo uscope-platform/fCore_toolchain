@@ -102,35 +102,8 @@ public:
   virtual void enterTypeSpecifier(C_grammarParser::TypeSpecifierContext * /*ctx*/) override { }
   virtual void exitTypeSpecifier(C_grammarParser::TypeSpecifierContext * /*ctx*/) override { }
 
-  virtual void enterStructSpecifier(C_grammarParser::StructSpecifierContext * /*ctx*/) override { }
-  virtual void exitStructSpecifier(C_grammarParser::StructSpecifierContext * /*ctx*/) override { }
-
-  virtual void enterStructDeclarationList(C_grammarParser::StructDeclarationListContext * /*ctx*/) override { }
-  virtual void exitStructDeclarationList(C_grammarParser::StructDeclarationListContext * /*ctx*/) override { }
-
-  virtual void enterStructDeclaration(C_grammarParser::StructDeclarationContext * /*ctx*/) override { }
-  virtual void exitStructDeclaration(C_grammarParser::StructDeclarationContext * /*ctx*/) override { }
-
   virtual void enterSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext * /*ctx*/) override { }
   virtual void exitSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext * /*ctx*/) override { }
-
-  virtual void enterStructDeclaratorList(C_grammarParser::StructDeclaratorListContext * /*ctx*/) override { }
-  virtual void exitStructDeclaratorList(C_grammarParser::StructDeclaratorListContext * /*ctx*/) override { }
-
-  virtual void enterStructDeclarator(C_grammarParser::StructDeclaratorContext * /*ctx*/) override { }
-  virtual void exitStructDeclarator(C_grammarParser::StructDeclaratorContext * /*ctx*/) override { }
-
-  virtual void enterEnumSpecifier(C_grammarParser::EnumSpecifierContext * /*ctx*/) override { }
-  virtual void exitEnumSpecifier(C_grammarParser::EnumSpecifierContext * /*ctx*/) override { }
-
-  virtual void enterEnumeratorList(C_grammarParser::EnumeratorListContext * /*ctx*/) override { }
-  virtual void exitEnumeratorList(C_grammarParser::EnumeratorListContext * /*ctx*/) override { }
-
-  virtual void enterEnumerator(C_grammarParser::EnumeratorContext * /*ctx*/) override { }
-  virtual void exitEnumerator(C_grammarParser::EnumeratorContext * /*ctx*/) override { }
-
-  virtual void enterEnumerationConstant(C_grammarParser::EnumerationConstantContext * /*ctx*/) override { }
-  virtual void exitEnumerationConstant(C_grammarParser::EnumerationConstantContext * /*ctx*/) override { }
 
   virtual void enterTypeQualifier(C_grammarParser::TypeQualifierContext * /*ctx*/) override { }
   virtual void exitTypeQualifier(C_grammarParser::TypeQualifierContext * /*ctx*/) override { }

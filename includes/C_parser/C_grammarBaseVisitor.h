@@ -129,43 +129,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitStructSpecifier(C_grammarParser::StructSpecifierContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitStructDeclarationList(C_grammarParser::StructDeclarationListContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitStructDeclaration(C_grammarParser::StructDeclarationContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitStructDeclaratorList(C_grammarParser::StructDeclaratorListContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitStructDeclarator(C_grammarParser::StructDeclaratorContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitEnumSpecifier(C_grammarParser::EnumSpecifierContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitEnumeratorList(C_grammarParser::EnumeratorListContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitEnumerator(C_grammarParser::EnumeratorContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitEnumerationConstant(C_grammarParser::EnumerationConstantContext *ctx) override {
     return visitChildren(ctx);
   }
 

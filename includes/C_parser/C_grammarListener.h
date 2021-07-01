@@ -100,35 +100,8 @@ public:
   virtual void enterTypeSpecifier(C_grammarParser::TypeSpecifierContext *ctx) = 0;
   virtual void exitTypeSpecifier(C_grammarParser::TypeSpecifierContext *ctx) = 0;
 
-  virtual void enterStructSpecifier(C_grammarParser::StructSpecifierContext *ctx) = 0;
-  virtual void exitStructSpecifier(C_grammarParser::StructSpecifierContext *ctx) = 0;
-
-  virtual void enterStructDeclarationList(C_grammarParser::StructDeclarationListContext *ctx) = 0;
-  virtual void exitStructDeclarationList(C_grammarParser::StructDeclarationListContext *ctx) = 0;
-
-  virtual void enterStructDeclaration(C_grammarParser::StructDeclarationContext *ctx) = 0;
-  virtual void exitStructDeclaration(C_grammarParser::StructDeclarationContext *ctx) = 0;
-
   virtual void enterSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext *ctx) = 0;
   virtual void exitSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext *ctx) = 0;
-
-  virtual void enterStructDeclaratorList(C_grammarParser::StructDeclaratorListContext *ctx) = 0;
-  virtual void exitStructDeclaratorList(C_grammarParser::StructDeclaratorListContext *ctx) = 0;
-
-  virtual void enterStructDeclarator(C_grammarParser::StructDeclaratorContext *ctx) = 0;
-  virtual void exitStructDeclarator(C_grammarParser::StructDeclaratorContext *ctx) = 0;
-
-  virtual void enterEnumSpecifier(C_grammarParser::EnumSpecifierContext *ctx) = 0;
-  virtual void exitEnumSpecifier(C_grammarParser::EnumSpecifierContext *ctx) = 0;
-
-  virtual void enterEnumeratorList(C_grammarParser::EnumeratorListContext *ctx) = 0;
-  virtual void exitEnumeratorList(C_grammarParser::EnumeratorListContext *ctx) = 0;
-
-  virtual void enterEnumerator(C_grammarParser::EnumeratorContext *ctx) = 0;
-  virtual void exitEnumerator(C_grammarParser::EnumeratorContext *ctx) = 0;
-
-  virtual void enterEnumerationConstant(C_grammarParser::EnumerationConstantContext *ctx) = 0;
-  virtual void exitEnumerationConstant(C_grammarParser::EnumerationConstantContext *ctx) = 0;
 
   virtual void enterTypeQualifier(C_grammarParser::TypeQualifierContext *ctx) = 0;
   virtual void exitTypeQualifier(C_grammarParser::TypeQualifierContext *ctx) = 0;

@@ -13,24 +13,22 @@ namespace C_parser {
 class  C_grammarLexer : public antlr4::Lexer {
 public:
   enum {
-    Auto = 1, Break = 2, Case = 3, Char = 4, Const = 5, Continue = 6, Default = 7, 
-    Do = 8, Double = 9, Else = 10, Enum = 11, Extern = 12, Float = 13, For = 14, 
-    Goto = 15, If = 16, Inline = 17, Int = 18, Long = 19, Register = 20, 
-    Restrict = 21, Return = 22, Short = 23, Signed = 24, Static = 25, Struct = 26, 
-    Switch = 27, Typedef = 28, Unsigned = 29, Void = 30, Volatile = 31, 
-    While = 32, LeftParen = 33, RightParen = 34, LeftBracket = 35, RightBracket = 36, 
-    LeftBrace = 37, RightBrace = 38, Less = 39, LessEqual = 40, Greater = 41, 
-    GreaterEqual = 42, LeftShift = 43, RightShift = 44, Plus = 45, PlusPlus = 46, 
-    Minus = 47, MinusMinus = 48, Star = 49, Div = 50, Mod = 51, And = 52, 
-    Or = 53, AndAnd = 54, OrOr = 55, Caret = 56, Not = 57, Tilde = 58, Question = 59, 
-    Colon = 60, Semi = 61, Comma = 62, Assign = 63, StarAssign = 64, DivAssign = 65, 
-    ModAssign = 66, PlusAssign = 67, MinusAssign = 68, LeftShiftAssign = 69, 
-    RightShiftAssign = 70, AndAssign = 71, XorAssign = 72, OrAssign = 73, 
-    Equal = 74, NotEqual = 75, Arrow = 76, Dot = 77, Ellipsis = 78, Identifier = 79, 
-    Constant = 80, DigitSequence = 81, StringLiteral = 82, ComplexDefine = 83, 
-    IncludeDirective = 84, AsmBlock = 85, LineAfterPreprocessing = 86, LineDirective = 87, 
-    PragmaDirective = 88, Whitespace = 89, Newline = 90, BlockComment = 91, 
-    LineComment = 92
+    T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, Case = 6, Char = 7, 
+    Const = 8, Else = 9, Float = 10, For = 11, If = 12, Int = 13, Long = 14, 
+    Return = 15, Short = 16, Signed = 17, Typedef = 18, Unsigned = 19, Void = 20, 
+    Volatile = 21, While = 22, LeftParen = 23, RightParen = 24, LeftBracket = 25, 
+    RightBracket = 26, LeftBrace = 27, RightBrace = 28, Less = 29, LessEqual = 30, 
+    Greater = 31, GreaterEqual = 32, LeftShift = 33, RightShift = 34, Plus = 35, 
+    PlusPlus = 36, Minus = 37, MinusMinus = 38, Star = 39, Div = 40, Mod = 41, 
+    And = 42, Or = 43, AndAnd = 44, OrOr = 45, Caret = 46, Not = 47, Tilde = 48, 
+    Question = 49, Colon = 50, Semi = 51, Comma = 52, Assign = 53, StarAssign = 54, 
+    DivAssign = 55, ModAssign = 56, PlusAssign = 57, MinusAssign = 58, LeftShiftAssign = 59, 
+    RightShiftAssign = 60, AndAssign = 61, XorAssign = 62, OrAssign = 63, 
+    Equal = 64, NotEqual = 65, Arrow = 66, Dot = 67, Ellipsis = 68, Identifier = 69, 
+    Constant = 70, DigitSequence = 71, StringLiteral = 72, ComplexDefine = 73, 
+    IncludeDirective = 74, AsmBlock = 75, LineAfterPreprocessing = 76, LineDirective = 77, 
+    PragmaDirective = 78, Whitespace = 79, Newline = 80, BlockComment = 81, 
+    LineComment = 82
   };
 
   explicit C_grammarLexer(antlr4::CharStream *input);

@@ -76,25 +76,7 @@ public:
 
     virtual antlrcpp::Any visitTypeSpecifier(C_grammarParser::TypeSpecifierContext *context) = 0;
 
-    virtual antlrcpp::Any visitStructSpecifier(C_grammarParser::StructSpecifierContext *context) = 0;
-
-    virtual antlrcpp::Any visitStructDeclarationList(C_grammarParser::StructDeclarationListContext *context) = 0;
-
-    virtual antlrcpp::Any visitStructDeclaration(C_grammarParser::StructDeclarationContext *context) = 0;
-
     virtual antlrcpp::Any visitSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext *context) = 0;
-
-    virtual antlrcpp::Any visitStructDeclaratorList(C_grammarParser::StructDeclaratorListContext *context) = 0;
-
-    virtual antlrcpp::Any visitStructDeclarator(C_grammarParser::StructDeclaratorContext *context) = 0;
-
-    virtual antlrcpp::Any visitEnumSpecifier(C_grammarParser::EnumSpecifierContext *context) = 0;
-
-    virtual antlrcpp::Any visitEnumeratorList(C_grammarParser::EnumeratorListContext *context) = 0;
-
-    virtual antlrcpp::Any visitEnumerator(C_grammarParser::EnumeratorContext *context) = 0;
-
-    virtual antlrcpp::Any visitEnumerationConstant(C_grammarParser::EnumerationConstantContext *context) = 0;
 
     virtual antlrcpp::Any visitTypeQualifier(C_grammarParser::TypeQualifierContext *context) = 0;
 
