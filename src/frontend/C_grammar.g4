@@ -40,30 +40,18 @@ primaryExpression
     |   '(' expression ')'
     ;
 
-postfixExpression
-    :(   primaryExpression |  '(' typeName ')' '{' initializerList ','? '}' )
-    ;
 
 unaryExpression
     :
-    ('++' |  '--' )*
-    (postfixExpression
-    |  unaryOperator castExpression
-    )
+    ('++' |  '--' )* (primaryExpression |  unaryOperator unaryExpression)
     ;
 
 unaryOperator
-    :   '&' | '*' | '+' | '-' | '~' | '!'
-    ;
-
-castExpression
-    :   '(' typeName ')' castExpression
-    |   unaryExpression
-    |   DigitSequence // for
+    :  '-' | '~' | '!'
     ;
 
 multiplicativeExpression
-    :   castExpression (('*'|'/'|'%') castExpression)*
+    :   unaryExpression (('*'|'/'|'%') unaryExpression)*
     ;
 
 additiveExpression

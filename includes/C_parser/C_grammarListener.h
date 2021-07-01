@@ -22,9 +22,6 @@ public:
   virtual void enterPrimaryExpression(C_grammarParser::PrimaryExpressionContext *ctx) = 0;
   virtual void exitPrimaryExpression(C_grammarParser::PrimaryExpressionContext *ctx) = 0;
 
-  virtual void enterPostfixExpression(C_grammarParser::PostfixExpressionContext *ctx) = 0;
-  virtual void exitPostfixExpression(C_grammarParser::PostfixExpressionContext *ctx) = 0;
-
   virtual void enterUnaryExpression(C_grammarParser::UnaryExpressionContext *ctx) = 0;
   virtual void exitUnaryExpression(C_grammarParser::UnaryExpressionContext *ctx) = 0;
 

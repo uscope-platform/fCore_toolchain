@@ -24,8 +24,6 @@ public:
 
     virtual antlrcpp::Any visitPrimaryExpression(C_grammarParser::PrimaryExpressionContext *context) = 0;
 
-    virtual antlrcpp::Any visitPostfixExpression(C_grammarParser::PostfixExpressionContext *context) = 0;
-
     virtual antlrcpp::Any visitUnaryExpression(C_grammarParser::UnaryExpressionContext *context) = 0;
 
     virtual antlrcpp::Any visitUnaryOperator(C_grammarParser::UnaryOperatorContext *context) = 0;

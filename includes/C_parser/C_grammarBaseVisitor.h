@@ -25,10 +25,6 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitPostfixExpression(C_grammarParser::PostfixExpressionContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitUnaryExpression(C_grammarParser::UnaryExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
