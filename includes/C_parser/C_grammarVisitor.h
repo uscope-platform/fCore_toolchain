@@ -136,6 +136,8 @@ public:
 
     virtual antlrcpp::Any visitDeclarationList(C_grammarParser::DeclarationListContext *context) = 0;
 
+    virtual antlrcpp::Any visitConstant(C_grammarParser::ConstantContext *context) = 0;
+
 
 };
 

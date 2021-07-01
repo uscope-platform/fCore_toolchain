@@ -190,6 +190,9 @@ public:
   virtual void enterDeclarationList(C_grammarParser::DeclarationListContext *ctx) = 0;
   virtual void exitDeclarationList(C_grammarParser::DeclarationListContext *ctx) = 0;
 
+  virtual void enterConstant(C_grammarParser::ConstantContext *ctx) = 0;
+  virtual void exitConstant(C_grammarParser::ConstantContext *ctx) = 0;
+
 
 };
 

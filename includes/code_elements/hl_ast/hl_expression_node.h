@@ -29,14 +29,20 @@ expr_xor_b = 15,
 expr_lsh = 16,
 expr_rsh = 17,
 expr_eq = 18,
-expr_neq = 19
+expr_neq = 19,
+expr_neg = 20
 } expression_type_t;
 
 class hl_expression_node : public hl_ast_node{
 public:
-    hl_expression_node(hl_ast_node_type_t nt, expression_type_t et);
+    hl_expression_node( expression_type_t et);
     void set_lhs(const std::shared_ptr<hl_ast_node> &node);
     void set_rhs(const std::shared_ptr<hl_ast_node> &node);
+    std::shared_ptr<hl_ast_node> get_lhs();
+    std::shared_ptr<hl_ast_node> get_rhs();
+
+    friend bool operator==(const hl_expression_node& lhs, const hl_expression_node& rhs);
+
 private:
     expression_type_t expr_type;
     std::shared_ptr<hl_ast_node> lhs;

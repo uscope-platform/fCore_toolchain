@@ -27,8 +27,8 @@ class ast_node_base {
         std::vector<std::shared_ptr<E>> get_content();
 
 
-    private:
-        std::vector<std::shared_ptr<E>> content;
+protected:
+    std::vector<std::shared_ptr<E>> content;
 };
 
 

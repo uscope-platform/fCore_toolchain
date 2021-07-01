@@ -25,10 +25,10 @@ public:
     DivAssign = 55, ModAssign = 56, PlusAssign = 57, MinusAssign = 58, LeftShiftAssign = 59, 
     RightShiftAssign = 60, AndAssign = 61, XorAssign = 62, OrAssign = 63, 
     Equal = 64, NotEqual = 65, Arrow = 66, Dot = 67, Ellipsis = 68, Identifier = 69, 
-    Constant = 70, DigitSequence = 71, StringLiteral = 72, ComplexDefine = 73, 
-    IncludeDirective = 74, AsmBlock = 75, LineAfterPreprocessing = 76, LineDirective = 77, 
-    PragmaDirective = 78, Whitespace = 79, Newline = 80, BlockComment = 81, 
-    LineComment = 82
+    IntegerConstant = 70, FloatingConstant = 71, DigitSequence = 72, CharacterConstant = 73, 
+    StringLiteral = 74, ComplexDefine = 75, IncludeDirective = 76, AsmBlock = 77, 
+    LineAfterPreprocessing = 78, LineDirective = 79, PragmaDirective = 80, 
+    Whitespace = 81, Newline = 82, BlockComment = 83, LineComment = 84
   };
 
   enum {
@@ -50,7 +50,8 @@ public:
     RuleBlockItem = 46, RuleExpressionStatement = 47, RuleSelectionStatement = 48, 
     RuleIterationStatement = 49, RuleForCondition = 50, RuleForDeclaration = 51, 
     RuleForExpression = 52, RuleReturnStatement = 53, RuleTranslationUnit = 54, 
-    RuleExternalDeclaration = 55, RuleFunctionDefinition = 56, RuleDeclarationList = 57
+    RuleExternalDeclaration = 55, RuleFunctionDefinition = 56, RuleDeclarationList = 57, 
+    RuleConstant = 58
   };
 
   explicit C_grammarParser(antlr4::TokenStream *input);
@@ -120,7 +121,8 @@ public:
   class TranslationUnitContext;
   class ExternalDeclarationContext;
   class FunctionDefinitionContext;
-  class DeclarationListContext; 
+  class DeclarationListContext;
+  class ConstantContext; 
 
   class  CompilationUnitContext : public antlr4::ParserRuleContext {
   public:
@@ -143,7 +145,7 @@ public:
     PrimaryExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *Identifier();
-    antlr4::tree::TerminalNode *Constant();
+    ConstantContext *constant();
     std::vector<antlr4::tree::TerminalNode *> StringLiteral();
     antlr4::tree::TerminalNode* StringLiteral(size_t i);
     antlr4::tree::TerminalNode *LeftParen();
@@ -1183,6 +1185,23 @@ public:
   };
 
   DeclarationListContext* declarationList();
+
+  class  ConstantContext : public antlr4::ParserRuleContext {
+  public:
+    ConstantContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *IntegerConstant();
+    antlr4::tree::TerminalNode *FloatingConstant();
+    antlr4::tree::TerminalNode *CharacterConstant();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  ConstantContext* constant();
 
 
   virtual bool sempred(antlr4::RuleContext *_localctx, size_t ruleIndex, size_t predicateIndex) override;

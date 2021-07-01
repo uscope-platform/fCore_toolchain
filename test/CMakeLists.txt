@@ -38,7 +38,8 @@ set(TEST_SOURCES
         end_to_end_asm.cpp
         testing_main.cpp
         end_to_end_C.cpp
-        C_frontend.cpp
+        C_preprocessor.cpp
+        C_tree_visitor.cpp
         )
 
 
@@ -68,4 +69,5 @@ configure_file(C_files/test_preproc_pragmas.c ${CMAKE_CURRENT_BINARY_DIR} COPYON
 configure_file(C_files/test_preproc_define.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_preproc_include_fail.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_preproc_include.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/test_unary_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/include_test.h ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

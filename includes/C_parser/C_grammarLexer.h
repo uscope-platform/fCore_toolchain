@@ -25,10 +25,10 @@ public:
     DivAssign = 55, ModAssign = 56, PlusAssign = 57, MinusAssign = 58, LeftShiftAssign = 59, 
     RightShiftAssign = 60, AndAssign = 61, XorAssign = 62, OrAssign = 63, 
     Equal = 64, NotEqual = 65, Arrow = 66, Dot = 67, Ellipsis = 68, Identifier = 69, 
-    Constant = 70, DigitSequence = 71, StringLiteral = 72, ComplexDefine = 73, 
-    IncludeDirective = 74, AsmBlock = 75, LineAfterPreprocessing = 76, LineDirective = 77, 
-    PragmaDirective = 78, Whitespace = 79, Newline = 80, BlockComment = 81, 
-    LineComment = 82
+    IntegerConstant = 70, FloatingConstant = 71, DigitSequence = 72, CharacterConstant = 73, 
+    StringLiteral = 74, ComplexDefine = 75, IncludeDirective = 76, AsmBlock = 77, 
+    LineAfterPreprocessing = 78, LineDirective = 79, PragmaDirective = 80, 
+    Whitespace = 81, Newline = 82, BlockComment = 83, LineComment = 84
   };
 
   explicit C_grammarLexer(antlr4::CharStream *input);

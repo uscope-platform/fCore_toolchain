@@ -35,11 +35,10 @@ compilationUnit
 
 primaryExpression
     :   Identifier
-    |   Constant
+    |   constant
     |   StringLiteral+
     |   '(' expression ')'
     ;
-
 
 unaryExpression
     :
@@ -423,13 +422,13 @@ HexQuad
     :   HexadecimalDigit HexadecimalDigit HexadecimalDigit HexadecimalDigit
     ;
 
-Constant
+constant
     :   IntegerConstant
     |   FloatingConstant
     |   CharacterConstant
     ;
 
-fragment
+
 IntegerConstant
     :   DecimalConstant IntegerSuffix?
     |   OctalConstant IntegerSuffix?
@@ -500,7 +499,7 @@ LongLongSuffix
     :   'll' | 'LL'
     ;
 
-fragment
+
 FloatingConstant
     :   DecimalFloatingConstant
     |   HexadecimalFloatingConstant
@@ -558,7 +557,7 @@ FloatingSuffix
     :   [flFL]
     ;
 
-fragment
+
 CharacterConstant
     :   '\'' CCharSequence '\''
     |   'L\'' CCharSequence '\''

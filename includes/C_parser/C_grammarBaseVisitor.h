@@ -249,6 +249,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitConstant(C_grammarParser::ConstantContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
 
 };
 

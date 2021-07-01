@@ -192,6 +192,9 @@ public:
   virtual void enterDeclarationList(C_grammarParser::DeclarationListContext * /*ctx*/) override { }
   virtual void exitDeclarationList(C_grammarParser::DeclarationListContext * /*ctx*/) override { }
 
+  virtual void enterConstant(C_grammarParser::ConstantContext * /*ctx*/) override { }
+  virtual void exitConstant(C_grammarParser::ConstantContext * /*ctx*/) override { }
+
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }
   virtual void exitEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

@@ -52,11 +52,14 @@ class C_language_parser{
 
     private:
 
+    C_Tree_visitor visitor;
+
     std::unique_ptr<C_pre_processor> preproc;
     std::shared_ptr<variable_map> vmap;
     std::shared_ptr<define_map> dmap;
 
     FRIEND_TEST( cFrontend, preprocessor_include);
+    FRIEND_TEST( cTreeVisitor, unaryExpressions);
 
     unsigned int n_inputs_ = 0;
     unsigned int n_outputs_ = 0;

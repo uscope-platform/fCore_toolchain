@@ -18,10 +18,10 @@
 #include "frontend/C/C_Tree_visitor.hpp"
 
 
-C_Tree_visitor::C_Tree_visitor(std::shared_ptr<variable_map> map) {
-    varmap = std::move(map);
+C_Tree_visitor::C_Tree_visitor() {
     in_function_declaration = false;
     in_function_body = false;
+    expression_nesting_level = 0;
 }
 
 
@@ -48,7 +48,7 @@ void C_Tree_visitor::exitFunctionDefinition(C_parser::C_grammarParser::FunctionD
     }
     std::string type = declaration_type.top();
     declaration_type.pop();
-    std::shared_ptr<hl_function_node> node = std::make_shared<hl_function_node>(type_function, hl_ast_node::string_to_type(type), func_name);
+    std::shared_ptr<hl_function_node> node = std::make_shared<hl_function_node>(hl_ast_node_type_function, hl_ast_node::string_to_type(type), func_name);
     node->set_parameters_list(parameters_list);
     node->set_body(function_body);
     function_body.clear();
@@ -71,7 +71,7 @@ void C_Tree_visitor::exitParameterDeclaration(C_parser::C_grammarParser::Paramet
     std::string id_name = ctx->declarator()->directDeclarator()->Identifier()->getText();
     std::string type = declaration_type.top();
     declaration_type.pop();
-    std::shared_ptr<hl_identifier_node> identifier = std::make_shared<hl_identifier_node>(type_identifier, id_name, hl_ast_node::string_to_type(type));
+    std::shared_ptr<hl_identifier_node> identifier = std::make_shared<hl_identifier_node>(hl_ast_node_type_identifier, id_name, hl_ast_node::string_to_type(type));
     if(in_function_declaration) {
         parameters_list.push_back(identifier);
     }
@@ -87,7 +87,7 @@ void C_Tree_visitor::exitInitDeclarator(C_parser::C_grammarParser::InitDeclarato
     std::string type = declaration_type.top();
     declaration_type.pop();
 
-    std::shared_ptr<hl_identifier_node> identifier = std::make_shared<hl_identifier_node>(type_identifier, id_name, hl_ast_node::string_to_type(type));
+    std::shared_ptr<hl_identifier_node> identifier = std::make_shared<hl_identifier_node>(hl_ast_node_type_identifier, id_name, hl_ast_node::string_to_type(type));
 
     if(in_function_body) {
         function_body.push_back(identifier);
@@ -105,7 +105,7 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
         }
         std::string type = declaration_type.top();
         declaration_type.pop();
-        std::shared_ptr<hl_identifier_node> identifier = std::make_shared<hl_identifier_node>(type_identifier, id_name, hl_ast_node::string_to_type(type));
+        std::shared_ptr<hl_identifier_node> identifier = std::make_shared<hl_identifier_node>(hl_ast_node_type_identifier, id_name, hl_ast_node::string_to_type(type));
         if(in_function_body) {
             function_body.push_back(identifier);
         }
@@ -120,4 +120,67 @@ void C_Tree_visitor::exitCompoundStatement(C_parser::C_grammarParser::CompoundSt
     id = std::static_pointer_cast<hl_identifier_node>(function_body[3]);
     in_function_body = false;
 }
+
+void C_Tree_visitor::exitUnaryExpression(C_parser::C_grammarParser::UnaryExpressionContext *ctx) {
+    std::shared_ptr<hl_expression_node> expression;
+    expression_type_t expr;
+
+    if(ctx->unaryExpression() != nullptr){
+
+        if(ctx->unaryOperator()->getText() == "!"){
+            expr = expr_not_l;
+        } else if(ctx->unaryOperator()->getText() == "~"){
+            expr = expr_not_b;
+        } else if(ctx->unaryOperator()->getText() == "-"){
+            expr = expr_neg;
+        }
+
+        expression = std::make_shared<hl_expression_node>( expr);
+        if(ctx->unaryExpression()->primaryExpression()!= nullptr){
+            if(expression_nesting_level==0){
+                expression->set_rhs(operands_stack.top());
+                operands_stack.pop();
+            } else{
+                expression->set_rhs(expressions_stack.top());
+                expressions_stack.pop();
+                expression_nesting_level--;
+            }
+        } else{
+            expression->set_rhs(expressions_stack.top());
+            expressions_stack.pop();
+        }
+        expressions_stack.push(expression);
+    }
+
+}
+
+void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExpressionContext *ctx) {
+    std::shared_ptr<hl_ast_operand> operand;
+
+    if(ctx->expression() != nullptr){
+        expression_nesting_level++;
+        return;
+    } else if(ctx->Identifier() != nullptr){
+        operand = std::make_shared<hl_ast_operand>( variable_operand);
+        operand->set_name(ctx->Identifier()->getText());
+    } else if(ctx->constant() != nullptr){
+        if(ctx->constant()->FloatingConstant() != nullptr){
+            operand = std::make_shared<hl_ast_operand>( float_immediate_operand);
+            std::string constant = ctx->constant()->FloatingConstant()->getText();
+            operand->set_immediate(std::stof(constant));
+        } else if(ctx->constant()->IntegerConstant() != nullptr){
+            operand = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+            std::string constant = ctx->constant()->IntegerConstant()->getText();
+            operand->set_immediate(std::stoi(constant));
+        } else if(ctx->constant()->CharacterConstant() != nullptr){
+            throw std::runtime_error("character literals are not supported by the fCore toolchain");
+        }
+    } else { // string litteral
+        operand = std::make_shared<hl_ast_operand>( string_operand);
+        operand->set_string(ctx->getText());
+    }
+
+    operands_stack.push(operand);
+}
+
 

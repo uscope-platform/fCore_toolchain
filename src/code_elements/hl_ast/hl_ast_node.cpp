@@ -10,7 +10,7 @@ bool hl_ast_node::is_terminal() {
 }
 
 hl_ast_node::hl_ast_node(hl_ast_node_type_t t) {
-    type = t;
+    node_type = t;
 }
 
 c_types_t hl_ast_node::string_to_type(const std::string &t) {
@@ -25,4 +25,11 @@ c_types_t hl_ast_node::string_to_type(const std::string &t) {
 
 
     return translator[t];
+}
+
+bool operator==(const hl_ast_node &lhs, const hl_ast_node &rhs) {
+    bool ret_val = true;
+    ret_val &= lhs.node_type == rhs.node_type;
+    ret_val &= lhs.content == rhs.content;
+    return ret_val;
 }
