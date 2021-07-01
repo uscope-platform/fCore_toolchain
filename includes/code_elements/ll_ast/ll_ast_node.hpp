@@ -37,7 +37,7 @@ typedef enum {
     type_pragma = 6,
     type_code_block = 7,
 
-} element_type_t;
+} ll_ast_node_type_t;
 
 
 class pragma {
@@ -54,15 +54,15 @@ class ll_ast_node : public ast_node_base<ll_ast_node> {
 
 public:
     ll_ast_node();
-    explicit ll_ast_node(element_type_t block_type);
-    ll_ast_node(element_type_t block_type, ll_instruction block_spec);
-    ll_ast_node(element_type_t block_type, ll_loop block_spec);
-    ll_ast_node(element_type_t block_type, pragma block_spec);
-    ll_ast_node(element_type_t block_type, variable);
+    explicit ll_ast_node(ll_ast_node_type_t block_type);
+    ll_ast_node(ll_ast_node_type_t block_type, ll_instruction block_spec);
+    ll_ast_node(ll_ast_node_type_t block_type, ll_loop block_spec);
+    ll_ast_node(ll_ast_node_type_t block_type, pragma block_spec);
+    ll_ast_node(ll_ast_node_type_t block_type, variable);
     bool is_terminal();
     static std::shared_ptr<ll_ast_node> deep_copy_element(const std::shared_ptr<ll_ast_node>& element);
 
-    element_type_t type;
+    ll_ast_node_type_t type;
     ll_loop loop;
     ll_instruction inst;
     pragma directive;

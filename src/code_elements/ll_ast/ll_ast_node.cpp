@@ -23,27 +23,27 @@ ll_ast_node::ll_ast_node() {
 
 }
 
-ll_ast_node::ll_ast_node(element_type_t block_type) {
+ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type) {
     type = block_type;
 }
 
-ll_ast_node::ll_ast_node(element_type_t block_type, ll_instruction block_spec) {
+ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type, ll_instruction block_spec) {
     type = block_type;
     inst = std::move(block_spec);
 }
 
-ll_ast_node::ll_ast_node(element_type_t block_type, ll_loop block_spec) {
+ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type, ll_loop block_spec) {
     type = block_type;
     loop = std::move(block_spec);
 }
 
-ll_ast_node::ll_ast_node(element_type_t block_type, pragma block_spec) {
+ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type, pragma block_spec) {
     type = block_type;
     directive = std::move(block_spec);
 }
 
 
-ll_ast_node::ll_ast_node(element_type_t block_type, variable var_in) {
+ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type, variable var_in) {
     type = block_type;
     var = var_in;
 }

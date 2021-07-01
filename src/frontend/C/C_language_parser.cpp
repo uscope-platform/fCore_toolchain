@@ -59,5 +59,5 @@ void C_language_parser::parse() {
     tree::ParseTree *Tree = parser.compilationUnit();
     C_Tree_visitor visitor(vmap);
     tree::ParseTreeWalker::DEFAULT.walk(&visitor, Tree);
-    AST = visitor.get_program();
+
 }

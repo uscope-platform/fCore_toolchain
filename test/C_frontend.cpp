@@ -99,7 +99,7 @@ TEST( cFrontend, preprocessor_include_fail) {
 }
 
 TEST( cFrontend, parser_main) {
-    std::string input_file = "test_preproc_pragmas.c";
+    std::string input_file = "test_main_add.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();

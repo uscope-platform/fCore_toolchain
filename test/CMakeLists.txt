@@ -2,9 +2,12 @@ set(TESTED_SOURCES
         ../src/backend/output_generator.cpp
         ../src/code_elements/ll_ast/ll_ast_node.cpp
         ../src/code_elements/ll_ast/ll_loop.cpp
+        ../src/code_elements/ll_ast/ll_instruction.cpp
+        ../src/code_elements/hl_ast/hl_ast_node.cpp
+        ../src/code_elements/hl_ast/hl_identifier_node.cpp
+        ../src/code_elements/hl_ast/hl_function_node.cpp
         ../src/code_elements/variable.cpp
         ../src/code_elements/define.cpp
-        ../src/code_elements/ll_ast/ll_instruction.cpp
         ../src/passes/pass_manager.cpp
         ../src/passes/loop_implementation_pass.cpp
         ../src/passes/pseudo_instructions_pass.cpp

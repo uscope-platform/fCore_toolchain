@@ -20,18 +20,59 @@
 
 C_Tree_visitor::C_Tree_visitor(std::shared_ptr<variable_map> map) {
     varmap = std::move(map);
+    in_function_declaration = false;
 }
 
 
-ast_t C_Tree_visitor::get_program() {
-    return program_head;
+
+void C_Tree_visitor::enterFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) {
+    in_function_declaration = true;
 }
 
-std::shared_ptr<variable> C_Tree_visitor::get_variable(const std::string &variable_name, bool is_const) const {
-    std::shared_ptr<variable> var;
-    if(!varmap->count(variable_name))
-        var = std::make_shared<variable>(is_const, variable_name);
-    else
-        var = varmap->at(variable_name);
-    return var;
+
+void C_Tree_visitor::exitFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) {
+
+    std::string func_name = ctx->declarator()->directDeclarator()->directDeclarator()->getText();
+
+    C_parser::C_grammarParser::ParameterListContext  *parameters = ctx->declarator()->directDeclarator()->parameterTypeList()->parameterList();
+    for(auto item:parameters->parameterDeclaration()){
+        std::vector<C_parser::C_grammarParser::DeclarationSpecifierContext *> param_specifiers = item->declarationSpecifiers()->declarationSpecifier();
+        std::string param_type;
+        for (auto param_type_item:param_specifiers) {
+            std::string content;
+            if(param_type_item->storageClassSpecifier() != nullptr)  content = param_type_item->storageClassSpecifier()->toString();
+            if(param_type_item->typeSpecifier() != nullptr)  param_type = param_type_item->typeSpecifier()->getText();
+            if(param_type_item->typeQualifier() != nullptr)  content = param_type_item->typeQualifier()->toString();
+            if(param_type_item->functionSpecifier() != nullptr)  content = param_type_item->functionSpecifier()->toString();
+            if(param_type_item->alignmentSpecifier() != nullptr)  content = param_type_item->alignmentSpecifier()->toString();
+        }
+        int i = 0;
+    }
+    std::string type = declaration_type.top();
+    declaration_type.pop();
+    std::shared_ptr<hl_function_node> node = std::make_shared<hl_function_node>(type_function, hl_ast_node::string_to_type(type), func_name);
+    node->set_parameters_list(parameters_list);
+    in_function_declaration = false;
+    functions.push_back(node);
+}
+
+void C_Tree_visitor::exitDeclarationSpecifiers(C_parser::C_grammarParser::DeclarationSpecifiersContext *ctx) {
+    std::string type;
+    for (auto item:ctx->declarationSpecifier()) {
+        std::string content;
+        if(item->storageClassSpecifier() != nullptr)  content = item->storageClassSpecifier()->toString();
+        if(item->typeSpecifier() != nullptr)  type = item->typeSpecifier()->getText();
+        if(item->typeQualifier() != nullptr)  content = item->typeQualifier()->toString();
+        if(item->functionSpecifier() != nullptr)  content = item->functionSpecifier()->toString();
+        if(item->alignmentSpecifier() != nullptr)  content = item->alignmentSpecifier()->toString();
+    }
+    declaration_type.push(type);
+}
+
+void C_Tree_visitor::exitParameterDeclaration(C_parser::C_grammarParser::ParameterDeclarationContext *ctx) {
+    std::string id_name = ctx->declarator()->directDeclarator()->Identifier()->getText();
+    std::string type = declaration_type.top();
+    declaration_type.pop();
+    std::shared_ptr<hl_identifier_node> identifier = std::make_shared<hl_identifier_node>(type_identifier, id_name, hl_ast_node::string_to_type(type));
+    if(in_function_declaration) parameters_list.push_back(identifier);
 }

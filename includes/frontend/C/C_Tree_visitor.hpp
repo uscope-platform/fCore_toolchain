@@ -23,17 +23,16 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include <stack>
 
 #include "C_parser/C_grammarBaseListener.h"
 #include "C_parser/C_grammarParser.h"
-#include "fCore_isa.hpp"
-#include "code_elements/ll_ast/ll_instruction.h"
-#include "code_elements/ll_ast/ll_loop.hpp"
-#include "code_elements/ll_ast/ll_ast_node.hpp"
 #include "code_elements/variable.hpp"
 #include "frontend/variable_map.hpp"
 
-
+#include "code_elements/hl_ast/hl_function_node.h"
+#include "code_elements/hl_ast/hl_identifier_node.h"
+#include "code_elements/hl_ast/hl_ast_node.h"
 
 
 typedef std::unordered_map<std::string, std::shared_ptr<variable>>  varmap_t;
@@ -41,15 +40,22 @@ typedef std::unordered_map<std::string, std::shared_ptr<variable>>  varmap_t;
 class C_Tree_visitor : public  C_parser::C_grammarBaseListener{
 public:
     explicit C_Tree_visitor(std::shared_ptr<variable_map> map);
-    ast_t get_program();
+
+    void enterFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) override;
+    void exitFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) override;
+
+    void exitParameterDeclaration(C_parser::C_grammarParser::ParameterDeclarationContext *ctx) override;
+
+    void exitDeclarationSpecifiers(C_parser::C_grammarParser::DeclarationSpecifiersContext *ctx) override;
 
 private:
-    ast_t program_head{};
-    ast_t current_element{};
-    std::stack<ast_t> parent_elements;
+
     std::shared_ptr<variable_map> varmap;
 
-    std::shared_ptr<variable> get_variable(const std::string &variable_name, bool is_const) const;
+    std::stack<std::string> declaration_type;
+    std::vector<std::shared_ptr<hl_identifier_node>> parameters_list;
+    std::vector<std::shared_ptr<hl_function_node>> functions;
+    bool in_function_declaration;
 };
 
 #endif //FCORE_HAS_ASMTREE_VISITOR_HPP
