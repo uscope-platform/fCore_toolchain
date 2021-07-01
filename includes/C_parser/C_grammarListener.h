@@ -31,9 +31,6 @@ public:
   virtual void enterUnaryOperator(C_grammarParser::UnaryOperatorContext *ctx) = 0;
   virtual void exitUnaryOperator(C_grammarParser::UnaryOperatorContext *ctx) = 0;
 
-  virtual void enterCastExpression(C_grammarParser::CastExpressionContext *ctx) = 0;
-  virtual void exitCastExpression(C_grammarParser::CastExpressionContext *ctx) = 0;
-
   virtual void enterMultiplicativeExpression(C_grammarParser::MultiplicativeExpressionContext *ctx) = 0;
   virtual void exitMultiplicativeExpression(C_grammarParser::MultiplicativeExpressionContext *ctx) = 0;
 

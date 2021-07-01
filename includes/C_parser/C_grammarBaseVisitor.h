@@ -37,10 +37,6 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitCastExpression(C_grammarParser::CastExpressionContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitMultiplicativeExpression(C_grammarParser::MultiplicativeExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
