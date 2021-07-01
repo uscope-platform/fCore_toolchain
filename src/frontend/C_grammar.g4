@@ -40,7 +40,6 @@ primaryExpression
     |   '(' expression ')'
     ;
 
-
 postfixExpression
     :(   primaryExpression |  '(' typeName ')' '{' initializerList ','? '}' )
     ;
@@ -162,55 +161,14 @@ typeSpecifier
     |   'int'
     |   'long'
     |   'float'
-    |   'double'
     |   'signed'
     |   'unsigned')
-    |   structSpecifier
-    |   enumSpecifier
     |   typedefName
     ;
 
-structSpecifier
-    :   'struct' Identifier? '{' structDeclarationList '}'
-    |   'struct' Identifier
-    ;
-
-structDeclarationList
-    :   structDeclaration+
-    ;
-
-structDeclaration
-    :   specifierQualifierList structDeclaratorList? ';'
-    ;
 
 specifierQualifierList
     :   (typeSpecifier| typeQualifier) specifierQualifierList?
-    ;
-
-structDeclaratorList
-    :   structDeclarator (',' structDeclarator)*
-    ;
-
-structDeclarator
-    :   declarator
-    |   declarator? ':' constantExpression
-    ;
-
-enumSpecifier
-    :   'enum' Identifier? '{' enumeratorList ','? '}'
-    |   'enum' Identifier
-    ;
-
-enumeratorList
-    :   enumerator (',' enumerator)*
-    ;
-
-enumerator
-    :   enumerationConstant ('=' constantExpression)?
-    ;
-
-enumerationConstant
-    :   Identifier
     ;
 
 
@@ -364,33 +322,20 @@ declarationList
     :   declaration+
     ;
 
-Auto : 'auto';
-Break : 'break';
 Case : 'case';
 Char : 'char';
 Const : 'const';
-Continue : 'continue';
-Default : 'default';
-Do : 'do';
-Double : 'double';
+
+
 Else : 'else';
-Enum : 'enum';
-Extern : 'extern';
 Float : 'float';
 For : 'for';
-Goto : 'goto';
 If : 'if';
-Inline : 'inline';
 Int : 'int';
 Long : 'long';
-Register : 'register';
-Restrict : 'restrict';
 Return : 'return';
 Short : 'short';
 Signed : 'signed';
-Static : 'static';
-Struct : 'struct';
-Switch : 'switch';
 Typedef : 'typedef';
 Unsigned : 'unsigned';
 Void : 'void';
@@ -493,7 +438,6 @@ HexQuad
 Constant
     :   IntegerConstant
     |   FloatingConstant
-    //|   EnumerationConstant
     |   CharacterConstant
     ;
 

@@ -6,6 +6,8 @@ set(TESTED_SOURCES
         ../src/code_elements/hl_ast/hl_ast_node.cpp
         ../src/code_elements/hl_ast/hl_identifier_node.cpp
         ../src/code_elements/hl_ast/hl_function_node.cpp
+        ../src/code_elements/hl_ast/hl_expression_node.cpp
+        ../src/code_elements/hl_ast/hl_ast_operand.cpp
         ../src/code_elements/variable.cpp
         ../src/code_elements/define.cpp
         ../src/passes/pass_manager.cpp

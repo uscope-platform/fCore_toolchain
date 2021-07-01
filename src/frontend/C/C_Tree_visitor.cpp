@@ -113,21 +113,11 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
 
 }
 
-
 void C_Tree_visitor::exitCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) {
     std::shared_ptr<hl_identifier_node> id = std::static_pointer_cast<hl_identifier_node>(function_body[0]);
     id = std::static_pointer_cast<hl_identifier_node>(function_body[1]);
     id = std::static_pointer_cast<hl_identifier_node>(function_body[2]);
     id = std::static_pointer_cast<hl_identifier_node>(function_body[3]);
     in_function_body = false;
-}
-
-
-void C_Tree_visitor::exitBlockItem(C_parser::C_grammarParser::BlockItemContext *ctx) {
-    if(ctx->statement() != nullptr){
-
-    } else if(ctx->declaration() != nullptr){
-
-    }
 }
 

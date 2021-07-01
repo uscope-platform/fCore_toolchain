@@ -48,14 +48,15 @@ public:
     void enterCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) override;
     void exitCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) override;
 
-
     void exitParameterDeclaration(C_parser::C_grammarParser::ParameterDeclarationContext *ctx) override;
     void exitDeclarationSpecifiers(C_parser::C_grammarParser::DeclarationSpecifiersContext *ctx) override;
 
-     void exitBlockItem(C_parser::C_grammarParser::BlockItemContext *ctx) override;
+    void exitDeclaration(C_parser::C_grammarParser::DeclarationContext *ctx) override;
+    void exitInitDeclarator(C_parser::C_grammarParser::InitDeclaratorContext *ctx) override;
 
-     void exitDeclaration(C_parser::C_grammarParser::DeclarationContext *ctx) override;
-     void exitInitDeclarator(C_parser::C_grammarParser::InitDeclaratorContext *ctx) override;
+    void exitMultiplicativeExpression(C_parser::C_grammarParser::MultiplicativeExpressionContext *ctx) override;
+    void exitAdditiveExpression(C_parser::C_grammarParser::AdditiveExpressionContext *ctx) override;
+
 
 private:
 
