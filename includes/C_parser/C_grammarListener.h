@@ -16,23 +16,14 @@ namespace C_parser {
 class  C_grammarListener : public antlr4::tree::ParseTreeListener {
 public:
 
+  virtual void enterCompilationUnit(C_grammarParser::CompilationUnitContext *ctx) = 0;
+  virtual void exitCompilationUnit(C_grammarParser::CompilationUnitContext *ctx) = 0;
+
   virtual void enterPrimaryExpression(C_grammarParser::PrimaryExpressionContext *ctx) = 0;
   virtual void exitPrimaryExpression(C_grammarParser::PrimaryExpressionContext *ctx) = 0;
 
-  virtual void enterGenericSelection(C_grammarParser::GenericSelectionContext *ctx) = 0;
-  virtual void exitGenericSelection(C_grammarParser::GenericSelectionContext *ctx) = 0;
-
-  virtual void enterGenericAssocList(C_grammarParser::GenericAssocListContext *ctx) = 0;
-  virtual void exitGenericAssocList(C_grammarParser::GenericAssocListContext *ctx) = 0;
-
-  virtual void enterGenericAssociation(C_grammarParser::GenericAssociationContext *ctx) = 0;
-  virtual void exitGenericAssociation(C_grammarParser::GenericAssociationContext *ctx) = 0;
-
   virtual void enterPostfixExpression(C_grammarParser::PostfixExpressionContext *ctx) = 0;
   virtual void exitPostfixExpression(C_grammarParser::PostfixExpressionContext *ctx) = 0;
-
-  virtual void enterArgumentExpressionList(C_grammarParser::ArgumentExpressionListContext *ctx) = 0;
-  virtual void exitArgumentExpressionList(C_grammarParser::ArgumentExpressionListContext *ctx) = 0;
 
   virtual void enterUnaryExpression(C_grammarParser::UnaryExpressionContext *ctx) = 0;
   virtual void exitUnaryExpression(C_grammarParser::UnaryExpressionContext *ctx) = 0;
@@ -94,9 +85,6 @@ public:
   virtual void enterDeclarationSpecifiers(C_grammarParser::DeclarationSpecifiersContext *ctx) = 0;
   virtual void exitDeclarationSpecifiers(C_grammarParser::DeclarationSpecifiersContext *ctx) = 0;
 
-  virtual void enterDeclarationSpecifiers2(C_grammarParser::DeclarationSpecifiers2Context *ctx) = 0;
-  virtual void exitDeclarationSpecifiers2(C_grammarParser::DeclarationSpecifiers2Context *ctx) = 0;
-
   virtual void enterDeclarationSpecifier(C_grammarParser::DeclarationSpecifierContext *ctx) = 0;
   virtual void exitDeclarationSpecifier(C_grammarParser::DeclarationSpecifierContext *ctx) = 0;
 
@@ -112,11 +100,8 @@ public:
   virtual void enterTypeSpecifier(C_grammarParser::TypeSpecifierContext *ctx) = 0;
   virtual void exitTypeSpecifier(C_grammarParser::TypeSpecifierContext *ctx) = 0;
 
-  virtual void enterStructOrUnionSpecifier(C_grammarParser::StructOrUnionSpecifierContext *ctx) = 0;
-  virtual void exitStructOrUnionSpecifier(C_grammarParser::StructOrUnionSpecifierContext *ctx) = 0;
-
-  virtual void enterStructOrUnion(C_grammarParser::StructOrUnionContext *ctx) = 0;
-  virtual void exitStructOrUnion(C_grammarParser::StructOrUnionContext *ctx) = 0;
+  virtual void enterStructSpecifier(C_grammarParser::StructSpecifierContext *ctx) = 0;
+  virtual void exitStructSpecifier(C_grammarParser::StructSpecifierContext *ctx) = 0;
 
   virtual void enterStructDeclarationList(C_grammarParser::StructDeclarationListContext *ctx) = 0;
   virtual void exitStructDeclarationList(C_grammarParser::StructDeclarationListContext *ctx) = 0;
@@ -145,17 +130,8 @@ public:
   virtual void enterEnumerationConstant(C_grammarParser::EnumerationConstantContext *ctx) = 0;
   virtual void exitEnumerationConstant(C_grammarParser::EnumerationConstantContext *ctx) = 0;
 
-  virtual void enterAtomicTypeSpecifier(C_grammarParser::AtomicTypeSpecifierContext *ctx) = 0;
-  virtual void exitAtomicTypeSpecifier(C_grammarParser::AtomicTypeSpecifierContext *ctx) = 0;
-
   virtual void enterTypeQualifier(C_grammarParser::TypeQualifierContext *ctx) = 0;
   virtual void exitTypeQualifier(C_grammarParser::TypeQualifierContext *ctx) = 0;
-
-  virtual void enterFunctionSpecifier(C_grammarParser::FunctionSpecifierContext *ctx) = 0;
-  virtual void exitFunctionSpecifier(C_grammarParser::FunctionSpecifierContext *ctx) = 0;
-
-  virtual void enterAlignmentSpecifier(C_grammarParser::AlignmentSpecifierContext *ctx) = 0;
-  virtual void exitAlignmentSpecifier(C_grammarParser::AlignmentSpecifierContext *ctx) = 0;
 
   virtual void enterDeclarator(C_grammarParser::DeclaratorContext *ctx) = 0;
   virtual void exitDeclarator(C_grammarParser::DeclaratorContext *ctx) = 0;
@@ -163,23 +139,8 @@ public:
   virtual void enterDirectDeclarator(C_grammarParser::DirectDeclaratorContext *ctx) = 0;
   virtual void exitDirectDeclarator(C_grammarParser::DirectDeclaratorContext *ctx) = 0;
 
-  virtual void enterGccDeclaratorExtension(C_grammarParser::GccDeclaratorExtensionContext *ctx) = 0;
-  virtual void exitGccDeclaratorExtension(C_grammarParser::GccDeclaratorExtensionContext *ctx) = 0;
-
-  virtual void enterGccAttributeSpecifier(C_grammarParser::GccAttributeSpecifierContext *ctx) = 0;
-  virtual void exitGccAttributeSpecifier(C_grammarParser::GccAttributeSpecifierContext *ctx) = 0;
-
-  virtual void enterGccAttributeList(C_grammarParser::GccAttributeListContext *ctx) = 0;
-  virtual void exitGccAttributeList(C_grammarParser::GccAttributeListContext *ctx) = 0;
-
-  virtual void enterGccAttribute(C_grammarParser::GccAttributeContext *ctx) = 0;
-  virtual void exitGccAttribute(C_grammarParser::GccAttributeContext *ctx) = 0;
-
   virtual void enterNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext *ctx) = 0;
   virtual void exitNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext *ctx) = 0;
-
-  virtual void enterPointer(C_grammarParser::PointerContext *ctx) = 0;
-  virtual void exitPointer(C_grammarParser::PointerContext *ctx) = 0;
 
   virtual void enterTypeQualifierList(C_grammarParser::TypeQualifierListContext *ctx) = 0;
   virtual void exitTypeQualifierList(C_grammarParser::TypeQualifierListContext *ctx) = 0;
@@ -199,12 +160,6 @@ public:
   virtual void enterTypeName(C_grammarParser::TypeNameContext *ctx) = 0;
   virtual void exitTypeName(C_grammarParser::TypeNameContext *ctx) = 0;
 
-  virtual void enterAbstractDeclarator(C_grammarParser::AbstractDeclaratorContext *ctx) = 0;
-  virtual void exitAbstractDeclarator(C_grammarParser::AbstractDeclaratorContext *ctx) = 0;
-
-  virtual void enterDirectAbstractDeclarator(C_grammarParser::DirectAbstractDeclaratorContext *ctx) = 0;
-  virtual void exitDirectAbstractDeclarator(C_grammarParser::DirectAbstractDeclaratorContext *ctx) = 0;
-
   virtual void enterTypedefName(C_grammarParser::TypedefNameContext *ctx) = 0;
   virtual void exitTypedefName(C_grammarParser::TypedefNameContext *ctx) = 0;
 
@@ -223,14 +178,8 @@ public:
   virtual void enterDesignator(C_grammarParser::DesignatorContext *ctx) = 0;
   virtual void exitDesignator(C_grammarParser::DesignatorContext *ctx) = 0;
 
-  virtual void enterStaticAssertDeclaration(C_grammarParser::StaticAssertDeclarationContext *ctx) = 0;
-  virtual void exitStaticAssertDeclaration(C_grammarParser::StaticAssertDeclarationContext *ctx) = 0;
-
   virtual void enterStatement(C_grammarParser::StatementContext *ctx) = 0;
   virtual void exitStatement(C_grammarParser::StatementContext *ctx) = 0;
-
-  virtual void enterLabeledStatement(C_grammarParser::LabeledStatementContext *ctx) = 0;
-  virtual void exitLabeledStatement(C_grammarParser::LabeledStatementContext *ctx) = 0;
 
   virtual void enterCompoundStatement(C_grammarParser::CompoundStatementContext *ctx) = 0;
   virtual void exitCompoundStatement(C_grammarParser::CompoundStatementContext *ctx) = 0;
@@ -259,11 +208,8 @@ public:
   virtual void enterForExpression(C_grammarParser::ForExpressionContext *ctx) = 0;
   virtual void exitForExpression(C_grammarParser::ForExpressionContext *ctx) = 0;
 
-  virtual void enterJumpStatement(C_grammarParser::JumpStatementContext *ctx) = 0;
-  virtual void exitJumpStatement(C_grammarParser::JumpStatementContext *ctx) = 0;
-
-  virtual void enterCompilationUnit(C_grammarParser::CompilationUnitContext *ctx) = 0;
-  virtual void exitCompilationUnit(C_grammarParser::CompilationUnitContext *ctx) = 0;
+  virtual void enterReturnStatement(C_grammarParser::ReturnStatementContext *ctx) = 0;
+  virtual void exitReturnStatement(C_grammarParser::ReturnStatementContext *ctx) = 0;
 
   virtual void enterTranslationUnit(C_grammarParser::TranslationUnitContext *ctx) = 0;
   virtual void exitTranslationUnit(C_grammarParser::TranslationUnitContext *ctx) = 0;

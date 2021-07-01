@@ -17,27 +17,15 @@ namespace C_parser {
 class  C_grammarBaseVisitor : public C_grammarVisitor {
 public:
 
+  virtual antlrcpp::Any visitCompilationUnit(C_grammarParser::CompilationUnitContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitPrimaryExpression(C_grammarParser::PrimaryExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitGenericSelection(C_grammarParser::GenericSelectionContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitGenericAssocList(C_grammarParser::GenericAssocListContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitGenericAssociation(C_grammarParser::GenericAssociationContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitPostfixExpression(C_grammarParser::PostfixExpressionContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitArgumentExpressionList(C_grammarParser::ArgumentExpressionListContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -121,10 +109,6 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitDeclarationSpecifiers2(C_grammarParser::DeclarationSpecifiers2Context *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitDeclarationSpecifier(C_grammarParser::DeclarationSpecifierContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -145,11 +129,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitStructOrUnionSpecifier(C_grammarParser::StructOrUnionSpecifierContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitStructOrUnion(C_grammarParser::StructOrUnionContext *ctx) override {
+  virtual antlrcpp::Any visitStructSpecifier(C_grammarParser::StructSpecifierContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -189,19 +169,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitAtomicTypeSpecifier(C_grammarParser::AtomicTypeSpecifierContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitTypeQualifier(C_grammarParser::TypeQualifierContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitFunctionSpecifier(C_grammarParser::FunctionSpecifierContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitAlignmentSpecifier(C_grammarParser::AlignmentSpecifierContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -213,27 +181,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitGccDeclaratorExtension(C_grammarParser::GccDeclaratorExtensionContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitGccAttributeSpecifier(C_grammarParser::GccAttributeSpecifierContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitGccAttributeList(C_grammarParser::GccAttributeListContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitGccAttribute(C_grammarParser::GccAttributeContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitPointer(C_grammarParser::PointerContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -261,14 +209,6 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitAbstractDeclarator(C_grammarParser::AbstractDeclaratorContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitDirectAbstractDeclarator(C_grammarParser::DirectAbstractDeclaratorContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitTypedefName(C_grammarParser::TypedefNameContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -293,15 +233,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitStaticAssertDeclaration(C_grammarParser::StaticAssertDeclarationContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitStatement(C_grammarParser::StatementContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitLabeledStatement(C_grammarParser::LabeledStatementContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -341,11 +273,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitJumpStatement(C_grammarParser::JumpStatementContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitCompilationUnit(C_grammarParser::CompilationUnitContext *ctx) override {
+  virtual antlrcpp::Any visitReturnStatement(C_grammarParser::ReturnStatementContext *ctx) override {
     return visitChildren(ctx);
   }
 

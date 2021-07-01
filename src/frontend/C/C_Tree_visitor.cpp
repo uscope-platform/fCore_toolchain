@@ -44,8 +44,6 @@ void C_Tree_visitor::exitFunctionDefinition(C_parser::C_grammarParser::FunctionD
             if(param_type_item->storageClassSpecifier() != nullptr)  content = param_type_item->storageClassSpecifier()->toString();
             if(param_type_item->typeSpecifier() != nullptr)  param_type = param_type_item->typeSpecifier()->getText();
             if(param_type_item->typeQualifier() != nullptr)  content = param_type_item->typeQualifier()->toString();
-            if(param_type_item->functionSpecifier() != nullptr)  content = param_type_item->functionSpecifier()->toString();
-            if(param_type_item->alignmentSpecifier() != nullptr)  content = param_type_item->alignmentSpecifier()->toString();
         }
     }
     std::string type = declaration_type.top();
@@ -65,8 +63,6 @@ void C_Tree_visitor::exitDeclarationSpecifiers(C_parser::C_grammarParser::Declar
         if(item->storageClassSpecifier() != nullptr)  content = item->storageClassSpecifier()->toString();
         if(item->typeSpecifier() != nullptr)  type = item->typeSpecifier()->getText();
         if(item->typeQualifier() != nullptr)  content = item->typeQualifier()->toString();
-        if(item->functionSpecifier() != nullptr)  content = item->functionSpecifier()->toString();
-        if(item->alignmentSpecifier() != nullptr)  content = item->alignmentSpecifier()->toString();
     }
         declaration_type.push(type);
 }
