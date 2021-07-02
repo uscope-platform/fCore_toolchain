@@ -155,6 +155,44 @@ TEST( cTreeVisitor, additiveExpressions) {
     }
 }
 
+
+TEST( cTreeVisitor, shiftExpressions) {
+    std::string input_file = "test_shift_expressions.c";
+    std::ifstream ifs(input_file);
+
+    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(ifs, result_var, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
+    std::stack<std::shared_ptr<hl_expression_node>> results = parser.visitor.expressions_stack;
+
+
+    std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
+    op_1->set_name("c");
+    std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_2->set_immediate(5);
+
+    std::shared_ptr<hl_expression_node> gs_1 = std::make_shared<hl_expression_node>(expr_rsh);
+    gs_1->set_lhs(op_1);
+    gs_1->set_rhs(op_2);
+
+    std::shared_ptr<hl_expression_node> gs_2 = std::make_shared<hl_expression_node>(expr_lsh);
+    gs_2->set_lhs(gs_1);
+    op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_2->set_immediate(6);
+    gs_2->set_rhs(op_2);
+
+    std::shared_ptr<hl_expression_node> res = results.top();
+
+    EXPECT_EQ(*res, *gs_2);
+    if(Test::HasFailure()){
+        std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res)->pretty_print()<< std::endl;
+        std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_2)->pretty_print()<< std::endl;
+    }
+}
+
 TEST( cFrontend, parser_main) {
     std::string input_file = "test_main_add.c";
     std::ifstream ifs(input_file);

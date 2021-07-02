@@ -214,11 +214,21 @@ void C_Tree_visitor::exitAdditiveExpression(C_parser::C_grammarParser::AdditiveE
 }
 
 void C_Tree_visitor::exitShiftExpression(C_parser::C_grammarParser::ShiftExpressionContext *ctx) {
-    C_grammarBaseListener::exitShiftExpression(ctx);
+    std::shared_ptr<hl_expression_node> expression;
+
+    std::map<std::string, expression_type_t> expr_map = {
+            {"<<", expr_lsh},
+            {">>", expr_rsh}
+    };
+
+    if(ctx->additiveExpression().size()>1){
+        processExpression(ctx->shiftOperator().size(), ctx->shiftOperator(), expr_map);
+    }
 }
 
 template<typename T>
-void C_Tree_visitor::processExpression(unsigned int expression_size, const T& operands_array, const std::map<std::string, expression_type_t>& expr_map) {
+void C_Tree_visitor::processExpression(unsigned int expression_size, const T& operands_array,
+                                       std::map<std::string, expression_type_t> &expr_map) {
     std::shared_ptr<hl_expression_node> expression;
     if(expression_nesting_level>0){
         std::shared_ptr<hl_expression_node> ex_1 = expressions_stack.top();

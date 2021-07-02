@@ -71,9 +71,10 @@ private:
     FRIEND_TEST( cTreeVisitor, unaryExpressions);
     FRIEND_TEST( cTreeVisitor, multiplicativeExpressions);
     FRIEND_TEST( cTreeVisitor, additiveExpressions);
+    FRIEND_TEST(cTreeVisitor, shiftExpressions);
 
     template<typename T>
-    void processExpression(unsigned int expression_size, const T& operands_array, const std::map<std::string, expression_type_t>& expr_map);
+    void processExpression(unsigned int expression_size, const T& operands_array, std::map<std::string, expression_type_t> &expr_map);
 
     std::stack<std::string> declaration_type;
     std::vector<std::shared_ptr<hl_identifier_node>> parameters_list;
