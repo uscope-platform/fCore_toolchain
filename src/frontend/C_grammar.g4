@@ -57,20 +57,38 @@ multiplicativeExpression
     :   unaryExpression (multiplicativeOperator unaryExpression)*
     ;
 
+
+additiveOperator
+    : ('+'|'-')
+    ;
+
 additiveExpression
-    :   multiplicativeExpression (('+'|'-') multiplicativeExpression)*
+    :   multiplicativeExpression (additiveOperator multiplicativeExpression)*
+    ;
+
+
+shiftOperator
+    : ('<<'|'>>')
     ;
 
 shiftExpression
-    :   additiveExpression (('<<'|'>>') additiveExpression)*
+    :   additiveExpression (shiftOperator additiveExpression)*
+    ;
+
+relationalOperator
+    : ('<'|'>'|'<='|'>=')
     ;
 
 relationalExpression
-    :   shiftExpression (('<'|'>'|'<='|'>=') shiftExpression)*
+    :   shiftExpression (relationalOperator shiftExpression)*
+    ;
+
+equalityOperator
+    : ('=='| '!=')
     ;
 
 equalityExpression
-    :   relationalExpression (('=='| '!=') relationalExpression)*
+    :   relationalExpression (equalityOperator relationalExpression)*
     ;
 
 andExpression

@@ -36,14 +36,26 @@ public:
   virtual void enterMultiplicativeExpression(C_grammarParser::MultiplicativeExpressionContext * /*ctx*/) override { }
   virtual void exitMultiplicativeExpression(C_grammarParser::MultiplicativeExpressionContext * /*ctx*/) override { }
 
+  virtual void enterAdditiveOperator(C_grammarParser::AdditiveOperatorContext * /*ctx*/) override { }
+  virtual void exitAdditiveOperator(C_grammarParser::AdditiveOperatorContext * /*ctx*/) override { }
+
   virtual void enterAdditiveExpression(C_grammarParser::AdditiveExpressionContext * /*ctx*/) override { }
   virtual void exitAdditiveExpression(C_grammarParser::AdditiveExpressionContext * /*ctx*/) override { }
+
+  virtual void enterShiftOperator(C_grammarParser::ShiftOperatorContext * /*ctx*/) override { }
+  virtual void exitShiftOperator(C_grammarParser::ShiftOperatorContext * /*ctx*/) override { }
 
   virtual void enterShiftExpression(C_grammarParser::ShiftExpressionContext * /*ctx*/) override { }
   virtual void exitShiftExpression(C_grammarParser::ShiftExpressionContext * /*ctx*/) override { }
 
+  virtual void enterRelationalOperator(C_grammarParser::RelationalOperatorContext * /*ctx*/) override { }
+  virtual void exitRelationalOperator(C_grammarParser::RelationalOperatorContext * /*ctx*/) override { }
+
   virtual void enterRelationalExpression(C_grammarParser::RelationalExpressionContext * /*ctx*/) override { }
   virtual void exitRelationalExpression(C_grammarParser::RelationalExpressionContext * /*ctx*/) override { }
+
+  virtual void enterEqualityOperator(C_grammarParser::EqualityOperatorContext * /*ctx*/) override { }
+  virtual void exitEqualityOperator(C_grammarParser::EqualityOperatorContext * /*ctx*/) override { }
 
   virtual void enterEqualityExpression(C_grammarParser::EqualityExpressionContext * /*ctx*/) override { }
   virtual void exitEqualityExpression(C_grammarParser::EqualityExpressionContext * /*ctx*/) override { }

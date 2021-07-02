@@ -41,7 +41,15 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitAdditiveOperator(C_grammarParser::AdditiveOperatorContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitAdditiveExpression(C_grammarParser::AdditiveExpressionContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitShiftOperator(C_grammarParser::ShiftOperatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -49,7 +57,15 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitRelationalOperator(C_grammarParser::RelationalOperatorContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitRelationalExpression(C_grammarParser::RelationalExpressionContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitEqualityOperator(C_grammarParser::EqualityOperatorContext *ctx) override {
     return visitChildren(ctx);
   }
 

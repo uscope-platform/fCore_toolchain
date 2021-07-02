@@ -34,14 +34,26 @@ public:
   virtual void enterMultiplicativeExpression(C_grammarParser::MultiplicativeExpressionContext *ctx) = 0;
   virtual void exitMultiplicativeExpression(C_grammarParser::MultiplicativeExpressionContext *ctx) = 0;
 
+  virtual void enterAdditiveOperator(C_grammarParser::AdditiveOperatorContext *ctx) = 0;
+  virtual void exitAdditiveOperator(C_grammarParser::AdditiveOperatorContext *ctx) = 0;
+
   virtual void enterAdditiveExpression(C_grammarParser::AdditiveExpressionContext *ctx) = 0;
   virtual void exitAdditiveExpression(C_grammarParser::AdditiveExpressionContext *ctx) = 0;
+
+  virtual void enterShiftOperator(C_grammarParser::ShiftOperatorContext *ctx) = 0;
+  virtual void exitShiftOperator(C_grammarParser::ShiftOperatorContext *ctx) = 0;
 
   virtual void enterShiftExpression(C_grammarParser::ShiftExpressionContext *ctx) = 0;
   virtual void exitShiftExpression(C_grammarParser::ShiftExpressionContext *ctx) = 0;
 
+  virtual void enterRelationalOperator(C_grammarParser::RelationalOperatorContext *ctx) = 0;
+  virtual void exitRelationalOperator(C_grammarParser::RelationalOperatorContext *ctx) = 0;
+
   virtual void enterRelationalExpression(C_grammarParser::RelationalExpressionContext *ctx) = 0;
   virtual void exitRelationalExpression(C_grammarParser::RelationalExpressionContext *ctx) = 0;
+
+  virtual void enterEqualityOperator(C_grammarParser::EqualityOperatorContext *ctx) = 0;
+  virtual void exitEqualityOperator(C_grammarParser::EqualityOperatorContext *ctx) = 0;
 
   virtual void enterEqualityExpression(C_grammarParser::EqualityExpressionContext *ctx) = 0;
   virtual void exitEqualityExpression(C_grammarParser::EqualityExpressionContext *ctx) = 0;

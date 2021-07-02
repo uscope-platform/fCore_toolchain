@@ -32,11 +32,19 @@ public:
 
     virtual antlrcpp::Any visitMultiplicativeExpression(C_grammarParser::MultiplicativeExpressionContext *context) = 0;
 
+    virtual antlrcpp::Any visitAdditiveOperator(C_grammarParser::AdditiveOperatorContext *context) = 0;
+
     virtual antlrcpp::Any visitAdditiveExpression(C_grammarParser::AdditiveExpressionContext *context) = 0;
+
+    virtual antlrcpp::Any visitShiftOperator(C_grammarParser::ShiftOperatorContext *context) = 0;
 
     virtual antlrcpp::Any visitShiftExpression(C_grammarParser::ShiftExpressionContext *context) = 0;
 
+    virtual antlrcpp::Any visitRelationalOperator(C_grammarParser::RelationalOperatorContext *context) = 0;
+
     virtual antlrcpp::Any visitRelationalExpression(C_grammarParser::RelationalExpressionContext *context) = 0;
+
+    virtual antlrcpp::Any visitEqualityOperator(C_grammarParser::EqualityOperatorContext *context) = 0;
 
     virtual antlrcpp::Any visitEqualityExpression(C_grammarParser::EqualityExpressionContext *context) = 0;
 
