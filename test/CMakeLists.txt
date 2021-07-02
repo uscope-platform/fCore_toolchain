@@ -39,7 +39,7 @@ set(TEST_SOURCES
         testing_main.cpp
         end_to_end_C.cpp
         C_preprocessor.cpp
-        C_tree_visitor.cpp
+        C_tree_visitor_testing.cpp
         )
 
 

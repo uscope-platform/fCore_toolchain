@@ -187,46 +187,14 @@ void C_Tree_visitor::exitMultiplicativeExpression(C_parser::C_grammarParser::Mul
 
     std::shared_ptr<hl_expression_node> expression;
 
+    std::map<std::string, expression_type_t> expr_map = {
+            {"*", expr_mult},
+            {"/", expr_div},
+            {"%", expr_modulo}
+    };
+
     if(ctx->unaryExpression().size()>1){
-
-        if(expression_nesting_level>0){
-            std::shared_ptr<hl_expression_node> ex_1 = expressions_stack.top();
-            expressions_stack.pop();
-            std::shared_ptr<hl_expression_node> ex_2 = expressions_stack.top();
-            expressions_stack.pop();
-            int i = 0;
-        } else {
-            std::stack<std::string> operations;
-            std::stack<std::shared_ptr<hl_ast_operand>> reversed_operands;
-
-            for(int i = 0; i <= ctx->multiplicativeOperator().size(); ++i){
-                reversed_operands.push(operands_stack.top());
-                operands_stack.pop();
-            }
-
-            bool first_op = true;
-            for(auto item: ctx->multiplicativeOperator()){
-                expression_type_t type;
-                if(item->getText() == "*")
-                    type = expr_mult;
-                else if(item->getText() == "/")
-                    type = expr_div;
-                else if(item->getText() == "%")
-                    type = expr_modulo;
-               std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(type);
-               if(first_op){
-                   ex->set_lhs(reversed_operands.top());
-                   reversed_operands.pop();
-                   first_op = false;
-               } else{
-                    ex->set_lhs(expression);
-               }
-               ex->set_rhs(reversed_operands.top());
-               reversed_operands.pop();
-               expression = ex;
-            }
-        }
-    expressions_stack.push(expression);
+        processExpression(ctx->multiplicativeOperator().size(), ctx->multiplicativeOperator(), expr_map);
     }
 
 }
@@ -235,45 +203,55 @@ void C_Tree_visitor::exitAdditiveExpression(C_parser::C_grammarParser::AdditiveE
 
     std::shared_ptr<hl_expression_node> expression;
 
+    std::map<std::string, expression_type_t> expr_map = {
+            {"+", expr_add},
+            {"-", expr_sub}
+    };
+
     if(ctx->multiplicativeExpression().size()>1){
-
-        if(expression_nesting_level>0){
-            std::shared_ptr<hl_expression_node> ex_1 = expressions_stack.top();
-            expressions_stack.pop();
-            std::shared_ptr<hl_expression_node> ex_2 = expressions_stack.top();
-            expressions_stack.pop();
-            int i = 0;
-        } else {
-            std::stack<std::string> operations;
-            std::stack<std::shared_ptr<hl_ast_operand>> reversed_operands;
-
-            for(int i = 0; i <= ctx->additiveOperator().size(); ++i){
-                reversed_operands.push(operands_stack.top());
-                operands_stack.pop();
-            }
-
-            bool first_op = true;
-            for(auto item: ctx->additiveOperator()){
-                expression_type_t type;
-                if(item->getText() == "+")
-                    type = expr_add;
-                else if(item->getText() == "-")
-                    type = expr_sub;
-                std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(type);
-                if(first_op){
-                    ex->set_lhs(reversed_operands.top());
-                    reversed_operands.pop();
-                    first_op = false;
-                } else{
-                    ex->set_lhs(expression);
-                }
-                ex->set_rhs(reversed_operands.top());
-                reversed_operands.pop();
-                expression = ex;
-            }
-        }
-        expressions_stack.push(expression);
+        processExpression(ctx->additiveOperator().size(), ctx->additiveOperator(), expr_map);
     }
+}
+
+void C_Tree_visitor::exitShiftExpression(C_parser::C_grammarParser::ShiftExpressionContext *ctx) {
+    C_grammarBaseListener::exitShiftExpression(ctx);
+}
+
+template<typename T>
+void C_Tree_visitor::processExpression(unsigned int expression_size, const T& operands_array, const std::map<std::string, expression_type_t>& expr_map) {
+    std::shared_ptr<hl_expression_node> expression;
+    if(expression_nesting_level>0){
+        std::shared_ptr<hl_expression_node> ex_1 = expressions_stack.top();
+        expressions_stack.pop();
+        std::shared_ptr<hl_expression_node> ex_2 = expressions_stack.top();
+        expressions_stack.pop();
+        int i = 0;
+    } else {
+        std::stack<std::string> operations;
+        std::stack<std::shared_ptr<hl_ast_operand>> reversed_operands;
+
+        for(int i = 0; i <= expression_size; ++i){
+            reversed_operands.push(operands_stack.top());
+            operands_stack.pop();
+        }
+
+        bool first_op = true;
+        for(auto item: operands_array){
+            expression_type_t type = expr_map[item->getText()];
+            std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(type);
+            if(first_op){
+                ex->set_lhs(reversed_operands.top());
+                reversed_operands.pop();
+                first_op = false;
+            } else{
+                ex->set_lhs(expression);
+            }
+            ex->set_rhs(reversed_operands.top());
+            reversed_operands.pop();
+            expression = ex;
+        }
+    }
+    expressions_stack.push(expression);
 }
 
 

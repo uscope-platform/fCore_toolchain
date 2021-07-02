@@ -63,10 +63,17 @@ public:
 
     void exitMultiplicativeExpression(C_parser::C_grammarParser::MultiplicativeExpressionContext *ctx) override;
     void exitAdditiveExpression(C_parser::C_grammarParser::AdditiveExpressionContext *ctx) override;
+
+    void exitShiftExpression(C_parser::C_grammarParser::ShiftExpressionContext *ctx) override;
+
+
 private:
     FRIEND_TEST( cTreeVisitor, unaryExpressions);
     FRIEND_TEST( cTreeVisitor, multiplicativeExpressions);
     FRIEND_TEST( cTreeVisitor, additiveExpressions);
+
+    template<typename T>
+    void processExpression(unsigned int expression_size, const T& operands_array, const std::map<std::string, expression_type_t>& expr_map);
 
     std::stack<std::string> declaration_type;
     std::vector<std::shared_ptr<hl_identifier_node>> parameters_list;
