@@ -33,6 +33,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitMultiplicativeOperator(C_grammarParser::MultiplicativeOperatorContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitMultiplicativeExpression(C_grammarParser::MultiplicativeExpressionContext *ctx) override {
     return visitChildren(ctx);
   }

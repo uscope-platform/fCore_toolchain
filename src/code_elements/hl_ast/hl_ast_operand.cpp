@@ -53,3 +53,22 @@ bool operator==(const hl_ast_operand &lhs, const hl_ast_operand &rhs) {
     ret_val &= lhs.node_type == rhs.node_type;
     return ret_val;
 }
+
+hl_ast_operand::operator std::string() {
+    std::string ret_val;
+    switch (operand_type) {
+        case integer_immediate_operand:
+            ret_val = std::to_string(integer_imm);
+            break;
+        case float_immediate_operand:
+            ret_val = std::to_string(float_imm);
+            break;
+        case variable_operand:
+            ret_val = name;
+            break;
+        case string_operand:
+            ret_val = string_imm;
+            break;
+    }
+    return ret_val;
+}

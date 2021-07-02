@@ -6,6 +6,29 @@
 
 hl_expression_node::hl_expression_node(expression_type_t et) : hl_ast_node(hl_ast_node_type_expr) {
     expr_type = et;
+    type_print = {
+            {expr_add, "+"},
+            {expr_sub, "-"},
+            {expr_mult, "*"},
+            {expr_div, "/"},
+            {expr_incr_pre, "++(pre)"},
+            {expr_incr_post, "(post)++"},
+            {expr_decr_pre, "--(pre)"},
+            {expr_decr_post, "(post)--"},
+            {expr_modulo, "%"},
+            {expr_and_l, "&&"},
+            {expr_and_b, "&"},
+            {expr_or_l, "||"},
+            {expr_or_b, "|"},
+            {expr_not_l, "!"},
+            {expr_not_b, "~"},
+            {expr_xor_b, "^"},
+            {expr_lsh, "<<"},
+            {expr_rsh, ">>"},
+            {expr_eq, "=="},
+            {expr_neq, "!="},
+            {expr_neg, "-"},
+    };
 }
 
 void hl_expression_node::set_lhs(const std::shared_ptr<hl_ast_node> &node) {
@@ -59,4 +82,30 @@ bool operator==(const hl_expression_node &lhs, const hl_expression_node &rhs) {
     ret_val &= lhs.expr_type == rhs.expr_type;
 
     return ret_val;
+}
+
+std::string hl_expression_node::pretty_print() {
+    std::ostringstream ss;
+    if(lhs != nullptr){
+        if(lhs->node_type == hl_ast_node_type_operand){
+            std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(lhs);
+            std::string tmp_lhs = *op;
+            ss << tmp_lhs;
+        } else{
+            ss << std::static_pointer_cast<hl_expression_node>(lhs)->pretty_print();
+        }
+
+    }
+    ss << type_print[expr_type];
+
+    if(rhs->node_type == hl_ast_node_type_operand){
+
+        std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(rhs);
+        std::string tmp_rhs = *op;
+        ss << tmp_rhs;
+    } else{
+        ss << std::static_pointer_cast<hl_expression_node>(rhs)->pretty_print();
+    }
+    std::string ret = ss.str();
+    return ret;
 }

@@ -26,7 +26,6 @@ using namespace antlr4;
 C_language_parser::C_language_parser(){
     vmap = std::make_shared<variable_map>();
     dmap = std::make_shared<define_map>();
-
 }
 
 C_language_parser::C_language_parser(std::istream &stream, std::shared_ptr<variable_map> &existing_varmap, std::shared_ptr<define_map> &existing_defmap) {

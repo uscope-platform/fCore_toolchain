@@ -61,11 +61,11 @@ public:
     void exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExpressionContext *ctx) override;
     void exitUnaryExpression(C_parser::C_grammarParser::UnaryExpressionContext *ctx) override;
 
-
-
+    void exitMultiplicativeExpression(C_parser::C_grammarParser::MultiplicativeExpressionContext *ctx) override;
+    void exitAdditiveExpression(C_parser::C_grammarParser::AdditiveExpressionContext *ctx) override;
 private:
-
     FRIEND_TEST( cTreeVisitor, unaryExpressions);
+    FRIEND_TEST( cTreeVisitor, multiplicativeExpressions);
 
     std::stack<std::string> declaration_type;
     std::vector<std::shared_ptr<hl_identifier_node>> parameters_list;

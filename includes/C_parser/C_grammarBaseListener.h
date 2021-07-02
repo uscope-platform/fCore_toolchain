@@ -30,6 +30,9 @@ public:
   virtual void enterUnaryOperator(C_grammarParser::UnaryOperatorContext * /*ctx*/) override { }
   virtual void exitUnaryOperator(C_grammarParser::UnaryOperatorContext * /*ctx*/) override { }
 
+  virtual void enterMultiplicativeOperator(C_grammarParser::MultiplicativeOperatorContext * /*ctx*/) override { }
+  virtual void exitMultiplicativeOperator(C_grammarParser::MultiplicativeOperatorContext * /*ctx*/) override { }
+
   virtual void enterMultiplicativeExpression(C_grammarParser::MultiplicativeExpressionContext * /*ctx*/) override { }
   virtual void exitMultiplicativeExpression(C_grammarParser::MultiplicativeExpressionContext * /*ctx*/) override { }
 

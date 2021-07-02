@@ -49,8 +49,12 @@ unaryOperator
     :  '-' | '~' | '!'
     ;
 
+multiplicativeOperator
+    : ('*'|'/'|'%')
+    ;
+
 multiplicativeExpression
-    :   unaryExpression (('*'|'/'|'%') unaryExpression)*
+    :   unaryExpression (multiplicativeOperator unaryExpression)*
     ;
 
 additiveExpression

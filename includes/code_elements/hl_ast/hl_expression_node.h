@@ -9,6 +9,9 @@
 #include "hl_ast_operand.h"
 #include "hl_ast_node.h"
 
+#include <iostream>
+#include <sstream>
+
 typedef enum {
 expr_add = 0,
 expr_sub = 1,
@@ -18,7 +21,7 @@ expr_incr_pre= 4,
 expr_incr_post= 5,
 expr_decr_pre= 6,
 expr_decr_post= 7,
-expr_module =8,
+expr_modulo =8,
 expr_and_l = 9,
 expr_and_b = 10,
 expr_or_l = 11,
@@ -40,13 +43,14 @@ public:
     void set_rhs(const std::shared_ptr<hl_ast_node> &node);
     std::shared_ptr<hl_ast_node> get_lhs();
     std::shared_ptr<hl_ast_node> get_rhs();
-
+    std::string pretty_print();
     friend bool operator==(const hl_expression_node& lhs, const hl_expression_node& rhs);
 
 private:
     expression_type_t expr_type;
     std::shared_ptr<hl_ast_node> lhs;
     std::shared_ptr<hl_ast_node> rhs;
+    std::map<expression_type_t, std::string> type_print;
 };
 
 #endif //FCORE_HAS_HL_EXPRESSION_NODE_H

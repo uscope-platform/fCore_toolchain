@@ -64,10 +64,14 @@ configure_file(asm_files/register_defs.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
 #  C TESTING FILES
 configure_file(C_files/test_main_add.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+    # Preprocessor
 configure_file(C_files/test_preproc_comments.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_preproc_pragmas.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_preproc_define.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_preproc_include_fail.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_preproc_include.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_unary_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/include_test.h ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+    # Tree visitor (ANTLR <-> AST
+configure_file(C_files/test_unary_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/test_multiplicative_Expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/test_main_add.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

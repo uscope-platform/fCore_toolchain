@@ -183,4 +183,57 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
     operands_stack.push(operand);
 }
 
+void C_Tree_visitor::exitMultiplicativeExpression(C_parser::C_grammarParser::MultiplicativeExpressionContext *ctx) {
+
+    expression_type_t expr;
+    std::shared_ptr<hl_expression_node> expression;
+
+    if(ctx->unaryExpression().size()>1){
+
+        if(expression_nesting_level>0){
+            std::shared_ptr<hl_expression_node> ex_1 = expressions_stack.top();
+            expressions_stack.pop();
+            std::shared_ptr<hl_expression_node> ex_2 = expressions_stack.top();
+            expressions_stack.pop();
+            int i = 0;
+        } else {
+            std::stack<std::string> operations;
+            std::stack<std::shared_ptr<hl_ast_operand>> reversed_operands;
+
+            for(int i = 0; i <= ctx->multiplicativeOperator().size(); ++i){
+                reversed_operands.push(operands_stack.top());
+                operands_stack.pop();
+            }
+
+            bool first_op = true;
+            for(auto item: ctx->multiplicativeOperator()){
+                expression_type_t type;
+                if(item->getText() == "*")
+                    type = expr_mult;
+                else if(item->getText() == "/")
+                    type = expr_div;
+                else if(item->getText() == "%")
+                    type = expr_modulo;
+               std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(type);
+               if(first_op){
+                   ex->set_lhs(reversed_operands.top());
+                   reversed_operands.pop();
+                   first_op = false;
+               } else{
+                    ex->set_lhs(expression);
+               }
+               ex->set_rhs(reversed_operands.top());
+               reversed_operands.pop();
+               expression = ex;
+            }
+        }
+    expressions_stack.push(expression);
+    }
+
+}
+
+void C_Tree_visitor::exitAdditiveExpression(C_parser::C_grammarParser::AdditiveExpressionContext *ctx) {
+    C_grammarBaseListener::exitAdditiveExpression(ctx);
+}
+
 

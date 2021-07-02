@@ -28,6 +28,8 @@ public:
 
     virtual antlrcpp::Any visitUnaryOperator(C_grammarParser::UnaryOperatorContext *context) = 0;
 
+    virtual antlrcpp::Any visitMultiplicativeOperator(C_grammarParser::MultiplicativeOperatorContext *context) = 0;
+
     virtual antlrcpp::Any visitMultiplicativeExpression(C_grammarParser::MultiplicativeExpressionContext *context) = 0;
 
     virtual antlrcpp::Any visitAdditiveExpression(C_grammarParser::AdditiveExpressionContext *context) = 0;
