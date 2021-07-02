@@ -76,4 +76,6 @@ configure_file(C_files/test_unary_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPY
 configure_file(C_files/test_multiplicative_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_additive_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_shift_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/test_equality_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/test_relational_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_main_add.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

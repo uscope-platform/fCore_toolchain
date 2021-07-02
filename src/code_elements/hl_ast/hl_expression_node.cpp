@@ -28,6 +28,10 @@ hl_expression_node::hl_expression_node(expression_type_t et) : hl_ast_node(hl_as
             {expr_eq, "=="},
             {expr_neq, "!="},
             {expr_neg, "-"},
+            {expr_lt, "<"},
+            {expr_gt, ">"},
+            {expr_lte, "<="},
+            {expr_gte, ">="}
     };
 }
 

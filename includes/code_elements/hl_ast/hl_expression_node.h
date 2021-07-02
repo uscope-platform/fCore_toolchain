@@ -33,7 +33,11 @@ expr_lsh = 16,
 expr_rsh = 17,
 expr_eq = 18,
 expr_neq = 19,
-expr_neg = 20
+expr_neg = 20,
+expr_lt = 21,
+expr_gt = 22,
+expr_lte = 23,
+expr_gte = 24
 } expression_type_t;
 
 class hl_expression_node : public hl_ast_node{

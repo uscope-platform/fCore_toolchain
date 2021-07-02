@@ -226,6 +226,36 @@ void C_Tree_visitor::exitShiftExpression(C_parser::C_grammarParser::ShiftExpress
     }
 }
 
+void C_Tree_visitor::exitEqualityExpression(C_parser::C_grammarParser::EqualityExpressionContext *ctx) {
+    std::shared_ptr<hl_expression_node> expression;
+
+    std::map<std::string, expression_type_t> expr_map = {
+            {"==", expr_eq},
+            {"!=", expr_neq}
+    };
+
+    if(ctx->relationalExpression().size()>1){
+        processExpression(ctx->equalityOperator().size(), ctx->equalityOperator(), expr_map);
+    }
+}
+
+void C_Tree_visitor::exitRelationalExpression(C_parser::C_grammarParser::RelationalExpressionContext *ctx) {
+    std::shared_ptr<hl_expression_node> expression;
+
+    std::map<std::string, expression_type_t> expr_map = {
+            {"<", expr_lt},
+            {">", expr_gt},
+            {"<=", expr_lte},
+            {">=", expr_gte}
+    };
+
+    if(ctx->shiftExpression().size()>1){
+        processExpression(ctx->relationalOperator().size(), ctx->relationalOperator(), expr_map);
+    }
+}
+
+
+
 template<typename T>
 void C_Tree_visitor::processExpression(unsigned int expression_size, const T& operands_array,
                                        std::map<std::string, expression_type_t> &expr_map) {
@@ -263,5 +293,4 @@ void C_Tree_visitor::processExpression(unsigned int expression_size, const T& op
     }
     expressions_stack.push(expression);
 }
-
 
