@@ -62,6 +62,7 @@ class C_language_parser{
     // tree visitor test
     FRIEND_TEST( cTreeVisitor, unaryExpressions);
     FRIEND_TEST( cTreeVisitor, multiplicativeExpressions);
+    FRIEND_TEST( cTreeVisitor, additiveExpressions);
 
     unsigned int n_inputs_ = 0;
     unsigned int n_outputs_ = 0;

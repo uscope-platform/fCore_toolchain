@@ -73,5 +73,6 @@ configure_file(C_files/test_preproc_include.c ${CMAKE_CURRENT_BINARY_DIR} COPYON
 configure_file(C_files/include_test.h ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
     # Tree visitor (ANTLR <-> AST
 configure_file(C_files/test_unary_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_multiplicative_Expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/test_multiplicative_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/test_additive_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_main_add.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

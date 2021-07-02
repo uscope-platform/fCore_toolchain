@@ -66,6 +66,7 @@ public:
 private:
     FRIEND_TEST( cTreeVisitor, unaryExpressions);
     FRIEND_TEST( cTreeVisitor, multiplicativeExpressions);
+    FRIEND_TEST( cTreeVisitor, additiveExpressions);
 
     std::stack<std::string> declaration_type;
     std::vector<std::shared_ptr<hl_identifier_node>> parameters_list;
