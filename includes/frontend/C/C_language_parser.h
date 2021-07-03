@@ -66,6 +66,9 @@ class C_language_parser{
     FRIEND_TEST(cTreeVisitor, shiftExpressions);
     FRIEND_TEST(cTreeVisitor, relationalExpressions);
     FRIEND_TEST(cTreeVisitor, equalityExpressions);
+    FRIEND_TEST(cTreeVisitor, exOrBinExpressions);
+    FRIEND_TEST(cTreeVisitor, andBinExpressions);
+    FRIEND_TEST(cTreeVisitor, orBinExpressions);
 
     unsigned int n_inputs_ = 0;
     unsigned int n_outputs_ = 0;

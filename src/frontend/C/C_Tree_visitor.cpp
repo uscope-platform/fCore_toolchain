@@ -255,6 +255,42 @@ void C_Tree_visitor::exitRelationalExpression(C_parser::C_grammarParser::Relatio
 }
 
 
+void C_Tree_visitor::exitInclusiveOrExpression(C_parser::C_grammarParser::InclusiveOrExpressionContext *ctx) {
+    std::shared_ptr<hl_expression_node> expression;
+
+    std::map<std::string, expression_type_t> expr_map = {
+            {"|", expr_or_b},
+    };
+
+    if(ctx->exclusiveOrExpression().size()>1){
+        processExpression(ctx->Or().size(), ctx->Or(), expr_map);
+    }
+}
+
+void C_Tree_visitor::exitExclusiveOrExpression(C_parser::C_grammarParser::ExclusiveOrExpressionContext *ctx) {
+    std::shared_ptr<hl_expression_node> expression;
+
+    std::map<std::string, expression_type_t> expr_map = {
+            {"^", expr_xor_b},
+    };
+
+    if(ctx->andExpression().size()>1){
+        processExpression(ctx->Caret().size(), ctx->Caret(), expr_map);
+    }
+}
+
+void C_Tree_visitor::exitAndExpression(C_parser::C_grammarParser::AndExpressionContext *ctx) {
+    std::shared_ptr<hl_expression_node> expression;
+
+    std::map<std::string, expression_type_t> expr_map = {
+            {"&", expr_and_b},
+    };
+
+    if(ctx->equalityExpression().size()>1){
+        processExpression(ctx->And().size(), ctx->And(), expr_map);
+    }
+}
+
 
 template<typename T>
 void C_Tree_visitor::processExpression(unsigned int expression_size, const T& operands_array,

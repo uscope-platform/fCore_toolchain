@@ -66,6 +66,9 @@ public:
     void exitShiftExpression(C_parser::C_grammarParser::ShiftExpressionContext *ctx) override;
     void exitEqualityExpression(C_parser::C_grammarParser::EqualityExpressionContext *ctx) override;
     void exitRelationalExpression(C_parser::C_grammarParser::RelationalExpressionContext *ctx) override;
+    void exitInclusiveOrExpression(C_parser::C_grammarParser::InclusiveOrExpressionContext *ctx) override;
+    void exitExclusiveOrExpression(C_parser::C_grammarParser::ExclusiveOrExpressionContext *ctx) override;
+    void exitAndExpression(C_parser::C_grammarParser::AndExpressionContext *ctx) override;
 
 private:
     FRIEND_TEST( cTreeVisitor, unaryExpressions);
@@ -74,6 +77,10 @@ private:
     FRIEND_TEST(cTreeVisitor, shiftExpressions);
     FRIEND_TEST(cTreeVisitor, relationalExpressions);
     FRIEND_TEST(cTreeVisitor, equalityExpressions);
+    FRIEND_TEST(cTreeVisitor, exOrBinExpressions);
+    FRIEND_TEST(cTreeVisitor, andBinExpressions);
+    FRIEND_TEST(cTreeVisitor, orBinExpressions);
+
 
     template<typename T>
     void processExpression(unsigned int expression_size, const T& operands_array, std::map<std::string, expression_type_t> &expr_map);
