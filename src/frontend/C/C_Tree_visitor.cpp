@@ -291,6 +291,31 @@ void C_Tree_visitor::exitAndExpression(C_parser::C_grammarParser::AndExpressionC
     }
 }
 
+void C_Tree_visitor::exitLogicalOrExpression(C_parser::C_grammarParser::LogicalOrExpressionContext *ctx) {
+    std::shared_ptr<hl_expression_node> expression;
+
+    std::map<std::string, expression_type_t> expr_map = {
+            {"||", expr_or_l},
+    };
+
+    if(ctx->logicalAndExpression().size()>1){
+        processExpression(ctx->OrOr().size(), ctx->OrOr(), expr_map);
+    }
+}
+
+void C_Tree_visitor::exitLogicalAndExpression(C_parser::C_grammarParser::LogicalAndExpressionContext *ctx) {
+    std::shared_ptr<hl_expression_node> expression;
+
+    std::map<std::string, expression_type_t> expr_map = {
+            {"&&", expr_and_l},
+    };
+
+    if(ctx->inclusiveOrExpression().size()>1){
+        processExpression(ctx->AndAnd().size(), ctx->AndAnd(), expr_map);
+    }
+}
+
+
 
 template<typename T>
 void C_Tree_visitor::processExpression(unsigned int expression_size, const T& operands_array,
@@ -329,4 +354,3 @@ void C_Tree_visitor::processExpression(unsigned int expression_size, const T& op
     }
     expressions_stack.push(expression);
 }
-
