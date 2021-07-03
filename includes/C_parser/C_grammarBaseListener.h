@@ -93,29 +93,17 @@ public:
   virtual void enterDeclaration(C_grammarParser::DeclarationContext * /*ctx*/) override { }
   virtual void exitDeclaration(C_grammarParser::DeclarationContext * /*ctx*/) override { }
 
-  virtual void enterDeclarationSpecifiers(C_grammarParser::DeclarationSpecifiersContext * /*ctx*/) override { }
-  virtual void exitDeclarationSpecifiers(C_grammarParser::DeclarationSpecifiersContext * /*ctx*/) override { }
-
-  virtual void enterDeclarationSpecifier(C_grammarParser::DeclarationSpecifierContext * /*ctx*/) override { }
-  virtual void exitDeclarationSpecifier(C_grammarParser::DeclarationSpecifierContext * /*ctx*/) override { }
-
   virtual void enterInitDeclaratorList(C_grammarParser::InitDeclaratorListContext * /*ctx*/) override { }
   virtual void exitInitDeclaratorList(C_grammarParser::InitDeclaratorListContext * /*ctx*/) override { }
 
   virtual void enterInitDeclarator(C_grammarParser::InitDeclaratorContext * /*ctx*/) override { }
   virtual void exitInitDeclarator(C_grammarParser::InitDeclaratorContext * /*ctx*/) override { }
 
-  virtual void enterStorageClassSpecifier(C_grammarParser::StorageClassSpecifierContext * /*ctx*/) override { }
-  virtual void exitStorageClassSpecifier(C_grammarParser::StorageClassSpecifierContext * /*ctx*/) override { }
-
   virtual void enterTypeSpecifier(C_grammarParser::TypeSpecifierContext * /*ctx*/) override { }
   virtual void exitTypeSpecifier(C_grammarParser::TypeSpecifierContext * /*ctx*/) override { }
 
   virtual void enterSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext * /*ctx*/) override { }
   virtual void exitSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext * /*ctx*/) override { }
-
-  virtual void enterTypeQualifier(C_grammarParser::TypeQualifierContext * /*ctx*/) override { }
-  virtual void exitTypeQualifier(C_grammarParser::TypeQualifierContext * /*ctx*/) override { }
 
   virtual void enterDeclarator(C_grammarParser::DeclaratorContext * /*ctx*/) override { }
   virtual void exitDeclarator(C_grammarParser::DeclaratorContext * /*ctx*/) override { }
@@ -125,9 +113,6 @@ public:
 
   virtual void enterNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext * /*ctx*/) override { }
   virtual void exitNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext * /*ctx*/) override { }
-
-  virtual void enterTypeQualifierList(C_grammarParser::TypeQualifierListContext * /*ctx*/) override { }
-  virtual void exitTypeQualifierList(C_grammarParser::TypeQualifierListContext * /*ctx*/) override { }
 
   virtual void enterParameterTypeList(C_grammarParser::ParameterTypeListContext * /*ctx*/) override { }
   virtual void exitParameterTypeList(C_grammarParser::ParameterTypeListContext * /*ctx*/) override { }
@@ -167,9 +152,6 @@ public:
 
   virtual void enterCompoundStatement(C_grammarParser::CompoundStatementContext * /*ctx*/) override { }
   virtual void exitCompoundStatement(C_grammarParser::CompoundStatementContext * /*ctx*/) override { }
-
-  virtual void enterBlockItemList(C_grammarParser::BlockItemListContext * /*ctx*/) override { }
-  virtual void exitBlockItemList(C_grammarParser::BlockItemListContext * /*ctx*/) override { }
 
   virtual void enterBlockItem(C_grammarParser::BlockItemContext * /*ctx*/) override { }
   virtual void exitBlockItem(C_grammarParser::BlockItemContext * /*ctx*/) override { }

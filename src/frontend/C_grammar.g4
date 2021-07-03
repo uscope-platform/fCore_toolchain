@@ -134,18 +134,9 @@ constantExpression
     ;
 
 declaration
-    :   declarationSpecifiers initDeclaratorList? ';'
+    :   Const? typeSpecifier initDeclaratorList? ';'
     ;
 
-declarationSpecifiers
-    :   declarationSpecifier+
-    ;
-
-declarationSpecifier
-    :   storageClassSpecifier
-    |   typeSpecifier
-    |   typeQualifier
-    ;
 
 initDeclaratorList
     :   initDeclarator (',' initDeclarator)*
@@ -155,13 +146,6 @@ initDeclarator
     :   declarator ('=' initializer)?
     ;
 
-storageClassSpecifier
-    :   'typedef'
-    |   'extern'
-    |   'static'
-    |   'auto'
-    |   'register'
-    ;
 
 typeSpecifier
     :   ('void'
@@ -177,15 +161,9 @@ typeSpecifier
 
 
 specifierQualifierList
-    :   (typeSpecifier| typeQualifier) specifierQualifierList?
+    :   (typeSpecifier| Const) specifierQualifierList?
     ;
 
-
-typeQualifier
-    :   'const'
-    |   'restrict'
-    |   'volatile'
-    ;
 
 declarator
     :   directDeclarator
@@ -194,10 +172,7 @@ declarator
 directDeclarator
     :   Identifier
     |   '(' declarator ')'
-    |   directDeclarator '[' typeQualifierList? assignmentExpression? ']'
-    |   directDeclarator '[' 'static' typeQualifierList? assignmentExpression ']'
-    |   directDeclarator '[' typeQualifierList 'static' assignmentExpression ']'
-    |   directDeclarator '[' typeQualifierList? '*' ']'
+    |   directDeclarator '[' Const? assignmentExpression? ']'
     |   directDeclarator '(' parameterTypeList ')'
     |   directDeclarator '(' identifierList? ')'
     |   Identifier ':' DigitSequence  // bit field
@@ -209,9 +184,6 @@ nestedParenthesesBlock
         )*
     ;
 
-typeQualifierList
-    :   typeQualifier+
-    ;
 
 parameterTypeList
     :   parameterList (',' '...')?
@@ -222,7 +194,7 @@ parameterList
     ;
 
 parameterDeclaration
-    :   declarationSpecifiers declarator
+    :   Const? typeSpecifier declarator
     ;
 
 identifierList
@@ -269,11 +241,7 @@ statement
     ;
 
 compoundStatement
-    :   '{' blockItemList? '}'
-    ;
-
-blockItemList
-    :   blockItem+
+    :   '{' blockItem* '}'
     ;
 
 blockItem
@@ -301,7 +269,7 @@ forCondition
 	;
 
 forDeclaration
-    :   declarationSpecifiers initDeclaratorList?
+    :   Const? typeSpecifier initDeclaratorList?
     ;
 
 forExpression
@@ -324,7 +292,7 @@ externalDeclaration
     ;
 
 functionDefinition
-    :   declarationSpecifiers? declarator declarationList? compoundStatement
+    :   (Const? typeSpecifier)? declarator declarationList? compoundStatement
     ;
 
 declarationList

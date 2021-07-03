@@ -117,14 +117,6 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitDeclarationSpecifiers(C_grammarParser::DeclarationSpecifiersContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitDeclarationSpecifier(C_grammarParser::DeclarationSpecifierContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitInitDeclaratorList(C_grammarParser::InitDeclaratorListContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -133,19 +125,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitStorageClassSpecifier(C_grammarParser::StorageClassSpecifierContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitTypeSpecifier(C_grammarParser::TypeSpecifierContext *ctx) override {
     return visitChildren(ctx);
   }
 
   virtual antlrcpp::Any visitSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitTypeQualifier(C_grammarParser::TypeQualifierContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -158,10 +142,6 @@ public:
   }
 
   virtual antlrcpp::Any visitNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitTypeQualifierList(C_grammarParser::TypeQualifierListContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -214,10 +194,6 @@ public:
   }
 
   virtual antlrcpp::Any visitCompoundStatement(C_grammarParser::CompoundStatementContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitBlockItemList(C_grammarParser::BlockItemListContext *ctx) override {
     return visitChildren(ctx);
   }
 

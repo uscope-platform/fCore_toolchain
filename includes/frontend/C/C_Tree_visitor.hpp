@@ -25,6 +25,7 @@
 #include <utility>
 #include <stack>
 #include <exception>
+#include <stdexcept>
 
 #include "C_parser/C_grammarBaseListener.h"
 #include "C_parser/C_grammarParser.h"
@@ -53,7 +54,6 @@ public:
     void exitCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) override;
 
     void exitParameterDeclaration(C_parser::C_grammarParser::ParameterDeclarationContext *ctx) override;
-    void exitDeclarationSpecifiers(C_parser::C_grammarParser::DeclarationSpecifiersContext *ctx) override;
 
     void exitDeclaration(C_parser::C_grammarParser::DeclarationContext *ctx) override;
     void exitInitDeclarator(C_parser::C_grammarParser::InitDeclaratorContext *ctx) override;
@@ -73,6 +73,7 @@ public:
     void exitLogicalAndExpression(C_parser::C_grammarParser::LogicalAndExpressionContext *ctx) override;
     void exitAssignmentExpression(C_parser::C_grammarParser::AssignmentExpressionContext *ctx) override;
 
+    void exitStatement(C_parser::C_grammarParser::StatementContext *ctx) override;
 private:
     FRIEND_TEST( cTreeVisitor, unaryExpressions);
     FRIEND_TEST( cTreeVisitor, multiplicativeExpressions);
@@ -97,6 +98,10 @@ private:
 
     std::stack<std::shared_ptr<hl_ast_operand>> operands_stack;
     std::stack<std::shared_ptr<hl_expression_node>> expressions_stack;
+    std::vector<std::shared_ptr<hl_expression_node>> block_content;
+
+    std::shared_ptr<hl_function_node> current_function;
+
     bool in_function_declaration;
     bool in_function_body;
     int expression_nesting_level;

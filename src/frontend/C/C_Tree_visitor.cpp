@@ -28,6 +28,7 @@ C_Tree_visitor::C_Tree_visitor() {
 
 void C_Tree_visitor::enterFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) {
     in_function_declaration = true;
+    current_function = std::make_shared<hl_function_node>();
 }
 
 
@@ -38,41 +39,24 @@ void C_Tree_visitor::exitFunctionDefinition(C_parser::C_grammarParser::FunctionD
 
         C_parser::C_grammarParser::ParameterListContext  *parameters = ctx->declarator()->directDeclarator()->parameterTypeList()->parameterList();
         for(auto item:parameters->parameterDeclaration()){
-            std::vector<C_parser::C_grammarParser::DeclarationSpecifierContext *> param_specifiers = item->declarationSpecifiers()->declarationSpecifier();
-            std::string param_type;
-            for (auto param_type_item:param_specifiers) {
-                std::string content;
-                if(param_type_item->storageClassSpecifier() != nullptr)  content = param_type_item->storageClassSpecifier()->toString();
-                if(param_type_item->typeSpecifier() != nullptr)  param_type = param_type_item->typeSpecifier()->getText();
-                if(param_type_item->typeQualifier() != nullptr)  content = param_type_item->typeQualifier()->toString();
-            }
+            std::string param_type =item->typeSpecifier()->getText();
         }
-        std::string type = declaration_type.top();
-        declaration_type.pop();
-        std::shared_ptr<hl_function_node> node = std::make_shared<hl_function_node>(hl_ast_node_type_function, hl_ast_node::string_to_type(type), func_name);
-        node->set_parameters_list(parameters_list);
-        node->set_body(function_body);
+        std::string type = ctx->typeSpecifier()->getText();
+
+        current_function->set_type( hl_ast_node::string_to_type(type));
+        current_function->set_name(func_name);
+        current_function->set_parameters_list(parameters_list);
+        current_function->set_body(function_body);
+
         function_body.clear();
         in_function_declaration = false;
-        functions.push_back(node);
+        functions.push_back(current_function);
     }
-}
-
-void C_Tree_visitor::exitDeclarationSpecifiers(C_parser::C_grammarParser::DeclarationSpecifiersContext *ctx) {
-    std::string type;
-    for (auto item:ctx->declarationSpecifier()) {
-        std::string content;
-        if(item->storageClassSpecifier() != nullptr)  content = item->storageClassSpecifier()->toString();
-        if(item->typeSpecifier() != nullptr)  type = item->typeSpecifier()->getText();
-        if(item->typeQualifier() != nullptr)  content = item->typeQualifier()->toString();
-    }
-        declaration_type.push(type);
 }
 
 void C_Tree_visitor::exitParameterDeclaration(C_parser::C_grammarParser::ParameterDeclarationContext *ctx) {
     std::string id_name = ctx->declarator()->directDeclarator()->Identifier()->getText();
-    std::string type = declaration_type.top();
-    declaration_type.pop();
+    std::string type = ctx->typeSpecifier()->getText();
     std::shared_ptr<hl_identifier_node> identifier = std::make_shared<hl_identifier_node>(hl_ast_node_type_identifier, id_name, hl_ast_node::string_to_type(type));
     if(in_function_declaration) {
         parameters_list.push_back(identifier);
@@ -84,34 +68,10 @@ void C_Tree_visitor::enterCompoundStatement(C_parser::C_grammarParser::CompoundS
 }
 
 void C_Tree_visitor::exitInitDeclarator(C_parser::C_grammarParser::InitDeclaratorContext *ctx) {
-    std::string id_name = ctx->declarator()->directDeclarator()->getText();
-
-    std::string type = declaration_type.top();
-    declaration_type.pop();
-
-    std::shared_ptr<hl_identifier_node> identifier = std::make_shared<hl_identifier_node>(hl_ast_node_type_identifier, id_name, hl_ast_node::string_to_type(type));
-
-    if(in_function_body) {
-        function_body.push_back(identifier);
-    }
 
 }
 
 void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationContext *ctx) {
-    if(ctx->initDeclaratorList() == nullptr){
-        std::string id_name = "ERROR_WRONG_NAME_DETECTED";
-        for(auto item : ctx->declarationSpecifiers()->declarationSpecifier()){
-            if(item->typeSpecifier() != nullptr){
-                id_name = item->typeSpecifier()->getText();
-            }
-        }
-        std::string type = declaration_type.top();
-        declaration_type.pop();
-        std::shared_ptr<hl_identifier_node> identifier = std::make_shared<hl_identifier_node>(hl_ast_node_type_identifier, id_name, hl_ast_node::string_to_type(type));
-        if(in_function_body) {
-            function_body.push_back(identifier);
-        }
-    }
 
 }
 
@@ -329,6 +289,24 @@ void C_Tree_visitor::exitAssignmentExpression(C_parser::C_grammarParser::Assignm
 }
 
 
+void C_Tree_visitor::exitStatement(C_parser::C_grammarParser::StatementContext *ctx) {
+    if (ctx->compoundStatement() != nullptr) {
+
+    } else if (ctx->expressionStatement() != nullptr){
+        block_content.push_back(expressions_stack.top());
+        expressions_stack.pop();
+    } else if (ctx->iterationStatement() != nullptr) {
+        throw std::runtime_error("for loops are not supported yet: " + ctx->getText()+"\n");
+    } else if(ctx->selectionStatement() != nullptr){
+        throw std::runtime_error("if else control flow is not supported yet: " + ctx->getText()+"\n");
+    } else if(ctx->returnStatement() != nullptr){
+        current_function->set_return(expressions_stack.top());
+        expressions_stack.pop();
+    } else {
+        throw std::runtime_error("The following statement is not supported: " + ctx->getText()+"\n");
+    }
+}
+
 template<typename T>
 void C_Tree_visitor::processExpression(unsigned int expression_size, const T& operands_array,
                                        std::map<std::string, expression_type_t> &expr_map) {
@@ -366,3 +344,4 @@ void C_Tree_visitor::processExpression(unsigned int expression_size, const T& op
     }
     expressions_stack.push(expression);
 }
+

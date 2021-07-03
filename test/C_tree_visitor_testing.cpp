@@ -422,7 +422,7 @@ TEST( cTreeVisitor, assignmentExpressions) {
     C_language_parser parser(ifs, result_var, result_def);
     parser.pre_process({}, {});
     parser.parse();
-    std::stack<std::shared_ptr<hl_expression_node>> results = parser.visitor.expressions_stack;
+    std::vector<std::shared_ptr<hl_expression_node>> results = parser.visitor.block_content;
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
@@ -442,7 +442,7 @@ TEST( cTreeVisitor, assignmentExpressions) {
 
 
 
-    std::shared_ptr<hl_expression_node> res = results.top();
+    std::shared_ptr<hl_expression_node> res = results[0];
 
     EXPECT_EQ(*res, *gs_2);
     if(Test::HasFailure()){

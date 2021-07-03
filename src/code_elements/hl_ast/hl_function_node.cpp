@@ -6,9 +6,8 @@
 
 #include <utility>
 
-hl_function_node::hl_function_node(hl_ast_node_type_t t, c_types_t ret_val, std::string &n) : hl_ast_node(t) {
-    return_type = ret_val;
-    name = n;
+hl_function_node::hl_function_node() : hl_ast_node(hl_ast_node_type_function) {
+    return_type = c_type_void;
 }
 
 void hl_function_node::set_parameters_list(std::vector<std::shared_ptr<hl_identifier_node>> list) {
@@ -17,4 +16,17 @@ void hl_function_node::set_parameters_list(std::vector<std::shared_ptr<hl_identi
 
 void hl_function_node::set_body(std::vector<std::shared_ptr<hl_ast_node>> b) {
     function_body = std::move(b);
+}
+
+void hl_function_node::set_return(std::shared_ptr<hl_expression_node> r) {
+    return_expression = std::move(r);
+}
+
+void hl_function_node::set_name(std::string &n) {
+    name = n;
+}
+
+void hl_function_node::set_type(c_types_t ret_val) {
+    return_type = ret_val;
+
 }

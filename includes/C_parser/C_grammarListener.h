@@ -91,29 +91,17 @@ public:
   virtual void enterDeclaration(C_grammarParser::DeclarationContext *ctx) = 0;
   virtual void exitDeclaration(C_grammarParser::DeclarationContext *ctx) = 0;
 
-  virtual void enterDeclarationSpecifiers(C_grammarParser::DeclarationSpecifiersContext *ctx) = 0;
-  virtual void exitDeclarationSpecifiers(C_grammarParser::DeclarationSpecifiersContext *ctx) = 0;
-
-  virtual void enterDeclarationSpecifier(C_grammarParser::DeclarationSpecifierContext *ctx) = 0;
-  virtual void exitDeclarationSpecifier(C_grammarParser::DeclarationSpecifierContext *ctx) = 0;
-
   virtual void enterInitDeclaratorList(C_grammarParser::InitDeclaratorListContext *ctx) = 0;
   virtual void exitInitDeclaratorList(C_grammarParser::InitDeclaratorListContext *ctx) = 0;
 
   virtual void enterInitDeclarator(C_grammarParser::InitDeclaratorContext *ctx) = 0;
   virtual void exitInitDeclarator(C_grammarParser::InitDeclaratorContext *ctx) = 0;
 
-  virtual void enterStorageClassSpecifier(C_grammarParser::StorageClassSpecifierContext *ctx) = 0;
-  virtual void exitStorageClassSpecifier(C_grammarParser::StorageClassSpecifierContext *ctx) = 0;
-
   virtual void enterTypeSpecifier(C_grammarParser::TypeSpecifierContext *ctx) = 0;
   virtual void exitTypeSpecifier(C_grammarParser::TypeSpecifierContext *ctx) = 0;
 
   virtual void enterSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext *ctx) = 0;
   virtual void exitSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext *ctx) = 0;
-
-  virtual void enterTypeQualifier(C_grammarParser::TypeQualifierContext *ctx) = 0;
-  virtual void exitTypeQualifier(C_grammarParser::TypeQualifierContext *ctx) = 0;
 
   virtual void enterDeclarator(C_grammarParser::DeclaratorContext *ctx) = 0;
   virtual void exitDeclarator(C_grammarParser::DeclaratorContext *ctx) = 0;
@@ -123,9 +111,6 @@ public:
 
   virtual void enterNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext *ctx) = 0;
   virtual void exitNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext *ctx) = 0;
-
-  virtual void enterTypeQualifierList(C_grammarParser::TypeQualifierListContext *ctx) = 0;
-  virtual void exitTypeQualifierList(C_grammarParser::TypeQualifierListContext *ctx) = 0;
 
   virtual void enterParameterTypeList(C_grammarParser::ParameterTypeListContext *ctx) = 0;
   virtual void exitParameterTypeList(C_grammarParser::ParameterTypeListContext *ctx) = 0;
@@ -165,9 +150,6 @@ public:
 
   virtual void enterCompoundStatement(C_grammarParser::CompoundStatementContext *ctx) = 0;
   virtual void exitCompoundStatement(C_grammarParser::CompoundStatementContext *ctx) = 0;
-
-  virtual void enterBlockItemList(C_grammarParser::BlockItemListContext *ctx) = 0;
-  virtual void exitBlockItemList(C_grammarParser::BlockItemListContext *ctx) = 0;
 
   virtual void enterBlockItem(C_grammarParser::BlockItemContext *ctx) = 0;
   virtual void exitBlockItem(C_grammarParser::BlockItemContext *ctx) = 0;

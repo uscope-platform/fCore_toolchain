@@ -70,29 +70,19 @@ public:
 
     virtual antlrcpp::Any visitDeclaration(C_grammarParser::DeclarationContext *context) = 0;
 
-    virtual antlrcpp::Any visitDeclarationSpecifiers(C_grammarParser::DeclarationSpecifiersContext *context) = 0;
-
-    virtual antlrcpp::Any visitDeclarationSpecifier(C_grammarParser::DeclarationSpecifierContext *context) = 0;
-
     virtual antlrcpp::Any visitInitDeclaratorList(C_grammarParser::InitDeclaratorListContext *context) = 0;
 
     virtual antlrcpp::Any visitInitDeclarator(C_grammarParser::InitDeclaratorContext *context) = 0;
 
-    virtual antlrcpp::Any visitStorageClassSpecifier(C_grammarParser::StorageClassSpecifierContext *context) = 0;
-
     virtual antlrcpp::Any visitTypeSpecifier(C_grammarParser::TypeSpecifierContext *context) = 0;
 
     virtual antlrcpp::Any visitSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext *context) = 0;
-
-    virtual antlrcpp::Any visitTypeQualifier(C_grammarParser::TypeQualifierContext *context) = 0;
 
     virtual antlrcpp::Any visitDeclarator(C_grammarParser::DeclaratorContext *context) = 0;
 
     virtual antlrcpp::Any visitDirectDeclarator(C_grammarParser::DirectDeclaratorContext *context) = 0;
 
     virtual antlrcpp::Any visitNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext *context) = 0;
-
-    virtual antlrcpp::Any visitTypeQualifierList(C_grammarParser::TypeQualifierListContext *context) = 0;
 
     virtual antlrcpp::Any visitParameterTypeList(C_grammarParser::ParameterTypeListContext *context) = 0;
 
@@ -119,8 +109,6 @@ public:
     virtual antlrcpp::Any visitStatement(C_grammarParser::StatementContext *context) = 0;
 
     virtual antlrcpp::Any visitCompoundStatement(C_grammarParser::CompoundStatementContext *context) = 0;
-
-    virtual antlrcpp::Any visitBlockItemList(C_grammarParser::BlockItemListContext *context) = 0;
 
     virtual antlrcpp::Any visitBlockItem(C_grammarParser::BlockItemContext *context) = 0;
 
