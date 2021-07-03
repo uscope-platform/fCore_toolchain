@@ -71,6 +71,8 @@ public:
     void exitAndExpression(C_parser::C_grammarParser::AndExpressionContext *ctx) override;
     void exitLogicalOrExpression(C_parser::C_grammarParser::LogicalOrExpressionContext *ctx) override;
     void exitLogicalAndExpression(C_parser::C_grammarParser::LogicalAndExpressionContext *ctx) override;
+    void exitAssignmentExpression(C_parser::C_grammarParser::AssignmentExpressionContext *ctx) override;
+
 private:
     FRIEND_TEST( cTreeVisitor, unaryExpressions);
     FRIEND_TEST( cTreeVisitor, multiplicativeExpressions);
@@ -83,6 +85,7 @@ private:
     FRIEND_TEST(cTreeVisitor, orBinExpressions);
     FRIEND_TEST(cTreeVisitor, andLogExpressions);
     FRIEND_TEST(cTreeVisitor, orLogExpressions);
+    FRIEND_TEST( cTreeVisitor, assignmentExpressions);
 
     template<typename T>
     void processExpression(unsigned int expression_size, const T& operands_array, std::map<std::string, expression_type_t> &expr_map);

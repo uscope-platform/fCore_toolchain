@@ -37,7 +37,8 @@ expr_neg = 20,
 expr_lt = 21,
 expr_gt = 22,
 expr_lte = 23,
-expr_gte = 24
+expr_gte = 24,
+expr_assign = 25
 } expression_type_t;
 
 class hl_expression_node : public hl_ast_node{

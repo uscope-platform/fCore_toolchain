@@ -34,26 +34,28 @@ void C_Tree_visitor::enterFunctionDefinition(C_parser::C_grammarParser::Function
 void C_Tree_visitor::exitFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) {
 
     std::string func_name = ctx->declarator()->directDeclarator()->directDeclarator()->getText();
+    if(ctx->declarator()->directDeclarator()->parameterTypeList() != nullptr){
 
-    C_parser::C_grammarParser::ParameterListContext  *parameters = ctx->declarator()->directDeclarator()->parameterTypeList()->parameterList();
-    for(auto item:parameters->parameterDeclaration()){
-        std::vector<C_parser::C_grammarParser::DeclarationSpecifierContext *> param_specifiers = item->declarationSpecifiers()->declarationSpecifier();
-        std::string param_type;
-        for (auto param_type_item:param_specifiers) {
-            std::string content;
-            if(param_type_item->storageClassSpecifier() != nullptr)  content = param_type_item->storageClassSpecifier()->toString();
-            if(param_type_item->typeSpecifier() != nullptr)  param_type = param_type_item->typeSpecifier()->getText();
-            if(param_type_item->typeQualifier() != nullptr)  content = param_type_item->typeQualifier()->toString();
+        C_parser::C_grammarParser::ParameterListContext  *parameters = ctx->declarator()->directDeclarator()->parameterTypeList()->parameterList();
+        for(auto item:parameters->parameterDeclaration()){
+            std::vector<C_parser::C_grammarParser::DeclarationSpecifierContext *> param_specifiers = item->declarationSpecifiers()->declarationSpecifier();
+            std::string param_type;
+            for (auto param_type_item:param_specifiers) {
+                std::string content;
+                if(param_type_item->storageClassSpecifier() != nullptr)  content = param_type_item->storageClassSpecifier()->toString();
+                if(param_type_item->typeSpecifier() != nullptr)  param_type = param_type_item->typeSpecifier()->getText();
+                if(param_type_item->typeQualifier() != nullptr)  content = param_type_item->typeQualifier()->toString();
+            }
         }
+        std::string type = declaration_type.top();
+        declaration_type.pop();
+        std::shared_ptr<hl_function_node> node = std::make_shared<hl_function_node>(hl_ast_node_type_function, hl_ast_node::string_to_type(type), func_name);
+        node->set_parameters_list(parameters_list);
+        node->set_body(function_body);
+        function_body.clear();
+        in_function_declaration = false;
+        functions.push_back(node);
     }
-    std::string type = declaration_type.top();
-    declaration_type.pop();
-    std::shared_ptr<hl_function_node> node = std::make_shared<hl_function_node>(hl_ast_node_type_function, hl_ast_node::string_to_type(type), func_name);
-    node->set_parameters_list(parameters_list);
-    node->set_body(function_body);
-    function_body.clear();
-    in_function_declaration = false;
-    functions.push_back(node);
 }
 
 void C_Tree_visitor::exitDeclarationSpecifiers(C_parser::C_grammarParser::DeclarationSpecifiersContext *ctx) {
@@ -114,10 +116,7 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
 }
 
 void C_Tree_visitor::exitCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) {
-    std::shared_ptr<hl_identifier_node> id = std::static_pointer_cast<hl_identifier_node>(function_body[0]);
-    id = std::static_pointer_cast<hl_identifier_node>(function_body[1]);
-    id = std::static_pointer_cast<hl_identifier_node>(function_body[2]);
-    id = std::static_pointer_cast<hl_identifier_node>(function_body[3]);
+    //std::shared_ptr<hl_identifier_node> id = std::static_pointer_cast<hl_identifier_node>(function_body[0]);
     in_function_body = false;
 }
 
@@ -315,6 +314,19 @@ void C_Tree_visitor::exitLogicalAndExpression(C_parser::C_grammarParser::Logical
     }
 }
 
+
+void C_Tree_visitor::exitAssignmentExpression(C_parser::C_grammarParser::AssignmentExpressionContext *ctx) {
+    if(ctx->unaryExpression()!= nullptr){
+        std::shared_ptr<hl_ast_operand> target = operands_stack.top();
+        operands_stack.pop();
+        std::shared_ptr<hl_expression_node> value = expressions_stack.top();
+        expressions_stack.pop();
+        std::shared_ptr<hl_expression_node> assignment = std::make_shared<hl_expression_node>(expr_assign);
+        assignment->set_lhs(target);
+        assignment->set_rhs(value);
+        expressions_stack.push(assignment);
+    }
+}
 
 
 template<typename T>
