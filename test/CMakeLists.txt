@@ -5,9 +5,10 @@ set(TESTED_SOURCES
         ../src/code_elements/ll_ast/ll_instruction.cpp
         ../src/code_elements/hl_ast/hl_ast_node.cpp
         ../src/code_elements/hl_ast/hl_definition_node.cpp
-        ../src/code_elements/hl_ast/hl_function_node.cpp
+        ../src/code_elements/hl_ast/hl_function_def_node.cpp
         ../src/code_elements/hl_ast/hl_expression_node.cpp
         ../src/code_elements/hl_ast/hl_ast_operand.cpp
+        ../src/code_elements/hl_ast/hl_function_call_node.cpp
         ../src/code_elements/variable.cpp
         ../src/code_elements/define.cpp
         ../src/passes/pass_manager.cpp
@@ -71,7 +72,7 @@ configure_file(C_files/test_preproc_define.c ${CMAKE_CURRENT_BINARY_DIR} COPYONL
 configure_file(C_files/test_preproc_include_fail.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_preproc_include.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/include_test.h ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-    # Tree visitor (ANTLR <-> AST
+    # Tree visitor (ANTLR <-> AST)
 configure_file(C_files/test_unary_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_multiplicative_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_additive_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
@@ -85,4 +86,5 @@ configure_file(C_files/test_orl_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYON
 configure_file(C_files/test_andl_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_assignment_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_definition.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/test_function_call.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_main_add.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

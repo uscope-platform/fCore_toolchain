@@ -2,40 +2,40 @@
 // Created by fils on 01/07/2021.
 //
 
-#include "code_elements/hl_ast/hl_function_node.h"
+#include "code_elements/hl_ast/hl_function_def_node.h"
 
 #include <utility>
 
-hl_function_node::hl_function_node() : hl_ast_node(hl_ast_node_type_function) {
+hl_function_def_node::hl_function_def_node() : hl_ast_node(hl_ast_node_type_function_def) {
     return_type = c_type_void;
 }
 
-void hl_function_node::set_parameters_list(std::vector<std::shared_ptr<hl_definition_node>> list) {
+void hl_function_def_node::set_parameters_list(std::vector<std::shared_ptr<hl_definition_node>> list) {
     parameters_list = std::move(list);
 }
 
-void hl_function_node::set_body(std::vector<std::shared_ptr<hl_ast_node>> b) {
+void hl_function_def_node::set_body(std::vector<std::shared_ptr<hl_ast_node>> b) {
     function_body = std::move(b);
 }
 
-void hl_function_node::set_return(std::shared_ptr<hl_expression_node> r) {
+void hl_function_def_node::set_return(std::shared_ptr<hl_expression_node> r) {
     return_expression = std::move(r);
 }
 
-void hl_function_node::set_name(std::string &n) {
+void hl_function_def_node::set_name(std::string &n) {
     name = n;
 }
 
-void hl_function_node::set_type(c_types_t ret_val) {
+void hl_function_def_node::set_type(c_types_t ret_val) {
     return_type = ret_val;
 
 }
 
-std::vector<std::shared_ptr<hl_ast_node>> hl_function_node::get_body() {
+std::vector<std::shared_ptr<hl_ast_node>> hl_function_def_node::get_body() {
     return function_body;
 }
 
-std::string hl_function_node::pretty_print() {
+std::string hl_function_def_node::pretty_print() {
     std::ostringstream ss;
 
     ss << hl_ast_node::type_to_string(return_type) << " " << name << "(";
@@ -59,7 +59,7 @@ std::string hl_function_node::pretty_print() {
     return ret;
 }
 
-bool operator==(const hl_function_node &lhs, const hl_function_node &rhs) {
+bool operator==(const hl_function_def_node &lhs, const hl_function_def_node &rhs) {
     bool ret_val = true;
 
     ret_val &= lhs.name == rhs.name;
@@ -91,6 +91,7 @@ bool operator==(const hl_function_node &lhs, const hl_function_node &rhs) {
         }
         ret_val &= body_equal;
     }
+
     if(lhs.return_expression != nullptr && rhs.return_expression != nullptr){
         ret_val &= *lhs.return_expression == *rhs.return_expression;
     } else if (lhs.return_expression != nullptr || rhs.return_expression != nullptr){

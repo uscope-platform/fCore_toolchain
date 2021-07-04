@@ -214,6 +214,18 @@ initializer
     |   '{' initializerList ','? '}'
     ;
 
+functionCallStatement
+    : typedefName '(' argumentExpressionList? ')'
+    ;
+
+argumentExpressionList
+    :   argumentExpression (',' argumentExpression)*
+    ;
+
+argumentExpression
+    :    assignmentExpression
+    ;
+
 initializerList
     :   designation? initializer (',' designation? initializer)*
     ;
@@ -236,6 +248,7 @@ statement
     |   selectionStatement
     |   iterationStatement
     |   returnStatement
+    | functionCallStatement ';'?
     |  '(' (logicalOrExpression (',' logicalOrExpression)*)? (':' (logicalOrExpression (',' logicalOrExpression)*)?)* ')' ';'
     ;
 

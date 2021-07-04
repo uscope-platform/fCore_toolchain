@@ -28,7 +28,7 @@ C_Tree_visitor::C_Tree_visitor() {
 
 void C_Tree_visitor::enterFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) {
     in_function_declaration = true;
-    current_function = std::make_shared<hl_function_node>();
+    current_function = std::make_shared<hl_function_def_node>();
 }
 
 
@@ -314,8 +314,14 @@ void C_Tree_visitor::exitAssignmentExpression(C_parser::C_grammarParser::Assignm
 
 void C_Tree_visitor::exitStatement(C_parser::C_grammarParser::StatementContext *ctx) {
     if (ctx->expressionStatement() != nullptr){
-        current_block_item = expressions_stack.top();
-        expressions_stack.pop();
+        if(!expressions_stack.empty()){
+            current_block_item = expressions_stack.top();
+            expressions_stack.pop();
+        } else{
+            std::string erorr_line = ctx->getText();
+            throw std::runtime_error("ERROR: internal error, this condition should never happen, contact development team");
+        }
+
     } else if (ctx->iterationStatement() != nullptr) {
         throw std::runtime_error("for loops are not supported yet: " + ctx->getText()+"\n");
     } else if(ctx->selectionStatement() != nullptr){
@@ -323,10 +329,13 @@ void C_Tree_visitor::exitStatement(C_parser::C_grammarParser::StatementContext *
     } else if(ctx->returnStatement() != nullptr){
         current_block_item = expressions_stack.top();
         expressions_stack.pop();
+    } else if(ctx->functionCallStatement() != nullptr){
+        // nothing to do here
     } else {
         throw std::runtime_error("The following statement is not supported: " + ctx->getText()+"\n");
     }
 }
+
 
 
 template<typename T>
@@ -372,4 +381,24 @@ void C_Tree_visitor::exitBlockItem(C_parser::C_grammarParser::BlockItemContext *
     if(in_function_body){
         function_body.push_back(current_block_item);
     }
+}
+
+void C_Tree_visitor::exitFunctionCallStatement(C_parser::C_grammarParser::FunctionCallStatementContext *ctx) {
+    std::string name = ctx->typedefName()->getText();
+
+    current_block_item = std::make_shared<hl_function_call_node>(name, argument_vector);
+}
+
+void C_Tree_visitor::exitArgumentExpression(C_parser::C_grammarParser::ArgumentExpressionContext *ctx) {
+    if(!operands_stack.empty()){
+        argument_vector.push_back(operands_stack.top());
+        operands_stack.pop();
+    } else{
+        argument_vector.push_back(expressions_stack.top());
+        expressions_stack.pop();
+    }
+}
+
+C_Tree_visitor::~C_Tree_visitor() noexcept {
+    int i = 0;
 }

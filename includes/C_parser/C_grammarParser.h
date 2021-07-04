@@ -44,13 +44,14 @@ public:
     RuleTypeSpecifier = 27, RuleSpecifierQualifierList = 28, RuleDeclarator = 29, 
     RuleDirectDeclarator = 30, RuleNestedParenthesesBlock = 31, RuleParameterTypeList = 32, 
     RuleParameterList = 33, RuleParameterDeclaration = 34, RuleIdentifierList = 35, 
-    RuleTypeName = 36, RuleTypedefName = 37, RuleInitializer = 38, RuleInitializerList = 39, 
-    RuleDesignation = 40, RuleDesignatorList = 41, RuleDesignator = 42, 
-    RuleStatement = 43, RuleCompoundStatement = 44, RuleBlockItem = 45, 
-    RuleExpressionStatement = 46, RuleSelectionStatement = 47, RuleIterationStatement = 48, 
-    RuleForCondition = 49, RuleForDeclaration = 50, RuleForExpression = 51, 
-    RuleReturnStatement = 52, RuleTranslationUnit = 53, RuleExternalDeclaration = 54, 
-    RuleFunctionDefinition = 55, RuleDeclarationList = 56, RuleConstant = 57
+    RuleTypeName = 36, RuleTypedefName = 37, RuleInitializer = 38, RuleFunctionCallStatement = 39, 
+    RuleArgumentExpressionList = 40, RuleArgumentExpression = 41, RuleInitializerList = 42, 
+    RuleDesignation = 43, RuleDesignatorList = 44, RuleDesignator = 45, 
+    RuleStatement = 46, RuleCompoundStatement = 47, RuleBlockItem = 48, 
+    RuleExpressionStatement = 49, RuleSelectionStatement = 50, RuleIterationStatement = 51, 
+    RuleForCondition = 52, RuleForDeclaration = 53, RuleForExpression = 54, 
+    RuleReturnStatement = 55, RuleTranslationUnit = 56, RuleExternalDeclaration = 57, 
+    RuleFunctionDefinition = 58, RuleDeclarationList = 59, RuleConstant = 60
   };
 
   explicit C_grammarParser(antlr4::TokenStream *input);
@@ -102,6 +103,9 @@ public:
   class TypeNameContext;
   class TypedefNameContext;
   class InitializerContext;
+  class FunctionCallStatementContext;
+  class ArgumentExpressionListContext;
+  class ArgumentExpressionContext;
   class InitializerListContext;
   class DesignationContext;
   class DesignatorListContext;
@@ -830,6 +834,57 @@ public:
 
   InitializerContext* initializer();
 
+  class  FunctionCallStatementContext : public antlr4::ParserRuleContext {
+  public:
+    FunctionCallStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    TypedefNameContext *typedefName();
+    antlr4::tree::TerminalNode *LeftParen();
+    antlr4::tree::TerminalNode *RightParen();
+    ArgumentExpressionListContext *argumentExpressionList();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  FunctionCallStatementContext* functionCallStatement();
+
+  class  ArgumentExpressionListContext : public antlr4::ParserRuleContext {
+  public:
+    ArgumentExpressionListContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    std::vector<ArgumentExpressionContext *> argumentExpression();
+    ArgumentExpressionContext* argumentExpression(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> Comma();
+    antlr4::tree::TerminalNode* Comma(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  ArgumentExpressionListContext* argumentExpressionList();
+
+  class  ArgumentExpressionContext : public antlr4::ParserRuleContext {
+  public:
+    ArgumentExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    AssignmentExpressionContext *assignmentExpression();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  ArgumentExpressionContext* argumentExpression();
+
   class  InitializerListContext : public antlr4::ParserRuleContext {
   public:
     InitializerListContext(antlr4::ParserRuleContext *parent, size_t invokingState);
@@ -909,9 +964,10 @@ public:
     SelectionStatementContext *selectionStatement();
     IterationStatementContext *iterationStatement();
     ReturnStatementContext *returnStatement();
+    FunctionCallStatementContext *functionCallStatement();
+    antlr4::tree::TerminalNode *Semi();
     antlr4::tree::TerminalNode *LeftParen();
     antlr4::tree::TerminalNode *RightParen();
-    antlr4::tree::TerminalNode *Semi();
     std::vector<LogicalOrExpressionContext *> logicalOrExpression();
     LogicalOrExpressionContext* logicalOrExpression(size_t i);
     std::vector<antlr4::tree::TerminalNode *> Colon();

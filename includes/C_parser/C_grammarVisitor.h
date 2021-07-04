@@ -98,6 +98,12 @@ public:
 
     virtual antlrcpp::Any visitInitializer(C_grammarParser::InitializerContext *context) = 0;
 
+    virtual antlrcpp::Any visitFunctionCallStatement(C_grammarParser::FunctionCallStatementContext *context) = 0;
+
+    virtual antlrcpp::Any visitArgumentExpressionList(C_grammarParser::ArgumentExpressionListContext *context) = 0;
+
+    virtual antlrcpp::Any visitArgumentExpression(C_grammarParser::ArgumentExpressionContext *context) = 0;
+
     virtual antlrcpp::Any visitInitializerList(C_grammarParser::InitializerListContext *context) = 0;
 
     virtual antlrcpp::Any visitDesignation(C_grammarParser::DesignationContext *context) = 0;

@@ -2,8 +2,8 @@
 // Created by fils on 01/07/2021.
 //
 
-#ifndef FCORE_HAS_HL_FUNCTION_NODE_H
-#define FCORE_HAS_HL_FUNCTION_NODE_H
+#ifndef FCORE_HAS_HL_FUNCTION_DEF_NODE_H
+#define FCORE_HAS_HL_FUNCTION_DEF_NODE_H
 
 #include <map>
 #include <string>
@@ -12,9 +12,9 @@
 #include "hl_definition_node.h"
 #include "hl_expression_node.h"
 
-class hl_function_node : public hl_ast_node{
+class hl_function_def_node : public hl_ast_node{
 public:
-    hl_function_node();
+    hl_function_def_node();
     void set_type( c_types_t ret_val);
     void set_name(std::string &n);
     void set_parameters_list(std::vector<std::shared_ptr<hl_definition_node>> list);
@@ -22,7 +22,7 @@ public:
     void set_return(std::shared_ptr<hl_expression_node> r);
     std::vector<std::shared_ptr<hl_ast_node>> get_body();
     std::string pretty_print();
-    friend bool operator==(const hl_function_node& lhs, const hl_function_node& rhs);
+    friend bool operator==(const hl_function_def_node& lhs, const hl_function_def_node& rhs);
 
 protected:
     c_types_t return_type;
@@ -33,4 +33,4 @@ protected:
 };
 
 
-#endif //FCORE_HAS_HL_FUNCTION_NODE_H
+#endif //FCORE_HAS_HL_FUNCTION_DEF_NODE_H

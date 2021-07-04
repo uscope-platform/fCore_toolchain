@@ -32,11 +32,13 @@
 #include "code_elements/variable.hpp"
 #include "frontend/variable_map.hpp"
 
-#include "code_elements/hl_ast/hl_function_node.h"
-#include "code_elements/hl_ast/hl_definition_node.h"
+
+#include "code_elements/hl_ast/hl_function_def_node.h"
 #include "code_elements/hl_ast/hl_ast_node.h"
 #include "code_elements/hl_ast/hl_expression_node.h"
+#include "code_elements/hl_ast/hl_ast_operand.h"
 #include "code_elements/hl_ast/hl_definition_node.h"
+#include "code_elements/hl_ast/hl_function_call_node.h"
 
 #include <gtest/gtest_prod.h>
 
@@ -71,8 +73,12 @@ public:
     void exitLogicalOrExpression(C_parser::C_grammarParser::LogicalOrExpressionContext *ctx) override;
     void exitLogicalAndExpression(C_parser::C_grammarParser::LogicalAndExpressionContext *ctx) override;
     void exitAssignmentExpression(C_parser::C_grammarParser::AssignmentExpressionContext *ctx) override;
+    void exitArgumentExpression(C_parser::C_grammarParser::ArgumentExpressionContext *ctx) override;
 
     void exitStatement(C_parser::C_grammarParser::StatementContext *ctx) override;
+    void exitFunctionCallStatement(C_parser::C_grammarParser::FunctionCallStatementContext *ctx) override;
+
+    ~C_Tree_visitor();
 
 private:
     FRIEND_TEST( cTreeVisitor, unaryExpressions);
@@ -88,21 +94,23 @@ private:
     FRIEND_TEST(cTreeVisitor, orLogExpressions);
     FRIEND_TEST( cTreeVisitor, assignmentExpressions);
     FRIEND_TEST(cTreeVisitor, definition);
-    FRIEND_TEST(cTreeVisitor, function);
+    FRIEND_TEST(cTreeVisitor, function_def);
+    FRIEND_TEST(cTreeVisitor, function_call);
+
 
     template<typename T>
     void processExpression(unsigned int expression_size, const T& operands_array, std::map<std::string, expression_type_t> &expr_map);
 
     std::vector<std::shared_ptr<hl_ast_node>> ext_decl;
     std::vector<std::shared_ptr<hl_definition_node>> parameters_list;
-    std::vector<std::shared_ptr<hl_function_node>> functions;
+    std::vector<std::shared_ptr<hl_function_def_node>> functions;
     std::vector<std::shared_ptr<hl_ast_node>> function_body;
 
     std::stack<std::shared_ptr<hl_ast_operand>> operands_stack;
     std::stack<std::shared_ptr<hl_expression_node>> expressions_stack;
-    std::vector<std::shared_ptr<hl_ast_node>> block_content;
+    std::vector<std::shared_ptr<hl_ast_node>> argument_vector;
 
-    std::shared_ptr<hl_function_node> current_function;
+    std::shared_ptr<hl_function_def_node> current_function;
 
     std::shared_ptr<hl_expression_node> current_initializer;
     std::shared_ptr<hl_ast_node> current_block_item;

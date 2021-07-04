@@ -73,7 +73,9 @@ class C_language_parser{
     FRIEND_TEST(cTreeVisitor, orLogExpressions);
     FRIEND_TEST( cTreeVisitor, assignmentExpressions);
     FRIEND_TEST(cTreeVisitor, definition);
-    FRIEND_TEST(cTreeVisitor, function);
+    FRIEND_TEST(cTreeVisitor, function_def);
+    FRIEND_TEST(cTreeVisitor, function_call);
+
 
     unsigned int n_inputs_ = 0;
     unsigned int n_outputs_ = 0;

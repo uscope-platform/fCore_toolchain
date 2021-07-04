@@ -135,6 +135,15 @@ public:
   virtual void enterInitializer(C_grammarParser::InitializerContext * /*ctx*/) override { }
   virtual void exitInitializer(C_grammarParser::InitializerContext * /*ctx*/) override { }
 
+  virtual void enterFunctionCallStatement(C_grammarParser::FunctionCallStatementContext * /*ctx*/) override { }
+  virtual void exitFunctionCallStatement(C_grammarParser::FunctionCallStatementContext * /*ctx*/) override { }
+
+  virtual void enterArgumentExpressionList(C_grammarParser::ArgumentExpressionListContext * /*ctx*/) override { }
+  virtual void exitArgumentExpressionList(C_grammarParser::ArgumentExpressionListContext * /*ctx*/) override { }
+
+  virtual void enterArgumentExpression(C_grammarParser::ArgumentExpressionContext * /*ctx*/) override { }
+  virtual void exitArgumentExpression(C_grammarParser::ArgumentExpressionContext * /*ctx*/) override { }
+
   virtual void enterInitializerList(C_grammarParser::InitializerListContext * /*ctx*/) override { }
   virtual void exitInitializerList(C_grammarParser::InitializerListContext * /*ctx*/) override { }
 

@@ -173,6 +173,18 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitFunctionCallStatement(C_grammarParser::FunctionCallStatementContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitArgumentExpressionList(C_grammarParser::ArgumentExpressionListContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitArgumentExpression(C_grammarParser::ArgumentExpressionContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitInitializerList(C_grammarParser::InitializerListContext *ctx) override {
     return visitChildren(ctx);
   }
