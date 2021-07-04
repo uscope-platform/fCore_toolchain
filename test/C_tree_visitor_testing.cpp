@@ -532,6 +532,7 @@ TEST( cTreeVisitor, function_call) {
 
     std::shared_ptr<hl_expression_node> res_exp = std::static_pointer_cast<hl_expression_node>(parser.visitor.functions[0]->get_body()[0]);
     std::shared_ptr<hl_function_call_node> res = std::static_pointer_cast<hl_function_call_node>(res_exp->get_rhs());
+    
 
     EXPECT_EQ(*res, *gs_3);
     if(Test::HasFailure()){

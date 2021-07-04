@@ -91,24 +91,26 @@ bool operator==(const hl_expression_node &lhs, const hl_expression_node &rhs) {
 
 std::string hl_expression_node::pretty_print() {
     std::ostringstream ss;
-    if(lhs != nullptr){
-        if(lhs->node_type == hl_ast_node_type_operand){
+    if (lhs != nullptr) {
+        if (lhs->node_type == hl_ast_node_type_operand) {
             std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(lhs);
             std::string tmp_lhs = *op;
             ss << tmp_lhs;
-        } else{
+        } else {
             ss << std::static_pointer_cast<hl_expression_node>(lhs)->pretty_print();
         }
 
     }
     ss << type_print[expr_type];
 
-    if(rhs->node_type == hl_ast_node_type_operand){
+    if (rhs->node_type == hl_ast_node_type_operand) {
 
         std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(rhs);
         std::string tmp_rhs = *op;
         ss << tmp_rhs;
-    } else{
+    } else if(rhs->node_type == hl_ast_node_type_function_call){
+        ss << std::static_pointer_cast<hl_function_call_node>(rhs)->pretty_print();
+    }else{
         ss << std::static_pointer_cast<hl_expression_node>(rhs)->pretty_print();
     }
     std::string ret = ss.str();

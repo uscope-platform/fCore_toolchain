@@ -8,6 +8,7 @@
 
 #include "hl_ast_operand.h"
 #include "hl_ast_node.h"
+#include "hl_function_call_node.h"
 
 #include <iostream>
 #include <sstream>
