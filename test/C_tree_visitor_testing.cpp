@@ -532,7 +532,7 @@ TEST( cTreeVisitor, function_call) {
 
     std::shared_ptr<hl_expression_node> res_exp = std::static_pointer_cast<hl_expression_node>(parser.visitor.functions[0]->get_body()[0]);
     std::shared_ptr<hl_function_call_node> res = std::static_pointer_cast<hl_function_call_node>(res_exp->get_rhs());
-    
+
 
     EXPECT_EQ(*res, *gs_3);
     if(Test::HasFailure()){
@@ -575,6 +575,44 @@ TEST( cTreeVisitor, definition) {
     }
 }
 
+
+
+TEST( cFrontend, returnTest) {
+    std::string input_file = "test_return.c";
+    std::ifstream ifs(input_file);
+
+    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(ifs, result_var, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
+
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(parser.visitor.functions[0]->get_return());
+
+    std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
+    op_1->set_name("c");
+    std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_2->set_immediate(5);
+
+    std::shared_ptr<hl_expression_node> gs_1 = std::make_shared<hl_expression_node>(expr_xor_b);
+    gs_1->set_lhs(op_1);
+    gs_1->set_rhs(op_2);
+
+    std::shared_ptr<hl_ast_operand> op_3 = std::make_shared<hl_ast_operand>(variable_operand);
+    op_3->set_name("test");
+    std::shared_ptr<hl_expression_node> gs_2 = std::make_shared<hl_expression_node>(expr_assign);
+    gs_2->set_lhs(op_3);
+    gs_2->set_rhs(gs_1);
+
+
+    EXPECT_EQ(*res, *gs_2);
+    if(Test::HasFailure()){
+        std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res)->pretty_print()<< std::endl;
+        std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_2)->pretty_print()<< std::endl;
+    }
+
+}
 
 
 TEST( cFrontend, parser_main) {

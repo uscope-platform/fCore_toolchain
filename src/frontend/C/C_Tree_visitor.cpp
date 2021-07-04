@@ -327,7 +327,7 @@ void C_Tree_visitor::exitStatement(C_parser::C_grammarParser::StatementContext *
     } else if(ctx->selectionStatement() != nullptr){
         throw std::runtime_error("if else control flow is not supported yet: " + ctx->getText()+"\n");
     } else if(ctx->returnStatement() != nullptr){
-        current_block_item = expressions_stack.top();
+        current_function->set_return(expressions_stack.top());
         expressions_stack.pop();
     } else {
         throw std::runtime_error("The following statement is not supported: " + ctx->getText()+"\n");

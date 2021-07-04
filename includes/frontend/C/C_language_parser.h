@@ -75,7 +75,7 @@ class C_language_parser{
     FRIEND_TEST(cTreeVisitor, definition);
     FRIEND_TEST(cTreeVisitor, function_def);
     FRIEND_TEST(cTreeVisitor, function_call);
-
+    FRIEND_TEST(cFrontend, returnTest);
 
     unsigned int n_inputs_ = 0;
     unsigned int n_outputs_ = 0;

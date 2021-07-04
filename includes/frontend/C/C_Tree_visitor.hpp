@@ -96,7 +96,7 @@ private:
     FRIEND_TEST(cTreeVisitor, definition);
     FRIEND_TEST(cTreeVisitor, function_def);
     FRIEND_TEST(cTreeVisitor, function_call);
-
+    FRIEND_TEST(cFrontend, returnTest);
 
     template<typename T>
     void processExpression(unsigned int expression_size, const T& operands_array, std::map<std::string, expression_type_t> &expr_map);
