@@ -76,7 +76,7 @@ public:
     void exitArgumentExpression(C_parser::C_grammarParser::ArgumentExpressionContext *ctx) override;
 
     void exitStatement(C_parser::C_grammarParser::StatementContext *ctx) override;
-    void exitFunctionCallStatement(C_parser::C_grammarParser::FunctionCallStatementContext *ctx) override;
+    void exitFunctionCallExpression(C_parser::C_grammarParser::FunctionCallExpressionContext *ctx) override;
 
     ~C_Tree_visitor();
 

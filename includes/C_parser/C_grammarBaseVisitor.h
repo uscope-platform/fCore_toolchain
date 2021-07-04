@@ -173,7 +173,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitFunctionCallStatement(C_grammarParser::FunctionCallStatementContext *ctx) override {
+  virtual antlrcpp::Any visitFunctionCallExpression(C_grammarParser::FunctionCallExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 

@@ -133,8 +133,8 @@ public:
   virtual void enterInitializer(C_grammarParser::InitializerContext *ctx) = 0;
   virtual void exitInitializer(C_grammarParser::InitializerContext *ctx) = 0;
 
-  virtual void enterFunctionCallStatement(C_grammarParser::FunctionCallStatementContext *ctx) = 0;
-  virtual void exitFunctionCallStatement(C_grammarParser::FunctionCallStatementContext *ctx) = 0;
+  virtual void enterFunctionCallExpression(C_grammarParser::FunctionCallExpressionContext *ctx) = 0;
+  virtual void exitFunctionCallExpression(C_grammarParser::FunctionCallExpressionContext *ctx) = 0;
 
   virtual void enterArgumentExpressionList(C_grammarParser::ArgumentExpressionListContext *ctx) = 0;
   virtual void exitArgumentExpressionList(C_grammarParser::ArgumentExpressionListContext *ctx) = 0;

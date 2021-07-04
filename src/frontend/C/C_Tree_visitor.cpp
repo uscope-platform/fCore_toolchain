@@ -329,8 +329,6 @@ void C_Tree_visitor::exitStatement(C_parser::C_grammarParser::StatementContext *
     } else if(ctx->returnStatement() != nullptr){
         current_block_item = expressions_stack.top();
         expressions_stack.pop();
-    } else if(ctx->functionCallStatement() != nullptr){
-        // nothing to do here
     } else {
         throw std::runtime_error("The following statement is not supported: " + ctx->getText()+"\n");
     }
@@ -383,10 +381,13 @@ void C_Tree_visitor::exitBlockItem(C_parser::C_grammarParser::BlockItemContext *
     }
 }
 
-void C_Tree_visitor::exitFunctionCallStatement(C_parser::C_grammarParser::FunctionCallStatementContext *ctx) {
+void C_Tree_visitor::exitFunctionCallExpression(C_parser::C_grammarParser::FunctionCallExpressionContext *ctx) {
     std::string name = ctx->typedefName()->getText();
+    std::shared_ptr<hl_function_call_node> node = std::make_shared<hl_function_call_node>(name, argument_vector);
 
-    current_block_item = std::make_shared<hl_function_call_node>(name, argument_vector);
+    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(expr_call);
+    exp->set_rhs(node);
+    expressions_stack.push(exp);
 }
 
 void C_Tree_visitor::exitArgumentExpression(C_parser::C_grammarParser::ArgumentExpressionContext *ctx) {

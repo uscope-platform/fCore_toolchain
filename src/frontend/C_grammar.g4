@@ -42,7 +42,9 @@ primaryExpression
 
 unaryExpression
     :
-    ('++' |  '--' )* (primaryExpression |  unaryOperator unaryExpression)
+    ('++' |  '--' )* (primaryExpression
+    |  unaryOperator unaryExpression
+    | functionCallExpression)
     ;
 
 unaryOperator
@@ -214,7 +216,7 @@ initializer
     |   '{' initializerList ','? '}'
     ;
 
-functionCallStatement
+functionCallExpression
     : typedefName '(' argumentExpressionList? ')'
     ;
 
@@ -244,11 +246,10 @@ designator
     ;
 
 statement
-    :   expressionStatement
+    :   expressionStatement ';'
     |   selectionStatement
     |   iterationStatement
     |   returnStatement
-    | functionCallStatement ';'?
     |  '(' (logicalOrExpression (',' logicalOrExpression)*)? (':' (logicalOrExpression (',' logicalOrExpression)*)?)* ')' ';'
     ;
 
@@ -262,7 +263,7 @@ blockItem
     ;
 
 expressionStatement
-    :   expression? ';'
+    :   expression?
     ;
 
 selectionStatement

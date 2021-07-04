@@ -530,8 +530,8 @@ TEST( cTreeVisitor, function_call) {
     std::vector<std::shared_ptr<hl_ast_node>> args = {gs_1, op_3};
     std::shared_ptr<hl_function_call_node> gs_3 = std::make_shared<hl_function_call_node>(func_name, args);
 
-
-    std::shared_ptr<hl_function_call_node> res = std::static_pointer_cast<hl_function_call_node>(parser.visitor.functions[0]->get_body()[0]);
+    std::shared_ptr<hl_expression_node> res_exp = std::static_pointer_cast<hl_expression_node>(parser.visitor.functions[0]->get_body()[0]);
+    std::shared_ptr<hl_function_call_node> res = std::static_pointer_cast<hl_function_call_node>(res_exp->get_rhs());
 
     EXPECT_EQ(*res, *gs_3);
     if(Test::HasFailure()){
