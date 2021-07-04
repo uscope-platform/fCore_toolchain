@@ -20,7 +20,11 @@ public:
     void set_parameters_list(std::vector<std::shared_ptr<hl_definition_node>> list);
     void set_body(std::vector<std::shared_ptr<hl_ast_node>> b);
     void set_return(std::shared_ptr<hl_expression_node> r);
-private:
+    std::vector<std::shared_ptr<hl_ast_node>> get_body();
+    std::string pretty_print();
+    friend bool operator==(const hl_function_node& lhs, const hl_function_node& rhs);
+
+protected:
     c_types_t return_type;
     std::string name;
     std::vector<std::shared_ptr<hl_definition_node>> parameters_list;

@@ -48,7 +48,7 @@ public:
 
     void enterFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) override;
     void exitFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) override;
-
+    void exitBlockItem(C_parser::C_grammarParser::BlockItemContext *ctx) override;
 
     void enterCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) override;
     void exitCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) override;
@@ -88,6 +88,7 @@ private:
     FRIEND_TEST(cTreeVisitor, orLogExpressions);
     FRIEND_TEST( cTreeVisitor, assignmentExpressions);
     FRIEND_TEST(cTreeVisitor, definition);
+    FRIEND_TEST(cTreeVisitor, function);
 
     template<typename T>
     void processExpression(unsigned int expression_size, const T& operands_array, std::map<std::string, expression_type_t> &expr_map);
@@ -104,7 +105,6 @@ private:
     std::shared_ptr<hl_function_node> current_function;
 
     std::shared_ptr<hl_expression_node> current_initializer;
-    std::shared_ptr<hl_definition_node> current_definition;
     std::shared_ptr<hl_ast_node> current_block_item;
 
     bool in_function_declaration;

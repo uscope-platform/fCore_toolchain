@@ -41,6 +41,7 @@ void C_Tree_visitor::exitFunctionDefinition(C_parser::C_grammarParser::FunctionD
         for(auto item:parameters->parameterDeclaration()){
             std::string param_type =item->typeSpecifier()->getText();
         }
+    }
         std::string type = ctx->typeSpecifier()->getText();
 
         current_function->set_type( hl_ast_node::string_to_type(type));
@@ -51,7 +52,7 @@ void C_Tree_visitor::exitFunctionDefinition(C_parser::C_grammarParser::FunctionD
         function_body.clear();
         in_function_declaration = false;
         functions.push_back(current_function);
-    }
+
 }
 
 void C_Tree_visitor::exitParameterDeclaration(C_parser::C_grammarParser::ParameterDeclarationContext *ctx) {
@@ -79,7 +80,7 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
         node->set_initializer(current_initializer);
     }
     if(in_function_body){
-        current_definition = node;
+        current_block_item = node;
     } else {
         ext_decl.push_back(node);
     }
@@ -99,6 +100,7 @@ void C_Tree_visitor::exitInitializer(C_parser::C_grammarParser::InitializerConte
 
 void C_Tree_visitor::exitCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) {
     in_function_body = false;
+
 }
 
 void C_Tree_visitor::exitUnaryExpression(C_parser::C_grammarParser::UnaryExpressionContext *ctx) {
@@ -363,4 +365,11 @@ void C_Tree_visitor::processExpression(unsigned int expression_size, const T& op
         }
     }
     expressions_stack.push(expression);
+}
+
+void C_Tree_visitor::exitBlockItem(C_parser::C_grammarParser::BlockItemContext *ctx) {
+    std::string test = ctx->getText();
+    if(in_function_body){
+        function_body.push_back(current_block_item);
+    }
 }
