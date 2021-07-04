@@ -12,7 +12,7 @@
 
 typedef enum {
     hl_ast_node_type_expr = 1,
-    hl_ast_node_type_identifier = 2,
+    hl_ast_node_type_definition = 2,
     hl_ast_node_type_conditional = 3,
     hl_ast_node_type_loop = 4,
     hl_ast_node_type_function = 5,
@@ -33,7 +33,7 @@ class hl_ast_node : public ast_node_base<hl_ast_node>{
 public:
     explicit hl_ast_node(hl_ast_node_type_t t);
     static c_types_t string_to_type(const std::string& t);
-
+    static std::string  type_to_string(const c_types_t &t);
     bool is_terminal();
 
     friend bool operator==(const hl_ast_node& lhs, const hl_ast_node& rhs);

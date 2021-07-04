@@ -27,9 +27,24 @@ c_types_t hl_ast_node::string_to_type(const std::string &t) {
     return translator[t];
 }
 
+
+
 bool operator==(const hl_ast_node &lhs, const hl_ast_node &rhs) {
     bool ret_val = true;
     ret_val &= lhs.node_type == rhs.node_type;
     ret_val &= lhs.content == rhs.content;
     return ret_val;
+}
+
+std::string hl_ast_node::type_to_string(const c_types_t &t) {
+    std::map <c_types_t,std::string>  translator {
+            {c_type_void, "void"},
+            {c_type_char, "char"},
+            {c_type_short, "short"},
+            {c_type_int, "int"},
+            {c_type_long, "long"},
+            {c_type_float, "float"}
+    };
+
+    return translator[t];
 }

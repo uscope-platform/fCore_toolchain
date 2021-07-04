@@ -22,14 +22,12 @@ TEST( cTreeVisitor, unaryExpressions) {
     C_language_parser parser(ifs, result_var, result_def);
     parser.pre_process({}, {});
     parser.parse();
-    std::stack<std::shared_ptr<hl_expression_node>> results = parser.visitor.expressions_stack;
+    std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
-    std::shared_ptr<hl_expression_node> res_3 = results.top();
-    results.pop();
-    std::shared_ptr<hl_expression_node> res_2 = results.top();
-    results.pop();
-    std::shared_ptr<hl_expression_node> res_1 = results.top();
-    results.pop();
+    std::shared_ptr<hl_expression_node> res_1 = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
+    std::shared_ptr<hl_expression_node> res_2 = std::static_pointer_cast<hl_definition_node>(results[1])->get_initializer();
+    std::shared_ptr<hl_expression_node> res_3 = std::static_pointer_cast<hl_definition_node>(results[2])->get_initializer();
+
 
 
     std::stack<std::shared_ptr<hl_expression_node>> gold_standard;
@@ -85,7 +83,8 @@ TEST( cTreeVisitor, multiplicativeExpressions) {
     C_language_parser parser(ifs, result_var, result_def);
     parser.pre_process({}, {});
     parser.parse();
-    std::stack<std::shared_ptr<hl_expression_node>> results = parser.visitor.expressions_stack;
+
+    std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
     // a = !b;
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
@@ -108,7 +107,10 @@ TEST( cTreeVisitor, multiplicativeExpressions) {
     op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(3);
     gs_3->set_rhs(op_2);
-    std::shared_ptr<hl_expression_node> res = results.top();
+
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
+
+
 
     EXPECT_EQ(*res, *gs_3);
     if(Test::HasFailure()){
@@ -128,7 +130,7 @@ TEST( cTreeVisitor, additiveExpressions) {
     C_language_parser parser(ifs, result_var, result_def);
     parser.pre_process({}, {});
     parser.parse();
-    std::stack<std::shared_ptr<hl_expression_node>> results = parser.visitor.expressions_stack;
+    std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
@@ -146,7 +148,7 @@ TEST( cTreeVisitor, additiveExpressions) {
     op_2->set_immediate(6);
     gs_2->set_rhs(op_2);
 
-    std::shared_ptr<hl_expression_node> res = results.top();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
 
     EXPECT_EQ(*res, *gs_2);
     if(Test::HasFailure()){
@@ -166,7 +168,7 @@ TEST( cTreeVisitor, shiftExpressions) {
     C_language_parser parser(ifs, result_var, result_def);
     parser.pre_process({}, {});
     parser.parse();
-    std::stack<std::shared_ptr<hl_expression_node>> results = parser.visitor.expressions_stack;
+    std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
@@ -184,7 +186,7 @@ TEST( cTreeVisitor, shiftExpressions) {
     op_2->set_immediate(6);
     gs_2->set_rhs(op_2);
 
-    std::shared_ptr<hl_expression_node> res = results.top();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
 
     EXPECT_EQ(*res, *gs_2);
     if(Test::HasFailure()){
@@ -204,7 +206,7 @@ TEST( cTreeVisitor, relationalExpressions) {
     C_language_parser parser(ifs, result_var, result_def);
     parser.pre_process({}, {});
     parser.parse();
-    std::stack<std::shared_ptr<hl_expression_node>> results = parser.visitor.expressions_stack;
+    std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("c");
@@ -232,7 +234,7 @@ TEST( cTreeVisitor, relationalExpressions) {
     op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(7);
     gs_4->set_rhs(op_2);
-    std::shared_ptr<hl_expression_node> res = results.top();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
 
     EXPECT_EQ(*res, *gs_4);
     if(Test::HasFailure()){
@@ -252,7 +254,7 @@ TEST( cTreeVisitor, equalityExpressions) {
     C_language_parser parser(ifs, result_var, result_def);
     parser.pre_process({}, {});
     parser.parse();
-    std::stack<std::shared_ptr<hl_expression_node>> results = parser.visitor.expressions_stack;
+    std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
@@ -270,7 +272,7 @@ TEST( cTreeVisitor, equalityExpressions) {
     op_2->set_immediate(6);
     gs_2->set_rhs(op_2);
 
-    std::shared_ptr<hl_expression_node> res = results.top();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
 
     EXPECT_EQ(*res, *gs_2);
     if(Test::HasFailure()){
@@ -291,7 +293,7 @@ TEST( cTreeVisitor, andBinExpressions) {
     C_language_parser parser(ifs, result_var, result_def);
     parser.pre_process({}, {});
     parser.parse();
-    std::stack<std::shared_ptr<hl_expression_node>> results = parser.visitor.expressions_stack;
+    std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
@@ -304,7 +306,7 @@ TEST( cTreeVisitor, andBinExpressions) {
     gs_1->set_rhs(op_2);
 
 
-    std::shared_ptr<hl_expression_node> res = results.top();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
 
     EXPECT_EQ(*res, *gs_1);
     if(Test::HasFailure()){
@@ -323,7 +325,7 @@ TEST( cTreeVisitor, exOrBinExpressions) {
     C_language_parser parser(ifs, result_var, result_def);
     parser.pre_process({}, {});
     parser.parse();
-    std::stack<std::shared_ptr<hl_expression_node>> results = parser.visitor.expressions_stack;
+    std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
@@ -336,7 +338,7 @@ TEST( cTreeVisitor, exOrBinExpressions) {
     gs_1->set_rhs(op_2);
 
 
-    std::shared_ptr<hl_expression_node> res = results.top();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
 
     EXPECT_EQ(*res, *gs_1);
     if(Test::HasFailure()){
@@ -358,7 +360,7 @@ TEST( cTreeVisitor, orLogExpressions) {
     C_language_parser parser(ifs, result_var, result_def);
     parser.pre_process({}, {});
     parser.parse();
-    std::stack<std::shared_ptr<hl_expression_node>> results = parser.visitor.expressions_stack;
+    std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
@@ -370,7 +372,7 @@ TEST( cTreeVisitor, orLogExpressions) {
     gs_1->set_lhs(op_1);
     gs_1->set_rhs(op_2);
 
-    std::shared_ptr<hl_expression_node> res = results.top();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
 
     EXPECT_EQ(*res, *gs_1);
     if(Test::HasFailure()){
@@ -389,7 +391,7 @@ TEST( cTreeVisitor, andLogExpressions) {
     C_language_parser parser(ifs, result_var, result_def);
     parser.pre_process({}, {});
     parser.parse();
-    std::stack<std::shared_ptr<hl_expression_node>> results = parser.visitor.expressions_stack;
+    std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
@@ -402,7 +404,7 @@ TEST( cTreeVisitor, andLogExpressions) {
     gs_1->set_rhs(op_2);
 
 
-    std::shared_ptr<hl_expression_node> res = results.top();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
 
     EXPECT_EQ(*res, *gs_1);
     if(Test::HasFailure()){
@@ -422,7 +424,7 @@ TEST( cTreeVisitor, assignmentExpressions) {
     C_language_parser parser(ifs, result_var, result_def);
     parser.pre_process({}, {});
     parser.parse();
-    std::vector<std::shared_ptr<hl_expression_node>> results = parser.visitor.block_content;
+    //std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.block_content;
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
@@ -442,7 +444,7 @@ TEST( cTreeVisitor, assignmentExpressions) {
 
 
 
-    std::shared_ptr<hl_expression_node> res = results[0];
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(parser.visitor.current_block_item);
 
     EXPECT_EQ(*res, *gs_2);
     if(Test::HasFailure()){
@@ -451,6 +453,39 @@ TEST( cTreeVisitor, assignmentExpressions) {
     }
 }
 
+
+TEST( cTreeVisitor, definition) {
+    std::string input_file = "test_definition.c";
+    std::ifstream ifs(input_file);
+
+    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(ifs, result_var, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
+    
+
+
+    std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
+    op_1->set_name("c");
+    std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_2->set_immediate(5);
+
+    std::shared_ptr<hl_expression_node> gs_1 = std::make_shared<hl_expression_node>(expr_xor_b);
+    gs_1->set_lhs(op_1);
+    gs_1->set_rhs(op_2);
+
+    std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("test",c_type_int);
+    def->set_initializer(gs_1);
+    std::shared_ptr<hl_definition_node> res = std::static_pointer_cast<hl_definition_node>(parser.visitor.ext_decl[0]);
+
+    EXPECT_EQ(*res, *def);
+    if(Test::HasFailure()){
+        std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_definition_node>(res)->pretty_print()<< std::endl;
+        std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_definition_node>(def)->pretty_print()<< std::endl;
+    }
+}
 
 
 

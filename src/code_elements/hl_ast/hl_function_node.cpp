@@ -10,7 +10,7 @@ hl_function_node::hl_function_node() : hl_ast_node(hl_ast_node_type_function) {
     return_type = c_type_void;
 }
 
-void hl_function_node::set_parameters_list(std::vector<std::shared_ptr<hl_identifier_node>> list) {
+void hl_function_node::set_parameters_list(std::vector<std::shared_ptr<hl_definition_node>> list) {
     parameters_list = std::move(list);
 }
 

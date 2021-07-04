@@ -4,7 +4,7 @@ set(TESTED_SOURCES
         ../src/code_elements/ll_ast/ll_loop.cpp
         ../src/code_elements/ll_ast/ll_instruction.cpp
         ../src/code_elements/hl_ast/hl_ast_node.cpp
-        ../src/code_elements/hl_ast/hl_identifier_node.cpp
+        ../src/code_elements/hl_ast/hl_definition_node.cpp
         ../src/code_elements/hl_ast/hl_function_node.cpp
         ../src/code_elements/hl_ast/hl_expression_node.cpp
         ../src/code_elements/hl_ast/hl_ast_operand.cpp
@@ -84,4 +84,5 @@ configure_file(C_files/test_exorb_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPY
 configure_file(C_files/test_orl_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_andl_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_assignment_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/test_definition.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_main_add.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

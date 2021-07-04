@@ -232,8 +232,7 @@ designator
     ;
 
 statement
-    :   compoundStatement
-    |   expressionStatement
+    :   expressionStatement
     |   selectionStatement
     |   iterationStatement
     |   returnStatement

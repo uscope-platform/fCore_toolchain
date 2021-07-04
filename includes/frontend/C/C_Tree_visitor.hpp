@@ -33,10 +33,10 @@
 #include "frontend/variable_map.hpp"
 
 #include "code_elements/hl_ast/hl_function_node.h"
-#include "code_elements/hl_ast/hl_identifier_node.h"
+#include "code_elements/hl_ast/hl_definition_node.h"
 #include "code_elements/hl_ast/hl_ast_node.h"
 #include "code_elements/hl_ast/hl_expression_node.h"
-#include "code_elements/hl_ast/hl_identifier_node.h"
+#include "code_elements/hl_ast/hl_definition_node.h"
 
 #include <gtest/gtest_prod.h>
 
@@ -54,9 +54,8 @@ public:
     void exitCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) override;
 
     void exitParameterDeclaration(C_parser::C_grammarParser::ParameterDeclarationContext *ctx) override;
-
     void exitDeclaration(C_parser::C_grammarParser::DeclarationContext *ctx) override;
-    void exitInitDeclarator(C_parser::C_grammarParser::InitDeclaratorContext *ctx) override;
+    void exitInitializer(C_parser::C_grammarParser::InitializerContext *ctx) override;
 
     void exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExpressionContext *ctx) override;
     void exitUnaryExpression(C_parser::C_grammarParser::UnaryExpressionContext *ctx) override;
@@ -74,6 +73,7 @@ public:
     void exitAssignmentExpression(C_parser::C_grammarParser::AssignmentExpressionContext *ctx) override;
 
     void exitStatement(C_parser::C_grammarParser::StatementContext *ctx) override;
+
 private:
     FRIEND_TEST( cTreeVisitor, unaryExpressions);
     FRIEND_TEST( cTreeVisitor, multiplicativeExpressions);
@@ -87,20 +87,25 @@ private:
     FRIEND_TEST(cTreeVisitor, andLogExpressions);
     FRIEND_TEST(cTreeVisitor, orLogExpressions);
     FRIEND_TEST( cTreeVisitor, assignmentExpressions);
+    FRIEND_TEST(cTreeVisitor, definition);
 
     template<typename T>
     void processExpression(unsigned int expression_size, const T& operands_array, std::map<std::string, expression_type_t> &expr_map);
 
-    std::stack<std::string> declaration_type;
-    std::vector<std::shared_ptr<hl_identifier_node>> parameters_list;
+    std::vector<std::shared_ptr<hl_ast_node>> ext_decl;
+    std::vector<std::shared_ptr<hl_definition_node>> parameters_list;
     std::vector<std::shared_ptr<hl_function_node>> functions;
     std::vector<std::shared_ptr<hl_ast_node>> function_body;
 
     std::stack<std::shared_ptr<hl_ast_operand>> operands_stack;
     std::stack<std::shared_ptr<hl_expression_node>> expressions_stack;
-    std::vector<std::shared_ptr<hl_expression_node>> block_content;
+    std::vector<std::shared_ptr<hl_ast_node>> block_content;
 
     std::shared_ptr<hl_function_node> current_function;
+
+    std::shared_ptr<hl_expression_node> current_initializer;
+    std::shared_ptr<hl_definition_node> current_definition;
+    std::shared_ptr<hl_ast_node> current_block_item;
 
     bool in_function_declaration;
     bool in_function_body;

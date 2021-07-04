@@ -57,26 +57,47 @@ void C_Tree_visitor::exitFunctionDefinition(C_parser::C_grammarParser::FunctionD
 void C_Tree_visitor::exitParameterDeclaration(C_parser::C_grammarParser::ParameterDeclarationContext *ctx) {
     std::string id_name = ctx->declarator()->directDeclarator()->Identifier()->getText();
     std::string type = ctx->typeSpecifier()->getText();
-    std::shared_ptr<hl_identifier_node> identifier = std::make_shared<hl_identifier_node>(hl_ast_node_type_identifier, id_name, hl_ast_node::string_to_type(type));
+    std::shared_ptr<hl_definition_node> identifier = std::make_shared<hl_definition_node>(id_name, hl_ast_node::string_to_type(type));
     if(in_function_declaration) {
         parameters_list.push_back(identifier);
     }
+    current_block_item = current_initializer;
 }
 
 void C_Tree_visitor::enterCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) {
     in_function_body = true;
 }
 
-void C_Tree_visitor::exitInitDeclarator(C_parser::C_grammarParser::InitDeclaratorContext *ctx) {
-
-}
 
 void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationContext *ctx) {
+    bool is_const = ctx->Const() != nullptr;
+    std::string type_name = ctx->typeSpecifier()->getText();
+    std::string name = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->getText();
+    std::shared_ptr<hl_definition_node> node = std::make_shared<hl_definition_node>(name, hl_ast_node::string_to_type(type_name));
+    node->set_constant(is_const);
+    if(ctx->initDeclaratorList() != nullptr){
+        node->set_initializer(current_initializer);
+    }
+    if(in_function_body){
+        current_definition = node;
+    } else {
+        ext_decl.push_back(node);
+    }
 
 }
 
+void C_Tree_visitor::exitInitializer(C_parser::C_grammarParser::InitializerContext *ctx) {
+    if(ctx->assignmentExpression() != nullptr){
+        current_initializer = expressions_stack.top();
+        expressions_stack.pop();
+    } else if(ctx->initializerList() != nullptr){
+        throw std::runtime_error("ERROR: Initializer lists are not supported yet");
+    }
+}
+
+
+
 void C_Tree_visitor::exitCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) {
-    //std::shared_ptr<hl_identifier_node> id = std::static_pointer_cast<hl_identifier_node>(function_body[0]);
     in_function_body = false;
 }
 
@@ -290,22 +311,21 @@ void C_Tree_visitor::exitAssignmentExpression(C_parser::C_grammarParser::Assignm
 
 
 void C_Tree_visitor::exitStatement(C_parser::C_grammarParser::StatementContext *ctx) {
-    if (ctx->compoundStatement() != nullptr) {
-
-    } else if (ctx->expressionStatement() != nullptr){
-        block_content.push_back(expressions_stack.top());
+    if (ctx->expressionStatement() != nullptr){
+        current_block_item = expressions_stack.top();
         expressions_stack.pop();
     } else if (ctx->iterationStatement() != nullptr) {
         throw std::runtime_error("for loops are not supported yet: " + ctx->getText()+"\n");
     } else if(ctx->selectionStatement() != nullptr){
         throw std::runtime_error("if else control flow is not supported yet: " + ctx->getText()+"\n");
     } else if(ctx->returnStatement() != nullptr){
-        current_function->set_return(expressions_stack.top());
+        current_block_item = expressions_stack.top();
         expressions_stack.pop();
     } else {
         throw std::runtime_error("The following statement is not supported: " + ctx->getText()+"\n");
     }
 }
+
 
 template<typename T>
 void C_Tree_visitor::processExpression(unsigned int expression_size, const T& operands_array,
@@ -344,4 +364,3 @@ void C_Tree_visitor::processExpression(unsigned int expression_size, const T& op
     }
     expressions_stack.push(expression);
 }
-
