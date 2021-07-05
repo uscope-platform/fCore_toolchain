@@ -29,9 +29,9 @@ public:
     uint32_t get_inst_count();
     ~fcore_cc();
 private:
-    std::shared_ptr<ll_ast_node> AST;
+    std::shared_ptr<hl_ast_node> AST;
     output_generator *writer;
-    pass_manager<ll_ast_node> manager;
+    pass_manager<hl_ast_node> manager;
     std::string error_code;
 };
 

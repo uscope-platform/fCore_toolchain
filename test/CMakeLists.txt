@@ -18,6 +18,7 @@ set(TESTED_SOURCES
         ../src/passes/ll_ast/variable_lifetime_mapping.cpp
         ../src/passes/ll_ast/load_intercalation_pass.cpp
         ../src/passes/ll_ast/instruction_counting_pass.cpp
+        ../src/passes/hl_ast/function_inlining_pass.cpp
         ../src/frontend/variable_map.cpp
         ../src/frontend/define_map.cpp
         ../src/frontend/asm/register_map.cpp

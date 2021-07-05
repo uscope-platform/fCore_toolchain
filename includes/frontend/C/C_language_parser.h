@@ -47,7 +47,7 @@ class C_language_parser{
     unsigned int n_outputs() const {return n_outputs_;};
     unsigned int n_variables() const {return n_variables_;};
 
-    std::shared_ptr<ll_ast_node> AST;
+    std::shared_ptr<hl_ast_node> AST;
     std::string error;
 
     private:

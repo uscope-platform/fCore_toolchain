@@ -12,11 +12,9 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes) {
     C_language_parser target_parser(input, variables_map, defines_map);
     AST = target_parser.AST;
 
-    manager = create_ll_pass_manager(variables_map);
+    manager = create_hl_pass_manager(variables_map);
     manager.run_morphing_passes(AST);
-
-    //manager.run_analysis_passes(AST);
-    writer = new output_generator(AST, false);
+    
 }
 
 

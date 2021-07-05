@@ -19,13 +19,19 @@
 #define FCORE_HAS_PASSES_HPP
 
 #include "pass_manager.hpp"
+// LL passes
 #include "ll_ast/loop_implementation_pass.hpp"
 #include "ll_ast/pseudo_instructions_pass.hpp"
 #include "ll_ast/instruction_counting_pass.hpp"
 #include "ll_ast/register_allocation_pass.hpp"
 #include "ll_ast/variable_lifetime_mapping.hpp"
 #include "ll_ast/load_intercalation_pass.hpp"
+//HL PASSES
+#include "hl_ast/function_inlining_pass.h"
+
 #include "frontend/variable_map.hpp"
+#include "code_elements/ll_ast/ll_ast_node.hpp"
+#include "code_elements/hl_ast/hl_ast_node.h"
 
 static pass_manager<ll_ast_node> create_ll_pass_manager(std::shared_ptr<variable_map> varmap){
     pass_manager<ll_ast_node> manager;
@@ -37,6 +43,14 @@ static pass_manager<ll_ast_node> create_ll_pass_manager(std::shared_ptr<variable
     std::shared_ptr<pass_base<ll_ast_node>> ic_pass =std::make_shared<instruction_counting_pass>();
     manager.add_pass(ic_pass);
     manager.analysis_passes.insert(std::make_pair ("instruction_counting", ic_pass));
+    return manager;
+}
+
+
+static pass_manager<hl_ast_node> create_hl_pass_manager(std::shared_ptr<variable_map> varmap){
+    pass_manager<hl_ast_node> manager;
+    manager.add_pass(std::make_shared<function_inlining_pass>());
+
     return manager;
 }
 
