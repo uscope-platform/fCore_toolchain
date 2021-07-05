@@ -27,8 +27,8 @@
 #include "load_intercalation_pass.hpp"
 #include "frontend/variable_map.hpp"
 
-static pass_manager create_pass_manager(std::shared_ptr<variable_map> varmap){
-    pass_manager manager;
+static pass_manager<ll_ast_node> create_pass_manager(std::shared_ptr<variable_map> varmap){
+    pass_manager<ll_ast_node> manager;
     manager.add_pass(std::make_shared<loop_implementation_pass>());
     manager.add_pass(std::make_shared<pseudo_instructions_pass>());
     manager.add_pass(std::make_shared<variable_lifetime_mapping>(varmap));

@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <vector>
+#include <utility>
 #include <unordered_map>
 #include "code_elements/ll_ast/ll_ast_node.hpp"
 
@@ -44,18 +45,107 @@ public:
     virtual int get_pass_type() { return NONE_PASS;};
 };
 
+
+template<class E>
 class pass_manager {
 public:
-    void add_pass(const std::shared_ptr<pass_base<ll_ast_node>>& pass);
-    std::shared_ptr<ll_ast_node> run_morphing_passes(std::shared_ptr<ll_ast_node> AST);
-    std::vector<std::vector<int>> run_analysis_passes(const std::shared_ptr<ll_ast_node>& AST);
-    void analyze_tree(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>>& pass);
-    std::vector<std::shared_ptr<ll_ast_node>> process_nodes(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>>& pass);
-    std::shared_ptr<ll_ast_node> process_leaves(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>>& pass);
-    std::unordered_map<std::string, std::shared_ptr<pass_base<ll_ast_node>>> analysis_passes;
+    void add_pass(const std::shared_ptr<pass_base<E>>& pass);
+    std::shared_ptr<E> run_morphing_passes(std::shared_ptr<E> AST);
+    std::vector<std::vector<int>> run_analysis_passes(const std::shared_ptr<E>& AST);
+    void analyze_tree(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass);
+    std::vector<std::shared_ptr<E>> process_nodes(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass);
+    std::shared_ptr<E> process_leaves(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass);
+    std::unordered_map<std::string, std::shared_ptr<pass_base<E>>> analysis_passes;
 private:
-    std::vector<std::shared_ptr<pass_base<ll_ast_node>>> passes = {};
+    std::vector<std::shared_ptr<pass_base<E>>> passes = {};
 };
+
+
+template<class E>
+void pass_manager<E>::add_pass(const std::shared_ptr<pass_base<E>>& pass) {
+    passes.push_back(pass);
+}
+
+template<class E>
+std::shared_ptr<E> pass_manager<E>::run_morphing_passes(std::shared_ptr<E> AST) {
+    std::shared_ptr<E> working_tree = std::move(AST);
+    for( auto& pass:passes){
+        int pass_type = pass->get_pass_type();
+        switch (pass_type) {
+            case NODE_PASS:{
+                std::vector<std::shared_ptr<E>> tmp = process_nodes(working_tree, pass);
+                working_tree = tmp[0];
+                break;
+            }
+            case LEAF_PASS:{
+                working_tree = process_leaves(working_tree, pass);
+                break;
+            }
+            default:
+                break;
+        }
+    }
+    return working_tree;
+}
+
+template<class E>
+std::vector<std::vector<int>> pass_manager<E>::run_analysis_passes(const std::shared_ptr<E>& AST) {
+    std::vector<std::vector<int>> results;
+    for( auto& pass:passes){
+        if(pass->get_pass_type() == ANALYSIS_PASS){
+            analyze_tree(AST, pass);
+            results.push_back(pass->get_analysis_result());
+        }
+    }
+    return results;
+}
+
+template<class E>
+std::vector<std::shared_ptr<E>>
+pass_manager<E>::process_nodes(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass) {
+    std::shared_ptr<E> result;
+    std::vector<std::shared_ptr<E>> content = subtree->get_content();
+    std::vector<std::shared_ptr<E>> result_vector = content;
+    for (int i = 0; i< content.size(); i++) {
+        if(content[i]->is_terminal()) continue;
+        std::vector<std::shared_ptr<E>> tmp_result;
+        tmp_result = process_nodes(content[i], pass);
+        result_vector.insert(result_vector.begin()+i, tmp_result.begin(), tmp_result.end());
+
+        result_vector.erase(result_vector.begin()+i+tmp_result.size());
+    }
+    subtree->set_content(result_vector);
+    return pass->process_node(subtree);
+}
+
+template<class E>
+std::shared_ptr<E> pass_manager<E>::process_leaves(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>> &pass) {
+
+    std::shared_ptr<E> result;
+    std::vector<std::shared_ptr<E>> content = subtree->get_content();
+    std::vector<std::shared_ptr<E>> result_vector = content;
+    for (auto & i : content) {
+        if(i->is_terminal()) {
+            i = pass->process_leaf(i);
+        } else{
+            process_leaves(i, pass);
+        }
+
+    }
+    subtree->set_content(content);
+    return subtree;
+}
+
+template<class E>
+void
+pass_manager<E>::analyze_tree(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>> &pass) {
+    for(auto &i : subtree->get_content()){
+        analyze_tree(i,pass);
+    }
+    pass->analyze_element(subtree);
+}
+
+
 
 
 #endif //FCORE_HAS_PASS_MANAGER_HPP

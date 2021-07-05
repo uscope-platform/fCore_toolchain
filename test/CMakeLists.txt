@@ -12,7 +12,6 @@ set(TESTED_SOURCES
         ../src/code_elements/hl_ast/hl_function_call_node.cpp
         ../src/code_elements/variable.cpp
         ../src/code_elements/define.cpp
-        ../src/passes/pass_manager.cpp
         ../src/passes/loop_implementation_pass.cpp
         ../src/passes/pseudo_instructions_pass.cpp
         ../src/passes/register_allocation_pass.cpp

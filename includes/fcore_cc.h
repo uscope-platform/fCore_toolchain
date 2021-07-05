@@ -31,7 +31,7 @@ public:
 private:
     std::shared_ptr<ll_ast_node> AST;
     output_generator *writer;
-    pass_manager manager;
+    pass_manager<ll_ast_node> manager;
     std::string error_code;
 };
 
