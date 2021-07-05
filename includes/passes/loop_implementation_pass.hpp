@@ -20,12 +20,13 @@
 
 #include <memory>
 #include "code_elements/ll_ast/ll_ast_node.hpp"
+#include "code_elements/ll_ast/ll_loop_node.h"
 #include "pass_manager.hpp"
 
 class loop_implementation_pass : public pass_base {
 
 public:
-    std::vector<ast_t>process_node(ast_t element) override;
+    std::vector<std::shared_ptr<ll_ast_node>>process_node(std::shared_ptr<ll_ast_node> element) override;
     int get_pass_type() override { return NODE_PASS;};
 };
 

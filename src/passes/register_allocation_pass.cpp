@@ -27,8 +27,8 @@ register_allocation_pass::register_allocation_pass(std::shared_ptr<variable_map>
 }
 
 
-ast_t register_allocation_pass::process_leaf(ast_t element) {
-    if(element->type == type_instr){
+std::shared_ptr<ll_ast_node> register_allocation_pass::process_leaf(std::shared_ptr<ll_ast_node> element) {
+    if(element->type == ll_type_instr){
         instruction_t current_instr = element->inst.getStringInstr();
         for(auto &item:current_instr.arguments){
             std::regex re("r(\\d\\d?)");

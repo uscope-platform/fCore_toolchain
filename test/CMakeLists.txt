@@ -1,6 +1,7 @@
 set(TESTED_SOURCES
         ../src/backend/output_generator.cpp
         ../src/code_elements/ll_ast/ll_ast_node.cpp
+        ../src/code_elements/ll_ast/ll_loop_node.cpp
         ../src/code_elements/ll_ast/ll_loop.cpp
         ../src/code_elements/ll_ast/ll_instruction.cpp
         ../src/code_elements/hl_ast/hl_ast_node.cpp

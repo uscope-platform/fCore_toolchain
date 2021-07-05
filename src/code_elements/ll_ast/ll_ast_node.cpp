@@ -51,7 +51,7 @@ ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type, variable var_in) {
 
 bool ll_ast_node::is_terminal() {
 
-    return  type == type_instr || type == type_pragma;
+    return type == ll_type_instr || type == ll_type_pragma;
 }
 
 std::shared_ptr<ll_ast_node> ll_ast_node::deep_copy_element(const std::shared_ptr<ll_ast_node> &element) {

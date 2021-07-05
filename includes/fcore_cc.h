@@ -29,7 +29,7 @@ public:
     uint32_t get_inst_count();
     ~fcore_cc();
 private:
-    ast_t AST;
+    std::shared_ptr<ll_ast_node> AST;
     output_generator *writer;
     pass_manager manager;
     std::string error_code;

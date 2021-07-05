@@ -18,7 +18,7 @@
 #include "passes/pseudo_instructions_pass.hpp"
 
 
-ast_t pseudo_instructions_pass::process_leaf(ast_t element) {
+std::shared_ptr<ll_ast_node> pseudo_instructions_pass::process_leaf(std::shared_ptr<ll_ast_node> element) {
     if (element->inst.is_pseudo()){
         instruction_t instr = element->inst.getStringInstr();
         std::string opcode = instr.opcode;

@@ -28,7 +28,7 @@
 class variable_lifetime_mapping: public pass_base {
 public:
     explicit variable_lifetime_mapping(std::shared_ptr<variable_map> var_map);
-    ast_t process_leaf(ast_t element) override ;
+    std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
     int get_pass_type() override { return LEAF_PASS;};
 private:
     int variable_detection_ctr;

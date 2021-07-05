@@ -11,6 +11,7 @@ set(FCORE_LIB_SRCS
         frontend/asm/register_map.cpp
         backend/output_generator.cpp
         code_elements/ll_ast/ll_instruction.cpp
+        code_elements/ll_ast/ll_loop_node.cpp
         code_elements/ll_ast/ll_ast_node.cpp
         code_elements/ll_ast/ll_loop.cpp
         code_elements/hl_ast/hl_ast_node.cpp

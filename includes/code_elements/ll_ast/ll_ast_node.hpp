@@ -31,11 +31,11 @@
 
 
 typedef enum {
-    type_instr = 1,
-    type_for_block = 4,
-    type_program_head = 5,
-    type_pragma = 6,
-    type_code_block = 7,
+    ll_type_instr = 1,
+    ll_type_for_block = 4,
+    ll_type_program_head = 5,
+    ll_type_pragma = 6,
+    ll_type_code_block = 7,
 
 } ll_ast_node_type_t;
 
@@ -70,8 +70,6 @@ public:
 
 
 };
-
-typedef  std::shared_ptr<ll_ast_node> ast_t;
 
 
 

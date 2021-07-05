@@ -26,8 +26,8 @@
 class output_generator {
 
 public:
-    explicit output_generator(const ast_t &AST, bool debug_print);
-    void emit_program(ast_t &sub_program, bool debug_print);
+    explicit output_generator(const std::shared_ptr<ll_ast_node> &AST, bool debug_print);
+    void emit_program(std::shared_ptr<ll_ast_node> &sub_program, bool debug_print);
     std::vector<uint32_t> get_raw_program();
     int get_program_size();
     void write_hex_file(const std::string& filename);
@@ -35,7 +35,7 @@ public:
     std::vector<uint32_t> generate_hex(bool endian_swap);
     std::vector<std::string> generate_mem();
 private:
-    ast_t program;
+    std::shared_ptr<ll_ast_node> program;
     std::vector<uint32_t> raw_program;
     int progress_counter;
     static inline uint16_t Reverse16(uint16_t value)

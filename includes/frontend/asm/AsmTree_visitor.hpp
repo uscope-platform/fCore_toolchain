@@ -24,6 +24,7 @@
 #include "code_elements/ll_ast/ll_instruction.h"
 #include "code_elements/ll_ast/ll_loop.hpp"
 #include "code_elements/ll_ast/ll_ast_node.hpp"
+#include "code_elements/ll_ast/ll_loop_node.h"
 #include "code_elements/variable.hpp"
 #include "frontend/variable_map.hpp"
 #include <iostream>
@@ -56,12 +57,12 @@ public:
     void exitOutput_decl(asm_parser::asm_grammarParser::Output_declContext *ctx) override;
     void exitImmediate(asm_parser::asm_grammarParser::ImmediateContext *ctx) override;
     void exitFloat_const(asm_parser::asm_grammarParser::Float_constContext *ctx) override;
-    ast_t get_program();
+    std::shared_ptr<ll_ast_node> get_program();
 
 private:
-    ast_t program_head{};
-    ast_t current_element{};
-    std::stack<ast_t> parent_elements;
+    std::shared_ptr<ll_ast_node> program_head{};
+    std::shared_ptr<ll_ast_node> current_element{};
+    std::stack<std::shared_ptr<ll_ast_node>> parent_elements;
     std::shared_ptr<variable_map> varmap;
 
     std::shared_ptr<variable> get_variable(const std::string &variable_name, bool is_const) const;

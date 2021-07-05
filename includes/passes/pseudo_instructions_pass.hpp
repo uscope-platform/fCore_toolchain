@@ -24,7 +24,7 @@
 
 class pseudo_instructions_pass: public pass_base {
 public:
-    ast_t process_leaf(ast_t element) override ;
+    std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
     int get_pass_type() override { return LEAF_PASS;};
 };
 

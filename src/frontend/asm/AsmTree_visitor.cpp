@@ -46,7 +46,7 @@ void AsmTree_visitor::exitImm_instr(asm_parser::asm_grammarParser::Imm_instrCont
     arguments.push_back(dest);
     arguments.push_back(immediate);
 
-    ll_ast_node this_inst = ll_ast_node(type_instr, ll_instruction(IMMEDIATE_INSTRUCTION,opcode, arguments));
+    ll_ast_node this_inst = ll_ast_node(ll_type_instr, ll_instruction(IMMEDIATE_INSTRUCTION, opcode, arguments));
     current_element->add_content(std::make_shared<ll_ast_node>(this_inst));
 }
 
@@ -81,7 +81,7 @@ void AsmTree_visitor::exitReg_instr(asm_parser::asm_grammarParser::Reg_instrCont
 
     std::vector<std::shared_ptr<variable>> arguments = {op_a, op_b, dest};
 
-    ll_ast_node this_inst = ll_ast_node(type_instr, ll_instruction(REGISTER_INSTRUCTION,opcode, arguments));
+    ll_ast_node this_inst = ll_ast_node(ll_type_instr, ll_instruction(REGISTER_INSTRUCTION, opcode, arguments));
     current_element->add_content(std::make_shared<ll_ast_node>(this_inst));
 }
 
@@ -94,7 +94,7 @@ void AsmTree_visitor::exitConv_instr(asm_parser::asm_grammarParser::Conv_instrCo
 
     std::vector<std::shared_ptr<variable>> arguments = {op_a, op_b};
 
-    ll_ast_node this_inst = ll_ast_node(type_instr, ll_instruction(CONVERSION_INSTRUCTION, opcode, arguments));
+    ll_ast_node this_inst = ll_ast_node(ll_type_instr, ll_instruction(CONVERSION_INSTRUCTION, opcode, arguments));
     current_element->add_content(std::make_shared<ll_ast_node>(this_inst));
 }
 
@@ -109,7 +109,7 @@ void AsmTree_visitor::exitBranch_instr(asm_parser::asm_grammarParser::Branch_ins
 
     std::vector<std::shared_ptr<variable>> arguments = {op_a, op_b, dest};
 
-    ll_ast_node this_inst = ll_ast_node(type_instr, ll_instruction(REGISTER_INSTRUCTION, opcode,arguments));
+    ll_ast_node this_inst = ll_ast_node(ll_type_instr, ll_instruction(REGISTER_INSTRUCTION, opcode, arguments));
     current_element->add_content(std::make_shared<ll_ast_node>(this_inst));
 }
 
@@ -147,7 +147,7 @@ void AsmTree_visitor::exitPseudo_instr(asm_parser::asm_grammarParser::Pseudo_ins
         arguments.push_back(dest);
     }
 
-    ll_ast_node this_inst = ll_ast_node(type_instr, ll_instruction(PSEUDO_INSTRUCTION,opcode,arguments));
+    ll_ast_node this_inst = ll_ast_node(ll_type_instr, ll_instruction(PSEUDO_INSTRUCTION, opcode, arguments));
     current_element->add_content(std::make_shared<ll_ast_node>(this_inst));
 }
 
@@ -155,7 +155,7 @@ void AsmTree_visitor::exitIndep_instr(asm_parser::asm_grammarParser::Indep_instr
     std::string opcode = ctx->getText();
     std::vector<std::shared_ptr<variable>> arguments;
 
-    ll_ast_node this_inst = ll_ast_node(type_instr, ll_instruction(INDEPENDENT_INSTRUCTION,opcode,arguments));
+    ll_ast_node this_inst = ll_ast_node(ll_type_instr, ll_instruction(INDEPENDENT_INSTRUCTION, opcode, arguments));
 
     current_element->add_content(std::make_shared<ll_ast_node>(this_inst));
 }
@@ -175,21 +175,25 @@ void AsmTree_visitor::exitLoad_instr(asm_parser::asm_grammarParser::Load_instrCo
     arguments.push_back(dest);
     arguments.push_back(immediate);
 
-    ll_ast_node this_inst = ll_ast_node(type_instr, ll_instruction(LOAD_CONSTANT_INSTRUCTION,"ldc", arguments));
+    ll_ast_node this_inst = ll_ast_node(ll_type_instr, ll_instruction(LOAD_CONSTANT_INSTRUCTION, "ldc", arguments));
     current_element->add_content(std::make_shared<ll_ast_node>(this_inst));
 }
 
 void AsmTree_visitor::enterFor_block(asm_parser::asm_grammarParser::For_blockContext *ctx) {
     ll_loop loop;
     parent_elements.push(current_element);
-    current_element = std::make_shared<ll_ast_node>(type_for_block,loop);
+    current_element = std::make_shared<ll_ast_node>(ll_type_for_block, loop);
 
 }
 void AsmTree_visitor::exitFor_block(asm_parser::asm_grammarParser::For_blockContext *ctx) {
     //Process loop initialization
+    std::shared_ptr<ll_loop_node> loop = std::make_shared<ll_loop_node>();
+
     loop_start_t start;
     start.variable = ctx->for_decl()->Identifier()->getText();
     start.starting_value = std::stoi(ctx->for_decl()->Integer()->getText(), nullptr, 0);
+
+    loop->set_loop_start(start);
 
     //Process advancement expression
     asm_parser::asm_grammarParser::For_incrContext *for_incr = ctx->for_incr();
@@ -197,40 +201,47 @@ void AsmTree_visitor::exitFor_block(asm_parser::asm_grammarParser::For_blockCont
     adv.loop_increment = 1;
     adv.direction = for_incr != nullptr; // variable increment -> direction true; variable decrement -> direction false;
 
+    loop->set_advance(adv);
+
     //Process end condition
     loop_end_t end;
     end.condition = ctx->for_end()->for_end_comp_type()->getText();
     end.end_count =std::stoi(ctx->for_end()->Integer()->getText(), nullptr, 0);
 
+    loop->set_loop_end(end);
+
+    loop->loop.set_loop_start(start);
+    loop->loop.set_loop_end(end);
+    loop->loop.set_advance(adv);
     //Add loop properties to current element
     current_element->loop.set_loop_start(start);
     current_element->loop.set_loop_end(end);
     current_element->loop.set_advance(adv);
 
     //add current element to the  AST
-    ast_t tmp_parent = parent_elements.top();
+    std::shared_ptr<ll_ast_node> tmp_parent = parent_elements.top();
     parent_elements.pop();
-    ast_t this_element = current_element;
+    std::shared_ptr<ll_ast_node> this_element = current_element;
     current_element = tmp_parent;
     current_element->add_content(this_element);
 }
 
 
 void AsmTree_visitor::enterProgram(asm_parser::asm_grammarParser::ProgramContext *ctx) {
-    current_element = std::make_shared<ll_ast_node>(type_program_head);
+    current_element = std::make_shared<ll_ast_node>(ll_type_program_head);
 }
 
 void AsmTree_visitor::exitProgram(asm_parser::asm_grammarParser::ProgramContext *ctx) {
     program_head = current_element;
 }
 
-ast_t AsmTree_visitor::get_program() {
+std::shared_ptr<ll_ast_node> AsmTree_visitor::get_program() {
     return program_head;
 }
 
 void AsmTree_visitor::exitPragma(asm_parser::asm_grammarParser::PragmaContext *ctx) {
-    ll_ast_node this_inst = ll_ast_node(type_pragma,
-                                          pragma(ctx->Identifier()->getText()));
+    ll_ast_node this_inst = ll_ast_node(ll_type_pragma,
+                                        pragma(ctx->Identifier()->getText()));
     current_element->add_content(std::make_shared<ll_ast_node>(this_inst));
 }
 

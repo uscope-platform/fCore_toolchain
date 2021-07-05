@@ -77,11 +77,11 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
     variable_map tmp_map;
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>(tmp_map);
     // Parse includes files
-    ast_t includes_ast;
+    std::shared_ptr<ll_ast_node> includes_ast;
 
     for(auto &item:includes){
         asm_language_parser include_parser(*item, variables_map);
-        ast_t tmp_ast = include_parser.AST;
+        std::shared_ptr<ll_ast_node> tmp_ast = include_parser.AST;
         if(includes_ast != nullptr){
             includes_ast->append_content(tmp_ast->get_content());
         } else{

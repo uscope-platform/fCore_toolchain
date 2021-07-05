@@ -17,8 +17,8 @@
 
 #include "passes/instruction_counting_pass.hpp"
 
-void instruction_counting_pass::analyze_element(ast_t element) {
-    if(element->type==type_instr){
+void instruction_counting_pass::analyze_element(std::shared_ptr<ll_ast_node> element) {
+    if(element->type == ll_type_instr){
         int count = element->inst.instruction_count();
         if(count>=0)
             instruction_count += count;

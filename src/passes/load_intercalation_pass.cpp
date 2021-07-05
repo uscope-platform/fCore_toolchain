@@ -17,13 +17,13 @@
 
 #include "passes/load_intercalation_pass.hpp"
 
-ast_t load_intercalation_pass::process_leaf(ast_t element) {
-    std::shared_ptr<ll_ast_node> container = std::make_shared<ll_ast_node>(type_code_block);
+std::shared_ptr<ll_ast_node> load_intercalation_pass::process_leaf(std::shared_ptr<ll_ast_node> element) {
+    std::shared_ptr<ll_ast_node> container = std::make_shared<ll_ast_node>(ll_type_code_block);
 
 
 
     bool float_present = false;
-    if(element->type == type_instr){
+    if(element->type == ll_type_instr){
         instruction_t current_instr = element->inst.getStringInstr();
         if(current_instr.opcode == "ldc"){
             float desired_constant = std::stof(current_instr.arguments[1]->to_str());
@@ -32,8 +32,8 @@ ast_t load_intercalation_pass::process_leaf(ast_t element) {
 
             //CREATE FRACT NUMERATOR MULTIPLICATION
             ll_instruction constant_inst = ll_instruction(INTERCALATED_CONSTANT,desired_constant);
-            std::shared_ptr<ll_ast_node> load_inst = std::make_shared<ll_ast_node>(type_instr, element->inst);
-            std::shared_ptr<ll_ast_node> constant = std::make_shared<ll_ast_node>(type_instr, constant_inst);
+            std::shared_ptr<ll_ast_node> load_inst = std::make_shared<ll_ast_node>(ll_type_instr, element->inst);
+            std::shared_ptr<ll_ast_node> constant = std::make_shared<ll_ast_node>(ll_type_instr, constant_inst);
             block_content.push_back(load_inst);
             block_content.push_back(constant);
 

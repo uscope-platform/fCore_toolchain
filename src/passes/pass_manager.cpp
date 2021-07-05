@@ -23,13 +23,13 @@ void pass_manager::add_pass(const std::shared_ptr<pass_base>& pass) {
     passes.push_back(pass);
 }
 
-ast_t pass_manager::run_morphing_passes(ast_t AST) {
-    ast_t working_tree = std::move(AST);
+std::shared_ptr<ll_ast_node> pass_manager::run_morphing_passes(std::shared_ptr<ll_ast_node> AST) {
+    std::shared_ptr<ll_ast_node> working_tree = std::move(AST);
     for( auto& pass:passes){
         int pass_type = pass->get_pass_type();
         switch (pass_type) {
             case NODE_PASS:{
-                std::vector<ast_t> tmp = process_nodes(working_tree, pass);
+                std::vector<std::shared_ptr<ll_ast_node>> tmp = process_nodes(working_tree, pass);
                 working_tree = tmp[0];
                 break;
             }
@@ -44,7 +44,7 @@ ast_t pass_manager::run_morphing_passes(ast_t AST) {
     return working_tree;
 }
 
-std::vector<std::vector<int>> pass_manager::run_analysis_passes(const ast_t& AST) {
+std::vector<std::vector<int>> pass_manager::run_analysis_passes(const std::shared_ptr<ll_ast_node>& AST) {
     std::vector<std::vector<int>> results;
     for( auto& pass:passes){
         if(pass->get_pass_type() == ANALYSIS_PASS){
@@ -55,14 +55,14 @@ std::vector<std::vector<int>> pass_manager::run_analysis_passes(const ast_t& AST
     return results;
 }
 
-std::vector<ast_t>
-pass_manager::process_nodes(const ast_t &subtree, const std::shared_ptr<pass_base>& pass) {
-    ast_t result;
-    std::vector<ast_t> content = subtree->get_content();
-    std::vector<ast_t> result_vector = content;
+std::vector<std::shared_ptr<ll_ast_node>>
+pass_manager::process_nodes(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base>& pass) {
+    std::shared_ptr<ll_ast_node> result;
+    std::vector<std::shared_ptr<ll_ast_node>> content = subtree->get_content();
+    std::vector<std::shared_ptr<ll_ast_node>> result_vector = content;
     for (int i = 0; i< content.size(); i++) {
         if(content[i]->is_terminal()) continue;
-        std::vector<ast_t> tmp_result;
+        std::vector<std::shared_ptr<ll_ast_node>> tmp_result;
         tmp_result = process_nodes(content[i], pass);
         result_vector.insert(result_vector.begin()+i, tmp_result.begin(), tmp_result.end());
 
@@ -72,11 +72,11 @@ pass_manager::process_nodes(const ast_t &subtree, const std::shared_ptr<pass_bas
     return pass->process_node(subtree);
 }
 
-ast_t pass_manager::process_leaves(const ast_t &subtree, const std::shared_ptr<pass_base> &pass) {
+std::shared_ptr<ll_ast_node> pass_manager::process_leaves(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base> &pass) {
 
-    ast_t result;
-    std::vector<ast_t> content = subtree->get_content();
-    std::vector<ast_t> result_vector = content;
+    std::shared_ptr<ll_ast_node> result;
+    std::vector<std::shared_ptr<ll_ast_node>> content = subtree->get_content();
+    std::vector<std::shared_ptr<ll_ast_node>> result_vector = content;
     for (auto & i : content) {
         if(i->is_terminal()) {
             i = pass->process_leaf(i);
@@ -90,7 +90,7 @@ ast_t pass_manager::process_leaves(const ast_t &subtree, const std::shared_ptr<p
 }
 
 void
-pass_manager::analyze_tree(const ast_t &subtree, const std::shared_ptr<pass_base> &pass) {
+pass_manager::analyze_tree(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base> &pass) {
     for(auto &i : subtree->get_content()){
         analyze_tree(i,pass);
     }

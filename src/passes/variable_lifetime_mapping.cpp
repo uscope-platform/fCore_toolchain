@@ -24,7 +24,7 @@ variable_lifetime_mapping::variable_lifetime_mapping(std::shared_ptr<variable_ma
     variable_detection_ctr = 0;
 }
 
-ast_t variable_lifetime_mapping::process_leaf(ast_t element) {
+std::shared_ptr<ll_ast_node> variable_lifetime_mapping::process_leaf(std::shared_ptr<ll_ast_node> element) {
     for(auto &variable:element->inst.getStringInstr().arguments){
         if(!variable->is_constant() && variable->type ==TYPE_REGULAR){
             if(variable_detection_ctr <= variable->first_occurrence)

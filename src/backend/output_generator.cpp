@@ -17,7 +17,7 @@
 
 #include "backend/output_generator.hpp"
 
-output_generator::output_generator(const ast_t &AST, bool debug_print) {
+output_generator::output_generator(const std::shared_ptr<ll_ast_node> &AST, bool debug_print) {
     program = AST;
     progress_counter = 0;
     emit_program(program, debug_print);
@@ -59,10 +59,10 @@ std::vector<std::string> output_generator::generate_mem() {
 }
 
 
-void output_generator::emit_program(ast_t &sub_program, bool debug_print) {
-    std::vector<ast_t> content = sub_program->get_content();
+void output_generator::emit_program(std::shared_ptr<ll_ast_node> &sub_program, bool debug_print) {
+    std::vector<std::shared_ptr<ll_ast_node>> content = sub_program->get_content();
     for(auto &item:content){
-        if(item->type == type_instr){
+        if(item->type == ll_type_instr){
             raw_program.push_back(item->inst.emit());
             progress_counter++;
             if(debug_print) {
@@ -70,7 +70,7 @@ void output_generator::emit_program(ast_t &sub_program, bool debug_print) {
                 item->inst.print();
             }
         }
-        if(item->type == type_code_block){
+        if(item->type == ll_type_code_block){
             emit_program(item, debug_print);
         }
     }

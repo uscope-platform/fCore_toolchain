@@ -42,7 +42,7 @@ class asm_language_parser{
     unsigned int n_outputs() const {return n_outputs_;};
     unsigned int n_variables() const {return n_variables_;};
 
-    ast_t AST;
+    std::shared_ptr<ll_ast_node> AST;
     varmap_t var_map;
 
     std::string error;
