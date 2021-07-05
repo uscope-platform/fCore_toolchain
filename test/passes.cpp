@@ -18,7 +18,6 @@
 
 #include <gtest/gtest.h>
 
-#include "code_elements/ll_ast/ll_loop.hpp"
 #include "code_elements/ll_ast/ll_instruction.h"
 #include "code_elements/ll_ast/ll_ast_node.hpp"
 #include "passes/passes.hpp"
@@ -101,19 +100,18 @@ TEST(PassesTest, loop_less) {
     std::shared_ptr<ll_ast_node> loop_instr = std::make_shared<ll_ast_node>(ll_type_instr, ll_instruction(INDEPENDENT_INSTRUCTION, "nop", args));
     std::vector<std::shared_ptr<ll_ast_node>> l1_content = {loop_pragma, loop_instr};
 
-    ll_loop loop;
     loop_start_t start = {"j", 0};
     loop_advance_t  adv = {true,1};
     loop_end_t end = {3, "<"};
 
-    loop.set_loop_start(start);
-    loop.set_advance(adv);
-    loop.set_loop_end(end);
+    std::shared_ptr<ll_loop_node> lvl_1 = std::make_shared<ll_loop_node>();
+    lvl_1->set_advance(adv);
+    lvl_1->set_loop_start(start);
+    lvl_1->set_loop_end(end);
 
-    std::shared_ptr<ll_ast_node> level_1 = std::make_shared<ll_ast_node>(ll_type_for_block, loop);
-    level_1->set_content(l1_content);
+    lvl_1->set_content(l1_content);
 
-    AST->add_content(level_1);
+    AST->add_content(lvl_1);
 
     std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
     std::ifstream stream;
@@ -136,19 +134,18 @@ TEST(PassesTest, loop_less_equal) {
     std::shared_ptr<ll_ast_node> loop_instr = std::make_shared<ll_ast_node>(ll_type_instr, ll_instruction(INDEPENDENT_INSTRUCTION, "nop", args));
     std::vector<std::shared_ptr<ll_ast_node>> l1_content = {loop_pragma, loop_instr};
 
-    ll_loop loop;
     loop_start_t start = {"j", 0};
     loop_advance_t  adv = {true,1};
     loop_end_t end = {3, "<="};
 
-    loop.set_loop_start(start);
-    loop.set_advance(adv);
-    loop.set_loop_end(end);
+    std::shared_ptr<ll_loop_node> lvl_1 = std::make_shared<ll_loop_node>();
+    lvl_1->set_advance(adv);
+    lvl_1->set_loop_start(start);
+    lvl_1->set_loop_end(end);
 
-    std::shared_ptr<ll_ast_node> level_1 = std::make_shared<ll_ast_node>(ll_type_for_block, loop);
-    level_1->set_content(l1_content);
+    lvl_1->set_content(l1_content);
 
-    AST->add_content(level_1);
+    AST->add_content(lvl_1);
 
     std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
     std::ifstream stream;
@@ -170,19 +167,20 @@ TEST(PassesTest, loop_more) {
     std::shared_ptr<ll_ast_node> loop_instr = std::make_shared<ll_ast_node>(ll_type_instr, ll_instruction(INDEPENDENT_INSTRUCTION, "nop", args));
     std::vector<std::shared_ptr<ll_ast_node>> l1_content = {loop_pragma, loop_instr};
 
-    ll_loop loop;
     loop_start_t start = {"j", 3};
     loop_advance_t  adv = {false,1};
     loop_end_t end = {1, ">"};
 
-    loop.set_loop_start(start);
-    loop.set_advance(adv);
-    loop.set_loop_end(end);
 
-    std::shared_ptr<ll_ast_node> level_1 = std::make_shared<ll_ast_node>(ll_type_for_block, loop);
-    level_1->set_content(l1_content);
+    std::shared_ptr<ll_loop_node> lvl_1 = std::make_shared<ll_loop_node>();
 
-    AST->add_content(level_1);
+    lvl_1->set_advance(adv);
+    lvl_1->set_loop_start(start);
+    lvl_1->set_loop_end(end);
+
+    lvl_1->set_content(l1_content);
+
+    AST->add_content(lvl_1);
 
     std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
     std::ifstream stream;
@@ -205,19 +203,19 @@ TEST(PassesTest, loop_more_equal) {
     std::shared_ptr<ll_ast_node> loop_instr = std::make_shared<ll_ast_node>(ll_type_instr, ll_instruction(INDEPENDENT_INSTRUCTION, "nop", args));
     std::vector<std::shared_ptr<ll_ast_node>> l1_content = {loop_pragma, loop_instr};
 
-    ll_loop loop;
     loop_start_t start = {"j", 3};
     loop_advance_t  adv = {false,1};
     loop_end_t end = {1, ">="};
 
-    loop.set_loop_start(start);
-    loop.set_advance(adv);
-    loop.set_loop_end(end);
 
-    std::shared_ptr<ll_ast_node> level_1 = std::make_shared<ll_ast_node>(ll_type_for_block, loop);
-    level_1->set_content(l1_content);
+    std::shared_ptr<ll_loop_node> lvl_1 = std::make_shared<ll_loop_node>();
+    lvl_1->set_advance(adv);
+    lvl_1->set_loop_start(start);
+    lvl_1->set_loop_end(end);
 
-    AST->add_content(level_1);
+    lvl_1->set_content(l1_content);
+
+    AST->add_content(lvl_1);
 
     std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
     std::ifstream stream;
@@ -234,18 +232,20 @@ TEST(PassesTest, loop_more_equal) {
 
 
 TEST(PassesTest, deep_copy_element) {
-    ll_loop loop;
     loop_start_t start = {"j", 36};
-    loop.set_loop_start(start);
     std::vector<std::shared_ptr<variable>> args = {};
     ll_instruction inst(INDEPENDENT_INSTRUCTION, "nop", args);
-    std::shared_ptr<ll_ast_node> level_1 = std::make_shared<ll_ast_node>(ll_type_for_block, loop);
+
+    std::shared_ptr<ll_loop_node> lvl_1 = std::make_shared<ll_loop_node>();
+    lvl_1->set_loop_start(start);
     std::shared_ptr<ll_ast_node> level_2 = std::make_shared<ll_ast_node>(ll_type_instr, inst);
-    level_1->add_content(level_2);
-    std::shared_ptr<ll_ast_node> result = ll_ast_node::deep_copy_element(level_1);
-    bool test_types = level_1->type == result->type && level_2->type == result->get_content()[0]->type;
-    bool test_instr_content = result->get_content()[0]->inst.emit() == level_2->inst.emit();
-    bool test_loop_content = result->loop.get_loop_start().starting_value == start.starting_value;
+    lvl_1->add_content(level_2);
+    std::shared_ptr<ll_ast_node> result = ll_ast_node::deep_copy_element(lvl_1);
+
+    std::shared_ptr<ll_loop_node> og_result = std::static_pointer_cast<ll_loop_node>(result);
+    bool test_types = lvl_1->type == og_result->type && level_2->type == og_result->get_content()[0]->type;
+    bool test_instr_content = og_result->get_content()[0]->inst.emit() == level_2->inst.emit();
+    bool test_loop_content = og_result->get_loop_start().starting_value == start.starting_value;
     bool result_check = test_types && test_instr_content && test_loop_content;
     ASSERT_TRUE(result_check);
 }

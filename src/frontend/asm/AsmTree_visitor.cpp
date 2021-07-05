@@ -180,9 +180,9 @@ void AsmTree_visitor::exitLoad_instr(asm_parser::asm_grammarParser::Load_instrCo
 }
 
 void AsmTree_visitor::enterFor_block(asm_parser::asm_grammarParser::For_blockContext *ctx) {
-    ll_loop loop;
+
     parent_elements.push(current_element);
-    current_element = std::make_shared<ll_ast_node>(ll_type_for_block, loop);
+    current_element = std::make_shared<ll_ast_node>(ll_type_for_block);
 
 }
 void AsmTree_visitor::exitFor_block(asm_parser::asm_grammarParser::For_blockContext *ctx) {
@@ -210,20 +210,18 @@ void AsmTree_visitor::exitFor_block(asm_parser::asm_grammarParser::For_blockCont
 
     loop->set_loop_end(end);
 
-    loop->loop.set_loop_start(start);
-    loop->loop.set_loop_end(end);
-    loop->loop.set_advance(adv);
-    //Add loop properties to current element
-    current_element->loop.set_loop_start(start);
-    current_element->loop.set_loop_end(end);
-    current_element->loop.set_advance(adv);
+    loop->set_loop_start(start);
+    loop->set_loop_end(end);
+    loop->set_advance(adv);
+
+    loop->set_content(current_element->get_content());
 
     //add current element to the  AST
     std::shared_ptr<ll_ast_node> tmp_parent = parent_elements.top();
     parent_elements.pop();
-    std::shared_ptr<ll_ast_node> this_element = current_element;
+
     current_element = tmp_parent;
-    current_element->add_content(this_element);
+    current_element->add_content(loop);
 }
 
 

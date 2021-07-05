@@ -16,7 +16,7 @@
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "code_elements/ll_ast/ll_ast_node.hpp"
-
+#include "code_elements/ll_ast/ll_loop_node.h"
 
 
 ll_ast_node::ll_ast_node() {
@@ -30,11 +30,6 @@ ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type) {
 ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type, ll_instruction block_spec) {
     type = block_type;
     inst = std::move(block_spec);
-}
-
-ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type, ll_loop block_spec) {
-    type = block_type;
-    loop = std::move(block_spec);
 }
 
 ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type, pragma block_spec) {
@@ -55,8 +50,23 @@ bool ll_ast_node::is_terminal() {
 }
 
 std::shared_ptr<ll_ast_node> ll_ast_node::deep_copy_element(const std::shared_ptr<ll_ast_node> &element) {
-    ll_ast_node copied_elem;
-    std::shared_ptr<ll_ast_node> result = std::make_shared<ll_ast_node>(copied_elem);
+    std::shared_ptr<ll_ast_node> result;
+
+    if(element->type == ll_type_for_block){
+        std::shared_ptr<ll_loop_node> loop_elem = std::static_pointer_cast<ll_loop_node>(element);
+        std::shared_ptr<ll_loop_node> loop_res = std::make_shared<ll_loop_node>();
+
+        loop_res->set_loop_start(loop_elem->get_loop_start());
+        loop_res->set_advance(loop_elem->get_advance());
+        loop_res->set_loop_end(loop_elem->get_loop_end());
+        result = std::static_pointer_cast<ll_ast_node>(loop_res);
+
+
+    } else {
+        ll_ast_node copied_elem;
+        result = std::make_shared<ll_ast_node>(copied_elem);
+    }
+
     if(element->has_content()){
         std::vector<std::shared_ptr<ll_ast_node>> children;
         for(auto &item:element->get_content()){
@@ -66,9 +76,9 @@ std::shared_ptr<ll_ast_node> ll_ast_node::deep_copy_element(const std::shared_pt
         result->set_content(children);
     }
     result->type = element->type;
-    result->loop = element->loop;
     result->inst = element->inst;
     result->directive = element->directive;
+
     return result;
 }
 

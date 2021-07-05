@@ -5,7 +5,26 @@
 #ifndef FCORE_HAS_LL_LOOP_NODE_H
 #define FCORE_HAS_LL_LOOP_NODE_H
 
+#include <utility>
+
 #include "ll_ast_node.hpp"
+
+typedef struct {
+    std::string variable;
+    int starting_value;
+}loop_start_t;
+
+
+typedef struct {
+    int end_count;
+    std::basic_string<char> condition;
+}loop_end_t;
+
+typedef struct {
+    bool direction;
+    int loop_increment;
+}loop_advance_t;
+
 
 class ll_loop_node: public ll_ast_node{
 
