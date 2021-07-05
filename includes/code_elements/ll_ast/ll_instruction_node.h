@@ -33,6 +33,7 @@ public:
     int get_type();
     [[nodiscard]] uint32_t emit() const;
     [[nodiscard]] int instruction_count() const;
+    bool is_terminal() override;
     void print();
     [[nodiscard]] bool is_pseudo() const { return type == PSEUDO_INSTRUCTION;};
     [[nodiscard]] const instruction_t &getStringInstr() const;

@@ -22,6 +22,7 @@
 #include "asm_parser/asm_grammarParser.h"
 #include "fCore_isa.hpp"
 #include "code_elements/ll_ast/ll_instruction_node.h"
+#include "code_elements/ll_ast/ll_ast_pragma.h"
 #include "code_elements/ll_ast/ll_ast_node.hpp"
 #include "code_elements/ll_ast/ll_loop_node.h"
 #include "code_elements/variable.hpp"
@@ -30,7 +31,7 @@
 #include <memory>
 #include <vector>
 #include <string>
-
+#include <utility>
 
 
 typedef std::unordered_map<std::string, std::shared_ptr<variable>>  varmap_t;

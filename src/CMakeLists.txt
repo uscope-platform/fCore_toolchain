@@ -12,6 +12,7 @@ set(FCORE_LIB_SRCS
         backend/output_generator.cpp
         code_elements/ll_ast/ll_instruction_node.cpp
         code_elements/ll_ast/ll_loop_node.cpp
+        code_elements/ll_ast/ll_ast_pragma.cpp
         code_elements/ll_ast/ll_ast_node.cpp
         code_elements/hl_ast/hl_ast_node.cpp
         code_elements/hl_ast/hl_definition_node.cpp

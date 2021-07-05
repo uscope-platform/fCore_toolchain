@@ -3,6 +3,7 @@ set(TESTED_SOURCES
         ../src/code_elements/ll_ast/ll_ast_node.cpp
         ../src/code_elements/ll_ast/ll_loop_node.cpp
         ../src/code_elements/ll_ast/ll_instruction_node.cpp
+        ../src/code_elements/ll_ast/ll_ast_pragma.cpp
         ../src/code_elements/hl_ast/hl_ast_node.cpp
         ../src/code_elements/hl_ast/hl_definition_node.cpp
         ../src/code_elements/hl_ast/hl_function_def_node.cpp

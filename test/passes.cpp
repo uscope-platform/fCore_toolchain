@@ -94,7 +94,7 @@ TEST(PassesTest, instruction_count_pass) {
 
 TEST(PassesTest, loop_less) {
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
-    std::shared_ptr<ll_ast_node> loop_pragma = std::make_shared<ll_ast_node>(ll_type_pragma, pragma("unroll"));
+    std::shared_ptr<ll_ast_pragma> loop_pragma = std::make_shared<ll_ast_pragma>("unroll");
     std::vector<std::shared_ptr<variable>> args = {};
     std::shared_ptr<ll_instruction_node> loop_instr = std::make_shared<ll_instruction_node>(INDEPENDENT_INSTRUCTION, "nop", args);
     std::vector<std::shared_ptr<ll_ast_node>> l1_content = {loop_pragma, loop_instr};
@@ -128,7 +128,7 @@ TEST(PassesTest, loop_less) {
 
 TEST(PassesTest, loop_less_equal) {
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
-    std::shared_ptr<ll_ast_node> loop_pragma = std::make_shared<ll_ast_node>(ll_type_pragma, pragma("unroll"));
+    std::shared_ptr<ll_ast_pragma> loop_pragma = std::make_shared<ll_ast_pragma>("unroll");
     std::vector<std::shared_ptr<variable>> args = {};
     std::shared_ptr<ll_instruction_node> loop_instr = std::make_shared<ll_instruction_node>(INDEPENDENT_INSTRUCTION, "nop", args);
     std::vector<std::shared_ptr<ll_ast_node>> l1_content = {loop_pragma, loop_instr};
@@ -161,7 +161,7 @@ TEST(PassesTest, loop_less_equal) {
 
 TEST(PassesTest, loop_more) {
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
-    std::shared_ptr<ll_ast_node> loop_pragma = std::make_shared<ll_ast_node>(ll_type_pragma, pragma("unroll"));
+    std::shared_ptr<ll_ast_pragma> loop_pragma = std::make_shared<ll_ast_pragma>("unroll");
     std::vector<std::shared_ptr<variable>> args = {};
     std::shared_ptr<ll_instruction_node> loop_instr = std::make_shared<ll_instruction_node>(INDEPENDENT_INSTRUCTION, "nop", args);
     std::vector<std::shared_ptr<ll_ast_node>> l1_content = {loop_pragma, loop_instr};
@@ -197,7 +197,7 @@ TEST(PassesTest, loop_more) {
 
 TEST(PassesTest, loop_more_equal) {
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
-    std::shared_ptr<ll_ast_node> loop_pragma = std::make_shared<ll_ast_node>(ll_type_pragma, pragma("unroll"));
+    std::shared_ptr<ll_ast_pragma> loop_pragma = std::make_shared<ll_ast_pragma>("unroll");
     std::vector<std::shared_ptr<variable>> args = {};
     std::shared_ptr<ll_instruction_node> loop_instr = std::make_shared<ll_instruction_node>(INDEPENDENT_INSTRUCTION, "nop", args);
     std::vector<std::shared_ptr<ll_ast_node>> l1_content = {loop_pragma, loop_instr};

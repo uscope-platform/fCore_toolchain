@@ -38,27 +38,17 @@ typedef enum {
 } ll_ast_node_type_t;
 
 
-class pragma {
-public:
-    pragma();
-    explicit pragma(std::string directive);
-    std::string get_directive();
-    void print();
-private:
-    std::string directive;
-};
-
 class ll_ast_node : public ast_node_base<ll_ast_node> {
 
 public:
     ll_ast_node();
     explicit ll_ast_node(ll_ast_node_type_t block_type);
-    ll_ast_node(ll_ast_node_type_t block_type, pragma block_spec);
-    bool is_terminal();
+
+    virtual bool is_terminal();
     static std::shared_ptr<ll_ast_node> deep_copy_element(const std::shared_ptr<ll_ast_node>& element);
 
     ll_ast_node_type_t type;
-    pragma directive;
+
 
 
 };

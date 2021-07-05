@@ -17,7 +17,7 @@
 
 #include "frontend/asm/AsmTree_visitor.hpp"
 
-#include <utility>
+
 
 AsmTree_visitor::AsmTree_visitor(std::shared_ptr<variable_map> map) {
     varmap = std::move(map);
@@ -238,9 +238,8 @@ std::shared_ptr<ll_ast_node> AsmTree_visitor::get_program() {
 }
 
 void AsmTree_visitor::exitPragma(asm_parser::asm_grammarParser::PragmaContext *ctx) {
-    ll_ast_node this_inst = ll_ast_node(ll_type_pragma,
-                                        pragma(ctx->Identifier()->getText()));
-    current_element->add_content(std::make_shared<ll_ast_node>(this_inst));
+    std::shared_ptr<ll_ast_pragma> node = std::make_shared<ll_ast_pragma>(ctx->Identifier()->getText());
+    current_element->add_content(node);
 }
 
 void AsmTree_visitor::exitConstant_decl(asm_parser::asm_grammarParser::Constant_declContext *ctx) {

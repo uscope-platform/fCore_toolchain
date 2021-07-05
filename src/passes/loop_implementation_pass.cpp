@@ -24,9 +24,10 @@ std::vector<std::shared_ptr<ll_ast_node>> loop_implementation_pass::process_node
     if(element->type == ll_type_for_block){
         std::shared_ptr<ll_loop_node> loop = std::static_pointer_cast<ll_loop_node>(element);
         for(auto & item:loop->get_content()){
-            if(item->type == ll_type_pragma)
-                unroll_mode =  item->directive.get_directive() == "unroll";
-            else{
+            if(item->type == ll_type_pragma) {
+                std::shared_ptr<ll_ast_pragma> pragma_item = std::static_pointer_cast<ll_ast_pragma>(item);
+                unroll_mode =  pragma_item->get_directive() == "unroll";
+            } else{
                 loop_content.push_back(item);
             }
         }

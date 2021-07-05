@@ -216,3 +216,7 @@ void ll_instruction_node::setStringInstr(const instruction_t &stringInstr) {
 int ll_instruction_node::get_type() {
     return type;
 }
+
+bool ll_instruction_node::is_terminal() {
+    return true;
+}

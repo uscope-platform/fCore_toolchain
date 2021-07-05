@@ -17,6 +17,7 @@
 
 #include "code_elements/ll_ast/ll_ast_node.hpp"
 #include "code_elements/ll_ast/ll_loop_node.h"
+#include "code_elements/ll_ast/ll_ast_pragma.h"
 #include "code_elements/ll_ast/ll_instruction_node.h"
 
 ll_ast_node::ll_ast_node() {
@@ -28,15 +29,10 @@ ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type) {
 }
 
 
-ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type, pragma block_spec) {
-    type = block_type;
-    directive = std::move(block_spec);
-}
-
 
 bool ll_ast_node::is_terminal() {
 
-    return type == ll_type_instr || type == ll_type_pragma;
+    return false;
 }
 
 std::shared_ptr<ll_ast_node> ll_ast_node::deep_copy_element(const std::shared_ptr<ll_ast_node> &element) {
@@ -50,8 +46,11 @@ std::shared_ptr<ll_ast_node> ll_ast_node::deep_copy_element(const std::shared_pt
         loop_res->set_advance(loop_elem->get_advance());
         loop_res->set_loop_end(loop_elem->get_loop_end());
         result = std::static_pointer_cast<ll_ast_node>(loop_res);
+    } else if(element->type == ll_type_pragma){
+        std::shared_ptr<ll_ast_pragma> pragma_elem = std::static_pointer_cast<ll_ast_pragma>(element);
+        std::shared_ptr<ll_ast_pragma> pragma_res = std::make_shared<ll_ast_pragma>(pragma_elem->get_directive());
+        result = std::static_pointer_cast<ll_ast_node>(pragma_res);
     } else if(element->type == ll_type_instr ){
-
         std::shared_ptr<ll_instruction_node> instr_elem = std::static_pointer_cast<ll_instruction_node>(element);
         std::shared_ptr<ll_instruction_node> instr_res = std::make_shared<ll_instruction_node>(instr_elem->get_type());
         instr_res->setStringInstr(instr_elem->getStringInstr());
@@ -71,24 +70,6 @@ std::shared_ptr<ll_ast_node> ll_ast_node::deep_copy_element(const std::shared_pt
         result->set_content(children);
     }
     result->type = element->type;
-    result->directive = element->directive;
 
     return result;
 }
-
-pragma::pragma() = default;
-
-pragma::pragma(std::string str) {
-    directive = std::move(str);
-}
-
-void pragma::print() {
-    std::cout<<"PRAGMA -> " + directive;
-}
-
-std::string pragma::get_directive() {
-    return directive;
-}
-
-
-
