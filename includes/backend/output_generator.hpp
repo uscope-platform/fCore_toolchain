@@ -23,6 +23,8 @@
 #include <fstream>
 #include <memory>
 #include "code_elements/ll_ast/ll_ast_node.hpp"
+#include "code_elements/ll_ast/ll_instruction_node.h"
+
 class output_generator {
 
 public:

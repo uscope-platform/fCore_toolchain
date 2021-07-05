@@ -19,7 +19,8 @@
 
 void instruction_counting_pass::analyze_element(std::shared_ptr<ll_ast_node> element) {
     if(element->type == ll_type_instr){
-        int count = element->inst.instruction_count();
+        std::shared_ptr<ll_instruction_node> node = std::static_pointer_cast<ll_instruction_node>(element);
+        int count = node->instruction_count();
         if(count>=0)
             instruction_count += count;
         else

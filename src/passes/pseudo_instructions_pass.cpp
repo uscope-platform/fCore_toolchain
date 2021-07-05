@@ -19,19 +19,23 @@
 
 
 std::shared_ptr<ll_ast_node> pseudo_instructions_pass::process_leaf(std::shared_ptr<ll_ast_node> element) {
-    if (element->inst.is_pseudo()){
-        instruction_t instr = element->inst.getStringInstr();
-        std::string opcode = instr.opcode;
-        if(opcode ==  "mov"){
-            instr.arguments.push_back(instr.arguments[1]);
-            variable zero(false, "r0");
-            instr.arguments[1] = std::make_shared<variable>(zero);
+    std::shared_ptr<ll_ast_node> ret_val = element;
+    if(element->type == ll_type_instr){
+        std::shared_ptr<ll_instruction_node> node = std::static_pointer_cast<ll_instruction_node>(element);
+        if (node->is_pseudo()){
+            instruction_t instr = node->getStringInstr();
+            std::string opcode = instr.opcode;
+            if(opcode ==  "mov"){
+                instr.arguments.push_back(instr.arguments[1]);
+                variable zero(false, "r0");
+                instr.arguments[1] = std::make_shared<variable>(zero);
 
+            }
+
+            std::string new_opcode = fcore_pseudo_op[instr.opcode];
+            ret_val = std::make_shared<ll_instruction_node>(fcore_op_types[new_opcode], new_opcode, instr.arguments);
         }
-
-        std::string new_opcode = fcore_pseudo_op[instr.opcode];
-        ll_instruction new_inst(fcore_op_types[new_opcode], new_opcode, instr.arguments);
-        element->inst = new_inst;
     }
-    return element;
+
+    return ret_val;
 }

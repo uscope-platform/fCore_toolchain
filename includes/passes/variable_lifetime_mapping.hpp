@@ -18,7 +18,7 @@
 #ifndef FCORE_HAS_VARIABLE_LIFETIME_MAPPING_HPP
 #define FCORE_HAS_VARIABLE_LIFETIME_MAPPING_HPP
 
-
+#include "code_elements/ll_ast/ll_instruction_node.h"
 #include "code_elements/ll_ast/ll_ast_node.hpp"
 #include "frontend/variable_map.hpp"
 #include "pass_manager.hpp"

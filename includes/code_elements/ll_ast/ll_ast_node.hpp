@@ -24,7 +24,6 @@
 #include <iostream>
 #include <utility>
 
-#include "ll_instruction.h"
 #include "code_elements/variable.hpp"
 #include "code_elements/ast_node_base.h"
 
@@ -54,16 +53,12 @@ class ll_ast_node : public ast_node_base<ll_ast_node> {
 public:
     ll_ast_node();
     explicit ll_ast_node(ll_ast_node_type_t block_type);
-    ll_ast_node(ll_ast_node_type_t block_type, ll_instruction block_spec);
     ll_ast_node(ll_ast_node_type_t block_type, pragma block_spec);
-    ll_ast_node(ll_ast_node_type_t block_type, variable);
     bool is_terminal();
     static std::shared_ptr<ll_ast_node> deep_copy_element(const std::shared_ptr<ll_ast_node>& element);
 
     ll_ast_node_type_t type;
-    ll_instruction inst;
     pragma directive;
-    variable var;
 
 
 };

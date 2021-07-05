@@ -15,23 +15,28 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "code_elements/ll_ast/ll_instruction.h"
-#include "fCore_isa.hpp"
+
+#include "code_elements/ll_ast/ll_instruction_node.h"
 
 
 
-ll_instruction::ll_instruction(int inst_type, float constant) {
+
+ll_instruction_node::ll_instruction_node(int inst_type, float constant) : ll_ast_node(ll_type_instr){
     type = inst_type;
     string_instr.intercalated_constant = constant;
 }
 
-ll_instruction::ll_instruction(int inst_type, std::string opcode, std::vector<std::shared_ptr<variable>> arguments) {
+ll_instruction_node::ll_instruction_node(int inst_type, std::string opcode, std::vector<std::shared_ptr<variable>> arguments) : ll_ast_node(ll_type_instr) {
     type = inst_type;
     string_instr.opcode = std::move(opcode);
     string_instr.arguments = std::move(arguments);
 }
 
-uint32_t ll_instruction::emit() const {
+ll_instruction_node::ll_instruction_node(int inst_type) {
+    type = inst_type;
+}
+
+uint32_t ll_instruction_node::emit() const {
     uint32_t raw_instr;
     switch (type) {
         case IMMEDIATE_INSTRUCTION:
@@ -59,7 +64,7 @@ uint32_t ll_instruction::emit() const {
     return raw_instr;
 }
 
-void ll_instruction::print() {
+void ll_instruction_node::print() {
     switch(type){
         case IMMEDIATE_INSTRUCTION:
             print_immediate();
@@ -82,7 +87,7 @@ void ll_instruction::print() {
     }
 }
 
-uint32_t ll_instruction::emit_immediate() const {
+uint32_t ll_instruction_node::emit_immediate() const {
     uint32_t raw_instr = 0;
     uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
     uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
@@ -92,27 +97,14 @@ uint32_t ll_instruction::emit_immediate() const {
     return raw_instr;
 }
 
-uint32_t ll_instruction::emit_independent() const {
+uint32_t ll_instruction_node::emit_independent() const {
     uint32_t raw_instr = 0;
     uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
     raw_instr += fcore_opcodes[string_instr.opcode] & opcode_mask;
     return raw_instr;
 }
 
-uint32_t ll_instruction::emit_register() const {
-    uint32_t raw_instr = 0;
-    uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
-    uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
-    raw_instr += fcore_opcodes[string_instr.opcode] & opcode_mask;
-    raw_instr += (string_instr.arguments[0]->get_value() & register_mask) << fcore_opcode_width;
-    raw_instr += (string_instr.arguments[1]->get_value() & register_mask) << (fcore_opcode_width+fcore_register_address_width);
-    raw_instr += (string_instr.arguments[2]->get_value() & register_mask) << (fcore_opcode_width+2*fcore_register_address_width);
-
-    return raw_instr;
-}
-
-
-uint32_t ll_instruction::emit_branch() const {
+uint32_t ll_instruction_node::emit_register() const {
     uint32_t raw_instr = 0;
     uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
     uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
@@ -120,10 +112,23 @@ uint32_t ll_instruction::emit_branch() const {
     raw_instr += (string_instr.arguments[0]->get_value() & register_mask) << fcore_opcode_width;
     raw_instr += (string_instr.arguments[1]->get_value() & register_mask) << (fcore_opcode_width+fcore_register_address_width);
     raw_instr += (string_instr.arguments[2]->get_value() & register_mask) << (fcore_opcode_width+2*fcore_register_address_width);
+
     return raw_instr;
 }
 
-uint32_t ll_instruction::emit_conversion() const {
+
+uint32_t ll_instruction_node::emit_branch() const {
+    uint32_t raw_instr = 0;
+    uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
+    uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
+    raw_instr += fcore_opcodes[string_instr.opcode] & opcode_mask;
+    raw_instr += (string_instr.arguments[0]->get_value() & register_mask) << fcore_opcode_width;
+    raw_instr += (string_instr.arguments[1]->get_value() & register_mask) << (fcore_opcode_width+fcore_register_address_width);
+    raw_instr += (string_instr.arguments[2]->get_value() & register_mask) << (fcore_opcode_width+2*fcore_register_address_width);
+    return raw_instr;
+}
+
+uint32_t ll_instruction_node::emit_conversion() const {
     uint32_t raw_instr = 0;
     uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
     uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
@@ -133,14 +138,14 @@ uint32_t ll_instruction::emit_conversion() const {
     return raw_instr;
 }
 
-uint32_t ll_instruction::emit_intercalated_const() const {
+uint32_t ll_instruction_node::emit_intercalated_const() const {
     uint32_t  raw_instr = 0;
     float constant = string_instr.intercalated_constant;
     memcpy(&raw_instr, &constant, sizeof(raw_instr));
     return raw_instr;
 }
 
-uint32_t ll_instruction::emit_load_const() const {
+uint32_t ll_instruction_node::emit_load_const() const {
     uint32_t raw_instr = 0;
     uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
     uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
@@ -149,39 +154,39 @@ uint32_t ll_instruction::emit_load_const() const {
     return raw_instr;
 }
 
-void ll_instruction::print_immediate() const {
+void ll_instruction_node::print_immediate() const {
     std::cout << std::setfill('0') << std::setw(4) << std::hex << emit() << " -> OPCODE: " << string_instr.opcode <<
-    " DESTINATION: " << string_instr.arguments[0]->to_str() << " IMMEDIATE: " << string_instr.arguments[1]->to_str() << std::endl;
+              " DESTINATION: " << string_instr.arguments[0]->to_str() << " IMMEDIATE: " << string_instr.arguments[1]->to_str() << std::endl;
 }
 
-void ll_instruction::print_independent() const {
+void ll_instruction_node::print_independent() const {
     std::cout << std::setfill('0') << std::setw(4) << std::hex << emit() << " -> OPCODE: " << string_instr.opcode << std::endl;
 }
 
-void ll_instruction::print_register() const {
+void ll_instruction_node::print_register() const {
     std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << string_instr.opcode <<
-    " OPERAND A: " << string_instr.arguments[0]->to_str() << " OPERAND B: " << string_instr.arguments[1]->to_str() <<
-    " DESTINATION: " << string_instr.arguments[2]->to_str() <<std::endl;
+              " OPERAND A: " << string_instr.arguments[0]->to_str() << " OPERAND B: " << string_instr.arguments[1]->to_str() <<
+              " DESTINATION: " << string_instr.arguments[2]->to_str() <<std::endl;
 }
 
 
-void ll_instruction::print_branch() const {
+void ll_instruction_node::print_branch() const {
     std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << string_instr.opcode <<
-        " OPERAND A: " << string_instr.arguments[0]->to_str() << " OPERAND B: " << string_instr.arguments[1]->to_str() <<
-        " OFFSET: " << string_instr.arguments[2]->to_str() <<std::endl;
+              " OPERAND A: " << string_instr.arguments[0]->to_str() << " OPERAND B: " << string_instr.arguments[1]->to_str() <<
+              " OFFSET: " << string_instr.arguments[2]->to_str() <<std::endl;
 }
 
-void ll_instruction::print_conversion() const {
+void ll_instruction_node::print_conversion() const {
     std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << string_instr.opcode <<
-        " SOURCE: " << string_instr.arguments[0]->to_str() << " DESTINATION: " << string_instr.arguments[1]->to_str()<<std::endl;
+              " SOURCE: " << string_instr.arguments[0]->to_str() << " DESTINATION: " << string_instr.arguments[1]->to_str()<<std::endl;
 }
 
-void ll_instruction::print_load_const() const {
+void ll_instruction_node::print_load_const() const {
     std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << string_instr.opcode <<
               " DESTINATION: " << string_instr.arguments[0]->to_str() << " CONSTANT(NEXT INSTRUCTION): " << string_instr.arguments[1]->to_str()<<std::endl;
 }
 
-int ll_instruction::instruction_count() const {
+int ll_instruction_node::instruction_count() const {
     switch(type){
         case IMMEDIATE_INSTRUCTION:
         case PSEUDO_INSTRUCTION:
@@ -200,10 +205,14 @@ int ll_instruction::instruction_count() const {
     }
 }
 
-const instruction_t &ll_instruction::getStringInstr() const {
+const instruction_t &ll_instruction_node::getStringInstr() const {
     return string_instr;
 }
 
-void ll_instruction::setStringInstr(const instruction_t &stringInstr) {
+void ll_instruction_node::setStringInstr(const instruction_t &stringInstr) {
     string_instr = stringInstr;
+}
+
+int ll_instruction_node::get_type() {
+    return type;
 }

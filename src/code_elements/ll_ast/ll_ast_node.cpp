@@ -17,7 +17,7 @@
 
 #include "code_elements/ll_ast/ll_ast_node.hpp"
 #include "code_elements/ll_ast/ll_loop_node.h"
-
+#include "code_elements/ll_ast/ll_instruction_node.h"
 
 ll_ast_node::ll_ast_node() {
 
@@ -27,20 +27,10 @@ ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type) {
     type = block_type;
 }
 
-ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type, ll_instruction block_spec) {
-    type = block_type;
-    inst = std::move(block_spec);
-}
 
 ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type, pragma block_spec) {
     type = block_type;
     directive = std::move(block_spec);
-}
-
-
-ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type, variable var_in) {
-    type = block_type;
-    var = var_in;
 }
 
 
@@ -52,7 +42,7 @@ bool ll_ast_node::is_terminal() {
 std::shared_ptr<ll_ast_node> ll_ast_node::deep_copy_element(const std::shared_ptr<ll_ast_node> &element) {
     std::shared_ptr<ll_ast_node> result;
 
-    if(element->type == ll_type_for_block){
+    if(element->type == ll_type_for_block) {
         std::shared_ptr<ll_loop_node> loop_elem = std::static_pointer_cast<ll_loop_node>(element);
         std::shared_ptr<ll_loop_node> loop_res = std::make_shared<ll_loop_node>();
 
@@ -60,8 +50,13 @@ std::shared_ptr<ll_ast_node> ll_ast_node::deep_copy_element(const std::shared_pt
         loop_res->set_advance(loop_elem->get_advance());
         loop_res->set_loop_end(loop_elem->get_loop_end());
         result = std::static_pointer_cast<ll_ast_node>(loop_res);
+    } else if(element->type == ll_type_instr ){
 
+        std::shared_ptr<ll_instruction_node> instr_elem = std::static_pointer_cast<ll_instruction_node>(element);
+        std::shared_ptr<ll_instruction_node> instr_res = std::make_shared<ll_instruction_node>(instr_elem->get_type());
+        instr_res->setStringInstr(instr_elem->getStringInstr());
 
+        result = std::static_pointer_cast<ll_ast_node>(instr_res);
     } else {
         ll_ast_node copied_elem;
         result = std::make_shared<ll_ast_node>(copied_elem);
@@ -76,7 +71,6 @@ std::shared_ptr<ll_ast_node> ll_ast_node::deep_copy_element(const std::shared_pt
         result->set_content(children);
     }
     result->type = element->type;
-    result->inst = element->inst;
     result->directive = element->directive;
 
     return result;

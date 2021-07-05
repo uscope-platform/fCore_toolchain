@@ -63,11 +63,12 @@ void output_generator::emit_program(std::shared_ptr<ll_ast_node> &sub_program, b
     std::vector<std::shared_ptr<ll_ast_node>> content = sub_program->get_content();
     for(auto &item:content){
         if(item->type == ll_type_instr){
-            raw_program.push_back(item->inst.emit());
+            std::shared_ptr<ll_instruction_node> instr_node = std::static_pointer_cast<ll_instruction_node>(item);
+            raw_program.push_back(instr_node->emit());
             progress_counter++;
             if(debug_print) {
                 std::cout << progress_counter << std::endl;
-                item->inst.print();
+                instr_node->print();
             }
         }
         if(item->type == ll_type_code_block){
