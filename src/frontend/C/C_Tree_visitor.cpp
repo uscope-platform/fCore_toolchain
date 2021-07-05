@@ -334,6 +334,12 @@ void C_Tree_visitor::exitStatement(C_parser::C_grammarParser::StatementContext *
     }
 }
 
+void C_Tree_visitor::exitCompilationUnit(C_parser::C_grammarParser::CompilationUnitContext *ctx) {
+    root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+
+    root->set_content(functions);
+
+}
 
 
 template<typename T>
@@ -400,6 +406,4 @@ void C_Tree_visitor::exitArgumentExpression(C_parser::C_grammarParser::ArgumentE
     }
 }
 
-C_Tree_visitor::~C_Tree_visitor() noexcept {
-    int i = 0;
-}
+

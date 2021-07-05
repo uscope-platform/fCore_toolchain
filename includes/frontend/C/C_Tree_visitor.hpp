@@ -78,7 +78,11 @@ public:
     void exitStatement(C_parser::C_grammarParser::StatementContext *ctx) override;
     void exitFunctionCallExpression(C_parser::C_grammarParser::FunctionCallExpressionContext *ctx) override;
 
-    ~C_Tree_visitor();
+    void exitCompilationUnit(C_parser::C_grammarParser::CompilationUnitContext *ctx) override;
+
+    std::shared_ptr<hl_ast_node> get_ast(){
+        return root;
+    };
 
 private:
     FRIEND_TEST( cTreeVisitor, unaryExpressions);
@@ -103,7 +107,7 @@ private:
 
     std::vector<std::shared_ptr<hl_ast_node>> ext_decl;
     std::vector<std::shared_ptr<hl_definition_node>> parameters_list;
-    std::vector<std::shared_ptr<hl_function_def_node>> functions;
+    std::vector<std::shared_ptr<hl_ast_node>> functions;
     std::vector<std::shared_ptr<hl_ast_node>> function_body;
 
     std::stack<std::shared_ptr<hl_ast_operand>> operands_stack;
@@ -114,6 +118,8 @@ private:
 
     std::shared_ptr<hl_expression_node> current_initializer;
     std::shared_ptr<hl_ast_node> current_block_item;
+
+    std::shared_ptr<hl_ast_node> root;
 
     bool in_function_declaration;
     bool in_function_body;

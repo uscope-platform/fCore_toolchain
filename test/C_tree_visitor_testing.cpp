@@ -464,7 +464,7 @@ TEST( cTreeVisitor, function_def) {
     C_language_parser parser(ifs, result_var, result_def);
     parser.pre_process({}, {});
     parser.parse();
-    std::shared_ptr<hl_function_def_node> results = parser.visitor.functions[0];
+    std::shared_ptr<hl_function_def_node> results = std::static_pointer_cast<hl_function_def_node>(parser.visitor.functions[0]);
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
@@ -512,7 +512,7 @@ TEST( cTreeVisitor, function_call) {
     C_language_parser parser(ifs, result_var, result_def);
     parser.pre_process({}, {});
     parser.parse();
-    std::shared_ptr<hl_function_def_node> results = parser.visitor.functions[0];
+    std::shared_ptr<hl_function_def_node> result = std::static_pointer_cast<hl_function_def_node>(parser.visitor.functions[0]);
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
@@ -530,7 +530,7 @@ TEST( cTreeVisitor, function_call) {
     std::vector<std::shared_ptr<hl_ast_node>> args = {gs_1, op_3};
     std::shared_ptr<hl_function_call_node> gs_3 = std::make_shared<hl_function_call_node>(func_name, args);
 
-    std::shared_ptr<hl_expression_node> res_exp = std::static_pointer_cast<hl_expression_node>(parser.visitor.functions[0]->get_body()[0]);
+    std::shared_ptr<hl_expression_node> res_exp = std::static_pointer_cast<hl_expression_node>(result->get_body()[0]);
     std::shared_ptr<hl_function_call_node> res = std::static_pointer_cast<hl_function_call_node>(res_exp->get_rhs());
 
 
@@ -588,7 +588,7 @@ TEST( cFrontend, returnTest) {
     parser.pre_process({}, {});
     parser.parse();
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(parser.visitor.functions[0]->get_return());
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_function_def_node>(parser.visitor.functions[0])->get_return();
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("c");

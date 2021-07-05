@@ -17,7 +17,8 @@ typedef enum {
     hl_ast_node_type_loop = 4,
     hl_ast_node_type_function_def = 5,
     hl_ast_node_type_operand = 6,
-    hl_ast_node_type_function_call = 7
+    hl_ast_node_type_function_call = 7,
+    hl_ast_node_type_program_root = 8
 } hl_ast_node_type_t;
 
 typedef enum {
