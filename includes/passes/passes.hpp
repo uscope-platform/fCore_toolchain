@@ -19,15 +19,15 @@
 #define FCORE_HAS_PASSES_HPP
 
 #include "pass_manager.hpp"
-#include "loop_implementation_pass.hpp"
-#include "pseudo_instructions_pass.hpp"
-#include "instruction_counting_pass.hpp"
-#include "register_allocation_pass.hpp"
-#include "variable_lifetime_mapping.hpp"
-#include "load_intercalation_pass.hpp"
+#include "ll_ast/loop_implementation_pass.hpp"
+#include "ll_ast/pseudo_instructions_pass.hpp"
+#include "ll_ast/instruction_counting_pass.hpp"
+#include "ll_ast/register_allocation_pass.hpp"
+#include "ll_ast/variable_lifetime_mapping.hpp"
+#include "ll_ast/load_intercalation_pass.hpp"
 #include "frontend/variable_map.hpp"
 
-static pass_manager<ll_ast_node> create_pass_manager(std::shared_ptr<variable_map> varmap){
+static pass_manager<ll_ast_node> create_ll_pass_manager(std::shared_ptr<variable_map> varmap){
     pass_manager<ll_ast_node> manager;
     manager.add_pass(std::make_shared<loop_implementation_pass>());
     manager.add_pass(std::make_shared<pseudo_instructions_pass>());

@@ -22,12 +22,12 @@ set(FCORE_LIB_SRCS
         code_elements/hl_ast/hl_ast_operand.cpp
         code_elements/define.cpp
         code_elements/variable.cpp
-        passes/loop_implementation_pass.cpp
-        passes/pseudo_instructions_pass.cpp
-        passes/instruction_counting_pass.cpp
-        passes/register_allocation_pass.cpp
-        passes/variable_lifetime_mapping.cpp
-        passes/load_intercalation_pass.cpp
+        passes/ll_ast/loop_implementation_pass.cpp
+        passes/ll_ast/pseudo_instructions_pass.cpp
+        passes/ll_ast/instruction_counting_pass.cpp
+        passes/ll_ast/register_allocation_pass.cpp
+        passes/ll_ast/variable_lifetime_mapping.cpp
+        passes/ll_ast/load_intercalation_pass.cpp
         fcore_has.cpp
         fcore_cc.cpp
         )

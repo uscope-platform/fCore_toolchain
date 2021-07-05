@@ -15,20 +15,21 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_HAS_INSTRUCTION_COUNTING_PASS_HPP
-#define FCORE_HAS_INSTRUCTION_COUNTING_PASS_HPP
+#ifndef FCORE_HAS_LOOP_IMPLEMENTATION_PASS_HPP
+#define FCORE_HAS_LOOP_IMPLEMENTATION_PASS_HPP
 
-#include "pass_manager.hpp"
-#include "code_elements/ll_ast/ll_instruction_node.h"
+#include <memory>
+#include "code_elements/ll_ast/ll_ast_node.hpp"
+#include "code_elements/ll_ast/ll_loop_node.h"
+#include "code_elements/ll_ast/ll_ast_pragma.h"
+#include "../pass_manager.hpp"
 
-class instruction_counting_pass : public pass_base<ll_ast_node> {
+class loop_implementation_pass : public pass_base<ll_ast_node> {
 
 public:
-    void analyze_element(std::shared_ptr<ll_ast_node> element) override;
-    int get_pass_type() override { return ANALYSIS_PASS;};
-    std::vector<int> get_analysis_result() override;
-    int instruction_count{0};
+    std::vector<std::shared_ptr<ll_ast_node>>process_node(std::shared_ptr<ll_ast_node> element) override;
+    int get_pass_type() override { return NODE_PASS;};
 };
 
 
-#endif //FCORE_HAS_INSTRUCTION_COUNTING_PASS_HPP
+#endif //FCORE_HAS_LOOP_IMPLEMENTATION_PASS_HPP

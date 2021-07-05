@@ -14,20 +14,22 @@
 
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
-#ifndef FCORE_HAS_LOAD_INTERCALATION_PASS_HPP
-#define FCORE_HAS_LOAD_INTERCALATION_PASS_HPP
 
+#include "passes/ll_ast/instruction_counting_pass.hpp"
 
-#include "code_elements/ll_ast/ll_instruction_node.h"
-#include "code_elements/ll_ast/ll_ast_node.hpp"
-#include "frontend/variable_map.hpp"
-#include "pass_manager.hpp"
+void instruction_counting_pass::analyze_element(std::shared_ptr<ll_ast_node> element) {
+    if(element->type == ll_type_instr){
+        std::shared_ptr<ll_instruction_node> node = std::static_pointer_cast<ll_instruction_node>(element);
+        int count = node->instruction_count();
+        if(count>=0)
+            instruction_count += count;
+        else
+            throw std::runtime_error("Instruction counting in brancing code is not supported");
+    }
 
+}
 
-class load_intercalation_pass: public pass_base<ll_ast_node> {
-public:
-    std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
-    int get_pass_type() override { return LEAF_PASS;};
-};
-
-#endif //FCORE_HAS_LOAD_INTERCALATION_PASS_HPP
+std::vector<int> instruction_counting_pass::get_analysis_result() {
+    std::vector<int> result_count = {instruction_count};
+    return result_count;
+}

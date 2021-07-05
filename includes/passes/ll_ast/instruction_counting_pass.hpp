@@ -15,21 +15,20 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "passes/instruction_counting_pass.hpp"
+#ifndef FCORE_HAS_INSTRUCTION_COUNTING_PASS_HPP
+#define FCORE_HAS_INSTRUCTION_COUNTING_PASS_HPP
 
-void instruction_counting_pass::analyze_element(std::shared_ptr<ll_ast_node> element) {
-    if(element->type == ll_type_instr){
-        std::shared_ptr<ll_instruction_node> node = std::static_pointer_cast<ll_instruction_node>(element);
-        int count = node->instruction_count();
-        if(count>=0)
-            instruction_count += count;
-        else
-            throw std::runtime_error("Instruction counting in brancing code is not supported");
-    }
+#include "../pass_manager.hpp"
+#include "code_elements/ll_ast/ll_instruction_node.h"
 
-}
+class instruction_counting_pass : public pass_base<ll_ast_node> {
 
-std::vector<int> instruction_counting_pass::get_analysis_result() {
-    std::vector<int> result_count = {instruction_count};
-    return result_count;
-}
+public:
+    void analyze_element(std::shared_ptr<ll_ast_node> element) override;
+    int get_pass_type() override { return ANALYSIS_PASS;};
+    std::vector<int> get_analysis_result() override;
+    int instruction_count{0};
+};
+
+
+#endif //FCORE_HAS_INSTRUCTION_COUNTING_PASS_HPP

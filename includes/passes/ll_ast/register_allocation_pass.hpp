@@ -14,20 +14,33 @@
 
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
-#ifndef FCORE_HAS_PSEUDO_INSTRUCTIONS_PASS_HPP
-#define FCORE_HAS_PSEUDO_INSTRUCTIONS_PASS_HPP
+
+#ifndef FCORE_HAS_REGISTER_ALLOCATION_PASS_HPP
+#define FCORE_HAS_REGISTER_ALLOCATION_PASS_HPP
 
 #include <memory>
+#include <unordered_map>
+#include <utility>
+
+#include "frontend/variable_map.hpp"
+#include "frontend/asm/register_map.hpp"
 #include "code_elements/ll_ast/ll_instruction_node.h"
 #include "code_elements/ll_ast/ll_ast_node.hpp"
-#include "pass_manager.hpp"
+#include "../pass_manager.hpp"
 #include "fCore_isa.hpp"
 
-class pseudo_instructions_pass: public pass_base<ll_ast_node> {
-public:
+
+class register_allocation_pass: public pass_base<ll_ast_node> {
+    public:
+        explicit register_allocation_pass(std::shared_ptr<variable_map> varmap);
     std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
-    int get_pass_type() override { return LEAF_PASS;};
+        int get_pass_type() override { return LEAF_PASS;};
+private:
+    bool used[16] = {false};
+    std::unordered_map<std::shared_ptr<variable>, std::shared_ptr<variable>> register_mapping;
+    register_map reg_map;
+    std::shared_ptr<variable_map> var_map;
 };
 
 
-#endif //FCORE_HAS_PSEUDO_INSTRUCTIONS_PASS_HPP
+#endif //FCORE_HAS_REGISTER_ALLOCATION_PASS_HPP

@@ -99,7 +99,7 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
     AST->prepend_content(includes_ast->get_content());
 
 
-    manager = create_pass_manager(variables_map);
+    manager = create_ll_pass_manager(variables_map);
     manager.run_morphing_passes(AST);
 
     //manager.run_analysis_passes(AST);

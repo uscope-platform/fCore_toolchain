@@ -12,12 +12,12 @@ set(TESTED_SOURCES
         ../src/code_elements/hl_ast/hl_function_call_node.cpp
         ../src/code_elements/variable.cpp
         ../src/code_elements/define.cpp
-        ../src/passes/loop_implementation_pass.cpp
-        ../src/passes/pseudo_instructions_pass.cpp
-        ../src/passes/register_allocation_pass.cpp
-        ../src/passes/variable_lifetime_mapping.cpp
-        ../src/passes/load_intercalation_pass.cpp
-        ../src/passes/instruction_counting_pass.cpp
+        ../src/passes/ll_ast/loop_implementation_pass.cpp
+        ../src/passes/ll_ast/pseudo_instructions_pass.cpp
+        ../src/passes/ll_ast/register_allocation_pass.cpp
+        ../src/passes/ll_ast/variable_lifetime_mapping.cpp
+        ../src/passes/ll_ast/load_intercalation_pass.cpp
+        ../src/passes/ll_ast/instruction_counting_pass.cpp
         ../src/frontend/variable_map.cpp
         ../src/frontend/define_map.cpp
         ../src/frontend/asm/register_map.cpp

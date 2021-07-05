@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "passes/pseudo_instructions_pass.hpp"
+#include "passes/ll_ast/pseudo_instructions_pass.hpp"
 
 
 std::shared_ptr<ll_ast_node> pseudo_instructions_pass::process_leaf(std::shared_ptr<ll_ast_node> element) {
