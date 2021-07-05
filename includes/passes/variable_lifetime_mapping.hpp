@@ -25,7 +25,7 @@
 
 #include <utility>
 
-class variable_lifetime_mapping: public pass_base {
+class variable_lifetime_mapping: public pass_base<ll_ast_node> {
 public:
     explicit variable_lifetime_mapping(std::shared_ptr<variable_map> var_map);
     std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;

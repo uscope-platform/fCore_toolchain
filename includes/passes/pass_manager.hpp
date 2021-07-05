@@ -28,32 +28,33 @@
 #define LEAF_PASS 2
 #define ANALYSIS_PASS 3
 
+template<class E>
 class pass_base {
 public:
-    virtual std::vector<std::shared_ptr<ll_ast_node>>process_node(std::shared_ptr<ll_ast_node> element){
-        std::vector<std::shared_ptr<ll_ast_node>> elem;
+    virtual std::vector<std::shared_ptr<E>>process_node(std::shared_ptr<E> element){
+        std::vector<std::shared_ptr<E>> elem;
         elem.push_back(element);
         return elem;
     };
-    virtual std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element){
+    virtual std::shared_ptr<E> process_leaf(std::shared_ptr<E> element){
         return element;
     };
-    virtual void analyze_element(std::shared_ptr<ll_ast_node> element) {};
+    virtual void analyze_element(std::shared_ptr<E> element) {};
     virtual std::vector<int> get_analysis_result() {return std::vector<int>();};
     virtual int get_pass_type() { return NONE_PASS;};
 };
 
 class pass_manager {
 public:
-    void add_pass(const std::shared_ptr<pass_base>& pass);
+    void add_pass(const std::shared_ptr<pass_base<ll_ast_node>>& pass);
     std::shared_ptr<ll_ast_node> run_morphing_passes(std::shared_ptr<ll_ast_node> AST);
     std::vector<std::vector<int>> run_analysis_passes(const std::shared_ptr<ll_ast_node>& AST);
-    void analyze_tree(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base>& pass);
-    std::vector<std::shared_ptr<ll_ast_node>> process_nodes(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base>& pass);
-    std::shared_ptr<ll_ast_node> process_leaves(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base>& pass);
-    std::unordered_map<std::string, std::shared_ptr<pass_base>> analysis_passes;
+    void analyze_tree(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>>& pass);
+    std::vector<std::shared_ptr<ll_ast_node>> process_nodes(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>>& pass);
+    std::shared_ptr<ll_ast_node> process_leaves(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>>& pass);
+    std::unordered_map<std::string, std::shared_ptr<pass_base<ll_ast_node>>> analysis_passes;
 private:
-    std::vector<std::shared_ptr<pass_base>> passes = {};
+    std::vector<std::shared_ptr<pass_base<ll_ast_node>>> passes = {};
 };
 
 

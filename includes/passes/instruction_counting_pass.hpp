@@ -21,7 +21,7 @@
 #include "pass_manager.hpp"
 #include "code_elements/ll_ast/ll_instruction_node.h"
 
-class instruction_counting_pass : public pass_base {
+class instruction_counting_pass : public pass_base<ll_ast_node> {
 
 public:
     void analyze_element(std::shared_ptr<ll_ast_node> element) override;

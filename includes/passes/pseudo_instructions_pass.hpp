@@ -23,7 +23,7 @@
 #include "pass_manager.hpp"
 #include "fCore_isa.hpp"
 
-class pseudo_instructions_pass: public pass_base {
+class pseudo_instructions_pass: public pass_base<ll_ast_node> {
 public:
     std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
     int get_pass_type() override { return LEAF_PASS;};

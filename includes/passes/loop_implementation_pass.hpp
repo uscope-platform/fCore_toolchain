@@ -24,7 +24,7 @@
 #include "code_elements/ll_ast/ll_ast_pragma.h"
 #include "pass_manager.hpp"
 
-class loop_implementation_pass : public pass_base {
+class loop_implementation_pass : public pass_base<ll_ast_node> {
 
 public:
     std::vector<std::shared_ptr<ll_ast_node>>process_node(std::shared_ptr<ll_ast_node> element) override;
