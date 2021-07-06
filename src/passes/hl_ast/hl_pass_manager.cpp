@@ -45,12 +45,16 @@ std::vector<std::shared_ptr<hl_ast_node>> hl_pass_manager::process_nodes(const s
 std::shared_ptr<hl_expression_node>
 hl_pass_manager::process_expression(const std::shared_ptr<hl_expression_node> &subtree,
                                     const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
-    std::shared_ptr<hl_expression_node> result = std::make_shared<hl_expression_node>(subtree->get_type());
-    std::shared_ptr<hl_ast_node> rhs = process_terminal_by_type(subtree->get_rhs(), pass);
-    std::shared_ptr<hl_ast_node> lhs = process_terminal_by_type(subtree->get_lhs(), pass);
 
+    std::shared_ptr<hl_expression_node> result = std::make_shared<hl_expression_node>(subtree->get_type());
+
+    std::shared_ptr<hl_ast_node> rhs = process_terminal_by_type(subtree->get_rhs(), pass);
     result->set_rhs(rhs);
-    result->set_lhs(lhs);
+
+    if(!subtree->is_unary()){
+        std::shared_ptr<hl_ast_node> lhs = process_terminal_by_type(subtree->get_lhs(), pass);
+        result->set_lhs(lhs);
+    }
 
     return std::static_pointer_cast<hl_expression_node>(pass->process_leaf(result));
 
@@ -58,7 +62,7 @@ hl_pass_manager::process_expression(const std::shared_ptr<hl_expression_node> &s
 
 std::shared_ptr<hl_ast_operand> hl_pass_manager::process_operand(const std::shared_ptr<hl_ast_operand> &subtree,
                                                                     const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
-    return subtree;
+    return std::static_pointer_cast<hl_ast_operand>(pass->process_leaf(subtree));
 }
 
 std::shared_ptr<hl_function_call_node>

@@ -121,3 +121,16 @@ std::string hl_expression_node::pretty_print() {
 expression_type_t hl_expression_node::get_type() {
     return expr_type;
 }
+
+bool hl_expression_node::is_unary() {
+    bool res  = false;
+    res |= expr_type == expr_reciprocal;
+    res |= expr_type == expr_not_b;
+    res |= expr_type == expr_not_l;
+    res |= expr_type == expr_neq;
+    res |= expr_type == expr_incr_pre;
+    res |= expr_type == expr_incr_post;
+    res |= expr_type == expr_decr_post;
+    res |= expr_type == expr_decr_pre;
+    return res;
+}
