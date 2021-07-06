@@ -24,9 +24,10 @@ std::shared_ptr<hl_ast_node> hl_pass_manager::run_pass(const std::shared_ptr<hl_
 
 std::shared_ptr<hl_ast_node> hl_pass_manager::process_leaves(const std::shared_ptr<hl_ast_node> &subtree,
                                                              const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
-    std::vector<std::shared_ptr<hl_ast_node>> content =  subtree->get_content();
+
     std::shared_ptr<hl_ast_node> result;
     if(!subtree->is_terminal()){
+        std::vector<std::shared_ptr<hl_ast_node>> content =  subtree->get_content();
         for(auto &i :content){
             i = process_leaves(i, pass);
         }

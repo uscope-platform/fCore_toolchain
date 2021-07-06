@@ -10,6 +10,8 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes) {
     std::shared_ptr<define_map> defines_map = std::make_shared<define_map>();
 
     C_language_parser target_parser(input, variables_map, defines_map);
+    target_parser.pre_process({}, {});
+    target_parser.parse();
     AST = target_parser.AST;
 
     manager = create_hl_pass_manager(variables_map);

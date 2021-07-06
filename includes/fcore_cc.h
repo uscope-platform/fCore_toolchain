@@ -15,6 +15,7 @@
 #include "frontend/C/C_language_parser.h"
 #include "backend/output_generator.hpp"
 #include "passes/hl_passes.hpp"
+#include "passes/hl_ast/hl_pass_manager.h"
 
 class fcore_cc {
 public:
@@ -31,7 +32,7 @@ public:
 private:
     std::shared_ptr<hl_ast_node> AST;
     output_generator *writer;
-    pass_manager_base<hl_ast_node> manager;
+    hl_pass_manager  manager;
     std::string error_code;
 };
 
