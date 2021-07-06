@@ -32,7 +32,8 @@ hl_expression_node::hl_expression_node(expression_type_t et) : hl_ast_node(hl_as
             {expr_gt, ">"},
             {expr_lte, "<="},
             {expr_gte, ">="},
-            {expr_assign, "="}
+            {expr_assign, "="},
+            {expr_reciprocal, "1/"}
     };
 }
 
@@ -115,4 +116,8 @@ std::string hl_expression_node::pretty_print() {
     }
     std::string ret = ss.str();
     return ret;
+}
+
+expression_type_t hl_expression_node::get_type() {
+    return expr_type;
 }

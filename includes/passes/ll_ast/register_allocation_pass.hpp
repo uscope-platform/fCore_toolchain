@@ -26,7 +26,7 @@
 #include "frontend/asm/register_map.hpp"
 #include "code_elements/ll_ast/ll_instruction_node.h"
 #include "code_elements/ll_ast/ll_ast_node.hpp"
-#include "../pass_manager.hpp"
+#include "../pass_manager_base.hpp"
 #include "fCore_isa.hpp"
 
 

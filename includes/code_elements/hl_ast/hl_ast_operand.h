@@ -18,7 +18,7 @@ typedef enum{
 
 class hl_ast_operand : public hl_ast_node{
 public:
-    hl_ast_operand(operand_type_t ot);
+    explicit hl_ast_operand(operand_type_t ot);
     void set_name(const std::string &name);
     void set_immediate(const int &v);
     void set_immediate(const float &v);

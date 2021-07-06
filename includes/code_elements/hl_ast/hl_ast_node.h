@@ -36,7 +36,8 @@ public:
     explicit hl_ast_node(hl_ast_node_type_t t);
     static c_types_t string_to_type(const std::string& t);
     static std::string  type_to_string(const c_types_t &t);
-    bool is_terminal();
+
+    virtual bool is_terminal();
 
     friend bool operator==(const hl_ast_node& lhs, const hl_ast_node& rhs);
 

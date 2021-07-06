@@ -22,7 +22,7 @@
 #include "code_elements/ll_ast/ll_ast_node.hpp"
 #include "code_elements/ll_ast/ll_loop_node.h"
 #include "code_elements/ll_ast/ll_ast_pragma.h"
-#include "../pass_manager.hpp"
+#include "../pass_manager_base.hpp"
 
 class loop_implementation_pass : public pass_base<ll_ast_node> {
 

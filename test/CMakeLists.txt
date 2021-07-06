@@ -12,13 +12,16 @@ set(TESTED_SOURCES
         ../src/code_elements/hl_ast/hl_function_call_node.cpp
         ../src/code_elements/variable.cpp
         ../src/code_elements/define.cpp
+        ../src/passes/ll_ast/ll_pass_manager.cpp
         ../src/passes/ll_ast/loop_implementation_pass.cpp
         ../src/passes/ll_ast/pseudo_instructions_pass.cpp
         ../src/passes/ll_ast/register_allocation_pass.cpp
         ../src/passes/ll_ast/variable_lifetime_mapping.cpp
         ../src/passes/ll_ast/load_intercalation_pass.cpp
         ../src/passes/ll_ast/instruction_counting_pass.cpp
+        ../src/passes/hl_ast/hl_pass_manager.cpp
         ../src/passes/hl_ast/function_inlining_pass.cpp
+        ../src/passes/hl_ast/division_implementation_pass.cpp
         ../src/frontend/variable_map.cpp
         ../src/frontend/define_map.cpp
         ../src/frontend/asm/register_map.cpp
@@ -36,13 +39,13 @@ set(TESTED_SOURCES
 
 set(TEST_SOURCES
         Instruction_classes.cpp
-        passes.cpp
+        ll_passes.cpp
         end_to_end_asm.cpp
         testing_main.cpp
         end_to_end_C.cpp
         C_preprocessor.cpp
         C_tree_visitor_testing.cpp
-        )
+        hl_passes.cpp)
 
 
 add_executable(test_target ${TESTED_SOURCES} ${TEST_SOURCES})

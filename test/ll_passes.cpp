@@ -19,7 +19,7 @@
 #include <gtest/gtest.h>
 
 #include "code_elements/ll_ast/ll_ast_node.hpp"
-#include "passes/passes.hpp"
+#include "passes/ll_passes.hpp"
 #include "backend/output_generator.hpp"
 #include "frontend/asm/asm_language_parser.h"
 
@@ -40,7 +40,7 @@ TEST(PassesTest, pseudo_inst_pass) {
     stream.open("register_defs.s");
     asm_language_parser p1(stream, map);
 
-    pass_manager manager = create_ll_pass_manager(map);
+    ll_pass_manager manager = create_ll_pass_manager(map);
     manager.run_morphing_passes(AST);
 
     output_generator writer(AST, false);
@@ -84,7 +84,7 @@ TEST(PassesTest, instruction_count_pass) {
     std::ifstream stream;
     stream.open("register_defs.s");
     asm_language_parser p1(stream, map);
-    pass_manager manager = create_ll_pass_manager(map);
+    ll_pass_manager manager = create_ll_pass_manager(map);
     manager.run_analysis_passes(AST);
     int count = manager.analysis_passes["instruction_counting"]->get_analysis_result()[0];
 
@@ -117,7 +117,7 @@ TEST(PassesTest, loop_less) {
     stream.open("register_defs.s");
     asm_language_parser p1(stream, map);
 
-    pass_manager manager = create_ll_pass_manager(map);
+    ll_pass_manager manager = create_ll_pass_manager(map);
     manager.run_morphing_passes(AST);
 
     output_generator writer(AST, false);
@@ -150,7 +150,7 @@ TEST(PassesTest, loop_less_equal) {
     std::ifstream stream;
     stream.open("register_defs.s");
     asm_language_parser p1(stream, map);
-    pass_manager manager = create_ll_pass_manager(map);
+    ll_pass_manager manager = create_ll_pass_manager(map);
     manager.run_morphing_passes(AST);
 
     output_generator writer(AST, false);
@@ -185,7 +185,7 @@ TEST(PassesTest, loop_more) {
     std::ifstream stream;
     stream.open("register_defs.s");
     asm_language_parser p1(stream, map);
-    pass_manager manager = create_ll_pass_manager(map);
+    ll_pass_manager manager = create_ll_pass_manager(map);
     manager.run_morphing_passes(AST);
 
     output_generator writer(AST, false);
@@ -220,7 +220,7 @@ TEST(PassesTest, loop_more_equal) {
     std::ifstream stream;
     stream.open("register_defs.s");
     asm_language_parser p1(stream, map);
-    pass_manager manager = create_ll_pass_manager(map);
+    ll_pass_manager manager = create_ll_pass_manager(map);
     manager.run_morphing_passes(AST);
 
     output_generator writer(AST, false);

@@ -14,20 +14,25 @@
 
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
-#ifndef FCORE_HAS_PSEUDO_INSTRUCTIONS_PASS_HPP
-#define FCORE_HAS_PSEUDO_INSTRUCTIONS_PASS_HPP
 
-#include <memory>
-#include "code_elements/ll_ast/ll_instruction_node.h"
-#include "code_elements/ll_ast/ll_ast_node.hpp"
-#include "../pass_manager_base.hpp"
-#include "fCore_isa.hpp"
+#ifndef FCORE_HAS_HL_PASSES_HPP
+#define FCORE_HAS_HL_PASSES_HPP
 
-class pseudo_instructions_pass: public pass_base<ll_ast_node> {
-public:
-    std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
-    int get_pass_type() override { return LEAF_PASS;};
-};
+#include "pass_manager_base.hpp"
+
+//HL PASSES
+#include "hl_ast/function_inlining_pass.h"
+#include "hl_ast/division_implementation_pass.h"
+
+#include "frontend/variable_map.hpp"
+#include "code_elements/hl_ast/hl_ast_node.h"
 
 
-#endif //FCORE_HAS_PSEUDO_INSTRUCTIONS_PASS_HPP
+static pass_manager_base<hl_ast_node> create_hl_pass_manager(std::shared_ptr<variable_map> varmap){
+    pass_manager_base<hl_ast_node> manager;
+    manager.add_pass(std::make_shared<function_inlining_pass>());
+    manager.add_pass(std::make_shared<division_implementation_pass>());
+    return manager;
+}
+
+#endif //FCORE_HAS_HL_PASSES_HPP

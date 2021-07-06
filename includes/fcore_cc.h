@@ -14,7 +14,7 @@
 #include "frontend/define_map.h"
 #include "frontend/C/C_language_parser.h"
 #include "backend/output_generator.hpp"
-#include "passes/passes.hpp"
+#include "passes/hl_passes.hpp"
 
 class fcore_cc {
 public:
@@ -31,7 +31,7 @@ public:
 private:
     std::shared_ptr<hl_ast_node> AST;
     output_generator *writer;
-    pass_manager<hl_ast_node> manager;
+    pass_manager_base<hl_ast_node> manager;
     std::string error_code;
 };
 

@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_HAS_PASSES_HPP
-#define FCORE_HAS_PASSES_HPP
+#ifndef FCORE_HAS_LL_PASSES_HPP
+#define FCORE_HAS_LL_PASSES_HPP
 
-#include "pass_manager.hpp"
+#include "pass_manager_base.hpp"
 // LL passes
 #include "ll_ast/loop_implementation_pass.hpp"
 #include "ll_ast/pseudo_instructions_pass.hpp"
@@ -26,15 +26,13 @@
 #include "ll_ast/register_allocation_pass.hpp"
 #include "ll_ast/variable_lifetime_mapping.hpp"
 #include "ll_ast/load_intercalation_pass.hpp"
-//HL PASSES
-#include "hl_ast/function_inlining_pass.h"
 
 #include "frontend/variable_map.hpp"
 #include "code_elements/ll_ast/ll_ast_node.hpp"
-#include "code_elements/hl_ast/hl_ast_node.h"
+#include "passes/ll_ast/ll_pass_manager.h"
 
-static pass_manager<ll_ast_node> create_ll_pass_manager(std::shared_ptr<variable_map> varmap){
-    pass_manager<ll_ast_node> manager;
+static ll_pass_manager create_ll_pass_manager(std::shared_ptr<variable_map> varmap){
+    ll_pass_manager manager;
     manager.add_pass(std::make_shared<loop_implementation_pass>());
     manager.add_pass(std::make_shared<pseudo_instructions_pass>());
     manager.add_pass(std::make_shared<variable_lifetime_mapping>(varmap));
@@ -46,12 +44,4 @@ static pass_manager<ll_ast_node> create_ll_pass_manager(std::shared_ptr<variable
     return manager;
 }
 
-
-static pass_manager<hl_ast_node> create_hl_pass_manager(std::shared_ptr<variable_map> varmap){
-    pass_manager<hl_ast_node> manager;
-    manager.add_pass(std::make_shared<function_inlining_pass>());
-
-    return manager;
-}
-
-#endif //FCORE_HAS_PASSES_HPP
+#endif //FCORE_HAS_LL_PASSES_HPP

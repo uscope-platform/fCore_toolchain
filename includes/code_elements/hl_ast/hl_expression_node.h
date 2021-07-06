@@ -40,7 +40,8 @@ expr_gt = 22,
 expr_lte = 23,
 expr_gte = 24,
 expr_assign = 25,
-expr_call = 26
+expr_call = 26,
+expr_reciprocal = 27
 } expression_type_t;
 
 class hl_expression_node : public hl_ast_node{
@@ -50,7 +51,11 @@ public:
     void set_rhs(const std::shared_ptr<hl_ast_node> &node);
     std::shared_ptr<hl_ast_node> get_lhs();
     std::shared_ptr<hl_ast_node> get_rhs();
+    expression_type_t get_type();
     std::string pretty_print();
+    bool is_terminal() {
+        return true;
+    }
     friend bool operator==(const hl_expression_node& lhs, const hl_expression_node& rhs);
 
 private:

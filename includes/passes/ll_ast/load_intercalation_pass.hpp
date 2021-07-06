@@ -21,7 +21,7 @@
 #include "code_elements/ll_ast/ll_instruction_node.h"
 #include "code_elements/ll_ast/ll_ast_node.hpp"
 #include "frontend/variable_map.hpp"
-#include "../pass_manager.hpp"
+#include "../pass_manager_base.hpp"
 
 
 class load_intercalation_pass: public pass_base<ll_ast_node> {
