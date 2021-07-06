@@ -27,7 +27,9 @@ public:
     operand_type_t  get_type();
     [[nodiscard]] int get_int_value() const;
     [[nodiscard]] float get_float_val() const;
-
+    bool is_terminal() override {
+        return true;
+    }
     operator std::string();
     friend bool operator==(const hl_ast_operand& lhs, const hl_ast_operand& rhs);
 private:

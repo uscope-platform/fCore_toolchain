@@ -19,6 +19,10 @@ public:
     std::shared_ptr<hl_expression_node> get_initializer();
     void set_initializer(std::shared_ptr<hl_expression_node> init);
     std::string pretty_print();
+    bool is_terminal() override {
+        return true;
+    }
+
     friend bool operator==(const hl_definition_node& lhs, const hl_definition_node& rhs);
 
 protected:

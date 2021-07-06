@@ -24,7 +24,9 @@ public:
     std::vector<std::shared_ptr<hl_ast_node>> get_body();
     std::string pretty_print();
     friend bool operator==(const hl_function_def_node& lhs, const hl_function_def_node& rhs);
-
+    bool is_terminal() override {
+        return false;
+    }
 protected:
     c_types_t return_type;
     std::string name;

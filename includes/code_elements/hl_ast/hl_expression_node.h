@@ -53,7 +53,7 @@ public:
     std::shared_ptr<hl_ast_node> get_rhs();
     expression_type_t get_type();
     std::string pretty_print();
-    bool is_terminal() {
+    bool is_terminal() override {
         return true;
     }
     friend bool operator==(const hl_expression_node& lhs, const hl_expression_node& rhs);

@@ -18,7 +18,9 @@ public:
     hl_function_call_node(std::string n, std::vector<std::shared_ptr<hl_ast_node>> a);
     std::string pretty_print();
     friend bool operator==(const hl_function_call_node& lhs, const hl_function_call_node& rhs);
-
+    bool is_terminal() override {
+        return true;
+    }
 protected:
     std::string name;
     std::vector<std::shared_ptr<hl_ast_node>> arguments;
