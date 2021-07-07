@@ -45,13 +45,13 @@ void C_Tree_visitor::exitFunctionDefinition(C_parser::C_grammarParser::FunctionD
         std::string type = ctx->typeSpecifier()->getText();
 
     current_function->set_return_type(hl_ast_node::string_to_type(type));
-        current_function->set_name(func_name);
-        current_function->set_parameters_list(parameters_list);
-        current_function->set_body(function_body);
+    current_function->set_name(func_name);
+    current_function->set_parameters_list(parameters_list);
+    current_function->set_body(function_body);
 
-        function_body.clear();
-        in_function_declaration = false;
-        functions.push_back(current_function);
+    function_body.clear();
+    in_function_declaration = false;
+    functions.push_back(current_function);
 
 }
 
@@ -389,6 +389,9 @@ void C_Tree_visitor::processExpression(unsigned int expression_size, const T& op
 void C_Tree_visitor::exitBlockItem(C_parser::C_grammarParser::BlockItemContext *ctx) {
     std::string test = ctx->getText();
     if(in_function_body){
+        if(ctx->statement() != nullptr){
+            if(ctx->statement()->returnStatement() != nullptr) return;
+        }
         function_body.push_back(current_block_item);
     }
 }
