@@ -5,9 +5,9 @@
 
 int add(int a, int b){
     int c = a+b;
-    return c;
+    return c+b;
 }
 
 int main(){
-    add(2,5);
+    add(2,t);
 }

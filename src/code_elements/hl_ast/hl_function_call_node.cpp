@@ -4,6 +4,8 @@
 
 #include "code_elements/hl_ast/hl_function_call_node.h"
 
+#include <utility>
+
 
 
 hl_function_call_node::hl_function_call_node(std::string n, std::vector<std::shared_ptr<hl_ast_node>> a) : hl_ast_node(hl_ast_node_type_function_call){
@@ -59,6 +61,13 @@ bool operator==(const hl_function_call_node &lhs, const hl_function_call_node &r
         ret_val &= args_equal;
     }
 
-
     return ret_val;
+}
+
+void hl_function_call_node::set_body(std::vector<std::shared_ptr<hl_ast_node>> i) {
+    function_body = std::move(i);
+}
+
+void hl_function_call_node::set_return(std::shared_ptr<hl_ast_node> r) {
+    function_return = std::move(r);
 }

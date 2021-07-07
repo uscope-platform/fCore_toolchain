@@ -158,9 +158,13 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_function_call(const std::sha
     for(const auto &i :orig->get_arguments()){
         args.push_back(deep_copy(i));
     }
+    std::vector<std::shared_ptr<hl_ast_node>> impl;
+    for(const auto &i :orig->get_body()){
+        impl.push_back(deep_copy(i));
+    }
 
     std::shared_ptr<hl_function_call_node> copied_obj = std::make_shared<hl_function_call_node>(orig->get_name(), args);
-
+    copied_obj->set_body(impl);
     copied_obj->set_content(orig->get_content());
     return copied_obj;
 }

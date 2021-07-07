@@ -59,3 +59,7 @@ bool operator==(const hl_definition_node &lhs, const hl_definition_node &rhs) {
 
     return ret_val;
 }
+
+void hl_definition_node::set_name(std::string n) {
+name = std::move(n);
+}
