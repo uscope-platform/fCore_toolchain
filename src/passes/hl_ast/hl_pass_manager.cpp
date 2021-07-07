@@ -9,7 +9,8 @@ std::shared_ptr<hl_ast_node> hl_pass_manager::run_pass(const std::shared_ptr<hl_
     std::shared_ptr<hl_ast_node> ret_val;
     switch (pass->get_pass_type()) {
         case NODE_PASS:{
-            ret_val = process_nodes(subtree, pass)[0];
+            std::vector<std::shared_ptr<hl_ast_node>> result_vect =  process_nodes(subtree, pass);
+            ret_val = result_vect[0];
             break;
         }
         case LEAF_PASS:{
@@ -40,7 +41,25 @@ std::shared_ptr<hl_ast_node> hl_pass_manager::process_leaves(const std::shared_p
 
 std::vector<std::shared_ptr<hl_ast_node>> hl_pass_manager::process_nodes(const std::shared_ptr<hl_ast_node> &subtree,
                                                                          const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
-    return std::vector<std::shared_ptr<hl_ast_node>>();
+
+    std::shared_ptr<hl_ast_node> result;
+    std::vector<std::shared_ptr<hl_ast_node>> content = subtree->get_content();
+    std::vector<std::shared_ptr<hl_ast_node>> result_vector = content;
+    for (int i = 0; i< content.size(); i++) {
+        if(content[i]->is_terminal()) continue;
+        std::vector<std::shared_ptr<hl_ast_node>> tmp_result;
+        tmp_result = process_nodes(content[i], pass);
+        result_vector.insert(result_vector.begin()+i, tmp_result.begin(), tmp_result.end());
+
+        result_vector.erase(result_vector.begin()+i+tmp_result.size());
+    }
+    subtree->set_content(result_vector);
+    return pass->process_node(subtree);
+
+
+
+
+
 }
 
 std::shared_ptr<hl_expression_node>

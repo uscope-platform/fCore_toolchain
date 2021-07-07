@@ -20,10 +20,6 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes) {
 }
 
 
-fcore_cc::~fcore_cc() {
-
-}
-
 std::vector<uint32_t> fcore_cc::get_hexfile(bool endian_swap) {
     return writer->generate_hex(endian_swap);
 }

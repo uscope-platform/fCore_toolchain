@@ -24,7 +24,7 @@
 #include "frontend/asm/asm_language_parser.h"
 
 
-TEST(PassesTest, pseudo_inst_pass) {
+TEST(llPassesTest, pseudo_inst_pass) {
 
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
 
@@ -50,7 +50,7 @@ TEST(PassesTest, pseudo_inst_pass) {
 }
 
 
-TEST(PassesTest, instruction_count_pass) {
+TEST(llPassesTest, instruction_count_pass) {
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
     std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r3");
     std::shared_ptr<variable> op_b = std::make_shared<variable>(false, "r4");
@@ -92,7 +92,7 @@ TEST(PassesTest, instruction_count_pass) {
     ASSERT_EQ( count, 6);
 }
 
-TEST(PassesTest, loop_less) {
+TEST(llPassesTest, loop_less) {
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
     std::shared_ptr<ll_ast_pragma> loop_pragma = std::make_shared<ll_ast_pragma>("unroll");
     std::vector<std::shared_ptr<variable>> args = {};
@@ -126,7 +126,7 @@ TEST(PassesTest, loop_less) {
     ASSERT_TRUE(result == gold_standard);
 }
 
-TEST(PassesTest, loop_less_equal) {
+TEST(llPassesTest, loop_less_equal) {
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
     std::shared_ptr<ll_ast_pragma> loop_pragma = std::make_shared<ll_ast_pragma>("unroll");
     std::vector<std::shared_ptr<variable>> args = {};
@@ -159,7 +159,7 @@ TEST(PassesTest, loop_less_equal) {
     ASSERT_TRUE(result == gold_standard);
 }
 
-TEST(PassesTest, loop_more) {
+TEST(llPassesTest, loop_more) {
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
     std::shared_ptr<ll_ast_pragma> loop_pragma = std::make_shared<ll_ast_pragma>("unroll");
     std::vector<std::shared_ptr<variable>> args = {};
@@ -195,7 +195,7 @@ TEST(PassesTest, loop_more) {
 }
 
 
-TEST(PassesTest, loop_more_equal) {
+TEST(llPassesTest, loop_more_equal) {
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
     std::shared_ptr<ll_ast_pragma> loop_pragma = std::make_shared<ll_ast_pragma>("unroll");
     std::vector<std::shared_ptr<variable>> args = {};
@@ -230,7 +230,7 @@ TEST(PassesTest, loop_more_equal) {
 }
 
 
-TEST(PassesTest, deep_copy_element) {
+TEST(llPassesTest, deep_copy_element) {
     loop_start_t start = {"j", 36};
     std::vector<std::shared_ptr<variable>> args = {};
 

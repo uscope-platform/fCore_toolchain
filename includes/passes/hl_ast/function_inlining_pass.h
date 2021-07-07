@@ -9,7 +9,8 @@
 #include "code_elements/hl_ast/hl_ast_node.h"
 
 class function_inlining_pass :public pass_base<hl_ast_node>{
-
+    std::shared_ptr<hl_ast_node> process_leaf(std::shared_ptr<hl_ast_node> element) override;
+    int get_pass_type() override { return LEAF_PASS;};
 };
 
 

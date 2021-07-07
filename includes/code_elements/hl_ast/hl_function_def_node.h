@@ -20,6 +20,7 @@ public:
     void set_parameters_list(std::vector<std::shared_ptr<hl_definition_node>> list);
     void set_body(std::vector<std::shared_ptr<hl_ast_node>> b);
     void set_return(std::shared_ptr<hl_expression_node> r);
+    std::string get_name();
     std::shared_ptr<hl_expression_node> get_return();
     std::vector<std::shared_ptr<hl_ast_node>> get_body();
     std::string pretty_print();

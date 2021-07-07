@@ -54,20 +54,20 @@ public:
     std::vector<std::vector<int>> run_analysis_passes(const std::shared_ptr<E>& AST);
     void analyze_tree(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass);
     std::unordered_map<std::string, std::shared_ptr<pass_base<E>>> analysis_passes;
-private:
-    std::vector<std::shared_ptr<pass_base<E>>> passes = {};
+protected:
+    std::vector<std::shared_ptr<pass_base<E>>> morphing_passes = {};
 };
 
 
 template<class E>
 void pass_manager_base<E>::add_pass(const std::shared_ptr<pass_base<E>>& pass) {
-    passes.push_back(pass);
+    morphing_passes.push_back(pass);
 }
 
 template<class E>
 std::shared_ptr<E> pass_manager_base<E>::run_morphing_passes(std::shared_ptr<E> AST) {
     std::shared_ptr<E> working_tree = std::move(AST);
-    for( auto& pass:passes){
+    for( auto& pass:morphing_passes){
         working_tree = run_pass(working_tree, pass);
     }
     return working_tree;
@@ -76,7 +76,7 @@ std::shared_ptr<E> pass_manager_base<E>::run_morphing_passes(std::shared_ptr<E> 
 template<class E>
 std::vector<std::vector<int>> pass_manager_base<E>::run_analysis_passes(const std::shared_ptr<E>& AST) {
     std::vector<std::vector<int>> results;
-    for( auto& pass:passes){
+    for( auto& pass:morphing_passes){
         if(pass->get_pass_type() == ANALYSIS_PASS){
             analyze_tree(AST, pass);
             results.push_back(pass->get_analysis_result());

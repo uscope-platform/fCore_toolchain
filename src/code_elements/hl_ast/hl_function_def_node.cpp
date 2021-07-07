@@ -104,3 +104,7 @@ bool operator==(const hl_function_def_node &lhs, const hl_function_def_node &rhs
 std::shared_ptr<hl_expression_node> hl_function_def_node::get_return() {
     return return_expression;
 }
+
+std::string hl_function_def_node::get_name() {
+    return name;
+}

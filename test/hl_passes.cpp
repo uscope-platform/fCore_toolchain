@@ -8,6 +8,7 @@
 #include "code_elements/hl_ast/hl_expression_node.h"
 #include "frontend/variable_map.hpp"
 #include "passes/hl_passes.hpp"
+#include "passes/hl_ast/function_mapping.h"
 #include "passes/hl_ast/hl_pass_manager.h"
 #include <memory>
 
@@ -83,4 +84,47 @@ TEST(HlPassesTest, divisionImplementation) {
         std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(ast->get_content()[0])->pretty_print()<< std::endl;
         std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(result)->pretty_print()<< std::endl;
     }
+}
+
+
+
+TEST(HlPassesTest, functionMapping) {
+
+
+    std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
+    op_1->set_name("c");
+    std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_2->set_immediate(5);
+
+    std::shared_ptr<hl_expression_node> lvl_1 = std::make_shared<hl_expression_node>(expr_mult);
+    lvl_1->set_lhs(op_1);
+    lvl_1->set_rhs(op_2);
+
+    std::shared_ptr<hl_function_def_node> func_1 = std::make_shared<hl_function_def_node>();
+    std::string fn = "test_1";
+    func_1->set_name(fn);
+    func_1->add_content(lvl_1);
+
+    std::shared_ptr<hl_function_def_node> func_2 = std::make_shared<hl_function_def_node>();
+    fn = "test_2";
+    func_2->set_name(fn);
+    func_2->add_content(lvl_1);
+
+
+    std::shared_ptr<hl_ast_node> ast = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    ast->add_content(func_1);
+    ast->add_content(func_2);
+
+
+    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
+
+
+    hl_pass_manager manager = create_hl_pass_manager(variables_map);
+    manager.run_morphing_passes(ast);
+
+    std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>> pass = std::static_pointer_cast<function_mapping>(manager.morphing_passes[0])->functions_map;
+    
+    EXPECT_EQ( *func_1, *pass["test_1"]);
+    EXPECT_EQ( *func_2, *pass["test_2"]);
+
 }

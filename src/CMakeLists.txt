@@ -30,6 +30,7 @@ set(FCORE_LIB_SRCS
         passes/ll_ast/variable_lifetime_mapping.cpp
         passes/ll_ast/load_intercalation_pass.cpp
         passes/hl_ast/hl_pass_manager.cpp
+        passes/hl_ast/function_mapping.cpp
         passes/hl_ast/function_inlining_pass.cpp
         passes/hl_ast/division_implementation_pass.cpp
         fcore_has.cpp

@@ -28,7 +28,6 @@ public:
     void write_verilog_memfile(const std::string& ouput_file);
     uint32_t get_program_size();
     uint32_t get_inst_count();
-    ~fcore_cc();
 private:
     std::shared_ptr<hl_ast_node> AST;
     output_generator *writer;

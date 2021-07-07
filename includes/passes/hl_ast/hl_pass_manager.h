@@ -5,6 +5,8 @@
 #ifndef FCORE_HAS_HL_PASS_MANAGER_H
 #define FCORE_HAS_HL_PASS_MANAGER_H
 
+#include <gtest/gtest_prod.h>
+
 #include "code_elements/hl_ast/hl_ast_node.h"
 #include "code_elements/hl_ast/hl_expression_node.h"
 #include "code_elements/hl_ast/hl_ast_operand.h"
@@ -21,6 +23,7 @@ public:
     std::vector<std::shared_ptr<hl_ast_node>> process_nodes(const std::shared_ptr<hl_ast_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
 
 private:
+    FRIEND_TEST(HlPassesTest, functionMapping);
     std::shared_ptr<hl_ast_node> process_terminal_by_type(const std::shared_ptr<hl_ast_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
     std::shared_ptr<hl_expression_node> process_expression(const std::shared_ptr<hl_expression_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
     static std::shared_ptr<hl_ast_operand> process_operand(const std::shared_ptr<hl_ast_operand> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
