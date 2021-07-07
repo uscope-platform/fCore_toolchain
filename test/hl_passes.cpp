@@ -7,10 +7,16 @@
 #include "code_elements/hl_ast/hl_ast_operand.h"
 #include "code_elements/hl_ast/hl_expression_node.h"
 #include "frontend/variable_map.hpp"
+#include "frontend/define_map.h"
+#include "frontend/C/C_language_parser.h"
 #include "passes/hl_passes.hpp"
 #include "passes/hl_ast/function_mapping.h"
 #include "passes/hl_ast/hl_pass_manager.h"
+
+
 #include <memory>
+#include <fstream>
+
 
 TEST(HlPassesTest, divisionImplementation) {
 
@@ -126,5 +132,26 @@ TEST(HlPassesTest, functionMapping) {
 
     EXPECT_EQ( *func_1, *pass->at("test_1"));
     EXPECT_EQ( *func_2, *pass->at("test_2"));
+
+}
+
+TEST(HlPassesTest, functionInlining) {
+
+
+    std::string input_file = "test_function_inlining.c";
+    std::ifstream ifs(input_file);
+
+    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(ifs, result_var, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
+
+    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
+
+
+    hl_pass_manager manager = create_hl_pass_manager(variables_map);
+    manager.run_morphing_passes(parser.AST);
 
 }

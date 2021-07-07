@@ -18,7 +18,7 @@ void hl_function_def_node::set_body(std::vector<std::shared_ptr<hl_ast_node>> b)
     function_body = std::move(b);
 }
 
-void hl_function_def_node::set_return(std::shared_ptr<hl_expression_node> r) {
+void hl_function_def_node::set_return(std::shared_ptr<hl_ast_node> r) {
     return_expression = std::move(r);
 }
 
@@ -101,7 +101,7 @@ bool operator==(const hl_function_def_node &lhs, const hl_function_def_node &rhs
     return ret_val;
 }
 
-std::shared_ptr<hl_expression_node> hl_function_def_node::get_return() {
+std::shared_ptr<hl_ast_node> hl_function_def_node::get_return() {
     return return_expression;
 }
 

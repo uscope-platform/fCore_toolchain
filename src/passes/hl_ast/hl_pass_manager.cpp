@@ -18,6 +18,7 @@ std::shared_ptr<hl_ast_node> hl_pass_manager::run_pass(const std::shared_ptr<hl_
             break;
         }
         default:
+            throw std::runtime_error("The pass" + pass->get_name() + " does not have a correct type");
             break;
     }
     return ret_val;

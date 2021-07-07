@@ -19,9 +19,9 @@ public:
     void set_name(std::string &n);
     void set_parameters_list(std::vector<std::shared_ptr<hl_definition_node>> list);
     void set_body(std::vector<std::shared_ptr<hl_ast_node>> b);
-    void set_return(std::shared_ptr<hl_expression_node> r);
+    void set_return(std::shared_ptr<hl_ast_node> r);
     std::string get_name();
-    std::shared_ptr<hl_expression_node> get_return();
+    std::shared_ptr<hl_ast_node> get_return();
     std::vector<std::shared_ptr<hl_ast_node>> get_body();
     std::string pretty_print();
     friend bool operator==(const hl_function_def_node& lhs, const hl_function_def_node& rhs);
@@ -33,7 +33,7 @@ protected:
     std::string name;
     std::vector<std::shared_ptr<hl_definition_node>> parameters_list;
     std::vector<std::shared_ptr<hl_ast_node>> function_body;
-    std::shared_ptr<hl_expression_node> return_expression;
+    std::shared_ptr<hl_ast_node> return_expression;
 };
 
 

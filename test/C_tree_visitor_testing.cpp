@@ -588,7 +588,8 @@ TEST( cFrontend, returnTest) {
     parser.pre_process({}, {});
     parser.parse();
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_function_def_node>(parser.visitor.functions[0])->get_return();
+    std::shared_ptr<hl_function_def_node> func_def = std::static_pointer_cast<hl_function_def_node>(parser.visitor.functions[0]);
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(func_def->get_return());
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("c");
