@@ -29,11 +29,14 @@
 
 class function_mapping : public pass_base<hl_ast_node> {
     public:
+        function_mapping();
         std::vector<std::shared_ptr<hl_ast_node>>process_node(std::shared_ptr<hl_ast_node> element) override;
+        std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>>> get_map_ref ();
         int get_pass_type() override { return NODE_PASS;};
-
+    protected:
         std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>> functions_map;
 };
+
 
 
 #endif //FCORE_HAS_FUNCTION_MAPPING_H

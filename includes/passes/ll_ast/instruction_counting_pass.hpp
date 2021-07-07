@@ -24,6 +24,7 @@
 class instruction_counting_pass : public pass_base<ll_ast_node> {
 
 public:
+    instruction_counting_pass();
     void analyze_element(std::shared_ptr<ll_ast_node> element) override;
     int get_pass_type() override { return ANALYSIS_PASS;};
     std::vector<int> get_analysis_result() override;

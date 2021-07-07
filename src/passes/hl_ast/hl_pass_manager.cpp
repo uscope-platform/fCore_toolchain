@@ -33,6 +33,7 @@ std::shared_ptr<hl_ast_node> hl_pass_manager::process_leaves(const std::shared_p
             i = process_leaves(i, pass);
         }
         subtree->set_content(content);
+        result = subtree;
     } else{
         result = process_terminal_by_type(subtree, pass);
     }
@@ -88,7 +89,7 @@ std::shared_ptr<hl_ast_operand> hl_pass_manager::process_operand(const std::shar
 std::shared_ptr<hl_function_call_node>
 hl_pass_manager::process_function_call(const std::shared_ptr<hl_function_call_node> &subtree,
                                     const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
-    return subtree;
+    return std::static_pointer_cast<hl_function_call_node>(pass->process_leaf(subtree));
 }
 
 std::shared_ptr<hl_definition_node>

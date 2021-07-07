@@ -4,6 +4,11 @@
 
 #include "passes/hl_ast/function_mapping.h"
 
+
+function_mapping::function_mapping() : pass_base<hl_ast_node>("function mapping pass"){
+
+}
+
 std::vector<std::shared_ptr<hl_ast_node>> function_mapping::process_node(std::shared_ptr<hl_ast_node> element) {
     std::vector<std::shared_ptr<hl_ast_node>> retval;
     retval.push_back(element);
@@ -14,3 +19,10 @@ std::vector<std::shared_ptr<hl_ast_node>> function_mapping::process_node(std::sh
 
     return retval;
 }
+
+std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>>>
+function_mapping::get_map_ref() {
+    return std::make_shared<std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>>>(functions_map);
+}
+
+

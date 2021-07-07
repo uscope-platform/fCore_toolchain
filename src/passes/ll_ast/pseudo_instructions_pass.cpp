@@ -17,6 +17,9 @@
 
 #include "passes/ll_ast/pseudo_instructions_pass.hpp"
 
+pseudo_instructions_pass::pseudo_instructions_pass() : pass_base<ll_ast_node>("pseudo instruction implementation pass"){
+
+}
 
 std::shared_ptr<ll_ast_node> pseudo_instructions_pass::process_leaf(std::shared_ptr<ll_ast_node> element) {
     std::shared_ptr<ll_ast_node> ret_val = element;

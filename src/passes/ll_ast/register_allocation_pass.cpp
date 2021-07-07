@@ -17,7 +17,7 @@
 #include "passes/ll_ast/register_allocation_pass.hpp"
 
 
-register_allocation_pass::register_allocation_pass(std::shared_ptr<variable_map> varmap) {
+register_allocation_pass::register_allocation_pass(std::shared_ptr<variable_map> varmap) : pass_base<ll_ast_node>("register allocation pass"){
     var_map = std::move(varmap);
     std::string registers[16] = {"r0", "r1", "r2", "r3", "r4", "r5",  "r6", "r7", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15"};
     for(int i= 0; i<16; i++){

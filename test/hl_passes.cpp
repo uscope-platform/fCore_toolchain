@@ -122,9 +122,9 @@ TEST(HlPassesTest, functionMapping) {
     hl_pass_manager manager = create_hl_pass_manager(variables_map);
     manager.run_morphing_passes(ast);
 
-    std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>> pass = std::static_pointer_cast<function_mapping>(manager.morphing_passes[0])->functions_map;
-    
-    EXPECT_EQ( *func_1, *pass["test_1"]);
-    EXPECT_EQ( *func_2, *pass["test_2"]);
+    std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>>> pass = std::static_pointer_cast<function_mapping>(manager.morphing_passes[0])->get_map_ref();
+
+    EXPECT_EQ( *func_1, *pass->at("test_1"));
+    EXPECT_EQ( *func_2, *pass->at("test_2"));
 
 }

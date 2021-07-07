@@ -31,8 +31,11 @@
 
 static hl_pass_manager create_hl_pass_manager(std::shared_ptr<variable_map> varmap){
     hl_pass_manager manager;
-    manager.add_pass(std::make_shared<function_mapping>());
-    //manager.add_pass(std::make_shared<function_inlining_pass>());
+    std::shared_ptr<function_mapping> mapping_pass = std::make_shared<function_mapping>();
+    manager.add_pass(mapping_pass);
+    auto inlining_pass = std::make_shared<function_inlining_pass>();
+    inlining_pass->set_functions_map(mapping_pass->get_map_ref());
+    manager.add_pass(inlining_pass);
     manager.add_pass(std::make_shared<division_implementation_pass>());
     return manager;
 }

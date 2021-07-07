@@ -19,7 +19,7 @@
 
 
 
-variable_lifetime_mapping::variable_lifetime_mapping(std::shared_ptr<variable_map> var_map) {
+variable_lifetime_mapping::variable_lifetime_mapping(std::shared_ptr<variable_map> var_map) : pass_base<ll_ast_node>("variable lifetime mapping pass"){
     vmap = std::move(var_map);
     variable_detection_ctr = 0;
 }

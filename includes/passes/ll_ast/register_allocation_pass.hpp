@@ -33,7 +33,7 @@
 class register_allocation_pass: public pass_base<ll_ast_node> {
     public:
         explicit register_allocation_pass(std::shared_ptr<variable_map> varmap);
-    std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
+        std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
         int get_pass_type() override { return LEAF_PASS;};
 private:
     bool used[16] = {false};

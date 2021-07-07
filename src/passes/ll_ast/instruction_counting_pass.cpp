@@ -17,6 +17,10 @@
 
 #include "passes/ll_ast/instruction_counting_pass.hpp"
 
+instruction_counting_pass::instruction_counting_pass() : pass_base<ll_ast_node>("instruction counting pass"){
+
+}
+
 void instruction_counting_pass::analyze_element(std::shared_ptr<ll_ast_node> element) {
     if(element->type == ll_type_instr){
         std::shared_ptr<ll_instruction_node> node = std::static_pointer_cast<ll_instruction_node>(element);
@@ -33,3 +37,4 @@ std::vector<int> instruction_counting_pass::get_analysis_result() {
     std::vector<int> result_count = {instruction_count};
     return result_count;
 }
+

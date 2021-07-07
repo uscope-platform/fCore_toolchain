@@ -4,6 +4,10 @@
 
 #include "passes/hl_ast/division_implementation_pass.h"
 
+division_implementation_pass::division_implementation_pass() : pass_base<hl_ast_node>("division implementation pass"){
+
+}
+
 std::shared_ptr<hl_ast_node> division_implementation_pass::process_leaf(std::shared_ptr<hl_ast_node> element) {
     std::shared_ptr<hl_ast_node> ret_val = element;
     if(element->node_type == hl_ast_node_type_expr){
@@ -20,3 +24,4 @@ std::shared_ptr<hl_ast_node> division_implementation_pass::process_leaf(std::sha
     }
     return ret_val;
 }
+
