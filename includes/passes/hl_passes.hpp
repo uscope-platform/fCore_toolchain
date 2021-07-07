@@ -24,6 +24,7 @@
 #include "passes/hl_ast/function_inlining_pass.h"
 #include "passes/hl_ast/division_implementation_pass.h"
 #include "passes/hl_ast/function_mapping.h"
+#include "passes/hl_ast/normalization_pass.h"
 
 #include "frontend/variable_map.hpp"
 #include "code_elements/hl_ast/hl_ast_node.h"
@@ -33,10 +34,15 @@ static hl_pass_manager create_hl_pass_manager(std::shared_ptr<variable_map> varm
     hl_pass_manager manager;
     std::shared_ptr<function_mapping> mapping_pass = std::make_shared<function_mapping>();
     manager.add_pass(mapping_pass);
+
+    manager.add_pass(std::make_shared<division_implementation_pass>());
+
     auto inlining_pass = std::make_shared<function_inlining_pass>();
     inlining_pass->set_functions_map(mapping_pass->get_map_ref());
     manager.add_pass(inlining_pass);
-    manager.add_pass(std::make_shared<division_implementation_pass>());
+
+    manager.add_pass(std::make_shared<normalization_pass>());
+
     return manager;
 }
 
