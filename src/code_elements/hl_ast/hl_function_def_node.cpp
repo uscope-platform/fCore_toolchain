@@ -22,11 +22,11 @@ void hl_function_def_node::set_return(std::shared_ptr<hl_ast_node> r) {
     return_expression = std::move(r);
 }
 
-void hl_function_def_node::set_name(std::string &n) {
-    name = n;
+void hl_function_def_node::set_name(std::string n) {
+    name = std::move(n);
 }
 
-void hl_function_def_node::set_type(c_types_t ret_val) {
+void hl_function_def_node::set_return_type(c_types_t ret_val) {
     return_type = ret_val;
 
 }

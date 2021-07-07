@@ -15,9 +15,11 @@
 class hl_function_def_node : public hl_ast_node{
 public:
     hl_function_def_node();
-    void set_type( c_types_t ret_val);
-    void set_name(std::string &n);
+    void set_return_type(c_types_t ret_val);
+    c_types_t get_return_type() {return return_type;};
+    void set_name(std::string n);
     void set_parameters_list(std::vector<std::shared_ptr<hl_definition_node>> list);
+    std::vector<std::shared_ptr<hl_definition_node>> get_parameters_list() { return parameters_list;};
     void set_body(std::vector<std::shared_ptr<hl_ast_node>> b);
     void set_return(std::shared_ptr<hl_ast_node> r);
     std::string get_name();

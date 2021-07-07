@@ -13,6 +13,8 @@
 class hl_definition_node : public hl_ast_node{
 public:
     hl_definition_node(std::string n, c_types_t ct);
+    std::string get_name(){ return name;};
+    c_types_t get_type(){ return type;};
     bool is_initialized();
     void set_constant(bool c);
     bool is_constant();

@@ -20,13 +20,15 @@ class hl_ast_operand : public hl_ast_node{
 public:
     explicit hl_ast_operand(operand_type_t ot);
     void set_name(const std::string &name);
+    std::string get_name() { return name;};
     void set_immediate(const int &v);
+    [[nodiscard]] int get_int_value() const;
     void set_immediate(const float &v);
+    [[nodiscard]] float get_float_val() const;
     void set_string(const std::string &s);
     std::string get_string();
     operand_type_t  get_type();
-    [[nodiscard]] int get_int_value() const;
-    [[nodiscard]] float get_float_val() const;
+
     bool is_terminal() override {
         return true;
     }

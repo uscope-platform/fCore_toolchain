@@ -44,7 +44,7 @@ void C_Tree_visitor::exitFunctionDefinition(C_parser::C_grammarParser::FunctionD
     }
         std::string type = ctx->typeSpecifier()->getText();
 
-        current_function->set_type( hl_ast_node::string_to_type(type));
+    current_function->set_return_type(hl_ast_node::string_to_type(type));
         current_function->set_name(func_name);
         current_function->set_parameters_list(parameters_list);
         current_function->set_body(function_body);

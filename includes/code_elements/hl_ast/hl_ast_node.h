@@ -7,8 +7,11 @@
 
 #include <map>
 #include <string>
+#include <stdexcept>
 
 #include "code_elements/ast_node_base.h"
+
+
 
 typedef enum {
     hl_ast_node_type_expr = 1,
@@ -40,8 +43,17 @@ public:
     virtual bool is_terminal();
 
     friend bool operator==(const hl_ast_node& lhs, const hl_ast_node& rhs);
-
+    static std::shared_ptr<hl_ast_node> deep_copy(const std::shared_ptr<hl_ast_node> &node);
     hl_ast_node_type_t node_type;
+private:
+    static std::shared_ptr<hl_ast_node> deep_copy_expr(const std::shared_ptr<hl_ast_node> &node);
+    static std::shared_ptr<hl_ast_node> deep_copy_def(const std::shared_ptr<hl_ast_node> &node);
+    static std::shared_ptr<hl_ast_node> deep_copy_conditional(const std::shared_ptr<hl_ast_node> &node);
+    static std::shared_ptr<hl_ast_node> deep_copy_loop(const std::shared_ptr<hl_ast_node> &node);
+    static std::shared_ptr<hl_ast_node> deep_copy_function_def(const std::shared_ptr<hl_ast_node> &node);
+    static std::shared_ptr<hl_ast_node> deep_copy_operands(const std::shared_ptr<hl_ast_node> &node);
+    static std::shared_ptr<hl_ast_node> deep_copy_function_call(const std::shared_ptr<hl_ast_node> &node);
+    static std::shared_ptr<hl_ast_node> deep_copy_program_root(const std::shared_ptr<hl_ast_node> &node);
 };
 
 

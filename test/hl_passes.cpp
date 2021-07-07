@@ -154,4 +154,6 @@ TEST(HlPassesTest, functionInlining) {
     hl_pass_manager manager = create_hl_pass_manager(variables_map);
     manager.run_morphing_passes(parser.AST);
 
+    int i = 0;
+
 }

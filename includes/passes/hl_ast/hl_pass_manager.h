@@ -11,6 +11,7 @@
 #include "code_elements/hl_ast/hl_expression_node.h"
 #include "code_elements/hl_ast/hl_ast_operand.h"
 #include "code_elements/hl_ast/hl_function_call_node.h"
+#include "code_elements/hl_ast/hl_function_def_node.h"
 #include "code_elements/hl_ast/hl_definition_node.h"
 
 #include "passes/pass_manager_base.hpp"

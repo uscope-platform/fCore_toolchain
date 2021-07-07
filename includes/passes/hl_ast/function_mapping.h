@@ -34,7 +34,7 @@ class function_mapping : public pass_base<hl_ast_node> {
         std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>>> get_map_ref ();
         int get_pass_type() override { return NODE_PASS;};
     protected:
-        std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>> functions_map;
+        std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>>> functions_map;
 };
 
 

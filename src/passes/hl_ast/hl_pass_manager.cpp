@@ -29,12 +29,28 @@ std::shared_ptr<hl_ast_node> hl_pass_manager::process_leaves(const std::shared_p
 
     std::shared_ptr<hl_ast_node> result;
     if(!subtree->is_terminal()){
-        std::vector<std::shared_ptr<hl_ast_node>> content =  subtree->get_content();
-        for(auto &i :content){
-            i = process_leaves(i, pass);
+        if(subtree->node_type == hl_ast_node_type_function_def){
+            std::shared_ptr<hl_function_def_node> node = std::static_pointer_cast<hl_function_def_node>(subtree);
+
+            std::vector<std::shared_ptr<hl_ast_node>> body =  node->get_body();
+            for(auto &i :body){
+                i = process_leaves(i, pass);
+            }
+            node->set_body(body);
+            if(node->get_return() != nullptr){
+                node->set_return(process_leaves(node->get_return(), pass));
+            }
+
+            result = node;
+        } else{
+            std::vector<std::shared_ptr<hl_ast_node>> content =  subtree->get_content();
+            for(auto &i :content){
+                i = process_leaves(i, pass);
+            }
+            subtree->set_content(content);
+            result = subtree;
         }
-        subtree->set_content(content);
-        result = subtree;
+
     } else{
         result = process_terminal_by_type(subtree, pass);
     }
@@ -90,6 +106,7 @@ std::shared_ptr<hl_ast_operand> hl_pass_manager::process_operand(const std::shar
 std::shared_ptr<hl_function_call_node>
 hl_pass_manager::process_function_call(const std::shared_ptr<hl_function_call_node> &subtree,
                                     const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
+
     return std::static_pointer_cast<hl_function_call_node>(pass->process_leaf(subtree));
 }
 

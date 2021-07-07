@@ -490,7 +490,7 @@ TEST( cTreeVisitor, function_def) {
     gs_3->set_body(res_body);
     std::string f_name = "main";
     gs_3->set_name(f_name);
-    gs_3->set_type(c_type_int);
+    gs_3->set_return_type(c_type_int);
 
     std::shared_ptr<hl_function_def_node> res = std::static_pointer_cast<hl_function_def_node>(parser.visitor.functions[0]);
 
