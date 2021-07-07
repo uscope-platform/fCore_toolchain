@@ -55,7 +55,13 @@ bool operator==(const hl_definition_node &lhs, const hl_definition_node &rhs) {
     ret_val &= lhs.constant == rhs.constant;
     ret_val &= lhs.type == rhs.type;
     ret_val &= lhs.name == rhs.name;
-    ret_val &= *std::static_pointer_cast<hl_expression_node>(lhs.initializer) == *std::static_pointer_cast<hl_expression_node>(rhs.initializer);
+    if(lhs.initializer == nullptr && rhs.initializer == nullptr) ret_val &= true;
+    else if(lhs.initializer != nullptr && rhs.initializer != nullptr) {
+        ret_val &= *std::static_pointer_cast<hl_expression_node>(lhs.initializer) == *std::static_pointer_cast<hl_expression_node>(rhs.initializer);
+    } else {
+        ret_val &= false;
+    }
+
 
     return ret_val;
 }
