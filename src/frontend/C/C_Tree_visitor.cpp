@@ -21,7 +21,6 @@
 C_Tree_visitor::C_Tree_visitor() {
     in_function_declaration = false;
     in_function_body = false;
-    expression_nesting_level = 0;
 }
 
 
@@ -89,7 +88,7 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
 
 void C_Tree_visitor::exitInitializer(C_parser::C_grammarParser::InitializerContext *ctx) {
     if(ctx->assignmentExpression() != nullptr){
-        current_initializer = expressions_stack.top();
+        current_initializer = std::static_pointer_cast<hl_expression_node>(expressions_stack.top());
         expressions_stack.pop();
     } else if(ctx->initializerList() != nullptr){
         throw std::runtime_error("ERROR: Initializer lists are not supported yet");
@@ -119,19 +118,20 @@ void C_Tree_visitor::exitUnaryExpression(C_parser::C_grammarParser::UnaryExpress
 
         expression = std::make_shared<hl_expression_node>( expr);
         if(ctx->unaryExpression()->primaryExpression()!= nullptr){
-            if(expression_nesting_level==0){
-                expression->set_rhs(operands_stack.top());
-                operands_stack.pop();
+            if(expressions_stack.size()==0){
+                expression->set_rhs(expressions_stack.top());
+                expressions_stack.pop();
             } else{
                 expression->set_rhs(expressions_stack.top());
                 expressions_stack.pop();
-                expression_nesting_level--;
             }
         } else{
             expression->set_rhs(expressions_stack.top());
             expressions_stack.pop();
+
         }
         expressions_stack.push(expression);
+
     }
 
 }
@@ -140,7 +140,6 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
     std::shared_ptr<hl_ast_operand> operand;
 
     if(ctx->expression() != nullptr){
-        expression_nesting_level++;
         return;
     } else if(ctx->Identifier() != nullptr){
         operand = std::make_shared<hl_ast_operand>( variable_operand);
@@ -162,7 +161,7 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
         operand->set_string(ctx->getText());
     }
 
-    operands_stack.push(operand);
+    expressions_stack.push(operand);
 }
 
 void C_Tree_visitor::exitMultiplicativeExpression(C_parser::C_grammarParser::MultiplicativeExpressionContext *ctx) {
@@ -300,9 +299,9 @@ void C_Tree_visitor::exitLogicalAndExpression(C_parser::C_grammarParser::Logical
 
 void C_Tree_visitor::exitAssignmentExpression(C_parser::C_grammarParser::AssignmentExpressionContext *ctx) {
     if(ctx->unaryExpression()!= nullptr){
-        std::shared_ptr<hl_ast_operand> target = operands_stack.top();
-        operands_stack.pop();
-        std::shared_ptr<hl_expression_node> value = expressions_stack.top();
+        std::shared_ptr<hl_expression_node> value = std::static_pointer_cast<hl_expression_node>(expressions_stack.top());
+        expressions_stack.pop();
+        std::shared_ptr<hl_ast_operand> target = std::static_pointer_cast<hl_ast_operand>(expressions_stack.top());
         expressions_stack.pop();
         std::shared_ptr<hl_expression_node> assignment = std::make_shared<hl_expression_node>(expr_assign);
         assignment->set_lhs(target);
@@ -330,9 +329,9 @@ void C_Tree_visitor::exitStatement(C_parser::C_grammarParser::StatementContext *
         if(!expressions_stack.empty()){
             current_function->set_return(expressions_stack.top());
             expressions_stack.pop();
-        } else if(!operands_stack.empty()) {
-            current_function->set_return(operands_stack.top());
-            operands_stack.pop();
+        } else if(!expressions_stack.empty()) {
+            current_function->set_return(expressions_stack.top());
+            expressions_stack.pop();
         }
 
     } else {
@@ -352,37 +351,31 @@ template<typename T>
 void C_Tree_visitor::processExpression(unsigned int expression_size, const T& operands_array,
                                        std::map<std::string, expression_type_t> &expr_map) {
     std::shared_ptr<hl_expression_node> expression;
-    if(expression_nesting_level>0){
-        std::shared_ptr<hl_expression_node> ex_1 = expressions_stack.top();
-        expressions_stack.pop();
-        std::shared_ptr<hl_expression_node> ex_2 = expressions_stack.top();
-        expressions_stack.pop();
-        int i = 0;
-    } else {
-        std::stack<std::string> operations;
-        std::stack<std::shared_ptr<hl_ast_operand>> reversed_operands;
 
-        for(int i = 0; i <= expression_size; ++i){
-            reversed_operands.push(operands_stack.top());
-            operands_stack.pop();
-        }
+    std::stack<std::string> operations;
+    std::stack<std::shared_ptr<hl_ast_operand>> reversed_operands;
 
-        bool first_op = true;
-        for(auto item: operands_array){
-            expression_type_t type = expr_map[item->getText()];
-            std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(type);
-            if(first_op){
-                ex->set_lhs(reversed_operands.top());
-                reversed_operands.pop();
-                first_op = false;
-            } else{
-                ex->set_lhs(expression);
-            }
-            ex->set_rhs(reversed_operands.top());
-            reversed_operands.pop();
-            expression = ex;
-        }
+    for(int i = 0; i <= expression_size; ++i){
+        reversed_operands.push(std::static_pointer_cast<hl_ast_operand>(expressions_stack.top()));
+        expressions_stack.pop();
     }
+
+    bool first_op = true;
+    for(auto item: operands_array){
+        expression_type_t type = expr_map[item->getText()];
+        std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(type);
+        if(first_op){
+            ex->set_lhs(reversed_operands.top());
+            reversed_operands.pop();
+            first_op = false;
+        } else{
+            ex->set_lhs(expression);
+        }
+        ex->set_rhs(reversed_operands.top());
+        reversed_operands.pop();
+        expression = ex;
+    }
+
     expressions_stack.push(expression);
 }
 
@@ -403,12 +396,13 @@ void C_Tree_visitor::exitFunctionCallExpression(C_parser::C_grammarParser::Funct
     std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(expr_call);
     exp->set_rhs(node);
     expressions_stack.push(exp);
+
 }
 
 void C_Tree_visitor::exitArgumentExpression(C_parser::C_grammarParser::ArgumentExpressionContext *ctx) {
-    if(!operands_stack.empty()){
-        argument_vector.push_back(operands_stack.top());
-        operands_stack.pop();
+    if(!expressions_stack.empty()){
+        argument_vector.push_back(expressions_stack.top());
+        expressions_stack.pop();
     } else{
         argument_vector.push_back(expressions_stack.top());
         expressions_stack.pop();

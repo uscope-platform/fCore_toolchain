@@ -110,8 +110,7 @@ private:
     std::vector<std::shared_ptr<hl_ast_node>> functions;
     std::vector<std::shared_ptr<hl_ast_node>> function_body;
 
-    std::stack<std::shared_ptr<hl_ast_operand>> operands_stack;
-    std::stack<std::shared_ptr<hl_expression_node>> expressions_stack;
+    std::stack<std::shared_ptr<hl_ast_node>> expressions_stack;
     std::vector<std::shared_ptr<hl_ast_node>> argument_vector;
 
     std::shared_ptr<hl_function_def_node> current_function;
@@ -123,7 +122,6 @@ private:
 
     bool in_function_declaration;
     bool in_function_body;
-    int expression_nesting_level;
 };
 
 #endif //FCORE_HAS_ASMTREE_VISITOR_HPP
