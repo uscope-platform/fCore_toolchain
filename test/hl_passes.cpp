@@ -47,10 +47,9 @@ TEST(HlPassesTest, divisionImplementation) {
     ast->add_content(lvl_3);
 
 
-    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
+    std::string ep = "main";
+    hl_pass_manager manager = create_hl_pass_manager(ep);
 
-
-    hl_pass_manager manager = create_hl_pass_manager(variables_map);
     manager.run_morphing_passes(ast);
 
 
@@ -122,10 +121,11 @@ TEST(HlPassesTest, functionMapping) {
     ast->add_content(func_2);
 
 
-    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
 
 
-    hl_pass_manager manager = create_hl_pass_manager(variables_map);
+    std::string ep = "main";
+    hl_pass_manager manager = create_hl_pass_manager(ep);
+
     manager.run_morphing_passes(ast);
 
     std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>>> pass = std::static_pointer_cast<function_mapping>(manager.morphing_passes[0])->get_map_ref();
@@ -148,13 +148,12 @@ TEST(HlPassesTest, functionInlining) {
     parser.pre_process({}, {});
     parser.parse();
 
-    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
+    std::string ep = "main";
+    hl_pass_manager manager = create_hl_pass_manager(ep);
 
-
-    hl_pass_manager manager = create_hl_pass_manager(variables_map);
     manager.run_morphing_passes(parser.AST);
 
-    std::shared_ptr<hl_function_def_node> res = std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[1]);
+    std::shared_ptr<hl_function_def_node> res = std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0]);
 
     std::shared_ptr<hl_function_def_node> gold_standard = std::make_shared<hl_function_def_node>();
     gold_standard->set_name("main");

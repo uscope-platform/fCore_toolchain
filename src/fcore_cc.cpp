@@ -13,8 +13,8 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes) {
     target_parser.pre_process({}, {});
     target_parser.parse();
     AST = target_parser.AST;
-
-    manager = create_hl_pass_manager(variables_map);
+    std::string ep = "main";
+    manager = create_hl_pass_manager(ep);
     manager.run_morphing_passes(AST);
     
 }
