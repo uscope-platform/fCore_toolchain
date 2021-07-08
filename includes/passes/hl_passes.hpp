@@ -24,7 +24,6 @@
 #include "passes/hl_ast/function_inlining_pass.h"
 #include "passes/hl_ast/division_implementation_pass.h"
 #include "passes/hl_ast/function_mapping.h"
-#include "passes/hl_ast/normalization_pass.h"
 #include "passes/hl_ast/inlined_function_elimination.h"
 
 #include "frontend/variable_map.hpp"
@@ -44,7 +43,6 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point){
 
     manager.add_pass(std::make_shared<inlined_function_elimination>(entry_point));
 
-    //manager.add_pass(std::make_shared<normalization_pass>());
 
     return manager;
 }

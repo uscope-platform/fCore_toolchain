@@ -12,7 +12,7 @@
 #include "passes/hl_passes.hpp"
 #include "passes/hl_ast/function_mapping.h"
 #include "passes/hl_ast/hl_pass_manager.h"
-
+#include "passes/independent/normalization_pass.h"
 
 #include <memory>
 #include <fstream>
@@ -192,5 +192,30 @@ TEST(HlPassesTest, functionInlining) {
     gold_standard->set_body({ex_call});
     gold_standard->set_return_type(c_type_int);
     EXPECT_EQ(*res, *gold_standard);
+
+}
+
+
+
+TEST(HlPassesTest, normalization) {
+
+
+    std::string input_file = "test_normalization.c";
+    std::ifstream ifs(input_file);
+
+    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(ifs, result_var, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
+
+    std::string ep = "main";
+    hl_pass_manager manager = create_hl_pass_manager(ep);
+    manager.run_morphing_passes(parser.AST);
+
+    normalization_pass p;
+    std::shared_ptr<hl_ast_node> result = p.run_pass(parser.AST);
+
 
 }
