@@ -21,7 +21,7 @@ set(TESTED_SOURCES
         ../src/passes/ll_ast/instruction_counting_pass.cpp
         ../src/passes/hl_ast/hl_pass_manager.cpp
         ../src/passes/hl_ast/function_inlining_pass.cpp
-        ../src/passes/hl_ast/normalization_pass.cpp
+        ../src/passes/independent/normalization_pass.cpp
         ../src/passes/hl_ast/inlined_function_elimination.cpp
         ../src/passes/hl_ast/function_mapping.cpp
         ../src/passes/hl_ast/division_implementation_pass.cpp
@@ -73,27 +73,29 @@ configure_file(asm_files/register_defs.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 #  C TESTING FILES
 configure_file(C_files/test_main_add.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
     # Preprocessor
-configure_file(C_files/test_preproc_comments.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_preproc_pragmas.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_preproc_define.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_preproc_include_fail.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_preproc_include.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/include_test.h ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/preprocessor/test_preproc_comments.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/preprocessor/test_preproc_pragmas.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/preprocessor/test_preproc_define.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/preprocessor/test_preproc_include_fail.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/preprocessor/test_preproc_include.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/preprocessor/include_test.h ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
     # Tree visitor (ANTLR <-> AST)
-configure_file(C_files/test_unary_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_multiplicative_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_additive_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_shift_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_equality_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_relational_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_andb_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_orb_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_exorb_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_orl_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_andl_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_assignment_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_definition.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_function_call.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_return.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_function_inlining.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_unary_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_multiplicative_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_additive_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_shift_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_equality_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_relational_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_andb_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_orb_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_exorb_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_orl_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_andl_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_assignment_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_definition.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_function_call.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_return.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_main_add.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+#OPTIMIZATION PASSES
+configure_file(C_files/test_function_inlining.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/test_normalization.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
