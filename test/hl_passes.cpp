@@ -49,7 +49,8 @@ TEST(HlPassesTest, divisionImplementation) {
 
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep);
+    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
+    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map);
 
     manager.run_morphing_passes(ast);
 
@@ -125,7 +126,8 @@ TEST(HlPassesTest, functionMapping) {
 
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep);
+    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
+    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map);
 
     manager.run_morphing_passes(ast);
 
@@ -150,7 +152,8 @@ TEST(HlPassesTest, functionInlining) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep);
+    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
+    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map);
 
     manager.run_morphing_passes(parser.AST);
 
@@ -212,7 +215,8 @@ TEST(HlPassesTest, normalization) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep);
+    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
+    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map);
     manager.run_morphing_passes(parser.AST);
 
     normalization_pass p;
@@ -274,7 +278,8 @@ TEST(HlPassesTest, function_elimination) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep);
+    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
+    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> raw_result = manager.run_global_passes(parser.AST);
@@ -326,7 +331,8 @@ TEST(HlPassesTest, hl_ast_lowering) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep);
+    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
+    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = manager.run_global_passes(parser.AST);

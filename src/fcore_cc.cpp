@@ -14,7 +14,7 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes) {
     target_parser.parse();
     AST = target_parser.AST;
     std::string ep = "main";
-    manager = create_hl_pass_manager(ep);
+    manager = create_hl_pass_manager(ep, variables_map);
     manager.run_morphing_passes(AST);
     
 }

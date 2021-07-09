@@ -12,7 +12,7 @@ hl_definition_node::hl_definition_node(std::string n, c_types_t ct) : hl_ast_nod
 }
 
 bool hl_definition_node::is_initialized() {
-    return initializer== nullptr;
+    return initializer != nullptr;
 }
 
 void hl_definition_node::set_initializer(std::shared_ptr<hl_expression_node> init) {

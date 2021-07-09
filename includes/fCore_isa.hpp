@@ -18,6 +18,13 @@
 #ifndef FCORE_HAS_FCORE_ISA_HPP
 #define FCORE_HAS_FCORE_ISA_HPP
 
+#include "ast/high_level/hl_expression_node.h"
+#include <map>
+
+#define OPCODE_WIDTH 5
+#define REGISTER_ADDRESS_WIDTH 4
+
+
 
 typedef enum {
     isa_immediate_instruction = 1,
@@ -29,11 +36,6 @@ typedef enum {
     isa_load_constant_instruction = 7,
     isa_intercalated_constant= 8
 }isa_instruction_type;
-
-#define OPCODE_WIDTH 5
-#define REGISTER_ADDRESS_WIDTH 4
-
-#include <map>
 
 static const int fcore_register_address_width = 6;
 static const int fcore_opcode_width = 5;
@@ -78,8 +80,41 @@ static std::map <std::string, isa_instruction_type>  fcore_op_types {
                 std::make_pair ("not", isa_conversion_instruction),
                 std::make_pair ("satp", isa_register_instruction),
                 std::make_pair ("satn", isa_register_instruction),
-                std::make_pair ("rec", isa_register_instruction),
+                std::make_pair ("rec", isa_conversion_instruction),
         };
+
+
+static std::map <expression_type_t, bool> fcore_implemented_operations {
+    std::make_pair(expr_add, true),
+    std::make_pair(expr_sub, true),
+    std::make_pair(expr_mult, true),
+    std::make_pair(expr_div, false),
+    std::make_pair(expr_incr_pre, true),
+    std::make_pair(expr_incr_post, true),
+    std::make_pair(expr_decr_pre, true),
+    std::make_pair(expr_decr_post, true),
+    std::make_pair(expr_modulo, false),
+    std::make_pair(expr_and_l, false),
+    std::make_pair(expr_and_b, true),
+    std::make_pair(expr_or_l, false),
+    std::make_pair(expr_or_b, true),
+    std::make_pair(expr_not_l, false),
+    std::make_pair(expr_not_b, true),
+    std::make_pair(expr_xor_b, false),
+    std::make_pair(expr_lsh, false),
+    std::make_pair(expr_rsh, false),
+    std::make_pair(expr_eq, true),
+    std::make_pair(expr_neq, true),
+    std::make_pair(expr_neg, true),
+    std::make_pair(expr_lt, true),
+    std::make_pair(expr_gt, true),
+    std::make_pair(expr_lte, true),
+    std::make_pair(expr_gte, true),
+    std::make_pair(expr_reciprocal, true),
+    std::make_pair(expr_assign, false),
+    std::make_pair(expr_call, false),
+
+};
 
 static std::map <std::string, std::string>  fcore_pseudo_op {
                 std::make_pair ("mov", "add"),

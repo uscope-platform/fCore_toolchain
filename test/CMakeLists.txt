@@ -20,6 +20,7 @@ set(TESTED_SOURCES
         ../src/passes/low_level/variable_lifetime_mapping.cpp
         ../src/passes/low_level/load_intercalation_pass.cpp
         ../src/passes/low_level/instruction_counting_pass.cpp
+        ../src/passes/high_level/hl_variable_mapping.cpp
         ../src/passes/high_level/hl_pass_manager.cpp
         ../src/passes/high_level/function_inlining_pass.cpp
         ../src/passes/high_level/normalization_pass.cpp

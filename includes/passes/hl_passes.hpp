@@ -27,13 +27,13 @@
 #include "passes/high_level/inlined_function_elimination.h"
 #include "passes/high_level/normalization_pass.h"
 #include "passes/high_level/function_elimination_pass.h"
-
+#include "passes/high_level/hl_variable_mapping.h"
 
 #include "frontend/variable_map.hpp"
 #include "ast/high_level/hl_ast_node.h"
 
 
-static hl_pass_manager create_hl_pass_manager(std::string& entry_point){
+static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::shared_ptr<variable_map> &var_map){
     hl_pass_manager manager;
     std::shared_ptr<function_mapping> mapping_pass = std::make_shared<function_mapping>();
     manager.add_morphing_pass(mapping_pass);
@@ -45,9 +45,11 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point){
     manager.add_morphing_pass(inlining_pass);
 
     manager.add_morphing_pass(std::make_shared<inlined_function_elimination>(entry_point));
+
+
     manager.add_global_pass(std::make_shared<normalization_pass>());
     manager.add_global_pass(std::make_shared<function_elimination_pass>());
-
+    manager.add_global_pass(std::make_shared<hl_variable_mapping>(var_map));
     return manager;
 }
 

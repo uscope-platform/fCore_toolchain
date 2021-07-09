@@ -54,6 +54,7 @@ public:
     expression_type_t get_type();
     std::string pretty_print();
     bool is_unary();
+    static bool is_hardware_compatible(expression_type_t et);
     bool is_terminal() override {
         return true;
     }

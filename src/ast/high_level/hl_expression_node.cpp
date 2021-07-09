@@ -135,3 +135,7 @@ bool hl_expression_node::is_unary() {
     res |= expr_type == expr_call;
     return res;
 }
+
+bool hl_expression_node::is_hardware_compatible(expression_type_t et) {
+    return false;
+}

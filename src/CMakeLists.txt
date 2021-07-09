@@ -31,6 +31,7 @@ set(FCORE_LIB_SRCS
         passes/low_level/variable_lifetime_mapping.cpp
         passes/low_level/load_intercalation_pass.cpp
         passes/high_level/hl_pass_manager.cpp
+        passes/high_level/hl_variable_mapping.cpp
         passes/high_level/function_mapping.cpp
         passes/high_level/inlined_function_elimination.cpp
         passes/high_level/function_inlining_pass.cpp
