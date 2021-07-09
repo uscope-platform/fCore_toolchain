@@ -215,8 +215,44 @@ TEST(HlPassesTest, normalization) {
     manager.run_morphing_passes(parser.AST);
 
     normalization_pass p;
-    std::shared_ptr<hl_ast_node> result = p.run_pass(parser.AST);
+    std::shared_ptr<hl_ast_node> raw_result = p.run_pass(parser.AST);
 
-    int a = 0;
 
+    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int);
+
+    std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_1->set_immediate(4);
+    std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_2->set_immediate(5);
+
+    std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(expr_mult);
+    ex_1->set_lhs(op_1);
+    ex_1->set_rhs(op_2);
+    def_1->set_initializer(ex_1);
+
+    std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int);
+
+    op_1 = std::make_shared<hl_ast_operand>(variable_operand);
+    op_1->set_name("intermediate_expr_0");
+    op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_2->set_immediate(6);
+
+    ex_1= std::make_shared<hl_expression_node>(expr_add);
+    ex_1->set_lhs(op_1);
+    ex_1->set_rhs(op_2);
+    def_2->set_initializer(ex_1);
+
+    std::vector<std::shared_ptr<hl_ast_node>> arguments = {};
+    std::shared_ptr<hl_function_def_node> gold_standard = std::make_shared<hl_function_def_node>();
+    gold_standard->set_name("main");
+    gold_standard->set_return_type(c_type_int);
+    gold_standard->set_body({def_1, def_2});
+
+    std::shared_ptr<hl_function_def_node> result = std::static_pointer_cast<hl_function_def_node>(raw_result->get_content()[0]);
+
+    EXPECT_EQ( *gold_standard, *result);
+    if(Test::HasFailure()){
+        std::cout << "TEST RESULT: " << result->pretty_print()<< std::endl;
+        std::cout << "GOLD STANDARD: " << gold_standard->pretty_print()<< std::endl;
+    }
 }
