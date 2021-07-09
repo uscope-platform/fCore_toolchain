@@ -16,7 +16,7 @@
 #include "backend/output_generator.hpp"
 #include "passes/hl_passes.hpp"
 #include "passes/hl_ast/hl_pass_manager.h"
-#include "passes/independent/normalization_pass.h"
+
 
 class fcore_cc {
 public:

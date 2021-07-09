@@ -10,7 +10,7 @@
 
 class ll_pass_manager : public pass_manager_base<ll_ast_node> {
 public:
-    std::shared_ptr<ll_ast_node> run_pass(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>>& pass) override;
+    std::shared_ptr<ll_ast_node> run_morphing_pass(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>>& pass) override;
     std::vector<std::shared_ptr<ll_ast_node>> process_nodes(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>>& pass);
     std::shared_ptr<ll_ast_node> process_leaves(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>>& pass);
 

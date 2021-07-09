@@ -33,13 +33,13 @@
 
 static ll_pass_manager create_ll_pass_manager(std::shared_ptr<variable_map> varmap){
     ll_pass_manager manager;
-    manager.add_pass(std::make_shared<loop_implementation_pass>());
-    manager.add_pass(std::make_shared<pseudo_instructions_pass>());
-    manager.add_pass(std::make_shared<variable_lifetime_mapping>(varmap));
-    manager.add_pass(std::make_shared<load_intercalation_pass>());
-    manager.add_pass(std::make_shared<register_allocation_pass>(varmap));//REGISTER ALLOCATION SHOULD ALWAYS BE THE LAST PASS
+    manager.add_morphing_pass(std::make_shared<loop_implementation_pass>());
+    manager.add_morphing_pass(std::make_shared<pseudo_instructions_pass>());
+    manager.add_morphing_pass(std::make_shared<variable_lifetime_mapping>(varmap));
+    manager.add_morphing_pass(std::make_shared<load_intercalation_pass>());
+    manager.add_morphing_pass(std::make_shared<register_allocation_pass>(varmap));//REGISTER ALLOCATION SHOULD ALWAYS BE THE LAST PASS
     std::shared_ptr<pass_base<ll_ast_node>> ic_pass =std::make_shared<instruction_counting_pass>();
-    manager.add_pass(ic_pass);
+    manager.add_morphing_pass(ic_pass);
     manager.analysis_passes.insert(std::make_pair ("instruction_counting", ic_pass));
     return manager;
 }

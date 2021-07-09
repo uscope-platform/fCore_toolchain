@@ -8,10 +8,13 @@
 #include "code_elements/hl_ast/hl_ast_node.h"
 #include "code_elements/hl_ast/hl_function_def_node.h"
 
-class function_elimination_pass {
+#include "passes/pass_manager_base.hpp"
+
+class function_elimination_pass : public pass_base<hl_ast_node> {
 public:
     function_elimination_pass();
-    std::shared_ptr<hl_ast_node> run_pass(std::shared_ptr<hl_ast_node> element);
+    std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
+    int get_pass_type() override { return GLOBAL_PASS;};
 };
 
 

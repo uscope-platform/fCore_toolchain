@@ -2,12 +2,14 @@
 // Created by fils on 07/07/2021.
 //
 
-#include "passes/independent/normalization_pass.h"
+#include "passes/hl_ast/normalization_pass.h"
 
-normalization_pass::normalization_pass() = default;
+normalization_pass::normalization_pass() : pass_base<hl_ast_node>("normalization pass"){
+
+}
 
 
-std::shared_ptr<hl_ast_node> normalization_pass::run_pass(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<hl_ast_node> normalization_pass::process_global(std::shared_ptr<hl_ast_node> element) {
     std::shared_ptr<hl_ast_node> retval = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
     std::shared_ptr<hl_function_def_node> ep = std::static_pointer_cast<hl_function_def_node>(element->get_content()[0]);

@@ -28,7 +28,9 @@
 #define NONE_PASS 0
 #define NODE_PASS 1
 #define LEAF_PASS 2
-#define ANALYSIS_PASS 3
+#define GLOBAL_PASS 3
+#define ANALYSIS_PASS 4
+
 
 template<class E>
 class pass_base {
@@ -38,6 +40,9 @@ public:
         std::vector<std::shared_ptr<E>> elem;
         elem.push_back(element);
         return elem;
+    };
+    virtual std::shared_ptr<E> process_global(std::shared_ptr<E> element) {
+        return element;
     };
     virtual std::shared_ptr<E> process_leaf(std::shared_ptr<E> element){
         return element;
@@ -54,30 +59,57 @@ private:
 template<class E>
 class pass_manager_base {
 public:
-    void add_pass(const std::shared_ptr<pass_base<E>>& pass);
+    // API FOR MORPHING PASSES
+    void add_morphing_pass(const std::shared_ptr<pass_base<E>>& pass);
     std::shared_ptr<E> run_morphing_passes(std::shared_ptr<E> AST);
-    virtual std::shared_ptr<E> run_pass(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass) {return std::shared_ptr<E>();};
+    virtual std::shared_ptr<E> run_morphing_pass(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass) {return std::shared_ptr<E>();};
+    // API FOR GLOBAL PASSES
+    void add_global_pass(const std::shared_ptr<pass_base<E>>& pass);
+    std::shared_ptr<E> run_global_passes(std::shared_ptr<E> AST);
+    virtual std::shared_ptr<E> run_global_pass(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass) {return std::shared_ptr<E>();};
+
     std::vector<std::vector<int>> run_analysis_passes(const std::shared_ptr<E>& AST);
     void analyze_tree(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass);
     std::unordered_map<std::string, std::shared_ptr<pass_base<E>>> analysis_passes;
 protected:
     std::vector<std::shared_ptr<pass_base<E>>> morphing_passes = {};
+    std::vector<std::shared_ptr<pass_base<E>>> global_passes = {};
 };
 
 
 template<class E>
-void pass_manager_base<E>::add_pass(const std::shared_ptr<pass_base<E>>& pass) {
+void pass_manager_base<E>::add_morphing_pass(const std::shared_ptr<pass_base<E>>& pass) {
     morphing_passes.push_back(pass);
 }
+
 
 template<class E>
 std::shared_ptr<E> pass_manager_base<E>::run_morphing_passes(std::shared_ptr<E> AST) {
     std::shared_ptr<E> working_tree = std::move(AST);
     for( auto& pass:morphing_passes){
-        working_tree = run_pass(working_tree, pass);
+        working_tree = run_morphing_pass(working_tree, pass);
     }
     return working_tree;
 }
+
+
+
+template<class E>
+void pass_manager_base<E>::add_global_pass(const std::shared_ptr<pass_base<E>>& pass) {
+    global_passes.push_back(pass);
+}
+
+template<class E>
+std::shared_ptr<E> pass_manager_base<E>::run_global_passes(std::shared_ptr<E> AST) {
+    std::shared_ptr<E> working_tree = std::move(AST);
+    for( auto& pass:global_passes){
+        working_tree = run_global_pass(working_tree, pass);
+    }
+    return working_tree;
+}
+
+
+
 
 template<class E>
 std::vector<std::vector<int>> pass_manager_base<E>::run_analysis_passes(const std::shared_ptr<E>& AST) {
@@ -100,7 +132,6 @@ pass_manager_base<E>::analyze_tree(const std::shared_ptr<E> &subtree, const std:
     }
     pass->analyze_element(subtree);
 }
-
 
 
 

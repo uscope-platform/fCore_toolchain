@@ -4,7 +4,7 @@
 
 #include "passes/hl_ast/hl_pass_manager.h"
 
-std::shared_ptr<hl_ast_node> hl_pass_manager::run_pass(const std::shared_ptr<hl_ast_node> &subtree,
+std::shared_ptr<hl_ast_node> hl_pass_manager::run_morphing_pass(const std::shared_ptr<hl_ast_node> &subtree,
                                                        const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
     std::shared_ptr<hl_ast_node> ret_val;
     switch (pass->get_pass_type()) {
@@ -23,6 +23,12 @@ std::shared_ptr<hl_ast_node> hl_pass_manager::run_pass(const std::shared_ptr<hl_
     }
     return ret_val;
 }
+
+std::shared_ptr<hl_ast_node> hl_pass_manager::run_global_pass(const std::shared_ptr<hl_ast_node> &subtree,
+                                                              const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
+    return pass->process_global(subtree);
+}
+
 
 std::shared_ptr<hl_ast_node> hl_pass_manager::process_leaves(const std::shared_ptr<hl_ast_node> &subtree,
                                                              const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
@@ -73,9 +79,6 @@ std::vector<std::shared_ptr<hl_ast_node>> hl_pass_manager::process_nodes(const s
     }
     subtree->set_content(result_vector);
     return pass->process_node(subtree);
-
-
-
 
 
 }
@@ -138,3 +141,4 @@ hl_pass_manager::process_terminal_by_type(const std::shared_ptr<hl_ast_node> &su
     };
     return res;
 }
+

@@ -12,8 +12,8 @@
 #include "passes/hl_passes.hpp"
 #include "passes/hl_ast/function_mapping.h"
 #include "passes/hl_ast/hl_pass_manager.h"
-#include "passes/independent/normalization_pass.h"
-#include "passes/independent/function_elimination_pass.h"
+#include "passes/hl_ast/normalization_pass.h"
+
 
 #include <memory>
 #include <fstream>
@@ -216,7 +216,7 @@ TEST(HlPassesTest, normalization) {
     manager.run_morphing_passes(parser.AST);
 
     normalization_pass p;
-    std::shared_ptr<hl_ast_node> raw_result = p.run_pass(parser.AST);
+    std::shared_ptr<hl_ast_node> raw_result = p.process_global(parser.AST);
 
 
     std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int);
@@ -277,10 +277,7 @@ TEST(HlPassesTest, function_elimination) {
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.run_morphing_passes(parser.AST);
 
-    normalization_pass n_p;
-    std::shared_ptr<hl_ast_node> raw_result = n_p.run_pass(parser.AST);
-    function_elimination_pass fe_p;
-    raw_result = fe_p.run_pass(raw_result);
+    std::shared_ptr<hl_ast_node> raw_result = manager.run_global_passes(parser.AST);
 
     std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int);
 

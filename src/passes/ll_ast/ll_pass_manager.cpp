@@ -39,7 +39,7 @@ std::shared_ptr<ll_ast_node> ll_pass_manager::process_leaves(const std::shared_p
     return subtree;
 }
 
-std::shared_ptr<ll_ast_node> ll_pass_manager::run_pass(const std::shared_ptr<ll_ast_node> &subtree,
+std::shared_ptr<ll_ast_node> ll_pass_manager::run_morphing_pass(const std::shared_ptr<ll_ast_node> &subtree,
                                                        const std::shared_ptr<pass_base<ll_ast_node>> &pass) {
     std::shared_ptr<ll_ast_node> ret_val;
     switch (pass->get_pass_type()) {
