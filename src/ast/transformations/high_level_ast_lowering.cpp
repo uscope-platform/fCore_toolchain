@@ -4,6 +4,12 @@
 
 #include "ast/transformations/high_level_ast_lowering.h"
 
+high_level_ast_lowering::high_level_ast_lowering() {
+    output_ast = std::make_shared<ll_ast_node>(ll_type_program_head);
+}
+
+
+
 void high_level_ast_lowering::translate() {
     for(const auto &i:input_ast->get_content()){
         std::shared_ptr<ll_ast_node> lowered_instr = translate_node(i);
@@ -47,18 +53,21 @@ std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::
 }
 
 std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(std::shared_ptr<hl_expression_node> input) {
-    std::shared_ptr<ll_instruction_node> retval = std::make_shared<ll_instruction_node>(isa_immediate_instruction);
+    std::shared_ptr<ll_instruction_node> retval = std::make_shared<ll_instruction_node>();
+
     return retval;
 }
 
 std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(std::shared_ptr<hl_definition_node> input) {
-    std::shared_ptr<ll_instruction_node> retval = std::make_shared<ll_instruction_node>(isa_immediate_instruction);
+    std::shared_ptr<ll_instruction_node> retval = std::make_shared<ll_instruction_node>();
+
     return retval;
 
 }
 
 std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(std::shared_ptr<hl_ast_operand> input) {
-    std::shared_ptr<ll_instruction_node> retval = std::make_shared<ll_instruction_node>(isa_immediate_instruction);
+    std::shared_ptr<ll_instruction_node> retval = std::make_shared<ll_instruction_node>();
+
     return retval;
 }
 

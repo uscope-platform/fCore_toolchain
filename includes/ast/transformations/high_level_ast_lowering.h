@@ -17,7 +17,7 @@
 
 class high_level_ast_lowering {
 public:
-    high_level_ast_lowering() = default;
+    high_level_ast_lowering();
     void set_input_ast(std::shared_ptr<hl_ast_node> i) {input_ast = std::move(i);};
     void translate();
     std::shared_ptr<ll_ast_node> get_output_ast() {return output_ast;};
