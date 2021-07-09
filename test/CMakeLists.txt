@@ -1,31 +1,32 @@
 set(TESTED_SOURCES
         ../src/backend/output_generator.cpp
-        ../src/code_elements/ll_ast/ll_ast_node.cpp
-        ../src/code_elements/ll_ast/ll_loop_node.cpp
-        ../src/code_elements/ll_ast/ll_instruction_node.cpp
-        ../src/code_elements/ll_ast/ll_ast_pragma.cpp
-        ../src/code_elements/hl_ast/hl_ast_node.cpp
-        ../src/code_elements/hl_ast/hl_definition_node.cpp
-        ../src/code_elements/hl_ast/hl_function_def_node.cpp
-        ../src/code_elements/hl_ast/hl_expression_node.cpp
-        ../src/code_elements/hl_ast/hl_ast_operand.cpp
-        ../src/code_elements/hl_ast/hl_function_call_node.cpp
-        ../src/code_elements/variable.cpp
-        ../src/code_elements/define.cpp
-        ../src/passes/ll_ast/ll_pass_manager.cpp
-        ../src/passes/ll_ast/loop_implementation_pass.cpp
-        ../src/passes/ll_ast/pseudo_instructions_pass.cpp
-        ../src/passes/ll_ast/register_allocation_pass.cpp
-        ../src/passes/ll_ast/variable_lifetime_mapping.cpp
-        ../src/passes/ll_ast/load_intercalation_pass.cpp
-        ../src/passes/ll_ast/instruction_counting_pass.cpp
-        ../src/passes/hl_ast/hl_pass_manager.cpp
-        ../src/passes/hl_ast/function_inlining_pass.cpp
-        ../src/passes/hl_ast/normalization_pass.cpp
-        ../src/passes/hl_ast/function_elimination_pass.cpp
-        ../src/passes/hl_ast/inlined_function_elimination.cpp
-        ../src/passes/hl_ast/function_mapping.cpp
-        ../src/passes/hl_ast/division_implementation_pass.cpp
+        ../src/ast/low_level/ll_ast_node.cpp
+        ../src/ast/low_level/ll_loop_node.cpp
+        ../src/ast/low_level/ll_instruction_node.cpp
+        ../src/ast/low_level/ll_ast_pragma.cpp
+        ../src/ast/high_level/hl_ast_node.cpp
+        ../src/ast/high_level/hl_definition_node.cpp
+        ../src/ast/high_level/hl_function_def_node.cpp
+        ../src/ast/high_level/hl_expression_node.cpp
+        ../src/ast/high_level/hl_ast_operand.cpp
+        ../src/ast/high_level/hl_function_call_node.cpp
+        ../src/ast/transformations/high_level_ast_lowering.cpp
+        ../src/ast/variable.cpp
+        ../src/ast/define.cpp
+        ../src/passes/low_level/ll_pass_manager.cpp
+        ../src/passes/low_level/loop_implementation_pass.cpp
+        ../src/passes/low_level/pseudo_instructions_pass.cpp
+        ../src/passes/low_level/register_allocation_pass.cpp
+        ../src/passes/low_level/variable_lifetime_mapping.cpp
+        ../src/passes/low_level/load_intercalation_pass.cpp
+        ../src/passes/low_level/instruction_counting_pass.cpp
+        ../src/passes/high_level/hl_pass_manager.cpp
+        ../src/passes/high_level/function_inlining_pass.cpp
+        ../src/passes/high_level/normalization_pass.cpp
+        ../src/passes/high_level/function_elimination_pass.cpp
+        ../src/passes/high_level/inlined_function_elimination.cpp
+        ../src/passes/high_level/function_mapping.cpp
+        ../src/passes/high_level/division_implementation_pass.cpp
         ../src/frontend/variable_map.cpp
         ../src/frontend/define_map.cpp
         ../src/frontend/asm/register_map.cpp

@@ -10,32 +10,33 @@ set(FCORE_LIB_SRCS
         frontend/define_map.cpp
         frontend/asm/register_map.cpp
         backend/output_generator.cpp
-        code_elements/ll_ast/ll_instruction_node.cpp
-        code_elements/ll_ast/ll_loop_node.cpp
-        code_elements/ll_ast/ll_ast_pragma.cpp
-        code_elements/ll_ast/ll_ast_node.cpp
-        code_elements/hl_ast/hl_ast_node.cpp
-        code_elements/hl_ast/hl_definition_node.cpp
-        code_elements/hl_ast/hl_function_def_node.cpp
-        code_elements/hl_ast/hl_expression_node.cpp
-        code_elements/hl_ast/hl_function_call_node.cpp
-        code_elements/hl_ast/hl_ast_operand.cpp
-        code_elements/define.cpp
-        code_elements/variable.cpp
-        passes/ll_ast/ll_pass_manager.cpp
-        passes/ll_ast/loop_implementation_pass.cpp
-        passes/ll_ast/pseudo_instructions_pass.cpp
-        passes/ll_ast/instruction_counting_pass.cpp#
-        passes/ll_ast/register_allocation_pass.cpp
-        passes/ll_ast/variable_lifetime_mapping.cpp
-        passes/ll_ast/load_intercalation_pass.cpp
-        passes/hl_ast/hl_pass_manager.cpp
-        passes/hl_ast/function_mapping.cpp
-        passes/hl_ast/inlined_function_elimination.cpp
-        passes/hl_ast/function_inlining_pass.cpp
-        passes/hl_ast/division_implementation_pass.cpp
-        passes/hl_ast/normalization_pass.cpp
-        passes/hl_ast/function_elimination_pass.cpp
+        ast/low_level/ll_instruction_node.cpp
+        ast/low_level/ll_loop_node.cpp
+        ast/low_level/ll_ast_pragma.cpp
+        ast/low_level/ll_ast_node.cpp
+        ast/high_level/hl_ast_node.cpp
+        ast/high_level/hl_definition_node.cpp
+        ast/high_level/hl_function_def_node.cpp
+        ast/high_level/hl_expression_node.cpp
+        ast/high_level/hl_function_call_node.cpp
+        ast/high_level/hl_ast_operand.cpp
+        ast/transformations/high_level_ast_lowering.cpp
+        ast/define.cpp
+        ast/variable.cpp
+        passes/low_level/ll_pass_manager.cpp
+        passes/low_level/loop_implementation_pass.cpp
+        passes/low_level/pseudo_instructions_pass.cpp
+        passes/low_level/instruction_counting_pass.cpp#
+        passes/low_level/register_allocation_pass.cpp
+        passes/low_level/variable_lifetime_mapping.cpp
+        passes/low_level/load_intercalation_pass.cpp
+        passes/high_level/hl_pass_manager.cpp
+        passes/high_level/function_mapping.cpp
+        passes/high_level/inlined_function_elimination.cpp
+        passes/high_level/function_inlining_pass.cpp
+        passes/high_level/division_implementation_pass.cpp
+        passes/high_level/normalization_pass.cpp
+        passes/high_level/function_elimination_pass.cpp
         fcore_has.cpp
         fcore_cc.cpp
         )
