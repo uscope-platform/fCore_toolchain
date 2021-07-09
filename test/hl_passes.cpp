@@ -217,5 +217,6 @@ TEST(HlPassesTest, normalization) {
     normalization_pass p;
     std::shared_ptr<hl_ast_node> result = p.run_pass(parser.AST);
 
+    int a = 0;
 
 }
