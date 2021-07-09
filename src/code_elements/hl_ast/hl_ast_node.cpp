@@ -38,8 +38,48 @@ c_types_t hl_ast_node::string_to_type(const std::string &t) {
 bool operator==(const hl_ast_node &lhs, const hl_ast_node &rhs) {
     bool ret_val = true;
     ret_val &= lhs.node_type == rhs.node_type;
-    ret_val &= lhs.content == rhs.content;
+
+    if(lhs.content.empty() && rhs.content.empty()){
+        ret_val &= true;
+    } else if(lhs.content.empty() || rhs.content.empty()){
+        ret_val = false;
+    } else{
+        bool body_equal = true;
+        body_equal &= lhs.content.size() == rhs.content.size();
+
+        for(int i = 0; i<lhs.content.size(); i++){
+
+            body_equal &=  hl_ast_node::compare_content_by_type(lhs.content[i], rhs.content[i]);
+        }
+        ret_val &= body_equal;
+    }
+
     return ret_val;
+}
+
+bool
+hl_ast_node::compare_content_by_type(const std::shared_ptr<hl_ast_node> &lhs, const std::shared_ptr<hl_ast_node> &rhs) {
+    if(lhs->node_type != rhs->node_type) return false;
+
+    switch (lhs->node_type) {
+        case hl_ast_node_type_loop:
+        case hl_ast_node_type_conditional:
+        case hl_ast_node_type_program_root:
+            return *lhs == *rhs;
+        case hl_ast_node_type_operand:
+            return *std::static_pointer_cast<hl_ast_operand>(lhs) == *std::static_pointer_cast<hl_ast_operand>(rhs);
+        case hl_ast_node_type_expr:
+            return *std::static_pointer_cast<hl_expression_node>(lhs) == *std::static_pointer_cast<hl_expression_node>(rhs);
+        case hl_ast_node_type_definition:
+            return *std::static_pointer_cast<hl_definition_node>(lhs) == *std::static_pointer_cast<hl_definition_node>(rhs);
+        case hl_ast_node_type_function_def:
+            return *std::static_pointer_cast<hl_function_def_node>(lhs) == *std::static_pointer_cast<hl_function_def_node>(rhs);
+        case hl_ast_node_type_function_call:
+            return *std::static_pointer_cast<hl_function_call_node>(lhs) == *std::static_pointer_cast<hl_function_call_node>(rhs);
+        default:
+            return false;
+    }
+    return false;
 }
 
 std::string hl_ast_node::type_to_string(const c_types_t &t) {
@@ -178,3 +218,4 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_program_root(const std::shar
     copied_obj->set_content(orig->get_content());
     return copied_obj;
 }
+
