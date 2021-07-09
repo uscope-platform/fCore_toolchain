@@ -22,6 +22,7 @@ set(TESTED_SOURCES
         ../src/passes/hl_ast/hl_pass_manager.cpp
         ../src/passes/hl_ast/function_inlining_pass.cpp
         ../src/passes/independent/normalization_pass.cpp
+        ../src/passes/independent/function_elimination_pass.cpp
         ../src/passes/hl_ast/inlined_function_elimination.cpp
         ../src/passes/hl_ast/function_mapping.cpp
         ../src/passes/hl_ast/division_implementation_pass.cpp

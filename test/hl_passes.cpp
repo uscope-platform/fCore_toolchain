@@ -13,6 +13,7 @@
 #include "passes/hl_ast/function_mapping.h"
 #include "passes/hl_ast/hl_pass_manager.h"
 #include "passes/independent/normalization_pass.h"
+#include "passes/independent/function_elimination_pass.h"
 
 #include <memory>
 #include <fstream>
@@ -255,4 +256,60 @@ TEST(HlPassesTest, normalization) {
         std::cout << "TEST RESULT: " << result->pretty_print()<< std::endl;
         std::cout << "GOLD STANDARD: " << gold_standard->pretty_print()<< std::endl;
     }
+}
+
+
+
+TEST(HlPassesTest, function_elimination) {
+
+
+    std::string input_file = "test_normalization.c";
+    std::ifstream ifs(input_file);
+
+    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(ifs, result_var, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
+
+    std::string ep = "main";
+    hl_pass_manager manager = create_hl_pass_manager(ep);
+    manager.run_morphing_passes(parser.AST);
+
+    normalization_pass n_p;
+    std::shared_ptr<hl_ast_node> raw_result = n_p.run_pass(parser.AST);
+    function_elimination_pass fe_p;
+    raw_result = fe_p.run_pass(raw_result);
+
+    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int);
+
+    std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_1->set_immediate(4);
+    std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_2->set_immediate(5);
+
+    std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(expr_mult);
+    ex_1->set_lhs(op_1);
+    ex_1->set_rhs(op_2);
+    def_1->set_initializer(ex_1);
+
+    std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int);
+
+    op_1 = std::make_shared<hl_ast_operand>(variable_operand);
+    op_1->set_name("intermediate_expr_0");
+    op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_2->set_immediate(6);
+
+    ex_1= std::make_shared<hl_expression_node>(expr_add);
+    ex_1->set_lhs(op_1);
+    ex_1->set_rhs(op_2);
+    def_2->set_initializer(ex_1);
+
+    std::vector<std::shared_ptr<hl_ast_node>> arguments = {};
+    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    gold_standard->set_content({def_1, def_2});
+
+    EXPECT_EQ( *gold_standard, *raw_result);
+
 }
