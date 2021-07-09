@@ -10,18 +10,24 @@ normalization_pass::normalization_pass() = default;
 std::shared_ptr<hl_ast_node> normalization_pass::run_pass(std::shared_ptr<hl_ast_node> element) {
     std::shared_ptr<hl_ast_node> retval = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
-    std::shared_ptr<hl_function_def_node> main = std::static_pointer_cast<hl_function_def_node>(element->get_content()[0]);
+    std::shared_ptr<hl_function_def_node> ep = std::static_pointer_cast<hl_function_def_node>(element->get_content()[0]);
 
     std::vector<std::shared_ptr<hl_ast_node>> normalized_body;
 
-    for(auto &i: main->get_body()){
+    std::shared_ptr<hl_function_def_node> new_ep = std::static_pointer_cast<hl_function_def_node>(hl_ast_node::deep_copy(ep));
+
+    for(auto &i: ep->get_body()){
         std::shared_ptr<hl_ast_node> tmp_res = process_node_by_type_top(i);
         normalized_body.insert(normalized_body.end(), additional_statements.begin(), additional_statements.end());
         normalized_body.push_back(tmp_res);
     }
 
-    retval->set_content(normalized_body);
+    new_ep->set_parameters_list({});
+    new_ep->set_body(normalized_body);
+    // PARAMETERS LIST AND RETURN VALUE ARE DISCARDED BECAUSE  USELESS FOR THE FEMTOCORE AS IPUTS AND OUTPUTS OF THE PROGRAM
+    // ARE DETERMINED BY PRAGMAS SINCE THEY NEED TO BE BOUND TO SPECIFIC REGISTERS
 
+    retval->add_content(new_ep);
     return retval;
 }
 

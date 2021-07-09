@@ -56,7 +56,9 @@ std::string hl_ast_node::type_to_string(const c_types_t &t) {
 }
 
 std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy(const std::shared_ptr<hl_ast_node> &node) {
-    if(node->node_type == hl_ast_node_type_expr){
+    if(node == nullptr){
+        return nullptr;
+    } else if(node->node_type == hl_ast_node_type_expr){
         return deep_copy_expr(node);
     } else if(node->node_type == hl_ast_node_type_definition){
         return deep_copy_def(node);
