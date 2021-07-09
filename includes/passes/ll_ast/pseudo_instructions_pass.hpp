@@ -20,7 +20,6 @@
 #include <memory>
 #include "code_elements/ll_ast/ll_instruction_node.h"
 #include "code_elements/ll_ast/ll_ast_node.hpp"
-#include "passes/pass_manager_base.hpp"
 #include "passes/pass_base.hpp"
 #include "fCore_isa.hpp"
 

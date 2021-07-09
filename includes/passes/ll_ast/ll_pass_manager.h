@@ -8,7 +8,6 @@
 #include "passes/pass_manager_base.hpp"
 #include "code_elements/ll_ast/ll_ast_node.hpp"
 #include "passes/pass_base.hpp"
-#include "passes/pass_base.hpp"
 
 class ll_pass_manager : public pass_manager_base<ll_ast_node> {
 public:
