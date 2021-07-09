@@ -5,9 +5,9 @@
 #ifndef FCORE_HAS_HL_FUNCTION_CALL_NODE_H
 #define FCORE_HAS_HL_FUNCTION_CALL_NODE_H
 
-#include "hl_ast_node.h"
-#include "hl_expression_node.h"
-#include "hl_ast_operand.h"
+#include "ast/high_level/hl_ast_node.h"
+#include "ast/high_level/hl_expression_node.h"
+#include "ast/high_level/hl_ast_operand.h"
 
 #include <string>
 #include <utility>

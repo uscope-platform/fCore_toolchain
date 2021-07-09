@@ -20,16 +20,16 @@
 
 #include "pass_manager_base.hpp"
 // LL passes
-#include "ll_ast/loop_implementation_pass.hpp"
-#include "ll_ast/pseudo_instructions_pass.hpp"
-#include "ll_ast/instruction_counting_pass.hpp"
-#include "ll_ast/register_allocation_pass.hpp"
-#include "ll_ast/variable_lifetime_mapping.hpp"
-#include "ll_ast/load_intercalation_pass.hpp"
+#include "passes/low_level/loop_implementation_pass.hpp"
+#include "passes/low_level/pseudo_instructions_pass.hpp"
+#include "passes/low_level/instruction_counting_pass.hpp"
+#include "passes/low_level/register_allocation_pass.hpp"
+#include "passes/low_level/variable_lifetime_mapping.hpp"
+#include "passes/low_level/load_intercalation_pass.hpp"
 
 #include "frontend/variable_map.hpp"
-#include "code_elements/ll_ast/ll_ast_node.hpp"
-#include "passes/ll_ast/ll_pass_manager.h"
+#include "ast/low_level/ll_ast_node.hpp"
+#include "passes/low_level/ll_pass_manager.h"
 #include "passes/pass_base.hpp"
 
 static ll_pass_manager create_ll_pass_manager(std::shared_ptr<variable_map> varmap){

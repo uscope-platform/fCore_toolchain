@@ -18,8 +18,8 @@
 #define FCORE_HAS_PSEUDO_INSTRUCTIONS_PASS_HPP
 
 #include <memory>
-#include "code_elements/ll_ast/ll_instruction_node.h"
-#include "code_elements/ll_ast/ll_ast_node.hpp"
+#include "ast/low_level/ll_instruction_node.h"
+#include "ast/low_level/ll_ast_node.hpp"
 #include "passes/pass_base.hpp"
 #include "fCore_isa.hpp"
 

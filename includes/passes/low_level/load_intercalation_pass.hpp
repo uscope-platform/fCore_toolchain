@@ -18,8 +18,8 @@
 #define FCORE_HAS_LOAD_INTERCALATION_PASS_HPP
 
 
-#include "code_elements/ll_ast/ll_instruction_node.h"
-#include "code_elements/ll_ast/ll_ast_node.hpp"
+#include "ast/low_level/ll_instruction_node.h"
+#include "ast/low_level/ll_ast_node.hpp"
 #include "frontend/variable_map.hpp"
 #include "passes/pass_base.hpp"
 

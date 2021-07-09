@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "passes/ll_ast/loop_implementation_pass.hpp"
+#include "passes/low_level/loop_implementation_pass.hpp"
 
 
 loop_implementation_pass::loop_implementation_pass() : pass_base<ll_ast_node>("loop implementation pass"){

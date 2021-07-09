@@ -10,7 +10,7 @@
 #include <memory>
 #include <utility>
 
-#include "code_elements/define.h"
+#include "ast/define.h"
 
 class define_map {
 public:

@@ -3,16 +3,16 @@
 //
 
 #include <gtest/gtest.h>
-#include "code_elements/hl_ast/hl_ast_node.h"
-#include "code_elements/hl_ast/hl_ast_operand.h"
-#include "code_elements/hl_ast/hl_expression_node.h"
+#include "ast/high_level/hl_ast_node.h"
+#include "ast/high_level/hl_ast_operand.h"
+#include "ast/high_level/hl_expression_node.h"
 #include "frontend/variable_map.hpp"
 #include "frontend/define_map.h"
 #include "frontend/C/C_language_parser.h"
 #include "passes/hl_passes.hpp"
-#include "passes/hl_ast/function_mapping.h"
-#include "passes/hl_ast/hl_pass_manager.h"
-#include "passes/hl_ast/normalization_pass.h"
+#include "passes/high_level/function_mapping.h"
+#include "passes/high_level/hl_pass_manager.h"
+#include "passes/high_level/normalization_pass.h"
 
 
 #include <memory>

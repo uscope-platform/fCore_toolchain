@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "code_elements/ll_ast/ll_ast_node.hpp"
-#include "code_elements/ll_ast/ll_loop_node.h"
-#include "code_elements/ll_ast/ll_ast_pragma.h"
-#include "code_elements/ll_ast/ll_instruction_node.h"
+#include "ast/low_level/ll_ast_node.hpp"
+#include "ast/low_level/ll_loop_node.h"
+#include "ast/low_level/ll_ast_pragma.h"
+#include "ast/low_level/ll_instruction_node.h"
 
 ll_ast_node::ll_ast_node() {
 

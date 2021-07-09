@@ -15,7 +15,7 @@
 #include "frontend/C/C_language_parser.h"
 #include "backend/output_generator.hpp"
 #include "passes/hl_passes.hpp"
-#include "passes/hl_ast/hl_pass_manager.h"
+#include "passes/high_level/hl_pass_manager.h"
 
 
 class fcore_cc {

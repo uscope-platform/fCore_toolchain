@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "passes/ll_ast/instruction_counting_pass.hpp"
+#include "passes/low_level/instruction_counting_pass.hpp"
 
 instruction_counting_pass::instruction_counting_pass() : pass_base<ll_ast_node>("instruction counting pass"){
 

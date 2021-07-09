@@ -2,7 +2,7 @@
 // Created by fils on 01/07/2021.
 //
 
-#include "code_elements/hl_ast/hl_ast_operand.h"
+#include "ast/high_level/hl_ast_operand.h"
 
 hl_ast_operand::hl_ast_operand(operand_type_t ot) : hl_ast_node(hl_ast_node_type_operand) {
     operand_type = ot;

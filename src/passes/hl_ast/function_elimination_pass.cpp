@@ -2,7 +2,7 @@
 // Created by fils on 09/07/2021.
 //
 
-#include "passes/hl_ast/function_elimination_pass.h"
+#include "passes/high_level/function_elimination_pass.h"
 
 function_elimination_pass::function_elimination_pass() : pass_base<hl_ast_node>("function elimination pass"){ {
 

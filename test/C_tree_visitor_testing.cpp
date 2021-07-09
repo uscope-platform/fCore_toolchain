@@ -8,8 +8,8 @@
 #include "frontend/define_map.h"
 #include "frontend/variable_map.hpp"
 #include "frontend/C/C_language_parser.h"
-#include "code_elements/hl_ast/hl_ast_operand.h"
-#include "code_elements/hl_ast/hl_expression_node.h"
+#include "ast/high_level/hl_ast_operand.h"
+#include "ast/high_level/hl_expression_node.h"
 
 
 TEST( cTreeVisitor, unaryExpressions) {

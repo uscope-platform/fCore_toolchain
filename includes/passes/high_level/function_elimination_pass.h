@@ -5,8 +5,8 @@
 #ifndef FCORE_HAS_FUNCTION_ELIMINATION_PASS_H
 #define FCORE_HAS_FUNCTION_ELIMINATION_PASS_H
 
-#include "code_elements/hl_ast/hl_ast_node.h"
-#include "code_elements/hl_ast/hl_function_def_node.h"
+#include "ast/high_level/hl_ast_node.h"
+#include "ast/high_level/hl_function_def_node.h"
 #include "passes/pass_base.hpp"
 
 

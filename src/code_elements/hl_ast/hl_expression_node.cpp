@@ -2,7 +2,7 @@
 // Created by fils on 01/07/2021.
 //
 
-#include "code_elements/hl_ast/hl_expression_node.h"
+#include "ast/high_level/hl_expression_node.h"
 
 hl_expression_node::hl_expression_node(expression_type_t et) : hl_ast_node(hl_ast_node_type_expr) {
     expr_type = et;

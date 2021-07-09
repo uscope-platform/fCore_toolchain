@@ -19,18 +19,18 @@
 #define FCORE_HAS_HL_PASSES_HPP
 
 #include "pass_manager_base.hpp"
-#include "passes/hl_ast/hl_pass_manager.h"
+#include "passes/high_level/hl_pass_manager.h"
 //HL PASSES
-#include "passes/hl_ast/function_inlining_pass.h"
-#include "passes/hl_ast/division_implementation_pass.h"
-#include "passes/hl_ast/function_mapping.h"
-#include "passes/hl_ast/inlined_function_elimination.h"
-#include "passes/hl_ast/normalization_pass.h"
-#include "passes/hl_ast/function_elimination_pass.h"
+#include "passes/high_level/function_inlining_pass.h"
+#include "passes/high_level/division_implementation_pass.h"
+#include "passes/high_level/function_mapping.h"
+#include "passes/high_level/inlined_function_elimination.h"
+#include "passes/high_level/normalization_pass.h"
+#include "passes/high_level/function_elimination_pass.h"
 
 
 #include "frontend/variable_map.hpp"
-#include "code_elements/hl_ast/hl_ast_node.h"
+#include "ast/high_level/hl_ast_node.h"
 
 
 static hl_pass_manager create_hl_pass_manager(std::string& entry_point){

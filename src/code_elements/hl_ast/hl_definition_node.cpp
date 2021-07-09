@@ -2,9 +2,8 @@
 // Created by fils on 01/07/2021.
 //
 
-#include "code_elements/hl_ast/hl_definition_node.h"
+#include "ast/high_level/hl_definition_node.h"
 
-#include <utility>
 
 hl_definition_node::hl_definition_node(std::string n, c_types_t ct) : hl_ast_node(hl_ast_node_type_definition) {
     name = std::move(n);

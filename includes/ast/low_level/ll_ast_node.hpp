@@ -24,8 +24,8 @@
 #include <iostream>
 #include <utility>
 
-#include "code_elements/variable.hpp"
-#include "code_elements/ast_node_base.h"
+#include "ast/variable.hpp"
+#include "ast/ast_node_base.h"
 
 
 typedef enum {

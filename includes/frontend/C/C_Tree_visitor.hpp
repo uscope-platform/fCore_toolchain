@@ -29,16 +29,16 @@
 
 #include "C_parser/C_grammarBaseListener.h"
 #include "C_parser/C_grammarParser.h"
-#include "code_elements/variable.hpp"
+#include "ast/variable.hpp"
 #include "frontend/variable_map.hpp"
 
 
-#include "code_elements/hl_ast/hl_function_def_node.h"
-#include "code_elements/hl_ast/hl_ast_node.h"
-#include "code_elements/hl_ast/hl_expression_node.h"
-#include "code_elements/hl_ast/hl_ast_operand.h"
-#include "code_elements/hl_ast/hl_definition_node.h"
-#include "code_elements/hl_ast/hl_function_call_node.h"
+#include "ast/high_level/hl_function_def_node.h"
+#include "ast/high_level/hl_ast_node.h"
+#include "ast/high_level/hl_expression_node.h"
+#include "ast/high_level/hl_ast_operand.h"
+#include "ast/high_level/hl_definition_node.h"
+#include "ast/high_level/hl_function_call_node.h"
 
 #include <gtest/gtest_prod.h>
 

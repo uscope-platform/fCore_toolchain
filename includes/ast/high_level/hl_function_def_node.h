@@ -7,10 +7,11 @@
 
 #include <map>
 #include <string>
+#include <utility>
 
-#include "hl_ast_node.h"
-#include "hl_definition_node.h"
-#include "hl_expression_node.h"
+#include "ast/high_level/hl_ast_node.h"
+#include "ast/high_level/hl_definition_node.h"
+#include "ast/high_level/hl_expression_node.h"
 
 class hl_function_def_node : public hl_ast_node{
 public:

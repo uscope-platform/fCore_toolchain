@@ -13,8 +13,8 @@
 #include <regex>
 #include <stdexcept>
 
-#include "code_elements/variable.hpp"
-#include "code_elements/define.h"
+#include "ast/variable.hpp"
+#include "ast/define.h"
 #include "frontend/variable_map.hpp"
 #include "frontend/define_map.h"
 

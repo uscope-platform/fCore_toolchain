@@ -2,9 +2,9 @@
 // Created by fils on 29/06/2021.
 //
 
-#include "code_elements/define.h"
+#include "ast/define.h"
 
-#include <utility>
+
 
 define::define(int l, std::string n, std::string c) {
 line = l;

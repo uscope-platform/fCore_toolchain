@@ -2,7 +2,7 @@
 // Created by fils on 07/07/2021.
 //
 
-#include "passes/hl_ast/normalization_pass.h"
+#include "passes/high_level/normalization_pass.h"
 
 normalization_pass::normalization_pass() : pass_base<hl_ast_node>("normalization pass"){
 

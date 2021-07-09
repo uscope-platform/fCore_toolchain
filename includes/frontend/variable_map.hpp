@@ -23,8 +23,8 @@
 #include <unordered_map>
 #include <iterator>
 #include <utility>
-#include "code_elements/variable.hpp"
-#include "code_elements/ll_ast/ll_ast_node.hpp"
+#include "ast/variable.hpp"
+#include "ast/low_level/ll_ast_node.hpp"
 
 class variable_map {
 public:

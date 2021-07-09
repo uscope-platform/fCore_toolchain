@@ -18,7 +18,7 @@
 
 #include <gtest/gtest.h>
 
-#include "code_elements/ll_ast/ll_ast_node.hpp"
+#include "ast/low_level/ll_ast_node.hpp"
 #include "passes/ll_passes.hpp"
 #include "backend/output_generator.hpp"
 #include "frontend/asm/asm_language_parser.h"

@@ -2,7 +2,7 @@
 // Created by fils on 07/07/2021.
 //
 
-#include "passes/hl_ast/function_mapping.h"
+#include "passes/high_level/function_mapping.h"
 
 
 function_mapping::function_mapping() : pass_base<hl_ast_node>("function mapping pass"){

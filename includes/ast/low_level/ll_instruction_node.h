@@ -12,8 +12,8 @@
 #include <cmath>
 #include <iomanip>
 
-#include "code_elements/ll_ast/ll_ast_node.hpp"
-#include "code_elements/variable.hpp"
+#include "ast/low_level/ll_ast_node.hpp"
+#include "ast/variable.hpp"
 #include "fCore_isa.hpp"
 
 typedef struct {

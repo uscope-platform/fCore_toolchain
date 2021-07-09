@@ -2,7 +2,7 @@
 // Created by fils on 08/07/2021.
 //
 
-#include "passes/hl_ast/inlined_function_elimination.h"
+#include "passes/high_level/inlined_function_elimination.h"
 
 
 inlined_function_elimination::inlined_function_elimination(std::string entry_point_name) : pass_base("inlined function elimination pass") {

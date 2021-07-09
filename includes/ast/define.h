@@ -6,6 +6,7 @@
 #define FCORE_HAS_DEFINE_H
 
 #include <string>
+#include <utility>
 
 class define {
 public:

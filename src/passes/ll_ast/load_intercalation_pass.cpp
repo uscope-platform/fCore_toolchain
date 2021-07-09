@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "passes/ll_ast/load_intercalation_pass.hpp"
+#include "passes/low_level/load_intercalation_pass.hpp"
 
 load_intercalation_pass::load_intercalation_pass() : pass_base<ll_ast_node>("load intercalation pass") {
 

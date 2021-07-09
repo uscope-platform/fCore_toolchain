@@ -19,8 +19,8 @@
 #include <gtest/gtest.h>
 #include <memory>
 
-#include "code_elements/variable.hpp"
-#include "code_elements/ll_ast/ll_instruction_node.h"
+#include "ast/variable.hpp"
+#include "ast/low_level/ll_instruction_node.h"
 #include "fCore_isa.hpp"
 
 TEST(InstructionClasses, immediate_instruction ) {
