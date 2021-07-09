@@ -8,6 +8,7 @@
 #include "passes/pass_manager_base.hpp"
 #include "code_elements/hl_ast/hl_ast_node.h"
 #include "code_elements/hl_ast/hl_function_def_node.h"
+#include "passes/pass_base.hpp"
 
 #include <utility>
 

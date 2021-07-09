@@ -15,6 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 #include "passes/ll_ast/register_allocation_pass.hpp"
+#include "passes/pass_manager_base.hpp"
+#include "passes/pass_base.hpp"
 
 
 register_allocation_pass::register_allocation_pass(std::shared_ptr<variable_map> varmap) : pass_base<ll_ast_node>("register allocation pass"){

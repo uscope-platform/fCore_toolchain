@@ -16,7 +16,8 @@
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
 #include "passes/ll_ast/variable_lifetime_mapping.hpp"
-
+#include "passes/pass_manager_base.hpp"
+#include "passes/pass_base.hpp"
 
 
 variable_lifetime_mapping::variable_lifetime_mapping(std::shared_ptr<variable_map> var_map) : pass_base<ll_ast_node>("variable lifetime mapping pass"){

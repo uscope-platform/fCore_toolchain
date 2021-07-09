@@ -11,6 +11,7 @@
 #include "code_elements/hl_ast/hl_function_def_node.h"
 #include "code_elements/hl_ast/hl_function_call_node.h"
 #include "passes/pass_manager_base.hpp"
+#include "passes/pass_base.hpp"
 
 class normalization_pass : public pass_base<hl_ast_node> {
 public:

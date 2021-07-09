@@ -18,8 +18,9 @@
 #ifndef FCORE_HAS_INSTRUCTION_COUNTING_PASS_HPP
 #define FCORE_HAS_INSTRUCTION_COUNTING_PASS_HPP
 
-#include "../pass_manager_base.hpp"
+#include "passes/pass_manager_base.hpp"
 #include "code_elements/ll_ast/ll_instruction_node.h"
+#include "passes/pass_base.hpp"
 
 class instruction_counting_pass : public pass_base<ll_ast_node> {
 

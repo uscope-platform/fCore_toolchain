@@ -5,7 +5,6 @@
 #include "passes/hl_ast/inlined_function_elimination.h"
 
 
-
 inlined_function_elimination::inlined_function_elimination(std::string entry_point_name) : pass_base("inlined function elimination pass") {
     entry_point = std::move(entry_point_name);
 }

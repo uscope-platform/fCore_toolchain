@@ -15,6 +15,7 @@
 #include "code_elements/hl_ast/hl_definition_node.h"
 
 #include "passes/pass_manager_base.hpp"
+#include "passes/pass_base.hpp"
 
 
 class hl_pass_manager : public pass_manager_base<hl_ast_node> {

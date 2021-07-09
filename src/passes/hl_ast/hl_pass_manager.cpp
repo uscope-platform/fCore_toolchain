@@ -3,6 +3,8 @@
 //
 
 #include "passes/hl_ast/hl_pass_manager.h"
+#include "passes/pass_manager_base.hpp"
+#include "passes/pass_base.hpp"
 
 std::shared_ptr<hl_ast_node> hl_pass_manager::run_morphing_pass(const std::shared_ptr<hl_ast_node> &subtree,
                                                        const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
