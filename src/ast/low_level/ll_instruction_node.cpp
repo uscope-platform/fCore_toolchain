@@ -21,43 +21,43 @@
 
 
 
-ll_instruction_node::ll_instruction_node(int inst_type, float constant) : ll_ast_node(ll_type_instr){
+ll_instruction_node::ll_instruction_node(isa_instruction_type inst_type, float constant) : ll_ast_node(ll_type_instr){
     type = inst_type;
     string_instr.intercalated_constant = constant;
 }
 
-ll_instruction_node::ll_instruction_node(int inst_type, std::string opcode, std::vector<std::shared_ptr<variable>> arguments) : ll_ast_node(ll_type_instr) {
+ll_instruction_node::ll_instruction_node(isa_instruction_type inst_type, std::string opcode, std::vector<std::shared_ptr<variable>> arguments) : ll_ast_node(ll_type_instr) {
     type = inst_type;
     string_instr.opcode = std::move(opcode);
     string_instr.arguments = std::move(arguments);
 }
 
-ll_instruction_node::ll_instruction_node(int inst_type) {
+ll_instruction_node::ll_instruction_node(isa_instruction_type inst_type) {
     type = inst_type;
 }
 
 uint32_t ll_instruction_node::emit() const {
     uint32_t raw_instr;
     switch (type) {
-        case IMMEDIATE_INSTRUCTION:
+        case isa_immediate_instruction:
             raw_instr = emit_immediate();
             break;
-        case INDEPENDENT_INSTRUCTION:
+        case isa_independent_instruction:
             raw_instr = emit_independent();
             break;
-        case REGISTER_INSTRUCTION:
+        case isa_register_instruction:
             raw_instr = emit_register();
             break;
-        case BRANCH_INSTRUCTION:
+        case isa_branch_instruction:
             raw_instr = emit_branch();
             break;
-        case CONVERSION_INSTRUCTION:
+        case isa_conversion_instruction:
             raw_instr = emit_conversion();
             break;
-        case LOAD_CONSTANT_INSTRUCTION:
+        case isa_load_constant_instruction:
             raw_instr = emit_load_const();
             break;
-        case INTERCALATED_CONSTANT:
+        case isa_intercalated_constant:
             raw_instr = emit_intercalated_const();
             break;
     }
@@ -66,22 +66,22 @@ uint32_t ll_instruction_node::emit() const {
 
 void ll_instruction_node::print() {
     switch(type){
-        case IMMEDIATE_INSTRUCTION:
+        case isa_immediate_instruction:
             print_immediate();
             break;
-        case INDEPENDENT_INSTRUCTION:
+        case isa_independent_instruction:
             print_independent();
             break;
-        case REGISTER_INSTRUCTION:
+        case isa_register_instruction:
             print_register();
             break;
-        case BRANCH_INSTRUCTION:
+        case isa_branch_instruction:
             print_branch();
             break;
-        case CONVERSION_INSTRUCTION:
+        case isa_conversion_instruction:
             print_conversion();
             break;
-        case LOAD_CONSTANT_INSTRUCTION:
+        case isa_intercalated_constant:
             print_load_const();
             break;
     }
@@ -188,17 +188,17 @@ void ll_instruction_node::print_load_const() const {
 
 int ll_instruction_node::instruction_count() const {
     switch(type){
-        case IMMEDIATE_INSTRUCTION:
-        case PSEUDO_INSTRUCTION:
-        case INDEPENDENT_INSTRUCTION:
-        case REGISTER_INSTRUCTION:
-        case CONVERSION_INSTRUCTION:
+        case isa_immediate_instruction:
+        case isa_pseudo_instruction:
+        case isa_independent_instruction:
+        case isa_register_instruction:
+        case isa_conversion_instruction:
             return 1;
-        case LOAD_CONSTANT_INSTRUCTION:
+        case isa_load_constant_instruction:
             return 2;
-        case INTERCALATED_CONSTANT:
+        case isa_intercalated_constant:
             return 0;
-        case BRANCH_INSTRUCTION:
+        case isa_branch_instruction:
             return -1;
         default:
             throw std::runtime_error("instruction type not recognised");
@@ -213,7 +213,7 @@ void ll_instruction_node::setStringInstr(const instruction_t &stringInstr) {
     string_instr = stringInstr;
 }
 
-int ll_instruction_node::get_type() {
+isa_instruction_type ll_instruction_node::get_type() {
     return type;
 }
 

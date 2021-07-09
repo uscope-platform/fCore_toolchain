@@ -27,15 +27,15 @@ class ll_instruction_node : public ll_ast_node{
 
 public:
     ll_instruction_node() = default;
-    explicit ll_instruction_node(int inst_type);
-    ll_instruction_node(int inst_type,std::string opcode, std::vector<std::shared_ptr<variable>> arguments);
-    ll_instruction_node(int inst_type, float constant);
-    int get_type();
+    explicit ll_instruction_node(isa_instruction_type inst_type);
+    ll_instruction_node(isa_instruction_type inst_type, std::string opcode, std::vector<std::shared_ptr<variable>> arguments);
+    ll_instruction_node(isa_instruction_type inst_type, float constant);
+    isa_instruction_type get_type();
     [[nodiscard]] uint32_t emit() const;
     [[nodiscard]] int instruction_count() const;
     bool is_terminal() override;
     void print();
-    [[nodiscard]] bool is_pseudo() const { return type == PSEUDO_INSTRUCTION;};
+    [[nodiscard]] bool is_pseudo() const { return type == isa_pseudo_instruction;};
     [[nodiscard]] const instruction_t &getStringInstr() const;
     void setStringInstr(const instruction_t &stringInstr);
 
@@ -54,7 +54,7 @@ private:
     void print_conversion() const;
     void print_load_const() const;
 
-    int type;
+    isa_instruction_type type;
     instruction_t string_instr;
 
 

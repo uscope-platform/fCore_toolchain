@@ -35,7 +35,7 @@ std::shared_ptr<ll_ast_node> load_intercalation_pass::process_leaf(std::shared_p
             std::vector<std::shared_ptr<ll_ast_node>> block_content;
 
             //CREATE FRACT NUMERATOR MULTIPLICATION
-            std::shared_ptr<ll_instruction_node> constant = std::make_shared<ll_instruction_node>(INTERCALATED_CONSTANT,desired_constant);
+            std::shared_ptr<ll_instruction_node> constant = std::make_shared<ll_instruction_node>(isa_intercalated_constant,desired_constant);
             block_content.push_back(node);
             block_content.push_back(constant);
 

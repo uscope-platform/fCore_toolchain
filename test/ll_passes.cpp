@@ -32,7 +32,7 @@ TEST(llPassesTest, pseudo_inst_pass) {
     std::shared_ptr<variable> op_b = std::make_shared<variable>(false, "r4");
     std::vector<std::shared_ptr<variable>> args = {op_a, op_b};
 
-    std::shared_ptr<ll_instruction_node> instr = std::make_shared<ll_instruction_node>(PSEUDO_INSTRUCTION, "mov", args);
+    std::shared_ptr<ll_instruction_node> instr = std::make_shared<ll_instruction_node>(isa_pseudo_instruction, "mov", args);
     AST->add_content(instr);
 
     std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
@@ -58,26 +58,26 @@ TEST(llPassesTest, instruction_count_pass) {
     std::shared_ptr<variable> imm = std::make_shared<variable>(true, "100");
     std::shared_ptr<variable> fltc = std::make_shared<variable>(true, "1.5464", true);
     std::vector<std::shared_ptr<variable>> args = {};
-    std::shared_ptr<ll_instruction_node> instr = std::make_shared<ll_instruction_node>(INDEPENDENT_INSTRUCTION, "nop", args);
+    std::shared_ptr<ll_instruction_node> instr = std::make_shared<ll_instruction_node>(isa_independent_instruction, "nop", args);
     AST->add_content(instr);
 
     args = {op_a, op_b};
-    instr = std::make_shared<ll_instruction_node>(PSEUDO_INSTRUCTION, "mov", args); // +1
+    instr = std::make_shared<ll_instruction_node>(isa_pseudo_instruction, "mov", args); // +1
     AST->add_content(instr);
 
     args = {dest, imm};
-    instr = std::make_shared<ll_instruction_node>(IMMEDIATE_INSTRUCTION, "ldr", args); // +1
+    instr = std::make_shared<ll_instruction_node>(isa_immediate_instruction, "ldr", args); // +1
     AST->add_content(instr);
 
     args = {op_a, op_b,dest};
-    instr = std::make_shared<ll_instruction_node>(REGISTER_INSTRUCTION, "add", args); // +1
+    instr = std::make_shared<ll_instruction_node>(isa_register_instruction, "add", args); // +1
     AST->add_content(instr);
 
     args = {dest};
-    instr = std::make_shared<ll_instruction_node>(LOAD_CONSTANT_INSTRUCTION, "ldc", args);// +2
+    instr = std::make_shared<ll_instruction_node>(isa_load_constant_instruction, "ldc", args);// +2
     AST->add_content(instr);
 
-    instr = std::make_shared<ll_instruction_node>(INTERCALATED_CONSTANT, 1.456);// +0
+    instr = std::make_shared<ll_instruction_node>(isa_intercalated_constant, 1.456);// +0
     AST->add_content(instr);
 
     std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
@@ -96,7 +96,7 @@ TEST(llPassesTest, loop_less) {
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
     std::shared_ptr<ll_ast_pragma> loop_pragma = std::make_shared<ll_ast_pragma>("unroll");
     std::vector<std::shared_ptr<variable>> args = {};
-    std::shared_ptr<ll_instruction_node> loop_instr = std::make_shared<ll_instruction_node>(INDEPENDENT_INSTRUCTION, "nop", args);
+    std::shared_ptr<ll_instruction_node> loop_instr = std::make_shared<ll_instruction_node>(isa_independent_instruction, "nop", args);
     std::vector<std::shared_ptr<ll_ast_node>> l1_content = {loop_pragma, loop_instr};
 
     loop_start_t start = {"j", 0};
@@ -130,7 +130,7 @@ TEST(llPassesTest, loop_less_equal) {
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
     std::shared_ptr<ll_ast_pragma> loop_pragma = std::make_shared<ll_ast_pragma>("unroll");
     std::vector<std::shared_ptr<variable>> args = {};
-    std::shared_ptr<ll_instruction_node> loop_instr = std::make_shared<ll_instruction_node>(INDEPENDENT_INSTRUCTION, "nop", args);
+    std::shared_ptr<ll_instruction_node> loop_instr = std::make_shared<ll_instruction_node>(isa_independent_instruction, "nop", args);
     std::vector<std::shared_ptr<ll_ast_node>> l1_content = {loop_pragma, loop_instr};
 
     loop_start_t start = {"j", 0};
@@ -163,7 +163,7 @@ TEST(llPassesTest, loop_more) {
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
     std::shared_ptr<ll_ast_pragma> loop_pragma = std::make_shared<ll_ast_pragma>("unroll");
     std::vector<std::shared_ptr<variable>> args = {};
-    std::shared_ptr<ll_instruction_node> loop_instr = std::make_shared<ll_instruction_node>(INDEPENDENT_INSTRUCTION, "nop", args);
+    std::shared_ptr<ll_instruction_node> loop_instr = std::make_shared<ll_instruction_node>(isa_independent_instruction, "nop", args);
     std::vector<std::shared_ptr<ll_ast_node>> l1_content = {loop_pragma, loop_instr};
 
     loop_start_t start = {"j", 3};
@@ -199,7 +199,7 @@ TEST(llPassesTest, loop_more_equal) {
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
     std::shared_ptr<ll_ast_pragma> loop_pragma = std::make_shared<ll_ast_pragma>("unroll");
     std::vector<std::shared_ptr<variable>> args = {};
-    std::shared_ptr<ll_instruction_node> loop_instr = std::make_shared<ll_instruction_node>(INDEPENDENT_INSTRUCTION, "nop", args);
+    std::shared_ptr<ll_instruction_node> loop_instr = std::make_shared<ll_instruction_node>(isa_independent_instruction, "nop", args);
     std::vector<std::shared_ptr<ll_ast_node>> l1_content = {loop_pragma, loop_instr};
 
     loop_start_t start = {"j", 3};
@@ -236,7 +236,7 @@ TEST(llPassesTest, deep_copy_element) {
 
     std::shared_ptr<ll_loop_node> lvl_1 = std::make_shared<ll_loop_node>();
     lvl_1->set_loop_start(start);
-    std::shared_ptr<ll_instruction_node> level_2 = std::make_shared<ll_instruction_node>(INDEPENDENT_INSTRUCTION, "nop", args);
+    std::shared_ptr<ll_instruction_node> level_2 = std::make_shared<ll_instruction_node>(isa_independent_instruction, "nop", args);
     lvl_1->add_content(level_2);
     std::shared_ptr<ll_ast_node> result = ll_ast_node::deep_copy_element(lvl_1);
 

@@ -13,7 +13,7 @@
 #include "passes/high_level/function_mapping.h"
 #include "passes/high_level/hl_pass_manager.h"
 #include "passes/high_level/normalization_pass.h"
-
+#include "ast/transformations/high_level_ast_lowering.h"
 
 #include <memory>
 #include <fstream>
@@ -308,5 +308,34 @@ TEST(HlPassesTest, function_elimination) {
     gold_standard->set_content({def_1, def_2});
 
     EXPECT_EQ( *gold_standard, *raw_result);
+
+}
+
+
+TEST(HlPassesTest, hl_ast_lowering) {
+
+
+    std::string input_file = "test_normalization.c";
+    std::ifstream ifs(input_file);
+
+    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(ifs, result_var, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
+
+    std::string ep = "main";
+    hl_pass_manager manager = create_hl_pass_manager(ep);
+    manager.run_morphing_passes(parser.AST);
+
+    std::shared_ptr<hl_ast_node> normalized_ast = manager.run_global_passes(parser.AST);
+
+    high_level_ast_lowering tranlator;
+
+    tranlator.set_input_ast(normalized_ast);
+    tranlator.translate();
+    std::shared_ptr<ll_ast_node> result = tranlator.get_output_ast();
+
 
 }

@@ -28,7 +28,7 @@ TEST(InstructionClasses, immediate_instruction ) {
     std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r4");
     std::shared_ptr<variable> imm = std::make_shared<variable>(true, "100");
     std::vector<std::shared_ptr<variable>> args = {dest, imm};
-    ll_instruction_node instr(IMMEDIATE_INSTRUCTION,"ldr", args);
+    ll_instruction_node instr(isa_immediate_instruction,"ldr", args);
 
     ASSERT_EQ( instr.emit(),  0x32087);
 
@@ -48,7 +48,7 @@ TEST(InstructionClasses, register_instruction ) {
     std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r4");
     std::vector<std::shared_ptr<variable>> args = {op_a, op_b, dest};
 
-    ll_instruction_node instr(REGISTER_INSTRUCTION,"add", args);
+    ll_instruction_node instr(isa_register_instruction,"add", args);
 
     ASSERT_EQ(instr.emit(), 0x81841);
 
@@ -66,7 +66,7 @@ TEST(InstructionClasses, register_instruction ) {
 
 TEST(InstructionClasses, independent_instruction ) {
     std::vector<std::shared_ptr<variable>> args = {};
-    ll_instruction_node instr(INDEPENDENT_INSTRUCTION,"stop", args);
+    ll_instruction_node instr(isa_independent_instruction,"stop", args);
 
 
     ASSERT_EQ( instr.emit(), 0xc);

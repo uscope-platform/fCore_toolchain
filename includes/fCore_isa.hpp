@@ -18,15 +18,17 @@
 #ifndef FCORE_HAS_FCORE_ISA_HPP
 #define FCORE_HAS_FCORE_ISA_HPP
 
-#define IMMEDIATE_INSTRUCTION 1
-#define INDEPENDENT_INSTRUCTION 2
-#define REGISTER_INSTRUCTION 3
-#define PSEUDO_INSTRUCTION 4
-#define BRANCH_INSTRUCTION 5
-#define CONVERSION_INSTRUCTION 6
-#define LOAD_CONSTANT_INSTRUCTION 7
-#define INTERCALATED_CONSTANT 8
 
+typedef enum {
+    isa_immediate_instruction = 1,
+    isa_independent_instruction = 2,
+    isa_register_instruction = 3,
+    isa_pseudo_instruction = 4,
+    isa_branch_instruction = 5,
+    isa_conversion_instruction = 6,
+    isa_load_constant_instruction = 7,
+    isa_intercalated_constant= 8
+}isa_instruction_type;
 
 #define OPCODE_WIDTH 5
 #define REGISTER_ADDRESS_WIDTH 4
@@ -57,26 +59,26 @@ static std::map <std::string, uint32_t>  fcore_opcodes {
                 std::make_pair ("rec", 18u),
         };
 
-static std::map <std::string, uint32_t>  fcore_op_types {
-                std::make_pair ("nop", INDEPENDENT_INSTRUCTION),
-                std::make_pair ("add", REGISTER_INSTRUCTION),
-                std::make_pair ("sub", REGISTER_INSTRUCTION),
-                std::make_pair ("mul", REGISTER_INSTRUCTION),
-                std::make_pair ("itf", CONVERSION_INSTRUCTION),
-                std::make_pair ("fti", CONVERSION_INSTRUCTION),
-                std::make_pair ("ldc", IMMEDIATE_INSTRUCTION),
-                std::make_pair ("ldr", IMMEDIATE_INSTRUCTION),
-                std::make_pair ("bgt", REGISTER_INSTRUCTION),
-                std::make_pair ("ble", REGISTER_INSTRUCTION),
-                std::make_pair ("beq", REGISTER_INSTRUCTION),
-                std::make_pair ("bne", REGISTER_INSTRUCTION),
-                std::make_pair ("stop", INDEPENDENT_INSTRUCTION),
-                std::make_pair ("and", REGISTER_INSTRUCTION),
-                std::make_pair ("or", REGISTER_INSTRUCTION),
-                std::make_pair ("not", CONVERSION_INSTRUCTION),
-                std::make_pair ("satp", REGISTER_INSTRUCTION),
-                std::make_pair ("satn", REGISTER_INSTRUCTION),
-                std::make_pair ("rec", REGISTER_INSTRUCTION),
+static std::map <std::string, isa_instruction_type>  fcore_op_types {
+                std::make_pair ("nop", isa_independent_instruction),
+                std::make_pair ("add", isa_register_instruction),
+                std::make_pair ("sub", isa_register_instruction),
+                std::make_pair ("mul", isa_register_instruction),
+                std::make_pair ("itf", isa_conversion_instruction),
+                std::make_pair ("fti", isa_conversion_instruction),
+                std::make_pair ("ldc", isa_immediate_instruction),
+                std::make_pair ("ldr", isa_immediate_instruction),
+                std::make_pair ("bgt", isa_register_instruction),
+                std::make_pair ("ble", isa_register_instruction),
+                std::make_pair ("beq", isa_register_instruction),
+                std::make_pair ("bne", isa_register_instruction),
+                std::make_pair ("stop", isa_independent_instruction),
+                std::make_pair ("and", isa_register_instruction),
+                std::make_pair ("or", isa_register_instruction),
+                std::make_pair ("not", isa_conversion_instruction),
+                std::make_pair ("satp", isa_register_instruction),
+                std::make_pair ("satn", isa_register_instruction),
+                std::make_pair ("rec", isa_register_instruction),
         };
 
 static std::map <std::string, std::string>  fcore_pseudo_op {
