@@ -4,12 +4,13 @@
 
 #include "ast/transformations/high_level_ast_lowering.h"
 
-high_level_ast_lowering::high_level_ast_lowering() {
+high_level_ast_lowering::high_level_ast_lowering(std::shared_ptr<variable_map> &m) {
     output_ast = std::make_shared<ll_ast_node>(ll_type_program_head);
+    var_map = m;
     expr_instruction_mapping = {
             {expr_add, "add"},
             {expr_sub, "sub"},
-            {expr_mult, "sub"},
+            {expr_mult, "mul"},
             {expr_incr_pre, "add"},
             {expr_incr_post, "add"},
             {expr_decr_pre, "sub"},
@@ -42,7 +43,8 @@ std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::
     switch (input->node_type) {
         case hl_ast_node_type_definition:{
             std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(input);
-            return translate_node(node);
+            std::shared_ptr<variable> dest = var_map->at(node->get_name());
+            return translate_node(node, dest);
         }
         case hl_ast_node_type_operand:
             throw std::runtime_error("ERROR: standalone operands nodes should not reach the ast lowering stage");
@@ -64,104 +66,49 @@ std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::
 
 }
 
-std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(std::shared_ptr<hl_expression_node> input) {
+std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest) {
     if(input->is_unary()){
-        return process_unary_expression(input);
+        return process_unary_expression(input,dest);
     } else{
-        return process_regular_expression(input);
+        return process_regular_expression(input,dest);
     }
 }
 
-std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(std::shared_ptr<hl_definition_node> input) {
+std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(std::shared_ptr<hl_definition_node> input, std::shared_ptr<variable> dest) {
     std::shared_ptr<ll_instruction_node> retval = std::make_shared<ll_instruction_node>();
     if(input->is_initialized()){
-        return translate_node(std::static_pointer_cast<hl_expression_node>(input->get_initializer()));
+        return translate_node(std::static_pointer_cast<hl_expression_node>(input->get_initializer()), dest);
     }
     return retval;
 
 }
 
 std::shared_ptr<ll_ast_node>
-high_level_ast_lowering::process_unary_expression(std::shared_ptr<hl_expression_node> input) {
-    operand_type_t rhs_type = std::static_pointer_cast<hl_ast_operand>(input->get_rhs())->get_type();
+high_level_ast_lowering::process_unary_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest) {
 
     std::shared_ptr<ll_instruction_node> retval;
     expression_type_t op_type = input->get_type();
     std::string opcode = expr_instruction_mapping[op_type];
     if(!fcore_implemented_operations[op_type]) throw std::runtime_error("ERROR: The required operation is not implementable on the fCore hardware");
 
-    switch (op_type) {
-        case expr_reciprocal:{
-            std::shared_ptr<variable> op = std::make_shared<variable>(false, "r3");
-            std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r4");
-            std::vector<std::shared_ptr<variable>> args = {op, dest};
-            retval = std::make_shared<ll_instruction_node>(fcore_op_types[opcode], opcode, args);
-            break;
-        }
-        case expr_not_b:{
-            std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r2");
-            std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r3");
-            std::vector<std::shared_ptr<variable>> args = {op_a, dest};
-            retval = std::make_shared<ll_instruction_node>(fcore_op_types[opcode], opcode, args);
-            break;
-        }
-        case expr_neg:{
-            std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r2");
-            std::shared_ptr<variable> op_b = std::make_shared<variable>(false, "r3");
-            std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r4");
-            std::vector<std::shared_ptr<variable>> args = {op_a, op_b, dest};
-            retval = std::make_shared<ll_instruction_node>(fcore_op_types[opcode], opcode, args);
-            break;
-        }
-        case expr_incr_pre:{
-            std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r2");
-            std::shared_ptr<variable> op_b = std::make_shared<variable>(false, "r3");
-            std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r4");
-            std::vector<std::shared_ptr<variable>> args = {op_a, op_b, dest};
-            retval = std::make_shared<ll_instruction_node>(fcore_op_types[opcode], opcode, args);
-            break;
-        }
-        case expr_incr_post:{
-            std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r2");
-            std::shared_ptr<variable> op_b = std::make_shared<variable>(false, "r3");
-            std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r4");
-            std::vector<std::shared_ptr<variable>> args = {op_a, op_b, dest};
-            retval = std::make_shared<ll_instruction_node>(fcore_op_types[opcode], opcode, args);
-            break;
-        }
-        case expr_decr_post:{
-            std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r2");
-            std::shared_ptr<variable> op_b = std::make_shared<variable>(false, "r3");
-            std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r4");
-            std::vector<std::shared_ptr<variable>> args = {op_a, op_b, dest};
-            retval = std::make_shared<ll_instruction_node>(fcore_op_types[opcode], opcode, args);
-            break;
-        }
-        case expr_decr_pre:{
-            std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r2");
-            std::shared_ptr<variable> op_b = std::make_shared<variable>(false, "r3");
-            std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r4");
-            std::vector<std::shared_ptr<variable>> args = {op_a, op_b, dest};
-            retval = std::make_shared<ll_instruction_node>(fcore_op_types[opcode], opcode, args);
-            break;
-        }
-    }
+    std::shared_ptr<variable> op_b = var_map->at(*std::static_pointer_cast<hl_ast_operand>(input->get_rhs()));
+    std::vector<std::shared_ptr<variable>> args = {op_b, dest};
+    retval = std::make_shared<ll_instruction_node>(fcore_op_types[opcode], opcode, args);
     return retval;
 }
 
 std::shared_ptr<ll_ast_node>
-high_level_ast_lowering::process_regular_expression(std::shared_ptr<hl_expression_node> input) {
-    operand_type_t lhs_type = std::static_pointer_cast<hl_ast_operand>(input->get_lhs())->get_type();
-    operand_type_t rhs_type = std::static_pointer_cast<hl_ast_operand>(input->get_rhs())->get_type();
+high_level_ast_lowering::process_regular_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest) {
 
     std::shared_ptr<ll_instruction_node> retval;
     expression_type_t op_type = input->get_type();
     std::string opcode = expr_instruction_mapping[op_type];
     if(!fcore_implemented_operations[op_type]) throw std::runtime_error("ERROR: The required operation is not implementable on the fCore hardware");
 
-    switch (op_type) {
-
-    }
+    std::shared_ptr<variable> op_a = var_map->at(*std::static_pointer_cast<hl_ast_operand>(input->get_lhs()));
+    std::shared_ptr<variable> op_b = var_map->at(*std::static_pointer_cast<hl_ast_operand>(input->get_rhs()));
+    std::vector<std::shared_ptr<variable>> args = {op_a, op_b, dest};
+    retval = std::make_shared<ll_instruction_node>(fcore_op_types[opcode], opcode, args);
     return retval;
 
 }

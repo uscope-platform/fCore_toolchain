@@ -19,6 +19,8 @@ void hl_variable_mapping::process_var(std::shared_ptr<hl_ast_node> element) {
     if(element->node_type == hl_ast_node_type_definition) {
         std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(element);
         if (node->is_initialized()) process_var(node->get_initializer());
+        std::shared_ptr<variable> var = std::make_shared<variable>(false,node->get_name());
+        var_map->insert(node->get_name(), var);
     } else if(element->node_type == hl_ast_node_type_expr){
         std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
         if (node->get_lhs() != nullptr) process_var(node->get_lhs());

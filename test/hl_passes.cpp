@@ -317,36 +317,6 @@ TEST(HlPassesTest, function_elimination) {
 }
 
 
-TEST(HlPassesTest, hl_ast_lowering) {
-
-
-    std::string input_file = "test_normalization.c";
-    std::ifstream ifs(input_file);
-
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
-    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-
-    C_language_parser parser(ifs, result_var, result_def);
-    parser.pre_process({}, {});
-    parser.parse();
-
-    std::string ep = "main";
-    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
-    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map);
-    manager.run_morphing_passes(parser.AST);
-
-    std::shared_ptr<hl_ast_node> normalized_ast = manager.run_global_passes(parser.AST);
-
-    high_level_ast_lowering tranlator;
-
-    tranlator.set_input_ast(normalized_ast);
-    tranlator.translate();
-    std::shared_ptr<ll_ast_node> result = tranlator.get_output_ast();
-
-
-}
-
-
 TEST(HlPassesTest, variable_mapping_pass) {
 
 
@@ -377,9 +347,42 @@ TEST(HlPassesTest, variable_mapping_pass) {
     gold_standard->insert("4", v_3);
     std::shared_ptr<variable> v_4 = std::make_shared<variable>(false, "intermediate_expr_0");
     gold_standard->insert("intermediate_expr_0", v_4);
+    std::shared_ptr<variable> v_5 = std::make_shared<variable>(false, "a");
+    gold_standard->insert("a", v_5);
 
 
     ASSERT_EQ(*variables_map, *gold_standard);
 
 
 }
+
+
+TEST(HlPassesTest, hl_ast_lowering) {
+
+
+    std::string input_file = "test_normalization.c";
+    std::ifstream ifs(input_file);
+
+    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(ifs, result_var, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
+
+    std::string ep = "main";
+    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
+    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map);
+    manager.run_morphing_passes(parser.AST);
+
+    std::shared_ptr<hl_ast_node> normalized_ast = manager.run_global_passes(parser.AST);
+
+    high_level_ast_lowering tranlator(variables_map);
+
+    tranlator.set_input_ast(normalized_ast);
+    tranlator.translate();
+    std::shared_ptr<ll_ast_node> result = tranlator.get_output_ast();
+
+
+}
+

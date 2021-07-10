@@ -26,6 +26,7 @@ std::shared_ptr<variable> variable_map::operator[](const std::string& key) {
 void variable_map::insert(const std::string& key, std::shared_ptr<variable>item) {
     std::regex re("r(\\d\\d?)");
     std::smatch m;
+    if(map.count(key)>0) return;
     switch (item->type) {
         case TYPE_INPUT:
             n_inputs_++;
