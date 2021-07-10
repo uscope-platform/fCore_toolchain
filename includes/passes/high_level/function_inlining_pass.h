@@ -17,7 +17,7 @@ public:
     void set_functions_map(std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>>> map);
     std::shared_ptr<hl_ast_node> process_leaf(std::shared_ptr<hl_ast_node> element) override;
 
-    std::shared_ptr<hl_ast_node> substitute_arguments(const std::shared_ptr<hl_ast_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_definition_node>>& parameters);
+    std::shared_ptr<hl_ast_node> substitute_arguments(const std::shared_ptr<hl_ast_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>>& parameters);
     int get_pass_type() override { return LEAF_PASS;};
 private:
     std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>>> functions_map;

@@ -353,10 +353,10 @@ void C_Tree_visitor::processExpression(unsigned int expression_size, const T& op
     std::shared_ptr<hl_expression_node> expression;
 
     std::stack<std::string> operations;
-    std::stack<std::shared_ptr<hl_ast_operand>> reversed_operands;
+    std::stack<std::shared_ptr<hl_ast_node>> reversed_operands;
 
     for(int i = 0; i <= expression_size; ++i){
-        reversed_operands.push(std::static_pointer_cast<hl_ast_operand>(expressions_stack.top()));
+        reversed_operands.push(expressions_stack.top());
         expressions_stack.pop();
     }
 

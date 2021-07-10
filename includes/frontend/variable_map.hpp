@@ -36,6 +36,8 @@ public:
     unsigned int n_inputs() const {return n_inputs_;};
     unsigned int n_outputs() const {return n_outputs_;};
     unsigned int n_variables() const {return n_variables_;};
+    friend bool operator==(const variable_map& lhs, const variable_map& rhs);
+
 private:
     unsigned int n_inputs_ = 0;
     unsigned int n_outputs_ = 0;

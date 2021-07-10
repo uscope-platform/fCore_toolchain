@@ -49,3 +49,28 @@ int variable_map::count(const std::string &key) {
 std::shared_ptr<variable> variable_map::at(const std::string &key) {
     return map.at(key);
 }
+
+bool operator==(const variable_map &lhs, const variable_map &rhs) {
+    bool retval = true;
+
+    retval &= lhs.n_inputs_ == rhs.n_inputs_;
+    retval &= lhs.n_outputs_ == rhs.n_outputs_;
+    retval &= lhs.n_variables_ == rhs.n_variables_;
+
+    for(auto &i: lhs.map){
+        if(rhs.map.count(i.first)){
+            retval &= *rhs.map.at(i.first) == *lhs.map.at(i.first);
+        } else{
+            retval &= false;
+        }
+
+    }
+    for(auto &i: rhs.map){
+        if(lhs.map.count(i.first)){
+            retval &= *rhs.map.at(i.first) == *lhs.map.at(i.first);
+        } else{
+            retval &= false;
+        }
+    }
+    return retval;
+}

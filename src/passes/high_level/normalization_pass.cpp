@@ -96,6 +96,7 @@ std::shared_ptr<hl_ast_operand>
 normalization_pass::extract_intermediate_expression(std::shared_ptr<hl_expression_node> n, int side) {
     operand_type_t type_lhs = std::static_pointer_cast<hl_ast_operand>(n->get_lhs())->get_type();
     operand_type_t type_rhs = std::static_pointer_cast<hl_ast_operand>(n->get_rhs())->get_type();
+
     c_types_t expr_type;
     if(type_lhs == float_immediate_operand && type_rhs == float_immediate_operand){
         expr_type = c_type_float;
@@ -109,10 +110,8 @@ normalization_pass::extract_intermediate_expression(std::shared_ptr<hl_expressio
     }
     std::string name = "intermediate_expr_" + std::to_string(intermediate_ordinal);
     std::shared_ptr<hl_definition_node> intermediate_def = std::make_shared<hl_definition_node>(name, expr_type);
-    if(side == 1)
-        intermediate_def->set_initializer(std::static_pointer_cast<hl_expression_node>(n->get_lhs()));
-    else if(side==2)
-        intermediate_def->set_initializer(std::static_pointer_cast<hl_expression_node>(n->get_rhs()));
+
+    intermediate_def->set_initializer(std::static_pointer_cast<hl_expression_node>(n));
 
     additional_statements.push_back(intermediate_def);
 
@@ -133,7 +132,7 @@ normalization_pass::produce_normalized_expression(std::shared_ptr<hl_expression_
     for(auto &i: extracted_intermediate){
         switch (i.first) {
             case 0:
-                return original_node;
+                return std::static_pointer_cast<hl_expression_node>(i.second);
                 break;
             case 1:
                 tmp_ret->set_lhs(i.second);

@@ -9,6 +9,10 @@ include_directories(/usr/include/antlr4-runtime)
 include_directories(includes)
 
 set(CMAKE_CXX_STANDARD 17)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined")
+
+
 add_compile_options(-Wno-attributes -fprofile-arcs -ftest-coverage)
 add_link_options(-fprofile-arcs -ftest-coverage)
 

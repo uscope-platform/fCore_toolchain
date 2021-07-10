@@ -23,11 +23,12 @@ std::shared_ptr<hl_ast_node> function_inlining_pass::process_leaf(std::shared_pt
 
         // MAP ARGUMENTS OF  THE CALL WITH its name
         int idx = 0;
-        std::unordered_map<std::string, std::shared_ptr<hl_definition_node>> arguments_map;
+        std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> arguments_map;
         for(const auto& arg: f_call->get_arguments()){
             std::string arg_name = f_def->get_parameters_list()[idx]->get_name();
-            arguments_map[arg_name] = std::static_pointer_cast<hl_definition_node>(hl_ast_node::deep_copy(arg));
+            arguments_map[arg_name] = hl_ast_node::deep_copy(arg);
             ++idx;
+
         }
 
         // SUBSTITUTE THE ARGUMENTS OF THE CALL WITHIN THE FUNCTION BODY
@@ -48,7 +49,7 @@ std::shared_ptr<hl_ast_node> function_inlining_pass::process_leaf(std::shared_pt
 
 
  std::shared_ptr<hl_ast_node> function_inlining_pass::substitute_arguments(const std::shared_ptr<hl_ast_node> &statement,
-                                                                           std::unordered_map<std::string, std::shared_ptr<hl_definition_node>>& parameters) {
+                                                                           std::unordered_map<std::string, std::shared_ptr<hl_ast_node>>& parameters) {
     std::shared_ptr<hl_ast_node> retval = statement;
     if (statement->node_type == hl_ast_node_type_expr){
         std::shared_ptr<hl_expression_node> item = std::static_pointer_cast<hl_expression_node>(statement);

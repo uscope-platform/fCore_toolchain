@@ -28,6 +28,7 @@ variable::variable() {
     float_const = false;
     first_occurrence = 32768;
     last_occurrence = 0;
+    bound_register = 0;
 }
 
 variable::variable(bool const_status, std::string text) {
@@ -38,6 +39,7 @@ variable::variable(bool const_status, std::string text) {
     float_const = false;
     first_occurrence = 32768;
     last_occurrence = 0;
+    bound_register = 0;
 }
 
 variable::variable(bool const_status, std::string text, bool float_status) {
@@ -49,6 +51,7 @@ variable::variable(bool const_status, std::string text, bool float_status) {
     float_const = float_status;
     first_occurrence = 32768;
     last_occurrence = 0;
+    bound_register = 0;
 }
 
 
