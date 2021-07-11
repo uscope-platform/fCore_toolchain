@@ -21,6 +21,7 @@
 #include <memory>
 #include <unordered_map>
 #include <utility>
+#include <cmath>
 
 #include "frontend/variable_map.hpp"
 #include "frontend/asm/register_map.hpp"
@@ -37,7 +38,7 @@ class register_allocation_pass: public pass_base<ll_ast_node> {
         std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
         int get_pass_type() override { return LEAF_PASS;};
 private:
-    bool used[16] = {false};
+    std::vector<bool> used;
     std::unordered_map<std::shared_ptr<variable>, std::shared_ptr<variable>> register_mapping;
     register_map reg_map;
     std::shared_ptr<variable_map> var_map;

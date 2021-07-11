@@ -18,6 +18,7 @@
 #ifndef FCORE_HAS_VARIABLE_MAP_HPP
 #define FCORE_HAS_VARIABLE_MAP_HPP
 
+#include <iterator>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -33,12 +34,18 @@ public:
     std::shared_ptr<variable> operator[](const std::string& key);
     std::shared_ptr<variable> at(const std::string& key);
     void insert(const std::string& key, std::shared_ptr<variable>item);
-    int count(const std::string& key);
+    unsigned int count(const std::string& key);
+    unsigned int size();
 
     unsigned int n_inputs() const {return n_inputs_;};
     unsigned int n_outputs() const {return n_outputs_;};
     unsigned int n_variables() const {return n_variables_;};
     friend bool operator==(const variable_map& lhs, const variable_map& rhs);
+
+    std::__detail::_Node_iterator<std::pair<const std::basic_string<char>, std::shared_ptr<variable>>, false, true> begin() {return map.begin();}
+    std::__detail::_Node_const_iterator<std::pair<const std::basic_string<char>, std::shared_ptr<variable>>, false, true> begin() const { return map.begin();}
+    std::__detail::_Node_iterator<std::pair<const std::basic_string<char>, std::shared_ptr<variable>>, false, true> end() {return map.end();}
+    std::__detail::_Node_const_iterator<std::pair<const std::basic_string<char>, std::shared_ptr<variable>>, false, true> end() const { return map.end();}
 
 private:
     unsigned int n_inputs_ = 0;

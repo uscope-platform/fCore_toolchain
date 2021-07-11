@@ -50,7 +50,7 @@ void variable_map::insert(const std::string& key, std::shared_ptr<variable>item)
     map[key] = std::move(item);
 }
 
-int variable_map::count(const std::string &key) {
+unsigned int variable_map::count(const std::string &key) {
     return map.count(key);
 }
 
@@ -81,4 +81,8 @@ bool operator==(const variable_map &lhs, const variable_map &rhs) {
         }
     }
     return retval;
+}
+
+unsigned int variable_map::size() {
+    return map.size();
 }

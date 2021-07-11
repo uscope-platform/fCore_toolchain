@@ -21,10 +21,25 @@
 
 register_allocation_pass::register_allocation_pass(std::shared_ptr<variable_map> varmap) : pass_base<ll_ast_node>("register allocation pass"){
     var_map = std::move(varmap);
-    std::string registers[16] = {"r0", "r1", "r2", "r3", "r4", "r5",  "r6", "r7", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15"};
-    for(int i= 0; i<16; i++){
-        used[i] = var_map->at(registers[i])->is_used();
+    //pre_initialize the registers statuses;
+    used.reserve(pow(2, fcore_opcode_width));
+    for(int i = 0; i< pow(2, fcore_opcode_width); ++i) {
+        used[i] = false;
     }
+
+    //exclude form allocation pool the register that are used explicitly by the user
+    for(int i= 0; i<pow(2, fcore_opcode_width); i++){
+        used[i] = var_map->at("r"+std::to_string(i))->is_used();
+    }
+
+    //exclude form allocation pool the inputs and outputs
+    for(auto &item: *var_map){
+        unsigned int bound_reg = item.second->get_bound_reg();
+        if(bound_reg>0){
+            used[bound_reg] = true;
+        }
+    }
+
     used[0] = true;
 }
 
