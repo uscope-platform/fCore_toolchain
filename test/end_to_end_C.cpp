@@ -60,3 +60,19 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     ASSERT_EQ(result, gold_standard);
 }
 
+
+
+TEST(EndToEndC, fcore_cc) {
+
+
+    std::string input_file = "test_normalization.c";
+    std::ifstream ifs(input_file);
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(ifs, includes);
+    std::vector<uint32_t> result = compiler.get_hexfile(false);
+
+    std::vector<uint32_t> gold_standard = {0x22883, 0x43021};
+    ASSERT_EQ(result, gold_standard);
+}

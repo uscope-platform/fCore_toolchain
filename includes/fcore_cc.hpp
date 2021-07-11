@@ -28,13 +28,15 @@
 #include "frontend/C/C_language_parser.hpp"
 #include "backend/output_generator.hpp"
 #include "passes/hl_passes.hpp"
+#include "passes/ll_passes.hpp"
 #include "passes/high_level/hl_pass_manager.hpp"
-
+#include "passes/low_level/ll_pass_manager.hpp"
+#include "ast/transformations/high_level_ast_lowering.hpp"
 
 class fcore_cc {
 public:
     fcore_cc(std::istream &input, std::vector<std::string> &includes);
-
+    ~fcore_cc();
     std::vector<uint32_t> get_hexfile(bool endian_swap);
     std::string get_errors();
     std::vector<std::string> get_verilog_memfile();
@@ -43,9 +45,11 @@ public:
     uint32_t get_program_size();
     uint32_t get_inst_count();
 private:
-    std::shared_ptr<hl_ast_node> AST;
+    std::shared_ptr<hl_ast_node> hl_ast;
+    std::shared_ptr<ll_ast_node> ll_ast;
     output_generator *writer;
-    hl_pass_manager  manager;
+    hl_pass_manager  hl_manager;
+    ll_pass_manager ll_manager;
     std::string error_code;
 };
 
