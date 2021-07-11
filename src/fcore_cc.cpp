@@ -44,7 +44,7 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes) {
     ll_manager = create_ll_pass_manager(variables_map);
     ll_manager.run_morphing_passes(ll_ast);
 
-    writer = new output_generator(ll_ast, true);
+    writer = new output_generator(ll_ast, false);
 }
 
 

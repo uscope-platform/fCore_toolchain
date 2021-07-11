@@ -30,15 +30,14 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     std::string input_file = "test_normalization.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
+    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, variables_map, result_def);
     parser.pre_process({}, {});
     parser.parse();
 
     std::string ep = "main";
-    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
     hl_pass_manager hl_manager = create_hl_pass_manager(ep, variables_map);
     hl_manager.run_morphing_passes(parser.AST);
 
@@ -53,10 +52,10 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     ll_pass_manager ll_manager = create_ll_pass_manager(variables_map);
     ll_manager.run_morphing_passes(ll_ast);
 
-    output_generator writer(ll_ast, true);
+    output_generator writer(ll_ast, false);
     std::vector<uint32_t> result = writer.get_raw_program();
 
-    std::vector<uint32_t> gold_standard = {0x22883, 0x43021};
+    std::vector<uint32_t> gold_standard = {0x22883, 0x143021};
     ASSERT_EQ(result, gold_standard);
 }
 
@@ -73,6 +72,6 @@ TEST(EndToEndC, fcore_cc) {
     fcore_cc compiler(ifs, includes);
     std::vector<uint32_t> result = compiler.get_hexfile(false);
 
-    std::vector<uint32_t> gold_standard = {0x22883, 0x43021};
+    std::vector<uint32_t> gold_standard = {0x22883, 0x143021};
     ASSERT_EQ(result, gold_standard);
 }

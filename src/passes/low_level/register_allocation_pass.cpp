@@ -39,25 +39,31 @@ std::shared_ptr<ll_ast_node> register_allocation_pass::process_leaf(std::shared_
             std::smatch m;
             std::string s = item->to_str();
             std::regex_match(s, m, re);
-            if(register_mapping.count(item)){
+            if(item->get_bound_reg() != 0){
+                register_mapping[item] = var_map->at("r"+std::to_string(item->get_bound_reg()));
                 item = register_mapping[item];
-            }else if(m.empty() && !item->is_constant()){
-                bool found = false;
-                for(int i = 0; i<16;i++){
+            } else{
+                if(register_mapping.count(item)){
+                    item = register_mapping[item];
+                }else if(m.empty() && !item->is_constant()){
+                    bool found = false;
+                    for(int i = 0; i<16;i++){
 
-                    if(!reg_map.is_used(i, item->first_occurrence, item->last_occurrence)){
-                        found = true;
-                        reg_map.insert(item->to_str(), i, item->first_occurrence, item->last_occurrence);
-                        register_mapping[item] = var_map->at("r"+std::to_string(i));
-                        item = register_mapping[item];
-                        break;
+                        if(!reg_map.is_used(i, item->first_occurrence, item->last_occurrence)){
+                            found = true;
+                            reg_map.insert(item->to_str(), i, item->first_occurrence, item->last_occurrence);
+                            register_mapping[item] = var_map->at("r"+std::to_string(i));
+                            item = register_mapping[item];
+                            break;
+                        }
+                    }
+                    if(!found){
+                        std::cout<<"ERROR: The register assignment phase run out of registers with variables still to assign."<< std::endl;
+                        exit(-1);
                     }
                 }
-                if(!found){
-                    std::cout<<"ERROR: The register assignment phase run out of registers with variables still to assign."<< std::endl;
-                    exit(-1);
-                }
             }
+
         }
         node->setStringInstr(current_instr);
         ret_val = node;
