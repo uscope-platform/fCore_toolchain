@@ -14,7 +14,8 @@ public:
     ll_ast_pragma();
     explicit ll_ast_pragma(std::string directive);
     std::string get_directive();
-    bool is_terminal();
+    bool is_terminal() override;
+    friend bool operator==(const ll_ast_pragma& lhs, const ll_ast_pragma& rhs);
     void print();
 private:
     std::string directive;

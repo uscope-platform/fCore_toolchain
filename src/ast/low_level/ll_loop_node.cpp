@@ -36,3 +36,31 @@ loop_advance_t ll_loop_node::get_advance() {
     return loop_advance;
 }
 
+bool operator==(const ll_loop_node &lhs, const ll_loop_node &rhs) {
+    bool retval = true;
+
+    retval &= lhs.loop_start.variable == rhs.loop_start.variable;
+    retval &= lhs.loop_start.starting_value == rhs.loop_start.starting_value;
+
+    retval &= lhs.loop_advance.direction == rhs.loop_advance.direction;
+    retval &= lhs.loop_advance.loop_increment == rhs.loop_advance.loop_increment;
+
+    retval &= lhs.end_condition.condition == rhs.end_condition.condition;
+    retval &= lhs.end_condition.end_count == rhs.end_condition.end_count;
+
+    if(lhs.content.empty() && rhs.content.empty()){
+        retval &= true;
+    } else if(lhs.content.empty() || rhs.content.empty()){
+        retval = false;
+    } else {
+        bool args_equal = true;
+        args_equal &= lhs.content.size() == rhs.content.size();
+        for (int i = 0; i < lhs.content.size(); i++) {
+            args_equal &= *lhs.content[i] == *rhs.content[i];
+        }
+        retval &= args_equal;
+    }
+    return retval;
+
+}
+

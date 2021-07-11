@@ -37,6 +37,7 @@ void high_level_ast_lowering::translate() {
         std::shared_ptr<ll_ast_node> lowered_instr = translate_node(i);
         output_ast->add_content(lowered_instr);
     }
+
 }
 
 std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::shared_ptr<hl_ast_node>& input) {

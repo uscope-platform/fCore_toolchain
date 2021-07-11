@@ -39,6 +39,8 @@ public:
     [[nodiscard]] const instruction_t &getStringInstr() const;
     void setStringInstr(const instruction_t &stringInstr);
 
+    friend bool operator==(const ll_instruction_node& lhs, const ll_instruction_node& rhs);
+
 private:
     [[nodiscard]] uint32_t emit_branch() const;
     [[nodiscard]] uint32_t emit_immediate() const;

@@ -220,3 +220,24 @@ isa_instruction_type ll_instruction_node::get_type() {
 bool ll_instruction_node::is_terminal() {
     return true;
 }
+
+bool operator==(const ll_instruction_node &lhs, const ll_instruction_node &rhs) {
+    bool retval = true;
+    retval &= lhs.type == rhs.type;
+    retval &= lhs.string_instr.opcode == rhs.string_instr.opcode;
+    retval &= lhs.string_instr.intercalated_constant == rhs.string_instr.intercalated_constant;
+
+    if(lhs.string_instr.arguments.empty() && rhs.string_instr.arguments.empty()){
+        retval &= true;
+    } else if(lhs.string_instr.arguments.empty() || rhs.string_instr.arguments.empty()){
+        retval = false;
+    } else {
+        bool args_equal = true;
+        args_equal &= lhs.string_instr.arguments.size() == rhs.string_instr.arguments.size();
+        for (int i = 0; i < lhs.string_instr.arguments.size(); i++) {
+            args_equal &= *lhs.string_instr.arguments[i] == *rhs.string_instr.arguments[i];
+        }
+        retval &= args_equal;
+    }
+    return retval;
+}

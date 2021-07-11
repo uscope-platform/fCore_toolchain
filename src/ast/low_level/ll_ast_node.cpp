@@ -73,3 +73,49 @@ std::shared_ptr<ll_ast_node> ll_ast_node::deep_copy_element(const std::shared_pt
 
     return result;
 }
+
+
+
+
+
+
+bool operator==(const ll_ast_node &lhs, const ll_ast_node &rhs) {
+    if(lhs.type != rhs.type) return false;
+
+        bool retval = true;
+        if(lhs.content.empty() && rhs.content.empty()){
+            retval &= true;
+        } else if(lhs.content.empty() || rhs.content.empty()){
+            retval = false;
+        } else {
+            bool args_equal = true;
+            args_equal &= lhs.content.size() == rhs.content.size();
+            for (int i = 0; i < lhs.content.size(); i++) {
+                args_equal &= *lhs.content[i] == *rhs.content[i];
+            }
+            retval &= args_equal;
+        }
+        return retval;
+
+}
+
+
+bool
+ll_ast_node::compare_content_by_type(const std::shared_ptr<ll_ast_node> &lhs, const std::shared_ptr<ll_ast_node> &rhs) {
+    if(lhs->type != rhs->type) return false;
+
+    switch (lhs->type) {
+        case ll_type_program_head:
+        case ll_type_code_block:
+            return *lhs == *rhs;
+        case ll_type_pragma:
+            return *std::static_pointer_cast<ll_ast_pragma>(lhs) == *std::static_pointer_cast<ll_ast_pragma>(rhs);
+        case ll_type_for_block:
+            return *std::static_pointer_cast<ll_loop_node>(lhs) == *std::static_pointer_cast<ll_loop_node>(rhs);
+        case ll_type_instr:
+            return *std::static_pointer_cast<ll_instruction_node>(lhs) == *std::static_pointer_cast<ll_instruction_node>(rhs);
+        default:
+            return false;
+    }
+    return false;
+}

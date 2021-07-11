@@ -383,6 +383,24 @@ TEST(HlPassesTest, hl_ast_lowering) {
     tranlator.translate();
     std::shared_ptr<ll_ast_node> result = tranlator.get_output_ast();
 
+    int i = 0;
 
+    std::shared_ptr<variable> op_a = std::make_shared<variable>(true, "4", false);
+    std::shared_ptr<variable> op_b = std::make_shared<variable>(true, "5", false);
+    std::shared_ptr<variable> dest = std::make_shared<variable>(false, "intermediate_expr_0");
+    std::vector<std::shared_ptr<variable>> args_1 = {op_a, op_b, dest};
+    std::shared_ptr<ll_instruction_node> op_1 = std::make_shared<ll_instruction_node>(isa_register_instruction, "mul", args_1);
+
+
+    op_a = std::make_shared<variable>(false, "intermediate_expr_0");
+    op_b = std::make_shared<variable>(true, "6", true);
+    dest = std::make_shared<variable>(false, "a");
+    std::vector<std::shared_ptr<variable>> args_2 = {op_a, op_b, dest};
+    std::shared_ptr<ll_instruction_node> op_2 = std::make_shared<ll_instruction_node>(isa_register_instruction, "add", args_2);
+
+    std::shared_ptr<ll_ast_node> golden_standard = std::make_shared<ll_ast_node>(ll_type_program_head);
+    golden_standard->set_content({op_1, op_2});
+
+    ASSERT_EQ(*golden_standard, *result);
 }
 

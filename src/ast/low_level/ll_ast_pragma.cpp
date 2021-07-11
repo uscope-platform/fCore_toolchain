@@ -25,3 +25,9 @@ std::string ll_ast_pragma::get_directive() {
 bool ll_ast_pragma::is_terminal() {
     return true;
 }
+
+bool operator==(const ll_ast_pragma &lhs, const ll_ast_pragma &rhs) {
+    bool retval = true;
+    retval &= lhs.directive == rhs.directive;
+    return retval;
+}

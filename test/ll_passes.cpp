@@ -240,11 +240,5 @@ TEST(llPassesTest, deep_copy_element) {
     lvl_1->add_content(level_2);
     std::shared_ptr<ll_ast_node> result = ll_ast_node::deep_copy_element(lvl_1);
 
-    std::shared_ptr<ll_loop_node> og_loop = std::static_pointer_cast<ll_loop_node>(result);
-    std::shared_ptr<ll_instruction_node> og_instr = std::static_pointer_cast<ll_instruction_node>(og_loop->get_content()[0]);
-    bool test_types = lvl_1->type == og_loop->type && level_2->get_type() == og_instr->get_type();
-    bool test_instr_content = og_instr->emit() == level_2->emit();
-    bool test_loop_content = og_loop->get_loop_start().starting_value == start.starting_value;
-    bool result_check = test_types && test_instr_content && test_loop_content;
-    ASSERT_TRUE(result_check);
+    ASSERT_EQ(*result, *lvl_1);
 }
