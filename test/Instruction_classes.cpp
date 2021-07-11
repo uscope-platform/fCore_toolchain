@@ -30,14 +30,14 @@ TEST(InstructionClasses, immediate_instruction ) {
     std::vector<std::shared_ptr<variable>> args = {dest, imm};
     ll_instruction_node instr(isa_immediate_instruction,"ldr", args);
 
-    ASSERT_EQ( instr.emit(),  0x32087);
+    ASSERT_EQ( instr.emit(),  0x64107);
 
     std::stringstream buffer;
     std::streambuf * old = std::cout.rdbuf(buffer.rdbuf());
     instr.print();
     std::string result = buffer.str();
     std::cout.rdbuf(old);
-    std::string golden_standard = "32087 -> OPCODE: ldr DESTINATION: r4 IMMEDIATE: 100\n";
+    std::string golden_standard = "64107 -> OPCODE: ldr DESTINATION: r4 IMMEDIATE: 100\n";
     ASSERT_EQ(result, golden_standard);
 }
 
@@ -50,14 +50,14 @@ TEST(InstructionClasses, register_instruction ) {
 
     ll_instruction_node instr(isa_register_instruction,"add", args);
 
-    ASSERT_EQ(instr.emit(), 0x81841);
+    ASSERT_EQ(instr.emit(), 0x103081);
 
     std::stringstream buffer;
     std::streambuf * old = std::cout.rdbuf(buffer.rdbuf());
     instr.print();
     std::string result = buffer.str();
     std::cout.rdbuf(old);
-    std::string golden_standard = "81841 -> OPCODE: add OPERAND A: r2 OPERAND B: r3 DESTINATION: r4\n";
+    std::string golden_standard = "103081 -> OPCODE: add OPERAND A: r2 OPERAND B: r3 DESTINATION: r4\n";
     ASSERT_EQ(result,  golden_standard);
 
 }

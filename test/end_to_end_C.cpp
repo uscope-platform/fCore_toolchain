@@ -55,7 +55,7 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     output_generator writer(ll_ast, false);
     std::vector<uint32_t> result = writer.get_raw_program();
 
-    std::vector<uint32_t> gold_standard = {0x22883, 0x143021};
+    std::vector<uint32_t> gold_standard = {0x45103, 0x286041};
     ASSERT_EQ(result, gold_standard);
 }
 
@@ -72,6 +72,6 @@ TEST(EndToEndC, fcore_cc) {
     fcore_cc compiler(ifs, includes);
     std::vector<uint32_t> result = compiler.get_hexfile(false);
 
-    std::vector<uint32_t> gold_standard = {0x22883, 0x143021};
+    std::vector<uint32_t> gold_standard = {0x45103, 0x286041};
     ASSERT_EQ(result, gold_standard);
 }
