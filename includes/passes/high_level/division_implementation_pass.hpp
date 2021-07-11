@@ -15,26 +15,21 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_HAS_VARIABLE_LIFETIME_MAPPING_HPP
-#define FCORE_HAS_VARIABLE_LIFETIME_MAPPING_HPP
+#ifndef FCORE_HAS_DIVISION_IMPLEMENTATION_PASS_HPP
+#define FCORE_HAS_DIVISION_IMPLEMENTATION_PASS_HPP
 
-#include "ast/low_level/ll_instruction_node.hpp"
-#include "ast/low_level/ll_ast_node.hpp"
-#include "frontend/variable_map.hpp"
+#include "ast/high_level/hl_expression_node.hpp"
+#include "ast/high_level/hl_ast_node.hpp"
 #include "passes/pass_base.hpp"
 
-#include <utility>
-
-class variable_lifetime_mapping: public pass_base<ll_ast_node> {
+class division_implementation_pass :public pass_base<hl_ast_node> {
 public:
-    explicit variable_lifetime_mapping(std::shared_ptr<variable_map> var_map);
-    std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
+    division_implementation_pass();
+    std::shared_ptr<hl_ast_node> process_leaf(std::shared_ptr<hl_ast_node> element) override;
     int get_pass_type() override { return LEAF_PASS;};
-private:
-    int variable_detection_ctr;
-    std::shared_ptr<variable_map> vmap;
 };
 
 
 
-#endif //FCORE_HAS_VARIABLE_LIFETIME_MAPPING_HPP
+
+#endif //FCORE_HAS_DIVISION_IMPLEMENTATION_PASS_HPP

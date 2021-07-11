@@ -22,7 +22,7 @@
 
 
 #include "../third_party/CLI11.hpp"
-#include "fcore_cc.h"
+#include "fcore_cc.hpp"
 
 int main(int argc, char **argv) {
     CLI::App app{"fCore High level assembler"};

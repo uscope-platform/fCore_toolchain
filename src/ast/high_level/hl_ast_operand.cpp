@@ -1,8 +1,22 @@
-//
-// Created by fils on 01/07/2021.
+// Copyright (C) 2020 Filippo Savi - All Rights Reserved
+
+// This file is part of fCore_has.
+
+// fCore_has is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+
+// fCore_has is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.01/07/2021.
 //
 
-#include "ast/high_level/hl_ast_operand.h"
+#include "ast/high_level/hl_ast_operand.hpp"
 
 hl_ast_operand::hl_ast_operand(operand_type_t ot) : hl_ast_node(hl_ast_node_type_operand) {
     operand_type = ot;

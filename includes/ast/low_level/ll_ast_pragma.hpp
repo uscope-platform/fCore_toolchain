@@ -13,8 +13,26 @@
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.30/06/2021.
-//
+// along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#define TEST
- #include "include_test.h"
+#ifndef FCORE_HAS_LL_AST_PRAGMA_HPP
+#define FCORE_HAS_LL_AST_PRAGMA_HPP
+
+#include <string>
+
+#include "ll_ast_node.hpp"
+
+class ll_ast_pragma :public ll_ast_node{
+public:
+    ll_ast_pragma();
+    explicit ll_ast_pragma(std::string directive);
+    std::string get_directive();
+    bool is_terminal() override;
+    friend bool operator==(const ll_ast_pragma& lhs, const ll_ast_pragma& rhs);
+    void print();
+private:
+    std::string directive;
+};
+
+
+#endif //FCORE_HAS_LL_AST_PRAGMA_HPP

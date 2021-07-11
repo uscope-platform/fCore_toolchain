@@ -21,10 +21,10 @@
 #include "asm_parser/asm_grammarBaseListener.h"
 #include "asm_parser/asm_grammarParser.h"
 #include "fCore_isa.hpp"
-#include "ast/low_level/ll_instruction_node.h"
-#include "ast/low_level/ll_ast_pragma.h"
+#include "ast/low_level/ll_instruction_node.hpp"
+#include "ast/low_level/ll_ast_pragma.hpp"
 #include "ast/low_level/ll_ast_node.hpp"
-#include "ast/low_level/ll_loop_node.h"
+#include "ast/low_level/ll_loop_node.hpp"
 #include "ast/variable.hpp"
 #include "frontend/variable_map.hpp"
 #include <iostream>

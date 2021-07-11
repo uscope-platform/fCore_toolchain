@@ -19,7 +19,7 @@
 
 
 variable_map::variable_map() {
-    for(int i = 0; i<std::pow(2, REGISTER_ADDRESS_WIDTH); i++){
+    for(int i = 0; i<std::pow(2, fcore_register_address_width); i++){
         std::string reg_name = "r"+std::to_string(i);
         std::shared_ptr<variable> reg = std::make_shared<variable>(false, reg_name);
         map[reg_name] = reg;

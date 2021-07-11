@@ -29,7 +29,7 @@
 
 #include "frontend/variable_map.hpp"
 #include "ast/low_level/ll_ast_node.hpp"
-#include "passes/low_level/ll_pass_manager.h"
+#include "passes/low_level/ll_pass_manager.hpp"
 #include "passes/pass_base.hpp"
 
 static ll_pass_manager create_ll_pass_manager(std::shared_ptr<variable_map> varmap){

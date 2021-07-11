@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_HAS_ASM_LANGUAGE_PARSER_H
-#define FCORE_HAS_FILE_PARSER_H
+#ifndef FCORE_HAS_C_LANGUAGE_PARSER_HPP
+#define FCORE_HAS_C_LANGUAGE_PARSER_HPP
 
 #include <string>
 #include <sstream>
@@ -28,7 +28,7 @@
 #include "ast/low_level//ll_ast_node.hpp"
 #include "C_Tree_visitor.hpp"
 #include "C_ErrorHandling.hpp"
-#include "C_pre_processor.h"
+#include "C_pre_processor.hpp"
 
 #include "antlr4-runtime.h"
 #include "C_parser/C_grammarLexer.h"
@@ -84,4 +84,4 @@ class C_language_parser{
 };
 
 
-#endif //FCORE_HAS_ASM_LANGUAGE_PARSER_H
+#endif //FCORE_HAS_C_LANGUAGE_PARSER_HPP

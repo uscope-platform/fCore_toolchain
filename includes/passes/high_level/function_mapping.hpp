@@ -15,16 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_HAS_FUNCTION_MAPPING_H
-#define FCORE_HAS_FUNCTION_MAPPING_H
+#ifndef FCORE_HAS_FUNCTION_MAPPING_HPP
+#define FCORE_HAS_FUNCTION_MAPPING_HPP
 
 #include <vector>
 #include <memory>
 #include <unordered_map>
 #include <string>
 
-#include "ast/high_level/hl_expression_node.h"
-#include "ast/high_level/hl_function_def_node.h"
+#include "ast/high_level/hl_expression_node.hpp"
+#include "ast/high_level/hl_function_def_node.hpp"
 #include "passes/pass_base.hpp"
 
 class function_mapping : public pass_base<hl_ast_node> {
@@ -39,4 +39,4 @@ class function_mapping : public pass_base<hl_ast_node> {
 
 
 
-#endif //FCORE_HAS_FUNCTION_MAPPING_H
+#endif //FCORE_HAS_FUNCTION_MAPPING_HPP

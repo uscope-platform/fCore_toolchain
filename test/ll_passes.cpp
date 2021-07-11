@@ -21,7 +21,7 @@
 #include "ast/low_level/ll_ast_node.hpp"
 #include "passes/ll_passes.hpp"
 #include "backend/output_generator.hpp"
-#include "frontend/asm/asm_language_parser.h"
+#include "frontend/asm/asm_language_parser.hpp"
 
 
 TEST(llPassesTest, pseudo_inst_pass) {

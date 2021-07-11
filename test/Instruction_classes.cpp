@@ -20,7 +20,7 @@
 #include <memory>
 
 #include "ast/variable.hpp"
-#include "ast/low_level/ll_instruction_node.h"
+#include "ast/low_level/ll_instruction_node.hpp"
 #include "fCore_isa.hpp"
 
 TEST(InstructionClasses, immediate_instruction ) {

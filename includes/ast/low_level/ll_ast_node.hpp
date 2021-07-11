@@ -25,7 +25,7 @@
 #include <utility>
 
 #include "ast/variable.hpp"
-#include "ast/ast_node_base.h"
+#include "ast/ast_node_base.hpp"
 
 
 typedef enum {

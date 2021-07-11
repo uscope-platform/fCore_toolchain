@@ -13,8 +13,23 @@
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.30/06/2021.
-//
+// along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#define TEST
- #include "include_test.h"
+#ifndef FCORE_HAS_DEFINE_HPP
+#define FCORE_HAS_DEFINE_HPP
+
+#include <string>
+#include <utility>
+
+class define {
+public:
+    define(int l, std::string n, std::string c);
+    friend bool operator==(const define& lhs, const define& rhs);
+private:
+    int line;
+    std::string name;
+    std::string content;
+};
+
+
+#endif //FCORE_HAS_DEFINE_HPP

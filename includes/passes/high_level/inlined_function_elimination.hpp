@@ -15,26 +15,24 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_HAS_VARIABLE_LIFETIME_MAPPING_HPP
-#define FCORE_HAS_VARIABLE_LIFETIME_MAPPING_HPP
-
-#include "ast/low_level/ll_instruction_node.hpp"
-#include "ast/low_level/ll_ast_node.hpp"
-#include "frontend/variable_map.hpp"
-#include "passes/pass_base.hpp"
+#ifndef FCORE_HAS_INLINED_FUNCTION_ELIMINATION_HPP
+#define FCORE_HAS_INLINED_FUNCTION_ELIMINATION_HPP
 
 #include <utility>
 
-class variable_lifetime_mapping: public pass_base<ll_ast_node> {
+#include "ast/high_level/hl_ast_node.hpp"
+#include "ast/high_level/hl_function_def_node.hpp"
+#include "passes/pass_base.hpp"
+
+class inlined_function_elimination : public  pass_base<hl_ast_node>{
 public:
-    explicit variable_lifetime_mapping(std::shared_ptr<variable_map> var_map);
-    std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
-    int get_pass_type() override { return LEAF_PASS;};
+    explicit inlined_function_elimination(std::string entry_point_name);
+    std::vector<std::shared_ptr<hl_ast_node>> process_node(std::shared_ptr<hl_ast_node> element) override;
+    int get_pass_type() override { return NODE_PASS;};
 private:
-    int variable_detection_ctr;
-    std::shared_ptr<variable_map> vmap;
+    std::string entry_point;
 };
 
 
 
-#endif //FCORE_HAS_VARIABLE_LIFETIME_MAPPING_HPP
+#endif //FCORE_HAS_INLINED_FUNCTION_ELIMINATION_HPP

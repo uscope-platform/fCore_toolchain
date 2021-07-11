@@ -23,7 +23,7 @@
 #include <fstream>
 #include <memory>
 #include "ast/low_level/ll_ast_node.hpp"
-#include "ast/low_level/ll_instruction_node.h"
+#include "ast/low_level/ll_instruction_node.hpp"
 
 class output_generator {
 

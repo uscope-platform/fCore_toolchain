@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_HAS_ASMERRORHANDLING_HPP
-#define FCORE_HAS_ERRORHANDLING_HPP
+#ifndef FCORE_HAS_C_ERRORHANDLING_HPP
+#define FCORE_HAS_C_ERRORHANDLING_HPP
 
 #include "ANTLRErrorListener.h"
 #include "antlr4-runtime.h"
@@ -171,4 +171,4 @@ class C_ErrorHandling : public  antlr4::ANTLRErrorListener {
 
 
 
-#endif //FCORE_HAS_ASMERRORHANDLING_HPP
+#endif //FCORE_HAS_C_ERRORHANDLING_HPP

@@ -1,19 +1,33 @@
-//
-// Created by fils on 05/07/2021.
+// Copyright (C) 2020 Filippo Savi - All Rights Reserved
+
+// This file is part of fCore_has.
+
+// fCore_has is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+
+// fCore_has is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.05/07/2021.
 //
 
 #include <gtest/gtest.h>
-#include "ast/high_level/hl_ast_node.h"
-#include "ast/high_level/hl_ast_operand.h"
-#include "ast/high_level/hl_expression_node.h"
+#include "ast/high_level/hl_ast_node.hpp"
+#include "ast/high_level/hl_ast_operand.hpp"
+#include "ast/high_level/hl_expression_node.hpp"
 #include "frontend/variable_map.hpp"
-#include "frontend/define_map.h"
-#include "frontend/C/C_language_parser.h"
+#include "frontend/define_map.hpp"
+#include "frontend/C/C_language_parser.hpp"
 #include "passes/hl_passes.hpp"
-#include "passes/high_level/function_mapping.h"
-#include "passes/high_level/hl_pass_manager.h"
-#include "passes/high_level/normalization_pass.h"
-#include "ast/transformations/high_level_ast_lowering.h"
+#include "passes/high_level/function_mapping.hpp"
+#include "passes/high_level/hl_pass_manager.hpp"
+#include "passes/high_level/normalization_pass.hpp"
+#include "ast/transformations/high_level_ast_lowering.hpp"
 
 #include <memory>
 #include <fstream>

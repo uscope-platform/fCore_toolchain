@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_HAS_ASMTREE_VISITOR_HPP
-#define FCORE_HAS_TREE_VISITOR_HPP
+#ifndef FCORE_HAS_C_TREE_VISITOR_HPP
+#define FCORE_HAS_C_TREE_VISITOR_HPP
 
 #include <iostream>
 #include <memory>
@@ -33,12 +33,12 @@
 #include "frontend/variable_map.hpp"
 
 
-#include "ast/high_level/hl_function_def_node.h"
-#include "ast/high_level/hl_ast_node.h"
-#include "ast/high_level/hl_expression_node.h"
-#include "ast/high_level/hl_ast_operand.h"
-#include "ast/high_level/hl_definition_node.h"
-#include "ast/high_level/hl_function_call_node.h"
+#include "ast/high_level/hl_function_def_node.hpp"
+#include "ast/high_level/hl_ast_node.hpp"
+#include "ast/high_level/hl_expression_node.hpp"
+#include "ast/high_level/hl_ast_operand.hpp"
+#include "ast/high_level/hl_definition_node.hpp"
+#include "ast/high_level/hl_function_call_node.hpp"
 
 #include <gtest/gtest_prod.h>
 

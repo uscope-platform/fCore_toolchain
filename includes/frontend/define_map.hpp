@@ -15,26 +15,28 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_HAS_VARIABLE_LIFETIME_MAPPING_HPP
-#define FCORE_HAS_VARIABLE_LIFETIME_MAPPING_HPP
+#ifndef FCORE_HAS_DEFINE_MAP_HPP
+#define FCORE_HAS_DEFINE_MAP_HPP
 
-#include "ast/low_level/ll_instruction_node.hpp"
-#include "ast/low_level/ll_ast_node.hpp"
-#include "frontend/variable_map.hpp"
-#include "passes/pass_base.hpp"
-
+#include <unordered_map>
+#include <string>
+#include <memory>
 #include <utility>
 
-class variable_lifetime_mapping: public pass_base<ll_ast_node> {
+#include "ast/define.hpp"
+
+class define_map {
 public:
-    explicit variable_lifetime_mapping(std::shared_ptr<variable_map> var_map);
-    std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
-    int get_pass_type() override { return LEAF_PASS;};
+
+    std::shared_ptr<define> operator[](const std::string& key);
+    std::shared_ptr<define> at(const std::string& key);
+    void insert(const std::string& key, std::shared_ptr<define>item);
+    unsigned int count(const std::string& key);
+
+
 private:
-    int variable_detection_ctr;
-    std::shared_ptr<variable_map> vmap;
+    std::unordered_map<std::string, std::shared_ptr<define>> defines;
 };
 
 
-
-#endif //FCORE_HAS_VARIABLE_LIFETIME_MAPPING_HPP
+#endif //FCORE_HAS_DEFINE_MAP_HPP

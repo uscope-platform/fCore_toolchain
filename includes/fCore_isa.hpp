@@ -18,11 +18,8 @@
 #ifndef FCORE_HAS_FCORE_ISA_HPP
 #define FCORE_HAS_FCORE_ISA_HPP
 
-#include "ast/high_level/hl_expression_node.h"
+#include "ast/high_level/hl_expression_node.hpp"
 #include <map>
-
-#define OPCODE_WIDTH 5
-#define REGISTER_ADDRESS_WIDTH 6
 
 
 typedef enum {
@@ -38,6 +35,7 @@ typedef enum {
 
 static const int fcore_register_address_width = 6;
 static const int fcore_opcode_width = 5;
+
 static std::map <std::string, uint32_t>  fcore_opcodes {
                 std::make_pair ("nop", 0u),
                 std::make_pair ("add", 1u),

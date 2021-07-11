@@ -1,18 +1,31 @@
-//
-// Created by fils on 06/07/2021.
-//
+// Copyright (C) 2020 Filippo Savi - All Rights Reserved
 
-#ifndef FCORE_HAS_HL_PASS_MANAGER_H
-#define FCORE_HAS_HL_PASS_MANAGER_H
+// This file is part of fCore_has.
+
+// fCore_has is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License.
+
+// fCore_has is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
+
+#ifndef FCORE_HAS_HL_PASS_MANAGER_HPP
+#define FCORE_HAS_HL_PASS_MANAGER_HPP
 
 #include <gtest/gtest_prod.h>
 
-#include "ast/high_level/hl_ast_node.h"
-#include "ast/high_level/hl_expression_node.h"
-#include "ast/high_level/hl_ast_operand.h"
-#include "ast/high_level/hl_function_call_node.h"
-#include "ast/high_level/hl_function_def_node.h"
-#include "ast/high_level/hl_definition_node.h"
+#include "ast/high_level/hl_ast_node.hpp"
+#include "ast/high_level/hl_expression_node.hpp"
+#include "ast/high_level/hl_ast_operand.hpp"
+#include "ast/high_level/hl_function_call_node.hpp"
+#include "ast/high_level/hl_function_def_node.hpp"
+#include "ast/high_level/hl_definition_node.hpp"
 
 #include "passes/pass_manager_base.hpp"
 #include "passes/pass_base.hpp"
@@ -37,4 +50,4 @@ private:
 };
 
 
-#endif //FCORE_HAS_HL_PASS_MANAGER_H
+#endif //FCORE_HAS_HL_PASS_MANAGER_HPP
