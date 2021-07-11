@@ -18,6 +18,13 @@
 #include "frontend/variable_map.hpp"
 
 
+variable_map::variable_map() {
+    for(int i = 0; i<std::pow(2, REGISTER_ADDRESS_WIDTH); i++){
+        std::string reg_name = "r"+std::to_string(i);
+        std::shared_ptr<variable> reg = std::make_shared<variable>(false, reg_name);
+        map[reg_name] = reg;
+    }
+}
 
 std::shared_ptr<variable> variable_map::operator[](const std::string& key) {
     return map[key];

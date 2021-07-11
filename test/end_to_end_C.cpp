@@ -18,18 +18,42 @@
 #include <fstream>
 
 #include <gtest/gtest.h>
+#include "passes/low_level/ll_pass_manager.h"
+#include "passes/ll_passes.hpp"
+#include "ast/transformations/high_level_ast_lowering.h"
 #include "fcore_cc.h"
 
 
-TEST( EndToEndC, simple_file ) {
-    std::string input_file = "test_main_add.c";
+TEST(EndToEndC, minimal_c_end_to_end) {
 
 
-    std::vector<std::string> include_files = {};
+    std::string input_file = "test_normalization.c";
     std::ifstream ifs(input_file);
 
-   // fcore_cc compiler_engine(ifs, include_files);
+    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
+    C_language_parser parser(ifs, result_var, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
+
+    std::string ep = "main";
+    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
+    hl_pass_manager hl_manager = create_hl_pass_manager(ep, variables_map);
+    hl_manager.run_morphing_passes(parser.AST);
+
+    std::shared_ptr<hl_ast_node> normalized_ast = hl_manager.run_global_passes(parser.AST);
+
+    high_level_ast_lowering tranlator(variables_map);
+
+    tranlator.set_input_ast(normalized_ast);
+    tranlator.translate();
+    std::shared_ptr<ll_ast_node> ll_ast = tranlator.get_output_ast();
+
+    ll_pass_manager ll_manager = create_ll_pass_manager(variables_map);
+    ll_manager.run_morphing_passes(ll_ast);
+
+    output_generator writer(ll_ast, false);
+    std::vector<uint32_t> result = writer.get_raw_program();
 }
-
 

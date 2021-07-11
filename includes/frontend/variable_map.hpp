@@ -23,11 +23,13 @@
 #include <unordered_map>
 #include <iterator>
 #include <utility>
+#include <cmath>
 #include "ast/variable.hpp"
 #include "ast/low_level/ll_ast_node.hpp"
 
 class variable_map {
 public:
+    variable_map();
     std::shared_ptr<variable> operator[](const std::string& key);
     std::shared_ptr<variable> at(const std::string& key);
     void insert(const std::string& key, std::shared_ptr<variable>item);

@@ -34,8 +34,8 @@ static inline uint32_t Reverse32(uint32_t value)
 TEST( EndToEndAsm, simple_file ) {
     std::string input_file = "test_add.s";
 
-    std::string include_dir = "";
-    std::vector<std::string> include_files = {"register_defs.s"};
+    std::string include_dir;
+    std::vector<std::string> include_files = {};
     std::ifstream stream(input_file);
     fcore_has uut(stream,include_files,include_dir);
 
@@ -66,7 +66,7 @@ TEST( EndToEndAsm, simple_file ) {
     std::string filename = input_file+".hex";
     FILE *fptr = fopen(filename.c_str(),"rb");
 
-    int program_size = uut.get_program_size();
+    uint32_t program_size = uut.get_program_size();
     uint32_t res[1000];
     fread(res,sizeof(uint32_t), program_size, fptr);
     result.clear();
@@ -81,8 +81,8 @@ TEST( EndToEndAsm, simple_file ) {
 TEST( EndToEndAsm, for_file ) {
     std::string input_file = "test_for.s";
 
-    std::string include_dir = "";
-    std::vector<std::string> include_files = {"register_defs.s"};
+    std::string include_dir;
+    std::vector<std::string> include_files = {};
 
     std::ifstream stream(input_file);
     fcore_has uut(stream,include_files,include_dir);
@@ -96,8 +96,8 @@ TEST( EndToEndAsm, for_file ) {
 TEST( EndToEndAsm, branch_file ) {
     std::string input_file = "test_branch.s";
 
-    std::string include_dir = "";
-    std::vector<std::string> include_files = {"register_defs.s"};
+    std::string include_dir;
+    std::vector<std::string> include_files = {};
 
     std::ifstream stream(input_file);
     fcore_has uut(stream,include_files,include_dir);
@@ -111,8 +111,8 @@ TEST( EndToEndAsm, branch_file ) {
 TEST(EndToEndAsm, variables_file) {
     std::string input_file = "test_variables.s";
 
-    std::string include_dir = "";
-    std::vector<std::string> include_files = {"register_defs.s"};
+    std::string include_dir;
+    std::vector<std::string> include_files = {};
 
     std::ifstream stream(input_file);
     fcore_has uut(stream,include_files,include_dir);
@@ -125,8 +125,8 @@ TEST(EndToEndAsm, variables_file) {
 TEST(EndToEndAsm, load_constant_file) {
     std::string input_file = "test_ldc.s";
 
-    std::string include_dir = "";
-    std::vector<std::string> include_files = {"register_defs.s"};
+    std::string include_dir;
+    std::vector<std::string> include_files = {};
 
     std::ifstream stream(input_file);
     fcore_has uut(stream,include_files,include_dir);
@@ -140,7 +140,7 @@ TEST(EndToEndAsm, load_constant_file) {
 TEST(EndToEndAsm, embeddable_wrapper_pass) {
     std::string input_file = "test_ldc.s";
     int hex_size;
-    uint32_t *hex_result = (uint32_t*) malloc(4096*sizeof(uint32_t));
+    auto *hex_result = (uint32_t*) malloc(4096*sizeof(uint32_t));
 
     fCore_has_embeddable_f(input_file.c_str(),hex_result, &hex_size);
 

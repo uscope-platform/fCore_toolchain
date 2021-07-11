@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
     }
 
     std::string include_dir = "/home/fils/git/fCore_has/";
-    std::vector<std::string> include_files = {"includes/registers_definitions.s"};
+    std::vector<std::string> include_files = {};
 
     std::ifstream stream;
     stream.open(input_file);

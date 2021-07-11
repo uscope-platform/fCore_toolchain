@@ -22,8 +22,7 @@
 #include <map>
 
 #define OPCODE_WIDTH 5
-#define REGISTER_ADDRESS_WIDTH 4
-
+#define REGISTER_ADDRESS_WIDTH 6
 
 
 typedef enum {
