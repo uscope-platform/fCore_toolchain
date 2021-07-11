@@ -53,7 +53,10 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     ll_pass_manager ll_manager = create_ll_pass_manager(variables_map);
     ll_manager.run_morphing_passes(ll_ast);
 
-    output_generator writer(ll_ast, false);
+    output_generator writer(ll_ast, true);
     std::vector<uint32_t> result = writer.get_raw_program();
+
+    std::vector<uint32_t> gold_standard = {0x22883, 0x43021};
+    ASSERT_EQ(result, gold_standard);
 }
 
