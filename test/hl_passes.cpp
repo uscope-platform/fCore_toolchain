@@ -177,13 +177,8 @@ TEST(HlPassesTest, functionInlining) {
     std::shared_ptr<hl_definition_node> par_1 = std::make_shared<hl_definition_node>("a", c_type_int);
     std::shared_ptr<hl_definition_node> par_2 = std::make_shared<hl_definition_node>("b", c_type_int);
     gold_standard->set_parameters_list({par_1, par_2});
-    // CALL NODE
-    std::shared_ptr<hl_ast_operand> arg_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    arg_1->set_immediate(2);
-    std::shared_ptr<hl_ast_operand> arg_2 = std::make_shared<hl_ast_operand>(variable_operand);
-    arg_2->set_name("t");
-    std::vector<std::shared_ptr<hl_ast_node>> arguments = {arg_1, arg_2};
-    std::shared_ptr<hl_function_call_node> func = std::make_shared<hl_function_call_node>("add", arguments);
+
+    std::shared_ptr<hl_ast_node> inlined_block = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
     // CALL BODY
     std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("c", c_type_int);
     std::shared_ptr<hl_expression_node> exadd = std::make_shared<hl_expression_node>(expr_add);
@@ -194,7 +189,7 @@ TEST(HlPassesTest, functionInlining) {
     exadd->set_rhs(op_2);
     exadd->set_lhs(op_1);
     def->set_initializer(exadd);
-    func->set_body({def});
+
     exadd = std::make_shared<hl_expression_node>(expr_add);
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("c");
@@ -202,8 +197,9 @@ TEST(HlPassesTest, functionInlining) {
     op_2->set_name("t");
     exadd->set_rhs(op_2);
     exadd->set_lhs(op_1);
-    func->set_return(exadd);
-    gold_standard->set_body({func});
+
+    inlined_block->set_content({def, exadd});
+    gold_standard->set_body({inlined_block});
     gold_standard->set_return_type(c_type_int);
     EXPECT_EQ(*res, *gold_standard);
 
@@ -256,18 +252,11 @@ TEST(HlPassesTest, normalization) {
     def_2->set_initializer(ex_1);
 
     std::vector<std::shared_ptr<hl_ast_node>> arguments = {};
-    std::shared_ptr<hl_function_def_node> gold_standard = std::make_shared<hl_function_def_node>();
-    gold_standard->set_name("main");
-    gold_standard->set_return_type(c_type_int);
-    gold_standard->set_body({def_1, def_2});
+    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    gold_standard->set_content({def_1, def_2});
 
-    std::shared_ptr<hl_function_def_node> result = std::static_pointer_cast<hl_function_def_node>(raw_result->get_content()[0]);
+    EXPECT_EQ( *gold_standard, *raw_result);
 
-    EXPECT_EQ( *gold_standard, *result);
-    if(Test::HasFailure()){
-        std::cout << "TEST RESULT: " << result->pretty_print()<< std::endl;
-        std::cout << "GOLD STANDARD: " << gold_standard->pretty_print()<< std::endl;
-    }
 }
 
 TEST(HlPassesTest, function_elimination) {
@@ -317,6 +306,7 @@ TEST(HlPassesTest, function_elimination) {
     std::vector<std::shared_ptr<hl_ast_node>> arguments = {};
     std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
     gold_standard->set_content({def_1, def_2});
+
 
     EXPECT_EQ( *gold_standard, *raw_result);
 

@@ -35,10 +35,11 @@ public:
     std::shared_ptr<hl_definition_node> process_node_def(std::shared_ptr<hl_definition_node> n);
     std::shared_ptr<hl_expression_node> process_node_exp(std::shared_ptr<hl_expression_node> n);
     std::shared_ptr<hl_ast_operand> extract_intermediate_expression(std::shared_ptr<hl_expression_node> n, int side);
+    std::shared_ptr<hl_ast_node> process_code_block(std::shared_ptr<hl_ast_node> n);
     int get_pass_type() override { return GLOBAL_PASS;};
 private:
     int intermediate_ordinal = 0;
-    std::vector<std::shared_ptr<hl_definition_node>> additional_statements;
+    std::vector<std::shared_ptr<hl_ast_node>> additional_statements;
 };
 
 

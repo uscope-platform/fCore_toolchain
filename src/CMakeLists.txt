@@ -38,7 +38,6 @@ set(FCORE_LIB_SRCS
         passes/high_level/function_inlining_pass.cpp
         passes/high_level/division_implementation_pass.cpp
         passes/high_level/normalization_pass.cpp
-        passes/high_level/function_elimination_pass.cpp
         fcore_has.cpp
         fcore_cc.cpp
         )

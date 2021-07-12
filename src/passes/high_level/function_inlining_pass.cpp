@@ -45,6 +45,8 @@ std::shared_ptr<hl_ast_node> function_inlining_pass::process_leaf(std::shared_pt
 
         }
 
+        std::shared_ptr<hl_ast_node> inlined_code = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
+
         // SUBSTITUTE THE ARGUMENTS OF THE CALL WITHIN THE FUNCTION BODY
         std::vector<std::shared_ptr<hl_ast_node>> body;
 
@@ -52,12 +54,10 @@ std::shared_ptr<hl_ast_node> function_inlining_pass::process_leaf(std::shared_pt
         for(auto &i: f_def->get_body()){
             body.push_back(substitute_arguments(hl_ast_node::deep_copy(i),arguments_map));
         }
+        inlined_code->set_content(body);
+        inlined_code->add_content(substitute_arguments(hl_ast_node::deep_copy(f_def->get_return()), arguments_map));
 
-        std::shared_ptr<hl_function_call_node> specialized_call = std::static_pointer_cast<hl_function_call_node>(hl_ast_node::deep_copy(f_call));
-        specialized_call->set_body(body);
-        specialized_call->set_return(substitute_arguments(hl_ast_node::deep_copy(f_def->get_return()), arguments_map));
-
-        ret_val = specialized_call;
+        ret_val = inlined_code;
     }
     return ret_val;
 }

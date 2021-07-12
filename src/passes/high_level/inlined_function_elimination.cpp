@@ -30,7 +30,7 @@ inlined_function_elimination::process_node(std::shared_ptr<hl_ast_node> element)
     if(element->node_type == hl_ast_node_type_function_def){
         std::shared_ptr<hl_function_def_node> node = std::static_pointer_cast<hl_function_def_node>(element);
         if(node->get_name() == entry_point)
-            retval.push_back(element);
+            retval = node->get_body();
     } else{
         retval.push_back(element);
     }

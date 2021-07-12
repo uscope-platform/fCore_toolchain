@@ -26,25 +26,17 @@ normalization_pass::normalization_pass() : pass_base<hl_ast_node>("normalization
 std::shared_ptr<hl_ast_node> normalization_pass::process_global(std::shared_ptr<hl_ast_node> element) {
     std::shared_ptr<hl_ast_node> retval = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
-    std::shared_ptr<hl_function_def_node> ep = std::static_pointer_cast<hl_function_def_node>(element->get_content()[0]);
 
     std::vector<std::shared_ptr<hl_ast_node>> normalized_body;
 
-    std::shared_ptr<hl_function_def_node> new_ep = std::static_pointer_cast<hl_function_def_node>(hl_ast_node::deep_copy(ep));
-
-    for(auto &i: ep->get_body()){
+    for(auto &i: element->get_content()){
         std::shared_ptr<hl_ast_node> tmp_res = process_node_by_type_top(i);
         normalized_body.insert(normalized_body.end(), additional_statements.begin(), additional_statements.end());
         additional_statements.clear();
         normalized_body.push_back(tmp_res);
     }
 
-    new_ep->set_parameters_list({});
-    new_ep->set_body(normalized_body);
-    // PARAMETERS LIST AND RETURN VALUE ARE DISCARDED BECAUSE  USELESS FOR THE FEMTOCORE AS IPUTS AND OUTPUTS OF THE PROGRAM
-    // ARE DETERMINED BY PRAGMAS SINCE THEY NEED TO BE BOUND TO SPECIFIC REGISTERS
-
-    retval->add_content(new_ep);
+    retval->set_content(normalized_body);
     return retval;
 }
 
@@ -54,6 +46,8 @@ std::shared_ptr<hl_ast_node> normalization_pass::process_node_by_type_top(std::s
         retval = process_node_exp(std::static_pointer_cast<hl_expression_node>(n));
     } else if(n->node_type == hl_ast_node_type_definition){
         retval = process_node_def(std::static_pointer_cast<hl_definition_node>(n));
+    } else if(n->node_type == hl_ast_node_type_code_block){
+        retval = process_code_block(n);
     }
     return retval;
 }
@@ -173,5 +167,15 @@ normalization_pass::produce_normalized_expression(std::shared_ptr<hl_expression_
         }
     }
     return tmp_ret;
+}
+
+std::shared_ptr<hl_ast_node> normalization_pass::process_code_block(std::shared_ptr<hl_ast_node> n) {
+    std::vector<std::shared_ptr<hl_ast_node>> content = n->get_content();
+    std::shared_ptr<hl_ast_node> return_statement = content.back();
+    content.pop_back();
+    for(auto &item:content){
+        additional_statements.push_back(item);
+    }
+    return return_statement;
 }
 

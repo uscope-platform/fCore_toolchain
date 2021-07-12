@@ -24,7 +24,6 @@ set(TESTED_SOURCES
         ../src/passes/high_level/hl_pass_manager.cpp
         ../src/passes/high_level/function_inlining_pass.cpp
         ../src/passes/high_level/normalization_pass.cpp
-        ../src/passes/high_level/function_elimination_pass.cpp
         ../src/passes/high_level/inlined_function_elimination.cpp
         ../src/passes/high_level/function_mapping.cpp
         ../src/passes/high_level/intrinsics_implementation_pass.cpp

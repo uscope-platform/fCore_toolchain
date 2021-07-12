@@ -26,7 +26,6 @@
 #include "passes/high_level/function_mapping.hpp"
 #include "passes/high_level/inlined_function_elimination.hpp"
 #include "passes/high_level/normalization_pass.hpp"
-#include "passes/high_level/function_elimination_pass.hpp"
 #include "passes/high_level/hl_variable_mapping.hpp"
 #include "passes/high_level/intrinsics_implementation_pass.hpp"
 
@@ -50,7 +49,6 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::sha
 
 
     manager.add_global_pass(std::make_shared<normalization_pass>());
-    manager.add_global_pass(std::make_shared<function_elimination_pass>());
     manager.add_global_pass(std::make_shared<hl_variable_mapping>(var_map));
     return manager;
 }
