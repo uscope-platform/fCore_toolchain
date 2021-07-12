@@ -27,6 +27,7 @@ set(TESTED_SOURCES
         ../src/passes/high_level/function_elimination_pass.cpp
         ../src/passes/high_level/inlined_function_elimination.cpp
         ../src/passes/high_level/function_mapping.cpp
+        ../src/passes/high_level/intrinsics_implementation_pass.cpp
         ../src/passes/high_level/division_implementation_pass.cpp
         ../src/frontend/variable_map.cpp
         ../src/frontend/define_map.cpp

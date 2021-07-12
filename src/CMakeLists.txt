@@ -34,6 +34,7 @@ set(FCORE_LIB_SRCS
         passes/high_level/hl_variable_mapping.cpp
         passes/high_level/function_mapping.cpp
         passes/high_level/inlined_function_elimination.cpp
+        passes/high_level/intrinsics_implementation_pass.cpp
         passes/high_level/function_inlining_pass.cpp
         passes/high_level/division_implementation_pass.cpp
         passes/high_level/normalization_pass.cpp

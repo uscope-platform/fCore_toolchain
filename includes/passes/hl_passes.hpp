@@ -28,6 +28,7 @@
 #include "passes/high_level/normalization_pass.hpp"
 #include "passes/high_level/function_elimination_pass.hpp"
 #include "passes/high_level/hl_variable_mapping.hpp"
+#include "passes/high_level/intrinsics_implementation_pass.hpp"
 
 #include "frontend/variable_map.hpp"
 #include "ast/high_level/hl_ast_node.hpp"
@@ -39,7 +40,7 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::sha
     manager.add_morphing_pass(mapping_pass);
 
     manager.add_morphing_pass(std::make_shared<division_implementation_pass>());
-
+    manager.add_morphing_pass(std::make_shared<intrinsics_implementation_pass>());
     auto inlining_pass = std::make_shared<function_inlining_pass>();
     inlining_pass->set_functions_map(mapping_pass->get_map_ref());
     manager.add_morphing_pass(inlining_pass);
