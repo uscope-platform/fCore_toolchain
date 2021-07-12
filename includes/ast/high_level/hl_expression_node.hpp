@@ -54,7 +54,11 @@ expr_lte = 23,
 expr_gte = 24,
 expr_assign = 25,
 expr_call = 26,
-expr_reciprocal = 27
+expr_reciprocal = 27,
+expr_itf = 28,
+expr_fti = 29,
+expr_satp = 30,
+expr_satn = 31
 } expression_type_t;
 
 class hl_expression_node : public hl_ast_node{

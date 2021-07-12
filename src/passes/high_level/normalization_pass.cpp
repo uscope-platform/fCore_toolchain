@@ -35,6 +35,7 @@ std::shared_ptr<hl_ast_node> normalization_pass::process_global(std::shared_ptr<
     for(auto &i: ep->get_body()){
         std::shared_ptr<hl_ast_node> tmp_res = process_node_by_type_top(i);
         normalized_body.insert(normalized_body.end(), additional_statements.begin(), additional_statements.end());
+        additional_statements.clear();
         normalized_body.push_back(tmp_res);
     }
 
@@ -98,9 +99,13 @@ std::shared_ptr<hl_definition_node> normalization_pass::process_node_def(std::sh
     std::shared_ptr<hl_definition_node> retval = std::static_pointer_cast<hl_definition_node>(hl_ast_node::deep_copy(n));
 
     if(n->get_initializer() != nullptr){
-        std::vector<std::pair<int, std::shared_ptr<hl_ast_node>>> intermediate = process_node_expr_inner(n->get_initializer());
-        std::shared_ptr<hl_expression_node> tmp_ret =produce_normalized_expression(n->get_initializer(), intermediate);
-        retval->set_initializer(tmp_ret);
+        if(n->get_initializer()->node_type == hl_ast_node_type_expr){
+            std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(n->get_initializer());
+            std::vector<std::pair<int, std::shared_ptr<hl_ast_node>>> intermediate = process_node_expr_inner(node);
+            std::shared_ptr<hl_expression_node> tmp_ret =produce_normalized_expression(node, intermediate);
+            retval->set_initializer(tmp_ret);
+        }
+
     }
 
     return retval;
@@ -108,20 +113,31 @@ std::shared_ptr<hl_definition_node> normalization_pass::process_node_def(std::sh
 
 std::shared_ptr<hl_ast_operand>
 normalization_pass::extract_intermediate_expression(std::shared_ptr<hl_expression_node> n, int side) {
-    operand_type_t type_lhs = std::static_pointer_cast<hl_ast_operand>(n->get_lhs())->get_type();
+
     operand_type_t type_rhs = std::static_pointer_cast<hl_ast_operand>(n->get_rhs())->get_type();
-
     c_types_t expr_type;
-    if(type_lhs == float_immediate_operand && type_rhs == float_immediate_operand){
-        expr_type = c_type_float;
-    } else if(type_lhs == integer_immediate_operand && type_rhs == integer_immediate_operand){
-        expr_type = c_type_int;
-    } else if(type_rhs == float_immediate_operand){
-        expr_type = c_type_float;
 
-    } else if(type_lhs == float_immediate_operand){
-        expr_type = c_type_float;
+    if(!n->is_unary()){
+        operand_type_t type_lhs = std::static_pointer_cast<hl_ast_operand>(n->get_lhs())->get_type();
+
+        if(type_lhs == float_immediate_operand && type_rhs == float_immediate_operand){
+            expr_type = c_type_float;
+        } else if(type_lhs == integer_immediate_operand && type_rhs == integer_immediate_operand){
+            expr_type = c_type_int;
+        } else if(type_rhs == float_immediate_operand){
+            expr_type = c_type_float;
+
+        } else if(type_lhs == float_immediate_operand){
+            expr_type = c_type_float;
+        }
+    } else{
+        if(type_rhs == float_immediate_operand){
+            expr_type = c_type_float;
+        } else if(type_rhs == integer_immediate_operand){
+            expr_type = c_type_int;
+        }
     }
+
     std::string name = "intermediate_expr_" + std::to_string(intermediate_ordinal);
     std::shared_ptr<hl_definition_node> intermediate_def = std::make_shared<hl_definition_node>(name, expr_type);
 

@@ -115,7 +115,7 @@ private:
 
     std::shared_ptr<hl_function_def_node> current_function;
 
-    std::shared_ptr<hl_expression_node> current_initializer;
+    std::shared_ptr<hl_ast_node> current_initializer;
     std::shared_ptr<hl_ast_node> current_block_item;
 
     std::shared_ptr<hl_ast_node> root;

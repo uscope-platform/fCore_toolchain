@@ -147,6 +147,8 @@ bool hl_expression_node::is_unary() {
     res |= expr_type == expr_decr_post;
     res |= expr_type == expr_decr_pre;
     res |= expr_type == expr_call;
+    res |= expr_type == expr_itf;
+    res |= expr_type == expr_fti;
     return res;
 }
 

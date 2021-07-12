@@ -102,3 +102,4 @@ configure_file(C_files/test_main_add.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 #OPTIMIZATION PASSES
 configure_file(C_files/test_function_inlining.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_normalization.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/test_intrinsics_implementation.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

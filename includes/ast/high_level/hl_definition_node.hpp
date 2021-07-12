@@ -33,8 +33,8 @@ public:
     bool is_initialized();
     void set_constant(bool c);
     bool is_constant();
-    std::shared_ptr<hl_expression_node> get_initializer();
-    void set_initializer(std::shared_ptr<hl_expression_node> init);
+    std::shared_ptr<hl_ast_node> get_initializer();
+    void set_initializer(std::shared_ptr<hl_ast_node> init);
     std::string pretty_print();
     bool is_terminal() override {
         return true;
@@ -46,7 +46,7 @@ protected:
     bool constant;
     std::string name;
     c_types_t type;
-    std::shared_ptr<hl_expression_node> initializer;
+    std::shared_ptr<hl_ast_node> initializer;
 
 };
 

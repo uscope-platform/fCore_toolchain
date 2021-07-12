@@ -88,7 +88,7 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
 
 void C_Tree_visitor::exitInitializer(C_parser::C_grammarParser::InitializerContext *ctx) {
     if(ctx->assignmentExpression() != nullptr){
-        current_initializer = std::static_pointer_cast<hl_expression_node>(expressions_stack.top());
+        current_initializer = expressions_stack.top();
         expressions_stack.pop();
     } else if(ctx->initializerList() != nullptr){
         throw std::runtime_error("ERROR: Initializer lists are not supported yet");
@@ -392,21 +392,14 @@ void C_Tree_visitor::exitBlockItem(C_parser::C_grammarParser::BlockItemContext *
 void C_Tree_visitor::exitFunctionCallExpression(C_parser::C_grammarParser::FunctionCallExpressionContext *ctx) {
     std::string name = ctx->typedefName()->getText();
     std::shared_ptr<hl_function_call_node> node = std::make_shared<hl_function_call_node>(name, argument_vector);
-
-    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(expr_call);
-    exp->set_rhs(node);
-    expressions_stack.push(exp);
+    argument_vector.clear();
+    expressions_stack.push(node);
 
 }
 
 void C_Tree_visitor::exitArgumentExpression(C_parser::C_grammarParser::ArgumentExpressionContext *ctx) {
-    if(!expressions_stack.empty()){
-        argument_vector.push_back(expressions_stack.top());
-        expressions_stack.pop();
-    } else{
-        argument_vector.push_back(expressions_stack.top());
-        expressions_stack.pop();
-    }
+    argument_vector.push_back(expressions_stack.top());
+    expressions_stack.pop();
 }
 
 

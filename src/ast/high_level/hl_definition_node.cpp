@@ -29,7 +29,7 @@ bool hl_definition_node::is_initialized() {
     return initializer != nullptr;
 }
 
-void hl_definition_node::set_initializer(std::shared_ptr<hl_expression_node> init) {
+void hl_definition_node::set_initializer(std::shared_ptr<hl_ast_node> init) {
     initializer = std::move(init);
 }
 
@@ -41,7 +41,7 @@ bool hl_definition_node::is_constant() {
     return constant;
 }
 
-std::shared_ptr<hl_expression_node> hl_definition_node::get_initializer() {
+std::shared_ptr<hl_ast_node> hl_definition_node::get_initializer() {
     return initializer;
 }
 
@@ -53,7 +53,13 @@ std::string hl_definition_node::pretty_print() {
     ss << hl_ast_node::type_to_string(type) << " " << name;
 
     if(initializer != nullptr){
-        ss << " = " << initializer->pretty_print();
+        ss << " = ";
+        if(initializer->node_type == hl_ast_node_type_function_call){
+            ss << std::static_pointer_cast<hl_function_call_node>(initializer)->pretty_print();
+        } else{
+            ss << std::static_pointer_cast<hl_expression_node>(initializer)->pretty_print();
+        }
+
     }
 
 

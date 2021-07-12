@@ -121,17 +121,21 @@ std::shared_ptr<hl_ast_operand> hl_pass_manager::process_operand(const std::shar
     return std::static_pointer_cast<hl_ast_operand>(pass->process_leaf(subtree));
 }
 
-std::shared_ptr<hl_function_call_node>
+std::shared_ptr<hl_ast_node>
 hl_pass_manager::process_function_call(const std::shared_ptr<hl_function_call_node> &subtree,
                                     const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
 
-    return std::static_pointer_cast<hl_function_call_node>(pass->process_leaf(subtree));
+    return pass->process_leaf(subtree);
 }
 
 std::shared_ptr<hl_definition_node>
 hl_pass_manager::process_definition(const std::shared_ptr<hl_definition_node> &subtree,
                                     const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
-    return subtree;
+    if(subtree->is_initialized()){
+        std::shared_ptr<hl_ast_node> new_initializer = process_terminal_by_type(subtree->get_initializer(), pass);
+        subtree->set_initializer(new_initializer);
+    }
+    return std::static_pointer_cast<hl_definition_node>(pass->process_leaf(subtree));
 }
 
 std::shared_ptr<hl_ast_node>

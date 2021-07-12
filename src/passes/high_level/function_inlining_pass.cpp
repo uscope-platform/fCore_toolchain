@@ -56,6 +56,7 @@ std::shared_ptr<hl_ast_node> function_inlining_pass::process_leaf(std::shared_pt
         std::shared_ptr<hl_function_call_node> specialized_call = std::static_pointer_cast<hl_function_call_node>(hl_ast_node::deep_copy(f_call));
         specialized_call->set_body(body);
         specialized_call->set_return(substitute_arguments(hl_ast_node::deep_copy(f_def->get_return()), arguments_map));
+
         ret_val = specialized_call;
     }
     return ret_val;

@@ -38,9 +38,9 @@ TEST( cTreeVisitor, unaryExpressions) {
     parser.parse();
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
-    std::shared_ptr<hl_expression_node> res_1 = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
-    std::shared_ptr<hl_expression_node> res_2 = std::static_pointer_cast<hl_definition_node>(results[1])->get_initializer();
-    std::shared_ptr<hl_expression_node> res_3 = std::static_pointer_cast<hl_definition_node>(results[2])->get_initializer();
+    std::shared_ptr<hl_expression_node> res_1 = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
+    std::shared_ptr<hl_expression_node> res_2 = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[1])->get_initializer());
+    std::shared_ptr<hl_expression_node> res_3 = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[2])->get_initializer());
 
 
 
@@ -122,7 +122,7 @@ TEST( cTreeVisitor, multiplicativeExpressions) {
     op_2->set_immediate(3);
     gs_3->set_rhs(op_2);
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
 
 
 
@@ -162,7 +162,7 @@ TEST( cTreeVisitor, additiveExpressions) {
     op_2->set_immediate(6);
     gs_2->set_rhs(op_2);
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
 
     EXPECT_EQ(*res, *gs_2);
     if(Test::HasFailure()){
@@ -200,7 +200,7 @@ TEST( cTreeVisitor, shiftExpressions) {
     op_2->set_immediate(6);
     gs_2->set_rhs(op_2);
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
 
     EXPECT_EQ(*res, *gs_2);
     if(Test::HasFailure()){
@@ -248,7 +248,7 @@ TEST( cTreeVisitor, relationalExpressions) {
     op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(7);
     gs_4->set_rhs(op_2);
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
 
     EXPECT_EQ(*res, *gs_4);
     if(Test::HasFailure()){
@@ -286,7 +286,7 @@ TEST( cTreeVisitor, equalityExpressions) {
     op_2->set_immediate(6);
     gs_2->set_rhs(op_2);
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
 
     EXPECT_EQ(*res, *gs_2);
     if(Test::HasFailure()){
@@ -320,7 +320,7 @@ TEST( cTreeVisitor, andBinExpressions) {
     gs_1->set_rhs(op_2);
 
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
 
     EXPECT_EQ(*res, *gs_1);
     if(Test::HasFailure()){
@@ -352,7 +352,7 @@ TEST( cTreeVisitor, exOrBinExpressions) {
     gs_1->set_rhs(op_2);
 
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
 
     EXPECT_EQ(*res, *gs_1);
     if(Test::HasFailure()){
@@ -386,7 +386,7 @@ TEST( cTreeVisitor, orLogExpressions) {
     gs_1->set_lhs(op_1);
     gs_1->set_rhs(op_2);
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
 
     EXPECT_EQ(*res, *gs_1);
     if(Test::HasFailure()){
@@ -418,7 +418,7 @@ TEST( cTreeVisitor, andLogExpressions) {
     gs_1->set_rhs(op_2);
 
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer();
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
 
     EXPECT_EQ(*res, *gs_1);
     if(Test::HasFailure()){
@@ -544,8 +544,8 @@ TEST( cTreeVisitor, function_call) {
     std::vector<std::shared_ptr<hl_ast_node>> args = {gs_1, op_3};
     std::shared_ptr<hl_function_call_node> gs_3 = std::make_shared<hl_function_call_node>(func_name, args);
 
-    std::shared_ptr<hl_expression_node> res_exp = std::static_pointer_cast<hl_expression_node>(result->get_body()[0]);
-    std::shared_ptr<hl_function_call_node> res = std::static_pointer_cast<hl_function_call_node>(res_exp->get_rhs());
+
+    std::shared_ptr<hl_function_call_node> res = std::static_pointer_cast<hl_function_call_node>(result->get_body()[0]);
 
 
     EXPECT_EQ(*res, *gs_3);
