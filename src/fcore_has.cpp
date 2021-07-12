@@ -83,20 +83,22 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
         delete item;
     }
 
-
-    asm_language_parser target_parser(input, variables_map);
-    AST = target_parser.AST;
-
-
-    //merge the two together (right now just concatenate them)
-    if(includes_ast != nullptr)
-        AST->prepend_content(includes_ast->get_content());
+    try{
+        asm_language_parser target_parser(input, variables_map);
+        AST = target_parser.AST;
+        //merge the two together (right now just concatenate them)
+        if(includes_ast != nullptr)
+            AST->prepend_content(includes_ast->get_content());
 
 
-    manager = create_ll_pass_manager(variables_map);
-    manager.run_morphing_passes(AST);
+        manager = create_ll_pass_manager(variables_map);
+        manager.run_morphing_passes(AST);
 
-    writer.process_ast(AST, false);
+        writer.process_ast(AST, false);
+    } catch(std::runtime_error &e){
+        error_code = e.what();
+    }
+
 }
 
 
@@ -149,7 +151,11 @@ std::string fcore_has::get_errors() {
 void fcore_has::write_json(const std::string &output_file) {
     nlohmann::json j;
     j["error_code"] = error_code;
-    j["compiled_program"] = writer.generate_hex(false);
+    if(!error_code.empty()){
+        j["compiled_program"] = writer.generate_hex(false);
+    } else{
+        j["compiled_program"] = {};
+    }
     std::string str = j.dump();
     std::ofstream ss(output_file);
     ss<<str;

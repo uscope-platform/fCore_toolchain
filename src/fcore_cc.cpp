@@ -22,29 +22,34 @@
 fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes) {
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
     std::shared_ptr<define_map> defines_map = std::make_shared<define_map>();
-
-    C_language_parser target_parser(input, variables_map, defines_map);
-    target_parser.pre_process({}, {});
-    target_parser.parse();
-    hl_ast = target_parser.AST;
-    std::string ep = "main";
-    hl_manager = create_hl_pass_manager(ep, variables_map);
-    hl_manager.run_morphing_passes(hl_ast);
-
-
-    hl_ast = hl_manager.run_global_passes(hl_ast);
+    error_code = "";
+    try{
+        C_language_parser target_parser(input, variables_map, defines_map);
+        target_parser.pre_process({}, {});
+        target_parser.parse();
+        hl_ast = target_parser.AST;
+        std::string ep = "main";
+        hl_manager = create_hl_pass_manager(ep, variables_map);
+        hl_manager.run_morphing_passes(hl_ast);
 
 
-    high_level_ast_lowering tranlator(variables_map);
+        hl_ast = hl_manager.run_global_passes(hl_ast);
 
-    tranlator.set_input_ast(hl_ast);
-    tranlator.translate();
-    ll_ast = tranlator.get_output_ast();
 
-    ll_manager = create_ll_pass_manager(variables_map);
-    ll_manager.run_morphing_passes(ll_ast);
+        high_level_ast_lowering tranlator(variables_map);
 
-    writer.process_ast(ll_ast, false);
+        tranlator.set_input_ast(hl_ast);
+        tranlator.translate();
+        ll_ast = tranlator.get_output_ast();
+
+        ll_manager = create_ll_pass_manager(variables_map);
+        ll_manager.run_morphing_passes(ll_ast);
+
+        writer.process_ast(ll_ast, false);
+    } catch(std::runtime_error &e){
+        error_code = e.what();
+    }
+
 }
 
 
@@ -83,7 +88,11 @@ uint32_t fcore_cc::get_inst_count() {
 void fcore_cc::write_json(const std::string &output_file) {
     nlohmann::json j;
     j["error_code"] = error_code;
-    j["compiled_program"] = writer.generate_hex(false);
+    if(!error_code.empty()){
+        j["compiled_program"] = writer.generate_hex(false);
+    } else{
+        j["compiled_program"] = {};
+    }
     std::string str = j.dump();
     std::ofstream ss(output_file);
     ss<<str;
