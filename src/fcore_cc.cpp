@@ -80,3 +80,13 @@ uint32_t fcore_cc::get_inst_count() {
     return 0;
 }
 
+void fcore_cc::write_json(const std::string &output_file) {
+    nlohmann::json j;
+    j["error_code"] = error_code;
+    j["compiled_program"] = writer.generate_hex(false);
+    std::string str = j.dump();
+    std::ofstream ss(output_file);
+    ss<<str;
+    ss.close();
+}
+

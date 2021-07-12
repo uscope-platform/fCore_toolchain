@@ -27,14 +27,13 @@
 int main(int argc, char **argv) {
     CLI::App app{"fCore High level assembler"};
 
-    bool output_hex;
-    bool output_mem;
-    bool output_force;
+    bool output_hex, output_mem, output_json, output_force;
     std::string input_file;
     std::string output_file;
     app.add_option("input_file", input_file, "Input file path")->required()->check(CLI::ExistingFile);
     app.add_flag("--mem", output_mem, "produce binary output file");
     app.add_flag("--hex", output_hex, "produce verilog memory initialization output file");
+    app.add_flag("--json", output_json, "produce a json file for output");
     app.add_flag("--f", output_force, "force the rewriting of an existing product file");
     app.add_option("--o", output_file, "Output file path");
     CLI11_PARSE(app, argc, argv);
@@ -50,14 +49,18 @@ int main(int argc, char **argv) {
     stream.open(input_file);
 
     std::vector<std::string> include_files = {""};
-    fcore_cc has_engine(stream, include_files);
+    fcore_cc cc_engine(stream, include_files);
 
     if(output_hex){
-        has_engine.write_hexfile(output_file);
+        cc_engine.write_hexfile(output_file);
     }
 
     if(output_mem){
-        has_engine.write_verilog_memfile(output_file);
+        cc_engine.write_verilog_memfile(output_file);
+    }
+
+    if(output_json){
+        cc_engine.write_json(output_file);
     }
 
     return 0;

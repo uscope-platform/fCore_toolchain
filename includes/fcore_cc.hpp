@@ -21,7 +21,7 @@
 #include <istream>
 #include <vector>
 #include <string>
-
+#include <fstream>
 
 #include "frontend/variable_map.hpp"
 #include "frontend/define_map.hpp"
@@ -32,6 +32,7 @@
 #include "passes/high_level/hl_pass_manager.hpp"
 #include "passes/low_level/ll_pass_manager.hpp"
 #include "ast/transformations/high_level_ast_lowering.hpp"
+#include "../third_party/json.hpp"
 
 class fcore_cc {
 public:
@@ -41,6 +42,7 @@ public:
     std::vector<std::string> get_verilog_memfile();
     void write_hexfile(const std::string& ouput_file);
     void write_verilog_memfile(const std::string& ouput_file);
+    void write_json(const std::string& output_file);
     uint32_t get_program_size();
     uint32_t get_inst_count();
 private:

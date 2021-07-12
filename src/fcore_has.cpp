@@ -145,3 +145,13 @@ uint32_t fcore_has::get_program_size() {
 std::string fcore_has::get_errors() {
     return  error_code;
 }
+
+void fcore_has::write_json(const std::string &output_file) {
+    nlohmann::json j;
+    j["error_code"] = error_code;
+    j["compiled_program"] = writer.generate_hex(false);
+    std::string str = j.dump();
+    std::ofstream ss(output_file);
+    ss<<str;
+    ss.close();
+}

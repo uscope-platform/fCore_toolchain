@@ -20,19 +20,22 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
 
 #include "frontend/variable_map.hpp"
 #include "frontend/asm/asm_language_parser.hpp"
 #include "backend/output_generator.hpp"
 #include "passes/ll_passes.hpp"
 #include "passes/low_level/ll_pass_manager.hpp"
+#include "../third_party/json.hpp"
 
 #define REGISTER_DEFINITION_STRING "const r0\nlet r1\nlet r2\nlet r3\nlet r4\nlet r5\nlet r6\nlet r7\nlet r8\nlet r9\nlet r10\nlet r11\nlet r12\nlet r13\nlet r14\nlet r15"
 
 extern "C"{
-std::tuple<std::vector<uint32_t>, int> fCore_has_embeddable_s(const std::string& content);
-void fCore_has_embeddable_f(const char * filename, uint32_t *hex, int *hex_size);
+    std::tuple<std::vector<uint32_t>, int> fCore_has_embeddable_s(const std::string& content);
+    void fCore_has_embeddable_f(const char * filename, uint32_t *hex, int *hex_size);
 };
+
 class fcore_has {
 public:
     fcore_has(std::istream &input,   std::vector<std::istream*> &includes);
@@ -46,6 +49,7 @@ public:
     std::vector<std::string> get_verilog_memfile();
     void write_hexfile(const std::string& ouput_file);
     void write_verilog_memfile(const std::string& ouput_file);
+    void write_json(const std::string& output_file);
     uint32_t get_program_size();
     uint32_t get_inst_count();
 private:
