@@ -30,7 +30,7 @@
 #define REGISTER_DEFINITION_STRING "const r0\nlet r1\nlet r2\nlet r3\nlet r4\nlet r5\nlet r6\nlet r7\nlet r8\nlet r9\nlet r10\nlet r11\nlet r12\nlet r13\nlet r14\nlet r15"
 
 extern "C"{
-std::tuple<std::vector<uint32_t>, int> fCore_has_embeddable_s(std::string content);
+std::tuple<std::vector<uint32_t>, int> fCore_has_embeddable_s(const std::string& content);
 void fCore_has_embeddable_f(const char * filename, uint32_t *hex, int *hex_size);
 };
 class fcore_has {
@@ -48,10 +48,9 @@ public:
     void write_verilog_memfile(const std::string& ouput_file);
     uint32_t get_program_size();
     uint32_t get_inst_count();
-    ~fcore_has();
 private:
     std::shared_ptr<ll_ast_node> AST;
-    output_generator *writer;
+    output_generator writer;
     ll_pass_manager manager;
     std::string error_code;
 };

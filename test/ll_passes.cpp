@@ -40,7 +40,8 @@ TEST(llPassesTest, pseudo_inst_pass) {
     ll_pass_manager manager = create_ll_pass_manager(map);
     manager.run_morphing_passes(AST);
 
-    output_generator writer(AST, false);
+    output_generator writer;
+    writer.process_ast(AST, false);
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {0x1000c1};
     ASSERT_EQ(result, gold_standard);
@@ -112,7 +113,8 @@ TEST(llPassesTest, loop_less) {
     ll_pass_manager manager = create_ll_pass_manager(map);
     manager.run_morphing_passes(AST);
 
-    output_generator writer(AST, false);
+    output_generator writer;
+    writer.process_ast(AST, false);
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {0, 0, 0};
     ASSERT_TRUE(result == gold_standard);
@@ -143,7 +145,8 @@ TEST(llPassesTest, loop_less_equal) {
     ll_pass_manager manager = create_ll_pass_manager(map);
     manager.run_morphing_passes(AST);
 
-    output_generator writer(AST, false);
+    output_generator writer;
+    writer.process_ast(AST, false);
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {0, 0};
     ASSERT_TRUE(result == gold_standard);
@@ -176,7 +179,8 @@ TEST(llPassesTest, loop_more) {
     ll_pass_manager manager = create_ll_pass_manager(map);
     manager.run_morphing_passes(AST);
 
-    output_generator writer(AST, false);
+    output_generator writer;
+    writer.process_ast(AST, false);
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {0, 0};
     ASSERT_TRUE(result == gold_standard);
@@ -209,7 +213,8 @@ TEST(llPassesTest, loop_more_equal) {
     ll_pass_manager manager = create_ll_pass_manager(map);
     manager.run_morphing_passes(AST);
 
-    output_generator writer(AST, false);
+    output_generator writer;
+    writer.process_ast(AST, false);
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {0,0,0};
     ASSERT_TRUE(result == gold_standard);

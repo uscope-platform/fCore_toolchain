@@ -28,7 +28,8 @@
 class output_generator {
 
 public:
-    explicit output_generator(const std::shared_ptr<ll_ast_node> &AST, bool debug_print);
+    output_generator() = default;
+    void process_ast(const std::shared_ptr<ll_ast_node> &AST, bool debug_print);
     void emit_program(std::shared_ptr<ll_ast_node> &sub_program, bool debug_print);
     std::vector<uint32_t> get_raw_program();
     int get_program_size();
@@ -39,7 +40,7 @@ public:
 private:
     std::shared_ptr<ll_ast_node> program;
     std::vector<uint32_t> raw_program;
-    int progress_counter;
+    int progress_counter = 0;
     static inline uint16_t Reverse16(uint16_t value)
     {
         return (((value & 0x00FFu) << 8u) |

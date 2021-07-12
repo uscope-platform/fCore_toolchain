@@ -19,8 +19,8 @@
 
 
 
-std::tuple<std::vector<uint32_t>, int> fCore_has_embeddable_s(std::string content){
-    std::string ret_val = "";
+std::tuple<std::vector<uint32_t>, int> fCore_has_embeddable_s(const std::string& content){
+    std::string ret_val;
     std::istringstream stream(content);
     std::vector<std::string> include_files;
     auto *iss = new std::istringstream(REGISTER_DEFINITION_STRING);
@@ -28,14 +28,14 @@ std::tuple<std::vector<uint32_t>, int> fCore_has_embeddable_s(std::string conten
 
     fcore_has assembler(stream,includes);
     std::vector<uint32_t> hex = assembler.get_hexfile(false);
-    int int_size = assembler.get_program_size();
+    unsigned int int_size = assembler.get_program_size();
     std::cout<<int_size<<std::endl;
     std::tuple<std::vector<uint32_t>, int> ret(hex, int_size);
     return ret;
 }
 
 void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size){
-    std::string ret_val = "";
+    std::string ret_val;
     std::ifstream stream;
     stream.open(path);
     std::vector<std::string> include_files;
@@ -45,7 +45,7 @@ void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size){
 
     fcore_has assembler(stream,includes);
     std::vector<uint32_t> data = assembler.get_hexfile(false);
-    int int_size = assembler.get_program_size();
+    unsigned int int_size = assembler.get_program_size();
     memcpy(hex_size, &int_size, sizeof(int));
     for(int i = 0; i < assembler.get_program_size(); i++){
         hex[i] = data[i];
@@ -96,8 +96,7 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
     manager = create_ll_pass_manager(variables_map);
     manager.run_morphing_passes(AST);
 
-    //manager.run_analysis_passes(AST);
-    writer = new output_generator(AST, false);
+    writer.process_ast(AST, false);
 }
 
 
@@ -116,15 +115,11 @@ fcore_has::process_includes(const std::vector<std::string> &include_files, const
 }
 
 std::vector<uint32_t> fcore_has::get_hexfile(bool endian_swap) {
-    return writer->generate_hex(endian_swap);
+    return writer.generate_hex(endian_swap);
 }
 
 std::vector<std::string> fcore_has::get_verilog_memfile() {
-    return writer->generate_mem();
-}
-
-fcore_has::~fcore_has() {
-    delete writer;
+    return writer.generate_mem();
 }
 
 uint32_t fcore_has::get_inst_count() {
@@ -136,15 +131,15 @@ uint32_t fcore_has::get_inst_count() {
 }
 
 void fcore_has::write_hexfile(const std::string& ouput_file) {
-    writer->write_hex_file(ouput_file);
+    writer.write_hex_file(ouput_file);
 }
 
 void fcore_has::write_verilog_memfile(const std::string& ouput_file) {
-    writer->write_mem_file(ouput_file);
+    writer.write_mem_file(ouput_file);
 }
 
 uint32_t fcore_has::get_program_size() {
-    return writer->get_program_size();
+    return writer.get_program_size();
 }
 
 std::string fcore_has::get_errors() {

@@ -36,7 +36,6 @@
 class fcore_cc {
 public:
     fcore_cc(std::istream &input, std::vector<std::string> &includes);
-    ~fcore_cc();
     std::vector<uint32_t> get_hexfile(bool endian_swap);
     std::string get_errors();
     std::vector<std::string> get_verilog_memfile();
@@ -47,7 +46,7 @@ public:
 private:
     std::shared_ptr<hl_ast_node> hl_ast;
     std::shared_ptr<ll_ast_node> ll_ast;
-    output_generator *writer;
+    output_generator writer;
     hl_pass_manager  hl_manager;
     ll_pass_manager ll_manager;
     std::string error_code;

@@ -17,11 +17,12 @@
 
 #include "backend/output_generator.hpp"
 
-output_generator::output_generator(const std::shared_ptr<ll_ast_node> &AST, bool debug_print) {
+
+void output_generator::process_ast(const std::shared_ptr<ll_ast_node> &AST, bool debug_print) {
     program = AST;
-    progress_counter = 0;
     emit_program(program, debug_print);
 }
+
 
 void output_generator::write_hex_file(const std::string& filename) {
     std::ofstream output(filename, std::ios::binary | std::ios::out);

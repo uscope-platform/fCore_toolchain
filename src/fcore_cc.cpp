@@ -44,12 +44,12 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes) {
     ll_manager = create_ll_pass_manager(variables_map);
     ll_manager.run_morphing_passes(ll_ast);
 
-    writer = new output_generator(ll_ast, false);
+    writer.process_ast(ll_ast, false);
 }
 
 
 std::vector<uint32_t> fcore_cc::get_hexfile(bool endian_swap) {
-    return writer->generate_hex(endian_swap);
+    return writer.generate_hex(endian_swap);
 }
 
 std::string fcore_cc::get_errors() {
@@ -57,19 +57,19 @@ std::string fcore_cc::get_errors() {
 }
 
 std::vector<std::string> fcore_cc::get_verilog_memfile() {
-    return writer->generate_mem();
+    return writer.generate_mem();
 }
 
 void fcore_cc::write_hexfile(const std::string &ouput_file) {
-    writer->write_hex_file(ouput_file);
+    writer.write_hex_file(ouput_file);
 }
 
 void fcore_cc::write_verilog_memfile(const std::string &ouput_file) {
-    writer->write_mem_file(ouput_file);
+    writer.write_mem_file(ouput_file);
 }
 
 uint32_t fcore_cc::get_program_size() {
-    return writer->get_program_size();
+    return writer.get_program_size();
 }
 
 uint32_t fcore_cc::get_inst_count() {
@@ -80,6 +80,3 @@ uint32_t fcore_cc::get_inst_count() {
     return 0;
 }
 
-fcore_cc::~fcore_cc() {
-    delete writer;
-}
