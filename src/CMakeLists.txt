@@ -52,14 +52,6 @@ add_library(fCore_lib_internal_s SHARED ${FCORE_LIB_SRCS})
 target_link_libraries(fCore_lib_internal_s asm_parser_libs)
 set_property(TARGET fCore_lib_internal_s PROPERTY POSITION_INDEPENDENT_CODE 1)
 
-# Python module
-if(NOT ${PY_MODULE_EXCLUDE})
-    add_definitions(-DPYTHON_MODULE)
-    pybind11_add_module(fCore_has_py  ${FCORE_LIB_SRCS})
-    target_link_libraries(fCore_has_py PRIVATE asm_parser_libs)
-    target_link_libraries(fCore_has_py PRIVATE antlr4-runtime)
-endif(NOT ${PY_MODULE_EXCLUDE})
-
 # Standalone assembler executable
 add_executable(fCore_has fcore_has_main.cpp)
 target_link_libraries(fCore_has fCore_lib_internal)

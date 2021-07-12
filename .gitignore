@@ -6,4 +6,3 @@ fCore_has_py-0.0.1
 fCore_has_py.egg-info
 venv
 dist
-includes/pybind11

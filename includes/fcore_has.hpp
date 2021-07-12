@@ -21,11 +21,6 @@
 #include <string>
 #include <vector>
 
-#ifdef PYTHON_MODULE
-    #include <pybind11/pybind11.h>
-    #include <pybind11/stl.h>
-#endif
-
 #include "frontend/variable_map.hpp"
 #include "frontend/asm/asm_language_parser.hpp"
 #include "backend/output_generator.hpp"
@@ -38,7 +33,6 @@ extern "C"{
 std::tuple<std::vector<uint32_t>, int> fCore_has_embeddable_s(std::string content);
 void fCore_has_embeddable_f(const char * filename, uint32_t *hex, int *hex_size);
 };
-
 class fcore_has {
 public:
     fcore_has(std::istream &input,   std::vector<std::istream*> &includes);
