@@ -40,7 +40,11 @@ high_level_ast_lowering::high_level_ast_lowering(std::shared_ptr<variable_map> &
             {expr_gt, "bgt"},
             {expr_lte, "ble"},
             {expr_gte, "ble"},
-            {expr_reciprocal, "rec"}
+            {expr_reciprocal, "rec"},
+            {expr_itf, "itf"},
+            {expr_fti, "fti"},
+            {expr_satp, "satp"},
+            {expr_satn, "satn"}
     };
 }
 

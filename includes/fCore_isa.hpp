@@ -111,7 +111,10 @@ static std::map <expression_type_t, bool> fcore_implemented_operations {
     std::make_pair(expr_reciprocal, true),
     std::make_pair(expr_assign, false),
     std::make_pair(expr_call, false),
-
+    std::make_pair(expr_fti, true),
+    std::make_pair(expr_itf, true),
+    std::make_pair(expr_satp, true),
+    std::make_pair(expr_satn, true),
 };
 
 static std::map <std::string, std::string>  fcore_pseudo_op {

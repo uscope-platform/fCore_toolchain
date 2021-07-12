@@ -75,3 +75,19 @@ TEST(EndToEndC, fcore_cc) {
     std::vector<uint32_t> gold_standard = {0x45103, 0x286041};
     ASSERT_EQ(result, gold_standard);
 }
+
+
+TEST(EndToEndC, end_to_end_intrinsics) {
+
+
+    std::string input_file = "test_intrinsics_implementation.c";
+    std::ifstream ifs(input_file);
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(ifs, includes);
+    std::vector<uint32_t> result = compiler.get_hexfile(false);
+
+    std::vector<uint32_t> gold_standard = {0x45103, 0x286041, 0x1284, 0x64290};
+    ASSERT_EQ(result, gold_standard);
+}
