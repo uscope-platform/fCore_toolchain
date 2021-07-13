@@ -54,15 +54,13 @@ set(TEST_SOURCES
         hl_passes.cpp)
 
 
-add_executable(test_target ${TESTED_SOURCES} ${TEST_SOURCES})
+add_executable(test_target ${TESTED_SOURCES} ${TEST_SOURCES} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS})
 
 # Locate GTest
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
-# Link runTests with what we want to test and the GTest and pthread library
-target_link_libraries(test_target ${GTEST_LIBRARIES} pthread asm_parser_lib)
-target_link_libraries(test_target ${GTEST_LIBRARIES} pthread c_parser)
+target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES} pthread antlr4-runtime)
 
 # ASM TESTING FILES
 configure_file(asm_files/test_add.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

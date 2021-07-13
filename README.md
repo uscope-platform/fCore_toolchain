@@ -1,4 +1,4 @@
-# fCore HAS
+# fCore Toolchain
 
 [![CircleCI](https://circleci.com/gh/filssavi/fCore_has.svg?style=shield&circle-token=1145a78e36553f20bf503af95f607591199be482)](https://app.circleci.com/pipelines/github/filssavi/fCore_has)
 

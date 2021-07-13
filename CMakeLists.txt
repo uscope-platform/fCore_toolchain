@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(fCore_has)
+project(fCore_toolchain)
 
 
 option(BUILD_TESTS "Build test programs" OFF)
@@ -17,6 +17,8 @@ add_link_options(-fprofile-arcs -ftest-coverage)
 
 add_subdirectory(includes/asm_parser)
 add_subdirectory(includes/C_parser)
+
+
 add_subdirectory(src)
 
 if(${BUILD_TESTS})

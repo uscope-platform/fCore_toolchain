@@ -1,21 +1,21 @@
 // Copyright (C) 2020 Filippo Savi - All Rights Reserved
 
-// This file is part of fCore_has.
+// This file is part of fCore_toolchain.
 
-// fCore_has is free software: you can redistribute it and/or modify
+// fCore_toolchain is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License.
 
-// fCore_has is distributed in the hope that it will be useful,
+// fCore_toolchain is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with fCore_has.  If not, see <https://www.gnu.org/licenses/>.
-#ifndef FCORE_HAS_LOAD_INTERCALATION_PASS_HPP
-#define FCORE_HAS_LOAD_INTERCALATION_PASS_HPP
+// along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.
+#ifndef FCORE_TOOLCHAIN_LOAD_INTERCALATION_PASS_HPP
+#define FCORE_TOOLCHAIN_LOAD_INTERCALATION_PASS_HPP
 
 
 #include "ast/low_level/ll_instruction_node.hpp"
@@ -31,4 +31,4 @@ public:
     int get_pass_type() override { return LEAF_PASS;};
 };
 
-#endif //FCORE_HAS_LOAD_INTERCALATION_PASS_HPP
+#endif //FCORE_TOOLCHAIN_LOAD_INTERCALATION_PASS_HPP

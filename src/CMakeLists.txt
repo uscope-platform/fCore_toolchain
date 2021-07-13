@@ -43,14 +43,8 @@ set(FCORE_LIB_SRCS
         )
 
 # Regular library for regular use
-add_library(fCore_lib_internal ${FCORE_LIB_SRCS})
-target_link_libraries(fCore_lib_internal asm_parser_lib)
-target_link_libraries(fCore_lib_internal c_parser)
-
-# Static library for use with uscope server
-add_library(fCore_lib_internal_s SHARED ${FCORE_LIB_SRCS})
-target_link_libraries(fCore_lib_internal_s asm_parser_libs)
-set_property(TARGET fCore_lib_internal_s PROPERTY POSITION_INDEPENDENT_CODE 1)
+add_library(fCore_lib_internal ${FCORE_LIB_SRCS} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS})
+target_link_libraries(fCore_lib_internal antlr4-runtime)
 
 # Standalone assembler executable
 add_executable(fCore_has fcore_has_main.cpp)
@@ -60,11 +54,5 @@ target_link_libraries(fCore_has fCore_lib_internal)
 add_executable(fCore_cc fcore_cc_main.cpp)
 target_link_libraries(fCore_cc fCore_lib_internal)
 
-# Install
-install(TARGETS fCore_lib_internal_s
-        LIBRARY DESTINATION /usr/local/lib/fcore_has)
-
-install(DIRECTORY ../includes # source directory
-        DESTINATION /usr/local/include # target directory
-        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
-        )
+install(TARGETS fCore_has DESTINATION /usr/bin)
+install(TARGETS fCore_cc DESTINATION /usr/bin)
