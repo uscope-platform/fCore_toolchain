@@ -17,10 +17,11 @@
 
 #include <fstream>
 #include <gtest/gtest.h>
+#include <filesystem>
 
 #include "fcore_has.hpp"
 #include "ast/low_level/ll_ast_node.hpp"
-
+#include "../third_party/json.hpp"
 
 
 static inline uint32_t Reverse32(uint32_t value)
@@ -153,14 +154,29 @@ TEST(EndToEndAsm, embeddable_wrapper_pass) {
     ASSERT_EQ( result, gold_standard);
 }
 
-/*
-TEST_CASE( "Embeddable C wrapper fail") {
-    std::string input_file = "test_ldc_fail.s";
 
-    std::ifstream ifs(input_file);
-    std::string content( (std::istreambuf_iterator<char>(ifs) ),
-                         (std::istreambuf_iterator<char>()) );
+TEST(EndToEndAsm, json_writing) {
+    std::string input_file = "test_ldc.s";
 
-    std::string gold_standard = "mismatched input '<EOF>' expecting {'ldc', 'stop', 'nop', 'add', 'sub', 'mul', 'itf', 'fti', 'ldr', 'ble', 'bgt', 'beq', 'bne', 'mov', 'for(', '#pragma ', 'let', 'const', 'input', 'output'}";
-    REQUIRE_THROWS_WITH( fCore_has_embeddable_s(content), gold_standard);
-}*/
+    std::string test_json = "/tmp/e2e_asm_json_test.json";
+    std::string include_dir;
+    std::vector<std::string> include_files = {};
+
+    std::ifstream stream(input_file);
+    fcore_has uut(stream,include_files,include_dir);
+
+    uut.write_json(test_json);
+
+    nlohmann::json out;
+    std::ifstream check_stream(test_json);
+
+    check_stream >> out;
+
+    std::vector<uint32_t> compile_result = out["compiled_program"];
+
+    std::vector<uint32_t> gold_standard = {0x64107, 0xc8147, 0x106, 0x4048f5c3, 0xc};
+
+    std::filesystem::remove(test_json);
+
+    ASSERT_EQ(gold_standard, compile_result);
+}

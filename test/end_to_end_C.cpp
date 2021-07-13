@@ -92,3 +92,30 @@ TEST(EndToEndC, end_to_end_intrinsics) {
     std::vector<uint32_t> gold_standard = {0x45103, 0x286041, 0x1284, 0x64290};
     ASSERT_EQ(result, gold_standard);
 }
+
+
+
+TEST(EndToEndC, json_writing) {
+    std::string input_file = "test_intrinsics_implementation.c";
+
+    std::string test_json = "/tmp/e2e_c_json_test.json";
+
+    std::vector<std::string> includes;
+    std::ifstream stream(input_file);
+
+    fcore_cc compiler(stream, includes);
+    compiler.write_json(test_json);
+
+    nlohmann::json out;
+    std::ifstream check_stream(test_json);
+
+    check_stream >> out;
+
+    std::vector<uint32_t> compile_result = out["compiled_program"];
+
+    std::vector<uint32_t> gold_standard = {0x45103, 0x286041, 0x1284, 0x64290};
+
+    std::filesystem::remove(test_json);
+
+    ASSERT_EQ(gold_standard, compile_result);
+}

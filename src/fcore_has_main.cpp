@@ -26,7 +26,10 @@
 int main(int argc, char **argv) {
     CLI::App app{"fCore High level assembler"};
 
-    bool output_hex, output_mem, output_json, output_force;
+    bool output_hex = false;
+    bool output_mem = false;
+    bool output_json = false;
+    bool output_force = false;
     std::string input_file;
     std::string output_file;
     app.add_option("input_file", input_file, "Input file path")->required()->check(CLI::ExistingFile);

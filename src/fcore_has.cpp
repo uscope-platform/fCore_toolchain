@@ -151,7 +151,7 @@ std::string fcore_has::get_errors() {
 void fcore_has::write_json(const std::string &output_file) {
     nlohmann::json j;
     j["error_code"] = error_code;
-    if(!error_code.empty()){
+    if(error_code.empty()){
         j["compiled_program"] = writer.generate_hex(false);
     } else{
         j["compiled_program"] = {};
