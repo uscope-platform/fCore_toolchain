@@ -33,8 +33,8 @@
 
 class hl_pass_manager : public pass_manager_base<hl_ast_node> {
 public:
-    void run_morphing_pass( std::shared_ptr<hl_ast_node> subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass) override;
-    std::shared_ptr<hl_ast_node> run_global_pass(const std::shared_ptr<hl_ast_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass) override;
+    void run_morphing_pass( std::shared_ptr<hl_ast_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass) override;
+    std::shared_ptr<hl_ast_node> run_global_pass(const std::shared_ptr<hl_ast_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
 
     std::shared_ptr<hl_ast_node> process_leaves(const std::shared_ptr<hl_ast_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
     std::vector<std::shared_ptr<hl_ast_node>> process_nodes(const std::shared_ptr<hl_ast_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);

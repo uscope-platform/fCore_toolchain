@@ -48,8 +48,8 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::sha
     manager.add_morphing_pass(std::make_shared<inlined_function_elimination>(entry_point));
 
 
-    manager.add_global_pass(std::make_shared<normalization_pass>());
-    manager.add_global_pass(std::make_shared<hl_variable_mapping>(var_map));
+    manager.add_morphing_pass(std::make_shared<normalization_pass>());
+    manager.add_morphing_pass(std::make_shared<hl_variable_mapping>(var_map));
     return manager;
 }
 

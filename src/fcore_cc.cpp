@@ -32,10 +32,6 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes) {
         hl_manager = create_hl_pass_manager(ep, variables_map);
         hl_manager.run_morphing_passes(hl_ast);
 
-
-        hl_ast = hl_manager.run_global_passes(hl_ast);
-
-
         high_level_ast_lowering tranlator(variables_map);
 
         tranlator.set_input_ast(hl_ast);

@@ -19,7 +19,7 @@
 #include "passes/high_level/hl_pass_manager.hpp"
 #include "passes/pass_base.hpp"
 
-void hl_pass_manager::run_morphing_pass( std::shared_ptr<hl_ast_node> subtree,
+void hl_pass_manager::run_morphing_pass( std::shared_ptr<hl_ast_node> &subtree,
                                                        const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
 
     switch (pass->get_pass_type()) {
@@ -31,8 +31,13 @@ void hl_pass_manager::run_morphing_pass( std::shared_ptr<hl_ast_node> subtree,
             process_leaves(subtree, pass);
             break;
         }
+        case GLOBAL_PASS:{
+            std::shared_ptr<hl_ast_node> tmp =  run_global_pass(subtree, pass);
+            *subtree = *tmp;
+            break;
+        }
         default:
-            throw std::runtime_error("The pass" + pass->get_name() + " does not have a correct type");
+            throw std::runtime_error("The pass  " + pass->get_name() + "  does not have a correct type");
             break;
     }
 }

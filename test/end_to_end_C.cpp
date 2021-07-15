@@ -41,7 +41,7 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     hl_pass_manager hl_manager = create_hl_pass_manager(ep, variables_map);
     hl_manager.run_morphing_passes(parser.AST);
 
-    std::shared_ptr<hl_ast_node> normalized_ast = hl_manager.run_global_passes(parser.AST);
+    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
 
     high_level_ast_lowering tranlator(variables_map);
 

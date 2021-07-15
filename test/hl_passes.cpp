@@ -277,7 +277,7 @@ TEST(HlPassesTest, function_elimination) {
     hl_pass_manager manager = create_hl_pass_manager(ep, variables_map);
     manager.run_morphing_passes(parser.AST);
 
-    std::shared_ptr<hl_ast_node> raw_result = manager.run_global_passes(parser.AST);
+    std::shared_ptr<hl_ast_node> raw_result =parser.AST;
 
     std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int);
 
@@ -307,7 +307,6 @@ TEST(HlPassesTest, function_elimination) {
     std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
     gold_standard->set_content({def_1, def_2});
 
-
     EXPECT_EQ( *gold_standard, *raw_result);
 
 }
@@ -330,7 +329,7 @@ TEST(HlPassesTest, variable_mapping_pass) {
     hl_pass_manager manager = create_hl_pass_manager(ep, variables_map);
     manager.run_morphing_passes(parser.AST);
 
-    std::shared_ptr<hl_ast_node> normalized_ast = manager.run_global_passes(parser.AST);
+    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
 
 
     std::shared_ptr<variable_map> gold_standard = std::make_shared<variable_map>();
@@ -369,7 +368,7 @@ TEST(HlPassesTest, hl_ast_lowering) {
     hl_pass_manager manager = create_hl_pass_manager(ep, variables_map);
     manager.run_morphing_passes(parser.AST);
 
-    std::shared_ptr<hl_ast_node> normalized_ast = manager.run_global_passes(parser.AST);
+    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
 
     high_level_ast_lowering tranlator(variables_map);
 
@@ -417,7 +416,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
     hl_pass_manager manager = create_hl_pass_manager(ep, variables_map);
     manager.run_morphing_passes(parser.AST);
 
-    std::shared_ptr<hl_ast_node> normalized_ast = manager.run_global_passes(parser.AST);
+    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
 
 
     std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int);

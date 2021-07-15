@@ -31,9 +31,14 @@ std::shared_ptr<hl_ast_node> normalization_pass::process_global(std::shared_ptr<
 
     for(auto &i: element->get_content()){
         std::shared_ptr<hl_ast_node> tmp_res = process_node_by_type_top(i);
-        normalized_body.insert(normalized_body.end(), additional_statements.begin(), additional_statements.end());
-        additional_statements.clear();
-        normalized_body.push_back(tmp_res);
+        if(tmp_res != nullptr){
+            normalized_body.insert(normalized_body.end(), additional_statements.begin(), additional_statements.end());
+            additional_statements.clear();
+            normalized_body.push_back(tmp_res);
+        } else {
+            normalized_body.push_back(i);
+        }
+
     }
 
     retval->set_content(normalized_body);

@@ -34,18 +34,13 @@ public:
     // API FOR MORPHING PASSES
     void add_morphing_pass(const std::shared_ptr<pass_base<E>>& pass);
     void run_morphing_passes(std::shared_ptr<E> AST);
-    virtual void run_morphing_pass(std::shared_ptr<E> subtree, const std::shared_ptr<pass_base<E>>& pass) {};
-    // API FOR GLOBAL PASSES
-    void add_global_pass(const std::shared_ptr<pass_base<E>>& pass);
-    std::shared_ptr<E> run_global_passes(std::shared_ptr<E> AST);
-    virtual std::shared_ptr<E> run_global_pass(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass) {return std::shared_ptr<E>();};
+    virtual void run_morphing_pass(std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass) {};
 
     std::vector<std::vector<int>> run_analysis_passes(const std::shared_ptr<E>& AST);
     void analyze_tree(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass);
     std::unordered_map<std::string, std::shared_ptr<pass_base<E>>> analysis_passes;
 protected:
     std::vector<std::shared_ptr<pass_base<E>>> morphing_passes = {};
-    std::vector<std::shared_ptr<pass_base<E>>> global_passes = {};
 };
 
 
@@ -61,23 +56,6 @@ void pass_manager_base<E>::run_morphing_passes(std::shared_ptr<E> AST) {
         run_morphing_pass(AST, pass);
     }
 }
-
-
-
-template<class E>
-void pass_manager_base<E>::add_global_pass(const std::shared_ptr<pass_base<E>>& pass) {
-    global_passes.push_back(pass);
-}
-
-template<class E>
-std::shared_ptr<E> pass_manager_base<E>::run_global_passes(std::shared_ptr<E> AST) {
-    std::shared_ptr<E> working_tree = std::move(AST);
-    for( auto& pass:global_passes){
-        working_tree = run_global_pass(working_tree, pass);
-    }
-    return working_tree;
-}
-
 
 
 
