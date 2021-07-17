@@ -36,73 +36,55 @@
 TEST(HlPassesTest, divisionImplementation) {
 
 
-    std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("c");
-    std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(5);
+    std::string input_file = "test_division_implementation.c";
+    std::ifstream ifs(input_file);
 
-    std::shared_ptr<hl_expression_node> lvl_1 = std::make_shared<hl_expression_node>(expr_mult);
-    lvl_1->set_lhs(op_1);
-    lvl_1->set_rhs(op_2);
+    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(7);
-
-    std::shared_ptr<hl_expression_node> lvl_2 = std::make_shared<hl_expression_node>(expr_div);
-    lvl_2->set_lhs(lvl_1);
-    lvl_2->set_rhs(op_2);
-
-    std::shared_ptr<hl_ast_operand> op_3 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_3->set_name("test");
-    std::shared_ptr<hl_expression_node> lvl_3 = std::make_shared<hl_expression_node>(expr_assign);
-    lvl_3->set_lhs(op_3);
-    lvl_3->set_rhs(lvl_2);
-
-    std::shared_ptr<hl_ast_node> ast = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
-    ast->add_content(lvl_3);
-
+    C_language_parser parser(ifs, result_var, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
 
     std::string ep = "main";
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
     hl_pass_manager manager = create_hl_pass_manager(ep, variables_map);
+    manager.run_morphing_passes(parser.AST);
 
-    manager.run_morphing_passes(ast);
-
-
-
-    op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("c");
-    op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(5);
-
-    std::shared_ptr<hl_expression_node> gs_1 = std::make_shared<hl_expression_node>(expr_mult);
-    gs_1->set_lhs(op_1);
-    gs_1->set_rhs(op_2);
-
-    op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(7);
-
-    std::shared_ptr<hl_expression_node> gs_2 = std::make_shared<hl_expression_node>(expr_reciprocal);
-    gs_2->set_rhs(op_2);
+    std::shared_ptr<hl_ast_node> result = parser.AST;
 
 
-    std::shared_ptr<hl_expression_node> gs_3 = std::make_shared<hl_expression_node>(expr_mult);
-    gs_3->set_lhs(gs_1);
-    gs_3->set_rhs(gs_2);
+    std::shared_ptr<hl_ast_operand> op_1= std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_1->set_immediate(6);
 
-    op_3 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_3->set_name("test");
+    std::shared_ptr<hl_expression_node> rec_exp = std::make_shared<hl_expression_node>(expr_reciprocal);
+    rec_exp->set_rhs(op_1);
 
-    std::shared_ptr<hl_expression_node> gs_4 = std::make_shared<hl_expression_node>(expr_assign);
-    gs_4->set_lhs(op_3);
-    gs_4->set_rhs(gs_3);
+    std::shared_ptr<hl_definition_node> rec_def = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int);
+    rec_def->set_initializer(rec_exp);
 
-    std::shared_ptr<hl_ast_node> result = ast->get_content()[0];
+    op_1= std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_1->set_immediate(4);
+
+    std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(variable_operand);
+    op_2->set_name("intermediate_expr_0");
+
+    std::shared_ptr<hl_expression_node> mult_exp = std::make_shared<hl_expression_node>(expr_mult);
+    mult_exp->set_lhs(op_1);
+    mult_exp->set_rhs(op_2);
+
+    std::shared_ptr<hl_definition_node> mult_def = std::make_shared<hl_definition_node>("a", c_type_int);
+    mult_def->set_initializer(mult_exp);
 
 
-    EXPECT_EQ( *gs_4, *result);
+    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    gold_standard->set_content({rec_def, mult_def});
+
+
+
+    EXPECT_EQ( *gold_standard, *result);
     if(Test::HasFailure()){
-        std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(ast->get_content()[0])->pretty_print()<< std::endl;
+        std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(parser.AST->get_content()[0])->pretty_print()<< std::endl;
         std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(result)->pretty_print()<< std::endl;
     }
 }

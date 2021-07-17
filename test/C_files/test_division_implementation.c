@@ -13,21 +13,10 @@
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.29/06/2021.
-//`
+// along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.07/07/2021.
+//
 
-int main(int arg1, float arg2){
 
-    #pragma input(a, r1)
-    int a;
-
-    #pragma input(b, r2)
-    int b;
-
-    int c;
-
-    c = a + b;
-
-    #pragma output (test, r10);
-    int test = c*5/6;
+int main(){
+    int a = 4/6;
 }

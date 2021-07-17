@@ -119,3 +119,20 @@ TEST(EndToEndC, json_writing) {
 
     ASSERT_EQ(gold_standard, compile_result);
 }
+
+TEST(EndToEndC, pragma_io) {
+    std::string input_file = "test_pragma_io.c";
+
+
+    std::vector<std::string> includes;
+    std::ifstream stream(input_file);
+
+    fcore_cc compiler(stream, includes);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x102041, 0x45103, 0x2192, 0x282043};
+
+
+    ASSERT_EQ(gold_standard, result);
+}

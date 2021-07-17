@@ -78,7 +78,7 @@ void C_pre_processor::process_file() {
 }
 
 void C_pre_processor::process_pragmas(const std::string& line) {
-    std::regex io_pragma_regex(R"(#pragma\s+(input|output)\s*\(\s?(.*),\s*r(\d*)\s*\))");
+    std::regex io_pragma_regex(R"(#pragma\s+(input|memory|output)\s*\(\s?(.*),\s*r(\d*)\s*\))");
     std::smatch match;
 
     if(std::regex_search( line,match,io_pragma_regex)){
@@ -90,7 +90,12 @@ void C_pre_processor::process_pragmas(const std::string& line) {
         std::string var_name = match.str(2);
         std::string reg = match.str(3);
         std::shared_ptr<variable> v = std::make_shared<variable>(false, var_name);
-        v->type = type == "output" ? TYPE_OUTPUT : TYPE_INPUT;
+        if(type == "output")
+            v->type = TYPE_OUTPUT;
+        else if(type == "input")
+            v->type = TYPE_INPUT;
+        else if(type == "memory")
+            v->type = TYPE_MEMORY;
         v->set_bound_reg(std::stoul(reg));
         vmap->insert(var_name, v);
     }

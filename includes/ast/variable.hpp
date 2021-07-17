@@ -27,7 +27,8 @@
 
 #define TYPE_INPUT 0
 #define TYPE_OUTPUT 1
-#define TYPE_REGULAR 2
+#define TYPE_MEMORY 2
+#define TYPE_REGULAR 3
 
 class variable {
 public:
