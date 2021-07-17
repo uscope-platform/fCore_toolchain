@@ -23,6 +23,7 @@
 #include "ast/high_level/hl_expression_node.hpp"
 #include "ast/high_level/hl_function_call_node.hpp"
 #include "ast/high_level/hl_function_def_node.hpp"
+#include "ast/high_level/hl_ast_conditional_node.h"
 
 bool hl_ast_node::is_terminal() {
     return false;
@@ -76,9 +77,11 @@ hl_ast_node::compare_content_by_type(const std::shared_ptr<hl_ast_node> &lhs, co
 
     switch (lhs->node_type) {
         case hl_ast_node_type_loop:
-        case hl_ast_node_type_conditional:
         case hl_ast_node_type_program_root:
+        case hl_ast_node_type_code_block:
             return *lhs == *rhs;
+        case hl_ast_node_type_conditional:
+            return *std::static_pointer_cast<hl_ast_conditional_node>(lhs) == *std::static_pointer_cast<hl_ast_conditional_node>(rhs);
         case hl_ast_node_type_operand:
             return *std::static_pointer_cast<hl_ast_operand>(lhs) == *std::static_pointer_cast<hl_ast_operand>(rhs);
         case hl_ast_node_type_expr:

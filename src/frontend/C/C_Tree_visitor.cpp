@@ -21,6 +21,7 @@
 C_Tree_visitor::C_Tree_visitor() {
     in_function_declaration = false;
     in_function_body = false;
+    is_conditional_block = false;
 }
 
 
@@ -324,12 +325,9 @@ void C_Tree_visitor::exitStatement(C_parser::C_grammarParser::StatementContext *
     } else if (ctx->iterationStatement() != nullptr) {
         throw std::runtime_error("for loops are not supported yet: " + ctx->getText()+"\n");
     } else if(ctx->selectionStatement() != nullptr){
-        throw std::runtime_error("if else control flow is not supported yet: " + ctx->getText()+"\n");
+        current_block_item = conditional;
     } else if(ctx->returnStatement() != nullptr){
         if(!expressions_stack.empty()){
-            current_function->set_return(expressions_stack.top());
-            expressions_stack.pop();
-        } else if(!expressions_stack.empty()) {
             current_function->set_return(expressions_stack.top());
             expressions_stack.pop();
         }
@@ -382,7 +380,9 @@ void C_Tree_visitor::processExpression(unsigned int expression_size, const T& op
 void C_Tree_visitor::exitBlockItem(C_parser::C_grammarParser::BlockItemContext *ctx) {
     std::string test = ctx->getText();
     if(in_function_body){
-        if(ctx->statement() != nullptr){
+        if(is_conditional_block){
+            is_conditional_block = false;
+        }else if(ctx->statement() != nullptr){
             if(ctx->statement()->returnStatement() != nullptr) return;
         }
         function_body.push_back(current_block_item);
@@ -401,5 +401,27 @@ void C_Tree_visitor::exitArgumentExpression(C_parser::C_grammarParser::ArgumentE
     argument_vector.push_back(expressions_stack.top());
     expressions_stack.pop();
 }
+
+void C_Tree_visitor::exitIfContent(C_parser::C_grammarParser::IfContentContext *ctx) {
+    conditional->set_if_block(function_body);
+    function_body.clear();
+}
+
+void C_Tree_visitor::exitElseContent(C_parser::C_grammarParser::ElseContentContext *ctx) {
+    conditional->set_else_block(function_body);
+    function_body.clear();
+}
+
+void C_Tree_visitor::enterSelectionStatement(C_parser::C_grammarParser::SelectionStatementContext *ctx) {
+    conditional = std::make_shared<hl_ast_conditional_node>();
+}
+
+void C_Tree_visitor::exitSelectionStatement(C_parser::C_grammarParser::SelectionStatementContext *ctx) {
+    current_block_item = conditional;
+    in_function_body = true;
+    is_conditional_block = true;
+}
+
+
 
 

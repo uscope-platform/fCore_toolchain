@@ -168,6 +168,12 @@ public:
   virtual void enterExpressionStatement(C_grammarParser::ExpressionStatementContext * /*ctx*/) override { }
   virtual void exitExpressionStatement(C_grammarParser::ExpressionStatementContext * /*ctx*/) override { }
 
+  virtual void enterIfContent(C_grammarParser::IfContentContext * /*ctx*/) override { }
+  virtual void exitIfContent(C_grammarParser::IfContentContext * /*ctx*/) override { }
+
+  virtual void enterElseContent(C_grammarParser::ElseContentContext * /*ctx*/) override { }
+  virtual void exitElseContent(C_grammarParser::ElseContentContext * /*ctx*/) override { }
+
   virtual void enterSelectionStatement(C_grammarParser::SelectionStatementContext * /*ctx*/) override { }
   virtual void exitSelectionStatement(C_grammarParser::SelectionStatementContext * /*ctx*/) override { }
 

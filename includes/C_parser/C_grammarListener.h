@@ -166,6 +166,12 @@ public:
   virtual void enterExpressionStatement(C_grammarParser::ExpressionStatementContext *ctx) = 0;
   virtual void exitExpressionStatement(C_grammarParser::ExpressionStatementContext *ctx) = 0;
 
+  virtual void enterIfContent(C_grammarParser::IfContentContext *ctx) = 0;
+  virtual void exitIfContent(C_grammarParser::IfContentContext *ctx) = 0;
+
+  virtual void enterElseContent(C_grammarParser::ElseContentContext *ctx) = 0;
+  virtual void exitElseContent(C_grammarParser::ElseContentContext *ctx) = 0;
+
   virtual void enterSelectionStatement(C_grammarParser::SelectionStatementContext *ctx) = 0;
   virtual void exitSelectionStatement(C_grammarParser::SelectionStatementContext *ctx) = 0;
 

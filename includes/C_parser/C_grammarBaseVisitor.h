@@ -217,6 +217,14 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitIfContent(C_grammarParser::IfContentContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitElseContent(C_grammarParser::ElseContentContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitSelectionStatement(C_grammarParser::SelectionStatementContext *ctx) override {
     return visitChildren(ctx);
   }

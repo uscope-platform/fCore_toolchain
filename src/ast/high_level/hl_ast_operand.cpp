@@ -69,6 +69,10 @@ bool operator==(const hl_ast_operand &lhs, const hl_ast_operand &rhs) {
 }
 
 hl_ast_operand::operator std::string() {
+    return pretty_print();
+}
+
+std::string hl_ast_operand::pretty_print() {
     std::string ret_val;
     switch (operand_type) {
         case integer_immediate_operand:

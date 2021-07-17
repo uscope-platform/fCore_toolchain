@@ -100,7 +100,7 @@ bool operator==(const hl_function_def_node &lhs, const hl_function_def_node &rhs
         body_equal &= lhs.function_body.size() == rhs.function_body.size();
 
         for(int i = 0; i<lhs.function_body.size(); i++){
-            body_equal &= *lhs.function_body[i] == *rhs.function_body[i];
+            body_equal &= hl_ast_node::compare_content_by_type( lhs.function_body[i], rhs.function_body[i]);
         }
         ret_val &= body_equal;
     }

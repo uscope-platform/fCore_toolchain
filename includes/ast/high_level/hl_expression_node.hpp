@@ -69,7 +69,7 @@ public:
     std::shared_ptr<hl_ast_node> get_lhs();
     std::shared_ptr<hl_ast_node> get_rhs();
     expression_type_t get_type();
-    std::string pretty_print();
+    std::string pretty_print() override;
     bool is_unary();
     static bool is_hardware_compatible(expression_type_t et);
     bool is_terminal() override {

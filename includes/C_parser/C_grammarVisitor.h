@@ -120,6 +120,10 @@ public:
 
     virtual antlrcpp::Any visitExpressionStatement(C_grammarParser::ExpressionStatementContext *context) = 0;
 
+    virtual antlrcpp::Any visitIfContent(C_grammarParser::IfContentContext *context) = 0;
+
+    virtual antlrcpp::Any visitElseContent(C_grammarParser::ElseContentContext *context) = 0;
+
     virtual antlrcpp::Any visitSelectionStatement(C_grammarParser::SelectionStatementContext *context) = 0;
 
     virtual antlrcpp::Any visitIterationStatement(C_grammarParser::IterationStatementContext *context) = 0;

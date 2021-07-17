@@ -35,7 +35,7 @@ public:
     bool is_constant();
     std::shared_ptr<hl_ast_node> get_initializer();
     void set_initializer(std::shared_ptr<hl_ast_node> init);
-    std::string pretty_print();
+    std::string pretty_print() override;
     bool is_terminal() override {
         return true;
     }

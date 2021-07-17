@@ -76,7 +76,7 @@ bool operator==(const hl_definition_node &lhs, const hl_definition_node &rhs) {
     ret_val &= lhs.name == rhs.name;
     if(lhs.initializer == nullptr && rhs.initializer == nullptr) ret_val &= true;
     else if(lhs.initializer != nullptr && rhs.initializer != nullptr) {
-        ret_val &= *std::static_pointer_cast<hl_expression_node>(lhs.initializer) == *std::static_pointer_cast<hl_expression_node>(rhs.initializer);
+        ret_val &= hl_ast_node::compare_content_by_type(lhs.initializer, rhs.initializer);
     } else {
         ret_val &= false;
     }

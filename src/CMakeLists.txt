@@ -20,6 +20,7 @@ set(FCORE_LIB_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_expression_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_function_call_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_ast_operand.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_ast_conditional_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/ast/transformations/high_level_ast_lowering.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/ast/define.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/ast/variable.cpp

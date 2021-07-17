@@ -184,6 +184,10 @@ TEST(HlPassesTest, functionInlining) {
     gold_standard->set_body({inlined_block});
     gold_standard->set_return_type(c_type_int);
     EXPECT_EQ(*res, *gold_standard);
+    if(Test::HasFailure()){
+        std::cout << "TEST RESULT: " << res->pretty_print()<< std::endl;
+        std::cout << "GOLD STANDARD: " << gold_standard->pretty_print()<< std::endl;
+    }
 
 }
 

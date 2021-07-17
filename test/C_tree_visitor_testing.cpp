@@ -24,7 +24,7 @@
 #include "frontend/C/C_language_parser.hpp"
 #include "ast/high_level/hl_ast_operand.hpp"
 #include "ast/high_level/hl_expression_node.hpp"
-
+#include "ast/high_level/hl_ast_conditional_node.h"
 
 TEST( cTreeVisitor, unaryExpressions) {
     std::string input_file = "test_unary_expressions.c";
@@ -591,7 +591,7 @@ TEST( cTreeVisitor, definition) {
 
 
 
-TEST( cFrontend, returnTest) {
+TEST( cTreeVisitor, returnTest) {
     std::string input_file = "test_return.c";
     std::ifstream ifs(input_file);
 
@@ -628,6 +628,42 @@ TEST( cFrontend, returnTest) {
     }
 
 }
+
+
+
+
+TEST( cTreeVisitor, ConditionalTest) {
+    std::string input_file = "test_conditional.c";
+    std::ifstream ifs(input_file);
+
+    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(ifs, result_var, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
+    std::shared_ptr<hl_ast_conditional_node> result = std::static_pointer_cast<hl_ast_conditional_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
+
+    std::shared_ptr<hl_ast_conditional_node> gold_standard = std::make_shared<hl_ast_conditional_node>();
+    std::shared_ptr<hl_definition_node> def_node = std::make_shared<hl_definition_node>("a", c_type_int);
+    std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_1->set_immediate(2);
+    def_node->set_initializer(op_1);
+    gold_standard->set_if_block({def_node});
+    def_node = std::make_shared<hl_definition_node>("a", c_type_int);
+    op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_1->set_immediate(3);
+    def_node->set_initializer(op_1);
+    gold_standard->set_else_block({def_node});
+
+    EXPECT_EQ(*result, *gold_standard);
+    if(Test::HasFailure()){
+        std::cout << "TEST RESULT: " << result->pretty_print()<< std::endl;
+        std::cout << "GOLD STANDARD: " << gold_standard->pretty_print()<< std::endl;
+    }
+
+}
+
 
 
 TEST( cFrontend, parser_main) {

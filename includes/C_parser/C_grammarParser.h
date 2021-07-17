@@ -48,10 +48,11 @@ public:
     RuleArgumentExpressionList = 40, RuleArgumentExpression = 41, RuleInitializerList = 42, 
     RuleDesignation = 43, RuleDesignatorList = 44, RuleDesignator = 45, 
     RuleStatement = 46, RuleCompoundStatement = 47, RuleBlockItem = 48, 
-    RuleExpressionStatement = 49, RuleSelectionStatement = 50, RuleIterationStatement = 51, 
-    RuleForCondition = 52, RuleForDeclaration = 53, RuleForExpression = 54, 
-    RuleReturnStatement = 55, RuleTranslationUnit = 56, RuleExternalDeclaration = 57, 
-    RuleFunctionDefinition = 58, RuleDeclarationList = 59, RuleConstant = 60
+    RuleExpressionStatement = 49, RuleIfContent = 50, RuleElseContent = 51, 
+    RuleSelectionStatement = 52, RuleIterationStatement = 53, RuleForCondition = 54, 
+    RuleForDeclaration = 55, RuleForExpression = 56, RuleReturnStatement = 57, 
+    RuleTranslationUnit = 58, RuleExternalDeclaration = 59, RuleFunctionDefinition = 60, 
+    RuleDeclarationList = 61, RuleConstant = 62
   };
 
   explicit C_grammarParser(antlr4::TokenStream *input);
@@ -114,6 +115,8 @@ public:
   class CompoundStatementContext;
   class BlockItemContext;
   class ExpressionStatementContext;
+  class IfContentContext;
+  class ElseContentContext;
   class SelectionStatementContext;
   class IterationStatementContext;
   class ForConditionContext;
@@ -1033,6 +1036,36 @@ public:
 
   ExpressionStatementContext* expressionStatement();
 
+  class  IfContentContext : public antlr4::ParserRuleContext {
+  public:
+    IfContentContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    CompoundStatementContext *compoundStatement();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  IfContentContext* ifContent();
+
+  class  ElseContentContext : public antlr4::ParserRuleContext {
+  public:
+    ElseContentContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    CompoundStatementContext *compoundStatement();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  ElseContentContext* elseContent();
+
   class  SelectionStatementContext : public antlr4::ParserRuleContext {
   public:
     SelectionStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
@@ -1041,9 +1074,9 @@ public:
     antlr4::tree::TerminalNode *LeftParen();
     ExpressionContext *expression();
     antlr4::tree::TerminalNode *RightParen();
-    std::vector<CompoundStatementContext *> compoundStatement();
-    CompoundStatementContext* compoundStatement(size_t i);
+    IfContentContext *ifContent();
     antlr4::tree::TerminalNode *Else();
+    ElseContentContext *elseContent();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;

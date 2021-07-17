@@ -39,6 +39,7 @@
 #include "ast/high_level/hl_ast_operand.hpp"
 #include "ast/high_level/hl_definition_node.hpp"
 #include "ast/high_level/hl_function_call_node.hpp"
+#include "ast/high_level/hl_ast_conditional_node.h"
 
 #include <gtest/gtest_prod.h>
 
@@ -78,6 +79,11 @@ public:
     void exitStatement(C_parser::C_grammarParser::StatementContext *ctx) override;
     void exitFunctionCallExpression(C_parser::C_grammarParser::FunctionCallExpressionContext *ctx) override;
 
+    void exitSelectionStatement(C_parser::C_grammarParser::SelectionStatementContext *ctx) override;
+    void enterSelectionStatement(C_parser::C_grammarParser::SelectionStatementContext *ctx) override;
+    void exitElseContent(C_parser::C_grammarParser::ElseContentContext *ctx) override;
+    void exitIfContent(C_parser::C_grammarParser::IfContentContext *ctx) override;
+
     void exitCompilationUnit(C_parser::C_grammarParser::CompilationUnitContext *ctx) override;
 
     std::shared_ptr<hl_ast_node> get_ast(){
@@ -100,7 +106,7 @@ private:
     FRIEND_TEST(cTreeVisitor, definition);
     FRIEND_TEST(cTreeVisitor, function_def);
     FRIEND_TEST(cTreeVisitor, function_call);
-    FRIEND_TEST(cFrontend, returnTest);
+    FRIEND_TEST(cTreeVisitor, returnTest);
 
     template<typename T>
     void processExpression(unsigned int expression_size, const T& operands_array, std::map<std::string, expression_type_t> &expr_map);
@@ -118,10 +124,13 @@ private:
     std::shared_ptr<hl_ast_node> current_initializer;
     std::shared_ptr<hl_ast_node> current_block_item;
 
+    std::shared_ptr<hl_ast_conditional_node> conditional;
+
     std::shared_ptr<hl_ast_node> root;
 
     bool in_function_declaration;
     bool in_function_body;
+    bool is_conditional_block;
 };
 
 #endif //FCORE_TOOLCHAIN_ASMTREE_VISITOR_HPP

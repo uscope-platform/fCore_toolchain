@@ -266,8 +266,16 @@ expressionStatement
     :   expression?
     ;
 
+ifContent
+    : compoundStatement
+    ;
+
+elseContent
+    : compoundStatement
+    ;
+
 selectionStatement
-    :   'if' '(' expression ')' compoundStatement ('else' compoundStatement)?
+    :   'if' '(' expression ')' ifContent ('else' elseContent)?
     ;
 
 iterationStatement

@@ -56,6 +56,8 @@ public:
 
     virtual bool is_terminal();
 
+    virtual std::string pretty_print() {return "";};
+
     friend bool operator==(const hl_ast_node& lhs, const hl_ast_node& rhs);
 
     static  bool compare_content_by_type(const std::shared_ptr<hl_ast_node>& lhs, const std::shared_ptr<hl_ast_node>& rhs);

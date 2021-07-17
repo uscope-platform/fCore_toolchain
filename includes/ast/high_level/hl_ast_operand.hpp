@@ -45,6 +45,7 @@ public:
     bool is_terminal() override {
         return true;
     }
+    std::string pretty_print() override;
     operator std::string();
     friend bool operator==(const hl_ast_operand& lhs, const hl_ast_operand& rhs);
 private:
