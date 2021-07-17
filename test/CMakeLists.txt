@@ -1,50 +1,3 @@
-set(TESTED_SOURCES
-        ../src/backend/output_generator.cpp
-        ../src/ast/low_level/ll_ast_node.cpp
-        ../src/ast/low_level/ll_loop_node.cpp
-        ../src/ast/low_level/ll_instruction_node.cpp
-        ../src/ast/low_level/ll_ast_pragma.cpp
-        ../src/ast/high_level/hl_ast_node.cpp
-        ../src/ast/high_level/hl_definition_node.cpp
-        ../src/ast/high_level/hl_function_def_node.cpp
-        ../src/ast/high_level/hl_expression_node.cpp
-        ../src/ast/high_level/hl_ast_operand.cpp
-        ../src/ast/high_level/hl_function_call_node.cpp
-        ../src/ast/transformations/high_level_ast_lowering.cpp
-        ../src/ast/variable.cpp
-        ../src/ast/define.cpp
-        ../src/passes/low_level/ll_pass_manager.cpp
-        ../src/passes/low_level/loop_implementation_pass.cpp
-        ../src/passes/low_level/pseudo_instructions_pass.cpp
-        ../src/passes/low_level/register_allocation_pass.cpp
-        ../src/passes/low_level/variable_lifetime_mapping.cpp
-        ../src/passes/low_level/load_intercalation_pass.cpp
-        ../src/passes/low_level/instruction_counting_pass.cpp
-        ../src/passes/high_level/dead_variable_elimination.cpp
-        ../src/passes/high_level/hl_variable_mapping.cpp
-        ../src/passes/high_level/declaration_instantiation_combining_pass.cpp
-        ../src/passes/high_level/hl_pass_manager.cpp
-        ../src/passes/high_level/function_inlining_pass.cpp
-        ../src/passes/high_level/normalization_pass.cpp
-        ../src/passes/high_level/inlined_function_elimination.cpp
-        ../src/passes/high_level/function_mapping.cpp
-        ../src/passes/high_level/intrinsics_implementation_pass.cpp
-        ../src/passes/high_level/division_implementation_pass.cpp
-        ../src/frontend/variable_map.cpp
-        ../src/frontend/define_map.cpp
-        ../src/frontend/asm/register_map.cpp
-        ../src/frontend/asm/AsmErrorHandling.cpp
-        ../src/frontend/asm/asm_language_parser.cpp
-        ../src/frontend/asm/AsmTree_visitor.cpp
-        ../src/frontend/C/C_language_parser.cpp
-        ../src/frontend/C/C_ErrorHandling.cpp
-        ../src/frontend/C/C_Tree_visitor.cpp
-        ../src/frontend/C/C_pre_processor.cpp
-        ../src/fcore_has.cpp
-        ../src/fcore_cc.cpp
-        )
-
-
 set(TEST_SOURCES
         Instruction_classes.cpp
         ll_passes.cpp
@@ -56,7 +9,7 @@ set(TEST_SOURCES
         hl_passes.cpp)
 
 
-add_executable(test_target ${TESTED_SOURCES} ${TEST_SOURCES} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS})
+add_executable(test_target ${FCORE_LIB_SRCS} ${TEST_SOURCES} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS})
 
 # Locate GTest
 find_package(GTest REQUIRED)
@@ -97,6 +50,7 @@ configure_file(C_files/tree_visitor/test_assignment_expressions.c ${CMAKE_CURREN
 configure_file(C_files/tree_visitor/test_definition.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/tree_visitor/test_function_call.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/tree_visitor/test_return.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_conditional.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_pragma_io.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 #OPTIMIZATION PASSES
 configure_file(C_files/test_function_inlining.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

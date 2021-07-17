@@ -1,5 +1,5 @@
 
-
+// Generated from /home/fils/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.9.1
 
 #pragma once
 
@@ -962,12 +962,12 @@ public:
     StatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     ExpressionStatementContext *expressionStatement();
+    antlr4::tree::TerminalNode *Semi();
     SelectionStatementContext *selectionStatement();
     IterationStatementContext *iterationStatement();
     ReturnStatementContext *returnStatement();
     antlr4::tree::TerminalNode *LeftParen();
     antlr4::tree::TerminalNode *RightParen();
-    antlr4::tree::TerminalNode *Semi();
     std::vector<LogicalOrExpressionContext *> logicalOrExpression();
     LogicalOrExpressionContext* logicalOrExpression(size_t i);
     std::vector<antlr4::tree::TerminalNode *> Colon();
@@ -1022,7 +1022,6 @@ public:
   public:
     ExpressionStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *Semi();
     ExpressionContext *expression();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -1042,8 +1041,8 @@ public:
     antlr4::tree::TerminalNode *LeftParen();
     ExpressionContext *expression();
     antlr4::tree::TerminalNode *RightParen();
-    std::vector<StatementContext *> statement();
-    StatementContext* statement(size_t i);
+    std::vector<CompoundStatementContext *> compoundStatement();
+    CompoundStatementContext* compoundStatement(size_t i);
     antlr4::tree::TerminalNode *Else();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;

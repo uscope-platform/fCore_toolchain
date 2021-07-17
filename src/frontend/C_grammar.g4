@@ -267,7 +267,7 @@ expressionStatement
     ;
 
 selectionStatement
-    :   'if' '(' expression ')' statement ('else' statement)?
+    :   'if' '(' expression ')' compoundStatement ('else' compoundStatement)?
     ;
 
 iterationStatement
