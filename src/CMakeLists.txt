@@ -31,6 +31,8 @@ set(FCORE_LIB_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/register_allocation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/variable_lifetime_mapping.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/load_intercalation_pass.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/constant_folding_pass.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/constant_propagation.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/hl_pass_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/hl_variable_mapping.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/function_mapping.cpp

@@ -141,7 +141,7 @@ bool hl_expression_node::is_unary() {
     res |= expr_type == expr_reciprocal;
     res |= expr_type == expr_not_b;
     res |= expr_type == expr_not_l;
-    res |= expr_type == expr_neq;
+    res |= expr_type == expr_neg;
     res |= expr_type == expr_incr_pre;
     res |= expr_type == expr_incr_post;
     res |= expr_type == expr_decr_post;

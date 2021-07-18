@@ -39,7 +39,7 @@
 #include "ast/high_level/hl_ast_operand.hpp"
 #include "ast/high_level/hl_definition_node.hpp"
 #include "ast/high_level/hl_function_call_node.hpp"
-#include "ast/high_level/hl_ast_conditional_node.h"
+#include "ast/high_level/hl_ast_conditional_node.hpp"
 
 #include <gtest/gtest_prod.h>
 

@@ -28,8 +28,10 @@
 #include "passes/high_level/normalization_pass.hpp"
 #include "passes/high_level/hl_variable_mapping.hpp"
 #include "passes/high_level/intrinsics_implementation_pass.hpp"
-#include "passes/high_level/dead_variable_elimination.h"
-#include "passes/high_level/declaration_instantiation_combining_pass.h"
+#include "passes/high_level/dead_variable_elimination.hpp"
+#include "passes/high_level/declaration_instantiation_combining_pass.hpp"
+#include "passes/high_level/constant_folding_pass.hpp"
+#include "passes/high_level/constant_propagation.hpp"
 
 #include "frontend/variable_map.hpp"
 #include "ast/high_level/hl_ast_node.hpp"
@@ -53,6 +55,8 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::sha
     manager.add_morphing_pass(std::make_shared<normalization_pass>());
     manager.add_morphing_pass(std::make_shared<dead_variable_elimination>());
     manager.add_morphing_pass(std::make_shared<declaration_instantiation_combining_pass>());
+    manager.add_morphing_pass(std::make_shared<constant_folding_pass>());
+    manager.add_morphing_pass(std::make_shared<constant_propagation>());
     manager.add_morphing_pass(std::make_shared<hl_variable_mapping>(var_map));
     return manager;
 }

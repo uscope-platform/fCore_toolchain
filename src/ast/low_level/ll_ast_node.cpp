@@ -89,7 +89,7 @@ bool operator==(const ll_ast_node &lhs, const ll_ast_node &rhs) {
             retval = false;
         } else {
             bool args_equal = true;
-            args_equal &= lhs.content.size() == rhs.content.size();
+            if(lhs.content.size() != rhs.content.size()) return false;
             for (int i = 0; i < lhs.content.size(); i++) {
                 args_equal &= *lhs.content[i] == *rhs.content[i];
             }

@@ -43,11 +43,11 @@ TEST(EndToEndC, minimal_c_end_to_end) {
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
 
-    high_level_ast_lowering tranlator(variables_map);
+    high_level_ast_lowering translator(variables_map);
 
-    tranlator.set_input_ast(normalized_ast);
-    tranlator.translate();
-    std::shared_ptr<ll_ast_node> ll_ast = tranlator.get_output_ast();
+    translator.set_input_ast(normalized_ast);
+    translator.translate();
+    std::shared_ptr<ll_ast_node> ll_ast = translator.get_output_ast();
 
     ll_pass_manager ll_manager = create_ll_pass_manager(variables_map);
     ll_manager.run_morphing_passes(ll_ast);
@@ -56,7 +56,7 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     writer.process_ast(ll_ast, false);
     std::vector<uint32_t> result = writer.get_raw_program();
 
-    std::vector<uint32_t> gold_standard = {0x45103, 0x286041};
+    std::vector<uint32_t> gold_standard = {0x286501};
     ASSERT_EQ(result, gold_standard);
 }
 
@@ -73,7 +73,7 @@ TEST(EndToEndC, fcore_cc) {
     fcore_cc compiler(ifs, includes);
     std::vector<uint32_t> result = compiler.get_hexfile(false);
 
-    std::vector<uint32_t> gold_standard = {0x45103, 0x286041};
+    std::vector<uint32_t> gold_standard = {0x286501};
     ASSERT_EQ(result, gold_standard);
 }
 
@@ -89,7 +89,7 @@ TEST(EndToEndC, end_to_end_intrinsics) {
     fcore_cc compiler(ifs, includes);
     std::vector<uint32_t> result = compiler.get_hexfile(false);
 
-    std::vector<uint32_t> gold_standard = {0x45103, 0x286041, 0x1284, 0x64290};
+    std::vector<uint32_t> gold_standard = {0x286501, 0x1284, 0x64290};
     ASSERT_EQ(result, gold_standard);
 }
 
@@ -113,7 +113,7 @@ TEST(EndToEndC, json_writing) {
 
     std::vector<uint32_t> compile_result = out["compiled_program"];
 
-    std::vector<uint32_t> gold_standard = {0x45103, 0x286041, 0x1284, 0x64290};
+    std::vector<uint32_t> gold_standard = {0x286501, 0x1284, 0x64290};
 
     std::filesystem::remove(test_json);
 
@@ -131,7 +131,7 @@ TEST(EndToEndC, pragma_io) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x102041, 0x45103, 0x2192, 0x282043};
+    std::vector<uint32_t> gold_standard = {0x102041, 0x45103, 0x280043};
 
 
     ASSERT_EQ(gold_standard, result);

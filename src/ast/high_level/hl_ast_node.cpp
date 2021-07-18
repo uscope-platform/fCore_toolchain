@@ -23,7 +23,7 @@
 #include "ast/high_level/hl_expression_node.hpp"
 #include "ast/high_level/hl_function_call_node.hpp"
 #include "ast/high_level/hl_function_def_node.hpp"
-#include "ast/high_level/hl_ast_conditional_node.h"
+#include "ast/high_level/hl_ast_conditional_node.hpp"
 
 bool hl_ast_node::is_terminal() {
     return false;
@@ -59,7 +59,7 @@ bool operator==(const hl_ast_node &lhs, const hl_ast_node &rhs) {
         ret_val = false;
     } else{
         bool body_equal = true;
-        body_equal &= lhs.content.size() == rhs.content.size();
+        if(lhs.content.size() != rhs.content.size()) return false;
 
         for(int i = 0; i<lhs.content.size(); i++){
 

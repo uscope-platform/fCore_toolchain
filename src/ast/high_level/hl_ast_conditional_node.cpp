@@ -2,7 +2,7 @@
 // Created by fils on 17/07/2021.
 //
 
-#include "ast/high_level/hl_ast_conditional_node.h"
+#include "ast/high_level/hl_ast_conditional_node.hpp"
 
 hl_ast_conditional_node::hl_ast_conditional_node() : hl_ast_node(hl_ast_node_type_conditional) {
     has_else = false;
@@ -53,7 +53,7 @@ bool operator==(const hl_ast_conditional_node &lhs, const hl_ast_conditional_nod
         ret_val = false;
     } else{
         bool body_equal = true;
-        body_equal &= lhs.if_block.size() == rhs.if_block.size();
+        if(lhs.if_block.size() != rhs.if_block.size()) return false;
 
         for(int i = 0; i<lhs.if_block.size(); i++){
             body_equal &=  hl_ast_node::compare_content_by_type( lhs.if_block[i], rhs.if_block[i]);
@@ -67,7 +67,7 @@ bool operator==(const hl_ast_conditional_node &lhs, const hl_ast_conditional_nod
         ret_val = false;
     } else{
         bool body_equal = true;
-        body_equal &= lhs.else_block.size() == rhs.else_block.size();
+        if(lhs.else_block.size() != rhs.else_block.size()) return false;
 
         for(int i = 0; i<lhs.else_block.size(); i++){
             body_equal &= hl_ast_node::compare_content_by_type( lhs.else_block[i], rhs.else_block[i]);

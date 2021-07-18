@@ -84,7 +84,8 @@ bool operator==(const hl_function_def_node &lhs, const hl_function_def_node &rhs
         ret_val = false;
     } else{
         bool param_equal = true;
-        param_equal &= lhs.parameters_list.size() == rhs.parameters_list.size();
+        if(lhs.parameters_list.size() != rhs.parameters_list.size()) return false;
+
         for(int i = 0; i<lhs.parameters_list.size(); i++){
             param_equal &= *lhs.parameters_list[i] == *rhs.parameters_list[i];
         }
@@ -97,7 +98,7 @@ bool operator==(const hl_function_def_node &lhs, const hl_function_def_node &rhs
         ret_val = false;
     } else{
         bool body_equal = true;
-        body_equal &= lhs.function_body.size() == rhs.function_body.size();
+        if(lhs.function_body.size() != rhs.function_body.size()) return false;
 
         for(int i = 0; i<lhs.function_body.size(); i++){
             body_equal &= hl_ast_node::compare_content_by_type( lhs.function_body[i], rhs.function_body[i]);
