@@ -1,4 +1,4 @@
-set(FCORE_LIB_SRCS
+set(FCORE_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/asm/AsmTree_visitor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/asm/asm_language_parser.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/asm/AsmErrorHandling.cpp
@@ -46,19 +46,18 @@ set(FCORE_LIB_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/normalization_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/fcore_has.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/fcore_cc.cpp
-        PARENT_SCOPE)
+        )
 
-# Regular library for regular use
-add_library(fCore_lib_internal ${FCORE_LIB_SRCS} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS})
-target_link_libraries(fCore_lib_internal antlr4-runtime)
+set(FCORE_SRCS ${FCORE_SRCS_I} PARENT_SCOPE)
 
-# Standalone assembler executable
-add_executable(fCore_has fcore_has_main.cpp)
-target_link_libraries(fCore_has fCore_lib_internal)
 
 # Standalone assembler executable
-add_executable(fCore_cc fcore_cc_main.cpp)
-target_link_libraries(fCore_cc fCore_lib_internal)
+add_executable(fCore_has ${FCORE_SRCS_I} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS} fcore_has_main.cpp)
+target_link_libraries(fCore_has PUBLIC antlr4-runtime)
+
+# Standalone assembler executable
+add_executable(fCore_cc ${FCORE_SRCS_I} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS} fcore_cc_main.cpp)
+target_link_libraries(fCore_cc PUBLIC antlr4-runtime)
 
 install(TARGETS fCore_has DESTINATION /usr/bin)
 install(TARGETS fCore_cc DESTINATION /usr/bin)

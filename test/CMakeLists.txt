@@ -9,7 +9,7 @@ set(TEST_SOURCES
         hl_passes.cpp)
 
 
-add_executable(test_target ${FCORE_LIB_SRCS} ${TEST_SOURCES} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS})
+add_executable(test_target ${FCORE_SRCS} ${TEST_SOURCES} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS})
 
 # Locate GTest
 find_package(GTest REQUIRED)
