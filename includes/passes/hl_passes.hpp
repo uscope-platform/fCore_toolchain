@@ -37,7 +37,7 @@
 #include "ast/high_level/hl_ast_node.hpp"
 
 
-static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::shared_ptr<variable_map> &var_map){
+static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::shared_ptr<variable_map> &var_map, std::vector<int> order){
     hl_pass_manager manager;
     std::shared_ptr<function_mapping> mapping_pass = std::make_shared<function_mapping>();
     manager.add_morphing_pass(mapping_pass);
@@ -58,6 +58,12 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::sha
     manager.add_morphing_pass(std::make_shared<constant_folding_pass>());
     manager.add_morphing_pass(std::make_shared<constant_propagation>());
     manager.add_morphing_pass(std::make_shared<hl_variable_mapping>(var_map));
+    if(order.empty()){
+        manager.set_pass_order({0,1,2,3,4,5,6,7,8,9,10});
+    } else {
+        manager.set_pass_order(order);
+    }
+
     return manager;
 }
 

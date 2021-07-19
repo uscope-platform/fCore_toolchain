@@ -36,11 +36,15 @@ public:
     void run_morphing_passes(std::shared_ptr<E> AST);
     virtual void run_morphing_pass(std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass) {};
 
+    std::vector<int> get_pass_order() { return pass_order;};
+    void set_pass_order(std::vector<int> order) {pass_order = std::move(order);};
+
     std::vector<std::vector<int>> run_analysis_passes(const std::shared_ptr<E>& AST);
     void analyze_tree(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass);
     std::unordered_map<std::string, std::shared_ptr<pass_base<E>>> analysis_passes;
 protected:
     std::vector<std::shared_ptr<pass_base<E>>> morphing_passes = {};
+    std::vector<int> pass_order;
 };
 
 
@@ -52,9 +56,10 @@ void pass_manager_base<E>::add_morphing_pass(const std::shared_ptr<pass_base<E>>
 
 template<class E>
 void pass_manager_base<E>::run_morphing_passes(std::shared_ptr<E> AST) {
-    for( auto& pass:morphing_passes){
-        run_morphing_pass(AST, pass);
+    for(auto& idx:pass_order){
+        run_morphing_pass(AST, morphing_passes[idx]);
     }
+
 }
 
 

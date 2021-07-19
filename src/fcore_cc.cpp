@@ -29,7 +29,7 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes) {
         target_parser.parse();
         hl_ast = target_parser.AST;
         std::string ep = "main";
-        hl_manager = create_hl_pass_manager(ep, variables_map);
+        hl_manager = create_hl_pass_manager(ep, variables_map,{});
         hl_manager.run_morphing_passes(hl_ast);
 
         high_level_ast_lowering tranlator(variables_map);
@@ -41,7 +41,7 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes) {
         ll_manager = create_ll_pass_manager(variables_map);
         ll_manager.run_morphing_passes(ll_ast);
 
-        writer.process_ast(ll_ast, true);
+        writer.process_ast(ll_ast, false);
     } catch(std::runtime_error &e){
         error_code = e.what();
     }

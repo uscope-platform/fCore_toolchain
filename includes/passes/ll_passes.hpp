@@ -41,6 +41,7 @@ static ll_pass_manager create_ll_pass_manager(std::shared_ptr<variable_map> varm
     manager.add_morphing_pass(std::make_shared<register_allocation_pass>(varmap));//REGISTER ALLOCATION SHOULD ALWAYS BE THE LAST PASS
     std::shared_ptr<pass_base<ll_ast_node>> ic_pass =std::make_shared<instruction_counting_pass>();
     manager.add_morphing_pass(ic_pass);
+    manager.set_pass_order({0,1,2,3,4,5});
     manager.analysis_passes.insert(std::make_pair ("instruction_counting", ic_pass));
     return manager;
 }
