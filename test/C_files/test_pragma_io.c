@@ -30,5 +30,5 @@ int main(int arg1, float arg2){
     c = a + b;
 
     #pragma output (test, r10);
-    int test = c*5/6;
+    int test = c*5/6.0;
 }

@@ -89,7 +89,7 @@ TEST(EndToEndC, end_to_end_intrinsics) {
     fcore_cc compiler(ifs, includes,false);
     std::vector<uint32_t> result = compiler.get_hexfile(false);
 
-    std::vector<uint32_t> gold_standard = {0x146, 0x41D00000, 0x944, 0x32150};
+    std::vector<uint32_t> gold_standard = {0x146, 0x41D00000, 0x944,0x26,0x42C80000, 0x40950};
     ASSERT_EQ(result, gold_standard);
 }
 
@@ -113,7 +113,7 @@ TEST(EndToEndC, json_writing) {
 
     std::vector<uint32_t> compile_result = out["compiled_program"];
 
-    std::vector<uint32_t> gold_standard = {0x146, 0x41D00000, 0x944, 0x32150};
+    std::vector<uint32_t> gold_standard = {0x146, 0x41D00000, 0x944,0x26,0x42C80000, 0x40950};
 
     std::filesystem::remove(test_json);
 
@@ -127,12 +127,11 @@ TEST(EndToEndC, pragma_io) {
     std::vector<std::string> includes;
     std::ifstream stream(input_file);
 
-    fcore_cc compiler(stream, includes,true);
+    fcore_cc compiler(stream, includes,false);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x102041, 0x45103, 0x280043};
-
+    std::vector<uint32_t> gold_standard = {0x81021, 0x26, 0x40A00000, 0x40883, 0x26, 0x3e2aaac1, 0x140843};
 
     ASSERT_EQ(gold_standard, result);
 }

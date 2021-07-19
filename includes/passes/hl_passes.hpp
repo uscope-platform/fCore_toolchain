@@ -32,6 +32,7 @@
 #include "passes/high_level/declaration_instantiation_combining_pass.hpp"
 #include "passes/high_level/constant_folding_pass.hpp"
 #include "passes/high_level/constant_propagation.hpp"
+#include "passes/high_level/inline_constant_extraction.hpp"
 
 #include "frontend/variable_map.hpp"
 #include "ast/high_level/hl_ast_node.hpp"
@@ -59,15 +60,13 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::sha
     std::shared_ptr<constant_folding_pass> const_fold = std::make_shared<constant_folding_pass>();
     std::shared_ptr<constant_propagation> const_prop = std::make_shared<constant_propagation>(var_map);
 
-    manager.add_morphing_pass(const_fold);
-    manager.add_morphing_pass(const_prop);
-
     manager.add_morphing_pass_group({const_fold, const_prop});
+    manager.add_morphing_pass(std::make_shared<inline_constant_extraction>());
 
     manager.add_morphing_pass(std::make_shared<hl_variable_mapping>(var_map));
 
     if(order.empty()){
-        manager.set_pass_order({1,2,3,4,5,6,7,8,-1,11});
+        manager.set_pass_order({1,2,3,4,5,6,7,8,-1,9, 10});
     } else {
         manager.set_pass_order(order);
     }
