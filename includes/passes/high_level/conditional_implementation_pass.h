@@ -16,27 +16,26 @@
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.05/07/2021.
 //
 
-#ifndef FCORE_TOOLCHAIN_CONSTANT_PROPAGATION_HPP
-#define FCORE_TOOLCHAIN_CONSTANT_PROPAGATION_HPP
-
-#include <unordered_map>
+#ifndef FCORE_TOOLCHAIN_CONDITIONAL_IMPLEMENTATION_PASS_H
+#define FCORE_TOOLCHAIN_CONDITIONAL_IMPLEMENTATION_PASS_H
 
 #include "passes/pass_base.hpp"
 #include "ast/high_level/hl_ast_node.hpp"
+#include "ast/high_level/hl_ast_operand.hpp"
+#include "ast/high_level/hl_ast_conditional_node.hpp"
 #include "ast/high_level/hl_definition_node.hpp"
-#include "frontend/variable_map.hpp"
+#include "ast/high_level/hl_expression_node.hpp"
 
-class constant_propagation :public pass_base<hl_ast_node> {
+class conditional_implementation_pass : public pass_base<hl_ast_node> {
 public:
-    explicit constant_propagation(std::shared_ptr<variable_map>  &v);
+    conditional_implementation_pass();
     std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
-    std::shared_ptr<hl_ast_node> substitute_constant(std::shared_ptr<hl_ast_node> element);
-    std::shared_ptr<hl_ast_operand> process_operand(std::shared_ptr<hl_ast_operand> element);
+    std::shared_ptr<hl_ast_operand> find_variable_definition(const std::shared_ptr<hl_ast_node>& subexpr, const std::shared_ptr<hl_ast_node>& item,
+                                                             const std::vector<std::shared_ptr<hl_ast_node>>& prog_content);
+    std::shared_ptr<hl_ast_operand> get_operands(const std::shared_ptr<hl_ast_node>& subexpr, const std::shared_ptr<hl_ast_node>& item,
+                                                 const std::vector<std::shared_ptr<hl_ast_node>>& prog_content);
     int get_pass_type() override { return GLOBAL_PASS;};
-private:
-    std::unordered_map<std::string, std::shared_ptr<hl_ast_operand>> constants_map;
-    std::shared_ptr<variable_map> var_map;
 };
 
 
-#endif //FCORE_TOOLCHAIN_CONSTANT_PROPAGATION_HPP
+#endif //FCORE_TOOLCHAIN_CONDITIONAL_IMPLEMENTATION_PASS_H

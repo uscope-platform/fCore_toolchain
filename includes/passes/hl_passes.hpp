@@ -33,6 +33,7 @@
 #include "passes/high_level/constant_folding_pass.hpp"
 #include "passes/high_level/constant_propagation.hpp"
 #include "passes/high_level/inline_constant_extraction.hpp"
+#include "passes/high_level/conditional_implementation_pass.h"
 
 #include "frontend/variable_map.hpp"
 #include "ast/high_level/hl_ast_node.hpp"
@@ -41,32 +42,32 @@
 static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::shared_ptr<variable_map> &var_map, std::vector<int> order){
     hl_pass_manager manager;
     std::shared_ptr<function_mapping> mapping_pass = std::make_shared<function_mapping>();
-    manager.add_morphing_pass(mapping_pass);
+    manager.add_morphing_pass(mapping_pass);  // pass #1
 
-    manager.add_morphing_pass(std::make_shared<division_implementation_pass>());
-    manager.add_morphing_pass(std::make_shared<intrinsics_implementation_pass>());
+    manager.add_morphing_pass(std::make_shared<division_implementation_pass>()); // pass #2
+    manager.add_morphing_pass(std::make_shared<intrinsics_implementation_pass>()); // pass #3
 
     auto inlining_pass = std::make_shared<function_inlining_pass>();
     inlining_pass->set_functions_map(mapping_pass->get_map_ref());
-    manager.add_morphing_pass(inlining_pass);
+    manager.add_morphing_pass(inlining_pass); // pass #4
 
-    manager.add_morphing_pass(std::make_shared<inlined_function_elimination>(entry_point));
+    manager.add_morphing_pass(std::make_shared<inlined_function_elimination>(entry_point)); // pass #5
 
+    manager.add_morphing_pass(std::make_shared<conditional_implementation_pass>()); // pass #6
 
-    manager.add_morphing_pass(std::make_shared<normalization_pass>());
-    manager.add_morphing_pass(std::make_shared<dead_variable_elimination>());
-    manager.add_morphing_pass(std::make_shared<declaration_instantiation_combining_pass>());
+    manager.add_morphing_pass(std::make_shared<normalization_pass>()); // pass #7
+    manager.add_morphing_pass(std::make_shared<dead_variable_elimination>()); // pass #8
+    manager.add_morphing_pass(std::make_shared<declaration_instantiation_combining_pass>()); // pass #9
 
     std::shared_ptr<constant_folding_pass> const_fold = std::make_shared<constant_folding_pass>();
     std::shared_ptr<constant_propagation> const_prop = std::make_shared<constant_propagation>(var_map);
 
-    manager.add_morphing_pass_group({const_fold, const_prop});
-    manager.add_morphing_pass(std::make_shared<inline_constant_extraction>());
+    manager.add_morphing_pass_group({const_fold, const_prop}); // group #-1
+    manager.add_morphing_pass(std::make_shared<inline_constant_extraction>()); // pass #10
 
-    manager.add_morphing_pass(std::make_shared<hl_variable_mapping>(var_map));
-
+    manager.add_morphing_pass(std::make_shared<hl_variable_mapping>(var_map)); // pass #11
     if(order.empty()){
-        manager.set_pass_order({1,2,3,4,5,6,7,8,-1,9, 10});
+        manager.set_pass_order({1,2,3,4,5,6,7,8,9,-1, 10, 11});
     } else {
         manager.set_pass_order(order);
     }

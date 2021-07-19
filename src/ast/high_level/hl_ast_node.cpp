@@ -155,7 +155,15 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_def(const std::shared_ptr<hl
     std::shared_ptr<hl_definition_node> copied_obj = std::make_shared<hl_definition_node>(orig->get_name(), orig->get_type());
     copied_obj->set_constant(orig->is_constant());
     if(orig->get_initializer() != nullptr){
-        std::shared_ptr<hl_expression_node> initializer = std::static_pointer_cast<hl_expression_node>(deep_copy_expr(orig->get_initializer()));
+        std::shared_ptr<hl_ast_node> initializer;
+        if(orig->get_initializer()->node_type == hl_ast_node_type_expr){
+            initializer = std::static_pointer_cast<hl_expression_node>(deep_copy_expr(orig->get_initializer()));
+        } else if (orig->get_initializer()->node_type == hl_ast_node_type_operand){
+            initializer = std::static_pointer_cast<hl_ast_operand>(deep_copy_operands(orig->get_initializer()));
+        } else {
+            throw std::runtime_error("ERROR: Initializers should be either operands or expressions");
+        }
+
         copied_obj->set_initializer(initializer);
     }
     copied_obj->set_content(orig->get_content());
