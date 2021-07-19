@@ -93,10 +93,14 @@ std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(std::shared
     }
 }
 
-std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(std::shared_ptr<hl_definition_node> input, std::shared_ptr<variable> dest) {
+std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::shared_ptr<hl_definition_node>& input, const std::shared_ptr<variable>& dest) {
     std::shared_ptr<ll_instruction_node> retval = std::make_shared<ll_instruction_node>();
     if(input->is_initialized()){
-        return translate_node(std::static_pointer_cast<hl_expression_node>(input->get_initializer()), dest);
+        if(input->get_initializer()->node_type == hl_ast_node_type_expr){
+            return translate_node(std::static_pointer_cast<hl_expression_node>(input->get_initializer()), dest);
+        } else if(input->get_initializer()->node_type == hl_ast_node_type_operand){
+            return translate_node(std::static_pointer_cast<hl_ast_operand>(input->get_initializer()), dest);
+        }
     }
     return retval;
 
@@ -128,6 +132,25 @@ high_level_ast_lowering::process_regular_expression(std::shared_ptr<hl_expressio
     std::shared_ptr<variable> op_b = var_map->at(*std::static_pointer_cast<hl_ast_operand>(input->get_rhs()));
     std::vector<std::shared_ptr<variable>> args = {op_a, op_b, dest};
     retval = std::make_shared<ll_instruction_node>(fcore_op_types[opcode], opcode, args);
+    return retval;
+
+}
+
+std::shared_ptr<ll_ast_node>
+high_level_ast_lowering::translate_node(const std::shared_ptr<hl_ast_operand>& input, std::shared_ptr<variable> dest) {
+
+
+    std::shared_ptr<ll_instruction_node> retval;
+    std::shared_ptr<variable> var;
+    if(input->get_type() == integer_immediate_operand){
+        var = std::make_shared<variable>(true, std::to_string(input->get_int_value()));
+    } else if (input->get_type() == float_immediate_operand){
+        var= std::make_shared<variable>(true, std::to_string(input->get_float_val()), true);
+    } else{
+        throw std::runtime_error("feature not implemented yet");
+    }
+    std::vector<std::shared_ptr<variable>> args = {std::move(dest), var};
+    retval = std::make_shared<ll_instruction_node>(isa_load_constant_instruction, "ldc", args);
     return retval;
 
 }

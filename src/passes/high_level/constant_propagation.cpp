@@ -4,8 +4,8 @@
 
 #include "passes/high_level/constant_propagation.hpp"
 
-constant_propagation::constant_propagation() : pass_base<hl_ast_node>("Constant Propagation Pass"){
-
+constant_propagation::constant_propagation(std::shared_ptr<variable_map>  &v) : pass_base<hl_ast_node>("Constant Propagation Pass"){
+    var_map = v;
 }
 
 std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_ptr<hl_ast_node> element) {
@@ -16,7 +16,9 @@ std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_pt
     for(auto & i : content){
         if(i->node_type == hl_ast_node_type_definition){
             std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(i);
-            if(node->get_initializer()->node_type == hl_ast_node_type_operand){
+            if(var_map->count(node->get_name())>0){
+                new_content.push_back(i);
+            } else if(node->get_initializer()->node_type == hl_ast_node_type_operand){
                 std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(node->get_initializer());
                 if(op->get_type() == float_immediate_operand || op->get_type() == integer_immediate_operand)
                     constants_map.insert(std::make_pair(node->get_name(), op));

@@ -19,7 +19,7 @@
 #include "fcore_cc.hpp"
 
 
-fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes) {
+fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes, bool print_debug) {
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
     std::shared_ptr<define_map> defines_map = std::make_shared<define_map>();
     error_code = "";
@@ -41,7 +41,7 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes) {
         ll_manager = create_ll_pass_manager(variables_map);
         ll_manager.run_morphing_passes(ll_ast);
 
-        writer.process_ast(ll_ast, false);
+        writer.process_ast(ll_ast, print_debug);
     } catch(std::runtime_error &e){
         error_code = e.what();
     }

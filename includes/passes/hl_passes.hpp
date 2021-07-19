@@ -57,7 +57,7 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::sha
     manager.add_morphing_pass(std::make_shared<declaration_instantiation_combining_pass>());
 
     std::shared_ptr<constant_folding_pass> const_fold = std::make_shared<constant_folding_pass>();
-    std::shared_ptr<constant_propagation> const_prop = std::make_shared<constant_propagation>();
+    std::shared_ptr<constant_propagation> const_prop = std::make_shared<constant_propagation>(var_map);
 
     manager.add_morphing_pass(const_fold);
     manager.add_morphing_pass(const_prop);

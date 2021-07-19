@@ -40,7 +40,7 @@ TEST( EndToEndAsm, simple_file ) {
     std::ifstream stream(input_file);
     fcore_has uut(stream,include_files,include_dir);
 
-    std::vector<uint32_t> gold_standard = {0x64107, 0xc8147, 0x185601, 0xc};
+    std::vector<uint32_t> gold_standard = {0x32087, 0x640A7, 0xc2b01, 0xc};
 
     // file parsing and processing
 
@@ -90,7 +90,7 @@ TEST( EndToEndAsm, for_file ) {
 
     std::vector<uint32_t> result = uut.get_hexfile(false);
 
-    std::vector<uint32_t> gold_standard = {0x64107, 0xc8147, 0x185101, 0x64107, 0x185101, 0x0000, 0x0000, 0x64107, 0x185101, 0x0000, 0x0000, 0xc};
+    std::vector<uint32_t> gold_standard = {0x32087, 0x640A7, 0xc2881, 0x32087, 0xc2881, 0x0000, 0x0000, 0x32087, 0xc2881, 0x0000, 0x0000, 0xc};
     ASSERT_EQ( result, gold_standard);
 }
 
@@ -105,7 +105,7 @@ TEST( EndToEndAsm, branch_file ) {
 
     std::vector<uint32_t> result = uut.get_hexfile(false);
 
-     std::vector<uint32_t> gold_standard = {0x64107, 0x185101, 0x1000c1, 0x43088, 0x43089, 0x4308a, 0x4308b, 0xC};
+     std::vector<uint32_t> gold_standard = {0x32087, 0xc2881, 0x80061, 0x21848, 0x21849, 0x2184a, 0x2184b, 0xC};
     ASSERT_EQ( result, gold_standard);
 }
 
@@ -119,7 +119,7 @@ TEST(EndToEndAsm, variables_file) {
     fcore_has uut(stream,include_files,include_dir);
 
     std::vector<uint32_t> result = uut.get_hexfile(false);
-    std::vector<uint32_t> gold_standard = {0x64047, 0xC8087, 0xc8147, 0x185101, 0x1c9041,0x1c9081,0x64047,0x1c9041, 0xA152, 0xc};
+    std::vector<uint32_t> gold_standard = {0x32027, 0x64047, 0x640A7, 0xc2881, 0xe4821,0xe4841,0x32027,0xe4821, 0x50b2, 0xc};
     ASSERT_EQ( result, gold_standard);
 }
 
@@ -134,7 +134,7 @@ TEST(EndToEndAsm, load_constant_file) {
 
     std::vector<uint32_t> result = uut.get_hexfile(false);
 
-    std::vector<uint32_t> gold_standard = {0x64107, 0xc8147, 0x106, 0x4048f5c3, 0xc};
+    std::vector<uint32_t> gold_standard = {0x32087, 0x640A7, 0x86, 0x4048f5c3, 0xc};
     ASSERT_EQ( result, gold_standard);
 }
 
@@ -150,7 +150,7 @@ TEST(EndToEndAsm, embeddable_wrapper_pass) {
         result.push_back(hex_result[i]);
     }
     free(hex_result);
-    std::vector<uint32_t> gold_standard = {0x64107, 0xc8147, 0x106, 0x4048f5c3, 0xc};
+    std::vector<uint32_t> gold_standard = {0x32087, 0x640A7, 0x86, 0x4048f5c3, 0xc};
     ASSERT_EQ( result, gold_standard);
 }
 
@@ -174,7 +174,7 @@ TEST(EndToEndAsm, json_writing) {
 
     std::vector<uint32_t> compile_result = out["compiled_program"];
 
-    std::vector<uint32_t> gold_standard = {0x64107, 0xc8147, 0x106, 0x4048f5c3, 0xc};
+    std::vector<uint32_t> gold_standard = {0x32087, 0x640A7, 0x86, 0x4048f5c3, 0xc};
 
     std::filesystem::remove(test_json);
 

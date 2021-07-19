@@ -34,7 +34,7 @@ typedef enum {
 }isa_instruction_type;
 
 static const int fcore_register_address_width = 6;
-static const int fcore_opcode_width = 6;
+static const int fcore_opcode_width = 5;
 
 
 static std::map <std::string, uint32_t>  fcore_opcodes {

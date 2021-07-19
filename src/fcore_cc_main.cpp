@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
     stream.open(input_file);
 
     std::vector<std::string> include_files = {""};
-    fcore_cc cc_engine(stream, include_files);
+    fcore_cc cc_engine(stream, include_files, false);
 
     if(output_hex){
         cc_engine.write_hexfile(output_file);

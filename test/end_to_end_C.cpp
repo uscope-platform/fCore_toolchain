@@ -56,7 +56,7 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     writer.process_ast(ll_ast, false);
     std::vector<uint32_t> result = writer.get_raw_program();
 
-    std::vector<uint32_t> gold_standard = {0x286501};
+    std::vector<uint32_t> gold_standard = {0x146, 1104150528};
     ASSERT_EQ(result, gold_standard);
 }
 
@@ -70,10 +70,10 @@ TEST(EndToEndC, fcore_cc) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(ifs, includes);
+    fcore_cc compiler(ifs, includes, false);
     std::vector<uint32_t> result = compiler.get_hexfile(false);
 
-    std::vector<uint32_t> gold_standard = {0x286501};
+    std::vector<uint32_t> gold_standard = {0x146, 1104150528};
     ASSERT_EQ(result, gold_standard);
 }
 
@@ -86,10 +86,10 @@ TEST(EndToEndC, end_to_end_intrinsics) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(ifs, includes);
+    fcore_cc compiler(ifs, includes,false);
     std::vector<uint32_t> result = compiler.get_hexfile(false);
 
-    std::vector<uint32_t> gold_standard = {0x286501, 0x1284, 0x64290};
+    std::vector<uint32_t> gold_standard = {0x146, 0x41D00000, 0x944, 0x32150};
     ASSERT_EQ(result, gold_standard);
 }
 
@@ -103,7 +103,7 @@ TEST(EndToEndC, json_writing) {
     std::vector<std::string> includes;
     std::ifstream stream(input_file);
 
-    fcore_cc compiler(stream, includes);
+    fcore_cc compiler(stream, includes,false);
     compiler.write_json(test_json);
 
     nlohmann::json out;
@@ -113,7 +113,7 @@ TEST(EndToEndC, json_writing) {
 
     std::vector<uint32_t> compile_result = out["compiled_program"];
 
-    std::vector<uint32_t> gold_standard = {0x286501, 0x1284, 0x64290};
+    std::vector<uint32_t> gold_standard = {0x146, 0x41D00000, 0x944, 0x32150};
 
     std::filesystem::remove(test_json);
 
@@ -127,7 +127,7 @@ TEST(EndToEndC, pragma_io) {
     std::vector<std::string> includes;
     std::ifstream stream(input_file);
 
-    fcore_cc compiler(stream, includes);
+    fcore_cc compiler(stream, includes,true);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
