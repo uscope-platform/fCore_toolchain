@@ -19,6 +19,23 @@
 #include "passes/high_level/hl_pass_manager.hpp"
 #include "passes/pass_base.hpp"
 
+
+void hl_pass_manager::run_morphing_pass_group(std::shared_ptr<hl_ast_node> &subtree,
+                                              const std::vector<std::shared_ptr<pass_base<hl_ast_node>>> &group) {
+
+    std::shared_ptr<hl_ast_node> old_tree;
+    do{
+        old_tree = hl_ast_node::deep_copy(subtree);
+        for(auto &pass:group){
+            run_morphing_pass(subtree, pass);
+        }
+    } while (!(*old_tree == *subtree));
+
+
+}
+
+
+
 void hl_pass_manager::run_morphing_pass( std::shared_ptr<hl_ast_node> &subtree,
                                                        const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
 
@@ -41,6 +58,7 @@ void hl_pass_manager::run_morphing_pass( std::shared_ptr<hl_ast_node> &subtree,
             break;
     }
 }
+
 
 std::shared_ptr<hl_ast_node> hl_pass_manager::run_global_pass(const std::shared_ptr<hl_ast_node> &subtree,
                                                               const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
@@ -163,4 +181,3 @@ hl_pass_manager::process_terminal_by_type(const std::shared_ptr<hl_ast_node> &su
     };
     return res;
 }
-

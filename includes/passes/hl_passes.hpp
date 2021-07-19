@@ -55,11 +55,19 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::sha
     manager.add_morphing_pass(std::make_shared<normalization_pass>());
     manager.add_morphing_pass(std::make_shared<dead_variable_elimination>());
     manager.add_morphing_pass(std::make_shared<declaration_instantiation_combining_pass>());
-    manager.add_morphing_pass(std::make_shared<constant_folding_pass>());
-    manager.add_morphing_pass(std::make_shared<constant_propagation>());
+
+    std::shared_ptr<constant_folding_pass> const_fold = std::make_shared<constant_folding_pass>();
+    std::shared_ptr<constant_propagation> const_prop = std::make_shared<constant_propagation>();
+
+    manager.add_morphing_pass(const_fold);
+    manager.add_morphing_pass(const_prop);
+
+    manager.add_morphing_pass_group({const_fold, const_prop});
+
     manager.add_morphing_pass(std::make_shared<hl_variable_mapping>(var_map));
+
     if(order.empty()){
-        manager.set_pass_order({0,1,2,3,4,5,6,7,8,9,10});
+        manager.set_pass_order({1,2,3,4,5,6,7,8,-1,11});
     } else {
         manager.set_pass_order(order);
     }

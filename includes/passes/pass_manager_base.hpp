@@ -33,8 +33,10 @@ class pass_manager_base {
 public:
     // API FOR MORPHING PASSES
     void add_morphing_pass(const std::shared_ptr<pass_base<E>>& pass);
+    void add_morphing_pass_group(const std::vector<std::shared_ptr<pass_base<E>>>& group);
     void run_morphing_passes(std::shared_ptr<E> AST);
     virtual void run_morphing_pass(std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass) {};
+    virtual void run_morphing_pass_group(std::shared_ptr<E> &subtree, const std::vector<std::shared_ptr<pass_base<E>>>& group) {};
 
     std::vector<int> get_pass_order() { return pass_order;};
     void set_pass_order(std::vector<int> order) {pass_order = std::move(order);};
@@ -45,6 +47,7 @@ public:
 protected:
     std::vector<std::shared_ptr<pass_base<E>>> morphing_passes = {};
     std::vector<int> pass_order;
+    std::vector<std::vector<std::shared_ptr<pass_base<E>>>> morphing_passes_groups{};
 };
 
 
@@ -57,12 +60,18 @@ void pass_manager_base<E>::add_morphing_pass(const std::shared_ptr<pass_base<E>>
 template<class E>
 void pass_manager_base<E>::run_morphing_passes(std::shared_ptr<E> AST) {
     for(auto& idx:pass_order){
-        run_morphing_pass(AST, morphing_passes[idx]);
+        if(idx>=0){
+            int pass_index = idx-1;
+            std::shared_ptr<pass_base<E>> pass = morphing_passes[pass_index];
+            run_morphing_pass(AST, pass);
+        } else {
+            int pass_index = -idx -1;
+            run_morphing_pass_group(AST, morphing_passes_groups[pass_index]);
+        }
+
     }
 
 }
-
-
 
 template<class E>
 std::vector<std::vector<int>> pass_manager_base<E>::run_analysis_passes(const std::shared_ptr<E>& AST) {
@@ -86,6 +95,10 @@ pass_manager_base<E>::analyze_tree(const std::shared_ptr<E> &subtree, const std:
     pass->analyze_element(subtree);
 }
 
+template<class E>
+void pass_manager_base<E>::add_morphing_pass_group(const std::vector<std::shared_ptr<pass_base<E>>> &group) {
+    morphing_passes_groups.push_back(group);
+}
 
 
 #endif //FCORE_TOOLCHAIN_PASS_MANAGER_BASE_HPP
