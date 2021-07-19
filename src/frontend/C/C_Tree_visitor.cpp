@@ -22,6 +22,7 @@ C_Tree_visitor::C_Tree_visitor() {
     in_function_declaration = false;
     in_function_body = false;
     is_conditional_block = false;
+    in_conditional_block = false;
 }
 
 
@@ -48,7 +49,6 @@ void C_Tree_visitor::exitFunctionDefinition(C_parser::C_grammarParser::FunctionD
     current_function->set_name(func_name);
     current_function->set_parameters_list(parameters_list);
     current_function->set_body(function_body);
-
     function_body.clear();
     in_function_declaration = false;
     functions.push_back(current_function);
@@ -379,10 +379,10 @@ void C_Tree_visitor::processExpression(unsigned int expression_size, const T& op
 
 void C_Tree_visitor::exitBlockItem(C_parser::C_grammarParser::BlockItemContext *ctx) {
     std::string test = ctx->getText();
-    if(in_function_body){
-        if(is_conditional_block){
-            is_conditional_block = false;
-        }else if(ctx->statement() != nullptr){
+    if(in_conditional_block){
+        conditional_body.push_back(current_block_item);
+    } else if(in_function_body){
+        if(ctx->statement() != nullptr){
             if(ctx->statement()->returnStatement() != nullptr) return;
         }
         function_body.push_back(current_block_item);
@@ -403,13 +403,13 @@ void C_Tree_visitor::exitArgumentExpression(C_parser::C_grammarParser::ArgumentE
 }
 
 void C_Tree_visitor::exitIfContent(C_parser::C_grammarParser::IfContentContext *ctx) {
-    conditional->set_if_block(function_body);
-    function_body.clear();
+    conditional->set_if_block(conditional_body);
+    conditional_body.clear();
 }
 
 void C_Tree_visitor::exitElseContent(C_parser::C_grammarParser::ElseContentContext *ctx) {
-    conditional->set_else_block(function_body);
-    function_body.clear();
+    conditional->set_else_block(conditional_body);
+    conditional_body.clear();
 }
 
 void C_Tree_visitor::exitConditionContent(C_parser::C_grammarParser::ConditionContentContext *ctx) {
@@ -419,12 +419,15 @@ void C_Tree_visitor::exitConditionContent(C_parser::C_grammarParser::ConditionCo
 
 void C_Tree_visitor::enterSelectionStatement(C_parser::C_grammarParser::SelectionStatementContext *ctx) {
     conditional = std::make_shared<hl_ast_conditional_node>();
+    in_conditional_block = true;
 }
+
+
 
 void C_Tree_visitor::exitSelectionStatement(C_parser::C_grammarParser::SelectionStatementContext *ctx) {
     current_block_item = conditional;
     in_function_body = true;
-    is_conditional_block = true;
+    in_conditional_block = false;
 }
 
 

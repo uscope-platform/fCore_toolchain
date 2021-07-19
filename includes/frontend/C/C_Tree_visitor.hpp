@@ -126,12 +126,13 @@ private:
     std::shared_ptr<hl_ast_node> current_block_item;
 
     std::shared_ptr<hl_ast_conditional_node> conditional;
-
+    std::vector<std::shared_ptr<hl_ast_node>> conditional_body;
     std::shared_ptr<hl_ast_node> root;
 
     bool in_function_declaration;
     bool in_function_body;
     bool is_conditional_block;
+    bool in_conditional_block;
 };
 
 #endif //FCORE_TOOLCHAIN_ASMTREE_VISITOR_HPP

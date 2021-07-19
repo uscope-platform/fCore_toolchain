@@ -674,8 +674,6 @@ TEST( cTreeVisitor, ConditionalTest) {
 
 }
 
-
-
 TEST( cFrontend, parser_main) {
     std::string input_file = "test_main_add.c";
     std::ifstream ifs(input_file);
