@@ -83,6 +83,7 @@ public:
     void enterSelectionStatement(C_parser::C_grammarParser::SelectionStatementContext *ctx) override;
     void exitElseContent(C_parser::C_grammarParser::ElseContentContext *ctx) override;
     void exitIfContent(C_parser::C_grammarParser::IfContentContext *ctx) override;
+    void exitConditionContent(C_parser::C_grammarParser::ConditionContentContext *ctx) override;
 
     void exitCompilationUnit(C_parser::C_grammarParser::CompilationUnitContext *ctx) override;
 

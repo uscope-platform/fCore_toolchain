@@ -124,6 +124,8 @@ public:
 
     virtual antlrcpp::Any visitElseContent(C_grammarParser::ElseContentContext *context) = 0;
 
+    virtual antlrcpp::Any visitConditionContent(C_grammarParser::ConditionContentContext *context) = 0;
+
     virtual antlrcpp::Any visitSelectionStatement(C_grammarParser::SelectionStatementContext *context) = 0;
 
     virtual antlrcpp::Any visitIterationStatement(C_grammarParser::IterationStatementContext *context) = 0;

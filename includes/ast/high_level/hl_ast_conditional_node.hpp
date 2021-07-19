@@ -17,6 +17,8 @@ public:
     std::vector<std::shared_ptr<hl_ast_node>> get_if_block();
     void set_else_block(std::vector<std::shared_ptr<hl_ast_node>> node);
     std::vector<std::shared_ptr<hl_ast_node>> get_else_block();
+    void set_condition(std::shared_ptr<hl_ast_node> node);
+    std::shared_ptr<hl_ast_node> get_condition();
     std::string pretty_print() override;
     friend bool operator==(const hl_ast_conditional_node& lhs, const hl_ast_conditional_node& rhs);
     bool is_terminal() override {
@@ -25,6 +27,7 @@ public:
 private:
     std::vector<std::shared_ptr<hl_ast_node>> if_block;
     std::vector<std::shared_ptr<hl_ast_node>> else_block;
+    std::shared_ptr<hl_ast_node> condition;
     bool has_else;
 
 };

@@ -225,6 +225,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitConditionContent(C_grammarParser::ConditionContentContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitSelectionStatement(C_grammarParser::SelectionStatementContext *ctx) override {
     return visitChildren(ctx);
   }

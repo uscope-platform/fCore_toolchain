@@ -49,10 +49,10 @@ public:
     RuleDesignation = 43, RuleDesignatorList = 44, RuleDesignator = 45, 
     RuleStatement = 46, RuleCompoundStatement = 47, RuleBlockItem = 48, 
     RuleExpressionStatement = 49, RuleIfContent = 50, RuleElseContent = 51, 
-    RuleSelectionStatement = 52, RuleIterationStatement = 53, RuleForCondition = 54, 
-    RuleForDeclaration = 55, RuleForExpression = 56, RuleReturnStatement = 57, 
-    RuleTranslationUnit = 58, RuleExternalDeclaration = 59, RuleFunctionDefinition = 60, 
-    RuleDeclarationList = 61, RuleConstant = 62
+    RuleConditionContent = 52, RuleSelectionStatement = 53, RuleIterationStatement = 54, 
+    RuleForCondition = 55, RuleForDeclaration = 56, RuleForExpression = 57, 
+    RuleReturnStatement = 58, RuleTranslationUnit = 59, RuleExternalDeclaration = 60, 
+    RuleFunctionDefinition = 61, RuleDeclarationList = 62, RuleConstant = 63
   };
 
   explicit C_grammarParser(antlr4::TokenStream *input);
@@ -117,6 +117,7 @@ public:
   class ExpressionStatementContext;
   class IfContentContext;
   class ElseContentContext;
+  class ConditionContentContext;
   class SelectionStatementContext;
   class IterationStatementContext;
   class ForConditionContext;
@@ -1066,13 +1067,28 @@ public:
 
   ElseContentContext* elseContent();
 
+  class  ConditionContentContext : public antlr4::ParserRuleContext {
+  public:
+    ConditionContentContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    ExpressionContext *expression();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  ConditionContentContext* conditionContent();
+
   class  SelectionStatementContext : public antlr4::ParserRuleContext {
   public:
     SelectionStatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *If();
     antlr4::tree::TerminalNode *LeftParen();
-    ExpressionContext *expression();
+    ConditionContentContext *conditionContent();
     antlr4::tree::TerminalNode *RightParen();
     IfContentContext *ifContent();
     antlr4::tree::TerminalNode *Else();

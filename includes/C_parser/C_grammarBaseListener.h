@@ -174,6 +174,9 @@ public:
   virtual void enterElseContent(C_grammarParser::ElseContentContext * /*ctx*/) override { }
   virtual void exitElseContent(C_grammarParser::ElseContentContext * /*ctx*/) override { }
 
+  virtual void enterConditionContent(C_grammarParser::ConditionContentContext * /*ctx*/) override { }
+  virtual void exitConditionContent(C_grammarParser::ConditionContentContext * /*ctx*/) override { }
+
   virtual void enterSelectionStatement(C_grammarParser::SelectionStatementContext * /*ctx*/) override { }
   virtual void exitSelectionStatement(C_grammarParser::SelectionStatementContext * /*ctx*/) override { }
 

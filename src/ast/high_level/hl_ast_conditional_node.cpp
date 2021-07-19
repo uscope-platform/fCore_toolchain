@@ -4,6 +4,8 @@
 
 #include "ast/high_level/hl_ast_conditional_node.hpp"
 
+#include <utility>
+
 hl_ast_conditional_node::hl_ast_conditional_node() : hl_ast_node(hl_ast_node_type_conditional) {
     has_else = false;
 }
@@ -75,5 +77,15 @@ bool operator==(const hl_ast_conditional_node &lhs, const hl_ast_conditional_nod
         ret_val &= body_equal;
     }
 
+    ret_val &= hl_ast_node::compare_content_by_type( lhs.condition, rhs.condition);
+
     return ret_val;
+}
+
+void hl_ast_conditional_node::set_condition(std::shared_ptr<hl_ast_node> node) {
+    condition = std::move(node);
+}
+
+std::shared_ptr<hl_ast_node> hl_ast_conditional_node::get_condition() {
+    return condition;
 }

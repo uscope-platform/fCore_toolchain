@@ -656,6 +656,16 @@ TEST( cTreeVisitor, ConditionalTest) {
     def_node->set_initializer(op_1);
     gold_standard->set_else_block({def_node});
 
+    std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(variable_operand);
+    op_2->set_name("i");
+    op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_1->set_immediate(0);
+
+    std::shared_ptr<hl_expression_node> condition = std::make_shared<hl_expression_node>(expr_eq);
+    condition->set_lhs(op_2);
+    condition->set_rhs(op_1);
+    gold_standard->set_condition(condition);
+
     EXPECT_EQ(*result, *gold_standard);
     if(Test::HasFailure()){
         std::cout << "TEST RESULT: " << result->pretty_print()<< std::endl;

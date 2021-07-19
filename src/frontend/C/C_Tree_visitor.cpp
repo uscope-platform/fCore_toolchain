@@ -412,6 +412,11 @@ void C_Tree_visitor::exitElseContent(C_parser::C_grammarParser::ElseContentConte
     function_body.clear();
 }
 
+void C_Tree_visitor::exitConditionContent(C_parser::C_grammarParser::ConditionContentContext *ctx) {
+    conditional->set_condition(expressions_stack.top());
+    expressions_stack.pop();
+}
+
 void C_Tree_visitor::enterSelectionStatement(C_parser::C_grammarParser::SelectionStatementContext *ctx) {
     conditional = std::make_shared<hl_ast_conditional_node>();
 }
@@ -421,6 +426,7 @@ void C_Tree_visitor::exitSelectionStatement(C_parser::C_grammarParser::Selection
     in_function_body = true;
     is_conditional_block = true;
 }
+
 
 
 

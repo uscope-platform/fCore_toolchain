@@ -274,8 +274,12 @@ elseContent
     : compoundStatement
     ;
 
+conditionContent
+    : expression
+    ;
+
 selectionStatement
-    :   'if' '(' expression ')' ifContent ('else' elseContent)?
+    :   'if' '(' conditionContent ')' ifContent ('else' elseContent)?
     ;
 
 iterationStatement

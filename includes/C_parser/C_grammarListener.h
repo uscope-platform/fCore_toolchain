@@ -172,6 +172,9 @@ public:
   virtual void enterElseContent(C_grammarParser::ElseContentContext *ctx) = 0;
   virtual void exitElseContent(C_grammarParser::ElseContentContext *ctx) = 0;
 
+  virtual void enterConditionContent(C_grammarParser::ConditionContentContext *ctx) = 0;
+  virtual void exitConditionContent(C_grammarParser::ConditionContentContext *ctx) = 0;
+
   virtual void enterSelectionStatement(C_grammarParser::SelectionStatementContext *ctx) = 0;
   virtual void exitSelectionStatement(C_grammarParser::SelectionStatementContext *ctx) = 0;
 
