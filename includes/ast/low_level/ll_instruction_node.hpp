@@ -68,6 +68,7 @@ private:
     void print_branch() const;
     void print_conversion() const;
     void print_load_const() const;
+    void print_intercalated_const() const;
 
     isa_instruction_type type;
     instruction_t string_instr;

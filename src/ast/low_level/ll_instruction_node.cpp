@@ -81,9 +81,8 @@ void ll_instruction_node::print() {
         case isa_conversion_instruction:
             print_conversion();
             break;
-        case isa_intercalated_constant:
+        case isa_load_constant_instruction:
             print_load_const();
-            break;
     }
 }
 
@@ -180,6 +179,7 @@ void ll_instruction_node::print_conversion() const {
     std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << string_instr.opcode <<
               " SOURCE: " << string_instr.arguments[0]->to_str() << " DESTINATION: " << string_instr.arguments[1]->to_str()<<std::endl;
 }
+
 
 void ll_instruction_node::print_load_const() const {
     std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << string_instr.opcode <<
