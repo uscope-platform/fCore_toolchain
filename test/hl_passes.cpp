@@ -20,14 +20,14 @@
 #include "ast/high_level/hl_ast_node.hpp"
 #include "ast/high_level/hl_ast_operand.hpp"
 #include "ast/high_level/hl_expression_node.hpp"
-#include "frontend/variable_map.hpp"
-#include "frontend/define_map.hpp"
+#include "tools/variable_map.hpp"
+#include "tools/define_map.hpp"
 #include "frontend/C/C_language_parser.hpp"
 #include "passes/hl_passes.hpp"
 #include "passes/high_level/function_mapping.hpp"
 #include "passes/high_level/hl_pass_manager.hpp"
 #include "passes/high_level/normalization_pass.hpp"
-#include "ast/transformations/high_level_ast_lowering.hpp"
+#include "tools/high_level_ast_lowering.hpp"
 
 #include <memory>
 #include <fstream>

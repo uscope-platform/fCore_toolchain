@@ -19,8 +19,8 @@
 #include <gtest/gtest.h>
 #include <fstream>
 
-#include "frontend/define_map.hpp"
-#include "frontend/variable_map.hpp"
+#include "tools/define_map.hpp"
+#include "tools/variable_map.hpp"
 #include "frontend/C/C_language_parser.hpp"
 #include "ast/high_level/hl_ast_operand.hpp"
 #include "ast/high_level/hl_expression_node.hpp"

@@ -27,7 +27,7 @@
 #include "passes/low_level/variable_lifetime_mapping.hpp"
 #include "passes/low_level/load_intercalation_pass.hpp"
 
-#include "frontend/variable_map.hpp"
+#include "tools/variable_map.hpp"
 #include "ast/low_level/ll_ast_node.hpp"
 #include "passes/low_level/ll_pass_manager.hpp"
 #include "passes/pass_base.hpp"

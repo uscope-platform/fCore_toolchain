@@ -24,7 +24,7 @@
 #include "passes/pass_base.hpp"
 #include "ast/high_level/hl_ast_node.hpp"
 #include "ast/high_level/hl_definition_node.hpp"
-#include "frontend/variable_map.hpp"
+#include "tools/variable_map.hpp"
 
 class constant_propagation :public pass_base<hl_ast_node> {
 public:

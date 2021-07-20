@@ -22,7 +22,7 @@
 #include <utility>
 #include <stdexcept>
 
-#include "frontend/variable_map.hpp"
+#include "tools/variable_map.hpp"
 #include "ast/high_level/hl_ast_node.hpp"
 #include "ast/high_level/hl_expression_node.hpp"
 #include "ast/high_level/hl_definition_node.hpp"

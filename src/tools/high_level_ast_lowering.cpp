@@ -16,7 +16,7 @@
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.09/07/2021.
 //
 
-#include "ast/transformations/high_level_ast_lowering.hpp"
+#include "tools/high_level_ast_lowering.hpp"
 
 high_level_ast_lowering::high_level_ast_lowering(std::shared_ptr<variable_map> &m) {
     output_ast = std::make_shared<ll_ast_node>(ll_type_program_head);

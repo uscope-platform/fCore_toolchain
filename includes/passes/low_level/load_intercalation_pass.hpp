@@ -20,7 +20,7 @@
 
 #include "ast/low_level/ll_instruction_node.hpp"
 #include "ast/low_level/ll_ast_node.hpp"
-#include "frontend/variable_map.hpp"
+#include "tools/variable_map.hpp"
 #include "passes/pass_base.hpp"
 
 

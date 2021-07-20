@@ -26,7 +26,7 @@
 #include <iomanip>
 
 #include "ast/low_level/ll_ast_node.hpp"
-#include "ast/variable.hpp"
+#include "tools/variable.hpp"
 #include "fCore_isa.hpp"
 
 typedef struct {

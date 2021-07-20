@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "frontend/variable_map.hpp"
+#include "tools/variable_map.hpp"
 
 
 variable_map::variable_map() {

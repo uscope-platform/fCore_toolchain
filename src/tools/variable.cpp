@@ -16,7 +16,7 @@
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.
 
 
-#include "ast/variable.hpp"
+#include "tools/variable.hpp"
 
 
 variable::variable() {

@@ -23,7 +23,7 @@
 #include <memory>
 #include <utility>
 
-#include "ast/define.hpp"
+#include "tools/define.hpp"
 
 class define_map {
 public:

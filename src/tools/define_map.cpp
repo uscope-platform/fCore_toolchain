@@ -16,7 +16,7 @@
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.29/06/2021.
 //
 
-#include "frontend/define_map.hpp"
+#include "tools/define_map.hpp"
 
 void define_map::insert(const std::string &key, std::shared_ptr<define> item) {
     defines[key] = std::move(item);

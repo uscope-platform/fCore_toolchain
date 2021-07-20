@@ -6,8 +6,6 @@ set(FCORE_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/C/C_pre_processor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/C/C_ErrorHandling.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/C/C_Tree_visitor.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/variable_map.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/define_map.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/asm/register_map.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/output_generator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/ast/low_level/ll_instruction_node.cpp
@@ -21,9 +19,11 @@ set(FCORE_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_function_call_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_ast_operand.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_ast_conditional_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ast/transformations/high_level_ast_lowering.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ast/define.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ast/variable.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tools/high_level_ast_lowering.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tools/define.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tools/variable.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tools/variable_map.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tools/define_map.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/ll_pass_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/loop_implementation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/pseudo_instructions_pass.cpp

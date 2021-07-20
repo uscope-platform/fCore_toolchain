@@ -22,7 +22,7 @@
 #include <vector>
 #include <fstream>
 
-#include "frontend/variable_map.hpp"
+#include "tools/variable_map.hpp"
 #include "frontend/asm/asm_language_parser.hpp"
 #include "backend/output_generator.hpp"
 #include "passes/ll_passes.hpp"

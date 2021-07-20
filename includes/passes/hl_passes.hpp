@@ -35,7 +35,7 @@
 #include "passes/high_level/inline_constant_extraction.hpp"
 #include "passes/high_level/conditional_implementation_pass.h"
 
-#include "frontend/variable_map.hpp"
+#include "tools/variable_map.hpp"
 #include "ast/high_level/hl_ast_node.hpp"
 
 

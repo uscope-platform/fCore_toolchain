@@ -23,15 +23,15 @@
 #include <string>
 #include <fstream>
 
-#include "frontend/variable_map.hpp"
-#include "frontend/define_map.hpp"
+#include "tools/variable_map.hpp"
+#include "tools/define_map.hpp"
 #include "frontend/C/C_language_parser.hpp"
 #include "backend/output_generator.hpp"
 #include "passes/hl_passes.hpp"
 #include "passes/ll_passes.hpp"
 #include "passes/high_level/hl_pass_manager.hpp"
 #include "passes/low_level/ll_pass_manager.hpp"
-#include "ast/transformations/high_level_ast_lowering.hpp"
+#include "tools/high_level_ast_lowering.hpp"
 #include "../third_party/json.hpp"
 
 class fcore_cc {

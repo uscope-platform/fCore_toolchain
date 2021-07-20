@@ -18,7 +18,7 @@
 #ifndef FCORE_TOOLCHAIN_HL_VARIABLE_MAPPING_HPP
 #define FCORE_TOOLCHAIN_HL_VARIABLE_MAPPING_HPP
 
-#include "frontend/variable_map.hpp"
+#include "tools/variable_map.hpp"
 #include "passes/pass_base.hpp"
 
 #include "ast/high_level/hl_ast_node.hpp"

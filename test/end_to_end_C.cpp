@@ -20,7 +20,7 @@
 #include <gtest/gtest.h>
 #include "passes/low_level/ll_pass_manager.hpp"
 #include "passes/ll_passes.hpp"
-#include "ast/transformations/high_level_ast_lowering.hpp"
+#include "tools/high_level_ast_lowering.hpp"
 #include "fcore_cc.hpp"
 
 

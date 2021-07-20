@@ -25,8 +25,8 @@
 #include "ast/low_level/ll_ast_pragma.hpp"
 #include "ast/low_level/ll_ast_node.hpp"
 #include "ast/low_level/ll_loop_node.hpp"
-#include "ast/variable.hpp"
-#include "frontend/variable_map.hpp"
+#include "tools/variable.hpp"
+#include "tools/variable_map.hpp"
 #include <iostream>
 #include <memory>
 #include <vector>

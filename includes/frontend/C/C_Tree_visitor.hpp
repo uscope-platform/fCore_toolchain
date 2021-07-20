@@ -29,8 +29,8 @@
 
 #include "C_parser/C_grammarBaseListener.h"
 #include "C_parser/C_grammarParser.h"
-#include "ast/variable.hpp"
-#include "frontend/variable_map.hpp"
+#include "tools/variable.hpp"
+#include "tools/variable_map.hpp"
 
 
 #include "ast/high_level/hl_function_def_node.hpp"

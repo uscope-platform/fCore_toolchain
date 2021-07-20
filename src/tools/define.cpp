@@ -16,7 +16,7 @@
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.29/06/2021.
 //
 
-#include "ast/define.hpp"
+#include "tools/define.hpp"
 
 
 

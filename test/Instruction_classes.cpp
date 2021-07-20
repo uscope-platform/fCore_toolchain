@@ -19,7 +19,7 @@
 #include <gtest/gtest.h>
 #include <memory>
 
-#include "ast/variable.hpp"
+#include "tools/variable.hpp"
 #include "ast/low_level/ll_instruction_node.hpp"
 #include "fCore_isa.hpp"
 

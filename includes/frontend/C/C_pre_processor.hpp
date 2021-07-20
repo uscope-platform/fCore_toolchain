@@ -26,10 +26,10 @@
 #include <regex>
 #include <stdexcept>
 
-#include "ast/variable.hpp"
-#include "ast/define.hpp"
-#include "frontend/variable_map.hpp"
-#include "frontend/define_map.hpp"
+#include "tools/variable.hpp"
+#include "tools/define.hpp"
+#include "tools/variable_map.hpp"
+#include "tools/define_map.hpp"
 
 class C_pre_processor {
 public:
