@@ -245,3 +245,22 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_program_root(const std::shar
     return copied_obj;
 }
 
+bool hl_ast_node::compare_vectors(const std::vector<std::shared_ptr<hl_ast_node>> &lhs,
+                                  const std::vector<std::shared_ptr<hl_ast_node>> &rhs) {
+    bool ret_val = true;
+    if(lhs.empty() && rhs.empty()){
+        ret_val &= true;
+    } else if(lhs.empty() || rhs.empty()){
+        ret_val = false;
+    } else{
+        bool body_equal = true;
+        if(lhs.size() != rhs.size()) return false;
+
+        for(int i = 0; i<lhs.size(); i++){
+            body_equal &= hl_ast_node::compare_content_by_type( lhs[i], rhs[i]);
+        }
+        ret_val &= body_equal;
+    }
+    return ret_val;
+}
+

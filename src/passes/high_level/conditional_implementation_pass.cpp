@@ -63,6 +63,7 @@ std::shared_ptr<hl_ast_operand>
 conditional_implementation_pass::find_variable_definition(const std::shared_ptr<hl_ast_node>& subexpr,
                                                           const std::shared_ptr<hl_ast_node>& item,
                                                           const std::vector<std::shared_ptr<hl_ast_node>>& prog_content) {
+    std::shared_ptr<hl_ast_operand> retval;
     if(subexpr->node_type == hl_ast_node_type_expr){
         throw std::runtime_error("OH SNAP! Nested subexpression handling is not implemented yet");
     } else {
@@ -84,6 +85,8 @@ conditional_implementation_pass::find_variable_definition(const std::shared_ptr<
             }
         }
     }
+
+    return retval;
 }
 
 std::shared_ptr<hl_ast_operand>

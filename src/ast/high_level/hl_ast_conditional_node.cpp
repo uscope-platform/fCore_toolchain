@@ -47,34 +47,8 @@ std::string hl_ast_conditional_node::pretty_print() {
 bool operator==(const hl_ast_conditional_node &lhs, const hl_ast_conditional_node &rhs) {
     bool ret_val = true;
 
-    if(lhs.if_block.empty() && rhs.if_block.empty()){
-        ret_val &= true;
-    } else if(lhs.if_block.empty() || rhs.if_block.empty()){
-        ret_val = false;
-    } else{
-        bool body_equal = true;
-        if(lhs.if_block.size() != rhs.if_block.size()) return false;
-
-        for(int i = 0; i<lhs.if_block.size(); i++){
-            body_equal &=  hl_ast_node::compare_content_by_type( lhs.if_block[i], rhs.if_block[i]);
-        }
-        ret_val &= body_equal;
-    }
-
-    if(lhs.else_block.empty() && rhs.else_block.empty()){
-        ret_val &= true;
-    } else if(lhs.else_block.empty() || rhs.else_block.empty()){
-        ret_val = false;
-    } else{
-        bool body_equal = true;
-        if(lhs.else_block.size() != rhs.else_block.size()) return false;
-
-        for(int i = 0; i<lhs.else_block.size(); i++){
-            body_equal &= hl_ast_node::compare_content_by_type( lhs.else_block[i], rhs.else_block[i]);
-        }
-        ret_val &= body_equal;
-    }
-
+    ret_val &= hl_ast_node::compare_vectors(lhs.if_block, rhs.if_block);
+    ret_val &= hl_ast_node::compare_vectors(lhs.else_block, rhs.else_block);
     ret_val &= hl_ast_node::compare_content_by_type( lhs.condition, rhs.condition);
 
     return ret_val;

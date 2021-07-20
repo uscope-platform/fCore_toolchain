@@ -64,6 +64,8 @@ public:
 
     static std::shared_ptr<hl_ast_node> deep_copy(const std::shared_ptr<hl_ast_node> &node);
     hl_ast_node_type_t node_type;
+    static bool compare_vectors(const std::vector<std::shared_ptr<hl_ast_node>>& lhs, const std::vector<std::shared_ptr<hl_ast_node>>& rhs);
+
 private:
     static std::shared_ptr<hl_ast_node> deep_copy_expr(const std::shared_ptr<hl_ast_node> &node);
     static std::shared_ptr<hl_ast_node> deep_copy_def(const std::shared_ptr<hl_ast_node> &node);

@@ -46,19 +46,7 @@ bool operator==(const hl_ast_loop_node &lhs, const hl_ast_loop_node &rhs) {
     ret_val &= hl_ast_node::compare_content_by_type( lhs.condition, rhs.condition);
     ret_val &= hl_ast_node::compare_content_by_type( lhs.iteration_expr, rhs.iteration_expr);
 
-    if(lhs.content.empty() && rhs.content.empty()){
-        ret_val &= true;
-    } else if(lhs.content.empty() || rhs.content.empty()){
-        ret_val = false;
-    } else{
-        bool body_equal = true;
-        if(lhs.content.size() != rhs.content.size()) return false;
-
-        for(int i = 0; i<lhs.content.size(); i++){
-            body_equal &= hl_ast_node::compare_content_by_type( lhs.content[i], rhs.content[i]);
-        }
-        ret_val &= body_equal;
-    }
+    ret_val &= hl_ast_node::compare_vectors(lhs.content, rhs.content);
 
     return ret_val;
 }

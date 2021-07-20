@@ -92,19 +92,7 @@ bool operator==(const hl_function_def_node &lhs, const hl_function_def_node &rhs
         ret_val &= param_equal;
     }
 
-    if(lhs.function_body.empty() && rhs.function_body.empty()){
-        ret_val &= true;
-    } else if(lhs.function_body.empty() || rhs.function_body.empty()){
-        ret_val = false;
-    } else{
-        bool body_equal = true;
-        if(lhs.function_body.size() != rhs.function_body.size()) return false;
-
-        for(int i = 0; i<lhs.function_body.size(); i++){
-            body_equal &= hl_ast_node::compare_content_by_type( lhs.function_body[i], rhs.function_body[i]);
-        }
-        ret_val &= body_equal;
-    }
+    ret_val &= hl_ast_node::compare_vectors(lhs.function_body, rhs.function_body);
 
     if(lhs.return_expression != nullptr && rhs.return_expression != nullptr){
         ret_val &= *lhs.return_expression == *rhs.return_expression;
