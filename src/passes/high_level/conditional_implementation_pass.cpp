@@ -33,7 +33,23 @@ std::shared_ptr<hl_ast_node> conditional_implementation_pass::process_global(std
             std::shared_ptr<hl_expression_node> condition = std::static_pointer_cast<hl_expression_node>(node->get_condition());
             std::shared_ptr<hl_ast_operand> lhs_op = get_operands(condition->get_lhs(), node, element->get_content());
             std::shared_ptr<hl_ast_operand> rhs_op = get_operands(condition->get_rhs(), node, element->get_content());
-            // TODO EVALUATE EXPRESSION
+
+            std::shared_ptr<hl_expression_node> const_cond_expr = std::make_shared<hl_expression_node>(condition->get_type());
+            const_cond_expr->set_lhs(lhs_op);
+            const_cond_expr->set_rhs(rhs_op);
+
+            std::shared_ptr<hl_ast_operand> result_op = expression_evaluator::evaluate_expression(const_cond_expr);
+            bool result;
+            if(result_op->get_type() == integer_immediate_operand) result = result_op->get_int_value();
+            if(result_op->get_type() == float_immediate_operand) result = result_op->get_float_val() == 1;
+
+            if(result){
+                std::vector<std::shared_ptr<hl_ast_node>> selected_block = node->get_if_block();
+                body.insert(body.end(), selected_block.begin(), selected_block.end());
+            } else if(node->has_else()){
+                std::vector<std::shared_ptr<hl_ast_node>> selected_block = node->get_else_block();
+                body.insert(body.end(), selected_block.begin(), selected_block.end());
+            }
         } else {
             body.push_back(item);
         }

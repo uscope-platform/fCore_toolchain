@@ -24,4 +24,7 @@ int main(){
     } else{
         int a = 3;
     }
+
+    #pragma output(test, r7);
+    int test  = i + a;
 }

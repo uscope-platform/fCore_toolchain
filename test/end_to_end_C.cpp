@@ -137,7 +137,7 @@ TEST(EndToEndC, pragma_io) {
 }
 
 TEST(EndToEndC, conditional) {
-    std::string input_file = "test_conditional_complete.c";
+    std::string input_file = "test_full_conditional.c";
 
 
     std::vector<std::string> includes;
@@ -147,7 +147,7 @@ TEST(EndToEndC, conditional) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x81021, 0x26, 0x40A00000, 0x40883, 0x26, 0x3e2aaac1, 0x140843};
+    std::vector<uint32_t> gold_standard = {0xE6, 0x40C00000};
 
     ASSERT_EQ(gold_standard, result);
 }

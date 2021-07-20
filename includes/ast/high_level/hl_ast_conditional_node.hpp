@@ -24,11 +24,11 @@ public:
     bool is_terminal() override {
         return false;
     }
+    bool has_else() {return !else_block.empty();};
 private:
     std::vector<std::shared_ptr<hl_ast_node>> if_block;
     std::vector<std::shared_ptr<hl_ast_node>> else_block;
     std::shared_ptr<hl_ast_node> condition;
-    bool has_else;
 
 };
 

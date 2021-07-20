@@ -7,7 +7,6 @@
 #include <utility>
 
 hl_ast_conditional_node::hl_ast_conditional_node() : hl_ast_node(hl_ast_node_type_conditional) {
-    has_else = false;
 }
 
 void hl_ast_conditional_node::set_if_block(std::vector<std::shared_ptr<hl_ast_node>> node) {

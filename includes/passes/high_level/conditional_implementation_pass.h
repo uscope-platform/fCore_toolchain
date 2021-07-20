@@ -25,6 +25,7 @@
 #include "ast/high_level/hl_ast_conditional_node.hpp"
 #include "ast/high_level/hl_definition_node.hpp"
 #include "ast/high_level/hl_expression_node.hpp"
+#include "tools/expression_evaluator.hpp"
 
 class conditional_implementation_pass : public pass_base<hl_ast_node> {
 public:
