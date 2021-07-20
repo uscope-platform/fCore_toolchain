@@ -20,6 +20,7 @@ set(FCORE_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_ast_operand.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_ast_conditional_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/high_level_ast_lowering.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tools/expression_evaluator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/define.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/variable.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/variable_map.cpp
