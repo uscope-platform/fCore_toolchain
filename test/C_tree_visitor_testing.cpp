@@ -674,8 +674,11 @@ TEST( cTreeVisitor, ConditionalTest) {
 
 }
 
-TEST( cFrontend, parser_main) {
-    std::string input_file = "test_main_add.c";
+
+
+
+TEST( cTreeVisitor, loopTest) {
+    std::string input_file = "test_loop_ast.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
@@ -684,4 +687,51 @@ TEST( cFrontend, parser_main) {
     C_language_parser parser(ifs, result_var, result_def);
     parser.pre_process({}, {});
     parser.parse();
+    std::shared_ptr<hl_ast_loop_node> result = std::static_pointer_cast<hl_ast_loop_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[3]);
+
+
+    std::shared_ptr<hl_ast_loop_node> gold_standard = std::make_shared<hl_ast_loop_node>();
+
+    // LOOP BODY
+    std::shared_ptr<hl_expression_node> loop_body = std::make_shared<hl_expression_node>(expr_assign);
+    std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
+    op_1->set_name("j");
+    loop_body->set_lhs(op_1);
+    std::shared_ptr<hl_expression_node> body_add_expr = std::make_shared<hl_expression_node>(expr_add);
+    op_1 = std::make_shared<hl_ast_operand>(variable_operand);
+    op_1->set_name("a");
+    std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(variable_operand);
+    op_2->set_name("h");
+    body_add_expr->set_lhs(op_1);
+    body_add_expr->set_lhs(op_2);
+    loop_body->set_rhs(body_add_expr);
+    gold_standard->set_loop_content({loop_body});
+    // LOOP INIT CONDITION
+    std::shared_ptr<hl_definition_node> init_def = std::make_shared<hl_definition_node>("i", c_type_int);
+    std::shared_ptr<hl_ast_operand> def_val = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    def_val->set_immediate(0);
+    init_def->set_initializer(def_val);
+    gold_standard->set_init_statement(init_def);
+    // LOOP CINDITION
+    std::shared_ptr<hl_expression_node> loop_cond = std::make_shared<hl_expression_node>(expr_lt);
+    op_1 = std::make_shared<hl_ast_operand>(variable_operand);
+    op_1->set_name("i");
+    op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_2->set_immediate(4);
+    loop_cond->set_rhs(op_2);
+    loop_cond->set_lhs(op_1);
+    gold_standard->set_condition(loop_cond);
+    // LOOP ITERATION EXPR
+    std::shared_ptr<hl_expression_node> loop_iter = std::make_shared<hl_expression_node>(expr_incr_pre);
+    op_1 = std::make_shared<hl_ast_operand>(variable_operand);
+    op_1->set_name("i");
+    loop_iter->set_rhs(op_1);
+    gold_standard->set_iteration_expr(loop_iter);
+
+    EXPECT_EQ(*result, *gold_standard);
+    if(Test::HasFailure()){
+        std::cout << "TEST RESULT: " << result->pretty_print()<< std::endl;
+        std::cout << "GOLD STANDARD: " << gold_standard->pretty_print()<< std::endl;
+    }
+
 }

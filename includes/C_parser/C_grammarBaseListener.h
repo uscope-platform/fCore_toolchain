@@ -183,14 +183,17 @@ public:
   virtual void enterIterationStatement(C_grammarParser::IterationStatementContext * /*ctx*/) override { }
   virtual void exitIterationStatement(C_grammarParser::IterationStatementContext * /*ctx*/) override { }
 
-  virtual void enterForCondition(C_grammarParser::ForConditionContext * /*ctx*/) override { }
-  virtual void exitForCondition(C_grammarParser::ForConditionContext * /*ctx*/) override { }
+  virtual void enterForContent(C_grammarParser::ForContentContext * /*ctx*/) override { }
+  virtual void exitForContent(C_grammarParser::ForContentContext * /*ctx*/) override { }
+
+  virtual void enterForExitCondition(C_grammarParser::ForExitConditionContext * /*ctx*/) override { }
+  virtual void exitForExitCondition(C_grammarParser::ForExitConditionContext * /*ctx*/) override { }
 
   virtual void enterForDeclaration(C_grammarParser::ForDeclarationContext * /*ctx*/) override { }
   virtual void exitForDeclaration(C_grammarParser::ForDeclarationContext * /*ctx*/) override { }
 
-  virtual void enterForExpression(C_grammarParser::ForExpressionContext * /*ctx*/) override { }
-  virtual void exitForExpression(C_grammarParser::ForExpressionContext * /*ctx*/) override { }
+  virtual void enterForIterationExpression(C_grammarParser::ForIterationExpressionContext * /*ctx*/) override { }
+  virtual void exitForIterationExpression(C_grammarParser::ForIterationExpressionContext * /*ctx*/) override { }
 
   virtual void enterReturnStatement(C_grammarParser::ReturnStatementContext * /*ctx*/) override { }
   virtual void exitReturnStatement(C_grammarParser::ReturnStatementContext * /*ctx*/) override { }

@@ -51,10 +51,12 @@ configure_file(C_files/tree_visitor/test_definition.c ${CMAKE_CURRENT_BINARY_DIR
 configure_file(C_files/tree_visitor/test_function_call.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/tree_visitor/test_return.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/tree_visitor/test_conditional.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_pragma_io.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_loop_ast.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+
 #OPTIMIZATION PASSES
 configure_file(C_files/test_function_inlining.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_normalization.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_intrinsics_implementation.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_division_implementation.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/test_full_conditional.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/test_pragma_io.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

@@ -136,7 +136,7 @@ constantExpression
     ;
 
 declaration
-    :   Const? typeSpecifier initDeclaratorList? ';'
+    :   Const? typeSpecifier initDeclaratorList?
     ;
 
 
@@ -259,7 +259,7 @@ compoundStatement
 
 blockItem
     :   statement
-    |   declaration
+    |   declaration ';'
     ;
 
 expressionStatement
@@ -283,21 +283,23 @@ selectionStatement
     ;
 
 iterationStatement
-    :  For '(' forCondition ')' statement
+    :  For '(' forDeclaration ';' forExitCondition ';' forIterationExpression ')' forContent
     ;
 
-//    |   'for' '(' expression? ';' expression?  ';' forUpdate? ')' statement
-//    |   For '(' declaration  expression? ';' expression? ')' statement
 
-forCondition
-	:   (forDeclaration | expression?) ';' forExpression? ';' forExpression?
-	;
+forContent
+    : (statement | compoundStatement)
+    ;
+
+forExitCondition
+    : assignmentExpression
+    ;
 
 forDeclaration
-    :   Const? typeSpecifier initDeclaratorList?
+    :   declaration
     ;
 
-forExpression
+forIterationExpression
     :   assignmentExpression (',' assignmentExpression)*
     ;
 
@@ -312,7 +314,7 @@ translationUnit
 
 externalDeclaration
     :   functionDefinition
-    |   declaration
+    |   declaration ';'
     |   ';' // stray ;
     ;
 
@@ -321,7 +323,7 @@ functionDefinition
     ;
 
 declarationList
-    :   declaration+
+    :   (declaration ';')+
     ;
 
 Case : 'case';

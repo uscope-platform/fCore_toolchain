@@ -237,7 +237,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitForCondition(C_grammarParser::ForConditionContext *ctx) override {
+  virtual antlrcpp::Any visitForContent(C_grammarParser::ForContentContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitForExitCondition(C_grammarParser::ForExitConditionContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -245,7 +249,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitForExpression(C_grammarParser::ForExpressionContext *ctx) override {
+  virtual antlrcpp::Any visitForIterationExpression(C_grammarParser::ForIterationExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 

@@ -130,11 +130,13 @@ public:
 
     virtual antlrcpp::Any visitIterationStatement(C_grammarParser::IterationStatementContext *context) = 0;
 
-    virtual antlrcpp::Any visitForCondition(C_grammarParser::ForConditionContext *context) = 0;
+    virtual antlrcpp::Any visitForContent(C_grammarParser::ForContentContext *context) = 0;
+
+    virtual antlrcpp::Any visitForExitCondition(C_grammarParser::ForExitConditionContext *context) = 0;
 
     virtual antlrcpp::Any visitForDeclaration(C_grammarParser::ForDeclarationContext *context) = 0;
 
-    virtual antlrcpp::Any visitForExpression(C_grammarParser::ForExpressionContext *context) = 0;
+    virtual antlrcpp::Any visitForIterationExpression(C_grammarParser::ForIterationExpressionContext *context) = 0;
 
     virtual antlrcpp::Any visitReturnStatement(C_grammarParser::ReturnStatementContext *context) = 0;
 

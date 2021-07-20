@@ -4,7 +4,6 @@
 
 #include "ast/high_level/hl_ast_conditional_node.hpp"
 
-#include <utility>
 
 hl_ast_conditional_node::hl_ast_conditional_node() : hl_ast_node(hl_ast_node_type_conditional) {
 }
@@ -29,7 +28,7 @@ std::string hl_ast_conditional_node::pretty_print() {
 
     std::ostringstream ss;
 
-    ss << "if (cond) {" << std::endl;
+    ss << "if (" << condition->pretty_print() << ") {" << std::endl;
     if(!if_block.empty()){
         for(const auto& item:if_block){
             ss << item->pretty_print() << ";" << std::endl;

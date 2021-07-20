@@ -21,7 +21,7 @@
 C_Tree_visitor::C_Tree_visitor() {
     in_function_declaration = false;
     in_function_body = false;
-    is_conditional_block = false;
+    in_foor_loop_block = false;
     in_conditional_block = false;
 }
 
@@ -106,10 +106,13 @@ void C_Tree_visitor::exitCompoundStatement(C_parser::C_grammarParser::CompoundSt
 void C_Tree_visitor::exitUnaryExpression(C_parser::C_grammarParser::UnaryExpressionContext *ctx) {
     std::shared_ptr<hl_expression_node> expression;
     expression_type_t expr;
+    if(ctx->unaryExpression() != nullptr|| !ctx->PlusPlus().empty() || !ctx->MinusMinus().empty()){
 
-    if(ctx->unaryExpression() != nullptr){
-
-        if(ctx->unaryOperator()->getText() == "!"){
+        if( !ctx->PlusPlus().empty()){
+            expr = expr_incr_pre;
+        } else if(!ctx->MinusMinus().empty()){
+            expr = expr_decr_pre;
+        } else if(ctx->unaryOperator()->getText() == "!"){
             expr = expr_not_l;
         } else if(ctx->unaryOperator()->getText() == "~"){
             expr = expr_not_b;
@@ -118,19 +121,8 @@ void C_Tree_visitor::exitUnaryExpression(C_parser::C_grammarParser::UnaryExpress
         }
 
         expression = std::make_shared<hl_expression_node>( expr);
-        if(ctx->unaryExpression()->primaryExpression()!= nullptr){
-            if(expressions_stack.size()==0){
-                expression->set_rhs(expressions_stack.top());
-                expressions_stack.pop();
-            } else{
-                expression->set_rhs(expressions_stack.top());
-                expressions_stack.pop();
-            }
-        } else{
-            expression->set_rhs(expressions_stack.top());
-            expressions_stack.pop();
-
-        }
+        expression->set_rhs(expressions_stack.top());
+        expressions_stack.pop();
         expressions_stack.push(expression);
 
     }
@@ -321,9 +313,8 @@ void C_Tree_visitor::exitStatement(C_parser::C_grammarParser::StatementContext *
             std::string erorr_line = ctx->getText();
             throw std::runtime_error("ERROR: internal error, this condition should never happen, contact development team");
         }
-
     } else if (ctx->iterationStatement() != nullptr) {
-        throw std::runtime_error("for loops are not supported yet: " + ctx->getText()+"\n");
+        current_block_item = loop;
     } else if(ctx->selectionStatement() != nullptr){
         current_block_item = conditional;
     } else if(ctx->returnStatement() != nullptr){
@@ -379,7 +370,9 @@ void C_Tree_visitor::processExpression(unsigned int expression_size, const T& op
 
 void C_Tree_visitor::exitBlockItem(C_parser::C_grammarParser::BlockItemContext *ctx) {
     std::string test = ctx->getText();
-    if(in_conditional_block){
+    if(in_foor_loop_block){
+        loop_body.push_back(current_block_item);
+    }else if(in_conditional_block){
         conditional_body.push_back(current_block_item);
     } else if(in_function_body){
         if(ctx->statement() != nullptr){
@@ -422,12 +415,41 @@ void C_Tree_visitor::enterSelectionStatement(C_parser::C_grammarParser::Selectio
     in_conditional_block = true;
 }
 
-
-
 void C_Tree_visitor::exitSelectionStatement(C_parser::C_grammarParser::SelectionStatementContext *ctx) {
-    current_block_item = conditional;
     in_function_body = true;
     in_conditional_block = false;
+}
+
+
+void C_Tree_visitor::enterIterationStatement(C_parser::C_grammarParser::IterationStatementContext *ctx) {
+    loop = std::make_shared<hl_ast_loop_node>();
+    in_function_body = false;
+    in_conditional_block = false;
+}
+
+void C_Tree_visitor::exitIterationStatement(C_parser::C_grammarParser::IterationStatementContext *ctx) {
+    loop->set_loop_content(loop_body);
+    loop_body.clear();
+    in_foor_loop_block = false;
+    in_function_body = true;
+}
+
+void C_Tree_visitor::exitForExitCondition(C_parser::C_grammarParser::ForExitConditionContext *ctx) {
+    loop->set_condition(std::static_pointer_cast<hl_expression_node>(expressions_stack.top()));
+    expressions_stack.pop();
+}
+
+void C_Tree_visitor::exitForDeclaration(C_parser::C_grammarParser::ForDeclarationContext *ctx) {
+    loop->set_init_statement(std::static_pointer_cast<hl_definition_node>(current_block_item));
+}
+
+void C_Tree_visitor::exitForIterationExpression(C_parser::C_grammarParser::ForIterationExpressionContext *ctx) {
+    loop->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(expressions_stack.top()));
+    expressions_stack.pop();
+}
+
+void C_Tree_visitor::enterForContent(C_parser::C_grammarParser::ForContentContext *ctx) {
+    in_foor_loop_block = true;
 }
 
 

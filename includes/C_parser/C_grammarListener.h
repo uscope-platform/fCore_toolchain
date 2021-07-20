@@ -181,14 +181,17 @@ public:
   virtual void enterIterationStatement(C_grammarParser::IterationStatementContext *ctx) = 0;
   virtual void exitIterationStatement(C_grammarParser::IterationStatementContext *ctx) = 0;
 
-  virtual void enterForCondition(C_grammarParser::ForConditionContext *ctx) = 0;
-  virtual void exitForCondition(C_grammarParser::ForConditionContext *ctx) = 0;
+  virtual void enterForContent(C_grammarParser::ForContentContext *ctx) = 0;
+  virtual void exitForContent(C_grammarParser::ForContentContext *ctx) = 0;
+
+  virtual void enterForExitCondition(C_grammarParser::ForExitConditionContext *ctx) = 0;
+  virtual void exitForExitCondition(C_grammarParser::ForExitConditionContext *ctx) = 0;
 
   virtual void enterForDeclaration(C_grammarParser::ForDeclarationContext *ctx) = 0;
   virtual void exitForDeclaration(C_grammarParser::ForDeclarationContext *ctx) = 0;
 
-  virtual void enterForExpression(C_grammarParser::ForExpressionContext *ctx) = 0;
-  virtual void exitForExpression(C_grammarParser::ForExpressionContext *ctx) = 0;
+  virtual void enterForIterationExpression(C_grammarParser::ForIterationExpressionContext *ctx) = 0;
+  virtual void exitForIterationExpression(C_grammarParser::ForIterationExpressionContext *ctx) = 0;
 
   virtual void enterReturnStatement(C_grammarParser::ReturnStatementContext *ctx) = 0;
   virtual void exitReturnStatement(C_grammarParser::ReturnStatementContext *ctx) = 0;

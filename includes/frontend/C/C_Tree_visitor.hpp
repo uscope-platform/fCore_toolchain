@@ -40,6 +40,7 @@
 #include "ast/high_level/hl_definition_node.hpp"
 #include "ast/high_level/hl_function_call_node.hpp"
 #include "ast/high_level/hl_ast_conditional_node.hpp"
+#include "ast/high_level/hl_ast_loop_node.h"
 
 #include <gtest/gtest_prod.h>
 
@@ -85,6 +86,13 @@ public:
     void exitIfContent(C_parser::C_grammarParser::IfContentContext *ctx) override;
     void exitConditionContent(C_parser::C_grammarParser::ConditionContentContext *ctx) override;
 
+    void enterIterationStatement(C_parser::C_grammarParser::IterationStatementContext *ctx) override;
+    void exitIterationStatement(C_parser::C_grammarParser::IterationStatementContext *ctx) override;
+    void exitForIterationExpression(C_parser::C_grammarParser::ForIterationExpressionContext *ctx) override;
+    void exitForExitCondition(C_parser::C_grammarParser::ForExitConditionContext *ctx) override;
+    void exitForDeclaration(C_parser::C_grammarParser::ForDeclarationContext *ctx) override;
+    void enterForContent(C_parser::C_grammarParser::ForContentContext *ctx) override;
+
     void exitCompilationUnit(C_parser::C_grammarParser::CompilationUnitContext *ctx) override;
 
     std::shared_ptr<hl_ast_node> get_ast(){
@@ -127,12 +135,17 @@ private:
 
     std::shared_ptr<hl_ast_conditional_node> conditional;
     std::vector<std::shared_ptr<hl_ast_node>> conditional_body;
+
+
+    std::shared_ptr<hl_ast_loop_node> loop;
+    std::vector<std::shared_ptr<hl_ast_node>> loop_body;
+
     std::shared_ptr<hl_ast_node> root;
 
     bool in_function_declaration;
     bool in_function_body;
-    bool is_conditional_block;
+    bool in_foor_loop_block;
     bool in_conditional_block;
 };
 
-#endif //FCORE_TOOLCHAIN_ASMTREE_VISITOR_HPP
+#endif //FCORE_TOOLCHAIN_C_TREE_VISITOR_HPP
