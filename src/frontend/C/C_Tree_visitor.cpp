@@ -440,7 +440,8 @@ void C_Tree_visitor::exitForExitCondition(C_parser::C_grammarParser::ForExitCond
 }
 
 void C_Tree_visitor::exitForDeclaration(C_parser::C_grammarParser::ForDeclarationContext *ctx) {
-    loop->set_init_statement(std::static_pointer_cast<hl_definition_node>(current_block_item));
+    loop->set_init_statement(std::static_pointer_cast<hl_definition_node>(ext_decl[0]));
+    ext_decl.clear();
 }
 
 void C_Tree_visitor::exitForIterationExpression(C_parser::C_grammarParser::ForIterationExpressionContext *ctx) {
