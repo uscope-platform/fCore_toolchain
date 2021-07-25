@@ -46,6 +46,7 @@ set(FCORE_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/dead_variable_elimination.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/declaration_instantiation_combining_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/conditional_implementation_pass.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/loop_unrolling_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/normalization_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/fcore_has.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/fcore_cc.cpp
