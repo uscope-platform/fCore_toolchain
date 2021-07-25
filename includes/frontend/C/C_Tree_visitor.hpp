@@ -62,8 +62,11 @@ public:
     void exitDirectDeclarator(C_parser::C_grammarParser::DirectDeclaratorContext *ctx) override;
     void exitInitializer(C_parser::C_grammarParser::InitializerContext *ctx) override;
 
+    void enterArrayAccessExpression(C_parser::C_grammarParser::ArrayAccessExpressionContext *ctx) override;
+    void exitArrayAccessExpression(C_parser::C_grammarParser::ArrayAccessExpressionContext *ctx) override;
     void exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExpressionContext *ctx) override;
     void exitUnaryExpression(C_parser::C_grammarParser::UnaryExpressionContext *ctx) override;
+
 
     void exitMultiplicativeExpression(C_parser::C_grammarParser::MultiplicativeExpressionContext *ctx) override;
     void exitAdditiveExpression(C_parser::C_grammarParser::AdditiveExpressionContext *ctx) override;
@@ -128,6 +131,7 @@ private:
 
     std::stack<std::shared_ptr<hl_ast_node>> expressions_stack;
     std::vector<std::shared_ptr<hl_ast_node>> argument_vector;
+    std::vector<std::shared_ptr<hl_ast_node>> array_dimentions;
 
     std::shared_ptr<hl_function_def_node> current_function;
 
@@ -145,7 +149,8 @@ private:
 
     bool in_function_declaration;
     bool in_function_body;
-    bool array_declaration;
+    bool in_array_declaration;
+    bool in_array_access;
     bool in_foor_loop_block;
     bool in_conditional_block;
 };

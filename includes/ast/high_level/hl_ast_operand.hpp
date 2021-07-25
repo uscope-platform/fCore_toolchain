@@ -27,6 +27,7 @@ typedef enum{
     float_immediate_operand = 1,
     string_operand = 2,
     variable_operand = 3,
+    array_operand = 4,
 }operand_type_t;
 
 class hl_ast_operand : public hl_ast_node{
@@ -41,7 +42,9 @@ public:
     void set_string(const std::string &s);
     std::string get_string();
     operand_type_t  get_type();
-
+    void set_type(operand_type_t type);
+    std::shared_ptr<hl_ast_node> get_array_index();
+    void set_array_index(std::shared_ptr<hl_ast_node> idx);
     bool is_terminal() override {
         return true;
     }
@@ -51,6 +54,7 @@ public:
 private:
     std::string name;
     operand_type_t operand_type;
+    std::shared_ptr<hl_ast_node> array_index;
     int integer_imm;
     float float_imm;
     std::string string_imm;

@@ -114,6 +114,9 @@ public:
   virtual void enterDirectDeclarator(C_grammarParser::DirectDeclaratorContext * /*ctx*/) override { }
   virtual void exitDirectDeclarator(C_grammarParser::DirectDeclaratorContext * /*ctx*/) override { }
 
+  virtual void enterArrayDeclarator(C_grammarParser::ArrayDeclaratorContext * /*ctx*/) override { }
+  virtual void exitArrayDeclarator(C_grammarParser::ArrayDeclaratorContext * /*ctx*/) override { }
+
   virtual void enterNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext * /*ctx*/) override { }
   virtual void exitNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext * /*ctx*/) override { }
 

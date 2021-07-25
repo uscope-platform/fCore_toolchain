@@ -84,6 +84,8 @@ public:
 
     virtual antlrcpp::Any visitDirectDeclarator(C_grammarParser::DirectDeclaratorContext *context) = 0;
 
+    virtual antlrcpp::Any visitArrayDeclarator(C_grammarParser::ArrayDeclaratorContext *context) = 0;
+
     virtual antlrcpp::Any visitNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext *context) = 0;
 
     virtual antlrcpp::Any visitParameterTypeList(C_grammarParser::ParameterTypeListContext *context) = 0;

@@ -112,6 +112,9 @@ public:
   virtual void enterDirectDeclarator(C_grammarParser::DirectDeclaratorContext *ctx) = 0;
   virtual void exitDirectDeclarator(C_grammarParser::DirectDeclaratorContext *ctx) = 0;
 
+  virtual void enterArrayDeclarator(C_grammarParser::ArrayDeclaratorContext *ctx) = 0;
+  virtual void exitArrayDeclarator(C_grammarParser::ArrayDeclaratorContext *ctx) = 0;
+
   virtual void enterNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext *ctx) = 0;
   virtual void exitNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext *ctx) = 0;
 

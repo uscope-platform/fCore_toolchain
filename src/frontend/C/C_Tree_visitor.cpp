@@ -23,6 +23,8 @@ C_Tree_visitor::C_Tree_visitor() {
     in_function_body = false;
     in_foor_loop_block = false;
     in_conditional_block = false;
+    in_array_declaration = false;
+    in_array_access = false;
 }
 
 
@@ -34,10 +36,10 @@ void C_Tree_visitor::enterFunctionDefinition(C_parser::C_grammarParser::Function
 
 
 void C_Tree_visitor::exitDirectDeclarator(C_parser::C_grammarParser::DirectDeclaratorContext *ctx) {
-    if(ctx->assignmentExpression()!= nullptr){
-        array_declaration = true;
+    if(!ctx->arrayDeclarator().empty()){
+        in_array_declaration = true;
     } else {
-        array_declaration = false;
+        in_array_declaration = false;
     }
 }
 
@@ -79,26 +81,53 @@ void C_Tree_visitor::enterCompoundStatement(C_parser::C_grammarParser::CompoundS
 
 
 void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationContext *ctx) {
-    if(array_declaration){
-        int i = 0;
+
+    bool is_const = ctx->Const() != nullptr;
+    std::string type_name = ctx->typeSpecifier()->getText();
+    std::string raw_name = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->getText();
+    std::string name = raw_name.substr(0, raw_name.find('['));
+    std::shared_ptr<hl_definition_node> node = std::make_shared<hl_definition_node>(name, hl_ast_node::string_to_type(type_name));
+    node->set_constant(is_const);
+
+    if(in_array_declaration){
+        in_array_declaration = false;
+        unsigned int d = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->arrayDeclarator().size();
+        std::vector<std::shared_ptr<hl_ast_node>> dimensions;
+        if(d>1){
+            dimensions.push_back(expressions_stack.top());
+            expressions_stack.pop();
+        }
+        dimensions.push_back(expressions_stack.top());
+        expressions_stack.pop();
+        node->set_is_array(true);
+        node->set_dimensions(dimensions);
     } else {
-        bool is_const = ctx->Const() != nullptr;
-        std::string type_name = ctx->typeSpecifier()->getText();
-        std::string name = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->getText();
-        std::shared_ptr<hl_definition_node> node = std::make_shared<hl_definition_node>(name, hl_ast_node::string_to_type(type_name));
-        node->set_constant(is_const);
         if(ctx->initDeclaratorList() != nullptr){
             node->set_initializer(current_initializer);
         }
-        if(in_function_body){
-            current_block_item = node;
-        } else {
-            ext_decl.push_back(node);
-        }
-
     }
 
+    if(in_function_body){
+        current_block_item = node;
+    } else {
+        ext_decl.push_back(node);
+    }
 }
+
+void C_Tree_visitor::enterArrayAccessExpression(C_parser::C_grammarParser::ArrayAccessExpressionContext *ctx) {
+    in_array_access = true;
+}
+
+void C_Tree_visitor::exitArrayAccessExpression(C_parser::C_grammarParser::ArrayAccessExpressionContext *ctx) {
+    std::shared_ptr<hl_ast_node> array_idx = expressions_stack.top();
+    expressions_stack.pop();
+    std::shared_ptr<hl_ast_operand> operand = std::static_pointer_cast<hl_ast_operand>(expressions_stack.top());
+    expressions_stack.pop();
+    operand->set_type(array_operand);
+    operand->set_array_index(array_idx);
+    expressions_stack.push(operand);
+}
+
 
 void C_Tree_visitor::exitInitializer(C_parser::C_grammarParser::InitializerContext *ctx) {
     if(ctx->assignmentExpression() != nullptr){
@@ -465,6 +494,7 @@ void C_Tree_visitor::exitForIterationExpression(C_parser::C_grammarParser::ForIt
 void C_Tree_visitor::enterForContent(C_parser::C_grammarParser::ForContentContext *ctx) {
     in_foor_loop_block = true;
 }
+
 
 
 

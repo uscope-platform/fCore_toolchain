@@ -746,6 +746,44 @@ TEST( cTreeVisitor, array_test){
     C_language_parser parser(ifs, result_var, result_def);
     parser.pre_process({}, {});
     parser.parse();
-    //std::shared_ptr<hl_ast_loop_node> result = std::static_pointer_cast<hl_ast_loop_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[3]);
+    std::vector<std::shared_ptr<hl_ast_node>> result = std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body();
+
+    std::vector<std::shared_ptr<hl_ast_node>> gold_standard;
+
+    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("array_test", c_type_int);
+    def_1->set_is_array(true);
+    std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_1->set_immediate(5);
+    def_1->set_dimensions({op_1});
+    std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("test_matrix", c_type_int);
+    def_2->set_is_array(true);
+    op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_1->set_immediate(2);
+    def_2->set_dimensions({op_1, op_1});
+
+    std::shared_ptr<hl_definition_node> def_3 = std::make_shared<hl_definition_node>("b", c_type_int);
+
+    std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(expr_add);
+    op_1 = std::make_shared<hl_ast_operand>(array_operand);
+    op_1->set_name("array_test");
+    //lhs
+    std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_2->set_immediate(0);
+    op_1->set_array_index(op_2);
+    ex->set_lhs(op_1);
+    //rhs
+    op_1 = std::make_shared<hl_ast_operand>(array_operand);
+    op_1->set_name("test_matrix");
+    op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    op_2->set_immediate(1);
+    op_1->set_array_index(op_2);
+    ex->set_rhs(op_1);
+    def_3->set_initializer(ex);
+
+    gold_standard.push_back(def_1);
+    gold_standard.push_back(def_2);
+    gold_standard.push_back(def_3);
+
+    ASSERT_TRUE(hl_ast_node::compare_vectors(result, gold_standard));
 
 }

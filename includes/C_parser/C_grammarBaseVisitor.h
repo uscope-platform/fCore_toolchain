@@ -145,6 +145,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitArrayDeclarator(C_grammarParser::ArrayDeclaratorContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext *ctx) override {
     return visitChildren(ctx);
   }

@@ -33,8 +33,14 @@ public:
     bool is_initialized();
     void set_constant(bool c);
     bool is_constant();
+    bool get_is_array() const;
+    void set_is_array(bool a);
     std::shared_ptr<hl_ast_node> get_initializer();
+
     void set_initializer(std::shared_ptr<hl_ast_node> init);
+    std::vector<std::shared_ptr<hl_ast_node>> get_dimensions();
+    void set_dimensions(std::vector<std::shared_ptr<hl_ast_node>> dim);
+
     std::string pretty_print() override;
     bool is_terminal() override {
         return true;
@@ -47,7 +53,8 @@ protected:
     std::string name;
     c_types_t type;
     std::shared_ptr<hl_ast_node> initializer;
-
+    bool is_array;
+    std::vector<std::shared_ptr<hl_ast_node>> dimensions;
 };
 
 

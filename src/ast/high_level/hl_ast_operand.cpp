@@ -18,6 +18,8 @@
 
 #include "ast/high_level/hl_ast_operand.hpp"
 
+#include <utility>
+
 hl_ast_operand::hl_ast_operand(operand_type_t ot) : hl_ast_node(hl_ast_node_type_operand) {
     operand_type = ot;
     integer_imm = 0;
@@ -65,6 +67,13 @@ bool operator==(const hl_ast_operand &lhs, const hl_ast_operand &rhs) {
     ret_val &= lhs.integer_imm == rhs.integer_imm;
     ret_val &= lhs.operand_type == rhs.operand_type;
     ret_val &= lhs.node_type == rhs.node_type;
+    if(lhs.array_index != nullptr && rhs.array_index != nullptr)
+        ret_val &= hl_ast_node::compare_content_by_type(lhs.array_index, rhs.array_index);
+    else if(lhs.array_index == nullptr && rhs.array_index == nullptr)
+        ret_val &= true;
+    else
+        ret_val &= false;
+
     return ret_val;
 }
 
@@ -87,6 +96,20 @@ std::string hl_ast_operand::pretty_print() {
         case string_operand:
             ret_val = string_imm;
             break;
+        case array_operand:
+            ret_val = name + '[' + array_index->pretty_print() + ']';
     }
     return ret_val;
+}
+
+std::shared_ptr<hl_ast_node> hl_ast_operand::get_array_index() {
+    return array_index;
+}
+
+void hl_ast_operand::set_array_index(std::shared_ptr<hl_ast_node> idx) {
+    array_index = std::move(idx);
+}
+
+void hl_ast_operand::set_type(operand_type_t type) {
+    operand_type = type;
 }

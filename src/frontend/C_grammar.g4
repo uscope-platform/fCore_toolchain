@@ -179,10 +179,14 @@ declarator
 directDeclarator
     :   Identifier
     |   '(' declarator ')'
-    |   directDeclarator '[' Const? assignmentExpression? ']'
+    |   directDeclarator arrayDeclarator+
     |   directDeclarator '(' parameterTypeList ')'
     |   directDeclarator '(' identifierList? ')'
     |   Identifier ':' DigitSequence  // bit field
+    ;
+
+arrayDeclarator
+    : '[' Const? assignmentExpression? ']'
     ;
 
 nestedParenthesesBlock

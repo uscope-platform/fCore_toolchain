@@ -42,18 +42,19 @@ public:
     RuleAssignmentExpression = 21, RuleAssignmentOperator = 22, RuleExpression = 23, 
     RuleConstantExpression = 24, RuleDeclaration = 25, RuleInitDeclaratorList = 26, 
     RuleInitDeclarator = 27, RuleTypeSpecifier = 28, RuleSpecifierQualifierList = 29, 
-    RuleDeclarator = 30, RuleDirectDeclarator = 31, RuleNestedParenthesesBlock = 32, 
-    RuleParameterTypeList = 33, RuleParameterList = 34, RuleParameterDeclaration = 35, 
-    RuleIdentifierList = 36, RuleTypeName = 37, RuleTypedefName = 38, RuleInitializer = 39, 
-    RuleFunctionCallExpression = 40, RuleArgumentExpressionList = 41, RuleArgumentExpression = 42, 
-    RuleInitializerList = 43, RuleDesignation = 44, RuleDesignatorList = 45, 
-    RuleDesignator = 46, RuleStatement = 47, RuleCompoundStatement = 48, 
-    RuleBlockItem = 49, RuleExpressionStatement = 50, RuleIfContent = 51, 
-    RuleElseContent = 52, RuleConditionContent = 53, RuleSelectionStatement = 54, 
-    RuleIterationStatement = 55, RuleForContent = 56, RuleForExitCondition = 57, 
-    RuleForDeclaration = 58, RuleForIterationExpression = 59, RuleReturnStatement = 60, 
-    RuleTranslationUnit = 61, RuleExternalDeclaration = 62, RuleFunctionDefinition = 63, 
-    RuleDeclarationList = 64, RuleConstant = 65
+    RuleDeclarator = 30, RuleDirectDeclarator = 31, RuleArrayDeclarator = 32, 
+    RuleNestedParenthesesBlock = 33, RuleParameterTypeList = 34, RuleParameterList = 35, 
+    RuleParameterDeclaration = 36, RuleIdentifierList = 37, RuleTypeName = 38, 
+    RuleTypedefName = 39, RuleInitializer = 40, RuleFunctionCallExpression = 41, 
+    RuleArgumentExpressionList = 42, RuleArgumentExpression = 43, RuleInitializerList = 44, 
+    RuleDesignation = 45, RuleDesignatorList = 46, RuleDesignator = 47, 
+    RuleStatement = 48, RuleCompoundStatement = 49, RuleBlockItem = 50, 
+    RuleExpressionStatement = 51, RuleIfContent = 52, RuleElseContent = 53, 
+    RuleConditionContent = 54, RuleSelectionStatement = 55, RuleIterationStatement = 56, 
+    RuleForContent = 57, RuleForExitCondition = 58, RuleForDeclaration = 59, 
+    RuleForIterationExpression = 60, RuleReturnStatement = 61, RuleTranslationUnit = 62, 
+    RuleExternalDeclaration = 63, RuleFunctionDefinition = 64, RuleDeclarationList = 65, 
+    RuleConstant = 66
   };
 
   explicit C_grammarParser(antlr4::TokenStream *input);
@@ -98,6 +99,7 @@ public:
   class SpecifierQualifierListContext;
   class DeclaratorContext;
   class DirectDeclaratorContext;
+  class ArrayDeclaratorContext;
   class NestedParenthesesBlockContext;
   class ParameterTypeListContext;
   class ParameterListContext;
@@ -705,10 +707,8 @@ public:
     antlr4::tree::TerminalNode *Colon();
     antlr4::tree::TerminalNode *DigitSequence();
     DirectDeclaratorContext *directDeclarator();
-    antlr4::tree::TerminalNode *LeftBracket();
-    antlr4::tree::TerminalNode *RightBracket();
-    antlr4::tree::TerminalNode *Const();
-    AssignmentExpressionContext *assignmentExpression();
+    std::vector<ArrayDeclaratorContext *> arrayDeclarator();
+    ArrayDeclaratorContext* arrayDeclarator(size_t i);
     ParameterTypeListContext *parameterTypeList();
     IdentifierListContext *identifierList();
 
@@ -721,6 +721,24 @@ public:
 
   DirectDeclaratorContext* directDeclarator();
   DirectDeclaratorContext* directDeclarator(int precedence);
+  class  ArrayDeclaratorContext : public antlr4::ParserRuleContext {
+  public:
+    ArrayDeclaratorContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *LeftBracket();
+    antlr4::tree::TerminalNode *RightBracket();
+    antlr4::tree::TerminalNode *Const();
+    AssignmentExpressionContext *assignmentExpression();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  ArrayDeclaratorContext* arrayDeclarator();
+
   class  NestedParenthesesBlockContext : public antlr4::ParserRuleContext {
   public:
     NestedParenthesesBlockContext(antlr4::ParserRuleContext *parent, size_t invokingState);
