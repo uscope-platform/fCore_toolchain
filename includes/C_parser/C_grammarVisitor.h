@@ -26,6 +26,8 @@ public:
 
     virtual antlrcpp::Any visitUnaryExpression(C_grammarParser::UnaryExpressionContext *context) = 0;
 
+    virtual antlrcpp::Any visitArrayAccessExpression(C_grammarParser::ArrayAccessExpressionContext *context) = 0;
+
     virtual antlrcpp::Any visitUnaryOperator(C_grammarParser::UnaryOperatorContext *context) = 0;
 
     virtual antlrcpp::Any visitMultiplicativeOperator(C_grammarParser::MultiplicativeOperatorContext *context) = 0;

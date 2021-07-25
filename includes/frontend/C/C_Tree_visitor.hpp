@@ -59,6 +59,7 @@ public:
 
     void exitParameterDeclaration(C_parser::C_grammarParser::ParameterDeclarationContext *ctx) override;
     void exitDeclaration(C_parser::C_grammarParser::DeclarationContext *ctx) override;
+    void exitDirectDeclarator(C_parser::C_grammarParser::DirectDeclaratorContext *ctx) override;
     void exitInitializer(C_parser::C_grammarParser::InitializerContext *ctx) override;
 
     void exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExpressionContext *ctx) override;
@@ -144,6 +145,7 @@ private:
 
     bool in_function_declaration;
     bool in_function_body;
+    bool array_declaration;
     bool in_foor_loop_block;
     bool in_conditional_block;
 };

@@ -674,9 +674,6 @@ TEST( cTreeVisitor, ConditionalTest) {
 
 }
 
-
-
-
 TEST( cTreeVisitor, loopTest) {
     std::string input_file = "test_loop_ast.c";
     std::ifstream ifs(input_file);
@@ -733,5 +730,22 @@ TEST( cTreeVisitor, loopTest) {
         std::cout << "TEST RESULT: " << result->pretty_print()<< std::endl;
         std::cout << "GOLD STANDARD: " << gold_standard->pretty_print()<< std::endl;
     }
+
+}
+
+
+
+
+TEST( cTreeVisitor, array_test){
+    std::string input_file = "test_array.c";
+    std::ifstream ifs(input_file);
+
+    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(ifs, result_var, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
+    //std::shared_ptr<hl_ast_loop_node> result = std::static_pointer_cast<hl_ast_loop_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[3]);
 
 }

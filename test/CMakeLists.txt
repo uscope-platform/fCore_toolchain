@@ -37,6 +37,7 @@ configure_file(C_files/preprocessor/include_test.h ${CMAKE_CURRENT_BINARY_DIR} C
     # Tree visitor (ANTLR <-> AST)
 configure_file(C_files/tree_visitor/test_unary_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/tree_visitor/test_multiplicative_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_array.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/tree_visitor/test_additive_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/tree_visitor/test_shift_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/tree_visitor/test_equality_expressions.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

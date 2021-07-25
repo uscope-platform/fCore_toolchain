@@ -45,6 +45,11 @@ unaryExpression
     ('++' |  '--' )* (primaryExpression
     |  unaryOperator unaryExpression
     | functionCallExpression)
+    | arrayAccessExpression
+    ;
+
+arrayAccessExpression
+    : primaryExpression '[' primaryExpression ']'
     ;
 
 unaryOperator

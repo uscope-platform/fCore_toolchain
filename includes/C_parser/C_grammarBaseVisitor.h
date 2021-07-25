@@ -29,6 +29,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitArrayAccessExpression(C_grammarParser::ArrayAccessExpressionContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitUnaryOperator(C_grammarParser::UnaryOperatorContext *ctx) override {
     return visitChildren(ctx);
   }

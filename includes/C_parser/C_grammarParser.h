@@ -33,27 +33,27 @@ public:
 
   enum {
     RuleCompilationUnit = 0, RulePrimaryExpression = 1, RuleUnaryExpression = 2, 
-    RuleUnaryOperator = 3, RuleMultiplicativeOperator = 4, RuleMultiplicativeExpression = 5, 
-    RuleAdditiveOperator = 6, RuleAdditiveExpression = 7, RuleShiftOperator = 8, 
-    RuleShiftExpression = 9, RuleRelationalOperator = 10, RuleRelationalExpression = 11, 
-    RuleEqualityOperator = 12, RuleEqualityExpression = 13, RuleAndExpression = 14, 
-    RuleExclusiveOrExpression = 15, RuleInclusiveOrExpression = 16, RuleLogicalAndExpression = 17, 
-    RuleLogicalOrExpression = 18, RuleConditionalExpression = 19, RuleAssignmentExpression = 20, 
-    RuleAssignmentOperator = 21, RuleExpression = 22, RuleConstantExpression = 23, 
-    RuleDeclaration = 24, RuleInitDeclaratorList = 25, RuleInitDeclarator = 26, 
-    RuleTypeSpecifier = 27, RuleSpecifierQualifierList = 28, RuleDeclarator = 29, 
-    RuleDirectDeclarator = 30, RuleNestedParenthesesBlock = 31, RuleParameterTypeList = 32, 
-    RuleParameterList = 33, RuleParameterDeclaration = 34, RuleIdentifierList = 35, 
-    RuleTypeName = 36, RuleTypedefName = 37, RuleInitializer = 38, RuleFunctionCallExpression = 39, 
-    RuleArgumentExpressionList = 40, RuleArgumentExpression = 41, RuleInitializerList = 42, 
-    RuleDesignation = 43, RuleDesignatorList = 44, RuleDesignator = 45, 
-    RuleStatement = 46, RuleCompoundStatement = 47, RuleBlockItem = 48, 
-    RuleExpressionStatement = 49, RuleIfContent = 50, RuleElseContent = 51, 
-    RuleConditionContent = 52, RuleSelectionStatement = 53, RuleIterationStatement = 54, 
-    RuleForContent = 55, RuleForExitCondition = 56, RuleForDeclaration = 57, 
-    RuleForIterationExpression = 58, RuleReturnStatement = 59, RuleTranslationUnit = 60, 
-    RuleExternalDeclaration = 61, RuleFunctionDefinition = 62, RuleDeclarationList = 63, 
-    RuleConstant = 64
+    RuleArrayAccessExpression = 3, RuleUnaryOperator = 4, RuleMultiplicativeOperator = 5, 
+    RuleMultiplicativeExpression = 6, RuleAdditiveOperator = 7, RuleAdditiveExpression = 8, 
+    RuleShiftOperator = 9, RuleShiftExpression = 10, RuleRelationalOperator = 11, 
+    RuleRelationalExpression = 12, RuleEqualityOperator = 13, RuleEqualityExpression = 14, 
+    RuleAndExpression = 15, RuleExclusiveOrExpression = 16, RuleInclusiveOrExpression = 17, 
+    RuleLogicalAndExpression = 18, RuleLogicalOrExpression = 19, RuleConditionalExpression = 20, 
+    RuleAssignmentExpression = 21, RuleAssignmentOperator = 22, RuleExpression = 23, 
+    RuleConstantExpression = 24, RuleDeclaration = 25, RuleInitDeclaratorList = 26, 
+    RuleInitDeclarator = 27, RuleTypeSpecifier = 28, RuleSpecifierQualifierList = 29, 
+    RuleDeclarator = 30, RuleDirectDeclarator = 31, RuleNestedParenthesesBlock = 32, 
+    RuleParameterTypeList = 33, RuleParameterList = 34, RuleParameterDeclaration = 35, 
+    RuleIdentifierList = 36, RuleTypeName = 37, RuleTypedefName = 38, RuleInitializer = 39, 
+    RuleFunctionCallExpression = 40, RuleArgumentExpressionList = 41, RuleArgumentExpression = 42, 
+    RuleInitializerList = 43, RuleDesignation = 44, RuleDesignatorList = 45, 
+    RuleDesignator = 46, RuleStatement = 47, RuleCompoundStatement = 48, 
+    RuleBlockItem = 49, RuleExpressionStatement = 50, RuleIfContent = 51, 
+    RuleElseContent = 52, RuleConditionContent = 53, RuleSelectionStatement = 54, 
+    RuleIterationStatement = 55, RuleForContent = 56, RuleForExitCondition = 57, 
+    RuleForDeclaration = 58, RuleForIterationExpression = 59, RuleReturnStatement = 60, 
+    RuleTranslationUnit = 61, RuleExternalDeclaration = 62, RuleFunctionDefinition = 63, 
+    RuleDeclarationList = 64, RuleConstant = 65
   };
 
   explicit C_grammarParser(antlr4::TokenStream *input);
@@ -69,6 +69,7 @@ public:
   class CompilationUnitContext;
   class PrimaryExpressionContext;
   class UnaryExpressionContext;
+  class ArrayAccessExpressionContext;
   class UnaryOperatorContext;
   class MultiplicativeOperatorContext;
   class MultiplicativeExpressionContext;
@@ -181,6 +182,7 @@ public:
     antlr4::tree::TerminalNode* PlusPlus(size_t i);
     std::vector<antlr4::tree::TerminalNode *> MinusMinus();
     antlr4::tree::TerminalNode* MinusMinus(size_t i);
+    ArrayAccessExpressionContext *arrayAccessExpression();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -190,6 +192,24 @@ public:
   };
 
   UnaryExpressionContext* unaryExpression();
+
+  class  ArrayAccessExpressionContext : public antlr4::ParserRuleContext {
+  public:
+    ArrayAccessExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    std::vector<PrimaryExpressionContext *> primaryExpression();
+    PrimaryExpressionContext* primaryExpression(size_t i);
+    antlr4::tree::TerminalNode *LeftBracket();
+    antlr4::tree::TerminalNode *RightBracket();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  ArrayAccessExpressionContext* arrayAccessExpression();
 
   class  UnaryOperatorContext : public antlr4::ParserRuleContext {
   public:

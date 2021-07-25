@@ -25,6 +25,9 @@ public:
   virtual void enterUnaryExpression(C_grammarParser::UnaryExpressionContext *ctx) = 0;
   virtual void exitUnaryExpression(C_grammarParser::UnaryExpressionContext *ctx) = 0;
 
+  virtual void enterArrayAccessExpression(C_grammarParser::ArrayAccessExpressionContext *ctx) = 0;
+  virtual void exitArrayAccessExpression(C_grammarParser::ArrayAccessExpressionContext *ctx) = 0;
+
   virtual void enterUnaryOperator(C_grammarParser::UnaryOperatorContext *ctx) = 0;
   virtual void exitUnaryOperator(C_grammarParser::UnaryOperatorContext *ctx) = 0;
 

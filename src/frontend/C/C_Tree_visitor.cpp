@@ -33,6 +33,14 @@ void C_Tree_visitor::enterFunctionDefinition(C_parser::C_grammarParser::Function
 }
 
 
+void C_Tree_visitor::exitDirectDeclarator(C_parser::C_grammarParser::DirectDeclaratorContext *ctx) {
+    if(ctx->assignmentExpression()!= nullptr){
+        array_declaration = true;
+    } else {
+        array_declaration = false;
+    }
+}
+
 void C_Tree_visitor::exitFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) {
 
     std::string func_name = ctx->declarator()->directDeclarator()->directDeclarator()->getText();
@@ -71,18 +79,23 @@ void C_Tree_visitor::enterCompoundStatement(C_parser::C_grammarParser::CompoundS
 
 
 void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationContext *ctx) {
-    bool is_const = ctx->Const() != nullptr;
-    std::string type_name = ctx->typeSpecifier()->getText();
-    std::string name = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->getText();
-    std::shared_ptr<hl_definition_node> node = std::make_shared<hl_definition_node>(name, hl_ast_node::string_to_type(type_name));
-    node->set_constant(is_const);
-    if(ctx->initDeclaratorList() != nullptr){
-        node->set_initializer(current_initializer);
-    }
-    if(in_function_body){
-        current_block_item = node;
+    if(array_declaration){
+        int i = 0;
     } else {
-        ext_decl.push_back(node);
+        bool is_const = ctx->Const() != nullptr;
+        std::string type_name = ctx->typeSpecifier()->getText();
+        std::string name = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->getText();
+        std::shared_ptr<hl_definition_node> node = std::make_shared<hl_definition_node>(name, hl_ast_node::string_to_type(type_name));
+        node->set_constant(is_const);
+        if(ctx->initDeclaratorList() != nullptr){
+            node->set_initializer(current_initializer);
+        }
+        if(in_function_body){
+            current_block_item = node;
+        } else {
+            ext_decl.push_back(node);
+        }
+
     }
 
 }
@@ -452,8 +465,6 @@ void C_Tree_visitor::exitForIterationExpression(C_parser::C_grammarParser::ForIt
 void C_Tree_visitor::enterForContent(C_parser::C_grammarParser::ForContentContext *ctx) {
     in_foor_loop_block = true;
 }
-
-
 
 
 

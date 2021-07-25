@@ -53,11 +53,15 @@ public:
     unsigned int last_occurrence;
 
 private:
+
+    bool is_array;
+    unsigned int array_length;
+
     unsigned int bound_register;
     std::string name;
     bool float_const;
     bool constant;
-    bool used;
+    std::vector<bool> used;
 
 };
 
