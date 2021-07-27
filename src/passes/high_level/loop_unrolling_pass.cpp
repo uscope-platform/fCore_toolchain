@@ -36,13 +36,12 @@ std::shared_ptr<hl_ast_node> loop_unrolling_pass::process_global(std::shared_ptr
         }
 
     }
-
     retval->set_content(body);
     return retval;
 }
 
 std::shared_ptr<hl_ast_node> loop_unrolling_pass::process_loop(const std::shared_ptr<hl_ast_loop_node>& element) {
-
+    std::shared_ptr<hl_ast_node> retval = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
     if(!element->get_init_statement()->is_initialized()){
         throw std::runtime_error("Error: incomplete loop initialization statement");
     }
@@ -53,10 +52,16 @@ std::shared_ptr<hl_ast_node> loop_unrolling_pass::process_loop(const std::shared
 
     std::shared_ptr<hl_expression_node> condition = element->get_condition();
     std::shared_ptr<hl_expression_node> iter_exp = element->get_iteration_expr();
-    while(evaluate_loop(condition, iter_exp, )){
 
+    std::shared_ptr<hl_ast_operand> loop_var = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+    loop_var->set_name(loop_var_name);
+    loop_var->set_immediate((int)current_loop_iteration);
+    while(evaluate_loop(condition, iter_exp, loop_var)){
+        std::vector<std::shared_ptr<hl_ast_node>> content = element->get_loop_content();
+        //TODO: handle array indexing;
+        retval->append_content(content);
     }
-
+    return retval;
 }
 
 unsigned int loop_unrolling_pass::process_loop_initializer(const std::shared_ptr<hl_ast_node>& raw_initializer) {
@@ -90,15 +95,19 @@ unsigned int loop_unrolling_pass::process_loop_initializer(const std::shared_ptr
 
 bool loop_unrolling_pass::evaluate_loop(const std::shared_ptr<hl_expression_node>& condition,
                                         const std::shared_ptr<hl_expression_node>& iteration_exp,
-                                        std::shared_ptr<hl_ast_operan> loop_var) {
-    bool retval = false;
-    expression_evaluator ev;
+                                        std::shared_ptr<hl_ast_operand> loop_var) {
+
+
 
     if(current_loop_iteration ==  max_loop_iterations){
         throw std::runtime_error("ERROR: Loops with more than 65536 iterations are not supported");
     }
 
-    return retval;
+    std::shared_ptr<hl_expression_node> loop_cond = update_loop_condition(condition, loop_var);
+    auto expr = expression_evaluator::evaluate_expression(loop_cond);
+    bool res = expr->get_int_value();
+    ++current_loop_iteration;
+    return res;
 }
 
 std::shared_ptr<hl_expression_node>

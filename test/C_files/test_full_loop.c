@@ -45,7 +45,7 @@ int main(){
 #pragma output(j, r15);
     int j;
 
-    for(int i = 0+5; i+1<4; ++i){
+    for(int i = 0+5; i+1<8; ++i){
         j = a + h;
     }
 
