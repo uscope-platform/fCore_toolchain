@@ -151,3 +151,19 @@ TEST(EndToEndC, conditional) {
 
     ASSERT_EQ(gold_standard, result);
 }
+
+
+TEST(EndToEndC, loop) {
+    std::string input_file = "test_full_loop.c";
+
+    std::vector<std::string> includes;
+    std::ifstream stream(input_file);
+
+    fcore_cc compiler(stream, includes,false);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0xE6, 0x40C00000};
+
+    ASSERT_EQ(gold_standard, result);
+}
