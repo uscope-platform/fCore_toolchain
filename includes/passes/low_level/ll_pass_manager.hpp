@@ -20,7 +20,7 @@
 #define FCORE_TOOLCHAIN_LL_PASS_MANAGER_HPP
 
 #include "passes/pass_manager_base.hpp"
-#include "ast/low_level/ll_ast_node.hpp"
+#include "data_structures/low_level_ast/ll_ast_node.hpp"
 #include "passes/pass_base.hpp"
 
 class ll_pass_manager : public pass_manager_base<ll_ast_node> {

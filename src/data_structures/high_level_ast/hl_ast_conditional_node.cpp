@@ -2,7 +2,7 @@
 // Created by fils on 17/07/2021.
 //
 
-#include "ast/high_level/hl_ast_conditional_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_conditional_node.hpp"
 
 
 hl_ast_conditional_node::hl_ast_conditional_node() : hl_ast_node(hl_ast_node_type_conditional) {

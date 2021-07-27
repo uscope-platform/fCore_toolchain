@@ -20,8 +20,8 @@
 #define FCORE_TOOLCHAIN_LOOP_UNROLLING_PASS_H
 
 #include "passes/pass_base.hpp"
-#include "ast/high_level/hl_ast_node.hpp"
-#include "ast/high_level/hl_ast_loop_node.h"
+#include "data_structures/high_level_ast/hl_ast_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_loop_node.h"
 #include "tools/expression_evaluator.hpp"
 
 class loop_unrolling_pass : public pass_base<hl_ast_node> {

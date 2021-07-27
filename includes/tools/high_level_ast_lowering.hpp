@@ -23,11 +23,11 @@
 #include <stdexcept>
 
 #include "tools/variable_map.hpp"
-#include "ast/high_level/hl_ast_node.hpp"
-#include "ast/high_level/hl_expression_node.hpp"
-#include "ast/high_level/hl_definition_node.hpp"
-#include "ast/low_level/ll_ast_node.hpp"
-#include "ast/low_level/ll_instruction_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_node.hpp"
+#include "data_structures/high_level_ast/hl_expression_node.hpp"
+#include "data_structures/high_level_ast/hl_definition_node.hpp"
+#include "data_structures/low_level_ast/ll_ast_node.hpp"
+#include "data_structures/low_level_ast/ll_instruction_node.hpp"
 
 class high_level_ast_lowering {
 public:

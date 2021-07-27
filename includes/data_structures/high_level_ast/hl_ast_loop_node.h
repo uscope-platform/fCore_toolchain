@@ -21,9 +21,9 @@
 
 #include <utility>
 
-#include "ast/high_level/hl_ast_node.hpp"
-#include "ast/high_level/hl_definition_node.hpp"
-#include "ast/high_level/hl_expression_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_node.hpp"
+#include "data_structures/high_level_ast/hl_definition_node.hpp"
+#include "data_structures/high_level_ast/hl_expression_node.hpp"
 
 class hl_ast_loop_node : public hl_ast_node {
 public:

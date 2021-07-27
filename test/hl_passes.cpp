@@ -17,9 +17,9 @@
 //
 
 #include <gtest/gtest.h>
-#include "ast/high_level/hl_ast_node.hpp"
-#include "ast/high_level/hl_ast_operand.hpp"
-#include "ast/high_level/hl_expression_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_operand.hpp"
+#include "data_structures/high_level_ast/hl_expression_node.hpp"
 #include "tools/variable_map.hpp"
 #include "tools/define_map.hpp"
 #include "frontend/C/C_language_parser.hpp"

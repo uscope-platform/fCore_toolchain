@@ -18,8 +18,8 @@
 #define FCORE_TOOLCHAIN_LOAD_INTERCALATION_PASS_HPP
 
 
-#include "ast/low_level/ll_instruction_node.hpp"
-#include "ast/low_level/ll_ast_node.hpp"
+#include "data_structures/low_level_ast/ll_instruction_node.hpp"
+#include "data_structures/low_level_ast/ll_ast_node.hpp"
 #include "tools/variable_map.hpp"
 #include "passes/pass_base.hpp"
 

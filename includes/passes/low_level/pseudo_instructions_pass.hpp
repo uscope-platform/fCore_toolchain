@@ -18,8 +18,8 @@
 #define FCORE_TOOLCHAIN_PSEUDO_INSTRUCTIONS_PASS_HPP
 
 #include <memory>
-#include "ast/low_level/ll_instruction_node.hpp"
-#include "ast/low_level/ll_ast_node.hpp"
+#include "data_structures/low_level_ast/ll_instruction_node.hpp"
+#include "data_structures/low_level_ast/ll_ast_node.hpp"
 #include "passes/pass_base.hpp"
 #include "fCore_isa.hpp"
 

@@ -22,7 +22,7 @@
 #include <string>
 #include <stdexcept>
 
-#include "ast/ast_node_base.hpp"
+#include "data_structures/ast_node_base.hpp"
 
 
 

@@ -16,7 +16,7 @@
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.01/07/2021.
 //
 
-#include "ast/high_level/hl_ast_operand.hpp"
+#include "data_structures/high_level_ast/hl_ast_operand.hpp"
 
 #include <utility>
 

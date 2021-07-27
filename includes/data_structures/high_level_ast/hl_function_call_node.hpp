@@ -18,9 +18,9 @@
 #ifndef FCORE_TOOLCHAIN_HL_FUNCTION_CALL_NODE_HPP
 #define FCORE_TOOLCHAIN_HL_FUNCTION_CALL_NODE_HPP
 
-#include "ast/high_level/hl_ast_node.hpp"
-#include "ast/high_level/hl_expression_node.hpp"
-#include "ast/high_level/hl_ast_operand.hpp"
+#include "data_structures/high_level_ast/hl_ast_node.hpp"
+#include "data_structures/high_level_ast/hl_expression_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_operand.hpp"
 
 #include <string>
 #include <utility>

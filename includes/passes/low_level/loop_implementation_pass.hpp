@@ -19,9 +19,9 @@
 #define FCORE_TOOLCHAIN_LOOP_IMPLEMENTATION_PASS_HPP
 
 #include <memory>
-#include "ast/low_level/ll_ast_node.hpp"
-#include "ast/low_level/ll_loop_node.hpp"
-#include "ast/low_level/ll_ast_pragma.hpp"
+#include "data_structures/low_level_ast/ll_ast_node.hpp"
+#include "data_structures/low_level_ast/ll_loop_node.hpp"
+#include "data_structures/low_level_ast/ll_ast_pragma.hpp"
 #include "passes/pass_base.hpp"
 
 class loop_implementation_pass : public pass_base<ll_ast_node> {

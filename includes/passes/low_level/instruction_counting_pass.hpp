@@ -19,7 +19,7 @@
 #define FCORE_TOOLCHAIN_INSTRUCTION_COUNTING_PASS_HPP
 
 
-#include "ast/low_level/ll_instruction_node.hpp"
+#include "data_structures/low_level_ast/ll_instruction_node.hpp"
 #include "passes/pass_base.hpp"
 
 class instruction_counting_pass : public pass_base<ll_ast_node> {

@@ -8,10 +8,10 @@
 #include <map>
 #include <string>
 
-#include "ast/high_level/hl_expression_node.hpp"
-#include "ast/high_level/hl_definition_node.hpp"
+#include "data_structures/high_level_ast/hl_expression_node.hpp"
+#include "data_structures/high_level_ast/hl_definition_node.hpp"
 #include "passes/pass_base.hpp"
-#include "ast/high_level/hl_ast_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_node.hpp"
 
 class intrinsics_implementation_pass : public  pass_base<hl_ast_node> {
 public:

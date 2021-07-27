@@ -33,14 +33,14 @@
 #include "tools/variable_map.hpp"
 
 
-#include "ast/high_level/hl_function_def_node.hpp"
-#include "ast/high_level/hl_ast_node.hpp"
-#include "ast/high_level/hl_expression_node.hpp"
-#include "ast/high_level/hl_ast_operand.hpp"
-#include "ast/high_level/hl_definition_node.hpp"
-#include "ast/high_level/hl_function_call_node.hpp"
-#include "ast/high_level/hl_ast_conditional_node.hpp"
-#include "ast/high_level/hl_ast_loop_node.h"
+#include "data_structures/high_level_ast/hl_function_def_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_node.hpp"
+#include "data_structures/high_level_ast/hl_expression_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_operand.hpp"
+#include "data_structures/high_level_ast/hl_definition_node.hpp"
+#include "data_structures/high_level_ast/hl_function_call_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_conditional_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_loop_node.h"
 
 #include <gtest/gtest_prod.h>
 

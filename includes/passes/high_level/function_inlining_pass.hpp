@@ -18,8 +18,8 @@
 #ifndef FCORE_TOOLCHAIN_FUNCTION_INLINING_PASS_HPP
 #define FCORE_TOOLCHAIN_FUNCTION_INLINING_PASS_HPP
 
-#include "ast/high_level/hl_ast_node.hpp"
-#include "ast/high_level/hl_function_def_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_node.hpp"
+#include "data_structures/high_level_ast/hl_function_def_node.hpp"
 #include "passes/pass_base.hpp"
 
 #include <utility>

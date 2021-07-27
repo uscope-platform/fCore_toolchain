@@ -5,7 +5,7 @@
 #ifndef FCORE_TOOLCHAIN_HL_AST_CONDITIONAL_NODE_HPP
 #define FCORE_TOOLCHAIN_HL_AST_CONDITIONAL_NODE_HPP
 
-#include "ast/high_level/hl_ast_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_node.hpp"
 
 #include <utility>
 #include <sstream>

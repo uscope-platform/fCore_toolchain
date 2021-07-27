@@ -16,7 +16,7 @@
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.01/07/2021.
 //
 
-#include "ast/high_level/hl_definition_node.hpp"
+#include "data_structures/high_level_ast/hl_definition_node.hpp"
 
 
 hl_definition_node::hl_definition_node(std::string n, c_types_t ct) : hl_ast_node(hl_ast_node_type_definition) {

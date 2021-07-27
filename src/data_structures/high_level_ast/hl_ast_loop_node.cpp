@@ -16,7 +16,7 @@
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.30/06/2021.
 //
 
-#include "ast/high_level/hl_ast_loop_node.h"
+#include "data_structures/high_level_ast/hl_ast_loop_node.h"
 
 hl_ast_loop_node::hl_ast_loop_node() : hl_ast_node(hl_ast_node_type_loop){
 

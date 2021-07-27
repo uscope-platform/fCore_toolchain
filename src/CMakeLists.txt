@@ -8,18 +8,18 @@ set(FCORE_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/C/C_Tree_visitor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/asm/register_map.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/output_generator.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ast/low_level/ll_instruction_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ast/low_level/ll_loop_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ast/low_level/ll_ast_pragma.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ast/low_level/ll_ast_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_ast_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_definition_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_function_def_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_ast_loop_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_ast_conditional_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_expression_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_function_call_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ast/high_level/hl_ast_operand.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_instruction_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_loop_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_ast_pragma.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_ast_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_ast_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_definition_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_function_def_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_ast_loop_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_ast_conditional_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_expression_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_function_call_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_ast_operand.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/high_level_ast_lowering.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/expression_evaluator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/define.cpp

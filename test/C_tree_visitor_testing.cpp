@@ -22,9 +22,9 @@
 #include "tools/define_map.hpp"
 #include "tools/variable_map.hpp"
 #include "frontend/C/C_language_parser.hpp"
-#include "ast/high_level/hl_ast_operand.hpp"
-#include "ast/high_level/hl_expression_node.hpp"
-#include "ast/high_level/hl_ast_conditional_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_operand.hpp"
+#include "data_structures/high_level_ast/hl_expression_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_conditional_node.hpp"
 
 TEST( cTreeVisitor, unaryExpressions) {
     std::string input_file = "test_unary_expressions.c";

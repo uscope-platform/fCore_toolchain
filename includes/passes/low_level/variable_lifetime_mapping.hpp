@@ -18,8 +18,8 @@
 #ifndef FCORE_TOOLCHAIN_VARIABLE_LIFETIME_MAPPING_HPP
 #define FCORE_TOOLCHAIN_VARIABLE_LIFETIME_MAPPING_HPP
 
-#include "ast/low_level/ll_instruction_node.hpp"
-#include "ast/low_level/ll_ast_node.hpp"
+#include "data_structures/low_level_ast/ll_instruction_node.hpp"
+#include "data_structures/low_level_ast/ll_ast_node.hpp"
 #include "tools/variable_map.hpp"
 #include "passes/pass_base.hpp"
 

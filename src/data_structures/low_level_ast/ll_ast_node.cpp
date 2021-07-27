@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "ast/low_level/ll_ast_node.hpp"
-#include "ast/low_level/ll_loop_node.hpp"
-#include "ast/low_level/ll_ast_pragma.hpp"
-#include "ast/low_level/ll_instruction_node.hpp"
+#include "data_structures/low_level_ast/ll_ast_node.hpp"
+#include "data_structures/low_level_ast/ll_loop_node.hpp"
+#include "data_structures/low_level_ast/ll_ast_pragma.hpp"
+#include "data_structures/low_level_ast/ll_instruction_node.hpp"
 
 ll_ast_node::ll_ast_node() {
 

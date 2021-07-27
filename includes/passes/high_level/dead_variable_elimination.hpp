@@ -21,8 +21,8 @@
 #define FCORE_TOOLCHAIN_DEAD_VARIABLE_ELIMINATION_HPP
 
 #include "passes/pass_base.hpp"
-#include "ast/high_level/hl_ast_node.hpp"
-#include "ast/high_level/hl_definition_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_node.hpp"
+#include "data_structures/high_level_ast/hl_definition_node.hpp"
 #include "tools/variable_map.hpp"
 
 

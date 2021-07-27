@@ -18,7 +18,8 @@
 #ifndef FCORE_TOOLCHAIN_FCORE_ISA_HPP
 #define FCORE_TOOLCHAIN_FCORE_ISA_HPP
 
-#include "ast/high_level/hl_expression_node.hpp"
+#include "data_structures/high_level_ast/hl_expression_node.hpp"
+
 #include <map>
 
 

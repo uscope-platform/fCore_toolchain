@@ -20,12 +20,12 @@
 
 #include <gtest/gtest_prod.h>
 
-#include "ast/high_level/hl_ast_node.hpp"
-#include "ast/high_level/hl_expression_node.hpp"
-#include "ast/high_level/hl_ast_operand.hpp"
-#include "ast/high_level/hl_function_call_node.hpp"
-#include "ast/high_level/hl_function_def_node.hpp"
-#include "ast/high_level/hl_definition_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_node.hpp"
+#include "data_structures/high_level_ast/hl_expression_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_operand.hpp"
+#include "data_structures/high_level_ast/hl_function_call_node.hpp"
+#include "data_structures/high_level_ast/hl_function_def_node.hpp"
+#include "data_structures/high_level_ast/hl_definition_node.hpp"
 
 #include "passes/pass_manager_base.hpp"
 #include "passes/pass_base.hpp"
