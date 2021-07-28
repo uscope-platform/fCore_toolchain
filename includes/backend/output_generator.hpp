@@ -22,6 +22,7 @@
 #include <vector>
 #include <fstream>
 #include <memory>
+#include "data_structures/instruction_stream.hpp"
 #include "data_structures/low_level_ast/ll_ast_node.hpp"
 #include "data_structures/low_level_ast/ll_instruction_node.hpp"
 
@@ -29,7 +30,7 @@ class output_generator {
 
 public:
     output_generator() = default;
-    void process_ast(const std::shared_ptr<ll_ast_node> &AST, bool debug_print);
+    void process_stream(const instruction_stream& stream, bool debug_print);
     void emit_program(std::shared_ptr<ll_ast_node> &sub_program, bool debug_print);
     std::vector<uint32_t> get_raw_program();
     int get_program_size();

@@ -22,7 +22,8 @@
 #include "passes/ll_passes.hpp"
 #include "backend/output_generator.hpp"
 #include "frontend/asm/asm_language_parser.hpp"
-
+#include "tools/instruction_stream_builder.hpp"
+#include "data_structures/instruction_stream.hpp"
 
 TEST(llPassesTest, pseudo_inst_pass) {
 
@@ -41,7 +42,10 @@ TEST(llPassesTest, pseudo_inst_pass) {
     manager.run_morphing_passes(AST);
 
     output_generator writer;
-    writer.process_ast(AST, false);
+
+    instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
+    writer.process_stream(program_stream, false);
+
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {0x80061};
     ASSERT_EQ(result, gold_standard);
@@ -114,7 +118,10 @@ TEST(llPassesTest, loop_less) {
     manager.run_morphing_passes(AST);
 
     output_generator writer;
-    writer.process_ast(AST, false);
+
+    instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
+    writer.process_stream(program_stream, false);
+
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {0, 0, 0};
     ASSERT_TRUE(result == gold_standard);
@@ -146,7 +153,10 @@ TEST(llPassesTest, loop_less_equal) {
     manager.run_morphing_passes(AST);
 
     output_generator writer;
-    writer.process_ast(AST, false);
+
+    instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
+    writer.process_stream(program_stream, false);
+
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {0, 0};
     ASSERT_TRUE(result == gold_standard);
@@ -180,7 +190,8 @@ TEST(llPassesTest, loop_more) {
     manager.run_morphing_passes(AST);
 
     output_generator writer;
-    writer.process_ast(AST, false);
+    instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
+    writer.process_stream(program_stream, false);
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {0, 0};
     ASSERT_TRUE(result == gold_standard);
@@ -214,7 +225,10 @@ TEST(llPassesTest, loop_more_equal) {
     manager.run_morphing_passes(AST);
 
     output_generator writer;
-    writer.process_ast(AST, false);
+
+    instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
+    writer.process_stream(program_stream, false);
+
     std::vector<uint32_t> result = writer.get_raw_program();
     std::vector<uint32_t> gold_standard = {0,0,0};
     ASSERT_TRUE(result == gold_standard);

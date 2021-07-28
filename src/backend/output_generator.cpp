@@ -18,11 +18,17 @@
 #include "backend/output_generator.hpp"
 
 
-void output_generator::process_ast(const std::shared_ptr<ll_ast_node> &AST, bool debug_print) {
-    program = AST;
-    emit_program(program, debug_print);
-}
+void output_generator::process_stream(const instruction_stream& stream, bool debug_print) {
+    for(const auto& item:stream){
+        raw_program.push_back(item->emit());
+        progress_counter++;
+        if(debug_print) {
+            std::cout << progress_counter << std::endl;
+            item->print();
+        }
+    }
 
+}
 
 void output_generator::write_hex_file(const std::string& filename) {
     std::ofstream output(filename, std::ios::binary | std::ios::out);
@@ -57,25 +63,6 @@ std::vector<std::string> output_generator::generate_mem() {
         ret.push_back(stream.str());
     }
     return ret;
-}
-
-
-void output_generator::emit_program(std::shared_ptr<ll_ast_node> &sub_program, bool debug_print) {
-    std::vector<std::shared_ptr<ll_ast_node>> content = sub_program->get_content();
-    for(auto &item:content){
-        if(item->type == ll_type_instr){
-            std::shared_ptr<ll_instruction_node> instr_node = std::static_pointer_cast<ll_instruction_node>(item);
-            raw_program.push_back(instr_node->emit());
-            progress_counter++;
-            if(debug_print) {
-                std::cout << progress_counter << std::endl;
-                instr_node->print();
-            }
-        }
-        if(item->type == ll_type_code_block){
-            emit_program(item, debug_print);
-        }
-    }
 }
 
 std::vector<uint32_t> output_generator::get_raw_program() {

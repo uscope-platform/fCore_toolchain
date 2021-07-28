@@ -20,7 +20,9 @@ set(FCORE_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_expression_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_function_call_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_ast_operand.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/instruction_stream.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/high_level_ast_lowering.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tools/instruction_stream_builder.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/expression_evaluator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/define.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/variable.cpp

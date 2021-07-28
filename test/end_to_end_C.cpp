@@ -22,6 +22,8 @@
 #include "passes/ll_passes.hpp"
 #include "tools/high_level_ast_lowering.hpp"
 #include "fcore_cc.hpp"
+#include "tools/instruction_stream_builder.hpp"
+#include "data_structures/instruction_stream.hpp"
 
 
 TEST(EndToEndC, minimal_c_end_to_end) {
@@ -53,7 +55,10 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     ll_manager.run_morphing_passes(ll_ast);
 
     output_generator writer;
-    writer.process_ast(ll_ast, false);
+
+    instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
+    writer.process_stream(program_stream, false);
+
     std::vector<uint32_t> result = writer.get_raw_program();
 
     std::vector<uint32_t> gold_standard = {0x146, 1104150528};

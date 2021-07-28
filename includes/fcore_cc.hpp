@@ -32,6 +32,8 @@
 #include "passes/high_level/hl_pass_manager.hpp"
 #include "passes/low_level/ll_pass_manager.hpp"
 #include "tools/high_level_ast_lowering.hpp"
+#include "data_structures/instruction_stream.hpp"
+#include "tools/instruction_stream_builder.hpp"
 #include "../third_party/json.hpp"
 
 class fcore_cc {

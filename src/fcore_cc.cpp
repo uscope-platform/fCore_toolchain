@@ -41,7 +41,9 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes, bool
         ll_manager = create_ll_pass_manager(variables_map);
         ll_manager.run_morphing_passes(ll_ast);
 
-        writer.process_ast(ll_ast, print_debug);
+        instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
+        writer.process_stream(program_stream, false);
+
     } catch(std::runtime_error &e){
         error_code = e.what();
     } catch (...) {
