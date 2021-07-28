@@ -21,10 +21,7 @@
 #include "asm_parser/asm_grammarBaseListener.h"
 #include "asm_parser/asm_grammarParser.h"
 #include "fCore_isa.hpp"
-#include "data_structures/low_level_ast/ll_instruction_node.hpp"
-#include "data_structures/low_level_ast/ll_ast_pragma.hpp"
-#include "data_structures/low_level_ast/ll_ast_node.hpp"
-#include "data_structures/low_level_ast/ll_loop_node.hpp"
+#include "data_structures/low_level_ast/low_level_ast.hpp"
 #include "tools/variable.hpp"
 #include "tools/variable_map.hpp"
 #include <iostream>
@@ -39,7 +36,6 @@ typedef std::unordered_map<std::string, std::shared_ptr<variable>>  varmap_t;
 class AsmTree_visitor : public  asm_parser::asm_grammarBaseListener{
 public:
     explicit AsmTree_visitor(std::shared_ptr<variable_map> map);
-    void exitImm_instr(asm_parser::asm_grammarParser::Imm_instrContext * ctx) override;
     void exitReg_instr(asm_parser::asm_grammarParser::Reg_instrContext * ctx) override;
     void exitPseudo_instr(asm_parser::asm_grammarParser::Pseudo_instrContext *ctx) override;
     void exitIndep_instr(asm_parser::asm_grammarParser::Indep_instrContext * ctx) override;

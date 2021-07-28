@@ -19,8 +19,8 @@
 #ifndef FCORE_TOOLCHAIN_LL_PASS_MANAGER_HPP
 #define FCORE_TOOLCHAIN_LL_PASS_MANAGER_HPP
 
+#include "data_structures/low_level_ast/low_level_ast.hpp"
 #include "passes/pass_manager_base.hpp"
-#include "data_structures/low_level_ast/ll_ast_node.hpp"
 #include "passes/pass_base.hpp"
 
 class ll_pass_manager : public pass_manager_base<ll_ast_node> {

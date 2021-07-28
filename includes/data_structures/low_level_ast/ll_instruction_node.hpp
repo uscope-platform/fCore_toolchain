@@ -20,6 +20,7 @@
 
 #include <string>
 #include <cstdint>
+#include <utility>
 #include <vector>
 #include <memory>
 #include <cmath>
@@ -29,50 +30,33 @@
 #include "tools/variable.hpp"
 #include "fCore_isa.hpp"
 
-typedef struct {
-    std::string opcode;
-    std::vector<std::shared_ptr<variable>> arguments;
-    float intercalated_constant;
-} instruction_t;
-
 
 class ll_instruction_node : public ll_ast_node{
 
 public:
-    ll_instruction_node() = default;
-    explicit ll_instruction_node(isa_instruction_type inst_type);
-    ll_instruction_node(isa_instruction_type inst_type, std::string opcode, std::vector<std::shared_ptr<variable>> arguments);
-    ll_instruction_node(isa_instruction_type inst_type, float constant);
-    isa_instruction_type get_type();
-    [[nodiscard]] uint32_t emit() const;
-    [[nodiscard]] int instruction_count() const;
+    explicit ll_instruction_node(isa_instruction_type t);
+    ll_instruction_node(const ll_instruction_node &old_obj);
+
+
+
+    virtual uint32_t emit() { return 0;};
+    virtual void print() {};
+    virtual int instruction_count() { return 0;};
+
     bool is_terminal() override;
-    void print();
-    [[nodiscard]] bool is_pseudo() const { return type == isa_pseudo_instruction;};
-    [[nodiscard]] const instruction_t &getStringInstr() const;
-    void setStringInstr(const instruction_t &stringInstr);
 
     friend bool operator==(const ll_instruction_node& lhs, const ll_instruction_node& rhs);
 
-private:
-    [[nodiscard]] uint32_t emit_branch() const;
-    [[nodiscard]] uint32_t emit_immediate() const;
-    [[nodiscard]] uint32_t emit_independent() const;
-    [[nodiscard]] uint32_t emit_register() const;
-    [[nodiscard]] uint32_t emit_conversion() const;
-    [[nodiscard]] uint32_t emit_load_const() const;
-    [[nodiscard]] uint32_t emit_intercalated_const() const;
-    void print_immediate() const;
-    void print_independent() const;
-    void print_register() const;
-    void print_branch() const;
-    void print_conversion() const;
-    void print_load_const() const;
-    void print_intercalated_const() const;
+    [[nodiscard]] bool is_pseudo() const { return instruction_type == isa_pseudo_instruction;};
 
-    isa_instruction_type type;
-    instruction_t string_instr;
+    isa_instruction_type get_type();
+    std::string get_opcode(){return opcode;};
 
+protected:
+
+    isa_instruction_type instruction_type;
+
+    std::string opcode;
 
 };
 

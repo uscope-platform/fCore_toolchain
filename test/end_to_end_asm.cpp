@@ -20,7 +20,7 @@
 #include <filesystem>
 
 #include "fcore_has.hpp"
-#include "data_structures/low_level_ast/ll_ast_node.hpp"
+#include "data_structures/low_level_ast/low_level_ast.hpp"
 #include "../third_party/json.hpp"
 
 

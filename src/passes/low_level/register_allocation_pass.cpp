@@ -46,10 +46,10 @@ register_allocation_pass::register_allocation_pass(std::shared_ptr<variable_map>
 
 std::shared_ptr<ll_ast_node> register_allocation_pass::process_leaf(std::shared_ptr<ll_ast_node> element) {
     std::shared_ptr<ll_ast_node> ret_val = element;
-    if(element->type == ll_type_instr){
+    /* if(element->type == ll_type_instr){
         std::shared_ptr<ll_instruction_node> node = std::static_pointer_cast<ll_instruction_node>(element);
-        instruction_t current_instr = node->getStringInstr();
-        for(auto &item:current_instr.arguments){
+        auto arguments = node->get_arguments();
+        for(auto &item:arguments){
             std::regex re("r(\\d\\d?)");
             std::smatch m;
             std::string s = item->to_str();
@@ -80,9 +80,9 @@ std::shared_ptr<ll_ast_node> register_allocation_pass::process_leaf(std::shared_
             }
 
         }
-        node->setStringInstr(current_instr);
+        node->set_arguments(arguments);
         ret_val = node;
-    }
+    }*/
     return ret_val;
 }
 

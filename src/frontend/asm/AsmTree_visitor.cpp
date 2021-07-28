@@ -24,30 +24,6 @@ AsmTree_visitor::AsmTree_visitor(std::shared_ptr<variable_map> map) {
 }
 
 
-void AsmTree_visitor::exitImm_instr(asm_parser::asm_grammarParser::Imm_instrContext * ctx) {
-    std::string opcode = ctx->imm_opcode()->getText();
-
-
-
-    std::string dest_str;
-    if(ctx->destination()->Identifier() != nullptr)
-        dest_str = ctx->destination()->Identifier()->getText();
-    else if (ctx->destination()->Register() != nullptr)
-        dest_str = ctx->destination()->Register()->getText();
-
-    std::shared_ptr<variable> dest = get_variable(dest_str, false);
-    std::shared_ptr<variable> immediate = get_variable(ctx->immediate()->getText(), true);
-
-    std::vector<std::shared_ptr<variable>> arguments;
-    arguments.push_back(dest);
-    arguments.push_back(immediate);
-
-    std::shared_ptr<ll_instruction_node> node = std::make_shared<ll_instruction_node>(isa_immediate_instruction, opcode, arguments);
-    current_element->add_content(node);
-}
-
-
-
 void AsmTree_visitor::exitReg_instr(asm_parser::asm_grammarParser::Reg_instrContext *ctx) {
     std::string opcode = ctx->reg_opcode()->getText();
 
@@ -75,9 +51,8 @@ void AsmTree_visitor::exitReg_instr(asm_parser::asm_grammarParser::Reg_instrCont
     op_b->set_used(true);
     std::shared_ptr<variable> dest = get_variable(dest_str, false);
 
-    std::vector<std::shared_ptr<variable>> arguments = {op_a, op_b, dest};
 
-    std::shared_ptr<ll_instruction_node> node = std::make_shared<ll_instruction_node>(isa_register_instruction, opcode, arguments);
+    std::shared_ptr<ll_register_instr_node> node = std::make_shared<ll_register_instr_node>(opcode, op_a, op_b, dest);
     current_element->add_content(node);
 }
 
@@ -88,9 +63,7 @@ void AsmTree_visitor::exitConv_instr(asm_parser::asm_grammarParser::Conv_instrCo
     op_a->set_used(true);
     std::shared_ptr<variable> op_b = get_variable(ctx->operand(1)->getText(), false);
 
-    std::vector<std::shared_ptr<variable>> arguments = {op_a, op_b};
-
-    std::shared_ptr<ll_instruction_node> node = std::make_shared<ll_instruction_node>(isa_conversion_instruction, opcode, arguments);
+    std::shared_ptr<ll_conversion_instr_node> node = std::make_shared<ll_conversion_instr_node>(opcode, op_a, op_b);
     current_element->add_content(node);
 }
 
@@ -103,9 +76,7 @@ void AsmTree_visitor::exitBranch_instr(asm_parser::asm_grammarParser::Branch_ins
     op_b->set_used(true);
     std::shared_ptr<variable> dest = get_variable(ctx->operand(2)->getText(), false);
 
-    std::vector<std::shared_ptr<variable>> arguments = {op_a, op_b, dest};
-
-    std::shared_ptr<ll_instruction_node> node = std::make_shared<ll_instruction_node>(isa_register_instruction, opcode, arguments);
+    std::shared_ptr<ll_register_instr_node> node = std::make_shared<ll_register_instr_node>(opcode, op_a, op_b, dest);
     current_element->add_content(node);
 
 }
@@ -144,17 +115,16 @@ void AsmTree_visitor::exitPseudo_instr(asm_parser::asm_grammarParser::Pseudo_ins
         arguments.push_back(dest);
     }
 
-    std::shared_ptr<ll_instruction_node> node = std::make_shared<ll_instruction_node>(isa_pseudo_instruction, opcode, arguments);
+    std::shared_ptr<ll_pseudo_instr_node> node = std::make_shared<ll_pseudo_instr_node>(opcode, arguments);
     current_element->add_content(node);
 
 }
 
 void AsmTree_visitor::exitIndep_instr(asm_parser::asm_grammarParser::Indep_instrContext *ctx) {
     std::string opcode = ctx->getText();
-    std::vector<std::shared_ptr<variable>> arguments;
 
 
-    std::shared_ptr<ll_instruction_node> node = std::make_shared<ll_instruction_node>(isa_independent_instruction, opcode, arguments);
+    std::shared_ptr<ll_independent_inst_node> node = std::make_shared<ll_independent_inst_node>(opcode);
     current_element->add_content(node);
 
 }
@@ -170,11 +140,8 @@ void AsmTree_visitor::exitLoad_instr(asm_parser::asm_grammarParser::Load_instrCo
     std::shared_ptr<variable> dest = get_variable(dest_str, false);
     std::shared_ptr<variable> immediate = get_variable(ctx->FloatingPointLiteral()->getText(), true);
 
-    std::vector<std::shared_ptr<variable>> arguments;
-    arguments.push_back(dest);
-    arguments.push_back(immediate);
 
-    std::shared_ptr<ll_instruction_node> node = std::make_shared<ll_instruction_node>(isa_load_constant_instruction, "ldc", arguments);
+    std::shared_ptr<ll_load_constant_instr_node> node = std::make_shared<ll_load_constant_instr_node>("ldc", dest, immediate);
     current_element->add_content(node);
 
 }

@@ -9,6 +9,12 @@ set(FCORE_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/asm/register_map.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/output_generator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_instruction_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_register_instr_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_conversion_instr_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_independent_instr_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_intercalated_const_instr_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_load_constant_instr_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_pseudo_instr_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_loop_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_ast_pragma.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_ast_node.cpp

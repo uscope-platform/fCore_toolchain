@@ -1,0 +1,14 @@
+//
+// Created by fils on 28/07/2021.
+//
+
+#ifndef FCORE_TOOLCHAIN_VARIABLE_LIFETIME_MAPPING_H
+#define FCORE_TOOLCHAIN_VARIABLE_LIFETIME_MAPPING_H
+
+
+class variable_lifetime_mapping {
+
+};
+
+
+#endif //FCORE_TOOLCHAIN_VARIABLE_LIFETIME_MAPPING_H

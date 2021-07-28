@@ -14,20 +14,23 @@
 
 // You should have received a copy of the GNU General Public License
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.
-#ifndef FCORE_TOOLCHAIN_LOAD_INTERCALATION_PASS_HPP
-#define FCORE_TOOLCHAIN_LOAD_INTERCALATION_PASS_HPP
 
+#ifndef FCORE_TOOLCHAIN_LL_INTERCALATED_CONST_INSTR_NODE_HPP
+#define FCORE_TOOLCHAIN_LL_INTERCALATED_CONST_INSTR_NODE_HPP
 
 #include "data_structures/low_level_ast/low_level_ast.hpp"
-#include "tools/variable_map.hpp"
-#include "passes/pass_base.hpp"
 
-
-class load_intercalation_pass: public pass_base<ll_ast_node> {
+class ll_intercalated_const_instr_node : public ll_instruction_node {
 public:
-    load_intercalation_pass();
-    std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
-    int get_pass_type() override { return LEAF_PASS;};
+    explicit ll_intercalated_const_instr_node(float constant);
+    uint32_t emit() override;
+    void print() override;
+    int instruction_count() override;
+
+    friend bool operator==(const ll_intercalated_const_instr_node& lhs, const ll_intercalated_const_instr_node& rhs);
+private:
+    float intercalated_constant;
 };
 
-#endif //FCORE_TOOLCHAIN_LOAD_INTERCALATION_PASS_HPP
+
+#endif //FCORE_TOOLCHAIN_LL_INTERCALATED_CONST_INSTR_NODE_HPP

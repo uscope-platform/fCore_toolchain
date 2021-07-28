@@ -26,8 +26,7 @@
 #include "data_structures/high_level_ast/hl_ast_node.hpp"
 #include "data_structures/high_level_ast/hl_expression_node.hpp"
 #include "data_structures/high_level_ast/hl_definition_node.hpp"
-#include "data_structures/low_level_ast/ll_ast_node.hpp"
-#include "data_structures/low_level_ast/ll_instruction_node.hpp"
+#include "data_structures/low_level_ast/low_level_ast.hpp"
 
 class high_level_ast_lowering {
 public:
@@ -44,6 +43,8 @@ private:
     std::shared_ptr<ll_ast_node> process_regular_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest);
     std::shared_ptr<hl_ast_node> input_ast;
     std::shared_ptr<ll_ast_node> output_ast;
+
+    std::shared_ptr<ll_ast_node> create_ast_node(isa_instruction_type t, std::vector<std::shared_ptr<variable>> args, const std::string& op);
     std::map<expression_type_t, std::string> expr_instruction_mapping;
     std::shared_ptr<variable_map> var_map;
 };

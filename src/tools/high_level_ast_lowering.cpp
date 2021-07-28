@@ -94,36 +94,37 @@ std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(std::shared
 }
 
 std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::shared_ptr<hl_definition_node>& input, const std::shared_ptr<variable>& dest) {
-    std::shared_ptr<ll_instruction_node> retval = std::make_shared<ll_instruction_node>();
     if(input->is_initialized()){
         if(input->get_initializer()->node_type == hl_ast_node_type_expr){
             return translate_node(std::static_pointer_cast<hl_expression_node>(input->get_initializer()), dest);
         } else if(input->get_initializer()->node_type == hl_ast_node_type_operand){
             return translate_node(std::static_pointer_cast<hl_ast_operand>(input->get_initializer()), dest);
+        } else{
+            throw std::runtime_error("ERROR: unexpected high level ast node encountered during the lowering phase");
         }
+    } else{
+        throw std::runtime_error("ERROR: uninitialized definition node encountered during the lowering phase");
     }
-    return retval;
-
 }
 
 std::shared_ptr<ll_ast_node>
 high_level_ast_lowering::process_unary_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest) {
 
-    std::shared_ptr<ll_instruction_node> retval;
+    std::shared_ptr<ll_ast_node> retval;
     expression_type_t op_type = input->get_type();
     std::string opcode = expr_instruction_mapping[op_type];
     if(!fcore_implemented_operations[op_type]) throw std::runtime_error("ERROR: The required operation is not implementable on the fCore hardware");
 
     std::shared_ptr<variable> op_b = var_map->at(*std::static_pointer_cast<hl_ast_operand>(input->get_rhs()));
     std::vector<std::shared_ptr<variable>> args = {op_b, dest};
-    retval = std::make_shared<ll_instruction_node>(fcore_op_types[opcode], opcode, args);
+    retval = create_ast_node(fcore_op_types[opcode], args, opcode);
     return retval;
 }
 
 std::shared_ptr<ll_ast_node>
 high_level_ast_lowering::process_regular_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest) {
 
-    std::shared_ptr<ll_instruction_node> retval;
+    std::shared_ptr<ll_ast_node> retval;
     expression_type_t op_type = input->get_type();
     std::string opcode = expr_instruction_mapping[op_type];
     if(!fcore_implemented_operations[op_type]) throw std::runtime_error("ERROR: The required operation is not implementable on the fCore hardware");
@@ -131,7 +132,7 @@ high_level_ast_lowering::process_regular_expression(std::shared_ptr<hl_expressio
     std::shared_ptr<variable> op_a = var_map->at(*std::static_pointer_cast<hl_ast_operand>(input->get_lhs()));
     std::shared_ptr<variable> op_b = var_map->at(*std::static_pointer_cast<hl_ast_operand>(input->get_rhs()));
     std::vector<std::shared_ptr<variable>> args = {op_a, op_b, dest};
-    retval = std::make_shared<ll_instruction_node>(fcore_op_types[opcode], opcode, args);
+    retval = create_ast_node(fcore_op_types[opcode], args, opcode);
     return retval;
 
 }
@@ -140,7 +141,7 @@ std::shared_ptr<ll_ast_node>
 high_level_ast_lowering::translate_node(const std::shared_ptr<hl_ast_operand>& input, std::shared_ptr<variable> dest) {
 
 
-    std::shared_ptr<ll_instruction_node> retval;
+    std::shared_ptr<ll_ast_node> retval;
     std::shared_ptr<variable> var;
     if(input->get_type() == integer_immediate_operand){
         var = std::make_shared<variable>(true, std::to_string(input->get_int_value()));
@@ -150,7 +151,30 @@ high_level_ast_lowering::translate_node(const std::shared_ptr<hl_ast_operand>& i
         throw std::runtime_error("feature not implemented yet");
     }
     std::vector<std::shared_ptr<variable>> args = {std::move(dest), var};
-    retval = std::make_shared<ll_instruction_node>(isa_load_constant_instruction, "ldc", args);
+    retval = create_ast_node(isa_load_constant_instruction, args, "ldc");
     return retval;
 
+}
+
+std::shared_ptr<ll_ast_node>
+high_level_ast_lowering::create_ast_node(isa_instruction_type t, std::vector<std::shared_ptr<variable>> args, const std::string& op) {
+    std::shared_ptr<ll_ast_node> retval;
+
+    switch (t) {
+        case isa_register_instruction:
+            retval = std::make_shared<ll_register_instr_node>(op, args[0], args[1], args[2]);
+            break;
+        case isa_conversion_instruction:
+            retval = std::make_shared<ll_conversion_instr_node>(op, args[0], args[1]);
+            break;
+        case isa_load_constant_instruction:
+            retval = std::make_shared<ll_load_constant_instr_node>(op, args[0], args[1]);
+            break;
+        case isa_independent_instruction:
+            retval = std::make_shared<ll_independent_inst_node>(op);
+            break;
+        case isa_pseudo_instruction:
+            break;
+    }
+    return retval;
 }

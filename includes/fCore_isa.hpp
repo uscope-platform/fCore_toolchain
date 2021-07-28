@@ -28,7 +28,6 @@ typedef enum {
     isa_independent_instruction = 2,
     isa_register_instruction = 3,
     isa_pseudo_instruction = 4,
-    isa_branch_instruction = 5,
     isa_conversion_instruction = 6,
     isa_load_constant_instruction = 7,
     isa_intercalated_constant= 8

@@ -6,7 +6,7 @@
 #define FCORE_TOOLCHAIN_INSTRUCTION_STREAM_HPP
 
 #include <vector>
-#include "data_structures/low_level_ast/ll_instruction_node.hpp"
+#include "data_structures/low_level_ast/low_level_ast.hpp"
 
 class instruction_stream {
 public:

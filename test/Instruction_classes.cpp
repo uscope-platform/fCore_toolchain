@@ -20,35 +20,16 @@
 #include <memory>
 
 #include "tools/variable.hpp"
-#include "data_structures/low_level_ast/ll_instruction_node.hpp"
+#include "data_structures/low_level_ast/low_level_ast.hpp"
 #include "fCore_isa.hpp"
-
-TEST(InstructionClasses, immediate_instruction ) {
-
-    std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r4");
-    std::shared_ptr<variable> imm = std::make_shared<variable>(true, "100");
-    std::vector<std::shared_ptr<variable>> args = {dest, imm};
-    ll_instruction_node instr(isa_immediate_instruction,"ldr", args);
-
-    ASSERT_EQ( instr.emit(),  0x32087);
-
-    std::stringstream buffer;
-    std::streambuf * old = std::cout.rdbuf(buffer.rdbuf());
-    instr.print();
-    std::string result = buffer.str();
-    std::cout.rdbuf(old);
-    std::string golden_standard = "32087 -> OPCODE: ldr DESTINATION: r4 IMMEDIATE: 100\n";
-    ASSERT_EQ(result, golden_standard);
-}
 
 TEST(InstructionClasses, register_instruction ) {
 
     std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r2");
     std::shared_ptr<variable> op_b = std::make_shared<variable>(false, "r3");
     std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r4");
-    std::vector<std::shared_ptr<variable>> args = {op_a, op_b, dest};
 
-    ll_instruction_node instr(isa_register_instruction,"add", args);
+    ll_register_instr_node instr("add", op_a, op_b, dest);
 
     ASSERT_EQ(instr.emit(), 0x81841);
 
@@ -65,8 +46,8 @@ TEST(InstructionClasses, register_instruction ) {
 
 
 TEST(InstructionClasses, independent_instruction ) {
-    std::vector<std::shared_ptr<variable>> args = {};
-    ll_instruction_node instr(isa_independent_instruction,"stop", args);
+
+    ll_independent_inst_node instr("stop");
 
 
     ASSERT_EQ( instr.emit(), 0xc);

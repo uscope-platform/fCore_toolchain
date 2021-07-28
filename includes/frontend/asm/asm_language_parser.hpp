@@ -23,9 +23,8 @@
 #include <vector>
 #include <utility>
 
-#include "data_structures/low_level_ast/ll_ast_node.hpp"
+#include "data_structures/low_level_ast/low_level_ast.hpp"
 #include "AsmTree_visitor.hpp"
-#include "data_structures/low_level_ast/ll_ast_node.hpp"
 #include "AsmErrorHandling.hpp"
 
 #include "antlr4-runtime.h"

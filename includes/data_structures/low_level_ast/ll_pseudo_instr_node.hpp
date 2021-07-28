@@ -15,23 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_TOOLCHAIN_INSTRUCTION_COUNTING_PASS_HPP
-#define FCORE_TOOLCHAIN_INSTRUCTION_COUNTING_PASS_HPP
+#ifndef FCORE_TOOLCHAIN_LL_PSEUDO_INSTR_NODE_HPP
+#define FCORE_TOOLCHAIN_LL_PSEUDO_INSTR_NODE_HPP
 
-
-#include "passes/pass_base.hpp"
+#include <utility>
 
 #include "data_structures/low_level_ast/ll_instruction_node.hpp"
+#include "tools/variable.hpp"
 
-class instruction_counting_pass : public pass_base<ll_ast_node> {
-
+class ll_pseudo_instr_node :public ll_instruction_node {
 public:
-    instruction_counting_pass();
-    void analyze_element(std::shared_ptr<ll_ast_node> element) override;
-    int get_pass_type() override { return ANALYSIS_PASS;};
-    std::vector<int> get_analysis_result() override;
-    int instruction_count{0};
+    ll_pseudo_instr_node(std::string op, std::vector<std::shared_ptr<variable>> args);
+
+    std::vector<std::shared_ptr<variable>> get_arguments() {return arguments;};
+    void set_arguments(std::vector<std::shared_ptr<variable>> a) {arguments = std::move(a);};
+    int instruction_count() override;
+
+    friend bool operator==(const ll_pseudo_instr_node& lhs, const ll_pseudo_instr_node& rhs);
+private:
+    std::vector<std::shared_ptr<variable>> arguments;
 };
 
 
-#endif //FCORE_TOOLCHAIN_INSTRUCTION_COUNTING_PASS_HPP
+#endif //FCORE_TOOLCHAIN_LL_PSEUDO_INSTR_NODE_HPP

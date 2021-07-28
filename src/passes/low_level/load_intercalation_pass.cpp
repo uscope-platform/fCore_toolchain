@@ -28,14 +28,15 @@ std::shared_ptr<ll_ast_node> load_intercalation_pass::process_leaf(std::shared_p
     bool float_present = false;
     if(element->type == ll_type_instr){
         std::shared_ptr<ll_instruction_node> node = std::static_pointer_cast<ll_instruction_node>(element);
-        instruction_t current_instr = node->getStringInstr();
-        if(current_instr.opcode == "ldc"){
-            float desired_constant = std::stof(current_instr.arguments[1]->to_str());
+
+        if(node->get_opcode() == "ldc"){
+            std::shared_ptr<ll_load_constant_instr_node> load_instr = std::static_pointer_cast<ll_load_constant_instr_node>(node);
+            float desired_constant = load_instr->get_constant();
 
             std::vector<std::shared_ptr<ll_ast_node>> block_content;
 
             //CREATE FRACT NUMERATOR MULTIPLICATION
-            std::shared_ptr<ll_instruction_node> constant = std::make_shared<ll_instruction_node>(isa_intercalated_constant,desired_constant);
+            std::shared_ptr<ll_intercalated_const_instr_node> constant = std::make_shared<ll_intercalated_const_instr_node>(desired_constant);
             block_content.push_back(node);
             block_content.push_back(constant);
 

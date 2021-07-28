@@ -52,8 +52,7 @@ std::shared_ptr<ll_ast_node> ll_ast_node::deep_copy_element(const std::shared_pt
         result = std::static_pointer_cast<ll_ast_node>(pragma_res);
     } else if(element->type == ll_type_instr ){
         std::shared_ptr<ll_instruction_node> instr_elem = std::static_pointer_cast<ll_instruction_node>(element);
-        std::shared_ptr<ll_instruction_node> instr_res = std::make_shared<ll_instruction_node>(instr_elem->get_type());
-        instr_res->setStringInstr(instr_elem->getStringInstr());
+        std::shared_ptr<ll_instruction_node> instr_res = std::make_shared<ll_instruction_node>(*instr_elem);
 
         result = std::static_pointer_cast<ll_ast_node>(instr_res);
     } else {

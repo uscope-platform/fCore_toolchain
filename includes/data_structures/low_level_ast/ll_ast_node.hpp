@@ -34,7 +34,6 @@ typedef enum {
     ll_type_program_head = 5,
     ll_type_pragma = 6,
     ll_type_code_block = 7,
-
 } ll_ast_node_type_t;
 
 

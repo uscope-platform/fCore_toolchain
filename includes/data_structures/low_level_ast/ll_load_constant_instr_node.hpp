@@ -15,31 +15,26 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.
 
+#ifndef FCORE_TOOLCHAIN_LL_LOAD_CONSTANT_INSTR_NODE_HPP
+#define FCORE_TOOLCHAIN_LL_LOAD_CONSTANT_INSTR_NODE_HPP
 
 #include "data_structures/low_level_ast/ll_instruction_node.hpp"
 
-ll_instruction_node::ll_instruction_node(isa_instruction_type t) : ll_ast_node(ll_type_instr) {
-    instruction_type = t;
-}
+#include <utility>
 
-ll_instruction_node::ll_instruction_node(const ll_instruction_node &old_obj) {
+class ll_load_constant_instr_node: public ll_instruction_node {
+public:
+    ll_load_constant_instr_node(std::string op, std::shared_ptr<variable> dest, std::shared_ptr<variable> c);
+    uint32_t emit() override;
+    void print() override;
+    int instruction_count() override;
+    float get_constant();
+    friend bool operator==(const ll_load_constant_instr_node& lhs, const ll_load_constant_instr_node& rhs);
+private:
+    std::shared_ptr<variable> destination;
+    std::shared_ptr<variable> constant;
 
-    instruction_type = old_obj.instruction_type;
-    opcode = old_obj.opcode;
-}
+};
 
-isa_instruction_type ll_instruction_node::get_type() {
-    return instruction_type;
-}
 
-bool ll_instruction_node::is_terminal() {
-    return true;
-}
-
-bool operator==(const ll_instruction_node &lhs, const ll_instruction_node &rhs) {
-    bool retval = true;
-    retval &= lhs.instruction_type == rhs.instruction_type;
-    retval &= lhs.opcode == rhs.opcode;
-
-    return retval;
-}
+#endif //FCORE_TOOLCHAIN_LL_LOAD_CONSTANT_INSTR_NODE_HPP

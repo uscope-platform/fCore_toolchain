@@ -14,20 +14,18 @@
 
 // You should have received a copy of the GNU General Public License
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.
-#ifndef FCORE_TOOLCHAIN_LOAD_INTERCALATION_PASS_HPP
-#define FCORE_TOOLCHAIN_LOAD_INTERCALATION_PASS_HPP
 
+#ifndef FCORE_TOOLCHAIN_LOW_LEVEL_AST_HPP
+#define FCORE_TOOLCHAIN_LOW_LEVEL_AST_HPP
 
-#include "data_structures/low_level_ast/low_level_ast.hpp"
-#include "tools/variable_map.hpp"
-#include "passes/pass_base.hpp"
+#include "ll_register_instr_node.hpp"
+#include "ll_loop_node.hpp"
+#include "ll_load_constant_instr_node.hpp"
+#include "ll_intercalated_const_instr_node.hpp"
+#include "ll_instruction_node.hpp"
+#include "ll_independent_instr_node.hpp"
+#include "ll_conversion_instr_node.hpp"
+#include "ll_pseudo_instr_node.hpp"
+#include "ll_ast_pragma.hpp"
 
-
-class load_intercalation_pass: public pass_base<ll_ast_node> {
-public:
-    load_intercalation_pass();
-    std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
-    int get_pass_type() override { return LEAF_PASS;};
-};
-
-#endif //FCORE_TOOLCHAIN_LOAD_INTERCALATION_PASS_HPP
+#endif //FCORE_TOOLCHAIN_LOW_LEVEL_AST_HPP
