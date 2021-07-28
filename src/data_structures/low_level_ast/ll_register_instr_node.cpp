@@ -60,3 +60,9 @@ bool operator==(const ll_register_instr_node &lhs, const ll_register_instr_node 
     return retval;
 }
 
+void ll_register_instr_node::set_arguments(const std::vector<std::shared_ptr<variable>> &a) {
+    operand_a = a[0];
+    operand_b = a[1];
+    destination = a[2];
+}
+

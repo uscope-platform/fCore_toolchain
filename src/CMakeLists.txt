@@ -38,8 +38,6 @@ set(FCORE_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/loop_implementation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/pseudo_instructions_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/instruction_counting_pass.cpp#
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/register_allocation_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/variable_lifetime_mapping.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/load_intercalation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/constant_folding_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/constant_propagation.cpp
@@ -56,6 +54,10 @@ set(FCORE_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/conditional_implementation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/loop_unrolling_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/normalization_pass.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/stream_pass_manager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/variable_lifetime_mapping.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/variable_mapping.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/register_allocation.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/fcore_has.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/fcore_cc.cpp
         )

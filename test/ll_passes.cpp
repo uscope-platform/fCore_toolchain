@@ -36,9 +36,8 @@ TEST(llPassesTest, pseudo_inst_pass) {
     std::shared_ptr<ll_pseudo_instr_node> instr = std::make_shared<ll_pseudo_instr_node>("mov", args);
     AST->add_content(instr);
 
-    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
 
-    ll_pass_manager manager = create_ll_pass_manager(map);
+    ll_pass_manager manager = create_ll_pass_manager();
     manager.run_morphing_passes(AST);
 
     output_generator writer;
@@ -77,9 +76,8 @@ TEST(llPassesTest, instruction_count_pass) {
     std::shared_ptr<ll_intercalated_const_instr_node> load_instr = std::make_shared<ll_intercalated_const_instr_node>(1.456);// +0
     AST->add_content(load_instr);
 
-    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
 
-    ll_pass_manager manager = create_ll_pass_manager(map);
+    ll_pass_manager manager = create_ll_pass_manager();
     manager.run_analysis_passes(AST);
     int count = manager.analysis_passes["instruction_counting"]->get_analysis_result()[0];
 
@@ -106,9 +104,7 @@ TEST(llPassesTest, loop_less) {
 
     AST->add_content(lvl_1);
 
-    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
-
-    ll_pass_manager manager = create_ll_pass_manager(map);
+    ll_pass_manager manager = create_ll_pass_manager();
     manager.run_morphing_passes(AST);
 
     output_generator writer;
@@ -140,9 +136,7 @@ TEST(llPassesTest, loop_less_equal) {
 
     AST->add_content(lvl_1);
 
-    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
-
-    ll_pass_manager manager = create_ll_pass_manager(map);
+    ll_pass_manager manager = create_ll_pass_manager();
     manager.run_morphing_passes(AST);
 
     output_generator writer;
@@ -176,9 +170,8 @@ TEST(llPassesTest, loop_more) {
 
     AST->add_content(lvl_1);
 
-    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
 
-    ll_pass_manager manager = create_ll_pass_manager(map);
+    ll_pass_manager manager = create_ll_pass_manager();
     manager.run_morphing_passes(AST);
 
     output_generator writer;
@@ -210,9 +203,7 @@ TEST(llPassesTest, loop_more_equal) {
 
     AST->add_content(lvl_1);
 
-    std::shared_ptr<variable_map> map = std::make_shared<variable_map>();
-
-    ll_pass_manager manager = create_ll_pass_manager(map);
+    ll_pass_manager manager = create_ll_pass_manager();
     manager.run_morphing_passes(AST);
 
     output_generator writer;

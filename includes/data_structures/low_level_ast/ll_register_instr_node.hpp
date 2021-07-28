@@ -29,6 +29,12 @@ public:
     int instruction_count() override;
 
     friend bool operator==(const ll_register_instr_node& lhs, const ll_register_instr_node& rhs);
+
+    std::shared_ptr<variable> get_operand_a() {return operand_a;};
+    std::shared_ptr<variable> get_operand_b() {return operand_b;};
+    std::shared_ptr<variable> get_destination() {return destination;};
+    std::vector<std::shared_ptr<variable>> get_arguments() override {return {operand_a, operand_b, destination};};
+    void set_arguments(const std::vector<std::shared_ptr<variable>> &a) override;
 private:
     std::shared_ptr<variable> operand_a;
     std::shared_ptr<variable> operand_b;

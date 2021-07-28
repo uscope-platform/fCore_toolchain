@@ -57,3 +57,7 @@ float ll_load_constant_instr_node::get_constant() {
     return std::stof(constant->to_str());
 }
 
+void ll_load_constant_instr_node::set_arguments(const std::vector<std::shared_ptr<variable>> &a) {
+    destination = a[0];
+    constant = a[1];
+}

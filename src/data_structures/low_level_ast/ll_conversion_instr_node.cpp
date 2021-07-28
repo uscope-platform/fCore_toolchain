@@ -51,3 +51,8 @@ bool operator==(const ll_conversion_instr_node &lhs, const ll_conversion_instr_n
     retval &= rhs.opcode == lhs.opcode;
     return retval;
 }
+
+void ll_conversion_instr_node::set_arguments(const std::vector<std::shared_ptr<variable>> &a) {
+    source = a[0];
+    destination = a[1];
+}

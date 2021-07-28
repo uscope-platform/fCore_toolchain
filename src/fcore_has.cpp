@@ -91,11 +91,17 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
             AST->prepend_content(includes_ast->get_content());
 
 
-        manager = create_ll_pass_manager(variables_map);
+        manager = create_ll_pass_manager();
         manager.run_morphing_passes(AST);
 
         instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
+
+        stream_pass_manager sman;
+        program_stream = sman.process_stream(program_stream);
+
         writer.process_stream(program_stream, false);
+
+
 
     } catch(std::runtime_error &e){
         error_code = e.what();

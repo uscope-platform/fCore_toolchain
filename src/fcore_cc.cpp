@@ -38,7 +38,7 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes, bool
         tranlator.translate();
         ll_ast = tranlator.get_output_ast();
 
-        ll_manager = create_ll_pass_manager(variables_map);
+        ll_manager = create_ll_pass_manager();
         ll_manager.run_morphing_passes(ll_ast);
 
         instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);

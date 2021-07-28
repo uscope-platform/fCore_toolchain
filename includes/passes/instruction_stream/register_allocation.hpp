@@ -15,33 +15,28 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_TOOLCHAIN_REGISTER_ALLOCATION_PASS_HPP
-#define FCORE_TOOLCHAIN_REGISTER_ALLOCATION_PASS_HPP
+#ifndef FCORE_TOOLCHAIN_REGISTER_ALLOCATION_HPP
+#define FCORE_TOOLCHAIN_REGISTER_ALLOCATION_HPP
 
-#include <memory>
-#include <unordered_map>
 #include <utility>
-#include <cmath>
 
+
+#include "passes/instruction_stream/stream_pass_base.hpp"
+#include "tools/variable.hpp"
 #include "tools/variable_map.hpp"
 #include "frontend/asm/register_map.hpp"
-#include "data_structures/low_level_ast/low_level_ast.hpp"
-#include "passes/pass_base.hpp"
-#include "fCore_isa.hpp"
 
 
-
-class register_allocation_pass: public pass_base<ll_ast_node> {
-    public:
-        explicit register_allocation_pass(std::shared_ptr<variable_map> varmap);
-        std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
-        int get_pass_type() override { return LEAF_PASS;};
+class register_allocation : public stream_pass_base{
+public:
+    explicit register_allocation(std::shared_ptr<variable_map> vmap);
+    std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
 private:
-    std::vector<bool> used;
+    std::shared_ptr<variable_map> var_map;
     std::unordered_map<std::shared_ptr<variable>, std::shared_ptr<variable>> register_mapping;
     register_map reg_map;
-    std::shared_ptr<variable_map> var_map;
+    std::vector<bool> used;
 };
 
 
-#endif //FCORE_TOOLCHAIN_REGISTER_ALLOCATION_PASS_HPP
+#endif //FCORE_TOOLCHAIN_REGISTER_ALLOCATION_HPP

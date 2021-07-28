@@ -51,7 +51,8 @@ public:
 
     isa_instruction_type get_type();
     std::string get_opcode(){return opcode;};
-
+    virtual std::vector<std::shared_ptr<variable>> get_arguments() {return {};};
+    virtual void set_arguments(const std::vector<std::shared_ptr<variable>> &a) {};
 protected:
 
     isa_instruction_type instruction_type;

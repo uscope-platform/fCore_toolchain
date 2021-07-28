@@ -30,6 +30,11 @@ public:
     void print() override;
     int instruction_count() override;
 
+    std::shared_ptr<variable> get_source() {return source;};
+    std::shared_ptr<variable> get_destination() {return destination;};
+    std::vector<std::shared_ptr<variable>> get_arguments() override {return {source, destination};};
+    void set_arguments(const std::vector<std::shared_ptr<variable>> &a) override;
+
     friend bool operator==(const ll_conversion_instr_node& lhs, const ll_conversion_instr_node& rhs);
 private:
     std::shared_ptr<variable> source;

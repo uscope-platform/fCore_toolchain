@@ -51,7 +51,7 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     translator.translate();
     std::shared_ptr<ll_ast_node> ll_ast = translator.get_output_ast();
 
-    ll_pass_manager ll_manager = create_ll_pass_manager(variables_map);
+    ll_pass_manager ll_manager = create_ll_pass_manager();
     ll_manager.run_morphing_passes(ll_ast);
 
     output_generator writer;
