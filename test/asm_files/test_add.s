@@ -1,6 +1,6 @@
 /* MICRO PROGRAM TO TEST ADDITIONS */
-ldr r4, 100
-ldr r5, 200
+ldc r4, 100.0
+ldc r5, 200.0
 add r24, r5, r6
 stop
 

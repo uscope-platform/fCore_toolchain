@@ -1,5 +1,5 @@
 /* MICRO PROGRAM TO TEST ADDITIONS */
-ldr r4, 100
+ldc r4, 100.0
 add r4, r5, r6
 mov r3, r4
 bgt r2, r3, r1

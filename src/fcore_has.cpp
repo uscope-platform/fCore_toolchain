@@ -99,7 +99,7 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
         stream_pass_manager sman;
         program_stream = sman.process_stream(program_stream);
 
-        writer.process_stream(program_stream, false);
+        writer.process_stream(program_stream, true);
 
 
 
