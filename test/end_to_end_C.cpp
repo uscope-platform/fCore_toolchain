@@ -57,6 +57,10 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     output_generator writer;
 
     instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
+
+    stream_pass_manager sman;
+    program_stream = sman.process_stream(program_stream);
+
     writer.process_stream(program_stream, false);
 
     std::vector<uint32_t> result = writer.get_raw_program();

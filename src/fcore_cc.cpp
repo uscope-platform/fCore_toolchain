@@ -42,6 +42,10 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes, bool
         ll_manager.run_morphing_passes(ll_ast);
 
         instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
+
+        stream_pass_manager sman;
+        program_stream = sman.process_stream(program_stream);
+
         writer.process_stream(program_stream, false);
 
     } catch(std::runtime_error &e){
