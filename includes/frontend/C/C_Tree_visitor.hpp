@@ -30,7 +30,7 @@
 #include "C_parser/C_grammarBaseListener.h"
 #include "C_parser/C_grammarParser.h"
 #include "tools/variable.hpp"
-#include "tools/variable_map.hpp"
+
 
 
 #include "data_structures/high_level_ast/hl_function_def_node.hpp"
@@ -49,7 +49,7 @@ typedef std::unordered_map<std::string, std::shared_ptr<variable>>  varmap_t;
 class C_Tree_visitor : public  C_parser::C_grammarBaseListener{
 public:
     explicit C_Tree_visitor();
-
+    void set_iom_map(std::unordered_map<std::string, std::shared_ptr<variable>> iom);
     void enterFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) override;
     void exitFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) override;
     void exitBlockItem(C_parser::C_grammarParser::BlockItemContext *ctx) override;
@@ -146,6 +146,7 @@ private:
     std::vector<std::shared_ptr<hl_ast_node>> loop_body;
 
     std::shared_ptr<hl_ast_node> root;
+    std::unordered_map<std::string, std::shared_ptr<variable>> iom_map;
 
     bool in_function_declaration;
     bool in_function_body;

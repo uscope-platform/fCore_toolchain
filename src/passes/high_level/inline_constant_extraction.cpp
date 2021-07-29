@@ -83,26 +83,28 @@ inline_constant_extraction::process_expr_side(std::shared_ptr<hl_ast_operand>& e
 
     std::vector<std::shared_ptr<hl_ast_node>> retval;
 
-        if(element->get_type() == float_immediate_operand) {
+    if(element->get_type() == float_immediate_operand) {
         std::string var_name = "inlined_variable_"+std::to_string(n_var);
-        std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>(var_name, c_type_float);
+        std::shared_ptr<variable> var = std::make_shared<variable>(false, var_name);
+        std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>(var_name, c_type_float, var);
         n_var++;
         def->set_initializer(element);
         std::shared_ptr<hl_ast_operand> var_op = std::make_shared<hl_ast_operand>(variable_operand);
         var_op->set_name(var_name);
 
-        std::shared_ptr<variable> var = std::make_shared<variable>(false, var_name);
+        var = std::make_shared<variable>(false, var_name);
         var_op->set_variable(var);
 
         retval.insert(retval.end(), {var_op, def});
     } else if(element->get_type() == integer_immediate_operand){
         std::string var_name = "inlined_variable_"+std::to_string(n_var);
-        std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>(var_name, c_type_int);
+        std::shared_ptr<variable> var = std::make_shared<variable>(false, var_name);
+        std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>(var_name, c_type_int, var);
         n_var++;
         def->set_initializer(element);
         std::shared_ptr<hl_ast_operand> var_op = std::make_shared<hl_ast_operand>(variable_operand);
 
-        std::shared_ptr<variable> var = std::make_shared<variable>(false, var_name);
+        var = std::make_shared<variable>(false, var_name);
         var_op->set_variable(var);
 
         var_op->set_name(var_name);

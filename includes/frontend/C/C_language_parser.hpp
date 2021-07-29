@@ -38,7 +38,7 @@
 class C_language_parser{
     public:
     explicit C_language_parser();
-    C_language_parser(std::istream &stream, std::shared_ptr<variable_map> &new_varmap, std::shared_ptr<define_map> &new_defmap);
+    C_language_parser(std::istream &stream, std::shared_ptr<define_map> &new_defmap);
 
     void pre_process(const std::vector<std::string> &abs_includes, const std::vector<std::string> &rel_includes);
     void parse();
@@ -55,10 +55,10 @@ class C_language_parser{
     C_Tree_visitor visitor;
 
     std::unique_ptr<C_pre_processor> preproc;
-    std::shared_ptr<variable_map> vmap;
     std::shared_ptr<define_map> dmap;
     // preprocessor test
     FRIEND_TEST( cFrontend, preprocessor_include);
+    FRIEND_TEST( cFrontend, preprocessor_pragma);
     // tree visitor test
     FRIEND_TEST( cTreeVisitor, unaryExpressions);
     FRIEND_TEST( cTreeVisitor, multiplicativeExpressions);

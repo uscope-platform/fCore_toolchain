@@ -35,7 +35,7 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, variables_map, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
 
@@ -45,7 +45,7 @@ TEST(EndToEndC, minimal_c_end_to_end) {
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
 
-    high_level_ast_lowering translator(variables_map);
+    high_level_ast_lowering translator;
 
     translator.set_input_ast(normalized_ast);
     translator.translate();

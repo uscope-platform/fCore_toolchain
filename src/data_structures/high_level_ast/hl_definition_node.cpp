@@ -19,11 +19,12 @@
 #include "data_structures/high_level_ast/hl_definition_node.hpp"
 
 
-hl_definition_node::hl_definition_node(std::string n, c_types_t ct) : hl_ast_node(hl_ast_node_type_definition) {
+hl_definition_node::hl_definition_node(std::string n, c_types_t ct, std::shared_ptr<variable> v) : hl_ast_node(hl_ast_node_type_definition) {
     name = std::move(n);
     type = ct;
     constant = false;
     is_array = false;
+    inner_variable = v;
 }
 
 bool hl_definition_node::is_initialized() {
@@ -86,6 +87,10 @@ bool operator==(const hl_definition_node &lhs, const hl_definition_node &rhs) {
         ret_val &= false;
     }
 
+
+    if(lhs.inner_variable == nullptr && rhs.inner_variable == nullptr) ret_val &= true;
+    else if (lhs.inner_variable == nullptr || rhs.inner_variable == nullptr) ret_val &= false;
+    else ret_val &= *lhs.inner_variable == *rhs.inner_variable;
 
     return ret_val;
 }

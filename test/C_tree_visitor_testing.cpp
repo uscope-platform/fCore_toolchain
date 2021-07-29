@@ -30,10 +30,9 @@ TEST( cTreeVisitor, unaryExpressions) {
     std::string input_file = "test_unary_expressions.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
@@ -99,10 +98,9 @@ TEST( cTreeVisitor, multiplicativeExpressions) {
     std::string input_file = "test_multiplicative_expressions.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
 
@@ -157,10 +155,9 @@ TEST( cTreeVisitor, additiveExpressions) {
     std::string input_file = "test_additive_expressions.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
@@ -203,10 +200,9 @@ TEST( cTreeVisitor, shiftExpressions) {
     std::string input_file = "test_shift_expressions.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
@@ -249,10 +245,9 @@ TEST( cTreeVisitor, relationalExpressions) {
     std::string input_file = "test_relational_expressions.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
@@ -308,10 +303,9 @@ TEST( cTreeVisitor, equalityExpressions) {
     std::string input_file = "test_equality_expressions.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
@@ -355,10 +349,9 @@ TEST( cTreeVisitor, andBinExpressions) {
     std::string input_file = "test_andb_expressions.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
@@ -392,10 +385,9 @@ TEST( cTreeVisitor, exOrBinExpressions) {
     std::string input_file = "test_exorb_expressions.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
@@ -432,10 +424,9 @@ TEST( cTreeVisitor, orLogExpressions) {
     std::string input_file = "test_orl_expressions.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
@@ -468,10 +459,9 @@ TEST( cTreeVisitor, andLogExpressions) {
     std::string input_file = "test_andl_expressions.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
@@ -506,10 +496,9 @@ TEST( cTreeVisitor, assignmentExpressions) {
     std::string input_file = "test_assignment_expressions.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
     //std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.block_content;
@@ -553,10 +542,9 @@ TEST( cTreeVisitor, function_def) {
     std::string input_file = "test_assignment_expressions.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
     std::shared_ptr<hl_function_def_node> results = std::static_pointer_cast<hl_function_def_node>(parser.visitor.functions[0]);
@@ -608,10 +596,9 @@ TEST( cTreeVisitor, function_call) {
     std::string input_file = "test_function_call.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
     std::shared_ptr<hl_function_def_node> result = std::static_pointer_cast<hl_function_def_node>(parser.visitor.functions[0]);
@@ -655,10 +642,9 @@ TEST( cTreeVisitor, definition) {
     std::string input_file = "test_definition.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
 
@@ -678,7 +664,8 @@ TEST( cTreeVisitor, definition) {
     gs_1->set_lhs(op_1);
     gs_1->set_rhs(op_2);
 
-    std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("test",c_type_int);
+    var = std::make_shared<variable>(false, "test");
+    std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("test",c_type_int, var);
     def->set_initializer(gs_1);
     std::shared_ptr<hl_definition_node> res = std::static_pointer_cast<hl_definition_node>(parser.visitor.ext_decl[0]);
 
@@ -695,10 +682,9 @@ TEST( cTreeVisitor, returnTest) {
     std::string input_file = "test_return.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
 
@@ -742,24 +728,25 @@ TEST( cTreeVisitor, ConditionalTest) {
     std::string input_file = "test_conditional.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
     std::shared_ptr<hl_ast_conditional_node> result = std::static_pointer_cast<hl_ast_conditional_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
 
     std::shared_ptr<hl_ast_conditional_node> gold_standard = std::make_shared<hl_ast_conditional_node>();
-    std::shared_ptr<hl_definition_node> def_node = std::make_shared<hl_definition_node>("a", c_type_int);
+    std::shared_ptr<variable> var = std::make_shared<variable>(false, "a");
+    std::shared_ptr<hl_definition_node> def_node = std::make_shared<hl_definition_node>("a", c_type_int, var);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(2);
-    std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(2));
+    var = std::make_shared<variable>(true, std::to_string(2));
     op_1->set_variable(var);
 
     def_node->set_initializer(op_1);
     gold_standard->set_if_block({def_node});
-    def_node = std::make_shared<hl_definition_node>("a", c_type_int);
+    var = std::make_shared<variable>(false, "a");
+    def_node = std::make_shared<hl_definition_node>("a", c_type_int, var);
     op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(3);
     var = std::make_shared<variable>(true, std::to_string(3));
@@ -795,10 +782,9 @@ TEST( cTreeVisitor, loopTest) {
     std::string input_file = "test_loop_ast.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
     std::shared_ptr<hl_ast_loop_node> result = std::static_pointer_cast<hl_ast_loop_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[3]);
@@ -830,7 +816,8 @@ TEST( cTreeVisitor, loopTest) {
     loop_body->set_rhs(body_add_expr);
     gold_standard->set_loop_content({loop_body});
     // LOOP INIT CONDITION
-    std::shared_ptr<hl_definition_node> init_def = std::make_shared<hl_definition_node>("i", c_type_int);
+    var = std::make_shared<variable>(false, "i");
+    std::shared_ptr<hl_definition_node> init_def = std::make_shared<hl_definition_node>("i", c_type_int, var);
     std::shared_ptr<hl_ast_operand> def_val = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     def_val->set_immediate(0);
     var = std::make_shared<variable>(true, std::to_string(0));
@@ -878,25 +865,26 @@ TEST( cTreeVisitor, array_test){
     std::string input_file = "test_array.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
+
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
     std::vector<std::shared_ptr<hl_ast_node>> result = std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body();
 
     std::vector<std::shared_ptr<hl_ast_node>> gold_standard;
-
-    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("array_test", c_type_int);
+    std::shared_ptr<variable> var = std::make_shared<variable>(false, "array_test");
+    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("array_test", c_type_int, var);
     def_1->set_is_array(true);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(5);
-    std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(5));
+    var = std::make_shared<variable>(true, std::to_string(5));
     op_1->set_variable(var);
 
     def_1->set_dimensions({op_1});
-    std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("test_matrix", c_type_int);
+    var = std::make_shared<variable>(false, "test_matrix");
+    std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("test_matrix", c_type_int, var);
     def_2->set_is_array(true);
     op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(2);
@@ -904,8 +892,10 @@ TEST( cTreeVisitor, array_test){
     op_1->set_variable(var);
 
     def_2->set_dimensions({op_1, op_1});
-
-    std::shared_ptr<hl_definition_node> def_3 = std::make_shared<hl_definition_node>("b", c_type_int);
+    var = std::make_shared<variable>(false, "b");
+    var->type = variable_output_type;
+    var->set_bound_reg(4);
+    std::shared_ptr<hl_definition_node> def_3 = std::make_shared<hl_definition_node>("b", c_type_int, var);
 
     std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(expr_add);
     op_1 = std::make_shared<hl_ast_operand>(array_operand);

@@ -30,6 +30,15 @@
 #define TYPE_MEMORY 2
 #define TYPE_REGULAR 3
 
+typedef enum {
+    variable_input_type = 0,
+    variable_output_type = 1,
+    variable_memory_type = 2,
+    variable_regular_type = 3
+}variable_type_t;
+
+
+
 class variable {
 public:
     variable();
@@ -48,7 +57,7 @@ public:
     [[nodiscard]] uint32_t get_value() const;
     friend bool operator==(const variable& lhs, const variable& rhs);
 
-    int type;
+    variable_type_t type;
     unsigned int first_occurrence;
     unsigned int last_occurrence;
 

@@ -152,7 +152,7 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_expr(const std::shared_ptr<h
 
 std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_def(const std::shared_ptr<hl_ast_node> &node) {
     std::shared_ptr<hl_definition_node> orig = std::static_pointer_cast<hl_definition_node>(node);
-    std::shared_ptr<hl_definition_node> copied_obj = std::make_shared<hl_definition_node>(orig->get_name(), orig->get_type());
+    std::shared_ptr<hl_definition_node> copied_obj = std::make_shared<hl_definition_node>(orig->get_name(), orig->get_type(), orig->get_variable());
     copied_obj->set_constant(orig->is_constant());
     if(orig->get_initializer() != nullptr){
         std::shared_ptr<hl_ast_node> initializer;

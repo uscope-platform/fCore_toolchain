@@ -25,10 +25,9 @@ TEST( cFrontend, preprocessor_decomment) {
     std::string input_file = "test_preproc_comments.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var,result_def);
+    C_language_parser parser(ifs,result_def);
     parser.pre_process({}, {});
 
     define def_1(0, "TEST", "15");
@@ -48,32 +47,31 @@ TEST( cFrontend, preprocessor_pragma) {
     std::string input_file = "test_preproc_pragmas.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
+    std::unordered_map<std::string, std::shared_ptr<variable>> iom_map = parser.preproc->get_iom_map();
 
     std::shared_ptr<variable_map> gold_standard = std::make_shared<variable_map>();
     std::string type = "output";
     std::string var_name = "test";
     std::string reg = "10";
     std::shared_ptr<variable> v = std::make_shared<variable>(false, var_name);
-    v->type = type == "output" ? TYPE_OUTPUT : TYPE_INPUT;
+    v->type = type == "output" ? variable_output_type : variable_input_type;
     v->set_bound_reg(std::stoul(reg));
-    gold_standard->insert(var_name, v);
 
-    ASSERT_EQ(*result_var->at("test"), *gold_standard->at("test"));
+
+    ASSERT_EQ(*iom_map["test"], *v);
 }
 
 TEST( cFrontend, preprocessor_define) {
     std::string input_file = "test_preproc_define.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var,result_def);
+    C_language_parser parser(ifs,result_def);
     parser.pre_process({}, {});
 
     std::shared_ptr<define_map> gold_standard = std::make_shared<define_map>();
@@ -90,11 +88,10 @@ TEST( cFrontend, preprocessor_include) {
     std::string input_file = "test_preproc_include.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
 
-    C_language_parser parser(ifs, result_var,result_def);
+    C_language_parser parser(ifs,result_def);
     parser.pre_process({}, {"include_test.h"});
     std::string result = parser.preproc->get_preprocessed_file();
     std::string gold_standard = "#define TEST\n#define test_include 42\n\n";
@@ -105,9 +102,8 @@ TEST( cFrontend, preprocessor_include_fail) {
     std::string input_file = "test_preproc_include_fail.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-    C_language_parser parser(ifs, result_var,result_def);
+    C_language_parser parser(ifs,result_def);
     EXPECT_THROW(parser.pre_process({}, {}), std::runtime_error);
 
 }

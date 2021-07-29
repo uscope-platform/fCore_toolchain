@@ -24,7 +24,7 @@ variable::variable() {
     name = "invalid-variable";
     constant = false;
     used = {false};
-    type = TYPE_REGULAR;
+    type = variable_regular_type;
     float_const = false;
     first_occurrence = 32768;
     last_occurrence = 0;
@@ -37,7 +37,7 @@ variable::variable(bool const_status, std::string text) {
     name = std::move(text);
     constant = const_status;
     used = {false};
-    type = TYPE_REGULAR;
+    type = variable_regular_type;
     float_const = false;
     first_occurrence = 32768;
     last_occurrence = 0;
@@ -51,7 +51,7 @@ variable::variable(bool const_status, std::string text, bool float_status) {
     name = std::move(text);
     constant = const_status;
     used = {false};
-    type = TYPE_REGULAR;
+    type = variable_regular_type;
     float_const = float_status;
     first_occurrence = 32768;
     last_occurrence = 0;

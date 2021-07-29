@@ -33,11 +33,12 @@
 
 class C_pre_processor {
 public:
-    explicit C_pre_processor(std::istream &file,std::shared_ptr<variable_map> &new_varmap,  std::shared_ptr<define_map> &defmap);
+    explicit C_pre_processor(std::istream &file,  std::shared_ptr<define_map> &defmap);
     std::string get_preprocessed_file();
     void set_relative_includes(std::vector<std::string> list);
     void set_absolute_includes(std::vector<std::string> list);
     void process_file();
+    std::unordered_map<std::string, std::shared_ptr<variable>> get_iom_map() { return iom_map;};
 
 private:
 
@@ -50,8 +51,8 @@ private:
     std::vector<std::string> allowed_absolute_includes = {};
     std::vector<std::string> allowed_relative_includes = {};
     std::string working_content;
-    std::shared_ptr<variable_map> vmap;
     std::shared_ptr<define_map> dmap;
+    std::unordered_map<std::string, std::shared_ptr<variable>> iom_map;
 };
 
 

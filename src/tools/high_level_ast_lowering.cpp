@@ -18,9 +18,9 @@
 
 #include "tools/high_level_ast_lowering.hpp"
 
-high_level_ast_lowering::high_level_ast_lowering(std::shared_ptr<variable_map> &m) {
+high_level_ast_lowering::high_level_ast_lowering() {
     output_ast = std::make_shared<ll_ast_node>(ll_type_program_head);
-    var_map = m;
+    var_map = std::make_shared<variable_map>();
     expr_instruction_mapping = {
             {expr_add, "add"},
             {expr_sub, "sub"},

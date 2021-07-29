@@ -21,10 +21,9 @@
 
 #include <utility>
 
-C_pre_processor::C_pre_processor(std::istream &file, std::shared_ptr<variable_map> &varmap, std::shared_ptr<define_map> &defmap) {
+C_pre_processor::C_pre_processor(std::istream &file, std::shared_ptr<define_map> &defmap) {
     working_content = std::string((std::istreambuf_iterator<char>(file)),std::istreambuf_iterator<char>());
     dmap = defmap;
-    vmap = varmap;
 }
 
 std::string  C_pre_processor::get_preprocessed_file() {
@@ -91,13 +90,15 @@ void C_pre_processor::process_pragmas(const std::string& line) {
         std::string reg = match.str(3);
         std::shared_ptr<variable> v = std::make_shared<variable>(false, var_name);
         if(type == "output")
-            v->type = TYPE_OUTPUT;
+            v->type = variable_output_type;
         else if(type == "input")
-            v->type = TYPE_INPUT;
+            v->type = variable_input_type;
         else if(type == "memory")
-            v->type = TYPE_MEMORY;
+            v->type = variable_memory_type;
+
+
         v->set_bound_reg(std::stoul(reg));
-        vmap->insert(var_name, v);
+        iom_map[var_name] = v;
     }
 }
 
@@ -121,7 +122,8 @@ std::string C_pre_processor::process_rel_includes(const std::string& line) {
             if(std::find(allowed_relative_includes.begin(), allowed_relative_includes.end(), target) != allowed_relative_includes.end()){
 
                 std::ifstream ifs(std::filesystem::canonical("./" + target));
-                C_pre_processor include_preproc(ifs, vmap, dmap);
+                C_pre_processor include_preproc(ifs, dmap);
+                iom_map.insert(include_preproc.get_iom_map().begin(), iom_map.end());
                 include_preproc.set_relative_includes(allowed_relative_includes);
                 include_preproc.set_absolute_includes(allowed_absolute_includes);
                 include_preproc.process_file();

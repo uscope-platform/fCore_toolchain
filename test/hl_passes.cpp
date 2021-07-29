@@ -40,10 +40,9 @@ TEST(HlPassesTest, divisionImplementation) {
     std::string input_file = "test_division_implementation.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
 
@@ -64,7 +63,8 @@ TEST(HlPassesTest, divisionImplementation) {
     std::shared_ptr<hl_expression_node> rec_exp = std::make_shared<hl_expression_node>(expr_reciprocal);
     rec_exp->set_rhs(op_1);
 
-    std::shared_ptr<hl_definition_node> rec_def = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int);
+    var = std::make_shared<variable>(false, "intermediate_expr_0");
+    std::shared_ptr<hl_definition_node> rec_def = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int, var);
     rec_def->set_initializer(rec_exp);
 
     op_1= std::make_shared<hl_ast_operand>(integer_immediate_operand);
@@ -84,7 +84,8 @@ TEST(HlPassesTest, divisionImplementation) {
     mult_exp->set_lhs(op_1);
     mult_exp->set_rhs(op_2);
 
-    std::shared_ptr<hl_definition_node> mult_def = std::make_shared<hl_definition_node>("a", c_type_int);
+    var = std::make_shared<variable>(false, "a");
+    std::shared_ptr<hl_definition_node> mult_def = std::make_shared<hl_definition_node>("a", c_type_int, var);
     mult_def->set_initializer(mult_exp);
 
 
@@ -147,10 +148,9 @@ TEST(HlPassesTest, functionInlining) {
     std::string input_file = "test_function_inlining.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
 
@@ -165,18 +165,21 @@ TEST(HlPassesTest, functionInlining) {
     std::shared_ptr<hl_function_def_node> gold_standard = std::make_shared<hl_function_def_node>();
     gold_standard->set_name("main");
     // PARAMETERS
-    std::shared_ptr<hl_definition_node> par_1 = std::make_shared<hl_definition_node>("a", c_type_int);
-    std::shared_ptr<hl_definition_node> par_2 = std::make_shared<hl_definition_node>("b", c_type_int);
+    std::shared_ptr<variable> var = std::make_shared<variable>(false, "a");
+    std::shared_ptr<hl_definition_node> par_1 = std::make_shared<hl_definition_node>("a", c_type_int, var);
+    var = std::make_shared<variable>(false, "b");
+    std::shared_ptr<hl_definition_node> par_2 = std::make_shared<hl_definition_node>("b", c_type_int, var);
     gold_standard->set_parameters_list({par_1, par_2});
 
     std::shared_ptr<hl_ast_node> inlined_block = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
     // CALL BODY
-    std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("c", c_type_int);
+    var = std::make_shared<variable>(false, "c");
+    std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("c", c_type_int, var);
     std::shared_ptr<hl_expression_node> exadd = std::make_shared<hl_expression_node>(expr_add);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(2);
 
-    std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(2));
+    var = std::make_shared<variable>(true, std::to_string(2));
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(variable_operand);
@@ -223,10 +226,9 @@ TEST(HlPassesTest, normalization) {
     std::string input_file = "test_normalization.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
 
@@ -238,13 +240,13 @@ TEST(HlPassesTest, normalization) {
     normalization_pass p;
     std::shared_ptr<hl_ast_node> raw_result = p.process_global(parser.AST);
 
-
-    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int);
+    std::shared_ptr<variable> var = std::make_shared<variable>(false, "intermediate_expr_0");
+    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int, var);
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(4);
 
-    std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(4));
+    var = std::make_shared<variable>(true, std::to_string(4));
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
@@ -258,7 +260,10 @@ TEST(HlPassesTest, normalization) {
     ex_1->set_rhs(op_2);
     def_1->set_initializer(ex_1);
 
-    std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int);
+    var = std::make_shared<variable>(false, "a");
+    var->type = variable_output_type;
+    var->set_bound_reg(10);
+    std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int, var);
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("intermediate_expr_0");
@@ -289,10 +294,9 @@ TEST(HlPassesTest, function_elimination) {
     std::string input_file = "test_normalization.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
 
@@ -303,11 +307,12 @@ TEST(HlPassesTest, function_elimination) {
 
     std::shared_ptr<hl_ast_node> raw_result =parser.AST;
 
-    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int);
+    std::shared_ptr<variable> var = std::make_shared<variable>(false, "intermediate_expr_0");
+    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int, var);
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(4);
-    std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(4));
+    var = std::make_shared<variable>(true, std::to_string(4));
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
@@ -320,7 +325,10 @@ TEST(HlPassesTest, function_elimination) {
     ex_1->set_rhs(op_2);
     def_1->set_initializer(ex_1);
 
-    std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int);
+    var = std::make_shared<variable>(false, "a");
+    var->type = variable_output_type;
+    var->set_bound_reg(10);
+    std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int, var);
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("intermediate_expr_0");
@@ -345,55 +353,15 @@ TEST(HlPassesTest, function_elimination) {
 
 }
 
-TEST(HlPassesTest, variable_mapping_pass) {
-
-
-    std::string input_file = "test_normalization.c";
-    std::ifstream ifs(input_file);
-
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
-    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-
-    C_language_parser parser(ifs, result_var, result_def);
-    parser.pre_process({}, {});
-    parser.parse();
-
-    std::string ep = "main";
-    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
-    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map,{1,2,3,4,5,8,9,10});
-    manager.run_morphing_passes(parser.AST);
-
-    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
-
-
-    std::shared_ptr<variable_map> gold_standard = std::make_shared<variable_map>();
-    std::shared_ptr<variable> v_1 = std::make_shared<variable>(true, "6", false);
-    gold_standard->insert("6", v_1);
-    std::shared_ptr<variable> v_2 = std::make_shared<variable>(true, "5", false);
-    gold_standard->insert("5", v_2);
-    std::shared_ptr<variable> v_3 = std::make_shared<variable>(true, "4", false);
-    gold_standard->insert("4", v_3);
-    std::shared_ptr<variable> v_4 = std::make_shared<variable>(false, "intermediate_expr_0");
-    gold_standard->insert("intermediate_expr_0", v_4);
-    std::shared_ptr<variable> v_5 = std::make_shared<variable>(false, "a");
-    gold_standard->insert("a", v_5);
-
-
-    ASSERT_EQ(*variables_map, *gold_standard);
-
-
-}
-
 TEST(HlPassesTest, hl_ast_lowering) {
 
 
     std::string input_file = "test_normalization.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
 
@@ -404,7 +372,7 @@ TEST(HlPassesTest, hl_ast_lowering) {
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
 
-    high_level_ast_lowering tranlator(variables_map);
+    high_level_ast_lowering tranlator;
 
     tranlator.set_input_ast(normalized_ast);
     tranlator.translate();
@@ -437,10 +405,10 @@ TEST(HlPassesTest, intrinsics_implementation) {
     std::string input_file = "test_intrinsics_implementation.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> result_var = std::make_shared<variable_map>();
+
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_var, result_def);
+    C_language_parser parser(ifs, result_def);
     parser.pre_process({}, {});
     parser.parse();
 
@@ -452,12 +420,12 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
 
-
-    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int);
+    std::shared_ptr<variable> var = std::make_shared<variable>(false, "intermediate_expr_0");
+    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int, var);
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(4);
-    std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(4));
+    var = std::make_shared<variable>(true, std::to_string(4));
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
@@ -470,7 +438,10 @@ TEST(HlPassesTest, intrinsics_implementation) {
     ex_1->set_rhs(op_2);
     def_1->set_initializer(ex_1);
 
-    std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int);
+    var = std::make_shared<variable>(false, "a");
+    var->type = variable_output_type;
+    var->set_bound_reg(10);
+    std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int, var);
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("intermediate_expr_0");
@@ -487,23 +458,28 @@ TEST(HlPassesTest, intrinsics_implementation) {
     ex_1->set_rhs(op_2);
     def_2->set_initializer(ex_1);
 
-
-    std::shared_ptr<hl_definition_node> def_3 = std::make_shared<hl_definition_node>("b", c_type_float);
+    var = std::make_shared<variable>(false, "b");
+    std::shared_ptr<hl_definition_node> def_3 = std::make_shared<hl_definition_node>("b", c_type_float, var);
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("a");
     var = std::make_shared<variable>(false, "a");
+    var->type = variable_output_type;
+    var->set_bound_reg(10);
     op_1->set_variable(var);
 
     ex_1= std::make_shared<hl_expression_node>(expr_itf);
     ex_1->set_rhs(op_1);
     def_3->set_initializer(ex_1);
 
-    std::shared_ptr<hl_definition_node> def_4 = std::make_shared<hl_definition_node>("c", c_type_float);
+    var = std::make_shared<variable>(false, "c");
+    std::shared_ptr<hl_definition_node> def_4 = std::make_shared<hl_definition_node>("c", c_type_float, var);
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("a");
     var = std::make_shared<variable>(false, "a");
+    var->type = variable_output_type;
+    var->set_bound_reg(10);
     op_1->set_variable(var);
 
     op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);

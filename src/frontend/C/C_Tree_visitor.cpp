@@ -17,6 +17,8 @@
 
 #include "frontend/C/C_Tree_visitor.hpp"
 
+#include <utility>
+
 
 C_Tree_visitor::C_Tree_visitor() {
     in_function_declaration = false;
@@ -68,7 +70,15 @@ void C_Tree_visitor::exitFunctionDefinition(C_parser::C_grammarParser::FunctionD
 void C_Tree_visitor::exitParameterDeclaration(C_parser::C_grammarParser::ParameterDeclarationContext *ctx) {
     std::string id_name = ctx->declarator()->directDeclarator()->Identifier()->getText();
     std::string type = ctx->typeSpecifier()->getText();
-    std::shared_ptr<hl_definition_node> identifier = std::make_shared<hl_definition_node>(id_name, hl_ast_node::string_to_type(type));
+
+    std::shared_ptr<variable> var;
+    if(iom_map.count(id_name)>0){
+        var = iom_map[id_name];
+    } else {
+        var = std::make_shared<variable>(false, id_name);
+    }
+
+    std::shared_ptr<hl_definition_node> identifier = std::make_shared<hl_definition_node>(id_name, hl_ast_node::string_to_type(type), var);
     if(in_function_declaration) {
         parameters_list.push_back(identifier);
     }
@@ -86,7 +96,15 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
     std::string type_name = ctx->typeSpecifier()->getText();
     std::string raw_name = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->getText();
     std::string name = raw_name.substr(0, raw_name.find('['));
-    std::shared_ptr<hl_definition_node> node = std::make_shared<hl_definition_node>(name, hl_ast_node::string_to_type(type_name));
+
+    std::shared_ptr<variable> var;
+    if(iom_map.count(name)>0){
+        var = iom_map[name];
+    } else {
+        var = std::make_shared<variable>(false, name);
+    }
+
+    std::shared_ptr<hl_definition_node> node = std::make_shared<hl_definition_node>(name, hl_ast_node::string_to_type(type_name), var);
     node->set_constant(is_const);
 
     if(in_array_declaration){
@@ -178,11 +196,17 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
         return;
     } else if(ctx->Identifier() != nullptr){
         operand = std::make_shared<hl_ast_operand>( variable_operand);
+        std::string var_name = ctx->Identifier()->getText();
+        operand->set_name(var_name);
 
-        std::shared_ptr<variable> var = std::make_shared<variable>(false, ctx->Identifier()->getText());
-        operand->set_variable(var);
+        if(iom_map.count(var_name)>0){
+            operand->set_variable(iom_map[var_name]);
+        } else {
+            std::shared_ptr<variable> var = std::make_shared<variable>(false, var_name);
+            operand->set_variable(var);
+        }
 
-        operand->set_name(ctx->Identifier()->getText());
+
     } else if(ctx->constant() != nullptr){
         if(ctx->constant()->FloatingConstant() != nullptr){
             operand = std::make_shared<hl_ast_operand>( float_immediate_operand);
@@ -507,6 +531,9 @@ void C_Tree_visitor::enterForContent(C_parser::C_grammarParser::ForContentContex
     in_foor_loop_block = true;
 }
 
+void C_Tree_visitor::set_iom_map(std::unordered_map<std::string, std::shared_ptr<variable>> iom) {
+    iom_map = std::move(iom);
+}
 
 
 

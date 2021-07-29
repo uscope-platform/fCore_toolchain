@@ -24,14 +24,12 @@
 using namespace antlr4;
 
 C_language_parser::C_language_parser(){
-    vmap = std::make_shared<variable_map>();
     dmap = std::make_shared<define_map>();
 }
 
-C_language_parser::C_language_parser(std::istream &stream, std::shared_ptr<variable_map> &existing_varmap, std::shared_ptr<define_map> &existing_defmap) {
-    vmap = existing_varmap;
+C_language_parser::C_language_parser(std::istream &stream, std::shared_ptr<define_map> &existing_defmap) {
     dmap = existing_defmap;
-    preproc = std::make_unique<C_pre_processor>(stream, vmap,dmap);
+    preproc = std::make_unique<C_pre_processor>(stream,dmap);
 
 }
 
@@ -41,6 +39,7 @@ void C_language_parser::pre_process(const std::vector<std::string> &abs_includes
     preproc->set_relative_includes(rel_includes);
     preproc->process_file();
     preprocessed_content = preproc->get_preprocessed_file();
+    visitor.set_iom_map( preproc->get_iom_map());
 }
 
 void C_language_parser::parse() {

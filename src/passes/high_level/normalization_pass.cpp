@@ -139,7 +139,8 @@ normalization_pass::extract_intermediate_expression(std::shared_ptr<hl_expressio
 
     std::string name = "intermediate_expr_" + std::to_string(intermediate_ordinal);
     intermediate_ordinal++;
-    std::shared_ptr<hl_definition_node> intermediate_def = std::make_shared<hl_definition_node>(name, expr_type);
+    std::shared_ptr<variable> var = std::make_shared<variable>(false, name);
+    std::shared_ptr<hl_definition_node> intermediate_def = std::make_shared<hl_definition_node>(name, expr_type, var);
 
     intermediate_def->set_initializer(std::static_pointer_cast<hl_expression_node>(n));
 
@@ -148,7 +149,7 @@ normalization_pass::extract_intermediate_expression(std::shared_ptr<hl_expressio
     std::shared_ptr<hl_ast_operand> ret = std::make_shared<hl_ast_operand>(variable_operand);
     ret->set_name(name);
     
-    std::shared_ptr<variable> var = std::make_shared<variable>(false, name);
+    var = std::make_shared<variable>(false, name);
     ret->set_variable(var);
 
     return ret;

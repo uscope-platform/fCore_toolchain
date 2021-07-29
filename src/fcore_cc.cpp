@@ -24,7 +24,7 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes, bool
     std::shared_ptr<define_map> defines_map = std::make_shared<define_map>();
     error_code = "";
     try{
-        C_language_parser target_parser(input, variables_map, defines_map);
+        C_language_parser target_parser(input, defines_map);
         target_parser.pre_process({}, {});
         target_parser.parse();
         hl_ast = target_parser.AST;
@@ -32,7 +32,7 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes, bool
         hl_manager = create_hl_pass_manager(ep, variables_map,{});
         hl_manager.run_morphing_passes(hl_ast);
 
-        high_level_ast_lowering tranlator(variables_map);
+        high_level_ast_lowering tranlator;
 
         tranlator.set_input_ast(hl_ast);
         tranlator.translate();

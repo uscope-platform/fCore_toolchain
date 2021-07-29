@@ -20,13 +20,14 @@
 
 #include "data_structures/high_level_ast/hl_ast_node.hpp"
 #include "data_structures/high_level_ast/hl_expression_node.hpp"
+#include "tools/variable.hpp"
 
 #include <utility>
 #include <string>
 
 class hl_definition_node : public hl_ast_node{
 public:
-    hl_definition_node(std::string n, c_types_t ct);
+    hl_definition_node(std::string n, c_types_t ct, std::shared_ptr<variable> v);
     void set_name(std::string name);
     std::string get_name(){ return name;};
     c_types_t get_type(){ return type;};
@@ -41,6 +42,8 @@ public:
     std::vector<std::shared_ptr<hl_ast_node>> get_dimensions();
     void set_dimensions(std::vector<std::shared_ptr<hl_ast_node>> dim);
 
+    std::shared_ptr<variable> get_variable() {return inner_variable;};
+
     std::string pretty_print() override;
     bool is_terminal() override {
         return true;
@@ -54,6 +57,7 @@ protected:
     c_types_t type;
     std::shared_ptr<hl_ast_node> initializer;
     bool is_array;
+    std::shared_ptr<variable> inner_variable;
     std::vector<std::shared_ptr<hl_ast_node>> dimensions;
 };
 
