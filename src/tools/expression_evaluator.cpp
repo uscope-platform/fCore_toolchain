@@ -65,10 +65,18 @@ expression_evaluator::evaluate_unary_expression(std::shared_ptr<hl_expression_no
         if(rhs->get_type() == float_immediate_operand){
             float operand = rhs->get_float_val();
             retval = std::make_shared<hl_ast_operand>(float_immediate_operand);
+
+            std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(operand), true);
+            retval->set_variable(var);
+
             retval->set_immediate(evaluate_unary_expr_f(operand, expression->get_type()));
         } else if(rhs->get_type()==integer_immediate_operand){
             int operand = rhs->get_int_value();
             retval = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+
+            std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(operand));
+            retval->set_variable(var);
+
             retval->set_immediate(evaluate_unary_expr_i(operand, expression->get_type()));
         }
     }
@@ -99,12 +107,24 @@ expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_
         int op_a = lhs->get_int_value();
         int op_b = rhs->get_int_value();
         retval = std::make_shared<hl_ast_operand>(integer_immediate_operand);
-        retval->set_immediate(evaluate_regular_expr_i(op_a, op_b, expression->get_type()));
+
+        int operand = evaluate_regular_expr_i(op_a, op_b, expression->get_type());
+
+        std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(operand));
+        retval->set_variable(var);
+
+        retval->set_immediate(operand);
     } else {
         float op_a = lhs->get_float_val();
         float op_b = rhs->get_float_val();
         retval = std::make_shared<hl_ast_operand>(float_immediate_operand);
-        retval->set_immediate(evaluate_regular_expr_f(op_a, op_b, expression->get_type()));
+
+        float operand = evaluate_regular_expr_f(op_a, op_b, expression->get_type());
+
+        std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(operand), true);
+        retval->set_variable(var);
+
+        retval->set_immediate(operand);
     }
 
     return retval;

@@ -67,6 +67,11 @@ bool operator==(const hl_ast_operand &lhs, const hl_ast_operand &rhs) {
     ret_val &= lhs.integer_imm == rhs.integer_imm;
     ret_val &= lhs.operand_type == rhs.operand_type;
     ret_val &= lhs.node_type == rhs.node_type;
+
+    if(lhs.inner_variable == nullptr && rhs.inner_variable == nullptr) ret_val &= true;
+    else if (lhs.inner_variable == nullptr || rhs.inner_variable == nullptr) ret_val &= false;
+    else ret_val &= *lhs.inner_variable == *rhs.inner_variable;
+
     if(lhs.array_index != nullptr && rhs.array_index != nullptr)
         ret_val &= hl_ast_node::compare_content_by_type(lhs.array_index, rhs.array_index);
     else if(lhs.array_index == nullptr && rhs.array_index == nullptr)
@@ -112,4 +117,12 @@ void hl_ast_operand::set_array_index(std::shared_ptr<hl_ast_node> idx) {
 
 void hl_ast_operand::set_type(operand_type_t type) {
     operand_type = type;
+}
+
+void hl_ast_operand::set_variable(std::shared_ptr<variable> v) {
+    inner_variable = std::move(v);
+}
+
+std::shared_ptr<variable> hl_ast_operand::get_variable() {
+    return inner_variable;
 }

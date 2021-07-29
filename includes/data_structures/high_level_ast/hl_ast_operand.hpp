@@ -19,6 +19,7 @@
 #define FCORE_TOOLCHAIN_HL_AST_OPERAND_HPP
 
 #include "hl_ast_node.hpp"
+#include "tools/variable.hpp"
 
 #include <string>
 
@@ -45,9 +46,12 @@ public:
     void set_type(operand_type_t type);
     std::shared_ptr<hl_ast_node> get_array_index();
     void set_array_index(std::shared_ptr<hl_ast_node> idx);
-    bool is_terminal() override {
-        return true;
-    }
+
+    void set_variable(std::shared_ptr<variable> v);
+    std::shared_ptr<variable> get_variable();
+
+
+    bool is_terminal() override {return true;}
     std::string pretty_print() override;
     operator std::string();
     friend bool operator==(const hl_ast_operand& lhs, const hl_ast_operand& rhs);
@@ -57,6 +61,7 @@ private:
     std::shared_ptr<hl_ast_node> array_index;
     int integer_imm;
     float float_imm;
+    std::shared_ptr<variable> inner_variable;
     std::string string_imm;
 };
 

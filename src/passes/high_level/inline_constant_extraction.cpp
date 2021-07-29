@@ -90,6 +90,10 @@ inline_constant_extraction::process_expr_side(std::shared_ptr<hl_ast_operand>& e
         def->set_initializer(element);
         std::shared_ptr<hl_ast_operand> var_op = std::make_shared<hl_ast_operand>(variable_operand);
         var_op->set_name(var_name);
+
+        std::shared_ptr<variable> var = std::make_shared<variable>(false, var_name);
+        var_op->set_variable(var);
+
         retval.insert(retval.end(), {var_op, def});
     } else if(element->get_type() == integer_immediate_operand){
         std::string var_name = "inlined_variable_"+std::to_string(n_var);
@@ -97,6 +101,10 @@ inline_constant_extraction::process_expr_side(std::shared_ptr<hl_ast_operand>& e
         n_var++;
         def->set_initializer(element);
         std::shared_ptr<hl_ast_operand> var_op = std::make_shared<hl_ast_operand>(variable_operand);
+
+        std::shared_ptr<variable> var = std::make_shared<variable>(false, var_name);
+        var_op->set_variable(var);
+
         var_op->set_name(var_name);
         retval.insert(retval.end(), {var_op, def});
     } else{

@@ -22,6 +22,7 @@
 #include "data_structures/high_level_ast/hl_expression_node.hpp"
 #include "tools/variable_map.hpp"
 #include "tools/define_map.hpp"
+#include "tools/variable.hpp"
 #include "frontend/C/C_language_parser.hpp"
 #include "passes/hl_passes.hpp"
 #include "passes/high_level/function_mapping.hpp"
@@ -48,7 +49,7 @@ TEST(HlPassesTest, divisionImplementation) {
 
     std::string ep = "main";
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
-    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map, {1,2,3,4,5,8,9,10,12});
+    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map, {1,2,3,4,5,8,9,10});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> result = parser.AST;
@@ -56,6 +57,9 @@ TEST(HlPassesTest, divisionImplementation) {
 
     std::shared_ptr<hl_ast_operand> op_1= std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(6);
+
+    std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(6));
+    op_1->set_variable(var);
 
     std::shared_ptr<hl_expression_node> rec_exp = std::make_shared<hl_expression_node>(expr_reciprocal);
     rec_exp->set_rhs(op_1);
@@ -66,8 +70,15 @@ TEST(HlPassesTest, divisionImplementation) {
     op_1= std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(4);
 
+    var = std::make_shared<variable>(true, std::to_string(4));
+    op_1->set_variable(var);
+
+
     std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(variable_operand);
     op_2->set_name("intermediate_expr_0");
+
+    var = std::make_shared<variable>(false, "intermediate_expr_0");
+    op_2->set_variable(var);
 
     std::shared_ptr<hl_expression_node> mult_exp = std::make_shared<hl_expression_node>(expr_mult);
     mult_exp->set_lhs(op_1);
@@ -145,7 +156,7 @@ TEST(HlPassesTest, functionInlining) {
 
     std::string ep = "main";
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
-    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map,{1,2,3,4,5,8,9,10,12});
+    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map,{1,2,3,4,5,8,9,10});
 
     manager.run_morphing_passes(parser.AST);
 
@@ -164,8 +175,16 @@ TEST(HlPassesTest, functionInlining) {
     std::shared_ptr<hl_expression_node> exadd = std::make_shared<hl_expression_node>(expr_add);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(2);
+
+    std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(2));
+    op_1->set_variable(var);
+
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(variable_operand);
     op_2->set_name("t");
+
+    var = std::make_shared<variable>(false, "t");
+    op_2->set_variable(var);
+
     exadd->set_rhs(op_2);
     exadd->set_lhs(op_1);
     def->set_initializer(exadd);
@@ -173,8 +192,17 @@ TEST(HlPassesTest, functionInlining) {
     exadd = std::make_shared<hl_expression_node>(expr_add);
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("c");
+
+    var = std::make_shared<variable>(false, "c");
+    op_1->set_variable(var);
+
+
     op_2 = std::make_shared<hl_ast_operand>(variable_operand);
     op_2->set_name("t");
+
+    var = std::make_shared<variable>(false, "t");
+    op_2->set_variable(var);
+
     exadd->set_rhs(op_2);
     exadd->set_lhs(op_1);
 
@@ -204,7 +232,7 @@ TEST(HlPassesTest, normalization) {
 
     std::string ep = "main";
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
-    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map,{1,2,3,4,5,8,9,10,12});
+    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map,{1,2,3,4,5,8,9,10});
     manager.run_morphing_passes(parser.AST);
 
     normalization_pass p;
@@ -215,8 +243,15 @@ TEST(HlPassesTest, normalization) {
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(4);
+
+    std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(4));
+    op_1->set_variable(var);
+
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(5);
+
+    var = std::make_shared<variable>(true, std::to_string(5));
+    op_2->set_variable(var);
 
     std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(expr_mult);
     ex_1->set_lhs(op_1);
@@ -227,8 +262,13 @@ TEST(HlPassesTest, normalization) {
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("intermediate_expr_0");
+    var = std::make_shared<variable>(false, "intermediate_expr_0");
+    op_1->set_variable(var);
+
     op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(6);
+    var = std::make_shared<variable>(true, std::to_string(6));
+    op_2->set_variable(var);
 
     ex_1= std::make_shared<hl_expression_node>(expr_add);
     ex_1->set_lhs(op_1);
@@ -258,7 +298,7 @@ TEST(HlPassesTest, function_elimination) {
 
     std::string ep = "main";
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
-    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map,{1,2,3,4,5,8,9,10,12});
+    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map,{1,2,3,4,5,8,9,10});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> raw_result =parser.AST;
@@ -267,8 +307,13 @@ TEST(HlPassesTest, function_elimination) {
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(4);
+    std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(4));
+    op_1->set_variable(var);
+
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(5);
+    var = std::make_shared<variable>(true, std::to_string(5));
+    op_2->set_variable(var);
 
     std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(expr_mult);
     ex_1->set_lhs(op_1);
@@ -279,8 +324,13 @@ TEST(HlPassesTest, function_elimination) {
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("intermediate_expr_0");
+    var = std::make_shared<variable>(false, "intermediate_expr_0");
+    op_1->set_variable(var);
+
     op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(6);
+    var = std::make_shared<variable>(true, std::to_string(6));
+    op_2->set_variable(var);
 
     ex_1= std::make_shared<hl_expression_node>(expr_add);
     ex_1->set_lhs(op_1);
@@ -310,7 +360,7 @@ TEST(HlPassesTest, variable_mapping_pass) {
 
     std::string ep = "main";
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
-    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map,{1,2,3,4,5,8,9,10,12});
+    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map,{1,2,3,4,5,8,9,10});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -349,7 +399,7 @@ TEST(HlPassesTest, hl_ast_lowering) {
 
     std::string ep = "main";
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
-    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map,{1,2,3,4,5,8,9,10,12});
+    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map,{1,2,3,4,5,8,9,10});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -397,7 +447,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
     std::string ep = "main";
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
-    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map,{1,2,3,4,5,8,9,10,12});
+    hl_pass_manager manager = create_hl_pass_manager(ep, variables_map,{1,2,3,4,5,8,9,10});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -407,8 +457,13 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(4);
+    std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(4));
+    op_1->set_variable(var);
+
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(5);
+    var = std::make_shared<variable>(true, std::to_string(5));
+    op_2->set_variable(var);
 
     std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(expr_mult);
     ex_1->set_lhs(op_1);
@@ -419,8 +474,13 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("intermediate_expr_0");
+    var = std::make_shared<variable>(false, "intermediate_expr_0");
+    op_1->set_variable(var);
+
     op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(6);
+    var = std::make_shared<variable>(true, std::to_string(6));
+    op_2->set_variable(var);
 
     ex_1= std::make_shared<hl_expression_node>(expr_add);
     ex_1->set_lhs(op_1);
@@ -432,6 +492,8 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("a");
+    var = std::make_shared<variable>(false, "a");
+    op_1->set_variable(var);
 
     ex_1= std::make_shared<hl_expression_node>(expr_itf);
     ex_1->set_rhs(op_1);
@@ -441,8 +503,13 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("a");
+    var = std::make_shared<variable>(false, "a");
+    op_1->set_variable(var);
+
     op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(100);
+    var = std::make_shared<variable>(true, std::to_string(100));
+    op_2->set_variable(var);
 
     ex_1= std::make_shared<hl_expression_node>(expr_satp);
     ex_1->set_lhs(op_1);

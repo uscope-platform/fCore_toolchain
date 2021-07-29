@@ -178,15 +178,27 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
         return;
     } else if(ctx->Identifier() != nullptr){
         operand = std::make_shared<hl_ast_operand>( variable_operand);
+
+        std::shared_ptr<variable> var = std::make_shared<variable>(false, ctx->Identifier()->getText());
+        operand->set_variable(var);
+
         operand->set_name(ctx->Identifier()->getText());
     } else if(ctx->constant() != nullptr){
         if(ctx->constant()->FloatingConstant() != nullptr){
             operand = std::make_shared<hl_ast_operand>( float_immediate_operand);
             std::string constant = ctx->constant()->FloatingConstant()->getText();
+
+            std::shared_ptr<variable> var = std::make_shared<variable>(true, constant, true);
+            operand->set_variable(var);
+
             operand->set_immediate(std::stof(constant));
         } else if(ctx->constant()->IntegerConstant() != nullptr){
             operand = std::make_shared<hl_ast_operand>(integer_immediate_operand);
             std::string constant = ctx->constant()->IntegerConstant()->getText();
+
+            std::shared_ptr<variable> var = std::make_shared<variable>(true, constant);
+            operand->set_variable(var);
+
             operand->set_immediate(std::stoi(constant));
         } else if(ctx->constant()->CharacterConstant() != nullptr){
             throw std::runtime_error("character literals are not supported by the fCore toolchain");

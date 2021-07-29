@@ -23,7 +23,7 @@
 #include <utility>
 #include <regex>
 #include <iostream>
-#include "fCore_isa.hpp"
+
 
 #define TYPE_INPUT 0
 #define TYPE_OUTPUT 1

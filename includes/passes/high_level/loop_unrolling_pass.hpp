@@ -23,6 +23,7 @@
 #include "data_structures/high_level_ast/hl_ast_node.hpp"
 #include "data_structures/high_level_ast/hl_ast_loop_node.h"
 #include "tools/expression_evaluator.hpp"
+#include "tools/variable.hpp"
 
 class loop_unrolling_pass : public pass_base<hl_ast_node> {
 public:

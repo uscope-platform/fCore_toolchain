@@ -67,10 +67,9 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::sha
     manager.add_morphing_pass_group({const_fold, const_prop}); // group #-1
     manager.add_morphing_pass(std::make_shared<inline_constant_extraction>()); // pass #11
 
-    manager.add_morphing_pass(std::make_shared<hl_variable_mapping>(var_map)); // pass #12
 
     if(order.empty()){
-        manager.set_pass_order({1,2,3,4,5,6,7,8,9,10,-1, 11, 12});
+        manager.set_pass_order({1,2,3,4,5,6,7,8,9,10,-1, 11});
     } else {
         manager.set_pass_order(order);
     }
