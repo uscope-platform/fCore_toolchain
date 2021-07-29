@@ -197,7 +197,6 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
     } else if(ctx->Identifier() != nullptr){
         operand = std::make_shared<hl_ast_operand>( variable_operand);
         std::string var_name = ctx->Identifier()->getText();
-        operand->set_name(var_name);
 
         if(iom_map.count(var_name)>0){
             operand->set_variable(iom_map[var_name]);
@@ -215,7 +214,6 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
             std::shared_ptr<variable> var = std::make_shared<variable>("constant",std::stof(constant));
             operand->set_variable(var);
 
-            operand->set_immediate(std::stof(constant));
         } else if(ctx->constant()->IntegerConstant() != nullptr){
             operand = std::make_shared<hl_ast_operand>(integer_immediate_operand);
             std::string constant = ctx->constant()->IntegerConstant()->getText();
@@ -223,7 +221,6 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
             std::shared_ptr<variable> var = std::make_shared<variable>("constant", std::stoi(constant));
             operand->set_variable(var);
 
-            operand->set_immediate(std::stoi(constant));
         } else if(ctx->constant()->CharacterConstant() != nullptr){
             throw std::runtime_error("character literals are not supported by the fCore toolchain");
         }

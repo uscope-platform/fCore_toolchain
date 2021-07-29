@@ -45,7 +45,7 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes, bool
         stream_pass_manager sman;
         program_stream = sman.process_stream(program_stream);
 
-        writer.process_stream(program_stream, true);
+        writer.process_stream(program_stream, false);
 
     } catch(std::runtime_error &e){
         error_code = e.what();

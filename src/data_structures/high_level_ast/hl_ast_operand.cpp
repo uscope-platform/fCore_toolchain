@@ -22,29 +22,27 @@
 
 hl_ast_operand::hl_ast_operand(operand_type_t ot) : hl_ast_node(hl_ast_node_type_operand) {
     operand_type = ot;
-    integer_imm = 0;
-    float_imm = 0.0;
     string_imm = "";
 }
 
 void hl_ast_operand::set_name(const std::string &n) {
- name = n;
+    inner_variable->set_name(n);
 }
 
 void hl_ast_operand::set_immediate(const int &v) {
-    integer_imm = v;
+    inner_variable->set_const_i(v);
 }
 
 void hl_ast_operand::set_immediate(const float &v) {
-    float_imm = v;
+    inner_variable->set_const_f(v);
 }
 
 int hl_ast_operand::get_int_value() const {
-    return integer_imm;
+    return inner_variable->get_const_i();
 }
 
 float hl_ast_operand::get_float_val() const {
-    return float_imm;
+    return inner_variable->get_const_f();
 }
 
 void hl_ast_operand::set_string(const std::string &s) {
@@ -61,10 +59,7 @@ operand_type_t hl_ast_operand::get_type() {
 
 bool operator==(const hl_ast_operand &lhs, const hl_ast_operand &rhs) {
     bool ret_val = true;
-    ret_val &= lhs.name == rhs.name;
     ret_val &= lhs.string_imm == rhs.string_imm;
-    ret_val &= lhs.float_imm == rhs.float_imm;
-    ret_val &= lhs.integer_imm == rhs.integer_imm;
     ret_val &= lhs.operand_type == rhs.operand_type;
     ret_val &= lhs.node_type == rhs.node_type;
 
@@ -90,19 +85,19 @@ std::string hl_ast_operand::pretty_print() {
     std::string ret_val;
     switch (operand_type) {
         case integer_immediate_operand:
-            ret_val = std::to_string(integer_imm);
+            ret_val = std::to_string(inner_variable->get_const_i());
             break;
         case float_immediate_operand:
-            ret_val = std::to_string(float_imm);
+            ret_val = std::to_string(inner_variable->get_const_f());
             break;
         case variable_operand:
-            ret_val = name;
+            ret_val = inner_variable->get_name();
             break;
         case string_operand:
             ret_val = string_imm;
             break;
         case array_operand:
-            ret_val = name + '[' + array_index->pretty_print() + ']';
+            ret_val = inner_variable->get_name() + '[' + array_index->pretty_print() + ']';
     }
     return ret_val;
 }

@@ -54,8 +54,6 @@ std::shared_ptr<hl_ast_node> loop_unrolling_pass::process_loop(const std::shared
     std::shared_ptr<hl_expression_node> iter_exp = element->get_iteration_expr();
 
     std::shared_ptr<hl_ast_operand> loop_var = std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    loop_var->set_name(loop_var_name);
-    loop_var->set_immediate((int)current_loop_iteration);
 
     std::shared_ptr<variable> var = std::make_shared<variable>("constant", (int)current_loop_iteration);
     loop_var->set_variable(var);

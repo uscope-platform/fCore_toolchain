@@ -136,3 +136,31 @@ int variable::get_const_i() {
         return (int)const_f;
     }
 }
+
+std::string variable::to_str() {
+    switch (variable_type) {
+        case integer_variable:
+            return std::to_string(const_i);
+        case float_variable:
+            return std::to_string(const_f);
+        case true_variable:
+            return name;
+    }
+    return "";
+}
+
+void variable::set_const_f(float f) {
+    if(variable_type == float_variable){
+        const_f = f;
+    } else {
+        throw std::runtime_error("INTERNAL ERROR: Setting the floating point value of a non floating point variable is not allowed");
+    }
+}
+
+void variable::set_const_i(int i) {
+    if(variable_type == integer_variable){
+        const_i = i;
+    } else {
+        throw std::runtime_error("INTERNAL ERROR: Setting the integer  value of a non integer point variable is not allowed");
+    }
+}

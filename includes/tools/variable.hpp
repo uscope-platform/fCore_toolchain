@@ -48,6 +48,12 @@ public:
 
     float get_const_f();
     int get_const_i();
+    void set_const_f(float f);
+    void set_const_i(int i);
+    void set_name(std::string n){name = std::move(n);};
+    std::string get_name() {return name;};
+
+    [[nodiscard]] std::string to_str();
 
     static bool is_terminal() { return true;};
     [[nodiscard]] bool is_constant() const { return constant;};
@@ -56,7 +62,7 @@ public:
     [[nodiscard]] bool is_float() const {return float_const;};
     [[nodiscard]]  unsigned int get_bound_reg() const { return bound_register;};
     [[nodiscard]]  void set_bound_reg(unsigned int reg) { bound_register = reg;};
-    [[nodiscard]] std::string to_str() const { return name;};
+
     [[nodiscard]] uint32_t get_value() const;
     friend bool operator==(const variable& lhs, const variable& rhs);
 

@@ -90,7 +90,6 @@ inline_constant_extraction::process_expr_side(std::shared_ptr<hl_ast_operand>& e
         n_var++;
         def->set_initializer(element);
         std::shared_ptr<hl_ast_operand> var_op = std::make_shared<hl_ast_operand>(variable_operand);
-        var_op->set_name(var_name);
 
         var = std::make_shared<variable>(var_name);
         var_op->set_variable(var);
@@ -107,7 +106,6 @@ inline_constant_extraction::process_expr_side(std::shared_ptr<hl_ast_operand>& e
         var = std::make_shared<variable>( var_name);
         var_op->set_variable(var);
 
-        var_op->set_name(var_name);
         retval.insert(retval.end(), {var_op, def});
     } else{
         retval.push_back(element);

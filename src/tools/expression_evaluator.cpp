@@ -113,7 +113,6 @@ expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_
         std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
         retval->set_variable(var);
 
-        retval->set_immediate(operand);
     } else {
         float op_a = lhs->get_float_val();
         float op_b = rhs->get_float_val();
@@ -124,7 +123,6 @@ expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_
         std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
         retval->set_variable(var);
 
-        retval->set_immediate(operand);
     }
 
     return retval;

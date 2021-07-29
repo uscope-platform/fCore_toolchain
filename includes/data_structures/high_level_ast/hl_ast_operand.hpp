@@ -35,7 +35,7 @@ class hl_ast_operand : public hl_ast_node{
 public:
     explicit hl_ast_operand(operand_type_t ot);
     void set_name(const std::string &name);
-    std::string get_name() { return name;};
+    std::string get_name() { return inner_variable->get_name();};
     void set_immediate(const int &v);
     [[nodiscard]] int get_int_value() const;
     void set_immediate(const float &v);
@@ -56,11 +56,10 @@ public:
     operator std::string();
     friend bool operator==(const hl_ast_operand& lhs, const hl_ast_operand& rhs);
 private:
-    std::string name;
+
     operand_type_t operand_type;
     std::shared_ptr<hl_ast_node> array_index;
-    int integer_imm;
-    float float_imm;
+
     std::shared_ptr<variable> inner_variable;
     std::string string_imm;
 };

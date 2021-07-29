@@ -46,7 +46,6 @@ TEST( cTreeVisitor, unaryExpressions) {
     std::stack<std::shared_ptr<hl_expression_node>> gold_standard;
     // a = !b;
     std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(variable_operand);
-    op->set_name("b");
     std::shared_ptr<variable> var = std::make_shared<variable>( "b");
     op->set_variable(var);
     std::shared_ptr<hl_expression_node> gs_1 = std::make_shared<hl_expression_node>(expr_not_l);
@@ -54,7 +53,6 @@ TEST( cTreeVisitor, unaryExpressions) {
 
     // c = -~d;
     op = std::make_shared<hl_ast_operand>(variable_operand);
-    op->set_name("d");
     var = std::make_shared<variable>( "d");
     op->set_variable(var);
 
@@ -66,7 +64,6 @@ TEST( cTreeVisitor, unaryExpressions) {
 
     // e = !(~f);
     op = std::make_shared<hl_ast_operand>(variable_operand);
-    op->set_name("f");
     var = std::make_shared<variable>( "f");
     op->set_variable(var);
 
@@ -108,12 +105,10 @@ TEST( cTreeVisitor, multiplicativeExpressions) {
 
     // a = !b;
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("c");
     std::shared_ptr<variable> var = std::make_shared<variable>( "c");
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(5);
     var = std::make_shared<variable>("constant",5);
     op_2->set_variable(var);
 
@@ -124,7 +119,6 @@ TEST( cTreeVisitor, multiplicativeExpressions) {
     std::shared_ptr<hl_expression_node> gs_2 = std::make_shared<hl_expression_node>(expr_div);
     gs_2->set_lhs(gs_1);
     op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(6);
     var = std::make_shared<variable>("constant",6);
     op_2->set_variable(var);
 
@@ -133,7 +127,6 @@ TEST( cTreeVisitor, multiplicativeExpressions) {
     std::shared_ptr<hl_expression_node> gs_3 = std::make_shared<hl_expression_node>(expr_modulo);
     gs_3->set_lhs(gs_2);
     op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(3);
     var = std::make_shared<variable>("constant", 3);
     op_2->set_variable(var);
 
@@ -164,12 +157,10 @@ TEST( cTreeVisitor, additiveExpressions) {
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("c");
     std::shared_ptr<variable> var = std::make_shared<variable>("c");
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(5);
     var = std::make_shared<variable>("constant",5);
     op_2->set_variable(var);
 
@@ -180,7 +171,6 @@ TEST( cTreeVisitor, additiveExpressions) {
     std::shared_ptr<hl_expression_node> gs_2 = std::make_shared<hl_expression_node>(expr_sub);
     gs_2->set_lhs(gs_1);
     op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(6);
     var = std::make_shared<variable>("constant",6);
     op_2->set_variable(var);
 
@@ -209,12 +199,10 @@ TEST( cTreeVisitor, shiftExpressions) {
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("c");
     std::shared_ptr<variable> var = std::make_shared<variable>("c");
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(5);
     var = std::make_shared<variable>("constant",5);
     op_2->set_variable(var);
 
@@ -225,7 +213,6 @@ TEST( cTreeVisitor, shiftExpressions) {
     std::shared_ptr<hl_expression_node> gs_2 = std::make_shared<hl_expression_node>(expr_lsh);
     gs_2->set_lhs(gs_1);
     op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(6);
     var = std::make_shared<variable>("constant",6);
     op_2->set_variable(var);
 
@@ -253,12 +240,10 @@ TEST( cTreeVisitor, relationalExpressions) {
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("c");
     std::shared_ptr<variable> var = std::make_shared<variable>("c");
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(5);
     var = std::make_shared<variable>("constant",5);
     op_2->set_variable(var);
 
@@ -269,7 +254,6 @@ TEST( cTreeVisitor, relationalExpressions) {
     std::shared_ptr<hl_expression_node> gs_2 = std::make_shared<hl_expression_node>(expr_lt);
     gs_2->set_lhs(gs_1);
     op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(6);
     var = std::make_shared<variable>("constant", 6);
     op_2->set_variable(var);
     gs_2->set_rhs(op_2);
@@ -277,7 +261,6 @@ TEST( cTreeVisitor, relationalExpressions) {
     std::shared_ptr<hl_expression_node> gs_3 = std::make_shared<hl_expression_node>(expr_gte);
     gs_3->set_lhs(gs_2);
     op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(3);
     var = std::make_shared<variable>("constant",3);
     op_2->set_variable(var);
     gs_3->set_rhs(op_2);
@@ -285,7 +268,6 @@ TEST( cTreeVisitor, relationalExpressions) {
     std::shared_ptr<hl_expression_node> gs_4 = std::make_shared<hl_expression_node>(expr_lte);
     gs_4->set_lhs(gs_3);
     op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(7);
     var = std::make_shared<variable>("constant",7);
     op_2->set_variable(var);
     gs_4->set_rhs(op_2);
@@ -312,12 +294,10 @@ TEST( cTreeVisitor, equalityExpressions) {
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("c");
     std::shared_ptr<variable> var = std::make_shared<variable>("c");
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(5);
     var = std::make_shared<variable>("constant", 5);
     op_2->set_variable(var);
 
@@ -328,7 +308,6 @@ TEST( cTreeVisitor, equalityExpressions) {
     std::shared_ptr<hl_expression_node> gs_2 = std::make_shared<hl_expression_node>(expr_neq);
     gs_2->set_lhs(gs_1);
     op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(6);
     var = std::make_shared<variable>("constant",6);
     op_2->set_variable(var);
 
@@ -358,12 +337,10 @@ TEST( cTreeVisitor, andBinExpressions) {
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("c");
     std::shared_ptr<variable> var = std::make_shared<variable>("c");
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(5);
     var = std::make_shared<variable>("constant", 5);
     op_2->set_variable(var);
 
@@ -394,12 +371,10 @@ TEST( cTreeVisitor, exOrBinExpressions) {
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("c");
     std::shared_ptr<variable> var = std::make_shared<variable>("c");
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(5);
     var = std::make_shared<variable>("constant", 5);
     op_2->set_variable(var);
 
@@ -433,12 +408,10 @@ TEST( cTreeVisitor, orLogExpressions) {
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("c");
     std::shared_ptr<variable> var = std::make_shared<variable>("c");
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(5);
     var = std::make_shared<variable>("constant", 5);
     op_2->set_variable(var);
 
@@ -468,12 +441,10 @@ TEST( cTreeVisitor, andLogExpressions) {
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("c");
     std::shared_ptr<variable> var = std::make_shared<variable>("c");
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(5);
     var = std::make_shared<variable>("constant", 5);
     op_2->set_variable(var);
 
@@ -505,12 +476,10 @@ TEST( cTreeVisitor, assignmentExpressions) {
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("c");
     std::shared_ptr<variable> var = std::make_shared<variable>("c");
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(5);
     var = std::make_shared<variable>("constant", 5);
     op_2->set_variable(var);
 
@@ -519,7 +488,6 @@ TEST( cTreeVisitor, assignmentExpressions) {
     gs_1->set_rhs(op_2);
 
     std::shared_ptr<hl_ast_operand> op_3 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_3->set_name("test");
     var = std::make_shared<variable>("test");
     op_3->set_variable(var);
     std::shared_ptr<hl_expression_node> gs_2 = std::make_shared<hl_expression_node>(expr_assign);
@@ -551,12 +519,10 @@ TEST( cTreeVisitor, function_def) {
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("c");
     std::shared_ptr<variable> var = std::make_shared<variable>("c");
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(5);
     var = std::make_shared<variable>("constant", 5);
     op_2->set_variable(var);
 
@@ -565,7 +531,6 @@ TEST( cTreeVisitor, function_def) {
     gs_1->set_rhs(op_2);
 
     std::shared_ptr<hl_ast_operand> op_3 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_3->set_name("test");
     var = std::make_shared<variable>("test");
     op_3->set_variable(var);
     std::shared_ptr<hl_expression_node> gs_2 = std::make_shared<hl_expression_node>(expr_assign);
@@ -605,11 +570,9 @@ TEST( cTreeVisitor, function_call) {
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("c");
     std::shared_ptr<variable> var = std::make_shared<variable>("c");
     op_1->set_variable(var);
     std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(4);
     var = std::make_shared<variable>("constant", 4);
     op_2->set_variable(var);
 
@@ -618,7 +581,6 @@ TEST( cTreeVisitor, function_call) {
     gs_1->set_rhs(op_2);
 
     std::shared_ptr<hl_ast_operand> op_3 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_3->set_immediate(5);
     var = std::make_shared<variable>("constant", 5);
     op_3->set_variable(var);
 
@@ -651,12 +613,10 @@ TEST( cTreeVisitor, definition) {
 
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("c");
     std::shared_ptr<variable> var = std::make_shared<variable>("c");
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(5);
     var = std::make_shared<variable>("constant", 5);
     op_2->set_variable(var);
 
@@ -692,11 +652,9 @@ TEST( cTreeVisitor, returnTest) {
     std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(func_def->get_return());
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("c");
     std::shared_ptr<variable> var = std::make_shared<variable>("c");
     op_1->set_variable(var);
     std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(5);
     var = std::make_shared<variable>("constant", 5);
     op_2->set_variable(var);
 
@@ -705,7 +663,6 @@ TEST( cTreeVisitor, returnTest) {
     gs_1->set_rhs(op_2);
 
     std::shared_ptr<hl_ast_operand> op_3 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_3->set_name("test");
     var = std::make_shared<variable>("test");
     op_3->set_variable(var);
     std::shared_ptr<hl_expression_node> gs_2 = std::make_shared<hl_expression_node>(expr_assign);
@@ -739,7 +696,6 @@ TEST( cTreeVisitor, ConditionalTest) {
     std::shared_ptr<variable> var = std::make_shared<variable>("a");
     std::shared_ptr<hl_definition_node> def_node = std::make_shared<hl_definition_node>("a", c_type_int, var);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_1->set_immediate(2);
     var = std::make_shared<variable>("constant",2);
     op_1->set_variable(var);
 
@@ -748,7 +704,6 @@ TEST( cTreeVisitor, ConditionalTest) {
     var = std::make_shared<variable>("a");
     def_node = std::make_shared<hl_definition_node>("a", c_type_int, var);
     op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_1->set_immediate(3);
     var = std::make_shared<variable>("constant",3);
     op_1->set_variable(var);
 
@@ -756,12 +711,10 @@ TEST( cTreeVisitor, ConditionalTest) {
     gold_standard->set_else_block({def_node});
 
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_2->set_name("i");
     var = std::make_shared<variable>("i");
     op_2->set_variable(var);
 
     op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_1->set_immediate(0);
     var = std::make_shared<variable>("constant",0);
     op_1->set_variable(var);
 
@@ -795,19 +748,16 @@ TEST( cTreeVisitor, loopTest) {
     // LOOP BODY
     std::shared_ptr<hl_expression_node> loop_body = std::make_shared<hl_expression_node>(expr_assign);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("j");
     std::shared_ptr<variable> var = std::make_shared<variable>("j");
     op_1->set_variable(var);
 
     loop_body->set_lhs(op_1);
     std::shared_ptr<hl_expression_node> body_add_expr = std::make_shared<hl_expression_node>(expr_add);
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("a");
     var = std::make_shared<variable>( "a");
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_2->set_name("h");
     var = std::make_shared<variable>("h");
     op_2->set_variable(var);
 
@@ -819,7 +769,6 @@ TEST( cTreeVisitor, loopTest) {
     var = std::make_shared<variable>( "i");
     std::shared_ptr<hl_definition_node> init_def = std::make_shared<hl_definition_node>("i", c_type_int, var);
     std::shared_ptr<hl_ast_operand> def_val = std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    def_val->set_immediate(0);
     var = std::make_shared<variable>("constant",0);
     def_val->set_variable(var);
 
@@ -828,12 +777,10 @@ TEST( cTreeVisitor, loopTest) {
     // LOOP CONDITION
     std::shared_ptr<hl_expression_node> loop_cond = std::make_shared<hl_expression_node>(expr_lt);
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("i");
     var = std::make_shared<variable>("i");
     op_1->set_variable(var);
 
     op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(4);
     var = std::make_shared<variable>("constant",4);
     op_2->set_variable(var);
 
@@ -843,7 +790,6 @@ TEST( cTreeVisitor, loopTest) {
     // LOOP ITERATION EXPR
     std::shared_ptr<hl_expression_node> loop_iter = std::make_shared<hl_expression_node>(expr_incr_pre);
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
-    op_1->set_name("i");
     var = std::make_shared<variable>("i");
     op_1->set_variable(var);
 
@@ -878,7 +824,6 @@ TEST( cTreeVisitor, array_test){
     std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("array_test", c_type_int, var);
     def_1->set_is_array(true);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_1->set_immediate(5);
     var = std::make_shared<variable>("constant", 5);
     op_1->set_variable(var);
 
@@ -887,7 +832,6 @@ TEST( cTreeVisitor, array_test){
     std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("test_matrix", c_type_int, var);
     def_2->set_is_array(true);
     op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_1->set_immediate(2);
     var = std::make_shared<variable>("constant",2);
     op_1->set_variable(var);
 
@@ -899,25 +843,21 @@ TEST( cTreeVisitor, array_test){
 
     std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(expr_add);
     op_1 = std::make_shared<hl_ast_operand>(array_operand);
-    op_1->set_name("array_test");
     var = std::make_shared<variable>( "array_test");
     op_1->set_variable(var);
 
     //lhs
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(0);
     var = std::make_shared<variable>("constant",0);
     op_2->set_variable(var);
     op_1->set_array_index(op_2);
     ex->set_lhs(op_1);
     //rhs
     op_1 = std::make_shared<hl_ast_operand>(array_operand);
-    op_1->set_name("test_matrix");
     var = std::make_shared<variable>( "test_matrix");
     op_1->set_variable(var);
 
     op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
-    op_2->set_immediate(1);
     var = std::make_shared<variable>("constant", 1);
     op_2->set_variable(var);
 

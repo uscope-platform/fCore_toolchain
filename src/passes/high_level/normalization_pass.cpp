@@ -147,8 +147,6 @@ normalization_pass::extract_intermediate_expression(std::shared_ptr<hl_expressio
     additional_statements.push_back(intermediate_def);
 
     std::shared_ptr<hl_ast_operand> ret = std::make_shared<hl_ast_operand>(variable_operand);
-    ret->set_name(name);
-    
     var = std::make_shared<variable>( name);
     ret->set_variable(var);
 
