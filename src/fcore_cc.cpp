@@ -20,7 +20,6 @@
 
 
 fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes, bool print_debug) {
-    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
     std::shared_ptr<define_map> defines_map = std::make_shared<define_map>();
     error_code = "";
     try{
@@ -29,7 +28,7 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes, bool
         target_parser.parse();
         hl_ast = target_parser.AST;
         std::string ep = "main";
-        hl_manager = create_hl_pass_manager(ep, variables_map,{});
+        hl_manager = create_hl_pass_manager(ep,{});
         hl_manager.run_morphing_passes(hl_ast);
 
         high_level_ast_lowering tranlator;
@@ -46,7 +45,7 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes, bool
         stream_pass_manager sman;
         program_stream = sman.process_stream(program_stream);
 
-        writer.process_stream(program_stream, false);
+        writer.process_stream(program_stream, true);
 
     } catch(std::runtime_error &e){
         error_code = e.what();

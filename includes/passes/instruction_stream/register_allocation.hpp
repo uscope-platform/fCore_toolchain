@@ -33,7 +33,7 @@ public:
     std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
 private:
     std::shared_ptr<variable_map> var_map;
-    std::unordered_map<std::shared_ptr<variable>, std::shared_ptr<variable>> register_mapping;
+    std::unordered_map<std::string, std::shared_ptr<variable>> register_mapping;
     register_map reg_map;
     std::vector<bool> used;
 };

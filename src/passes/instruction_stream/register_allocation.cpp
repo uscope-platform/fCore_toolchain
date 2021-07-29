@@ -52,11 +52,11 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
         std::string s = item->to_str();
         std::regex_match(s, m, re);
         if(item->get_bound_reg() != 0){
-            register_mapping[item] = var_map->at("r"+std::to_string(item->get_bound_reg()));
-            item = register_mapping[item];
+            register_mapping[item->to_str()] = var_map->at("r"+std::to_string(item->get_bound_reg()));
+            item = register_mapping[item->to_str()];
         } else{
-            if(register_mapping.count(item)){
-                item = register_mapping[item];
+            if(register_mapping.count(item->to_str())){
+                item = register_mapping[item->to_str()];
             }else if(m.empty() && !item->is_constant()){
                 bool found = false;
                 for(int i = 0; i<16;i++){
@@ -64,8 +64,8 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
                     if(!reg_map.is_used(i, item->first_occurrence, item->last_occurrence)){
                         found = true;
                         reg_map.insert(item->to_str(), i, item->first_occurrence, item->last_occurrence);
-                        register_mapping[item] = var_map->at("r"+std::to_string(i));
-                        item = register_mapping[item];
+                        register_mapping[item->to_str()] = var_map->at("r"+std::to_string(i));
+                        item = register_mapping[item->to_str()];
                         break;
                     }
                 }

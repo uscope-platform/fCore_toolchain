@@ -32,7 +32,6 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     std::string input_file = "test_normalization.c";
     std::ifstream ifs(input_file);
 
-    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>();
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
     C_language_parser parser(ifs, result_def);
@@ -40,7 +39,7 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager hl_manager = create_hl_pass_manager(ep, variables_map,{});
+    hl_pass_manager hl_manager = create_hl_pass_manager(ep,{});
     hl_manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;

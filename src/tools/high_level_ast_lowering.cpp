@@ -20,7 +20,6 @@
 
 high_level_ast_lowering::high_level_ast_lowering() {
     output_ast = std::make_shared<ll_ast_node>(ll_type_program_head);
-    var_map = std::make_shared<variable_map>();
     expr_instruction_mapping = {
             {expr_add, "add"},
             {expr_sub, "sub"},
@@ -62,7 +61,7 @@ std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::
     switch (input->node_type) {
         case hl_ast_node_type_definition:{
             std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(input);
-            std::shared_ptr<variable> dest = var_map->at(node->get_name());
+            std::shared_ptr<variable> dest = node->get_variable();
             return translate_node(node, dest);
         }
         case hl_ast_node_type_operand:
@@ -85,7 +84,7 @@ std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::
 
 }
 
-std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest) {
+std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::shared_ptr<hl_expression_node>& input, const std::shared_ptr<variable>& dest) {
     if(input->is_unary()){
         return process_unary_expression(input,dest);
     } else{
@@ -115,7 +114,7 @@ high_level_ast_lowering::process_unary_expression(std::shared_ptr<hl_expression_
     std::string opcode = expr_instruction_mapping[op_type];
     if(!fcore_implemented_operations[op_type]) throw std::runtime_error("ERROR: The required operation is not implementable on the fCore hardware");
 
-    std::shared_ptr<variable> op_b = var_map->at(*std::static_pointer_cast<hl_ast_operand>(input->get_rhs()));
+    std::shared_ptr<variable> op_b = std::static_pointer_cast<hl_ast_operand>(input->get_rhs())->get_variable();
     std::vector<std::shared_ptr<variable>> args = {op_b, dest};
     retval = create_ast_node(fcore_op_types[opcode], args, opcode);
     return retval;
@@ -129,8 +128,8 @@ high_level_ast_lowering::process_regular_expression(std::shared_ptr<hl_expressio
     std::string opcode = expr_instruction_mapping[op_type];
     if(!fcore_implemented_operations[op_type]) throw std::runtime_error("ERROR: The required operation is not implementable on the fCore hardware");
 
-    std::shared_ptr<variable> op_a = var_map->at(*std::static_pointer_cast<hl_ast_operand>(input->get_lhs()));
-    std::shared_ptr<variable> op_b = var_map->at(*std::static_pointer_cast<hl_ast_operand>(input->get_rhs()));
+    std::shared_ptr<variable> op_a = std::static_pointer_cast<hl_ast_operand>(input->get_lhs())->get_variable();
+    std::shared_ptr<variable> op_b = std::static_pointer_cast<hl_ast_operand>(input->get_rhs())->get_variable();
     std::vector<std::shared_ptr<variable>> args = {op_a, op_b, dest};
     retval = create_ast_node(fcore_op_types[opcode], args, opcode);
     return retval;

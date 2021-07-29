@@ -18,8 +18,7 @@
 
 #include "passes/high_level/constant_propagation.hpp"
 
-constant_propagation::constant_propagation(std::shared_ptr<variable_map>  &v) : pass_base<hl_ast_node>("Constant Propagation Pass"){
-    var_map = v;
+constant_propagation::constant_propagation() : pass_base<hl_ast_node>("Constant Propagation Pass"){
 }
 
 std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_ptr<hl_ast_node> element) {
@@ -30,7 +29,7 @@ std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_pt
     for(auto & i : content){
         if(i->node_type == hl_ast_node_type_definition){
             std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(i);
-            if(var_map->count(node->get_name())>0){
+            if(node->get_variable()->type != variable_regular_type) {
                 new_content.push_back(i);
             } else if(node->get_initializer()->node_type == hl_ast_node_type_operand){
                 std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(node->get_initializer());
@@ -51,7 +50,8 @@ std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_pt
     content.reserve(new_content.size());
 
     for(auto & i : new_content){
-        content.push_back(substitute_constant(i));
+        auto new_item = substitute_constant(i);
+        content.push_back(new_item);
     }
     element->set_content(content);
     return element;

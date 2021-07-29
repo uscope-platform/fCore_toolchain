@@ -36,7 +36,7 @@ public:
     std::shared_ptr<ll_ast_node> get_output_ast() {return output_ast;};
 private:
     std::shared_ptr<ll_ast_node> translate_node(const std::shared_ptr<hl_ast_node>& input);
-    std::shared_ptr<ll_ast_node> translate_node(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest);
+    std::shared_ptr<ll_ast_node> translate_node(const std::shared_ptr<hl_expression_node>& input, const std::shared_ptr<variable>& dest);
     std::shared_ptr<ll_ast_node> translate_node(const std::shared_ptr<hl_ast_operand>& input, std::shared_ptr<variable> dest);
     std::shared_ptr<ll_ast_node> translate_node(const std::shared_ptr<hl_definition_node>& input, const std::shared_ptr<variable>& dest);
     std::shared_ptr<ll_ast_node> process_unary_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest);
@@ -46,7 +46,7 @@ private:
 
     std::shared_ptr<ll_ast_node> create_ast_node(isa_instruction_type t, std::vector<std::shared_ptr<variable>> args, const std::string& op);
     std::map<expression_type_t, std::string> expr_instruction_mapping;
-    std::shared_ptr<variable_map> var_map;
+
 };
 
 

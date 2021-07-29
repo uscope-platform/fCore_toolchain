@@ -40,7 +40,7 @@
 #include "data_structures/high_level_ast/hl_ast_node.hpp"
 
 
-static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::shared_ptr<variable_map> &var_map, std::vector<int> order){
+static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::vector<int> order){
     hl_pass_manager manager;
     std::shared_ptr<function_mapping> mapping_pass = std::make_shared<function_mapping>();
     manager.add_morphing_pass(mapping_pass);  // pass #1
@@ -62,7 +62,7 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::sha
     manager.add_morphing_pass(std::make_shared<declaration_instantiation_combining_pass>()); // pass #10
 
     std::shared_ptr<constant_folding_pass> const_fold = std::make_shared<constant_folding_pass>();
-    std::shared_ptr<constant_propagation> const_prop = std::make_shared<constant_propagation>(var_map);
+    std::shared_ptr<constant_propagation> const_prop = std::make_shared<constant_propagation>();
 
     manager.add_morphing_pass_group({const_fold, const_prop}); // group #-1
     manager.add_morphing_pass(std::make_shared<inline_constant_extraction>()); // pass #11
