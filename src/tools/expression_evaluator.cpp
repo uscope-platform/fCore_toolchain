@@ -66,7 +66,7 @@ expression_evaluator::evaluate_unary_expression(std::shared_ptr<hl_expression_no
             float operand = rhs->get_float_val();
             retval = std::make_shared<hl_ast_operand>(float_immediate_operand);
 
-            std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(operand), true);
+            std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
             retval->set_variable(var);
 
             retval->set_immediate(evaluate_unary_expr_f(operand, expression->get_type()));
@@ -74,7 +74,7 @@ expression_evaluator::evaluate_unary_expression(std::shared_ptr<hl_expression_no
             int operand = rhs->get_int_value();
             retval = std::make_shared<hl_ast_operand>(integer_immediate_operand);
 
-            std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(operand));
+            std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
             retval->set_variable(var);
 
             retval->set_immediate(evaluate_unary_expr_i(operand, expression->get_type()));
@@ -110,7 +110,7 @@ expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_
 
         int operand = evaluate_regular_expr_i(op_a, op_b, expression->get_type());
 
-        std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(operand));
+        std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
         retval->set_variable(var);
 
         retval->set_immediate(operand);
@@ -121,7 +121,7 @@ expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_
 
         float operand = evaluate_regular_expr_f(op_a, op_b, expression->get_type());
 
-        std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(operand), true);
+        std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
         retval->set_variable(var);
 
         retval->set_immediate(operand);

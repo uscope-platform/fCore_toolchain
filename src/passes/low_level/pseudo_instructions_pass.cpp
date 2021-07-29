@@ -32,7 +32,7 @@ std::shared_ptr<ll_ast_node> pseudo_instructions_pass::process_leaf(std::shared_
             auto arguments = pseudo_instr->get_arguments();
             if(opcode ==  "mov"){
                 arguments.push_back(arguments[1]);
-                variable zero(false, "r0");
+                variable zero("r0");
                 arguments[1] = std::make_shared<variable>(zero);
 
             }

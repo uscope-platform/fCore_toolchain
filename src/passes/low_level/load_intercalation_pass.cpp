@@ -31,7 +31,7 @@ std::shared_ptr<ll_ast_node> load_intercalation_pass::process_leaf(std::shared_p
 
         if(node->get_opcode() == "ldc"){
             std::shared_ptr<ll_load_constant_instr_node> load_instr = std::static_pointer_cast<ll_load_constant_instr_node>(node);
-            float desired_constant = load_instr->get_constant();
+            float desired_constant = load_instr->get_constant_f();
 
             std::vector<std::shared_ptr<ll_ast_node>> block_content;
 

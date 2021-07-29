@@ -21,7 +21,7 @@
 variable_map::variable_map() {
     for(int i = 0; i<std::pow(2, fcore_register_address_width); i++){
         std::string reg_name = "r"+std::to_string(i);
-        std::shared_ptr<variable> reg = std::make_shared<variable>(false, reg_name);
+        std::shared_ptr<variable> reg = std::make_shared<variable>(reg_name);
         map[reg_name] = reg;
     }
 }
@@ -34,16 +34,16 @@ void variable_map::insert(const std::string& key, std::shared_ptr<variable>item)
     std::regex re("r(\\d\\d?)");
     std::smatch m;
     if(map.count(key)>0) return;
-    switch (item->type) {
-        case TYPE_INPUT:
+    switch (item->variable_class) {
+        case variable_input_type:
             n_inputs_++;
             break;
-        case TYPE_REGULAR:
+        case variable_regular_type:
             std::regex_match(key, m, re);
             if(m.empty())
                 n_variables_++;
             break;
-        case TYPE_OUTPUT:
+        case variable_output_type:
             n_outputs_++;
             break;
     }

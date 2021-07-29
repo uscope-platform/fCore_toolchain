@@ -28,8 +28,8 @@ public:
     uint32_t emit() override;
     void print() override;
     int instruction_count() override;
-    float get_constant();
-
+    float get_constant_f();
+    int get_constant_i();
     std::shared_ptr<variable> get_destination() {return destination;};
     std::vector<std::shared_ptr<variable>> get_arguments() override {return {destination, constant};};
     void set_arguments(const std::vector<std::shared_ptr<variable>> &a) override;

@@ -56,34 +56,34 @@ TEST(HlPassesTest, divisionImplementation) {
     std::shared_ptr<hl_ast_operand> op_1= std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(6);
 
-    std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(6));
+    std::shared_ptr<variable> var = std::make_shared<variable>("constant",6);
     op_1->set_variable(var);
 
     std::shared_ptr<hl_expression_node> rec_exp = std::make_shared<hl_expression_node>(expr_reciprocal);
     rec_exp->set_rhs(op_1);
 
-    var = std::make_shared<variable>(false, "intermediate_expr_0");
+    var = std::make_shared<variable>("intermediate_expr_0");
     std::shared_ptr<hl_definition_node> rec_def = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int, var);
     rec_def->set_initializer(rec_exp);
 
     op_1= std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(4);
 
-    var = std::make_shared<variable>(true, std::to_string(4));
+    var = std::make_shared<variable>("constant", 4);
     op_1->set_variable(var);
 
 
     std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(variable_operand);
     op_2->set_name("intermediate_expr_0");
 
-    var = std::make_shared<variable>(false, "intermediate_expr_0");
+    var = std::make_shared<variable>("intermediate_expr_0");
     op_2->set_variable(var);
 
     std::shared_ptr<hl_expression_node> mult_exp = std::make_shared<hl_expression_node>(expr_mult);
     mult_exp->set_lhs(op_1);
     mult_exp->set_rhs(op_2);
 
-    var = std::make_shared<variable>(false, "a");
+    var = std::make_shared<variable>("a");
     std::shared_ptr<hl_definition_node> mult_def = std::make_shared<hl_definition_node>("a", c_type_int, var);
     mult_def->set_initializer(mult_exp);
 
@@ -163,27 +163,27 @@ TEST(HlPassesTest, functionInlining) {
     std::shared_ptr<hl_function_def_node> gold_standard = std::make_shared<hl_function_def_node>();
     gold_standard->set_name("main");
     // PARAMETERS
-    std::shared_ptr<variable> var = std::make_shared<variable>(false, "a");
+    std::shared_ptr<variable> var = std::make_shared<variable>("a");
     std::shared_ptr<hl_definition_node> par_1 = std::make_shared<hl_definition_node>("a", c_type_int, var);
-    var = std::make_shared<variable>(false, "b");
+    var = std::make_shared<variable>("b");
     std::shared_ptr<hl_definition_node> par_2 = std::make_shared<hl_definition_node>("b", c_type_int, var);
     gold_standard->set_parameters_list({par_1, par_2});
 
     std::shared_ptr<hl_ast_node> inlined_block = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
     // CALL BODY
-    var = std::make_shared<variable>(false, "c");
+    var = std::make_shared<variable>("c");
     std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("c", c_type_int, var);
     std::shared_ptr<hl_expression_node> exadd = std::make_shared<hl_expression_node>(expr_add);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(2);
 
-    var = std::make_shared<variable>(true, std::to_string(2));
+    var = std::make_shared<variable>("constant",2);
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(variable_operand);
     op_2->set_name("t");
 
-    var = std::make_shared<variable>(false, "t");
+    var = std::make_shared<variable>("t");
     op_2->set_variable(var);
 
     exadd->set_rhs(op_2);
@@ -194,14 +194,14 @@ TEST(HlPassesTest, functionInlining) {
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("c");
 
-    var = std::make_shared<variable>(false, "c");
+    var = std::make_shared<variable>("c");
     op_1->set_variable(var);
 
 
     op_2 = std::make_shared<hl_ast_operand>(variable_operand);
     op_2->set_name("t");
 
-    var = std::make_shared<variable>(false, "t");
+    var = std::make_shared<variable>("t");
     op_2->set_variable(var);
 
     exadd->set_rhs(op_2);
@@ -237,19 +237,19 @@ TEST(HlPassesTest, normalization) {
     normalization_pass p;
     std::shared_ptr<hl_ast_node> raw_result = p.process_global(parser.AST);
 
-    std::shared_ptr<variable> var = std::make_shared<variable>(false, "intermediate_expr_0");
+    std::shared_ptr<variable> var = std::make_shared<variable>("intermediate_expr_0");
     std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int, var);
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(4);
 
-    var = std::make_shared<variable>(true, std::to_string(4));
+    var = std::make_shared<variable>("constant", 4);
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(5);
 
-    var = std::make_shared<variable>(true, std::to_string(5));
+    var = std::make_shared<variable>("constant", 5);
     op_2->set_variable(var);
 
     std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(expr_mult);
@@ -257,19 +257,19 @@ TEST(HlPassesTest, normalization) {
     ex_1->set_rhs(op_2);
     def_1->set_initializer(ex_1);
 
-    var = std::make_shared<variable>(false, "a");
-    var->type = variable_output_type;
+    var = std::make_shared<variable>("a");
+    var->variable_class = variable_output_type;
     var->set_bound_reg(10);
     std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int, var);
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("intermediate_expr_0");
-    var = std::make_shared<variable>(false, "intermediate_expr_0");
+    var = std::make_shared<variable>("intermediate_expr_0");
     op_1->set_variable(var);
 
     op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(6);
-    var = std::make_shared<variable>(true, std::to_string(6));
+    var = std::make_shared<variable>("constant",6);
     op_2->set_variable(var);
 
     ex_1= std::make_shared<hl_expression_node>(expr_add);
@@ -303,17 +303,17 @@ TEST(HlPassesTest, function_elimination) {
 
     std::shared_ptr<hl_ast_node> raw_result =parser.AST;
 
-    std::shared_ptr<variable> var = std::make_shared<variable>(false, "intermediate_expr_0");
+    std::shared_ptr<variable> var = std::make_shared<variable>("intermediate_expr_0");
     std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int, var);
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(4);
-    var = std::make_shared<variable>(true, std::to_string(4));
+    var = std::make_shared<variable>("constant", 4);
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(5);
-    var = std::make_shared<variable>(true, std::to_string(5));
+    var = std::make_shared<variable>("constant", 5);
     op_2->set_variable(var);
 
     std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(expr_mult);
@@ -321,19 +321,19 @@ TEST(HlPassesTest, function_elimination) {
     ex_1->set_rhs(op_2);
     def_1->set_initializer(ex_1);
 
-    var = std::make_shared<variable>(false, "a");
-    var->type = variable_output_type;
+    var = std::make_shared<variable>("a");
+    var->variable_class = variable_output_type;
     var->set_bound_reg(10);
     std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int, var);
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("intermediate_expr_0");
-    var = std::make_shared<variable>(false, "intermediate_expr_0");
+    var = std::make_shared<variable>("intermediate_expr_0");
     op_1->set_variable(var);
 
     op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(6);
-    var = std::make_shared<variable>(true, std::to_string(6));
+    var = std::make_shared<variable>("constant",6);
     op_2->set_variable(var);
 
     ex_1= std::make_shared<hl_expression_node>(expr_add);
@@ -375,16 +375,16 @@ TEST(HlPassesTest, hl_ast_lowering) {
 
     int i = 0;
 
-    std::shared_ptr<variable> op_a = std::make_shared<variable>(true, "4", false);
-    std::shared_ptr<variable> op_b = std::make_shared<variable>(true, "5", false);
-    std::shared_ptr<variable> dest = std::make_shared<variable>(false, "intermediate_expr_0");
+    std::shared_ptr<variable> op_a = std::make_shared<variable>("constant", 4);
+    std::shared_ptr<variable> op_b = std::make_shared<variable>("constant", 5);
+    std::shared_ptr<variable> dest = std::make_shared<variable>("intermediate_expr_0");
 
     std::shared_ptr<ll_register_instr_node> op_1 = std::make_shared<ll_register_instr_node>("mul", op_a, op_b, dest);
 
 
-    op_a = std::make_shared<variable>(false, "intermediate_expr_0");
-    op_b = std::make_shared<variable>(true, "6", true);
-    dest = std::make_shared<variable>(false, "a");
+    op_a = std::make_shared<variable>("intermediate_expr_0");
+    op_b = std::make_shared<variable>("constant", 6);
+    dest = std::make_shared<variable>("a");
 
     std::shared_ptr<ll_register_instr_node> op_2 = std::make_shared<ll_register_instr_node>( "add", op_a, op_b, dest);
 
@@ -414,17 +414,17 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
 
-    std::shared_ptr<variable> var = std::make_shared<variable>(false, "intermediate_expr_0");
+    std::shared_ptr<variable> var = std::make_shared<variable>("intermediate_expr_0");
     std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int, var);
 
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_1->set_immediate(4);
-    var = std::make_shared<variable>(true, std::to_string(4));
+    var = std::make_shared<variable>("constant", 4);
     op_1->set_variable(var);
 
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(5);
-    var = std::make_shared<variable>(true, std::to_string(5));
+    var = std::make_shared<variable>("constant", 5);
     op_2->set_variable(var);
 
     std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(expr_mult);
@@ -432,19 +432,19 @@ TEST(HlPassesTest, intrinsics_implementation) {
     ex_1->set_rhs(op_2);
     def_1->set_initializer(ex_1);
 
-    var = std::make_shared<variable>(false, "a");
-    var->type = variable_output_type;
+    var = std::make_shared<variable>("a");
+    var->variable_class = variable_output_type;
     var->set_bound_reg(10);
     std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int, var);
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("intermediate_expr_0");
-    var = std::make_shared<variable>(false, "intermediate_expr_0");
+    var = std::make_shared<variable>("intermediate_expr_0");
     op_1->set_variable(var);
 
     op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(6);
-    var = std::make_shared<variable>(true, std::to_string(6));
+    var = std::make_shared<variable>("constant", 6);
     op_2->set_variable(var);
 
     ex_1= std::make_shared<hl_expression_node>(expr_add);
@@ -452,13 +452,13 @@ TEST(HlPassesTest, intrinsics_implementation) {
     ex_1->set_rhs(op_2);
     def_2->set_initializer(ex_1);
 
-    var = std::make_shared<variable>(false, "b");
+    var = std::make_shared<variable>("b");
     std::shared_ptr<hl_definition_node> def_3 = std::make_shared<hl_definition_node>("b", c_type_float, var);
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("a");
-    var = std::make_shared<variable>(false, "a");
-    var->type = variable_output_type;
+    var = std::make_shared<variable>("a");
+    var->variable_class = variable_output_type;
     var->set_bound_reg(10);
     op_1->set_variable(var);
 
@@ -466,19 +466,19 @@ TEST(HlPassesTest, intrinsics_implementation) {
     ex_1->set_rhs(op_1);
     def_3->set_initializer(ex_1);
 
-    var = std::make_shared<variable>(false, "c");
+    var = std::make_shared<variable>("c");
     std::shared_ptr<hl_definition_node> def_4 = std::make_shared<hl_definition_node>("c", c_type_float, var);
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     op_1->set_name("a");
-    var = std::make_shared<variable>(false, "a");
-    var->type = variable_output_type;
+    var = std::make_shared<variable>("a");
+    var->variable_class = variable_output_type;
     var->set_bound_reg(10);
     op_1->set_variable(var);
 
     op_2 = std::make_shared<hl_ast_operand>(integer_immediate_operand);
     op_2->set_immediate(100);
-    var = std::make_shared<variable>(true, std::to_string(100));
+    var = std::make_shared<variable>("constant",100);
     op_2->set_variable(var);
 
     ex_1= std::make_shared<hl_expression_node>(expr_satp);

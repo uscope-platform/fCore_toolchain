@@ -33,7 +33,7 @@ void hl_variable_mapping::process_var(std::shared_ptr<hl_ast_node> element) {
     if(element->node_type == hl_ast_node_type_definition) {
         std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(element);
         if (node->is_initialized()) process_var(node->get_initializer());
-        std::shared_ptr<variable> var = std::make_shared<variable>(false,node->get_name());
+        std::shared_ptr<variable> var = std::make_shared<variable>(node->get_name());
         var_map->insert(node->get_name(), var);
     } else if(element->node_type == hl_ast_node_type_expr){
         std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
@@ -45,14 +45,12 @@ void hl_variable_mapping::process_var(std::shared_ptr<hl_ast_node> element) {
         std::shared_ptr<variable> var;
         std::string var_name;
         if(op->get_type() == integer_immediate_operand){
-            var_name = std::to_string(op->get_int_value());
-            var = std::make_shared<variable>(true, var_name, false);
+            var = std::make_shared<variable>("constant", op->get_int_value());
         } else if(op->get_type()==float_immediate_operand){
-            var_name = std::to_string(op->get_float_val());
-            var = std::make_shared<variable>(true,var_name, true);
+            var = std::make_shared<variable>("constant", op->get_float_val());
         } else if(op->get_type()==variable_operand){
             var_name = op->get_name();
-            var = std::make_shared<variable>(false,var_name);
+            var = std::make_shared<variable>(var_name);
         }
         var_map->insert(var_name, var);
     }

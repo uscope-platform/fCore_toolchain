@@ -23,11 +23,11 @@
 #include "data_structures/low_level_ast/low_level_ast.hpp"
 #include "fCore_isa.hpp"
 
-TEST(InstructionClasses, register_instruction ) {
+TEST(InstructionClasses, register_instruction) {
 
-    std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r2");
-    std::shared_ptr<variable> op_b = std::make_shared<variable>(false, "r3");
-    std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r4");
+    std::shared_ptr<variable> op_a = std::make_shared<variable>("r2");
+    std::shared_ptr<variable> op_b = std::make_shared<variable>("r3");
+    std::shared_ptr<variable> dest = std::make_shared<variable>("r4");
 
     ll_register_instr_node instr("add", op_a, op_b, dest);
 

@@ -60,8 +60,6 @@ private:
     std::shared_ptr<ll_ast_node> current_element{};
     std::stack<std::shared_ptr<ll_ast_node>> parent_elements;
     std::shared_ptr<variable_map> varmap;
-
-    std::shared_ptr<variable> get_variable(const std::string &variable_name, bool is_const) const;
 };
 
 #endif //FCORE_TOOLCHAIN_ASMTREE_VISITOR_HPP

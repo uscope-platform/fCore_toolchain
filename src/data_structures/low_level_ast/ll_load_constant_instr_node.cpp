@@ -53,11 +53,15 @@ bool operator==(const ll_load_constant_instr_node &lhs, const ll_load_constant_i
     return retval;
 }
 
-float ll_load_constant_instr_node::get_constant() {
-    return std::stof(constant->to_str());
+float ll_load_constant_instr_node::get_constant_f() {
+    return constant->get_const_f();
 }
 
 void ll_load_constant_instr_node::set_arguments(const std::vector<std::shared_ptr<variable>> &a) {
     destination = a[0];
     constant = a[1];
+}
+
+int ll_load_constant_instr_node::get_constant_i() {
+    return constant->get_const_i();
 }

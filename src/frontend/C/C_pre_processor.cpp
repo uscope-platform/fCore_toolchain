@@ -88,13 +88,13 @@ void C_pre_processor::process_pragmas(const std::string& line) {
         std::string type = match.str(1);
         std::string var_name = match.str(2);
         std::string reg = match.str(3);
-        std::shared_ptr<variable> v = std::make_shared<variable>(false, var_name);
+        std::shared_ptr<variable> v = std::make_shared<variable>( var_name);
         if(type == "output")
-            v->type = variable_output_type;
+            v->variable_class = variable_output_type;
         else if(type == "input")
-            v->type = variable_input_type;
+            v->variable_class = variable_input_type;
         else if(type == "memory")
-            v->type = variable_memory_type;
+            v->variable_class = variable_memory_type;
 
 
         v->set_bound_reg(std::stoul(reg));

@@ -75,7 +75,7 @@ void C_Tree_visitor::exitParameterDeclaration(C_parser::C_grammarParser::Paramet
     if(iom_map.count(id_name)>0){
         var = iom_map[id_name];
     } else {
-        var = std::make_shared<variable>(false, id_name);
+        var = std::make_shared<variable>(id_name);
     }
 
     std::shared_ptr<hl_definition_node> identifier = std::make_shared<hl_definition_node>(id_name, hl_ast_node::string_to_type(type), var);
@@ -101,7 +101,7 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
     if(iom_map.count(name)>0){
         var = iom_map[name];
     } else {
-        var = std::make_shared<variable>(false, name);
+        var = std::make_shared<variable>( name);
     }
 
     std::shared_ptr<hl_definition_node> node = std::make_shared<hl_definition_node>(name, hl_ast_node::string_to_type(type_name), var);
@@ -202,7 +202,7 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
         if(iom_map.count(var_name)>0){
             operand->set_variable(iom_map[var_name]);
         } else {
-            std::shared_ptr<variable> var = std::make_shared<variable>(false, var_name);
+            std::shared_ptr<variable> var = std::make_shared<variable>(var_name);
             operand->set_variable(var);
         }
 
@@ -212,7 +212,7 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
             operand = std::make_shared<hl_ast_operand>( float_immediate_operand);
             std::string constant = ctx->constant()->FloatingConstant()->getText();
 
-            std::shared_ptr<variable> var = std::make_shared<variable>(true, constant, true);
+            std::shared_ptr<variable> var = std::make_shared<variable>("constant",std::stof(constant));
             operand->set_variable(var);
 
             operand->set_immediate(std::stof(constant));
@@ -220,7 +220,7 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
             operand = std::make_shared<hl_ast_operand>(integer_immediate_operand);
             std::string constant = ctx->constant()->IntegerConstant()->getText();
 
-            std::shared_ptr<variable> var = std::make_shared<variable>(true, constant);
+            std::shared_ptr<variable> var = std::make_shared<variable>("constant", std::stoi(constant));
             operand->set_variable(var);
 
             operand->set_immediate(std::stoi(constant));

@@ -29,8 +29,8 @@ TEST(llPassesTest, pseudo_inst_pass) {
 
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
 
-    std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r3");
-    std::shared_ptr<variable> op_b = std::make_shared<variable>(false, "r4");
+    std::shared_ptr<variable> op_a = std::make_shared<variable>("r3");
+    std::shared_ptr<variable> op_b = std::make_shared<variable>("r4");
     std::vector<std::shared_ptr<variable>> args = {op_a, op_b};
 
     std::shared_ptr<ll_pseudo_instr_node> instr = std::make_shared<ll_pseudo_instr_node>("mov", args);
@@ -53,11 +53,11 @@ TEST(llPassesTest, pseudo_inst_pass) {
 
 TEST(llPassesTest, instruction_count_pass) {
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
-    std::shared_ptr<variable> op_a = std::make_shared<variable>(false, "r3");
-    std::shared_ptr<variable> op_b = std::make_shared<variable>(false, "r4");
-    std::shared_ptr<variable> dest = std::make_shared<variable>(false, "r5");
-    std::shared_ptr<variable> imm = std::make_shared<variable>(true, "100");
-    std::shared_ptr<variable> fltc = std::make_shared<variable>(true, "1.5464", true);
+    std::shared_ptr<variable> op_a = std::make_shared<variable>("r3");
+    std::shared_ptr<variable> op_b = std::make_shared<variable>("r4");
+    std::shared_ptr<variable> dest = std::make_shared<variable>("r5");
+    std::shared_ptr<variable> imm = std::make_shared<variable>("constant", 100);
+    std::shared_ptr<variable> fltc = std::make_shared<variable>("constant",(float)1.5464);
     std::vector<std::shared_ptr<variable>> args = {};
     std::shared_ptr<ll_independent_inst_node> indep_instr = std::make_shared<ll_independent_inst_node>("nop");
     AST->add_content(indep_instr);

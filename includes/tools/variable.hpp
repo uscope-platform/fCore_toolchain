@@ -24,27 +24,30 @@
 #include <regex>
 #include <iostream>
 
-
-#define TYPE_INPUT 0
-#define TYPE_OUTPUT 1
-#define TYPE_MEMORY 2
-#define TYPE_REGULAR 3
-
 typedef enum {
     variable_input_type = 0,
     variable_output_type = 1,
     variable_memory_type = 2,
     variable_regular_type = 3
-}variable_type_t;
+} variable_class_t;
 
+typedef enum {
+    float_variable = 0,
+    integer_variable = 1,
+    true_variable = 2
+} variable_type_t;
 
 
 class variable {
 public:
     variable();
-    variable(bool const_status, std::string text);
-    variable(bool const_status, std::string text, bool is_float);
+    explicit variable(std::string n);
+    variable(std::string n, float value);
+    variable(std::string n, int value);
 
+
+    float get_const_f();
+    int get_const_i();
 
     static bool is_terminal() { return true;};
     [[nodiscard]] bool is_constant() const { return constant;};
@@ -57,11 +60,13 @@ public:
     [[nodiscard]] uint32_t get_value() const;
     friend bool operator==(const variable& lhs, const variable& rhs);
 
-    variable_type_t type;
+    variable_class_t variable_class;
     unsigned int first_occurrence;
     unsigned int last_occurrence;
 
 private:
+
+    variable_type_t variable_type;
 
     bool is_array;
     unsigned int array_length;
@@ -71,6 +76,9 @@ private:
     bool float_const;
     bool constant;
     std::vector<bool> used;
+
+    int const_i;
+    float const_f;
 
 };
 

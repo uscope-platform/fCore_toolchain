@@ -57,7 +57,7 @@ std::shared_ptr<hl_ast_node> loop_unrolling_pass::process_loop(const std::shared
     loop_var->set_name(loop_var_name);
     loop_var->set_immediate((int)current_loop_iteration);
 
-    std::shared_ptr<variable> var = std::make_shared<variable>(true, std::to_string(current_loop_iteration));
+    std::shared_ptr<variable> var = std::make_shared<variable>("constant", (int)current_loop_iteration);
     loop_var->set_variable(var);
     
     while(evaluate_loop(condition, iter_exp, loop_var)){

@@ -139,7 +139,7 @@ TEST(EndToEndC, pragma_io) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x81021, 0x26, 0x40A00000, 0x40883, 0x26, 0x3e2aaac1, 0x140843};
+    std::vector<uint32_t> gold_standard = {0x81021, 0x26, 0x40A00000, 0x40883, 0x26, 0x3e2aaaab, 0x140843};
 
     ASSERT_EQ(gold_standard, result);
 }
