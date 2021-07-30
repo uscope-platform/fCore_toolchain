@@ -29,7 +29,7 @@ bool expression_evaluator::is_constant_expression(const std::shared_ptr<hl_expre
 bool expression_evaluator::is_constant_subexpr(const std::shared_ptr<hl_ast_node>& subex) {
     if(subex->node_type == hl_ast_node_type_operand){
         std::shared_ptr<hl_ast_operand> node = std::static_pointer_cast<hl_ast_operand>(subex);
-        if(node->get_type() == variable_operand ||  node->get_type() == array_operand){
+        if(node->get_type() == var_type_scalar ||  node->get_type() == var_type_array){
             return false;
         } else{
             return true;
@@ -57,25 +57,23 @@ expression_evaluator::evaluate_unary_expression(std::shared_ptr<hl_expression_no
 
     c_types_t expr_type = c_type_int;
 
-    if(rhs->get_type() == float_immediate_operand){
+    if(rhs->get_type() == var_type_float_const){
         expr_type = c_type_float;
     }
 
     if(expression->get_type() != expr_fti || expression->get_type() != expr_itf  ){
-        if(rhs->get_type() == float_immediate_operand){
+        if(rhs->get_type() == var_type_float_const){
             float operand = rhs->get_float_val();
-            retval = std::make_shared<hl_ast_operand>(float_immediate_operand);
 
             std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
-            retval->set_variable(var);
+            retval = std::make_shared<hl_ast_operand>(var);
 
             retval->set_immediate(evaluate_unary_expr_f(operand, expression->get_type()));
-        } else if(rhs->get_type()==integer_immediate_operand){
+        } else if(rhs->get_type()==var_type_int_const){
             int operand = rhs->get_int_value();
-            retval = std::make_shared<hl_ast_operand>(integer_immediate_operand);
 
             std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
-            retval->set_variable(var);
+            retval = std::make_shared<hl_ast_operand>(var);
 
             retval->set_immediate(evaluate_unary_expr_i(operand, expression->get_type()));
         }
@@ -94,11 +92,11 @@ expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_
 
     c_types_t expr_type = c_type_int;
 
-    if(rhs->get_type() == float_immediate_operand){
+    if(rhs->get_type() == var_type_float_const){
         expr_type = c_type_float;
     }
 
-    if(lhs->get_type() == float_immediate_operand){
+    if(lhs->get_type() == var_type_int_const){
         expr_type = c_type_float;
     }
 
@@ -106,22 +104,21 @@ expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_
     if(expr_type == c_type_int) {
         int op_a = lhs->get_int_value();
         int op_b = rhs->get_int_value();
-        retval = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+
 
         int operand = evaluate_regular_expr_i(op_a, op_b, expression->get_type());
 
         std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
-        retval->set_variable(var);
+        retval = std::make_shared<hl_ast_operand>(var);
 
     } else {
         float op_a = lhs->get_float_val();
         float op_b = rhs->get_float_val();
-        retval = std::make_shared<hl_ast_operand>(float_immediate_operand);
 
         float operand = evaluate_regular_expr_f(op_a, op_b, expression->get_type());
 
         std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
-        retval->set_variable(var);
+        retval = std::make_shared<hl_ast_operand>(var);
 
     }
 

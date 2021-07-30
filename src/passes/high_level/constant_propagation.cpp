@@ -33,7 +33,7 @@ std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_pt
                 new_content.push_back(i);
             } else if(node->get_initializer()->node_type == hl_ast_node_type_operand){
                 std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(node->get_initializer());
-                if(op->get_type() == float_immediate_operand || op->get_type() == integer_immediate_operand)
+                if(op->get_type() == var_type_float_const || op->get_type() == var_type_int_const)
                     constants_map.insert(std::make_pair(node->get_name(), op));
                 else{
                     new_content.push_back(i);
@@ -104,7 +104,7 @@ std::shared_ptr<hl_ast_node> constant_propagation::substitute_constant(std::shar
 }
 
 std::shared_ptr<hl_ast_operand> constant_propagation::process_operand(std::shared_ptr<hl_ast_operand> element) {
-    if(element->get_type() == variable_operand){
+    if(element->get_type() == var_type_scalar || element->get_type() == var_type_array){
         if(constants_map.count(element->get_name())>0){
             return constants_map[element->get_name()];
         } else{

@@ -46,11 +46,15 @@ public:
     variable(std::string n, float value);
     variable(std::string n, int value);
 
-
     float get_const_f();
     int get_const_i();
+
     void set_const_f(float f);
     void set_const_i(int i);
+
+    variable_type_t get_type() {return variable_type;};
+    void set_type(variable_type_t t) {variable_type = t;};
+
     void set_name(std::string n){name = std::move(n);};
     std::string get_name() {return name;};
 

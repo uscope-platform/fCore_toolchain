@@ -142,9 +142,9 @@ high_level_ast_lowering::translate_node(const std::shared_ptr<hl_ast_operand>& i
 
     std::shared_ptr<ll_ast_node> retval;
     std::shared_ptr<variable> var;
-    if(input->get_type() == integer_immediate_operand){
+    if(input->get_type() == var_type_int_const){
         var = std::make_shared<variable>("constant", input->get_int_value());
-    } else if (input->get_type() == float_immediate_operand){
+    } else if (input->get_type() == var_type_float_const){
         var= std::make_shared<variable>("constant",input->get_float_val());
     } else{
         throw std::runtime_error("feature not implemented yet");

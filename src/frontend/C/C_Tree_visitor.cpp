@@ -141,7 +141,7 @@ void C_Tree_visitor::exitArrayAccessExpression(C_parser::C_grammarParser::ArrayA
     expressions_stack.pop();
     std::shared_ptr<hl_ast_operand> operand = std::static_pointer_cast<hl_ast_operand>(expressions_stack.top());
     expressions_stack.pop();
-    operand->set_type(array_operand);
+    operand->set_type(var_type_array);
     operand->set_array_index(array_idx);
     expressions_stack.push(operand);
 }
@@ -195,31 +195,30 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
     if(ctx->expression() != nullptr){
         return;
     } else if(ctx->Identifier() != nullptr){
-        operand = std::make_shared<hl_ast_operand>( variable_operand);
         std::string var_name = ctx->Identifier()->getText();
 
         if(iom_map.count(var_name)>0){
-            operand->set_variable(iom_map[var_name]);
+            operand = std::make_shared<hl_ast_operand>(iom_map[var_name]);
         } else {
             std::shared_ptr<variable> var = std::make_shared<variable>(var_name);
-            operand->set_variable(var);
+            operand = std::make_shared<hl_ast_operand>(var);
         }
 
 
     } else if(ctx->constant() != nullptr){
         if(ctx->constant()->FloatingConstant() != nullptr){
-            operand = std::make_shared<hl_ast_operand>( float_immediate_operand);
+
             std::string constant = ctx->constant()->FloatingConstant()->getText();
 
             std::shared_ptr<variable> var = std::make_shared<variable>("constant",std::stof(constant));
-            operand->set_variable(var);
+            operand = std::make_shared<hl_ast_operand>( var);
 
         } else if(ctx->constant()->IntegerConstant() != nullptr){
-            operand = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+
             std::string constant = ctx->constant()->IntegerConstant()->getText();
 
             std::shared_ptr<variable> var = std::make_shared<variable>("constant", std::stoi(constant));
-            operand->set_variable(var);
+            operand = std::make_shared<hl_ast_operand>( var);
 
         } else if(ctx->constant()->CharacterConstant() != nullptr){
             throw std::runtime_error("character literals are not supported by the fCore toolchain");

@@ -113,26 +113,25 @@ std::shared_ptr<hl_definition_node> normalization_pass::process_node_def(std::sh
 std::shared_ptr<hl_ast_operand>
 normalization_pass::extract_intermediate_expression(std::shared_ptr<hl_expression_node> n, int side) {
 
-    operand_type_t type_rhs = std::static_pointer_cast<hl_ast_operand>(n->get_rhs())->get_type();
+    variable_type_t type_rhs = std::static_pointer_cast<hl_ast_operand>(n->get_rhs())->get_type();
     c_types_t expr_type;
 
     if(!n->is_unary()){
-        operand_type_t type_lhs = std::static_pointer_cast<hl_ast_operand>(n->get_lhs())->get_type();
+        variable_type_t type_lhs = std::static_pointer_cast<hl_ast_operand>(n->get_lhs())->get_type();
 
-        if(type_lhs == float_immediate_operand && type_rhs == float_immediate_operand){
+        if(type_lhs == var_type_float_const && type_rhs == var_type_float_const){
             expr_type = c_type_float;
-        } else if(type_lhs == integer_immediate_operand && type_rhs == integer_immediate_operand){
+        } else if(type_lhs == var_type_int_const && type_rhs == var_type_int_const){
             expr_type = c_type_int;
-        } else if(type_rhs == float_immediate_operand){
+        } else if(type_rhs == var_type_float_const){
             expr_type = c_type_float;
-
-        } else if(type_lhs == float_immediate_operand){
+        } else if(type_lhs == var_type_float_const){
             expr_type = c_type_float;
         }
     } else{
-        if(type_rhs == float_immediate_operand){
+        if(type_rhs == var_type_float_const){
             expr_type = c_type_float;
-        } else if(type_rhs == integer_immediate_operand){
+        } else if(type_rhs == var_type_int_const){
             expr_type = c_type_int;
         }
     }
@@ -146,9 +145,9 @@ normalization_pass::extract_intermediate_expression(std::shared_ptr<hl_expressio
 
     additional_statements.push_back(intermediate_def);
 
-    std::shared_ptr<hl_ast_operand> ret = std::make_shared<hl_ast_operand>(variable_operand);
+
     var = std::make_shared<variable>( name);
-    ret->set_variable(var);
+    std::shared_ptr<hl_ast_operand> ret = std::make_shared<hl_ast_operand>(var);
 
     return ret;
 }

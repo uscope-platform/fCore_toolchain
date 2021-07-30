@@ -10,7 +10,7 @@ include_directories(includes)
 set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-set(CMAKE_CXX_FLAGS_DEBUG "-Og -fsanitize=undefined")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -fsanitize=undefined")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
 add_compile_options(-Wno-attributes -fprofile-arcs -ftest-coverage)

@@ -53,10 +53,10 @@ std::shared_ptr<hl_ast_node> loop_unrolling_pass::process_loop(const std::shared
     std::shared_ptr<hl_expression_node> condition = element->get_condition();
     std::shared_ptr<hl_expression_node> iter_exp = element->get_iteration_expr();
 
-    std::shared_ptr<hl_ast_operand> loop_var = std::make_shared<hl_ast_operand>(integer_immediate_operand);
+
 
     std::shared_ptr<variable> var = std::make_shared<variable>("constant", (int)current_loop_iteration);
-    loop_var->set_variable(var);
+    std::shared_ptr<hl_ast_operand> loop_var = std::make_shared<hl_ast_operand>(var);
     
     while(evaluate_loop(condition, iter_exp, loop_var)){
         std::vector<std::shared_ptr<hl_ast_node>> content = element->get_loop_content();
@@ -80,10 +80,10 @@ unsigned int loop_unrolling_pass::process_loop_initializer(const std::shared_ptr
         initializer = expression_evaluator::evaluate_expression(std::static_pointer_cast<hl_expression_node>(raw_initializer));
     } else if(raw_initializer->node_type == hl_ast_node_type_operand){
         initializer = std::static_pointer_cast<hl_ast_operand>(raw_initializer);
-        if(initializer->get_type() == float_immediate_operand){
+        if(initializer->get_type() == var_type_float_const){
             throw std::runtime_error("Error:Floating point loop initializers are not supported");
         }
-        if(initializer->get_type() != integer_immediate_operand){
+        if(initializer->get_type() != var_type_int_const){
             throw std::runtime_error("Error: Loop initialization statement is not a compile time constant");
         }
     } else{
@@ -124,7 +124,7 @@ loop_unrolling_pass::update_loop_condition(std::shared_ptr<hl_expression_node> e
 void loop_unrolling_pass::update_expression(std::shared_ptr<hl_expression_node> expression, std::shared_ptr<hl_ast_operand> loop_var) {
     if(expression->get_lhs()->node_type == hl_ast_node_type_operand){
         std::shared_ptr<hl_ast_operand> node = std::static_pointer_cast<hl_ast_operand>(expression->get_lhs());
-        if(node->get_type() == variable_operand){
+        if(node->get_type() == var_type_scalar){
             if(node->get_name() == loop_var->get_name())
                 expression->set_lhs(loop_var);
         }

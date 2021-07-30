@@ -20,8 +20,8 @@
 
 #include <utility>
 
-hl_ast_operand::hl_ast_operand(operand_type_t ot) : hl_ast_node(hl_ast_node_type_operand) {
-    operand_type = ot;
+hl_ast_operand::hl_ast_operand(std::shared_ptr<variable> iv) : hl_ast_node(hl_ast_node_type_operand) {
+inner_variable = std::move(iv);
 }
 
 void hl_ast_operand::set_name(const std::string &n) {
@@ -44,14 +44,16 @@ float hl_ast_operand::get_float_val() const {
     return inner_variable->get_const_f();
 }
 
+void hl_ast_operand::set_type(variable_type_t type) {
+    inner_variable->set_type(type);
+}
 
-operand_type_t hl_ast_operand::get_type() {
-    return operand_type;
+variable_type_t hl_ast_operand::get_type() {
+    return inner_variable->get_type();
 }
 
 bool operator==(const hl_ast_operand &lhs, const hl_ast_operand &rhs) {
     bool ret_val = true;
-    ret_val &= lhs.operand_type == rhs.operand_type;
     ret_val &= lhs.node_type == rhs.node_type;
 
     if(lhs.inner_variable == nullptr && rhs.inner_variable == nullptr) ret_val &= true;
@@ -74,17 +76,17 @@ hl_ast_operand::operator std::string() {
 
 std::string hl_ast_operand::pretty_print() {
     std::string ret_val;
-    switch (operand_type) {
-        case integer_immediate_operand:
+    switch (inner_variable->get_type()) {
+        case var_type_int_const:
             ret_val = std::to_string(inner_variable->get_const_i());
             break;
-        case float_immediate_operand:
+        case var_type_float_const:
             ret_val = std::to_string(inner_variable->get_const_f());
             break;
-        case variable_operand:
+        case var_type_scalar:
             ret_val = inner_variable->get_name();
             break;
-        case array_operand:
+        case var_type_array:
             ret_val = inner_variable->get_name() + '[' + array_index->pretty_print() + ']';
     }
     return ret_val;
@@ -96,10 +98,6 @@ std::shared_ptr<hl_ast_node> hl_ast_operand::get_array_index() {
 
 void hl_ast_operand::set_array_index(std::shared_ptr<hl_ast_node> idx) {
     array_index = std::move(idx);
-}
-
-void hl_ast_operand::set_type(operand_type_t type) {
-    operand_type = type;
 }
 
 void hl_ast_operand::set_variable(std::shared_ptr<variable> v) {

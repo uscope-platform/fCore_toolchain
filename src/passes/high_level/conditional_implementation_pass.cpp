@@ -40,8 +40,8 @@ std::shared_ptr<hl_ast_node> conditional_implementation_pass::process_global(std
 
             std::shared_ptr<hl_ast_operand> result_op = expression_evaluator::evaluate_expression(const_cond_expr);
             bool result;
-            if(result_op->get_type() == integer_immediate_operand) result = result_op->get_int_value();
-            if(result_op->get_type() == float_immediate_operand) result = result_op->get_float_val() == 1;
+            if(result_op->get_type() == var_type_int_const) result = result_op->get_int_value();
+            if(result_op->get_type() == var_type_float_const) result = result_op->get_float_val() == 1;
 
             if(result){
                 std::vector<std::shared_ptr<hl_ast_node>> selected_block = node->get_if_block();
@@ -97,7 +97,8 @@ conditional_implementation_pass::get_operands(const std::shared_ptr<hl_ast_node>
     if(subexpr->node_type != hl_ast_node_type_operand){
         retval = find_variable_definition(subexpr, item, prog_content);
     } else{
-        if(std::static_pointer_cast<hl_ast_operand>(subexpr)->get_type() == variable_operand){
+        variable_type_t vt = std::static_pointer_cast<hl_ast_operand>(subexpr)->get_type();
+        if(vt == var_type_scalar || vt == var_type_array){
             retval = find_variable_definition(subexpr, item, prog_content);
         } else {
             retval = std::static_pointer_cast<hl_ast_operand>(subexpr);

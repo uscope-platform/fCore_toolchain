@@ -44,11 +44,11 @@ void hl_variable_mapping::process_var(std::shared_ptr<hl_ast_node> element) {
         std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(element);
         std::shared_ptr<variable> var;
         std::string var_name;
-        if(op->get_type() == integer_immediate_operand){
+        if(op->get_type() == var_type_int_const){
             var = std::make_shared<variable>("constant", op->get_int_value());
-        } else if(op->get_type()==float_immediate_operand){
+        } else if(op->get_type()==var_type_float_const){
             var = std::make_shared<variable>("constant", op->get_float_val());
-        } else if(op->get_type()==variable_operand){
+        } else if(op->get_type()==var_type_scalar || op->get_type() == var_type_array){
             var_name = op->get_name();
             var = std::make_shared<variable>(var_name);
         }
