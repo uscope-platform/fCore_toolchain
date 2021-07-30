@@ -115,7 +115,7 @@ bool loop_unrolling_pass::evaluate_loop(const std::shared_ptr<hl_expression_node
 std::shared_ptr<hl_expression_node>
 loop_unrolling_pass::update_loop_condition(std::shared_ptr<hl_expression_node> expression,
                                            std::shared_ptr<hl_ast_operand> loop_var) {
-    std::shared_ptr<hl_expression_node> ret_val = std::static_pointer_cast<hl_expression_node>(hl_ast_node::deep_copy(expression));
+    std::shared_ptr<hl_expression_node> ret_val = expression;
     loop_var->set_immediate((int)current_loop_iteration);
     update_expression(ret_val, loop_var);
     return ret_val;
