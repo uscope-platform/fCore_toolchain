@@ -35,7 +35,7 @@ declaration_instantiation_combining_pass::process_global(std::shared_ptr<hl_ast_
                     if(content[j]->node_type == hl_ast_node_type_expr){
                         std::shared_ptr<hl_expression_node> expr = std::static_pointer_cast<hl_expression_node>(content[j]);
                         if(expr->get_type()==expr_assign){
-                            if(std::static_pointer_cast<hl_definition_node>(expr->get_lhs())->get_name() == node->get_name()){
+                            if(std::static_pointer_cast<hl_ast_operand>(expr->get_lhs())->get_name() == node->get_name()){
                                 node->set_initializer(expr->get_rhs());
                                 new_content.push_back(node);
                                 break;

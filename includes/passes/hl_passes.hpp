@@ -58,8 +58,8 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::vec
     manager.add_morphing_pass(std::make_shared<loop_unrolling_pass>()); // pass #7
 
     manager.add_morphing_pass(std::make_shared<normalization_pass>());// pass #8
-    manager.add_morphing_pass(std::make_shared<dead_variable_elimination>());  // pass #9
-    manager.add_morphing_pass(std::make_shared<declaration_instantiation_combining_pass>()); // pass #10
+    manager.add_morphing_pass(std::make_shared<declaration_instantiation_combining_pass>());  // pass #9
+    manager.add_morphing_pass(std::make_shared<dead_variable_elimination>()); // pass #10
 
     std::shared_ptr<constant_folding_pass> const_fold = std::make_shared<constant_folding_pass>();
     std::shared_ptr<constant_propagation> const_prop = std::make_shared<constant_propagation>();
