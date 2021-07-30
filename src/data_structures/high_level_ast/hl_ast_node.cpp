@@ -213,7 +213,6 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_operands(const std::shared_p
     std::shared_ptr<hl_ast_operand> orig = std::static_pointer_cast<hl_ast_operand>(node);
     std::shared_ptr<hl_ast_operand> copied_obj = std::make_shared<hl_ast_operand>(orig->get_type());
     copied_obj->set_variable(orig->get_variable());
-    copied_obj->set_string(orig->get_string());
     copied_obj->set_content(orig->get_content());
 
     return copied_obj;

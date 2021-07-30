@@ -69,7 +69,11 @@ TEST( EndToEndAsm, simple_file ) {
 
     uint32_t program_size = uut.get_program_size();
     uint32_t res[1000];
-    fread(res,sizeof(uint32_t), program_size, fptr);
+    ssize_t ret = fread(res,sizeof(uint32_t), program_size, fptr);
+    if(ret ==0){
+        std::cout << "OH SNAP! this should not have happened";
+        exit(1);
+    }
     result.clear();
     for(int i = 0; i < program_size; i++){
         result.push_back(Reverse32(res[i]));

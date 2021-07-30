@@ -26,9 +26,8 @@
 typedef enum{
     integer_immediate_operand = 0,
     float_immediate_operand = 1,
-    string_operand = 2,
-    variable_operand = 3,
-    array_operand = 4,
+    variable_operand = 2,
+    array_operand = 3
 }operand_type_t;
 
 class hl_ast_operand : public hl_ast_node{
@@ -40,8 +39,6 @@ public:
     [[nodiscard]] int get_int_value() const;
     void set_immediate(const float &v);
     [[nodiscard]] float get_float_val() const;
-    void set_string(const std::string &s);
-    std::string get_string();
     operand_type_t  get_type();
     void set_type(operand_type_t type);
     std::shared_ptr<hl_ast_node> get_array_index();
@@ -61,7 +58,6 @@ private:
     std::shared_ptr<hl_ast_node> array_index;
 
     std::shared_ptr<variable> inner_variable;
-    std::string string_imm;
 };
 
 #endif //FCORE_TOOLCHAIN_HL_AST_OPERAND_HPP

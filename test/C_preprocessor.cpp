@@ -58,7 +58,8 @@ TEST( cFrontend, preprocessor_pragma) {
     std::string var_name = "test";
     std::string reg = "10";
     std::shared_ptr<variable> v = std::make_shared<variable>( var_name);
-    v->variable_class = type == "output" ? variable_output_type : variable_input_type;
+    variable_class_t  vc = type == "output" ? variable_output_type : variable_input_type;
+    v->set_variable_class(vc);
     v->set_bound_reg(std::stoul(reg));
 
 

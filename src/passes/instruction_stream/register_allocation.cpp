@@ -61,9 +61,9 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
                 bool found = false;
                 for(int i = 0; i<16;i++){
 
-                    if(!reg_map.is_used(i, item->first_occurrence, item->last_occurrence)){
+                    if(!reg_map.is_used(i, item->get_first_occurrence(), item->get_last_occurrence())){
                         found = true;
-                        reg_map.insert(item->to_str(), i, item->first_occurrence, item->last_occurrence);
+                        reg_map.insert(item->to_str(), i, item->get_first_occurrence(), item->get_last_occurrence());
                         register_mapping[item->to_str()] = var_map->at("r"+std::to_string(i));
                         item = register_mapping[item->to_str()];
                         break;

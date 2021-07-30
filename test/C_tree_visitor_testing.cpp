@@ -837,7 +837,7 @@ TEST( cTreeVisitor, array_test){
 
     def_2->set_dimensions({op_1, op_1});
     var = std::make_shared<variable>( "b");
-    var->variable_class = variable_output_type;
+    var->set_variable_class(variable_output_type);
     var->set_bound_reg(4);
     std::shared_ptr<hl_definition_node> def_3 = std::make_shared<hl_definition_node>("b", c_type_int, var);
 

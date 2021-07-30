@@ -29,7 +29,7 @@ std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_pt
     for(auto & i : content){
         if(i->node_type == hl_ast_node_type_definition){
             std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(i);
-            if(node->get_variable()->variable_class != variable_regular_type) {
+            if(node->get_variable()->get_variable_class() != variable_regular_type) {
                 new_content.push_back(i);
             } else if(node->get_initializer()->node_type == hl_ast_node_type_operand){
                 std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(node->get_initializer());

@@ -246,7 +246,7 @@ TEST(HlPassesTest, normalization) {
     def_1->set_initializer(ex_1);
 
     var = std::make_shared<variable>("a");
-    var->variable_class = variable_output_type;
+    var->set_variable_class(variable_output_type);
     var->set_bound_reg(10);
     std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int, var);
 
@@ -306,7 +306,7 @@ TEST(HlPassesTest, function_elimination) {
     def_1->set_initializer(ex_1);
 
     var = std::make_shared<variable>("a");
-    var->variable_class = variable_output_type;
+    var->set_variable_class(variable_output_type);
     var->set_bound_reg(10);
     std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int, var);
 
@@ -413,7 +413,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
     def_1->set_initializer(ex_1);
 
     var = std::make_shared<variable>("a");
-    var->variable_class = variable_output_type;
+    var->set_variable_class(variable_output_type);
     var->set_bound_reg(10);
     std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int, var);
 
@@ -435,7 +435,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     var = std::make_shared<variable>("a");
-    var->variable_class = variable_output_type;
+    var->set_variable_class(variable_output_type);
     var->set_bound_reg(10);
     op_1->set_variable(var);
 
@@ -448,7 +448,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
     op_1 = std::make_shared<hl_ast_operand>(variable_operand);
     var = std::make_shared<variable>("a");
-    var->variable_class = variable_output_type;
+    var->set_variable_class(variable_output_type);
     var->set_bound_reg(10);
     op_1->set_variable(var);
 

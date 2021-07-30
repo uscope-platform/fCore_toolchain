@@ -22,7 +22,6 @@
 
 hl_ast_operand::hl_ast_operand(operand_type_t ot) : hl_ast_node(hl_ast_node_type_operand) {
     operand_type = ot;
-    string_imm = "";
 }
 
 void hl_ast_operand::set_name(const std::string &n) {
@@ -45,13 +44,6 @@ float hl_ast_operand::get_float_val() const {
     return inner_variable->get_const_f();
 }
 
-void hl_ast_operand::set_string(const std::string &s) {
-    string_imm = s;
-}
-
-std::string hl_ast_operand::get_string() {
-    return string_imm;
-}
 
 operand_type_t hl_ast_operand::get_type() {
     return operand_type;
@@ -59,7 +51,6 @@ operand_type_t hl_ast_operand::get_type() {
 
 bool operator==(const hl_ast_operand &lhs, const hl_ast_operand &rhs) {
     bool ret_val = true;
-    ret_val &= lhs.string_imm == rhs.string_imm;
     ret_val &= lhs.operand_type == rhs.operand_type;
     ret_val &= lhs.node_type == rhs.node_type;
 
@@ -92,9 +83,6 @@ std::string hl_ast_operand::pretty_print() {
             break;
         case variable_operand:
             ret_val = inner_variable->get_name();
-            break;
-        case string_operand:
-            ret_val = string_imm;
             break;
         case array_operand:
             ret_val = inner_variable->get_name() + '[' + array_index->pretty_print() + ']';

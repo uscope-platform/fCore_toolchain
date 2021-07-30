@@ -34,10 +34,11 @@ void variable_map::insert(const std::string& key, std::shared_ptr<variable>item)
     std::regex re("r(\\d\\d?)");
     std::smatch m;
     if(map.count(key)>0) return;
-    switch (item->variable_class) {
+    switch (item->get_variable_class()) {
         case variable_input_type:
             n_inputs_++;
             break;
+        case variable_memory_type:
         case variable_regular_type:
             std::regex_match(key, m, re);
             if(m.empty())

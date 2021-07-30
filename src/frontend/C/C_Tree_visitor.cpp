@@ -225,8 +225,7 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
             throw std::runtime_error("character literals are not supported by the fCore toolchain");
         }
     } else { // string litteral
-        operand = std::make_shared<hl_ast_operand>( string_operand);
-        operand->set_string(ctx->getText());
+        throw std::runtime_error("Strings are not supported by the fCore toolchain");
     }
 
     expressions_stack.push(operand);

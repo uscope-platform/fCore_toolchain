@@ -29,7 +29,7 @@ bool expression_evaluator::is_constant_expression(const std::shared_ptr<hl_expre
 bool expression_evaluator::is_constant_subexpr(const std::shared_ptr<hl_ast_node>& subex) {
     if(subex->node_type == hl_ast_node_type_operand){
         std::shared_ptr<hl_ast_operand> node = std::static_pointer_cast<hl_ast_operand>(subex);
-        if(node->get_type() == variable_operand ||  node->get_type() == string_operand){
+        if(node->get_type() == variable_operand ||  node->get_type() == array_operand){
             return false;
         } else{
             return true;
