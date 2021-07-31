@@ -484,18 +484,59 @@ void C_Tree_visitor::exitConditionContent(C_parser::C_grammarParser::ConditionCo
 }
 
 void C_Tree_visitor::enterSelectionStatement(C_parser::C_grammarParser::SelectionStatementContext *ctx) {
+    if(in_conditional_block){
+        outer_block_contents.push(conditional_body);
+        outer_block_types.push("conditional");
+    } else if(in_foor_loop_block){
+        outer_block_contents.push(loop_body);
+        outer_block_types.push("loop");
+    } else{
+        outer_block_types.push("function");
+    }
     conditional = std::make_shared<hl_ast_conditional_node>();
     in_conditional_block = true;
+    in_foor_loop_block = false;
+    in_function_body = false;
 }
 
 void C_Tree_visitor::exitSelectionStatement(C_parser::C_grammarParser::SelectionStatementContext *ctx) {
-    in_function_body = true;
-    in_conditional_block = false;
+    std::string outer_type = outer_block_types.top();
+    outer_block_types.pop();
+
+    if(outer_type == "function"){
+        in_foor_loop_block = false;
+        in_conditional_block = false;
+        in_function_body = true;
+    } else if(outer_type == "loop"){
+        in_foor_loop_block = true;
+        in_conditional_block = false;
+        in_function_body = false;
+        loop_body = outer_block_contents.top();
+        outer_block_contents.pop();
+    } else if(outer_type == "conditional"){
+        in_foor_loop_block = false;
+        in_conditional_block = true;
+        in_function_body = false;
+        conditional_body = outer_block_contents.top();
+        outer_block_contents.pop();
+    }
+
 }
 
 
 void C_Tree_visitor::enterIterationStatement(C_parser::C_grammarParser::IterationStatementContext *ctx) {
     loop = std::make_shared<hl_ast_loop_node>();
+
+    if(in_conditional_block){
+        outer_block_contents.push(conditional_body);
+        outer_block_types.push("conditional");
+    } else if(in_foor_loop_block){
+        outer_block_contents.push(loop_body);
+        outer_block_types.push("loop");
+    } else{
+        outer_block_types.push("function");
+    }
+
     in_function_body = false;
     in_conditional_block = false;
 }
@@ -503,8 +544,27 @@ void C_Tree_visitor::enterIterationStatement(C_parser::C_grammarParser::Iteratio
 void C_Tree_visitor::exitIterationStatement(C_parser::C_grammarParser::IterationStatementContext *ctx) {
     loop->set_loop_content(loop_body);
     loop_body.clear();
-    in_foor_loop_block = false;
-    in_function_body = true;
+    std::string outer_type = outer_block_types.top();
+    outer_block_types.pop();
+
+    if(outer_type == "function"){
+        in_foor_loop_block = false;
+        in_conditional_block = false;
+        in_function_body = true;
+    } else if(outer_type == "loop"){
+        in_foor_loop_block = true;
+        in_conditional_block = false;
+        in_function_body = false;
+        loop_body = outer_block_contents.top();
+        outer_block_contents.pop();
+    } else if(outer_type == "conditional"){
+        in_foor_loop_block = false;
+        in_conditional_block = true;
+        in_function_body = false;
+        conditional_body = outer_block_contents.top();
+        outer_block_contents.pop();
+    }
+
 }
 
 void C_Tree_visitor::exitForExitCondition(C_parser::C_grammarParser::ForExitConditionContext *ctx) {

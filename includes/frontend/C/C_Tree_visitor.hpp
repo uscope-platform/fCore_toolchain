@@ -148,6 +148,9 @@ private:
     std::shared_ptr<hl_ast_node> root;
     std::unordered_map<std::string, std::shared_ptr<variable>> iom_map;
 
+    std::stack<std::vector<std::shared_ptr<hl_ast_node>>> outer_block_contents;
+    std::stack<std::string> outer_block_types;
+
     bool in_function_declaration;
     bool in_function_body;
     bool in_array_declaration;
