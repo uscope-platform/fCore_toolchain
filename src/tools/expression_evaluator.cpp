@@ -96,7 +96,7 @@ expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_
         expr_type = c_type_float;
     }
 
-    if(lhs->get_type() == var_type_int_const){
+    if(lhs->get_type() == var_type_float_const){
         expr_type = c_type_float;
     }
 
