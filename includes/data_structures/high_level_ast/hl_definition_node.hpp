@@ -38,6 +38,9 @@ public:
     void set_is_array(bool a);
     std::shared_ptr<hl_ast_node> get_initializer();
 
+    std::shared_ptr<hl_ast_operand> get_array_index() {return array_index;};
+    void set_array_index(std::shared_ptr<hl_ast_operand> i) {array_index = std::move(i);};
+
     void set_initializer(std::shared_ptr<hl_ast_node> init);
     std::vector<std::shared_ptr<hl_ast_node>> get_dimensions();
     void set_dimensions(std::vector<std::shared_ptr<hl_ast_node>> dim);
@@ -57,6 +60,7 @@ protected:
     c_types_t type;
     std::shared_ptr<hl_ast_node> initializer;
     bool is_array;
+    std::shared_ptr<hl_ast_operand> array_index;
     std::shared_ptr<variable> inner_variable;
     std::vector<std::shared_ptr<hl_ast_node>> dimensions;
 };
