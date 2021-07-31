@@ -84,6 +84,36 @@ std::shared_ptr<hl_ast_node> hl_pass_manager::process_leaves(const std::shared_p
             }
 
             result = node;
+        }else if (subtree->node_type == hl_ast_node_type_conditional){
+            std::shared_ptr<hl_ast_conditional_node> node = std::static_pointer_cast<hl_ast_conditional_node>(subtree);
+
+            std::vector<std::shared_ptr<hl_ast_node>> new_block_content;
+            for(auto &item:node->get_if_block()){
+                new_block_content.push_back(process_leaves(item, pass));
+            }
+            node->set_if_block(new_block_content);
+
+            new_block_content.clear();
+
+            for(auto &item:node->get_else_block()){
+                new_block_content.push_back(process_leaves(item, pass));
+            }
+            node->set_else_block(new_block_content);
+            node->set_condition(process_leaves(node->get_condition(), pass));
+            result = node;
+        }else if (subtree->node_type == hl_ast_node_type_loop){
+            std::shared_ptr<hl_ast_loop_node> node = std::static_pointer_cast<hl_ast_loop_node>(subtree);
+
+            std::vector<std::shared_ptr<hl_ast_node>> new_block_content;
+            for(auto &item:node->get_loop_content()){
+                new_block_content.push_back(process_leaves(item, pass));
+            }
+            node->set_loop_content(new_block_content);
+
+            node->set_condition(std::static_pointer_cast<hl_expression_node>(process_leaves(node->get_condition(), pass)));
+            node->set_init_statement(std::static_pointer_cast<hl_definition_node>(process_leaves(node->get_init_statement(), pass)));
+            node->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(process_leaves(node->get_iteration_expr(), pass)));
+            result = node;
         } else{
             std::vector<std::shared_ptr<hl_ast_node>> content =  subtree->get_content();
             for(auto &i :content){
@@ -114,7 +144,8 @@ std::vector<std::shared_ptr<hl_ast_node>> hl_pass_manager::process_nodes(const s
         result_vector.erase(result_vector.begin()+i+tmp_result.size());
     }
     subtree->set_content(result_vector);
-    return pass->process_node(subtree);
+    std::vector<std::shared_ptr<hl_ast_node>> ret_val = pass->process_node(subtree);
+    return ret_val;
 
 
 }
@@ -158,6 +189,34 @@ hl_pass_manager::process_definition(const std::shared_ptr<hl_definition_node> &s
     }
     return std::static_pointer_cast<hl_definition_node>(pass->process_leaf(subtree));
 }
+
+std::shared_ptr<hl_ast_loop_node> hl_pass_manager::process_loop(const std::shared_ptr<hl_ast_loop_node> &subtree,
+                                                                const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
+    return std::shared_ptr<hl_ast_loop_node>();
+
+}
+
+std::shared_ptr<hl_ast_conditional_node>
+hl_pass_manager::process_conditional(const std::shared_ptr<hl_ast_conditional_node> &subtree,
+                                     const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
+
+    subtree->set_condition(pass->process_leaf(subtree->get_condition()));
+    std::vector<std::shared_ptr<hl_ast_node>> new_block_content;
+    for(auto &item:subtree->get_if_block()){
+        new_block_content.push_back(process_terminal_by_type(item, pass));
+    }
+    subtree->set_if_block(new_block_content);
+
+    new_block_content.clear();
+    for(auto &item:subtree->get_else_block()){
+        new_block_content.push_back(process_terminal_by_type(item, pass));
+    }
+    subtree->set_else_block(new_block_content);
+
+    return subtree;
+}
+
+
 
 std::shared_ptr<hl_ast_node>
 hl_pass_manager::process_terminal_by_type(const std::shared_ptr<hl_ast_node> &subtree,

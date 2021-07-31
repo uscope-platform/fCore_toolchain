@@ -26,6 +26,8 @@
 #include "data_structures/high_level_ast/hl_function_call_node.hpp"
 #include "data_structures/high_level_ast/hl_function_def_node.hpp"
 #include "data_structures/high_level_ast/hl_definition_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_loop_node.h"
+#include "data_structures/high_level_ast/hl_ast_conditional_node.hpp"
 
 #include "passes/pass_manager_base.hpp"
 #include "passes/pass_base.hpp"
@@ -48,7 +50,8 @@ private:
     static std::shared_ptr<hl_ast_operand> process_operand(const std::shared_ptr<hl_ast_operand> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
     std::shared_ptr<hl_ast_node> process_function_call(const std::shared_ptr<hl_function_call_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
     std::shared_ptr<hl_definition_node> process_definition(const std::shared_ptr<hl_definition_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
-
+    std::shared_ptr<hl_ast_loop_node> process_loop(const std::shared_ptr<hl_ast_loop_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
+    std::shared_ptr<hl_ast_conditional_node> process_conditional(const std::shared_ptr<hl_ast_conditional_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
 };
 
 
