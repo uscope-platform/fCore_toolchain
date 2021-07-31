@@ -27,8 +27,8 @@
 class inlined_function_elimination : public  pass_base<hl_ast_node>{
 public:
     explicit inlined_function_elimination(std::string entry_point_name);
-    std::vector<std::shared_ptr<hl_ast_node>> process_node(std::shared_ptr<hl_ast_node> element) override;
-    int get_pass_type() override { return NODE_PASS;};
+    std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
+    int get_pass_type() override { return GLOBAL_PASS;};
 private:
     std::string entry_point;
 };
