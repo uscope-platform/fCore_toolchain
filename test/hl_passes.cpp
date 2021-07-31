@@ -147,24 +147,15 @@ TEST(HlPassesTest, functionInlining) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,8,9,10});
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5});
 
     manager.run_morphing_passes(parser.AST);
 
-    std::shared_ptr<hl_function_def_node> res = std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0]);
+    std::shared_ptr<hl_ast_node> res = parser.AST->get_content()[0];
 
-    std::shared_ptr<hl_function_def_node> gold_standard = std::make_shared<hl_function_def_node>();
-    gold_standard->set_name("main");
-    // PARAMETERS
-    std::shared_ptr<variable> var = std::make_shared<variable>("a");
-    std::shared_ptr<hl_definition_node> par_1 = std::make_shared<hl_definition_node>("a", c_type_int, var);
-    var = std::make_shared<variable>("b");
-    std::shared_ptr<hl_definition_node> par_2 = std::make_shared<hl_definition_node>("b", c_type_int, var);
-    gold_standard->set_parameters_list({par_1, par_2});
-
-    std::shared_ptr<hl_ast_node> inlined_block = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
+    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
     // CALL BODY
-    var = std::make_shared<variable>("c");
+    std::shared_ptr<variable> var = std::make_shared<variable>("c");
     std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("c", c_type_int, var);
     std::shared_ptr<hl_expression_node> exadd = std::make_shared<hl_expression_node>(expr_add);
 
@@ -189,9 +180,7 @@ TEST(HlPassesTest, functionInlining) {
     exadd->set_rhs(op_2);
     exadd->set_lhs(op_1);
 
-    inlined_block->set_content({def, exadd});
-    gold_standard->set_body({inlined_block});
-    gold_standard->set_return_type(c_type_int);
+    gold_standard->set_content({def, exadd});
     EXPECT_EQ(*res, *gold_standard);
     if(Test::HasFailure()){
         std::cout << "TEST RESULT: " << res->pretty_print()<< std::endl;
