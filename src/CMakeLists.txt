@@ -49,6 +49,7 @@ set(FCORE_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/intrinsics_implementation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/function_inlining_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/division_implementation_pass.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/code_block_inlining_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/dead_variable_elimination.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/declaration_instantiation_combining_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/conditional_implementation_pass.cpp
