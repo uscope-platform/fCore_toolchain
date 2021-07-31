@@ -25,17 +25,26 @@
 #include "data_structures/high_level_ast/hl_ast_conditional_node.hpp"
 #include "data_structures/high_level_ast/hl_definition_node.hpp"
 #include "data_structures/high_level_ast/hl_expression_node.hpp"
+#include "data_structures/high_level_ast/hl_function_def_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_loop_node.h"
+
 #include "tools/expression_evaluator.hpp"
 
 class conditional_implementation_pass : public pass_base<hl_ast_node> {
 public:
     conditional_implementation_pass();
     std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
+    int get_pass_type() override { return GLOBAL_PASS;};
+
+private:
     std::shared_ptr<hl_ast_operand> find_variable_definition(const std::shared_ptr<hl_ast_node>& subexpr, const std::shared_ptr<hl_ast_node>& item,
                                                              const std::vector<std::shared_ptr<hl_ast_node>>& prog_content);
     std::shared_ptr<hl_ast_operand> get_operands(const std::shared_ptr<hl_ast_node>& subexpr, const std::shared_ptr<hl_ast_node>& item,
                                                  const std::vector<std::shared_ptr<hl_ast_node>>& prog_content);
-    int get_pass_type() override { return GLOBAL_PASS;};
+
+    std::vector<std::shared_ptr<hl_ast_node>> process_block_by_type(const std::shared_ptr<hl_ast_node>& node, const std::shared_ptr<hl_ast_node>& subtree);
+    std::vector<std::shared_ptr<hl_ast_node>> process_conditional(const std::shared_ptr<hl_ast_conditional_node>& node, const std::shared_ptr<hl_ast_node>& subtree);
+    std::vector<std::shared_ptr<hl_ast_node>> process_loop(const std::shared_ptr<hl_ast_loop_node>& node, const std::shared_ptr<hl_ast_node>& subtree);
 };
 
 

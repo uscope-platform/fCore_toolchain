@@ -27,37 +27,77 @@ std::shared_ptr<hl_ast_node> conditional_implementation_pass::process_global(std
 
     std::vector<std::shared_ptr<hl_ast_node>> body;
 
-    for(auto item:element->get_content()){
-        if(item->node_type == hl_ast_node_type_conditional){
-            std::shared_ptr<hl_ast_conditional_node> node = std::static_pointer_cast<hl_ast_conditional_node>(item);
-            std::shared_ptr<hl_expression_node> condition = std::static_pointer_cast<hl_expression_node>(node->get_condition());
-            std::shared_ptr<hl_ast_operand> lhs_op = get_operands(condition->get_lhs(), node, element->get_content());
-            std::shared_ptr<hl_ast_operand> rhs_op = get_operands(condition->get_rhs(), node, element->get_content());
-
-            std::shared_ptr<hl_expression_node> const_cond_expr = std::make_shared<hl_expression_node>(condition->get_type());
-            const_cond_expr->set_lhs(lhs_op);
-            const_cond_expr->set_rhs(rhs_op);
-
-            std::shared_ptr<hl_ast_operand> result_op = expression_evaluator::evaluate_expression(const_cond_expr);
-            bool result;
-            if(result_op->get_type() == var_type_int_const) result = result_op->get_int_value();
-            if(result_op->get_type() == var_type_float_const) result = result_op->get_float_val() == 1;
-
-            if(result){
-                std::vector<std::shared_ptr<hl_ast_node>> selected_block = node->get_if_block();
-                body.insert(body.end(), selected_block.begin(), selected_block.end());
-            } else if(node->has_else()){
-                std::vector<std::shared_ptr<hl_ast_node>> selected_block = node->get_else_block();
-                body.insert(body.end(), selected_block.begin(), selected_block.end());
-            }
-        } else {
-            body.push_back(item);
-        }
+    for(const auto& item:element->get_content()){
+        std::vector<std::shared_ptr<hl_ast_node>> selected_branch = process_block_by_type(item, element);
+        body.insert(body.end(),selected_branch.begin(), selected_branch.end());
     }
 
     ret_val->set_content(body);
     return ret_val;
 }
+
+
+std::vector<std::shared_ptr<hl_ast_node>>
+conditional_implementation_pass::process_block_by_type(const std::shared_ptr<hl_ast_node> &node,
+                                                       const std::shared_ptr<hl_ast_node> &subtree) {
+
+    if(node->node_type == hl_ast_node_type_loop){
+        std::shared_ptr<hl_ast_loop_node> loop_node = std::static_pointer_cast<hl_ast_loop_node>(node);
+        std::vector<std::shared_ptr<hl_ast_node>> loop_content =  process_loop(loop_node, subtree);
+        loop_node->set_loop_content(loop_content);
+        return{loop_node};
+    } else if(node->node_type == hl_ast_node_type_conditional){
+        return process_conditional(std::static_pointer_cast<hl_ast_conditional_node>(node), subtree);
+    } else {
+        return {node};
+    }
+}
+
+std::vector<std::shared_ptr<hl_ast_node>>
+conditional_implementation_pass::process_loop(const std::shared_ptr<hl_ast_loop_node> &node,
+                                              const std::shared_ptr<hl_ast_node> &subtree) {
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_block_content;
+    for(auto &loop_instr:node->get_loop_content()){
+        if(loop_instr->node_type == hl_ast_node_type_conditional){
+            std::shared_ptr<hl_ast_conditional_node> instr_node = std::static_pointer_cast<hl_ast_conditional_node>(loop_instr);
+            std::vector<std::shared_ptr<hl_ast_node>> selected_branch = process_conditional(instr_node, subtree);
+            new_block_content.insert(new_block_content.end(),selected_branch.begin(), selected_branch.end());
+        }
+    }
+    node->set_loop_content(new_block_content);
+
+    return new_block_content;
+}
+
+std::vector<std::shared_ptr<hl_ast_node>>
+conditional_implementation_pass::process_conditional(const std::shared_ptr<hl_ast_conditional_node>& node, const std::shared_ptr<hl_ast_node>& subtree) {
+    std::vector<std::shared_ptr<hl_ast_node>> result_body;
+
+
+    std::shared_ptr<hl_expression_node> condition = std::static_pointer_cast<hl_expression_node>(node->get_condition());
+    std::shared_ptr<hl_ast_operand> lhs_op = get_operands(condition->get_lhs(), node, subtree->get_content());
+    std::shared_ptr<hl_ast_operand> rhs_op = get_operands(condition->get_rhs(), node, subtree->get_content());
+
+    std::shared_ptr<hl_expression_node> const_cond_expr = std::make_shared<hl_expression_node>(condition->get_type());
+    const_cond_expr->set_lhs(lhs_op);
+    const_cond_expr->set_rhs(rhs_op);
+
+    std::shared_ptr<hl_ast_operand> result_op = expression_evaluator::evaluate_expression(const_cond_expr);
+    bool result;
+    if(result_op->get_type() == var_type_int_const) result = result_op->get_int_value();
+    if(result_op->get_type() == var_type_float_const) result = result_op->get_float_val() == 1;
+
+    if(result){
+        std::vector<std::shared_ptr<hl_ast_node>> selected_block = node->get_if_block();
+        result_body.insert(result_body.end(), selected_block.begin(), selected_block.end());
+    } else if(node->has_else()){
+        std::vector<std::shared_ptr<hl_ast_node>> selected_block = node->get_else_block();
+        result_body.insert(result_body.end(), selected_block.begin(), selected_block.end());
+    }
+    return result_body;
+}
+
 
 std::shared_ptr<hl_ast_operand>
 conditional_implementation_pass::find_variable_definition(const std::shared_ptr<hl_ast_node>& subexpr,
@@ -89,6 +129,7 @@ conditional_implementation_pass::find_variable_definition(const std::shared_ptr<
     return retval;
 }
 
+
 std::shared_ptr<hl_ast_operand>
 conditional_implementation_pass::get_operands(const std::shared_ptr<hl_ast_node> &subexpr,
                                               const std::shared_ptr<hl_ast_node> &item,
@@ -106,5 +147,3 @@ conditional_implementation_pass::get_operands(const std::shared_ptr<hl_ast_node>
     }
     return retval;
 }
-
-
