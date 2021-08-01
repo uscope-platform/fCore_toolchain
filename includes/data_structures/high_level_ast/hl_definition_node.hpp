@@ -46,6 +46,7 @@ public:
     void set_dimensions(std::vector<std::shared_ptr<hl_ast_node>> dim);
 
     std::shared_ptr<variable> get_variable() {return inner_variable;};
+    void set_variable(std::shared_ptr<variable> var) {inner_variable = std::move(var);};
 
     std::string pretty_print() override;
     bool is_terminal() override {

@@ -49,6 +49,7 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes, bool
 
     } catch(std::runtime_error &e){
         error_code = e.what();
+        int i = 0;
     } catch (...) {
         throw std::runtime_error("OH SNAP!");
     }

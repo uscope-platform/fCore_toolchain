@@ -102,6 +102,7 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
         var = iom_map[name];
     } else {
         var = std::make_shared<variable>( name);
+        var->set_type(var_type_array);
     }
 
     std::shared_ptr<hl_definition_node> node = std::make_shared<hl_definition_node>(name, hl_ast_node::string_to_type(type_name), var);
@@ -119,11 +120,12 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
         expressions_stack.pop();
         node->set_is_array(true);
         node->set_dimensions(dimensions);
-    } else {
-        if(ctx->initDeclaratorList() != nullptr){
-            node->set_initializer(current_initializer);
-        }
+
     }
+    if(ctx->initDeclaratorList() != nullptr){
+        node->set_initializer(current_initializer);
+    }
+
 
     if(in_function_body){
         current_block_item = node;
