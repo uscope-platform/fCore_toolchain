@@ -494,7 +494,6 @@ TEST(HlPassesTest, loop_unrolling) {
         op->set_array_index(op_idx);
         expr->set_rhs(op);
         def->set_initializer(expr);
-
         gold_standard->add_content(def);
     }
     ASSERT_EQ(*normalized_ast, *gold_standard);

@@ -51,6 +51,7 @@ set(FCORE_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/division_implementation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/code_block_inlining_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/dead_variable_elimination.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/array_scalarization_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/declaration_instantiation_combining_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/conditional_implementation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/loop_unrolling_pass.cpp
