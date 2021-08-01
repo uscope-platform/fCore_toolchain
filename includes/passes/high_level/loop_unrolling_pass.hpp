@@ -34,7 +34,7 @@ public:
     std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
     int get_pass_type() override { return GLOBAL_PASS;};
 private:
-    std::shared_ptr<hl_ast_node> process_loop(const std::shared_ptr<hl_ast_loop_node>& element);
+    std::vector<std::shared_ptr<hl_ast_node>> process_loop(const std::shared_ptr<hl_ast_loop_node>& element);
     unsigned int process_loop_initializer(const std::shared_ptr<hl_ast_node>& raw_initializer);
     bool evaluate_loop(const std::shared_ptr<hl_expression_node>& condition, const std::shared_ptr<hl_expression_node>& iteration_exp, std::shared_ptr<hl_ast_operand> &loop_var);
     std::shared_ptr<hl_expression_node> update_loop_condition(std::shared_ptr<hl_expression_node> expression, std::shared_ptr<hl_ast_operand> loop_var);

@@ -29,7 +29,8 @@ std::shared_ptr<hl_ast_node> loop_unrolling_pass::process_global(std::shared_ptr
 
     for(const auto& item:element->get_content()){
         if(item->node_type == hl_ast_node_type_loop){
-            body.push_back(process_loop(std::static_pointer_cast<hl_ast_loop_node>(item)));
+            std::vector<std::shared_ptr<hl_ast_node>> unrolled_loop = process_loop(std::static_pointer_cast<hl_ast_loop_node>(item));
+            body.insert(body.end(), unrolled_loop.begin(), unrolled_loop.end());
         } else {
             body.push_back(item);
         }
@@ -38,8 +39,8 @@ std::shared_ptr<hl_ast_node> loop_unrolling_pass::process_global(std::shared_ptr
     return retval;
 }
 
-std::shared_ptr<hl_ast_node> loop_unrolling_pass::process_loop(const std::shared_ptr<hl_ast_loop_node>& element) {
-    std::shared_ptr<hl_ast_node> retval = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
+std::vector<std::shared_ptr<hl_ast_node>> loop_unrolling_pass::process_loop(const std::shared_ptr<hl_ast_loop_node>& element) {
+    std::vector<std::shared_ptr<hl_ast_node>> retval;
     if(!element->get_init_statement()->is_initialized()){
         throw std::runtime_error("Error: incomplete loop initialization statement");
     }
@@ -66,7 +67,7 @@ std::shared_ptr<hl_ast_node> loop_unrolling_pass::process_loop(const std::shared
         }
         var = std::make_shared<variable>(loop_var_name, (int)current_loop_iteration);
         loop_var = std::make_shared<hl_ast_operand>(var);
-        retval->append_content(new_content);
+        retval.insert(retval.end(), new_content.begin(), new_content.end());
     }
     return retval;
 }

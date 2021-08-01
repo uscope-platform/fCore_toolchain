@@ -445,3 +445,58 @@ TEST(HlPassesTest, intrinsics_implementation) {
 }
 
 
+TEST(HlPassesTest, loop_unrolling) {
+
+
+    std::string input_file = "test_loop_unrolling_pass.c";
+    std::ifstream ifs(input_file);
+
+
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(ifs, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
+
+
+    std::string ep = "main";
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8});
+    manager.run_morphing_passes(parser.AST);
+
+    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
+
+    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+
+    for(int i = 5; i<7; ++i){
+        //DEFINITION
+        std::shared_ptr<variable> def_var = std::make_shared<variable>("j");
+        def_var->set_type(var_type_array);
+        std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("j", c_type_int, def_var);
+        std::shared_ptr<variable> idx_var = std::make_shared<variable>("constant", i);
+        std::shared_ptr<hl_ast_operand> op_idx = std::make_shared<hl_ast_operand>(idx_var);
+        def->set_array_index(op_idx);
+        //INITIALIZER
+        std::shared_ptr<hl_expression_node> expr = std::make_shared<hl_expression_node>(expr_add);
+        // LHS
+        def_var = std::make_shared<variable>("a");
+        def_var->set_type(var_type_array);
+        std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(def_var);
+        idx_var = std::make_shared<variable>("i", i);
+        op_idx = std::make_shared<hl_ast_operand>(idx_var);
+        op->set_array_index(op_idx);
+        expr->set_lhs(op);
+        //RHS
+        def_var = std::make_shared<variable>("h");
+        def_var->set_type(var_type_array);
+        op = std::make_shared<hl_ast_operand>(def_var);
+        idx_var = std::make_shared<variable>("i", i);
+        op_idx = std::make_shared<hl_ast_operand>(idx_var);
+        op->set_array_index(op_idx);
+        expr->set_rhs(op);
+        def->set_initializer(expr);
+
+        gold_standard->add_content(def);
+    }
+    ASSERT_EQ(*normalized_ast, *gold_standard);
+}
+

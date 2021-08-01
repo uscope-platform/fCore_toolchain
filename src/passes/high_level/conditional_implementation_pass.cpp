@@ -63,6 +63,8 @@ conditional_implementation_pass::process_loop(const std::shared_ptr<hl_ast_loop_
             std::shared_ptr<hl_ast_conditional_node> instr_node = std::static_pointer_cast<hl_ast_conditional_node>(loop_instr);
             std::vector<std::shared_ptr<hl_ast_node>> selected_branch = process_conditional(instr_node, subtree);
             new_block_content.insert(new_block_content.end(),selected_branch.begin(), selected_branch.end());
+        } else{
+            new_block_content.push_back(loop_instr);
         }
     }
     node->set_loop_content(new_block_content);
