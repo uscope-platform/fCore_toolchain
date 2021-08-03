@@ -23,8 +23,7 @@
 #include <utility>
 
 #include "passes/pass_base.hpp"
-#include "data_structures/high_level_ast/hl_ast_node.hpp"
-#include "data_structures/high_level_ast/hl_ast_loop_node.h"
+#include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "tools/expression_evaluator.hpp"
 #include "tools/variable.hpp"
 

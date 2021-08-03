@@ -18,8 +18,7 @@
 #ifndef FCORE_TOOLCHAINLCHAINLCHAIN_DIVISION_IMPLEMENTATION_PASS_HPP
 #define FCORE_TOOLCHAINLCHAINLCHAIN_DIVISION_IMPLEMENTATION_PASS_HPP
 
-#include "data_structures/high_level_ast/hl_expression_node.hpp"
-#include "data_structures/high_level_ast/hl_ast_node.hpp"
+#include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "passes/pass_base.hpp"
 
 class division_implementation_pass :public pass_base<hl_ast_node> {

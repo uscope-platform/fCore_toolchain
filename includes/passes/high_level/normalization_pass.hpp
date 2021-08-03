@@ -18,11 +18,7 @@
 #ifndef FCORE_TOOLCHAIN_NORMALIZATION_PASS_HPP
 #define FCORE_TOOLCHAIN_NORMALIZATION_PASS_HPP
 
-
-
-#include "data_structures/high_level_ast/hl_ast_node.hpp"
-#include "data_structures/high_level_ast/hl_function_def_node.hpp"
-#include "data_structures/high_level_ast/hl_function_call_node.hpp"
+#include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "passes/pass_base.hpp"
 
 class normalization_pass : public pass_base<hl_ast_node> {

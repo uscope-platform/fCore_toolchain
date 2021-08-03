@@ -21,9 +21,7 @@
 #define FCORE_TOOLCHAIN_DECLARATION_INSTANTIATION_COMBINING_PASS_HPP
 
 #include "passes/pass_base.hpp"
-#include "data_structures/high_level_ast/hl_ast_node.hpp"
-#include "data_structures/high_level_ast/hl_definition_node.hpp"
-#include "data_structures/high_level_ast/hl_expression_node.hpp"
+#include "data_structures/high_level_ast/high_level_ast.hpp"
 
 class declaration_instantiation_combining_pass : public pass_base<hl_ast_node> {
 public:

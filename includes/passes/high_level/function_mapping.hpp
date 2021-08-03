@@ -23,8 +23,7 @@
 #include <unordered_map>
 #include <string>
 
-#include "data_structures/high_level_ast/hl_expression_node.hpp"
-#include "data_structures/high_level_ast/hl_function_def_node.hpp"
+#include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "passes/pass_base.hpp"
 
 class function_mapping : public pass_base<hl_ast_node> {

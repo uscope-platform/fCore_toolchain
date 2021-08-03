@@ -20,13 +20,7 @@
 #define FCORE_TOOLCHAIN_CONDITIONAL_IMPLEMENTATION_PASS_H
 
 #include "passes/pass_base.hpp"
-#include "data_structures/high_level_ast/hl_ast_node.hpp"
-#include "data_structures/high_level_ast/hl_ast_operand.hpp"
-#include "data_structures/high_level_ast/hl_ast_conditional_node.hpp"
-#include "data_structures/high_level_ast/hl_definition_node.hpp"
-#include "data_structures/high_level_ast/hl_expression_node.hpp"
-#include "data_structures/high_level_ast/hl_function_def_node.hpp"
-#include "data_structures/high_level_ast/hl_ast_loop_node.h"
+#include "data_structures/high_level_ast/high_level_ast.hpp"
 
 #include "tools/expression_evaluator.hpp"
 

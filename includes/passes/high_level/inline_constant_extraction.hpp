@@ -18,9 +18,7 @@
 #define FCORE_TOOLCHAIN_INLINE_CONSTANT_EXTRACTION_H
 
 #include "passes/pass_base.hpp"
-#include "data_structures/high_level_ast/hl_ast_node.hpp"
-#include "data_structures/high_level_ast/hl_expression_node.hpp"
-#include "data_structures/high_level_ast/hl_definition_node.hpp"
+#include "data_structures/high_level_ast/high_level_ast.hpp"
 
 class inline_constant_extraction : public pass_base<hl_ast_node> {
 public:

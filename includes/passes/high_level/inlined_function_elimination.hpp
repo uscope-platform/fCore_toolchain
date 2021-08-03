@@ -20,8 +20,7 @@
 
 #include <utility>
 
-#include "data_structures/high_level_ast/hl_ast_node.hpp"
-#include "data_structures/high_level_ast/hl_function_def_node.hpp"
+#include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "passes/pass_base.hpp"
 
 class inlined_function_elimination : public  pass_base<hl_ast_node>{
