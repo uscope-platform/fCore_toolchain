@@ -34,8 +34,7 @@ public:
     bool is_initialized();
     void set_constant(bool c);
     bool is_constant();
-    bool get_is_array() const;
-    void set_is_array(bool a);
+
     std::shared_ptr<hl_ast_node> get_initializer();
 
     std::shared_ptr<hl_ast_operand> get_array_index() {return array_index;};
@@ -60,7 +59,6 @@ protected:
     std::string name;
     c_types_t type;
     std::shared_ptr<hl_ast_node> initializer;
-    bool is_array;
     std::shared_ptr<hl_ast_operand> array_index;
     std::shared_ptr<variable> inner_variable;
     std::vector<std::shared_ptr<hl_ast_node>> dimensions;

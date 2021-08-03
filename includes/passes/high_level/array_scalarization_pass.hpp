@@ -19,6 +19,8 @@
 #ifndef FCORE_TOOLCHAIN_ARRAY_SCALARIZATION_PASS_HPP
 #define FCORE_TOOLCHAIN_ARRAY_SCALARIZATION_PASS_HPP
 
+#include <unordered_map>
+
 #include "passes/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
@@ -27,6 +29,14 @@ public:
     array_scalarization_pass();
     std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
     int get_pass_type() override { return GLOBAL_PASS;};
+private:
+
+    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_node> node);
+    std::shared_ptr<hl_expression_node> process_expression(std::shared_ptr<hl_expression_node> node);
+    std::shared_ptr<hl_ast_operand> process_operand(std::shared_ptr<hl_ast_operand> node);
+    std::shared_ptr<hl_definition_node> process_definition(std::shared_ptr<hl_definition_node> node);
+    int loop_variable_counter;
+    std::unordered_map<std::string, int> var_index_map;
 };
 
 

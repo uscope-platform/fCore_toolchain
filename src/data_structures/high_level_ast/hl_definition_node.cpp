@@ -23,7 +23,6 @@ hl_definition_node::hl_definition_node(std::string n, c_types_t ct, std::shared_
     name = std::move(n);
     type = ct;
     constant = false;
-    is_array = false;
     inner_variable = v;
 }
 
@@ -76,7 +75,6 @@ bool operator==(const hl_definition_node &lhs, const hl_definition_node &rhs) {
     ret_val &= lhs.constant == rhs.constant;
     ret_val &= lhs.type == rhs.type;
     ret_val &= lhs.name == rhs.name;
-    ret_val &= lhs.is_array == rhs.is_array;
 
     ret_val &= hl_ast_node::compare_vectors(lhs.dimensions, rhs.dimensions);
 
@@ -97,14 +95,6 @@ bool operator==(const hl_definition_node &lhs, const hl_definition_node &rhs) {
 
 void hl_definition_node::set_name(std::string n) {
     name = std::move(n);
-}
-
-bool hl_definition_node::get_is_array() const {
-    return is_array;
-}
-
-void hl_definition_node::set_is_array(bool a) {
-    is_array = a;
 }
 
 std::vector<std::shared_ptr<hl_ast_node>> hl_definition_node::get_dimensions() {

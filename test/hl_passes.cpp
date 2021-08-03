@@ -443,7 +443,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
 }
 
 
-TEST(HlPassesTest, loop_unrolling) {
+TEST(HlPassesTest, loop_unrolling_array_scalarization) {
 
 
     std::string input_file = "test_loop_unrolling_pass.c";
@@ -496,4 +496,3 @@ TEST(HlPassesTest, loop_unrolling) {
     }
     ASSERT_EQ(*normalized_ast, *gold_standard);
 }
-
