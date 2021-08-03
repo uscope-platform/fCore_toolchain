@@ -25,8 +25,16 @@ declaration_instantiation_combining_pass::declaration_instantiation_combining_pa
 
 std::shared_ptr<hl_ast_node>
 declaration_instantiation_combining_pass::process_global(std::shared_ptr<hl_ast_node> element) {
+
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_content = process_content(element->get_content());
+    element->set_content(new_content);
+    return element;
+}
+
+std::vector<std::shared_ptr<hl_ast_node>>
+declaration_instantiation_combining_pass::process_content(std::vector<std::shared_ptr<hl_ast_node>> content) {
     std::vector<std::shared_ptr<hl_ast_node>> new_content;
-    std::vector<std::shared_ptr<hl_ast_node>> content = element->get_content();
     for(int i = 0; i<content.size(); i++){
         if(content[i]->node_type == hl_ast_node_type_definition){
             std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(content[i]);
@@ -37,6 +45,7 @@ declaration_instantiation_combining_pass::process_global(std::shared_ptr<hl_ast_
                         if(expr->get_type()==expr_assign){
                             if(std::static_pointer_cast<hl_ast_operand>(expr->get_lhs())->get_name() == node->get_name()){
                                 node->set_initializer(expr->get_rhs());
+                                combined_instructions.push_back(j);
                                 new_content.push_back(node);
                                 break;
                             }
@@ -48,14 +57,12 @@ declaration_instantiation_combining_pass::process_global(std::shared_ptr<hl_ast_
             }
         } else if(content[i]->node_type == hl_ast_node_type_expr){
             std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(content[i]);
-            if(node->get_type()!=expr_assign){
+            if(node->get_type()!=expr_assign || std::count(combined_instructions.begin(), combined_instructions.end(), i) == 0){
                 new_content.push_back(node);
             }
         } else {
             new_content.push_back(content[i]);
         }
     }
-
-    element->set_content(new_content);
-    return element;
+    return new_content;
 }

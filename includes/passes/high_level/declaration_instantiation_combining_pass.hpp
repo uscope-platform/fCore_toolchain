@@ -28,6 +28,10 @@ public:
     declaration_instantiation_combining_pass();
     std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
     int get_pass_type() override { return GLOBAL_PASS;};
+private:
+    std::vector<std::shared_ptr<hl_ast_node>> process_content(std::vector<std::shared_ptr<hl_ast_node>> content);
+    std::vector<std::string> fully_defined_variables;
+    std::vector<int> combined_instructions;
 };
 
 
