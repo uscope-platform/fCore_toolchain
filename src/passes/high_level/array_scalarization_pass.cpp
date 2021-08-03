@@ -64,6 +64,14 @@ std::shared_ptr<hl_ast_operand> array_scalarization_pass::process_operand(std::s
     if(node->get_variable()->get_type() != var_type_array)
         return node;
 
+    std::string var_name = node->get_variable()->get_name();
+    int idx = std::static_pointer_cast<hl_ast_operand>(node->get_array_index())->get_int_value();
+    std::string mangled_name = "_fcmglr_flattened_array_"+  var_name + "_" + std::to_string(idx);
+    std::shared_ptr<variable> var = std::make_shared<variable>(mangled_name);
+
+    node->set_variable(var);
+    node->set_array_index(nullptr);
+
     return node;
 }
 

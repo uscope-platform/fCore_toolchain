@@ -66,8 +66,20 @@ std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::
         }
         case hl_ast_node_type_operand:
             throw std::runtime_error("ERROR: standalone operands nodes should not reach the ast lowering stage");
-        case hl_ast_node_type_expr:
-            throw std::runtime_error("ERROR: standalone expression nodes should not reach the ast lowering stage");
+        case hl_ast_node_type_expr:{
+            std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(input);
+            if(node->get_type() == expr_assign){
+                if(node->get_lhs()->node_type != hl_ast_node_type_operand){
+                    throw std::runtime_error("ERROR: Invalid assignment expression detected  the lowering stage as the LHS is an expression and not a variable");
+                }
+                if(node->get_rhs()->node_type != hl_ast_node_type_expr){
+                    throw std::runtime_error("ERROR: Invalid assignment expression detected at the lowering stage as the LHS is an expression and not a variable");
+                }
+                std::shared_ptr<variable> dest = std::static_pointer_cast<hl_ast_operand>(node->get_lhs())->get_variable();
+                return translate_node(std::static_pointer_cast<hl_expression_node>(node->get_rhs()), dest);
+            }
+            throw std::runtime_error("ERROR: expression nodes not encoding assignments should not reach the ast lowering stage");
+        }
         case hl_ast_node_type_program_root:
             throw std::runtime_error("ERROR: program_root nodes should not reach the ast lowering stage");
         case hl_ast_node_type_loop:
