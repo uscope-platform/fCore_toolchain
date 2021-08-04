@@ -186,7 +186,7 @@ TEST(EndToEndC, loop) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0xE6, 0x40C00000};
+    std::vector<uint32_t> gold_standard = {0x1e1021, 0x60841, 0x1e1021, 0x60841};
 
-   //ASSERT_EQ(gold_standard, result);
+   ASSERT_EQ(gold_standard, result);
 }

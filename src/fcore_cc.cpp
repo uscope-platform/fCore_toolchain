@@ -31,11 +31,11 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes, bool
         hl_manager = create_hl_pass_manager(ep,{});
         hl_manager.run_morphing_passes(hl_ast);
 
-        high_level_ast_lowering tranlator;
+        high_level_ast_lowering translator;
 
-        tranlator.set_input_ast(hl_ast);
-        tranlator.translate();
-        ll_ast = tranlator.get_output_ast();
+        translator.set_input_ast(hl_ast);
+        translator.translate();
+        ll_ast = translator.get_output_ast();
 
         ll_manager = create_ll_pass_manager();
         ll_manager.run_morphing_passes(ll_ast);
@@ -45,7 +45,7 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes, bool
         stream_pass_manager sman;
         program_stream = sman.process_stream(program_stream);
 
-        writer.process_stream(program_stream, false);
+        writer.process_stream(program_stream, print_debug);
 
     } catch(std::runtime_error &e){
         error_code = e.what();
