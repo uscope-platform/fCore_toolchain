@@ -34,7 +34,6 @@ int main(){
 
     for(int i = 5; i<7; ++i){
         for(int x = 0; x<2; ++x){
-            j = a[x] + h[i];
             int b[i] = h[i] + a[x];
         }
     }

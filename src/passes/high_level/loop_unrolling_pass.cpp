@@ -44,7 +44,17 @@ std::vector<std::shared_ptr<hl_ast_node>> loop_unrolling_pass::process_loop(cons
     if(!element->get_init_statement()->is_initialized()){
         throw std::runtime_error("Error: incomplete loop initialization statement");
     }
+    std::vector<std::shared_ptr<hl_ast_node>> new_body;
 
+    for(auto &item:element->get_loop_content()){
+        if(item->node_type ==hl_ast_node_type_loop){
+            std::vector<std::shared_ptr<hl_ast_node>> unrolled_loop = process_loop(std::static_pointer_cast<hl_ast_loop_node>(item));
+            new_body.insert(new_body.end(), unrolled_loop.begin(), unrolled_loop.end());
+        } else{
+            new_body.push_back(item);
+        }
+    }
+    element->set_loop_content(new_body);
     std::shared_ptr<hl_ast_node> raw_initializer = element->get_init_statement()->get_initializer();
     std::string loop_var_name = element->get_init_statement()->get_name();
     current_loop_iteration = process_loop_initializer(raw_initializer);
@@ -154,8 +164,6 @@ loop_unrolling_pass::substitute_index(std::shared_ptr<hl_ast_node> element, std:
             return substitute_index_in_expression(std::static_pointer_cast<hl_expression_node>(element), idx_name, value);
         case hl_ast_node_type_operand:
             return substitute_index_in_operand(std::static_pointer_cast<hl_ast_operand>(element), idx_name, value);;
-        case hl_ast_node_type_loop:
-            return substitute_index_in_loop(std::static_pointer_cast<hl_ast_loop_node>(element), idx_name, value);
         case hl_ast_node_type_definition:
             return substitute_index_in_definition(std::static_pointer_cast<hl_definition_node>(element), idx_name, value);
         case hl_ast_node_type_conditional:
@@ -212,11 +220,6 @@ loop_unrolling_pass::substitute_index_in_definition(std::shared_ptr<hl_definitio
         ret_val->set_array_index(op);
     }
     return ret_val;
-}
-
-std::shared_ptr<hl_ast_loop_node>
-loop_unrolling_pass::substitute_index_in_loop(std::shared_ptr<hl_ast_loop_node> node, std::string idx_name, int value) {
-    int i = 0;
 }
 
 
