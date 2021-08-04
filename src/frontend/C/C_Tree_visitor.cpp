@@ -139,12 +139,17 @@ void C_Tree_visitor::enterArrayAccessExpression(C_parser::C_grammarParser::Array
 }
 
 void C_Tree_visitor::exitArrayAccessExpression(C_parser::C_grammarParser::ArrayAccessExpressionContext *ctx) {
-    std::shared_ptr<hl_ast_node> array_idx = expressions_stack.top();
-    expressions_stack.pop();
-    std::shared_ptr<hl_ast_operand> operand = std::static_pointer_cast<hl_ast_operand>(expressions_stack.top());
-    expressions_stack.pop();
+
+    std::vector<std::shared_ptr<hl_ast_node>> idx_array;
+    for(unsigned int i = 0; i< ctx->primaryExpression().size(); ++i){
+        idx_array.insert(idx_array.begin(), expressions_stack.top());
+        expressions_stack.pop();
+    }
+    //std::shared_ptr<hl_ast_node> array_idx = expressions_stack.top();
+    //expressions_stack.pop();
+    std::shared_ptr<hl_ast_operand> operand = std::static_pointer_cast<hl_ast_operand>(idx_array[0]);
     operand->set_type(var_type_array);
-    operand->set_array_index(array_idx);
+    operand->set_array_index(idx_array[1]);
     expressions_stack.push(operand);
 }
 
@@ -554,9 +559,6 @@ void C_Tree_visitor::exitIterationStatement(C_parser::C_grammarParser::Iteration
     loop->set_loop_content(loop_body);
     current_block_item = loop;
     restore_current_block_context();
-
-
-
 
 }
 

@@ -201,8 +201,10 @@ public:
     virtual size_t getRuleIndex() const override;
     std::vector<PrimaryExpressionContext *> primaryExpression();
     PrimaryExpressionContext* primaryExpression(size_t i);
-    antlr4::tree::TerminalNode *LeftBracket();
-    antlr4::tree::TerminalNode *RightBracket();
+    std::vector<antlr4::tree::TerminalNode *> LeftBracket();
+    antlr4::tree::TerminalNode* LeftBracket(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> RightBracket();
+    antlr4::tree::TerminalNode* RightBracket(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;

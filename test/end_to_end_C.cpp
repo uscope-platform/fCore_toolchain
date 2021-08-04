@@ -198,7 +198,7 @@ TEST(EndToEndC, nested_loop) {
     std::vector<std::string> includes;
     std::ifstream stream(input_file);
 
-    fcore_cc compiler(stream, includes,true);
+    fcore_cc compiler(stream, includes, false);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 

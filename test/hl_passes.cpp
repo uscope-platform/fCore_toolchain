@@ -496,3 +496,29 @@ TEST(HlPassesTest, loop_unrolling_array_scalarization) {
     }
     ASSERT_EQ(*normalized_ast, *gold_standard);
 }
+
+
+TEST(HlPassesTest, test_matrix_scalarization) {
+
+
+    std::string input_file = "test_matrix_scalarization.c";
+    std::ifstream ifs(input_file);
+
+
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(ifs, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
+
+
+    std::string ep = "main";
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8});
+    manager.run_morphing_passes(parser.AST);
+
+    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
+
+    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+
+    ASSERT_EQ(*normalized_ast, *gold_standard);
+}

@@ -49,7 +49,7 @@ unaryExpression
     ;
 
 arrayAccessExpression
-    : primaryExpression '[' primaryExpression ']'
+    : primaryExpression ('[' primaryExpression ']')+
     ;
 
 unaryOperator
