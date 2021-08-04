@@ -25,8 +25,6 @@ configure_file(asm_files/test_variables.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(asm_files/test_branch.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(asm_files/test_ldc.s ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
-#  C TESTING FILES
-configure_file(C_files/test_pragma_io.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
     # Preprocessor
 configure_file(C_files/preprocessor/test_preproc_comments.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/preprocessor/test_preproc_pragmas.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
@@ -62,6 +60,7 @@ configure_file(C_files/hl_passes/test_division_implementation.c ${CMAKE_CURRENT_
 configure_file(C_files/hl_passes/test_loop_unrolling_pass.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/hl_passes/test_array_scalarization.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 # FULL PROGRAMS
-configure_file(C_files/test_full_conditional.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_full_loop.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/test_pragma_io.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/end_to_end/test_full_conditional.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/end_to_end/test_full_loop.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/end_to_end/test_full_nested_loop.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/end_to_end/test_pragma_io.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

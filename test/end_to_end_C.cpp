@@ -190,3 +190,19 @@ TEST(EndToEndC, loop) {
 
    ASSERT_EQ(gold_standard, result);
 }
+
+
+TEST(EndToEndC, nested_loop) {
+    std::string input_file = "test_full_nested_loop.c";
+
+    std::vector<std::string> includes;
+    std::ifstream stream(input_file);
+
+    //fcore_cc compiler(stream, includes,false);
+    //std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    //std::vector<uint32_t> gold_standard = {0x1e1021, 0x60841, 0x1e1021, 0x60841};
+
+    //ASSERT_EQ(gold_standard, result);
+}

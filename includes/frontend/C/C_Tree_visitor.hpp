@@ -96,7 +96,7 @@ public:
     void exitForExitCondition(C_parser::C_grammarParser::ForExitConditionContext *ctx) override;
     void exitForDeclaration(C_parser::C_grammarParser::ForDeclarationContext *ctx) override;
     void enterForContent(C_parser::C_grammarParser::ForContentContext *ctx) override;
-
+    void exitForContent(C_parser::C_grammarParser::ForContentContext *ctx) override;
     void exitCompilationUnit(C_parser::C_grammarParser::CompilationUnitContext *ctx) override;
 
     std::shared_ptr<hl_ast_node> get_ast(){
@@ -123,6 +123,8 @@ private:
 
     template<typename T>
     void processExpression(unsigned int expression_size, const T& operands_array, std::map<std::string, expression_type_t> &expr_map);
+    void save_current_block_context();
+    std::string restore_current_block_context();
 
     std::vector<std::shared_ptr<hl_ast_node>> ext_decl;
     std::vector<std::shared_ptr<hl_definition_node>> parameters_list;
@@ -148,7 +150,9 @@ private:
     std::shared_ptr<hl_ast_node> root;
     std::unordered_map<std::string, std::shared_ptr<variable>> iom_map;
 
+    std::stack<std::shared_ptr<hl_ast_node>> outer_block_nodes;
     std::stack<std::vector<std::shared_ptr<hl_ast_node>>> outer_block_contents;
+
     std::stack<std::string> outer_block_types;
 
     bool in_function_declaration;
