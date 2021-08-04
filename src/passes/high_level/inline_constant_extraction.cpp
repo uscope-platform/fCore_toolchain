@@ -22,8 +22,6 @@ inline_constant_extraction::inline_constant_extraction() : pass_base<hl_ast_node
     n_var = 0;
 }
 
-
-
 std::shared_ptr<hl_ast_node>
 inline_constant_extraction::process_global(std::shared_ptr<hl_ast_node> element) {
     std::shared_ptr<hl_ast_node> retval = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
@@ -41,6 +39,26 @@ inline_constant_extraction::process_global(std::shared_ptr<hl_ast_node> element)
             } else{
                 new_content.push_back(item);
             }
+        } else if(item->node_type == hl_ast_node_type_expr){
+            std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(item);
+            if(node->get_type()==expr_assign){
+                std::shared_ptr<hl_ast_node> rhs = node->get_rhs();
+                if(rhs->node_type == hl_ast_node_type_operand){
+                    new_content.push_back(item);
+                } else{
+                    std::shared_ptr<hl_expression_node> n = std::static_pointer_cast<hl_expression_node>(rhs);
+                    std::vector<std::shared_ptr<hl_ast_node>> res = process_node(n);
+                    if(res.size()>1){
+                        new_content.push_back(res[1]);
+                        node->set_rhs(res[0]);
+
+                    }
+                    new_content.push_back(item);
+                }
+
+            } else{
+                throw std::runtime_error("INTERNAL ERROR: non assignment top level expressions should not reach inline constant extraction pass");
+            }
         } else{
             new_content.push_back(item);
         }
@@ -57,7 +75,6 @@ inline_constant_extraction::process_node(std::shared_ptr<hl_expression_node> &el
     std::vector<std::shared_ptr<hl_ast_node>> retval;
     if(element->node_type == hl_ast_node_type_expr){
         std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
-
         std::shared_ptr<hl_ast_operand> rhs = std::static_pointer_cast<hl_ast_operand>(node->get_rhs());
         std::vector<std::shared_ptr<hl_ast_node>> rhs_result = process_expr_side(rhs);
         node->set_rhs(rhs_result[0]);

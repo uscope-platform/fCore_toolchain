@@ -57,36 +57,37 @@ std::shared_ptr<hl_ast_node> normalization_pass::process_node_by_type_top(std::s
     return retval;
 }
 
-//TODO: make recursion working
-std::vector<std::pair<int, std::shared_ptr<hl_ast_node>>> normalization_pass::process_node_expr_inner(std::shared_ptr<hl_expression_node> n) {
-    std::vector<std::pair<int, std::shared_ptr<hl_ast_node>>> retval;
+
+
+std::vector<std::pair<side_to_normalize, std::shared_ptr<hl_ast_node>>> normalization_pass::process_node_expr_inner(std::shared_ptr<hl_expression_node> n) {
+    std::vector<std::pair<side_to_normalize, std::shared_ptr<hl_ast_node>>> retval;
     if(n->is_unary()){
         if(n->get_rhs()->node_type==hl_ast_node_type_operand){
-            retval.emplace_back(0, n);
+            retval.emplace_back(expr_normalized, n);
         } else{
-            std::vector<std::pair<int, std::shared_ptr<hl_ast_node>>> extracted_exp = process_node_expr_inner(std::static_pointer_cast<hl_expression_node>(n->get_rhs()));
+            std::vector<std::pair<side_to_normalize , std::shared_ptr<hl_ast_node>>> extracted_exp = process_node_expr_inner(std::static_pointer_cast<hl_expression_node>(n->get_rhs()));
             std::shared_ptr<hl_expression_node> lower_level_expr  = produce_normalized_expression(n, extracted_exp);
 
-            std::shared_ptr<hl_ast_operand> intermediate_def = extract_intermediate_expression(lower_level_expr, 2);
-            retval.emplace_back(2, intermediate_def);
+            std::shared_ptr<hl_ast_operand> intermediate_def = extract_intermediate_expression(lower_level_expr);
+            retval.emplace_back(expr_normalize_rhs, intermediate_def);
         }
     } else{
         if(n->get_rhs()->node_type==hl_ast_node_type_operand && n->get_lhs()->node_type==hl_ast_node_type_operand){
-            retval.emplace_back(0, n);
+            retval.emplace_back(expr_normalized, n);
         } else {
             if(n->get_lhs()->node_type!=hl_ast_node_type_operand){
-                std::vector<std::pair<int, std::shared_ptr<hl_ast_node>>> extracted_exp = process_node_expr_inner(std::static_pointer_cast<hl_expression_node>(n->get_lhs()));
+                std::vector<std::pair<side_to_normalize , std::shared_ptr<hl_ast_node>>> extracted_exp = process_node_expr_inner(std::static_pointer_cast<hl_expression_node>(n->get_lhs()));
                 std::shared_ptr<hl_expression_node> lower_level_expr  = produce_normalized_expression(n, extracted_exp);
 
-                std::shared_ptr<hl_ast_operand> intermediate_def = extract_intermediate_expression(lower_level_expr,1);
-                retval.emplace_back(1, intermediate_def);
+                std::shared_ptr<hl_ast_operand> intermediate_def = extract_intermediate_expression(lower_level_expr);
+                retval.emplace_back(expr_normalize_lhs, intermediate_def);
             }
             if(n->get_rhs()->node_type!=hl_ast_node_type_operand) {
-                std::vector<std::pair<int, std::shared_ptr<hl_ast_node>>> extracted_exp = process_node_expr_inner(std::static_pointer_cast<hl_expression_node>(n->get_rhs()));
+                std::vector<std::pair<side_to_normalize , std::shared_ptr<hl_ast_node>>> extracted_exp = process_node_expr_inner(std::static_pointer_cast<hl_expression_node>(n->get_rhs()));
                 std::shared_ptr<hl_expression_node> lower_level_expr  = produce_normalized_expression(n, extracted_exp);
 
-                std::shared_ptr<hl_ast_operand> intermediate_def = extract_intermediate_expression(lower_level_expr,1);
-                retval.emplace_back(2, intermediate_def);
+                std::shared_ptr<hl_ast_operand> intermediate_def = extract_intermediate_expression(lower_level_expr);
+                retval.emplace_back(expr_normalize_rhs, intermediate_def);
             }
         }
     }
@@ -100,7 +101,7 @@ std::shared_ptr<hl_definition_node> normalization_pass::process_node_def(std::sh
     if(n->get_initializer() != nullptr){
         if(n->get_initializer()->node_type == hl_ast_node_type_expr){
             std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(n->get_initializer());
-            std::vector<std::pair<int, std::shared_ptr<hl_ast_node>>> intermediate = process_node_expr_inner(node);
+            std::vector<std::pair<side_to_normalize , std::shared_ptr<hl_ast_node>>> intermediate = process_node_expr_inner(node);
             std::shared_ptr<hl_expression_node> tmp_ret =produce_normalized_expression(node, intermediate);
             retval->set_initializer(tmp_ret);
         }
@@ -111,7 +112,7 @@ std::shared_ptr<hl_definition_node> normalization_pass::process_node_def(std::sh
 }
 
 std::shared_ptr<hl_ast_operand>
-normalization_pass::extract_intermediate_expression(std::shared_ptr<hl_expression_node> n, int side) {
+normalization_pass::extract_intermediate_expression(std::shared_ptr<hl_expression_node> n) {
 
     variable_type_t type_rhs = std::static_pointer_cast<hl_ast_operand>(n->get_rhs())->get_type();
     c_types_t expr_type;
@@ -153,23 +154,40 @@ normalization_pass::extract_intermediate_expression(std::shared_ptr<hl_expressio
 }
 
 std::shared_ptr<hl_expression_node> normalization_pass::process_node_exp(std::shared_ptr<hl_expression_node> n) {
-    return std::shared_ptr<hl_expression_node>();
+    if(n->get_type()==expr_assign){
+        if(n->get_rhs()->node_type == hl_ast_node_type_operand){
+            return n;
+        } else{
+            std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(hl_ast_node::deep_copy(n->get_rhs()));
+            if(node->get_rhs()->node_type != hl_ast_node_type_operand || node->get_lhs()->node_type !=hl_ast_node_type_operand ){
+                std::vector<std::pair<side_to_normalize , std::shared_ptr<hl_ast_node>>> intermediate = process_node_expr_inner(node);
+                std::shared_ptr<hl_expression_node> tmp_ret =produce_normalized_expression(node, intermediate);
+                n->set_rhs(tmp_ret);
+                return n;
+            } else{
+                return n;
+            }
+        }
+    } else{
+        return n;
+    }
+
 }
 
 std::shared_ptr<hl_expression_node>
 normalization_pass::produce_normalized_expression(std::shared_ptr<hl_expression_node> original_node,
-                                                  const std::vector<std::pair<int, std::shared_ptr<hl_ast_node>>>& extracted_intermediate) {
+                                                  const std::vector<std::pair<side_to_normalize , std::shared_ptr<hl_ast_node>>>& extracted_intermediate) {
 
     std::shared_ptr<hl_expression_node> tmp_ret = std::static_pointer_cast<hl_expression_node>(hl_ast_node::deep_copy(original_node));
     for(auto &i: extracted_intermediate){
         switch (i.first) {
-            case 0:
+            case expr_normalized:
                 return std::static_pointer_cast<hl_expression_node>(i.second);
                 break;
-            case 1:
+            case expr_normalize_lhs:
                 tmp_ret->set_lhs(i.second);
                 break;
-            case 2:
+            case expr_normalize_rhs:
                 tmp_ret->set_rhs(i.second);
                 break;
         }

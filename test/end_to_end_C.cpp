@@ -160,6 +160,21 @@ TEST(EndToEndC, conditional) {
     ASSERT_EQ(gold_standard, result);
 }
 
+TEST(EndToEndC, array_scalarization) {
+    std::string input_file = "test_array_scalarization.c";
+
+    std::vector<std::string> includes;
+    std::ifstream stream(input_file);
+
+    fcore_cc compiler(stream, includes,false);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x26, 0x40000000, 0x60843, 0x26, 0x40400000, 0x80863, 0x21083, 0x62023, 0x21063};
+
+    ASSERT_EQ(gold_standard, result);
+}
+
 
 TEST(EndToEndC, loop) {
     std::string input_file = "test_full_loop.c";
@@ -173,5 +188,5 @@ TEST(EndToEndC, loop) {
 
     std::vector<uint32_t> gold_standard = {0xE6, 0x40C00000};
 
-//    ASSERT_EQ(gold_standard, result);
+   //ASSERT_EQ(gold_standard, result);
 }
