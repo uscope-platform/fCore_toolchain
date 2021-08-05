@@ -23,18 +23,16 @@ The fCore toolchain is a set of tools that allow the compilation of various sour
 - All hardware supported C language operators
 - Intrinsic functions exposing advanced fCore features
 - looping support (unrollable loops only)
+- compile time conditionals
 - Input and outputs register pinning for DMA I/O
 
 **planned features:**
-
-- compile time conditionals
 - limited branchless programming support for run time conditional execution
-- Full support for all C operators (even the non directly hardware implementable ones through logic and arithmetic equivalences)
 
 **Unsupported features:**
 
+- postfix increment/decrement
 - Pointers
-- Arrays
 - Non inline function calls
 - while loops
 - do-while loops
