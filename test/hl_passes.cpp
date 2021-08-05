@@ -472,7 +472,7 @@ TEST(HlPassesTest, loop_unrolling_array_scalarization) {
         std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("j", c_type_int, def_var);
         std::shared_ptr<variable> idx_var = std::make_shared<variable>("constant", i);
         std::shared_ptr<hl_ast_operand> op_idx = std::make_shared<hl_ast_operand>(idx_var);
-        def->set_array_index(op_idx);
+        def->set_array_index({op_idx});
         //INITIALIZER
         std::shared_ptr<hl_expression_node> expr = std::make_shared<hl_expression_node>(expr_add);
         // LHS
@@ -481,7 +481,7 @@ TEST(HlPassesTest, loop_unrolling_array_scalarization) {
         std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(def_var);
         idx_var = std::make_shared<variable>("i", i);
         op_idx = std::make_shared<hl_ast_operand>(idx_var);
-        op->set_array_index(op_idx);
+        op->set_array_index({op_idx});
         expr->set_lhs(op);
         //RHS
         def_var = std::make_shared<variable>("h");
@@ -489,7 +489,7 @@ TEST(HlPassesTest, loop_unrolling_array_scalarization) {
         op = std::make_shared<hl_ast_operand>(def_var);
         idx_var = std::make_shared<variable>("i", i);
         op_idx = std::make_shared<hl_ast_operand>(idx_var);
-        op->set_array_index(op_idx);
+        op->set_array_index({op_idx});
         expr->set_rhs(op);
         def->set_initializer(expr);
         gold_standard->add_content(def);

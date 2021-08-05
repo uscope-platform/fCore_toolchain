@@ -60,12 +60,7 @@ bool operator==(const hl_ast_operand &lhs, const hl_ast_operand &rhs) {
     else if (lhs.inner_variable == nullptr || rhs.inner_variable == nullptr) ret_val &= false;
     else ret_val &= *lhs.inner_variable == *rhs.inner_variable;
 
-    if(lhs.array_index != nullptr && rhs.array_index != nullptr)
-        ret_val &= hl_ast_node::compare_content_by_type(lhs.array_index, rhs.array_index);
-    else if(lhs.array_index == nullptr && rhs.array_index == nullptr)
-        ret_val &= true;
-    else
-        ret_val &= false;
+    ret_val &= hl_ast_node::compare_vectors(lhs.array_index, rhs.array_index);
 
     return ret_val;
 }
@@ -86,17 +81,22 @@ std::string hl_ast_operand::pretty_print() {
         case var_type_scalar:
             ret_val = inner_variable->get_name();
             break;
-        case var_type_array:
-            ret_val = inner_variable->get_name() + '[' + array_index->pretty_print() + ']';
+        case var_type_array:{
+            ret_val = inner_variable->get_name();
+            for(auto &item:array_index){
+                ret_val += '[' + item->pretty_print() + ']';
+            }
+        }
+
     }
     return ret_val;
 }
 
-std::shared_ptr<hl_ast_node> hl_ast_operand::get_array_index() {
+std::vector<std::shared_ptr<hl_ast_node>> hl_ast_operand::get_array_index() {
     return array_index;
 }
 
-void hl_ast_operand::set_array_index(std::shared_ptr<hl_ast_node> idx) {
+void hl_ast_operand::set_array_index(std::vector<std::shared_ptr<hl_ast_node>> idx) {
     array_index = std::move(idx);
 }
 

@@ -40,8 +40,8 @@ public:
     variable_type_t get_type();
     void set_type(variable_type_t type);
     // ARRAY INDEX
-    std::shared_ptr<hl_ast_node> get_array_index();
-    void set_array_index(std::shared_ptr<hl_ast_node> idx);
+    std::vector<std::shared_ptr<hl_ast_node>> get_array_index();
+    void set_array_index(std::vector<std::shared_ptr<hl_ast_node>> idx);
 
     //INNER VARIABLE
     void set_variable(std::shared_ptr<variable> v);
@@ -54,7 +54,7 @@ public:
     friend bool operator==(const hl_ast_operand& lhs, const hl_ast_operand& rhs);
 private:
 
-    std::shared_ptr<hl_ast_node> array_index;
+    std::vector<std::shared_ptr<hl_ast_node>> array_index;
     std::shared_ptr<variable> inner_variable;
 };
 

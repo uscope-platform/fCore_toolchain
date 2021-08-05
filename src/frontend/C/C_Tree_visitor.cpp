@@ -110,16 +110,21 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
     node->set_constant(is_const);
 
     if(in_array_declaration){
+
+
+
+
         in_array_declaration = false;
         unsigned int d = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->arrayDeclarator().size();
         std::vector<std::shared_ptr<hl_ast_node>> dimensions;
-        if(d>1){
-            dimensions.push_back(expressions_stack.top());
+
+        std::vector<std::shared_ptr<hl_ast_node>> idx_array;
+        for(unsigned int i = 0; i< d; ++i){
+            idx_array.insert(idx_array.begin(), expressions_stack.top());
             expressions_stack.pop();
         }
-        dimensions.push_back(expressions_stack.top());
-        expressions_stack.pop();
-        node->set_dimensions(dimensions);
+
+        node->set_array_index(idx_array);
 
     }
     if(ctx->initDeclaratorList() != nullptr){
@@ -145,11 +150,10 @@ void C_Tree_visitor::exitArrayAccessExpression(C_parser::C_grammarParser::ArrayA
         idx_array.insert(idx_array.begin(), expressions_stack.top());
         expressions_stack.pop();
     }
-    //std::shared_ptr<hl_ast_node> array_idx = expressions_stack.top();
-    //expressions_stack.pop();
     std::shared_ptr<hl_ast_operand> operand = std::static_pointer_cast<hl_ast_operand>(idx_array[0]);
+    idx_array.erase(idx_array.begin());
     operand->set_type(var_type_array);
-    operand->set_array_index(idx_array[1]);
+    operand->set_array_index(idx_array);
     expressions_stack.push(operand);
 }
 

@@ -65,12 +65,12 @@ std::shared_ptr<hl_ast_operand> array_scalarization_pass::process_operand(std::s
         return node;
 
     std::string var_name = node->get_variable()->get_name();
-    int idx = std::static_pointer_cast<hl_ast_operand>(node->get_array_index())->get_int_value();
+    int idx = std::static_pointer_cast<hl_ast_operand>(node->get_array_index()[0])->get_int_value();
     std::string mangled_name = "_fcmglr_flattened_array_"+  var_name + "_" + std::to_string(idx);
     std::shared_ptr<variable> var = std::make_shared<variable>(mangled_name);
 
     node->set_variable(var);
-    node->set_array_index(nullptr);
+    node->set_array_index({});
 
     return node;
 }
@@ -85,12 +85,12 @@ array_scalarization_pass::process_definition(std::shared_ptr<hl_definition_node>
         return node;
 
     std::string var_name = node->get_variable()->get_name();
-    int idx = node->get_array_index()->get_int_value();
+    int idx = std::static_pointer_cast<hl_ast_operand>(node->get_array_index()[0])->get_int_value();
     std::string mangled_name = "_fcmglr_flattened_array_"+  var_name + "_" + std::to_string(idx);
     std::shared_ptr<variable> var = std::make_shared<variable>(mangled_name);
 
     node->set_variable(var);
-    node->set_array_index(nullptr);
+    node->set_array_index({});
 
     return node;
 }

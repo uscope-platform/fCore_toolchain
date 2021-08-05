@@ -171,8 +171,8 @@ loop_unrolling_pass::substitute_index(std::shared_ptr<hl_ast_node> element, std:
         case hl_ast_node_type_code_block:
         case hl_ast_node_type_program_root:
         case hl_ast_node_type_function_def:
+        case hl_ast_node_type_loop:
             throw std::runtime_error("INTERNAL ERROR: An unexpected node type was present in the AST during loop unrolling.");
-
     }
 }
 
@@ -193,11 +193,11 @@ loop_unrolling_pass::substitute_index_in_operand(std::shared_ptr<hl_ast_operand>
     std::shared_ptr<hl_ast_operand> retval = std::static_pointer_cast<hl_ast_operand>(hl_ast_operand::deep_copy(node));
     if(node->get_type() == var_type_scalar) return retval;
 
-    std::shared_ptr<hl_ast_operand> old_idx = std::static_pointer_cast<hl_ast_operand>(retval->get_array_index());
+    std::shared_ptr<hl_ast_operand> old_idx = std::static_pointer_cast<hl_ast_operand>(retval->get_array_index()[0]);
     if(old_idx->get_name() == idx_name){
         std::shared_ptr<variable> var = std::make_shared<variable>(old_idx->get_name(), value);
         std::shared_ptr<hl_ast_operand> idx = std::make_shared<hl_ast_operand>(var);
-        retval->set_array_index(idx);
+        retval->set_array_index({idx});
         return retval;
     } else {
         return retval;
@@ -217,7 +217,7 @@ loop_unrolling_pass::substitute_index_in_definition(std::shared_ptr<hl_definitio
     if(node->get_variable()->get_type() == var_type_array){
         std::shared_ptr<variable> var = std::make_shared<variable>("constant", value);
         std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
-        ret_val->set_array_index(op);
+        ret_val->set_array_index({op});
     }
     return ret_val;
 }

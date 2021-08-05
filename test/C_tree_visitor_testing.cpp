@@ -815,14 +815,14 @@ TEST( cTreeVisitor, array_test){
     var = std::make_shared<variable>("constant", 5);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
 
-    def_1->set_dimensions({op_1});
+    def_1->set_array_index({op_1});
     var = std::make_shared<variable>("test_matrix");
     std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("test_matrix", c_type_int, var);
 
     var = std::make_shared<variable>("constant",2);
     op_1 = std::make_shared<hl_ast_operand>(var);
 
-    def_2->set_dimensions({op_1, op_1});
+    def_2->set_array_index({op_1, op_1});
     var = std::make_shared<variable>( "b");
     var->set_variable_class(variable_output_type);
     var->set_bound_reg(4);
@@ -837,7 +837,7 @@ TEST( cTreeVisitor, array_test){
 
     var = std::make_shared<variable>("constant",0);
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
-    op_1->set_array_index(op_2);
+    op_1->set_array_index({op_2});
     ex->set_lhs(op_1);
     //rhs
 
@@ -848,7 +848,7 @@ TEST( cTreeVisitor, array_test){
     var = std::make_shared<variable>("constant", 1);
     op_2 = std::make_shared<hl_ast_operand>(var);
 
-    op_1->set_array_index(op_2);
+    op_1->set_array_index({op_2});
     ex->set_rhs(op_1);
     def_3->set_initializer(ex);
 

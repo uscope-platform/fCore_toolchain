@@ -76,7 +76,7 @@ bool operator==(const hl_definition_node &lhs, const hl_definition_node &rhs) {
     ret_val &= lhs.type == rhs.type;
     ret_val &= lhs.name == rhs.name;
 
-    ret_val &= hl_ast_node::compare_vectors(lhs.dimensions, rhs.dimensions);
+    ret_val &= hl_ast_node::compare_vectors(lhs.array_index, rhs.array_index);
 
     if(lhs.initializer == nullptr && rhs.initializer == nullptr) ret_val &= true;
     else if(lhs.initializer != nullptr && rhs.initializer != nullptr) {
@@ -96,12 +96,3 @@ bool operator==(const hl_definition_node &lhs, const hl_definition_node &rhs) {
 void hl_definition_node::set_name(std::string n) {
     name = std::move(n);
 }
-
-std::vector<std::shared_ptr<hl_ast_node>> hl_definition_node::get_dimensions() {
-    return dimensions;
-}
-
-void hl_definition_node::set_dimensions(std::vector<std::shared_ptr<hl_ast_node>> dim) {
-    dimensions = dim;
-}
-
