@@ -166,18 +166,13 @@ loop_unrolling_pass::substitute_index(std::shared_ptr<hl_ast_node> element, std:
             return substitute_index_in_operand(std::static_pointer_cast<hl_ast_operand>(element), idx_name, value);;
         case hl_ast_node_type_definition:
             return substitute_index_in_definition(std::static_pointer_cast<hl_definition_node>(element), idx_name, value);
-        case hl_ast_node_type_conditional:
-        case hl_ast_node_type_function_call:
-        case hl_ast_node_type_code_block:
-        case hl_ast_node_type_program_root:
-        case hl_ast_node_type_function_def:
-        case hl_ast_node_type_loop:
+        default:
             throw std::runtime_error("INTERNAL ERROR: An unexpected node type was present in the AST during loop unrolling.");
     }
 }
 
 std::shared_ptr<hl_expression_node>
-loop_unrolling_pass::substitute_index_in_expression(std::shared_ptr<hl_expression_node> node, std::string idx_name,
+loop_unrolling_pass::substitute_index_in_expression(const std::shared_ptr<hl_expression_node>& node, const std::string& idx_name,
                                                     int value) {
     std::shared_ptr<hl_expression_node> retval = std::static_pointer_cast<hl_expression_node>(hl_ast_node::deep_copy(node));
     if(!node->is_unary()){
@@ -188,25 +183,20 @@ loop_unrolling_pass::substitute_index_in_expression(std::shared_ptr<hl_expressio
 }
 
 std::shared_ptr<hl_ast_operand>
-loop_unrolling_pass::substitute_index_in_operand(std::shared_ptr<hl_ast_operand> node, std::string idx_name,
+loop_unrolling_pass::substitute_index_in_operand(const std::shared_ptr<hl_ast_operand>& node, const std::string& idx_name,
                                                  int value) {
     std::shared_ptr<hl_ast_operand> retval = std::static_pointer_cast<hl_ast_operand>(hl_ast_operand::deep_copy(node));
     if(node->get_type() == var_type_scalar) return retval;
 
-    std::shared_ptr<hl_ast_operand> old_idx = std::static_pointer_cast<hl_ast_operand>(retval->get_array_index()[0]);
-    if(old_idx->get_name() == idx_name){
-        std::shared_ptr<variable> var = std::make_shared<variable>(old_idx->get_name(), value);
-        std::shared_ptr<hl_ast_operand> idx = std::make_shared<hl_ast_operand>(var);
-        retval->set_array_index({idx});
-        return retval;
-    } else {
-        return retval;
-    }
+    std::vector<std::shared_ptr<hl_ast_node>> old_idx_array = retval->get_array_index();
+    std::vector<std::shared_ptr<hl_ast_node>> new_idx_array = proces_array_of_indices(old_idx_array,idx_name, value);
 
+    retval->set_array_index(new_idx_array);
+    return retval;
 }
 
 std::shared_ptr<hl_definition_node>
-loop_unrolling_pass::substitute_index_in_definition(std::shared_ptr<hl_definition_node> node, std::string idx_name,
+loop_unrolling_pass::substitute_index_in_definition(const std::shared_ptr<hl_definition_node>& node, const std::string& idx_name,
                                                     int value) {
     std:std::shared_ptr<hl_definition_node> ret_val = std::static_pointer_cast<hl_definition_node>(hl_ast_node::deep_copy(node));
 
@@ -215,11 +205,26 @@ loop_unrolling_pass::substitute_index_in_definition(std::shared_ptr<hl_definitio
     }
 
     if(node->get_variable()->get_type() == var_type_array){
-        std::shared_ptr<variable> var = std::make_shared<variable>("constant", value);
-        std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
-        ret_val->set_array_index({op});
+        ret_val->set_array_index(proces_array_of_indices(node->get_array_index(),idx_name, value));
     }
     return ret_val;
+}
+
+std::vector<std::shared_ptr<hl_ast_node>>
+loop_unrolling_pass::proces_array_of_indices(const std::vector<std::shared_ptr<hl_ast_node>>& old_idx_array, const std::string& idx_name,
+                                           int value ) {
+    std::vector<std::shared_ptr<hl_ast_node>> new_idx_array;
+    for(auto &item:old_idx_array){
+        std::shared_ptr<hl_ast_operand> old_idx = std::static_pointer_cast<hl_ast_operand>(item);
+        if(old_idx->get_name() == idx_name){
+            std::shared_ptr<variable> var = std::make_shared<variable>(old_idx->get_name(), value);
+            std::shared_ptr<hl_ast_operand> idx = std::make_shared<hl_ast_operand>(var);
+            new_idx_array.push_back(idx);
+        } else {
+            new_idx_array.push_back(old_idx);
+        }
+    }
+    return new_idx_array;
 }
 
 

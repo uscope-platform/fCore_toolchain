@@ -40,10 +40,12 @@ private:
     void update_expression(std::shared_ptr<hl_expression_node> expression, std::shared_ptr<hl_ast_operand> loop_var);
 
     std::shared_ptr<hl_ast_node> substitute_index(std::shared_ptr<hl_ast_node> element, std::string idx_name, int value);
-    std::shared_ptr<hl_ast_loop_node> substitute_index_in_loop(std::shared_ptr<hl_ast_loop_node> node, std::string idx_name, int value);
-    std::shared_ptr<hl_expression_node> substitute_index_in_expression(std::shared_ptr<hl_expression_node> node, std::string idx_name, int value);
-    std::shared_ptr<hl_definition_node> substitute_index_in_definition(std::shared_ptr<hl_definition_node> node, std::string idx_name, int value);
-    static std::shared_ptr<hl_ast_operand> substitute_index_in_operand(std::shared_ptr<hl_ast_operand> node, std::string idx_name, int value);
+    std::shared_ptr<hl_expression_node> substitute_index_in_expression(const std::shared_ptr<hl_expression_node>& node, const std::string& idx_name, int value);
+    std::shared_ptr<hl_definition_node> substitute_index_in_definition(const std::shared_ptr<hl_definition_node>& node, const std::string& idx_name, int value);
+    std::shared_ptr<hl_ast_operand> substitute_index_in_operand(const std::shared_ptr<hl_ast_operand>& node, const std::string& idx_name, int value);
+
+
+    std::vector<std::shared_ptr<hl_ast_node>> proces_array_of_indices(const std::vector<std::shared_ptr<hl_ast_node>>& old_idx_array, const std::string& idx_name, int value);
     const unsigned int max_loop_iterations = 32767;
     unsigned int current_loop_iteration;
 

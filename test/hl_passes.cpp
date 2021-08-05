@@ -443,7 +443,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
 }
 
 
-TEST(HlPassesTest, loop_unrolling_array_scalarization) {
+TEST(HlPassesTest, loop_unrolling_array) {
 
 
     std::string input_file = "test_loop_unrolling_pass.c";
@@ -470,7 +470,7 @@ TEST(HlPassesTest, loop_unrolling_array_scalarization) {
         std::shared_ptr<variable> def_var = std::make_shared<variable>("j");
         def_var->set_type(var_type_array);
         std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("j", c_type_int, def_var);
-        std::shared_ptr<variable> idx_var = std::make_shared<variable>("constant", i);
+        std::shared_ptr<variable> idx_var = std::make_shared<variable>("i", i);
         std::shared_ptr<hl_ast_operand> op_idx = std::make_shared<hl_ast_operand>(idx_var);
         def->set_array_index({op_idx});
         //INITIALIZER
@@ -513,12 +513,45 @@ TEST(HlPassesTest, test_matrix_scalarization) {
 
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8});
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8, 9});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
 
     std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
+
+
+    std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(expr_assign);
+    // FIRST EXPRESSION LHS
+    std:std::shared_ptr<variable> var = std::make_shared<variable>("_fcmglr_flattened_array_a_0_1");
+    std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
+    ex->set_lhs(op);
+    // FIRST EXPRESSION RHS
+    std::shared_ptr<hl_expression_node> ex_inner = std::make_shared<hl_expression_node>(expr_mult);
+    var = std::make_shared<variable>("_fcmglr_flattened_array_b_0");
+    op = std::make_shared<hl_ast_operand>(var);
+    ex_inner->set_lhs(op);
+    var = std::make_shared<variable>("constant", 2);
+    op = std::make_shared<hl_ast_operand>(var);
+    ex_inner->set_rhs(op);
+    ex->set_rhs(ex_inner);
+    gold_standard->add_content(ex);
+
+    ex = std::make_shared<hl_expression_node>(expr_assign);
+    // SECOND EXPRESSION LHS
+    var = std::make_shared<variable>("_fcmglr_flattened_array_b_2");
+     op = std::make_shared<hl_ast_operand>(var);
+    ex->set_lhs(op);
+    // SECOND EXPRESSION RHS
+    ex_inner = std::make_shared<hl_expression_node>(expr_mult);
+    var = std::make_shared<variable>("_fcmglr_flattened_array_a_1_1");
+    op = std::make_shared<hl_ast_operand>(var);
+    ex_inner->set_lhs(op);
+    var = std::make_shared<variable>("constant", 2);
+    op = std::make_shared<hl_ast_operand>(var);
+    ex_inner->set_rhs(op);
+    ex->set_rhs(ex_inner);
+    gold_standard->add_content(ex);
     ASSERT_EQ(*normalized_ast, *gold_standard);
 }
