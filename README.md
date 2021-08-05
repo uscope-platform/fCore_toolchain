@@ -1,6 +1,6 @@
 # fCore Toolchain
 
-[![CircleCI](https://circleci.com/gh/filssavi/fCore__toolchain.svg?style=shield&circle-token=1145a78e36553f20bf503af95f607591199be482)](https://app.circleci.com/pipelines/github/filssavi/fCore_toolchain)
+[![CircleCI](https://circleci.com/gh/filssavi/fCore_toolchain.svg?style=shield&circle-token=1145a78e36553f20bf503af95f607591199be482)](https://app.circleci.com/pipelines/github/filssavi/fCore_toolchain)
 
 
 The fCore toolchain is a set of tools that allow the compilation of various source languages to executable femtoCore machine instructions.
