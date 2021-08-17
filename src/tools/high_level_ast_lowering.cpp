@@ -106,10 +106,10 @@ std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::
 
 std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::shared_ptr<hl_definition_node>& input, const std::shared_ptr<variable>& dest) {
     if(input->is_initialized()){
-        if(input->get_initializer()->node_type == hl_ast_node_type_expr){
-            return translate_node(std::static_pointer_cast<hl_expression_node>(input->get_initializer()), dest);
-        } else if(input->get_initializer()->node_type == hl_ast_node_type_operand){
-            return translate_node(std::static_pointer_cast<hl_ast_operand>(input->get_initializer()), dest);
+        if(input->get_scalar_initializer()->node_type == hl_ast_node_type_expr){
+            return translate_node(std::static_pointer_cast<hl_expression_node>(input->get_scalar_initializer()), dest);
+        } else if(input->get_scalar_initializer()->node_type == hl_ast_node_type_operand){
+            return translate_node(std::static_pointer_cast<hl_ast_operand>(input->get_scalar_initializer()), dest);
         } else{
             throw std::runtime_error("ERROR: unexpected high level ast node encountered during the lowering phase");
         }

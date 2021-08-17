@@ -77,8 +77,9 @@ std::shared_ptr<hl_ast_node> function_inlining_pass::process_leaf(std::shared_pt
     } else if (statement->node_type == hl_ast_node_type_definition){
         std::shared_ptr<hl_definition_node> item = std::static_pointer_cast<hl_definition_node>(statement);
 
-        std::shared_ptr<hl_ast_node> tmp = item->get_initializer();
-        item->set_initializer(std::static_pointer_cast<hl_expression_node>(substitute_arguments(tmp, parameters)));
+        std::shared_ptr<hl_ast_node> tmp = item->get_scalar_initializer();
+        item->set_scalar_initializer(
+                std::static_pointer_cast<hl_expression_node>(substitute_arguments(tmp, parameters)));
 
     } else if(statement->node_type == hl_ast_node_type_operand){
         std::shared_ptr<hl_ast_operand> s = std::static_pointer_cast<hl_ast_operand>(statement);

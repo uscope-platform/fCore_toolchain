@@ -27,6 +27,7 @@ The fCore toolchain is a set of tools that allow the compilation of various sour
 - Input and outputs register pinning for DMA I/O
 
 **planned features:**
+
 - limited branchless programming support for run time conditional execution
 
 **Unsupported features:**

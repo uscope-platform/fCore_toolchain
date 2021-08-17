@@ -35,12 +35,14 @@ public:
     void set_constant(bool c);
     bool is_constant();
 
-    std::shared_ptr<hl_ast_node> get_initializer();
-
     std::vector<std::shared_ptr<hl_ast_node>> get_array_index() {return array_index;};
     void set_array_index(std::vector<std::shared_ptr<hl_ast_node>> i) {array_index = std::move(i);};
 
-    void set_initializer(std::shared_ptr<hl_ast_node> init);
+    std::shared_ptr<hl_ast_node> get_scalar_initializer();
+    void set_scalar_initializer(const std::shared_ptr<hl_ast_node>& init);
+
+    std::vector<std::shared_ptr<hl_ast_node>> get_array_initializer() {return initializer;};
+    void set_array_initializer(const std::vector<std::shared_ptr<hl_ast_node>> &init) {initializer = init;};
 
     std::shared_ptr<variable> get_variable() {return inner_variable;};
     void set_variable(std::shared_ptr<variable> var) {inner_variable = std::move(var);};
@@ -56,7 +58,7 @@ protected:
     bool constant;
     std::string name;
     c_types_t type;
-    std::shared_ptr<hl_ast_node> initializer;
+    std::vector<std::shared_ptr<hl_ast_node>> initializer;
     std::vector<std::shared_ptr<hl_ast_node>> array_index;
     std::shared_ptr<variable> inner_variable;
 };

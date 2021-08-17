@@ -23,15 +23,17 @@ hl_definition_node::hl_definition_node(std::string n, c_types_t ct, std::shared_
     name = std::move(n);
     type = ct;
     constant = false;
-    inner_variable = v;
+    inner_variable = std::move(v);
 }
 
 bool hl_definition_node::is_initialized() {
-    return initializer != nullptr;
+    return !initializer.empty();
 }
 
-void hl_definition_node::set_initializer(std::shared_ptr<hl_ast_node> init) {
-    initializer = std::move(init);
+void hl_definition_node::set_scalar_initializer(const std::shared_ptr<hl_ast_node>& init) {
+    initializer.clear();
+    initializer.push_back(init);
+
 }
 
 void hl_definition_node::set_constant(bool c) {
@@ -42,8 +44,8 @@ bool hl_definition_node::is_constant() {
     return constant;
 }
 
-std::shared_ptr<hl_ast_node> hl_definition_node::get_initializer() {
-    return initializer;
+std::shared_ptr<hl_ast_node> hl_definition_node::get_scalar_initializer() {
+    return initializer[0];
 }
 
 std::string hl_definition_node::pretty_print() {
@@ -53,12 +55,12 @@ std::string hl_definition_node::pretty_print() {
     if(constant) ss << "const ";
     ss << hl_ast_node::type_to_string(type) << " " << name;
 
-    if(initializer != nullptr){
+    if(!initializer.empty()){
         ss << " = ";
-        if(initializer->node_type == hl_ast_node_type_function_call){
-            ss << std::static_pointer_cast<hl_function_call_node>(initializer)->pretty_print();
+        if(initializer[0]->node_type == hl_ast_node_type_function_call){
+            ss << std::static_pointer_cast<hl_function_call_node>(initializer[0])->pretty_print();
         } else{
-            ss << std::static_pointer_cast<hl_expression_node>(initializer)->pretty_print();
+            ss << std::static_pointer_cast<hl_expression_node>(initializer[0])->pretty_print();
         }
 
     }
@@ -77,14 +79,7 @@ bool operator==(const hl_definition_node &lhs, const hl_definition_node &rhs) {
     ret_val &= lhs.name == rhs.name;
 
     ret_val &= hl_ast_node::compare_vectors(lhs.array_index, rhs.array_index);
-
-    if(lhs.initializer == nullptr && rhs.initializer == nullptr) ret_val &= true;
-    else if(lhs.initializer != nullptr && rhs.initializer != nullptr) {
-        ret_val &= hl_ast_node::compare_content_by_type(lhs.initializer, rhs.initializer);
-    } else {
-        ret_val &= false;
-    }
-
+    ret_val &= hl_ast_node::compare_vectors(lhs.initializer, rhs.initializer);
 
     if(lhs.inner_variable == nullptr && rhs.inner_variable == nullptr) ret_val &= true;
     else if (lhs.inner_variable == nullptr || rhs.inner_variable == nullptr) ret_val &= false;

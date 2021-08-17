@@ -98,12 +98,13 @@ std::vector<std::pair<side_to_normalize, std::shared_ptr<hl_ast_node>>> normaliz
 std::shared_ptr<hl_definition_node> normalization_pass::process_node_def(std::shared_ptr<hl_definition_node> n) {
     std::shared_ptr<hl_definition_node> retval = std::static_pointer_cast<hl_definition_node>(hl_ast_node::deep_copy(n));
 
-    if(n->get_initializer() != nullptr){
-        if(n->get_initializer()->node_type == hl_ast_node_type_expr){
-            std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(n->get_initializer());
+    if(n->is_initialized()){
+        if(n->get_scalar_initializer()->node_type == hl_ast_node_type_expr){
+            std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(
+                    n->get_scalar_initializer());
             std::vector<std::pair<side_to_normalize , std::shared_ptr<hl_ast_node>>> intermediate = process_node_expr_inner(node);
             std::shared_ptr<hl_expression_node> tmp_ret =produce_normalized_expression(node, intermediate);
-            retval->set_initializer(tmp_ret);
+            retval->set_scalar_initializer(tmp_ret);
         }
 
     }
@@ -142,7 +143,7 @@ normalization_pass::extract_intermediate_expression(std::shared_ptr<hl_expressio
     std::shared_ptr<variable> var = std::make_shared<variable>( name);
     std::shared_ptr<hl_definition_node> intermediate_def = std::make_shared<hl_definition_node>(name, expr_type, var);
 
-    intermediate_def->set_initializer(std::static_pointer_cast<hl_expression_node>(n));
+    intermediate_def->set_scalar_initializer(std::static_pointer_cast<hl_expression_node>(n));
 
     additional_statements.push_back(intermediate_def);
 

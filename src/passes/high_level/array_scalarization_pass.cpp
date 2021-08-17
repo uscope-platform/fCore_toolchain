@@ -78,7 +78,7 @@ std::shared_ptr<hl_definition_node>
 array_scalarization_pass::process_definition(std::shared_ptr<hl_definition_node> node) {
 
     if(node->is_initialized()){
-        node->set_initializer(process_element(node->get_initializer()));
+        node->set_scalar_initializer(process_element(node->get_scalar_initializer()));
     }
     if(node->get_variable()->get_type() != var_type_array || !node->is_initialized())
         return node;

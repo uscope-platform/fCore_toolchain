@@ -17,7 +17,8 @@
 //
 
 int main(){
-    for(int i =5; i<7; ++i){
-         j[i] = a[i] + h[i];
-    }
+    int array_test[5] = {1,2,3,4,5};
+
+    int test_matrix[2][2] = {{1,2}, {3,4}};
+
 }

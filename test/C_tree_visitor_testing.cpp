@@ -34,9 +34,12 @@ TEST( cTreeVisitor, unaryExpressions) {
     parser.parse();
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
-    std::shared_ptr<hl_expression_node> res_1 = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
-    std::shared_ptr<hl_expression_node> res_2 = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[1])->get_initializer());
-    std::shared_ptr<hl_expression_node> res_3 = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[2])->get_initializer());
+    std::shared_ptr<hl_expression_node> res_1 = std::static_pointer_cast<hl_expression_node>(
+            std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
+    std::shared_ptr<hl_expression_node> res_2 = std::static_pointer_cast<hl_expression_node>(
+            std::static_pointer_cast<hl_definition_node>(results[1])->get_scalar_initializer());
+    std::shared_ptr<hl_expression_node> res_3 = std::static_pointer_cast<hl_expression_node>(
+            std::static_pointer_cast<hl_definition_node>(results[2])->get_scalar_initializer());
 
 
 
@@ -126,7 +129,8 @@ TEST( cTreeVisitor, multiplicativeExpressions) {
     op_2= std::make_shared<hl_ast_operand>(var);
     gs_3->set_rhs(op_2);
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(
+            std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
 
 
 
@@ -169,7 +173,8 @@ TEST( cTreeVisitor, additiveExpressions) {
 
     gs_2->set_rhs(op_2);
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(
+            std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
 
     EXPECT_EQ(*res, *gs_2);
     if(Test::HasFailure()){
@@ -211,7 +216,8 @@ TEST( cTreeVisitor, shiftExpressions) {
 
     gs_2->set_rhs(op_2);
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(
+            std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
 
     EXPECT_EQ(*res, *gs_2);
     if(Test::HasFailure()){
@@ -264,7 +270,8 @@ TEST( cTreeVisitor, relationalExpressions) {
     var = std::make_shared<variable>("constant",7);
     op_2= std::make_shared<hl_ast_operand>(var);
     gs_4->set_rhs(op_2);
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(
+            std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
 
     EXPECT_EQ(*res, *gs_4);
     if(Test::HasFailure()){
@@ -306,7 +313,8 @@ TEST( cTreeVisitor, equalityExpressions) {
 
     gs_2->set_rhs(op_2);
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(
+            std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
 
     EXPECT_EQ(*res, *gs_2);
     if(Test::HasFailure()){
@@ -339,7 +347,8 @@ TEST( cTreeVisitor, andBinExpressions) {
     gs_1->set_rhs(op_2);
 
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(
+            std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
 
     EXPECT_EQ(*res, *gs_1);
     if(Test::HasFailure()){
@@ -373,7 +382,8 @@ TEST( cTreeVisitor, exOrBinExpressions) {
     gs_1->set_rhs(op_2);
 
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(
+            std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
 
     EXPECT_EQ(*res, *gs_1);
     if(Test::HasFailure()){
@@ -409,7 +419,8 @@ TEST( cTreeVisitor, orLogExpressions) {
     gs_1->set_lhs(op_1);
     gs_1->set_rhs(op_2);
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(
+            std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
 
     EXPECT_EQ(*res, *gs_1);
     if(Test::HasFailure()){
@@ -443,7 +454,8 @@ TEST( cTreeVisitor, andLogExpressions) {
     gs_1->set_rhs(op_2);
 
 
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(results[0])->get_initializer());
+    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(
+            std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
 
     EXPECT_EQ(*res, *gs_1);
     if(Test::HasFailure()){
@@ -614,7 +626,7 @@ TEST( cTreeVisitor, definition) {
 
     var = std::make_shared<variable>("test");
     std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("test",c_type_int, var);
-    def->set_initializer(gs_1);
+    def->set_scalar_initializer(gs_1);
     std::shared_ptr<hl_definition_node> res = std::static_pointer_cast<hl_definition_node>(parser.visitor.ext_decl[0]);
 
     EXPECT_EQ(*res, *def);
@@ -687,7 +699,7 @@ TEST( cTreeVisitor, ConditionalTest) {
     var = std::make_shared<variable>("constant",2);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
 
-    def_node->set_initializer(op_1);
+    def_node->set_scalar_initializer(op_1);
     gold_standard->set_if_block({def_node});
     var = std::make_shared<variable>("a");
     def_node = std::make_shared<hl_definition_node>("a", c_type_int, var);
@@ -695,7 +707,7 @@ TEST( cTreeVisitor, ConditionalTest) {
     var = std::make_shared<variable>("constant",3);
     op_1 = std::make_shared<hl_ast_operand>(var);
 
-    def_node->set_initializer(op_1);
+    def_node->set_scalar_initializer(op_1);
     gold_standard->set_else_block({def_node});
 
 
@@ -760,7 +772,7 @@ TEST( cTreeVisitor, loopTest) {
     var = std::make_shared<variable>("constant",0);
     std::shared_ptr<hl_ast_operand> def_val = std::make_shared<hl_ast_operand>(var);
 
-    init_def->set_initializer(def_val);
+    init_def->set_scalar_initializer(def_val);
     gold_standard->set_init_statement(init_def);
     // LOOP CONDITION
     std::shared_ptr<hl_expression_node> loop_cond = std::make_shared<hl_expression_node>(expr_lt);
@@ -850,11 +862,70 @@ TEST( cTreeVisitor, array_test){
 
     op_1->set_array_index({op_2});
     ex->set_rhs(op_1);
-    def_3->set_initializer(ex);
+    def_3->set_scalar_initializer(ex);
 
     gold_standard.push_back(def_1);
     gold_standard.push_back(def_2);
     gold_standard.push_back(def_3);
+
+    ASSERT_TRUE(hl_ast_node::compare_vectors(result, gold_standard));
+
+}
+
+
+TEST( cTreeVisitor, array_init){
+    std::string input_file = "test_array_init.c";
+    std::ifstream ifs(input_file);
+
+
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(ifs, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
+    std::vector<std::shared_ptr<hl_ast_node>> result = std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body();
+
+    std::vector<std::shared_ptr<hl_ast_node>> gold_standard;
+
+
+    std::vector<std::shared_ptr<hl_ast_node>> init;
+    std::shared_ptr<variable> var;
+    std::shared_ptr<hl_ast_operand> op;
+    for(int i = 1; i<6;++i){
+        var = std::make_shared<variable>("constant", i);
+        op = std::make_shared<hl_ast_operand>(var);
+        init.push_back(op);
+    }
+
+    var = std::make_shared<variable>("array_test");
+    var->set_type(var_type_array);
+    std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("array_test", c_type_int, var);
+    var = std::make_shared<variable>("constant", 5);
+    op = std::make_shared<hl_ast_operand>(var);
+    def->set_array_index({op});
+
+    def->set_array_initializer(init);
+    gold_standard.push_back(def);
+
+    init.clear();
+
+    for(int i = 1; i<5;++i){
+        var = std::make_shared<variable>("constant", i);
+        op = std::make_shared<hl_ast_operand>(var);
+        init.push_back(op);
+    }
+
+    var = std::make_shared<variable>("test_matrix");
+    var->set_type(var_type_array);
+    def = std::make_shared<hl_definition_node>("test_matrix", c_type_int, var);
+
+    def->set_array_initializer(init);
+
+    var = std::make_shared<variable>("constant", 2);
+    op = std::make_shared<hl_ast_operand>(var);
+    def->set_array_index({op, op});
+
+    gold_standard.push_back(def);
 
     ASSERT_TRUE(hl_ast_node::compare_vectors(result, gold_standard));
 

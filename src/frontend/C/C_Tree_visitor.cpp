@@ -27,6 +27,8 @@ C_Tree_visitor::C_Tree_visitor() {
     in_conditional_block = false;
     in_array_declaration = false;
     in_array_access = false;
+    in_initializer_list = false;
+    initializer_array_level = 0;
 }
 
 
@@ -111,9 +113,6 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
 
     if(in_array_declaration){
 
-
-
-
         in_array_declaration = false;
         unsigned int d = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->arrayDeclarator().size();
         std::vector<std::shared_ptr<hl_ast_node>> dimensions;
@@ -125,11 +124,15 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
         }
 
         node->set_array_index(idx_array);
+        node->set_array_initializer(array_initializer_data);
+        array_initializer_data.clear();
+    } else{
+        if(current_initializer != nullptr){
+            node->set_scalar_initializer(current_initializer);
+            current_initializer = nullptr;
+        }
+    }
 
-    }
-    if(ctx->initDeclaratorList() != nullptr){
-        node->set_initializer(current_initializer);
-    }
 
 
     if(in_function_body){
@@ -158,12 +161,22 @@ void C_Tree_visitor::exitArrayAccessExpression(C_parser::C_grammarParser::ArrayA
 }
 
 
+void C_Tree_visitor::enterInitializerList(C_parser::C_grammarParser::InitializerListContext *ctx) {
+    in_initializer_list = true;
+    initializer_array_level++;
+}
+
+void C_Tree_visitor::exitInitializerList(C_parser::C_grammarParser::InitializerListContext *ctx) {
+    if(initializer_array_level==1) in_initializer_list = false;
+    initializer_array_level--;
+}
+
+
+
 void C_Tree_visitor::exitInitializer(C_parser::C_grammarParser::InitializerContext *ctx) {
-    if(ctx->assignmentExpression() != nullptr){
+    if(ctx->assignmentExpression() != nullptr && !in_initializer_list){
         current_initializer = expressions_stack.top();
         expressions_stack.pop();
-    } else if(ctx->initializerList() != nullptr){
-        throw std::runtime_error("ERROR: Initializer lists are not supported yet");
     }
 }
 
@@ -238,7 +251,13 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
         throw std::runtime_error("Strings are not supported by the fCore toolchain");
     }
 
-    expressions_stack.push(operand);
+    if(in_initializer_list){
+        array_initializer_data.push_back(operand);
+    } else{
+        expressions_stack.push(operand);
+    }
+
+
 }
 
 void C_Tree_visitor::exitMultiplicativeExpression(C_parser::C_grammarParser::MultiplicativeExpressionContext *ctx) {
@@ -592,6 +611,5 @@ void C_Tree_visitor::exitForContent(C_parser::C_grammarParser::ForContentContext
 void C_Tree_visitor::set_iom_map(std::unordered_map<std::string, std::shared_ptr<variable>> iom) {
     iom_map = std::move(iom);
 }
-
 
 

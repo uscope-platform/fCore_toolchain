@@ -20,7 +20,7 @@
 
 
 loop_unrolling_pass::loop_unrolling_pass() : pass_base<hl_ast_node>("C loop unrolling pass"){
-
+    current_loop_iteration = 0;
 }
 
 std::shared_ptr<hl_ast_node> loop_unrolling_pass::process_global(std::shared_ptr<hl_ast_node> element) {
@@ -55,7 +55,8 @@ std::vector<std::shared_ptr<hl_ast_node>> loop_unrolling_pass::process_loop(cons
         }
     }
     element->set_loop_content(new_body);
-    std::shared_ptr<hl_ast_node> raw_initializer = element->get_init_statement()->get_initializer();
+
+    std::shared_ptr<hl_ast_node> raw_initializer = element->get_init_statement()->get_scalar_initializer();
     std::string loop_var_name = element->get_init_statement()->get_name();
     current_loop_iteration = process_loop_initializer(raw_initializer);
 
@@ -201,7 +202,8 @@ loop_unrolling_pass::substitute_index_in_definition(const std::shared_ptr<hl_def
     std:std::shared_ptr<hl_definition_node> ret_val = std::static_pointer_cast<hl_definition_node>(hl_ast_node::deep_copy(node));
 
     if(node->is_initialized()){
-        ret_val->set_initializer(substitute_index(node->get_initializer(), idx_name, value));
+        std::shared_ptr<hl_ast_node> init = substitute_index(node->get_scalar_initializer(), idx_name, value);
+        ret_val->set_scalar_initializer(init);
     }
 
     if(node->get_variable()->get_type() == var_type_array){

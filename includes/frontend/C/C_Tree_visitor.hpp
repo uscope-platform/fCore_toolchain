@@ -60,6 +60,8 @@ public:
     void exitParameterDeclaration(C_parser::C_grammarParser::ParameterDeclarationContext *ctx) override;
     void exitDeclaration(C_parser::C_grammarParser::DeclarationContext *ctx) override;
     void exitDirectDeclarator(C_parser::C_grammarParser::DirectDeclaratorContext *ctx) override;
+    void enterInitializerList(C_parser::C_grammarParser::InitializerListContext *ctx) override;
+    void exitInitializerList(C_parser::C_grammarParser::InitializerListContext *ctx) override;
     void exitInitializer(C_parser::C_grammarParser::InitializerContext *ctx) override;
 
     void enterArrayAccessExpression(C_parser::C_grammarParser::ArrayAccessExpressionContext *ctx) override;
@@ -161,6 +163,10 @@ private:
     bool in_array_access;
     bool in_foor_loop_block;
     bool in_conditional_block;
+    bool in_initializer_list;
+
+    std::vector<std::shared_ptr<hl_ast_node>> array_initializer_data;
+    int initializer_array_level;
 };
 
 #endif //FCORE_TOOLCHAIN_C_TREE_VISITOR_HPP

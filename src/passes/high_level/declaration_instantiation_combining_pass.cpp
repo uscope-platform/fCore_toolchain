@@ -44,7 +44,7 @@ declaration_instantiation_combining_pass::process_content(std::vector<std::share
                         std::shared_ptr<hl_expression_node> expr = std::static_pointer_cast<hl_expression_node>(content[j]);
                         if(expr->get_type()==expr_assign){
                             if(std::static_pointer_cast<hl_ast_operand>(expr->get_lhs())->get_name() == node->get_name()){
-                                node->set_initializer(expr->get_rhs());
+                                node->set_scalar_initializer(expr->get_rhs());
                                 combined_instructions.push_back(j);
                                 new_content.push_back(node);
                                 break;

@@ -117,10 +117,10 @@ conditional_implementation_pass::find_variable_definition(const std::shared_ptr<
                 std::shared_ptr<hl_definition_node> def = std::static_pointer_cast<hl_definition_node>(i);
                 if(def->get_name() == variable->get_name()){
                     if(def->is_initialized()){
-                        if(def->get_initializer()->node_type == hl_ast_node_type_operand){
-                            return std::static_pointer_cast<hl_ast_operand>(def->get_initializer());
+                        if(def->get_scalar_initializer()->node_type == hl_ast_node_type_operand){
+                            return std::static_pointer_cast<hl_ast_operand>(def->get_scalar_initializer());
                         } else{
-                            return find_variable_definition(def->get_initializer(), def, prog_content);
+                            return find_variable_definition(def->get_scalar_initializer(), def, prog_content);
                         }
                     }
                 }
