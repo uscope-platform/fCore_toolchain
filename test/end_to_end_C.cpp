@@ -206,3 +206,18 @@ TEST(EndToEndC, nested_loop) {
 
      ASSERT_EQ(gold_standard, result);
 }
+
+TEST(EndToEndC, array_initialization) {
+    std::string input_file = "test_array_initialization.c";
+
+    std::vector<std::string> includes;
+    std::ifstream stream(input_file);
+
+    fcore_cc compiler(stream, includes, true);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x61021, 0x81021, 0x62821, 0x62821, 0xc1021,0x81021, 0xc2821, 0x62821};
+
+    ASSERT_EQ(gold_standard, result);
+}

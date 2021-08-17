@@ -202,8 +202,17 @@ loop_unrolling_pass::substitute_index_in_definition(const std::shared_ptr<hl_def
     std:std::shared_ptr<hl_definition_node> ret_val = std::static_pointer_cast<hl_definition_node>(hl_ast_node::deep_copy(node));
 
     if(node->is_initialized()){
-        std::shared_ptr<hl_ast_node> init = substitute_index(node->get_scalar_initializer(), idx_name, value);
-        ret_val->set_scalar_initializer(init);
+        if(node->is_scalar()){
+            std::shared_ptr<hl_ast_node> init = substitute_index(node->get_scalar_initializer(), idx_name, value);
+            ret_val->set_scalar_initializer(init);
+        } else {
+            std::vector<std::shared_ptr<hl_ast_node>> init;
+            for(auto &item: node->get_array_initializer()){
+                init.push_back(substitute_index(item, idx_name, value));
+            }
+            ret_val->set_array_initializer(init);
+        }
+
     }
 
     if(node->get_variable()->get_type() == var_type_array){

@@ -76,12 +76,27 @@ code_block_inlining_pass::process_conditional(std::shared_ptr<hl_ast_conditional
 
 std::shared_ptr<hl_ast_node> code_block_inlining_pass::process_definition(std::shared_ptr<hl_definition_node> element) {
     if(element->is_initialized()){
-        std::vector<std::shared_ptr<hl_ast_node>> content = process_element_by_type(element->get_scalar_initializer());
-        if(content.size()>1){
-            throw std::runtime_error("INTERNAL ERROR: A DEFINITION CAN NOT BE INITIALIZED WITH MORE THAN A SINGLE EXPRESSION");
-        } else {
-            element->set_scalar_initializer(content[0]);
+        if(element->is_scalar()){
+            std::vector<std::shared_ptr<hl_ast_node>> content = process_element_by_type(element->get_scalar_initializer());
+            if(content.size()>1){
+                throw std::runtime_error("INTERNAL ERROR: A DEFINITION CAN NOT BE INITIALIZED WITH MORE THAN A SINGLE EXPRESSION");
+            } else {
+                element->set_scalar_initializer(content[0]);
+            }
+        } else{
+            std::vector<std::shared_ptr<hl_ast_node>> init;
+
+            for(auto &item:element->get_array_initializer()){
+                std::vector<std::shared_ptr<hl_ast_node>> content = process_element_by_type(item);
+                if(content.size()>1){
+                    throw std::runtime_error("INTERNAL ERROR: A DEFINITION CAN NOT BE INITIALIZED WITH MORE THAN A SINGLE EXPRESSION");
+                } else {
+                    init.push_back(content[0]);
+                }
+            }
+           element->set_array_initializer(init);
         }
+
     }
     return element;
 }

@@ -184,8 +184,16 @@ std::shared_ptr<hl_definition_node>
 hl_pass_manager::process_definition(const std::shared_ptr<hl_definition_node> &subtree,
                                     const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
     if(subtree->is_initialized()){
-        std::shared_ptr<hl_ast_node> new_initializer = process_terminal_by_type(subtree->get_scalar_initializer(), pass);
-        subtree->set_scalar_initializer(new_initializer);
+        if(subtree->is_scalar()){
+            std::shared_ptr<hl_ast_node> new_initializer = process_terminal_by_type(subtree->get_scalar_initializer(), pass);
+            subtree->set_scalar_initializer(new_initializer);
+        } else{
+            std::vector<std::shared_ptr<hl_ast_node>> new_initializer;
+            for(auto &item: subtree->get_array_initializer()){
+                new_initializer.push_back(process_terminal_by_type(item, pass));
+            }
+            subtree->set_array_initializer(new_initializer);
+        }
     }
     return std::static_pointer_cast<hl_definition_node>(pass->process_leaf(subtree));
 }

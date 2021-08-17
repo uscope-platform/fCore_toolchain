@@ -65,3 +65,4 @@ configure_file(C_files/end_to_end/test_full_conditional.c ${CMAKE_CURRENT_BINARY
 configure_file(C_files/end_to_end/test_full_loop.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_full_nested_loop.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_pragma_io.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(C_files/end_to_end/test_array_initialization.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

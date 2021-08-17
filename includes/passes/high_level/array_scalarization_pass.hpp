@@ -36,8 +36,8 @@ private:
     std::shared_ptr<hl_ast_operand> process_operand(std::shared_ptr<hl_ast_operand> node);
     std::shared_ptr<hl_definition_node> process_definition(std::shared_ptr<hl_definition_node> node);
     std::string mangle_name(std::vector<std::shared_ptr<hl_ast_node>> old_array_idx, std::string var_name);
-    int loop_variable_counter;
-    std::unordered_map<std::string, int> var_index_map;
+
+    std::map<std::string, std::shared_ptr<hl_definition_node>> def_map;
 };
 
 

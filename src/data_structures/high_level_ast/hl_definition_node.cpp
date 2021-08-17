@@ -91,3 +91,7 @@ bool operator==(const hl_definition_node &lhs, const hl_definition_node &rhs) {
 void hl_definition_node::set_name(std::string n) {
     name = std::move(n);
 }
+
+bool hl_definition_node::is_scalar() {
+    return inner_variable->get_type() != var_type_array;
+}
