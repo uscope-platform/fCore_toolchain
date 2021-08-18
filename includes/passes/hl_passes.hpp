@@ -29,7 +29,6 @@
 #include "passes/high_level/hl_variable_mapping.hpp"
 #include "passes/high_level/intrinsics_implementation_pass.hpp"
 #include "passes/high_level/dead_variable_elimination.hpp"
-#include "passes/high_level/declaration_instantiation_combining_pass.hpp"
 #include "passes/high_level/constant_folding_pass.hpp"
 #include "passes/high_level/constant_propagation.hpp"
 #include "passes/high_level/inline_constant_extraction.hpp"
@@ -63,18 +62,17 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::vec
     manager.add_morphing_pass(std::make_shared<array_scalarization_pass>()); // pass #10
 
     manager.add_morphing_pass(std::make_shared<normalization_pass>());// pass #11
-    manager.add_morphing_pass(std::make_shared<declaration_instantiation_combining_pass>());  // pass #12
-    manager.add_morphing_pass(std::make_shared<dead_variable_elimination>()); // pass #13
+    manager.add_morphing_pass(std::make_shared<dead_variable_elimination>()); // pass #12
 
     std::shared_ptr<constant_folding_pass> const_fold = std::make_shared<constant_folding_pass>();
     std::shared_ptr<constant_propagation> const_prop = std::make_shared<constant_propagation>();
 
     manager.add_morphing_pass_group({const_fold, const_prop}); // group #-1
-    manager.add_morphing_pass(std::make_shared<inline_constant_extraction>()); // pass #14
+    manager.add_morphing_pass(std::make_shared<inline_constant_extraction>()); // pass #13
 
 
     if(order.empty()){
-        manager.set_pass_order({1,2,3,4,5,6,7,8,9,10,11,12,13,-1, 14});
+        manager.set_pass_order({1,2,3,4,5,6,7,8,9,10,11,12,-1, 13});
     } else {
         manager.set_pass_order(order);
     }
