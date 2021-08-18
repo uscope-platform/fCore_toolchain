@@ -6,7 +6,8 @@ set(TEST_SOURCES
         end_to_end_C.cpp
         C_preprocessor.cpp
         C_tree_visitor_testing.cpp
-        hl_passes.cpp)
+        hl_passes.cpp
+        disassembler_testing.cpp)
 
 
 add_executable(test_target ${FCORE_SRCS} ${TEST_SOURCES} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS})
@@ -66,3 +67,7 @@ configure_file(C_files/end_to_end/test_full_loop.c ${CMAKE_CURRENT_BINARY_DIR} C
 configure_file(C_files/end_to_end/test_full_nested_loop.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_pragma_io.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_array_initialization.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+
+# DISASSEMBLER TESTING FILES
+configure_file(disassembler_files/test_add.hex ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(disassembler_files/test_add.mem ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
