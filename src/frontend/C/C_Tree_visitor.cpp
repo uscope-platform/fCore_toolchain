@@ -115,14 +115,16 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
 
         in_array_declaration = false;
         unsigned int d = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->arrayDeclarator().size();
-        std::vector<std::shared_ptr<hl_ast_node>> dimensions;
+        std::vector<int> shape;
 
         std::vector<std::shared_ptr<hl_ast_node>> idx_array;
         for(unsigned int i = 0; i< d; ++i){
+            shape.insert(shape.begin(), std::static_pointer_cast<hl_ast_operand>(expressions_stack.top())->get_int_value());
             idx_array.insert(idx_array.begin(), expressions_stack.top());
             expressions_stack.pop();
         }
 
+        node->set_array_shape(shape);
         node->set_array_index(idx_array);
         node->set_array_initializer(array_initializer_data);
         array_initializer_data.clear();

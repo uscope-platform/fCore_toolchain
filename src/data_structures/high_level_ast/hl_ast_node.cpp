@@ -167,6 +167,9 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_def(const std::shared_ptr<hl
         }
         copied_obj->set_array_initializer(initializer);
     }
+    copied_obj->set_array_index(orig->get_array_index());
+    std::vector<int> shape = orig->get_array_shape();
+    copied_obj->set_array_shape(shape);
     copied_obj->set_content(orig->get_content());
     return copied_obj;
 }

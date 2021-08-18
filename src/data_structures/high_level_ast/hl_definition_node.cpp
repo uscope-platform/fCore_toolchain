@@ -78,6 +78,8 @@ bool operator==(const hl_definition_node &lhs, const hl_definition_node &rhs) {
     ret_val &= lhs.type == rhs.type;
     ret_val &= lhs.name == rhs.name;
 
+    ret_val &= lhs.array_shape == rhs.array_shape;
+
     ret_val &= hl_ast_node::compare_vectors(lhs.array_index, rhs.array_index);
     ret_val &= hl_ast_node::compare_vectors(lhs.initializer, rhs.initializer);
 
@@ -94,4 +96,12 @@ void hl_definition_node::set_name(std::string n) {
 
 bool hl_definition_node::is_scalar() {
     return inner_variable->get_type() != var_type_array;
+}
+
+unsigned int hl_definition_node::get_array_size() {
+    unsigned  int retval = array_shape[0];
+    for(int i = 1; i<array_shape.size(); i++) {
+        retval *= array_shape[i];
+    }
+    return retval;
 }

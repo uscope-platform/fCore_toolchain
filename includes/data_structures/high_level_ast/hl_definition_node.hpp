@@ -48,6 +48,11 @@ public:
     std::shared_ptr<variable> get_variable() {return inner_variable;};
     void set_variable(std::shared_ptr<variable> var) {inner_variable = std::move(var);};
 
+    void set_array_shape(std::vector<int> &shape){array_shape = shape;};
+    std::vector<int> get_array_shape(){return array_shape;};
+
+    unsigned int get_array_size();
+    unsigned int get_flattened_idx(std::vector<int> md_idx);
     std::string pretty_print() override;
     bool is_terminal() override {
         return true;
@@ -62,6 +67,8 @@ protected:
     std::vector<std::shared_ptr<hl_ast_node>> initializer;
     std::vector<std::shared_ptr<hl_ast_node>> array_index;
     std::shared_ptr<variable> inner_variable;
+
+    std::vector<int> array_shape;
 };
 
 

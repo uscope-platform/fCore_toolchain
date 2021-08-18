@@ -804,9 +804,6 @@ TEST( cTreeVisitor, loopTest) {
 
 }
 
-
-
-
 TEST( cTreeVisitor, array_test){
     std::string input_file = "test_array.c";
     std::ifstream ifs(input_file);
@@ -826,7 +823,8 @@ TEST( cTreeVisitor, array_test){
 
     var = std::make_shared<variable>("constant", 5);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
-
+    std::vector<int> shape = {5};
+    def_1->set_array_shape(shape);
     def_1->set_array_index({op_1});
     var = std::make_shared<variable>("test_matrix");
     std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("test_matrix", c_type_int, var);
@@ -835,6 +833,8 @@ TEST( cTreeVisitor, array_test){
     op_1 = std::make_shared<hl_ast_operand>(var);
 
     def_2->set_array_index({op_1, op_1});
+    shape = {2,2};
+    def_2->set_array_shape(shape);
     var = std::make_shared<variable>( "b");
     var->set_variable_class(variable_output_type);
     var->set_bound_reg(4);
@@ -904,6 +904,9 @@ TEST( cTreeVisitor, array_init){
     op = std::make_shared<hl_ast_operand>(var);
     def->set_array_index({op});
 
+    std::vector<int> shape = {5};
+    def->set_array_shape(shape);
+
     def->set_array_initializer(init);
     gold_standard.push_back(def);
 
@@ -921,6 +924,9 @@ TEST( cTreeVisitor, array_init){
 
     def->set_array_initializer(init);
 
+    shape = {2,2};
+    def->set_array_shape(shape);
+
     var = std::make_shared<variable>("constant", 2);
     op = std::make_shared<hl_ast_operand>(var);
     def->set_array_index({op, op});
@@ -928,5 +934,36 @@ TEST( cTreeVisitor, array_init){
     gold_standard.push_back(def);
 
     ASSERT_TRUE(hl_ast_node::compare_vectors(result, gold_standard));
+
+}
+
+
+
+
+
+TEST( HlAstDeepCopy, definition){
+    std::vector<std::shared_ptr<hl_ast_node>> init;
+    std::shared_ptr<variable> var;
+    std::shared_ptr<hl_ast_operand> op;
+    for(int i = 1; i<6;++i){
+        var = std::make_shared<variable>("constant", i);
+        op = std::make_shared<hl_ast_operand>(var);
+        init.push_back(op);
+    }
+
+    var = std::make_shared<variable>("array_test");
+    var->set_type(var_type_array);
+    std::shared_ptr<hl_definition_node> gold_standard = std::make_shared<hl_definition_node>("array_test", c_type_int, var);
+    var = std::make_shared<variable>("constant", 5);
+    op = std::make_shared<hl_ast_operand>(var);
+    gold_standard->set_array_index({op});
+
+    gold_standard->set_array_initializer(init);
+    std::vector<int> shape = {5};
+    gold_standard->set_array_shape(shape);
+
+    std::shared_ptr<hl_definition_node> result = std::static_pointer_cast<hl_definition_node>(hl_ast_node::deep_copy(gold_standard));
+
+    ASSERT_EQ(*result, *gold_standard);
 
 }

@@ -45,7 +45,7 @@ TEST(HlPassesTest, divisionImplementation) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep, {1,2,3,4,5,8,9,10});
+    hl_pass_manager manager = create_hl_pass_manager(ep, {1,2,3,4,5,8,9,10,11});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> result = parser.AST;
@@ -200,7 +200,7 @@ TEST(HlPassesTest, normalization) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,8,9,10});
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,8,9,10,11});
     manager.run_morphing_passes(parser.AST);
 
     normalization_pass p;
@@ -263,7 +263,7 @@ TEST(HlPassesTest, function_elimination) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,8,9,10});
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,8,9,10,11});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> raw_result =parser.AST;
@@ -322,7 +322,7 @@ TEST(HlPassesTest, hl_ast_lowering) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,8,9,10});
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,8,9,10,11});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -369,7 +369,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,8,9,10});
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,8,9,10,11});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -517,18 +517,37 @@ TEST(HlPassesTest, test_matrix_scalarization) {
 
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8, 9});
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8, 9,10});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
 
     std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
-
+    //A VECTOR DEFINITION
+    std::shared_ptr<variable> var = std::make_shared<variable>("a");
+    std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("a", c_type_int, var);
+    std::vector<int> shape = {10,2};
+    def->set_array_shape(shape);
+    var = std::make_shared<variable>("constant", 10);
+    std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
+    var = std::make_shared<variable>("constant", 2);
+    std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
+    def->set_array_index({op_1, op_2});
+    gold_standard->add_content(def);
+    //B VECTOR DEFINITION
+    var = std::make_shared<variable>("b");
+    def = std::make_shared<hl_definition_node>("b", c_type_int, var);
+    shape = {3};
+    def->set_array_shape(shape);
+    var = std::make_shared<variable>("constant", 3);
+    op_1 = std::make_shared<hl_ast_operand>(var);
+    def->set_array_index({op_1});
+    gold_standard->add_content(def);
 
     std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(expr_assign);
     // FIRST EXPRESSION LHS
-    std:std::shared_ptr<variable> var = std::make_shared<variable>("_fcmglr_flattened_array_a_0_1");
+    var = std::make_shared<variable>("_fcmglr_flattened_array_a_0_1");
     std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
     ex->set_lhs(op);
     // FIRST EXPRESSION RHS
