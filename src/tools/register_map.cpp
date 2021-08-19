@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "frontend/asm/register_map.hpp"
+#include "tools/register_map.hpp"
 
 
 register_map::register_map() {
