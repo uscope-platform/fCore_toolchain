@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_TOOLCHAIN_OUTPUT_GENERATOR_HPP
-#define FCORE_TOOLCHAIN_OUTPUT_GENERATOR_HPP
+#ifndef FCORE_TOOLCHAIN_BINARY_GENERATOR_HPP
+#define FCORE_TOOLCHAIN_BINARY_GENERATOR_HPP
 
 #include <string>
 #include <vector>
@@ -25,12 +25,11 @@
 #include "data_structures/instruction_stream.hpp"
 #include "data_structures/low_level_ast/low_level_ast.hpp"
 
-class output_generator {
+class binary_generator {
 
 public:
-    output_generator() = default;
+    binary_generator() = default;
     void process_stream(const instruction_stream& stream, bool debug_print);
-    void emit_program(std::shared_ptr<ll_ast_node> &sub_program, bool debug_print);
     std::vector<uint32_t> get_raw_program();
     int get_program_size();
     void write_hex_file(const std::string& filename);
@@ -57,4 +56,4 @@ private:
 };
 
 
-#endif //FCORE_TOOLCHAIN_OUTPUT_GENERATOR_HPP
+#endif //FCORE_TOOLCHAIN_BINARY_GENERATOR_HPP

@@ -17,21 +17,59 @@
 
 #include <fstream>
 #include <gtest/gtest.h>
+#include <filesystem>
+#include <cstdlib>
 
 #include "fcore_dis.hpp"
-
+#include "../third_party/json.hpp"
 
 TEST( Disassembler, disassembler_mem) {
     std::string input_file = "test_add.mem";
     std::ifstream ifs(input_file);
 
-    fcore_dis disassembler(ifs, disassembler_mem_input);
+    fcore_dis disassembler(ifs, bin_loader_mem_input);
 
+    std::string result = disassembler.get_disassenbled_program();
+
+    std::string gold_standard = "ldc r4, 100.000000\nldc r5, 200.000000\nadd r24, r5, r6\nstop\n";
+
+    ASSERT_EQ(result, gold_standard);
 }
 
 TEST( Disassembler, disassembler_hex) {
     std::string input_file = "test_add.hex";
     std::ifstream ifs(input_file);
 
-    fcore_dis disassembler(ifs, disassembler_hex_input);
+    fcore_dis disassembler(ifs, bin_loader_hex_input);
+
+    std::string result = disassembler.get_disassenbled_program();
+
+    std::string gold_standard = "ldc r4, 100.000000\nldc r5, 200.000000\nadd r24, r5, r6\nstop\n";
+
+    ASSERT_EQ(result, gold_standard);
+}
+
+
+TEST( Disassembler, disassembler_json) {
+    std::string input_file = "test_add.hex";
+    std::ifstream ifs(input_file);
+
+    fcore_dis disassembler(ifs, bin_loader_hex_input);
+
+
+    unsigned int filename = rand();
+    std::string outfile_name = std::filesystem::temp_directory_path().string() + "/" + std::to_string(filename);
+    disassembler.write_json(outfile_name);
+
+    std::ifstream result_file(outfile_name);
+    std::ostringstream sstr;
+    sstr << result_file.rdbuf();
+
+    auto result = nlohmann::json::parse(sstr.str());
+
+    nlohmann::json gold_standard;
+    gold_standard["error_code"] = "";
+    gold_standard["disassembled_program"] = "ldc r4, 100.000000\nldc r5, 200.000000\nadd r24, r5, r6\nstop\n";
+
+    ASSERT_EQ(result, gold_standard);
 }

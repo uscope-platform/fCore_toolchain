@@ -66,3 +66,7 @@ void ll_register_instr_node::set_arguments(const std::vector<std::shared_ptr<var
     destination = a[2];
 }
 
+std::string ll_register_instr_node::disassemble() {
+    return opcode + " " + operand_a->get_name() + ", " + operand_b->get_name() + ", " + destination->get_name();
+}
+

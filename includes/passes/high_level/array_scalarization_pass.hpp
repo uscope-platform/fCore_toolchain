@@ -29,7 +29,7 @@ public:
     int get_pass_type() override { return GLOBAL_PASS;};
 private:
 
-    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_node> node);
+    std::shared_ptr<hl_ast_node> process_element(const std::shared_ptr<hl_ast_node>& node);
     std::shared_ptr<hl_expression_node> process_expression(std::shared_ptr<hl_expression_node> node);
     std::shared_ptr<hl_ast_operand> process_operand(std::shared_ptr<hl_ast_operand> node);
     std::shared_ptr<hl_definition_node> process_definition(std::shared_ptr<hl_definition_node> node);

@@ -26,6 +26,7 @@ class ll_independent_inst_node: public ll_instruction_node {
 public:
     explicit ll_independent_inst_node(std::string opcode);
     uint32_t emit() override;
+    std::string disassemble() override;
     void print() override;
     int instruction_count() override;
 

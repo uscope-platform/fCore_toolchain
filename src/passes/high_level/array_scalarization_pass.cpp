@@ -32,7 +32,7 @@ std::shared_ptr<hl_ast_node> array_scalarization_pass::process_global(std::share
     return ret_val;
 }
 
-std::shared_ptr<hl_ast_node> array_scalarization_pass::process_element(std::shared_ptr<hl_ast_node> node) {
+std::shared_ptr<hl_ast_node> array_scalarization_pass::process_element(const std::shared_ptr<hl_ast_node>& node) {
     switch(node->node_type) {
         case hl_ast_node_type_expr:
             return process_expression(std::static_pointer_cast<hl_expression_node>(node));
@@ -48,6 +48,7 @@ std::shared_ptr<hl_ast_node> array_scalarization_pass::process_element(std::shar
         case hl_ast_node_type_code_block:
             throw std::runtime_error("INTERNAL ERROR: Unexpected node found in the AST during array scalarization");
     }
+    return nullptr;
 }
 
 std::shared_ptr<hl_expression_node>

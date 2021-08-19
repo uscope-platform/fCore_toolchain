@@ -27,6 +27,8 @@ public:
     ll_load_constant_instr_node(std::string op, std::shared_ptr<variable> dest, std::shared_ptr<variable> c);
     uint32_t emit() override;
     void print() override;
+    std::string disassemble() override;
+
     int instruction_count() override;
     float get_constant_f();
     int get_constant_i();

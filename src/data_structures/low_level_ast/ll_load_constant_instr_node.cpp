@@ -65,3 +65,7 @@ void ll_load_constant_instr_node::set_arguments(const std::vector<std::shared_pt
 int ll_load_constant_instr_node::get_constant_i() {
     return constant->get_const_i();
 }
+
+std::string ll_load_constant_instr_node::disassemble() {
+    return opcode + " " + destination->get_name() + ", " + std::to_string(constant->get_const_f());
+}

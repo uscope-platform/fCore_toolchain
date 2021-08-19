@@ -15,25 +15,20 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef FCORE_TOOLCHAIN_DISASSEMBLER_TESTING_HPP
-#define FCORE_TOOLCHAIN_DISASSEMBLER_TESTING_HPP
+#include "backend/assembly_generator.hpp"
 
-#include <istream>
+assembly_generator::assembly_generator(const instruction_stream &stream) {
+    std::ostringstream disassembled_program;
 
-#include "data_structures/low_level_ast/ll_ast_node.hpp"
+    for(const auto& item:stream){
+        disassembled_program << item->disassemble() << std::endl;
+    }
+    program = disassembled_program.str();
+}
 
-typedef enum {
-    disassembler_mem_input = 0,
-    disassembler_hex_input = 1
-} disassembler_input_type_t;
-
-class disassembler_testing {
-public:
-    disassembler_testing(std::istream &stream, disassembler_input_type_t in_type);
-    std::shared_ptr<ll_ast_node> get_ast() {return ast_root;};
-private:
-    std::shared_ptr<ll_ast_node> ast_root;
-};
-
-
-#endif //FCORE_TOOLCHAIN_DISASSEMBLER_TESTING_HPP
+void assembly_generator::write_program(const std::string &filename) {
+    std::ofstream output(filename);
+    for(auto &instr:program){
+        output << instr;
+    }
+}

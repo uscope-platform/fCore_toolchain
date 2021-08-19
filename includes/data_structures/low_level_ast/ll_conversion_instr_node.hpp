@@ -28,6 +28,7 @@ public:
     ll_conversion_instr_node(std::string op, std::shared_ptr<variable> s, std::shared_ptr<variable> d);
     uint32_t emit() override;
     void print() override;
+    std::string disassemble() override;
     int instruction_count() override;
 
     std::shared_ptr<variable> get_source() {return source;};

@@ -24,7 +24,7 @@
 
 #include "tools/variable_map.hpp"
 #include "frontend/asm/asm_language_parser.hpp"
-#include "backend/output_generator.hpp"
+#include "backend/binary_generator.hpp"
 #include "passes/ll_passes.hpp"
 #include "passes/low_level/ll_pass_manager.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
@@ -57,7 +57,7 @@ public:
     uint32_t get_inst_count();
 private:
     std::shared_ptr<ll_ast_node> AST;
-    output_generator writer;
+    binary_generator writer;
     ll_pass_manager manager;
     std::string error_code;
 };

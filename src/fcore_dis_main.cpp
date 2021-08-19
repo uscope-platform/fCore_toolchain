@@ -55,15 +55,23 @@ int main(int argc, char **argv) {
     }
 
     std::ifstream stream;
-    stream.open(input_file);
 
-    disassembler_input_type_t in_type;
-    if(input_mem)
-        in_type = disassembler_mem_input;
-    else
-        in_type = disassembler_hex_input;
+
+    bin_loader_input_type_t in_type;
+    if(input_mem) {
+        stream.open(input_file);
+        in_type = bin_loader_mem_input;
+    } else {
+        stream.open(input_file, std::ifstream::binary);
+        in_type = bin_loader_hex_input;
+    }
 
     fcore_dis dis_engine(stream, in_type);
+    if(output_json){
+        dis_engine.write_json(output_file);
+    } else {
+        dis_engine.write_disassembled_program(output_file);
+    }
 
     return 0;
 }

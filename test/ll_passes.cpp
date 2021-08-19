@@ -20,7 +20,7 @@
 
 #include "data_structures/low_level_ast/low_level_ast.hpp"
 #include "passes/ll_passes.hpp"
-#include "backend/output_generator.hpp"
+#include "backend/binary_generator.hpp"
 #include "frontend/asm/asm_language_parser.hpp"
 #include "tools/instruction_stream_builder.hpp"
 #include "data_structures/instruction_stream.hpp"
@@ -40,7 +40,7 @@ TEST(llPassesTest, pseudo_inst_pass) {
     ll_pass_manager manager = create_ll_pass_manager();
     manager.run_morphing_passes(AST);
 
-    output_generator writer;
+    binary_generator writer;
 
     instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
     writer.process_stream(program_stream, false);
@@ -107,7 +107,7 @@ TEST(llPassesTest, loop_less) {
     ll_pass_manager manager = create_ll_pass_manager();
     manager.run_morphing_passes(AST);
 
-    output_generator writer;
+    binary_generator writer;
 
     instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
     writer.process_stream(program_stream, false);
@@ -139,7 +139,7 @@ TEST(llPassesTest, loop_less_equal) {
     ll_pass_manager manager = create_ll_pass_manager();
     manager.run_morphing_passes(AST);
 
-    output_generator writer;
+    binary_generator writer;
 
     instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
     writer.process_stream(program_stream, false);
@@ -174,7 +174,7 @@ TEST(llPassesTest, loop_more) {
     ll_pass_manager manager = create_ll_pass_manager();
     manager.run_morphing_passes(AST);
 
-    output_generator writer;
+    binary_generator writer;
     instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
     writer.process_stream(program_stream, false);
     std::vector<uint32_t> result = writer.get_raw_program();
@@ -206,7 +206,7 @@ TEST(llPassesTest, loop_more_equal) {
     ll_pass_manager manager = create_ll_pass_manager();
     manager.run_morphing_passes(AST);
 
-    output_generator writer;
+    binary_generator writer;
 
     instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
     writer.process_stream(program_stream, false);

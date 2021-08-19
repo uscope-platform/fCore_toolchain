@@ -1,6 +1,6 @@
 set(FCORE_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/asm/AsmTree_visitor.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/disassembler.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/binary_loader.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/asm/asm_language_parser.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/asm/AsmErrorHandling.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/C/C_language_parser.cpp
@@ -8,7 +8,8 @@ set(FCORE_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/C/C_ErrorHandling.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/C/C_Tree_visitor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/asm/register_map.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/backend/output_generator.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/backend/binary_generator.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/backend/assembly_generator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_instruction_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_register_instr_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_conversion_instr_node.cpp
@@ -78,9 +79,10 @@ add_executable(fCore_cc ${FCORE_SRCS_I} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS} fcor
 target_link_libraries(fCore_cc PUBLIC antlr4-runtime)
 
 # Standalone disassembler executable
-add_executable(fCore_dis ${FCORE_SRCS_I} fcore_dis_main.cpp)
-
+add_executable(fCore_dis ${FCORE_SRCS_I}  ${C_PARSER_SRCS} ${ASM_PARSER_SRCS} fcore_dis_main.cpp)
+target_link_libraries(fCore_dis PUBLIC antlr4-runtime)
 
 
 install(TARGETS fCore_has DESTINATION /usr/bin)
 install(TARGETS fCore_cc DESTINATION /usr/bin)
+install(TARGETS fCore_dis DESTINATION /usr/bin)

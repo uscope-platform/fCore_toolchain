@@ -41,6 +41,7 @@ public:
 
     virtual uint32_t emit() { return 0;};
     virtual void print() {};
+    virtual std::string disassemble() {return "";};
     virtual int instruction_count() { return 0;};
 
     bool is_terminal() override;

@@ -53,7 +53,7 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     ll_pass_manager ll_manager = create_ll_pass_manager();
     ll_manager.run_morphing_passes(ll_ast);
 
-    output_generator writer;
+    binary_generator writer;
 
     instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
 

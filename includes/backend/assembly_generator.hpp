@@ -15,18 +15,21 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "frontend/disassembler_testing.hpp"
+#ifndef FCORE_TOOLCHAIN_ASSEMBLY_GENERATOR_H
+#define FCORE_TOOLCHAIN_ASSEMBLY_GENERATOR_H
 
-disassembler_testing::disassembler_testing(std::istream &stream, disassembler_input_type_t in_type) {
-    std::string line;
-    std::vector<unsigned int> raw_program;
-    while (std::getline(stream, line))
-    {
-        std::istringstream iss(line);
-        if(in_type == disassembler_hex_input){
+#include <fstream>
 
-        } else if(in_type == disassembler_mem_input){
+#include "data_structures/instruction_stream.hpp"
 
-        }
-    }
-}
+class assembly_generator {
+public:
+    explicit assembly_generator(const instruction_stream& stream);
+    void write_program(const std::string& filename);
+    std::string get_program() {return  program;};
+private:
+    std::string program;
+};
+
+
+#endif //FCORE_TOOLCHAIN_ASSEMBLY_GENERATOR_H

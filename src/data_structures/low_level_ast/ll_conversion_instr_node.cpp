@@ -56,3 +56,7 @@ void ll_conversion_instr_node::set_arguments(const std::vector<std::shared_ptr<v
     source = a[0];
     destination = a[1];
 }
+
+std::string ll_conversion_instr_node::disassemble() {
+    return opcode + " " + source->get_name() + ", " + destination->get_name();
+}

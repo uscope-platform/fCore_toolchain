@@ -43,3 +43,7 @@ int ll_independent_inst_node::instruction_count() {
 bool operator==(const ll_independent_inst_node &lhs, const ll_independent_inst_node &rhs) {
     return rhs.opcode == lhs.opcode;
 }
+
+std::string ll_independent_inst_node::disassemble() {
+    return opcode;
+}

@@ -26,7 +26,7 @@
 #include "tools/variable_map.hpp"
 #include "tools/define_map.hpp"
 #include "frontend/C/C_language_parser.hpp"
-#include "backend/output_generator.hpp"
+#include "backend/binary_generator.hpp"
 #include "passes/hl_passes.hpp"
 #include "passes/ll_passes.hpp"
 #include "passes/high_level/hl_pass_manager.hpp"
@@ -51,7 +51,7 @@ public:
 private:
     std::shared_ptr<hl_ast_node> hl_ast;
     std::shared_ptr<ll_ast_node> ll_ast;
-    output_generator writer;
+    binary_generator writer;
     hl_pass_manager  hl_manager;
     ll_pass_manager ll_manager;
     std::string error_code;
