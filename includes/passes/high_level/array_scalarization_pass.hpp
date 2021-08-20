@@ -33,6 +33,10 @@ private:
     std::shared_ptr<hl_expression_node> process_expression(std::shared_ptr<hl_expression_node> node);
     std::shared_ptr<hl_ast_operand> process_operand(std::shared_ptr<hl_ast_operand> node);
     std::shared_ptr<hl_definition_node> process_definition(std::shared_ptr<hl_definition_node> node);
+    std::shared_ptr<hl_function_call_node> process_function_call(std::shared_ptr<hl_function_call_node> node);
+    std::shared_ptr<hl_function_def_node> process_function_def(std::shared_ptr<hl_function_def_node> node);
+    std::shared_ptr<hl_ast_conditional_node> process_conditional(std::shared_ptr<hl_ast_conditional_node> node);
+
     std::string mangle_name(std::vector<std::shared_ptr<hl_ast_node>> old_array_idx, std::string var_name);
 
 };

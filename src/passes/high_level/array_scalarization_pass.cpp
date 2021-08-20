@@ -41,9 +41,12 @@ std::shared_ptr<hl_ast_node> array_scalarization_pass::process_element(const std
         case hl_ast_node_type_definition:
             return process_definition(std::static_pointer_cast<hl_definition_node>(node));
         case hl_ast_node_type_conditional:
-        case hl_ast_node_type_loop:
+            return process_conditional(std::static_pointer_cast<hl_ast_conditional_node>(node));
         case hl_ast_node_type_function_def:
+            return process_function_def(std::static_pointer_cast<hl_function_def_node>(node));
         case hl_ast_node_type_function_call:
+            return process_function_call(std::static_pointer_cast<hl_function_call_node>(node));
+        case hl_ast_node_type_loop:
         case hl_ast_node_type_program_root:
         case hl_ast_node_type_code_block:
             throw std::runtime_error("INTERNAL ERROR: Unexpected node found in the AST during array scalarization");
@@ -105,6 +108,53 @@ std::string array_scalarization_pass::mangle_name(std::vector<std::shared_ptr<hl
         mangled_name += "_" + std::to_string(idx);
     }
     return mangled_name;
+}
+
+std::shared_ptr<hl_function_call_node>
+array_scalarization_pass::process_function_call(std::shared_ptr<hl_function_call_node> node) {
+
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_args;
+    for(auto &item:node->get_arguments()){
+        new_args.push_back(process_element(item));
+    }
+    node->set_arguments(new_args);
+
+    return node;
+}
+
+std::shared_ptr<hl_function_def_node>
+array_scalarization_pass::process_function_def(std::shared_ptr<hl_function_def_node> node) {
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_body;
+
+    for(auto &item:node->get_body()){
+        new_body.push_back(process_element(item));
+    }
+    node->set_body(new_body);
+    if(node->get_return() != nullptr){
+        node->set_return(process_element(node->get_return()));
+    }
+
+    return node;
+}
+
+std::shared_ptr<hl_ast_conditional_node>
+array_scalarization_pass::process_conditional(std::shared_ptr<hl_ast_conditional_node> node) {
+    std::vector<std::shared_ptr<hl_ast_node>> new_block;
+    for(auto &item:node->get_if_block()){
+        new_block.push_back(process_element(item));
+    }
+    node->set_if_block(new_block);
+
+    new_block.clear();
+    for(auto &item:node->get_else_block()){
+        new_block.push_back(process_element(item));
+    }
+    node->set_else_block(new_block);
+
+    node->set_condition(process_element(node->get_condition()));
+    return node;
 }
 
 

@@ -26,16 +26,16 @@ int main(){
 #pragma input(h, r1);
     int h[6];
 
-#pragma input(a, r2)
-    int a[4];
+#pragma input(k, r2)
+    int k[4];
 
 #pragma output(j, r15);
     int j;
 
     for(int i = 0+5; i+1<8; ++i){
         if(3<5){
-            j = a[i] + h[i];
-            b[i] = add(h[i], a[i]);
+            j = k[i] + h[i];
+            b[i] = add(h[i], k[i]);
         }
     }
 }
