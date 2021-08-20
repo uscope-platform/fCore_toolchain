@@ -276,12 +276,18 @@ expressionStatement
     ;
 
 ifContent
-    : compoundStatement
+    : '{' conditionalBlockItem* '}'
     ;
 
 elseContent
-    : compoundStatement
+    : '{' conditionalBlockItem* '}'
     ;
+
+conditionalBlockItem
+    :   statement
+    |   declaration ';'
+    ;
+
 
 conditionContent
     : expression
@@ -297,7 +303,12 @@ iterationStatement
 
 
 forContent
-    : (statement | compoundStatement)
+    : '{' forBlockItem* '}'
+    ;
+
+forBlockItem
+    :   statement
+    |   declaration ';'
     ;
 
 forExitCondition

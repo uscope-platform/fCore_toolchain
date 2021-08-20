@@ -128,6 +128,8 @@ public:
 
     virtual antlrcpp::Any visitElseContent(C_grammarParser::ElseContentContext *context) = 0;
 
+    virtual antlrcpp::Any visitConditionalBlockItem(C_grammarParser::ConditionalBlockItemContext *context) = 0;
+
     virtual antlrcpp::Any visitConditionContent(C_grammarParser::ConditionContentContext *context) = 0;
 
     virtual antlrcpp::Any visitSelectionStatement(C_grammarParser::SelectionStatementContext *context) = 0;
@@ -135,6 +137,8 @@ public:
     virtual antlrcpp::Any visitIterationStatement(C_grammarParser::IterationStatementContext *context) = 0;
 
     virtual antlrcpp::Any visitForContent(C_grammarParser::ForContentContext *context) = 0;
+
+    virtual antlrcpp::Any visitForBlockItem(C_grammarParser::ForBlockItemContext *context) = 0;
 
     virtual antlrcpp::Any visitForExitCondition(C_grammarParser::ForExitConditionContext *context) = 0;
 

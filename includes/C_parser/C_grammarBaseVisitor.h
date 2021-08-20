@@ -233,6 +233,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitConditionalBlockItem(C_grammarParser::ConditionalBlockItemContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitConditionContent(C_grammarParser::ConditionContentContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -246,6 +250,10 @@ public:
   }
 
   virtual antlrcpp::Any visitForContent(C_grammarParser::ForContentContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitForBlockItem(C_grammarParser::ForBlockItemContext *ctx) override {
     return visitChildren(ctx);
   }
 

@@ -137,7 +137,7 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
 
 
 
-    if(in_function_body){
+    if(in_function_body | in_conditional_block | in_foor_loop_block){
         current_block_item = node;
     } else {
         ext_decl.push_back(node);
@@ -396,6 +396,7 @@ void C_Tree_visitor::exitLogicalAndExpression(C_parser::C_grammarParser::Logical
 
 
 void C_Tree_visitor::exitAssignmentExpression(C_parser::C_grammarParser::AssignmentExpressionContext *ctx) {
+    std::string dbg = ctx->getText();
     if(ctx->unaryExpression()!= nullptr){
         std::shared_ptr<hl_expression_node> value = std::static_pointer_cast<hl_expression_node>(expressions_stack.top());
         expressions_stack.pop();
@@ -474,11 +475,7 @@ void C_Tree_visitor::processExpression(unsigned int expression_size, const T& op
 
 void C_Tree_visitor::exitBlockItem(C_parser::C_grammarParser::BlockItemContext *ctx) {
     std::string test = ctx->getText();
-    if(in_foor_loop_block){
-        loop_body.push_back(current_block_item);
-    }else if(in_conditional_block){
-        conditional_body.push_back(current_block_item);
-    } else if(in_function_body){
+    if(in_function_body){
         if(ctx->statement() != nullptr){
             if(ctx->statement()->returnStatement() != nullptr) return;
         }
@@ -502,6 +499,10 @@ void C_Tree_visitor::exitArgumentExpression(C_parser::C_grammarParser::ArgumentE
 void C_Tree_visitor::exitIfContent(C_parser::C_grammarParser::IfContentContext *ctx) {
     conditional->set_if_block(conditional_body);
     conditional_body.clear();
+}
+
+void C_Tree_visitor::exitConditionalBlockItem(C_parser::C_grammarParser::ConditionalBlockItemContext *ctx) {
+    conditional_body.push_back(current_block_item);
 }
 
 void C_Tree_visitor::exitElseContent(C_parser::C_grammarParser::ElseContentContext *ctx) {
@@ -530,9 +531,16 @@ void C_Tree_visitor::exitSelectionStatement(C_parser::C_grammarParser::Selection
 void C_Tree_visitor::enterIterationStatement(C_parser::C_grammarParser::IterationStatementContext *ctx) {
     save_current_block_context();
     loop = std::make_shared<hl_ast_loop_node>();
-
+    loop_body.clear();
     in_function_body = false;
+    in_foor_loop_block = true;
     in_conditional_block = false;
+}
+
+void C_Tree_visitor::exitIterationStatement(C_parser::C_grammarParser::IterationStatementContext *ctx) {
+    loop->set_loop_content(loop_body);
+    current_block_item = loop;
+    restore_current_block_context();
 }
 
 std::string C_Tree_visitor::restore_current_block_context() {
@@ -579,27 +587,23 @@ void C_Tree_visitor::save_current_block_context() {
     }
 }
 
-
-void C_Tree_visitor::exitIterationStatement(C_parser::C_grammarParser::IterationStatementContext *ctx) {
-    loop->set_loop_content(loop_body);
-    current_block_item = loop;
-    restore_current_block_context();
-
-}
-
 void C_Tree_visitor::exitForExitCondition(C_parser::C_grammarParser::ForExitConditionContext *ctx) {
     loop->set_condition(std::static_pointer_cast<hl_expression_node>(expressions_stack.top()));
     expressions_stack.pop();
 }
 
 void C_Tree_visitor::exitForDeclaration(C_parser::C_grammarParser::ForDeclarationContext *ctx) {
-    loop->set_init_statement(std::static_pointer_cast<hl_definition_node>(ext_decl[0]));
+    loop->set_init_statement(std::static_pointer_cast<hl_definition_node>(current_block_item));
     ext_decl.clear();
 }
 
 void C_Tree_visitor::exitForIterationExpression(C_parser::C_grammarParser::ForIterationExpressionContext *ctx) {
     loop->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(expressions_stack.top()));
     expressions_stack.pop();
+}
+
+void C_Tree_visitor::exitForBlockItem(C_parser::C_grammarParser::ForBlockItemContext *ctx) {
+    loop_body.push_back(current_block_item);
 }
 
 void C_Tree_visitor::enterForContent(C_parser::C_grammarParser::ForContentContext *ctx) {
@@ -613,5 +617,4 @@ void C_Tree_visitor::exitForContent(C_parser::C_grammarParser::ForContentContext
 void C_Tree_visitor::set_iom_map(std::unordered_map<std::string, std::shared_ptr<variable>> iom) {
     iom_map = std::move(iom);
 }
-
 

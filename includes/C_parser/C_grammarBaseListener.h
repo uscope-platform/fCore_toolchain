@@ -180,6 +180,9 @@ public:
   virtual void enterElseContent(C_grammarParser::ElseContentContext * /*ctx*/) override { }
   virtual void exitElseContent(C_grammarParser::ElseContentContext * /*ctx*/) override { }
 
+  virtual void enterConditionalBlockItem(C_grammarParser::ConditionalBlockItemContext * /*ctx*/) override { }
+  virtual void exitConditionalBlockItem(C_grammarParser::ConditionalBlockItemContext * /*ctx*/) override { }
+
   virtual void enterConditionContent(C_grammarParser::ConditionContentContext * /*ctx*/) override { }
   virtual void exitConditionContent(C_grammarParser::ConditionContentContext * /*ctx*/) override { }
 
@@ -191,6 +194,9 @@ public:
 
   virtual void enterForContent(C_grammarParser::ForContentContext * /*ctx*/) override { }
   virtual void exitForContent(C_grammarParser::ForContentContext * /*ctx*/) override { }
+
+  virtual void enterForBlockItem(C_grammarParser::ForBlockItemContext * /*ctx*/) override { }
+  virtual void exitForBlockItem(C_grammarParser::ForBlockItemContext * /*ctx*/) override { }
 
   virtual void enterForExitCondition(C_grammarParser::ForExitConditionContext * /*ctx*/) override { }
   virtual void exitForExitCondition(C_grammarParser::ForExitConditionContext * /*ctx*/) override { }

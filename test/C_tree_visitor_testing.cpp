@@ -749,20 +749,26 @@ TEST( cTreeVisitor, loopTest) {
     std::shared_ptr<hl_expression_node> loop_body = std::make_shared<hl_expression_node>(expr_assign);
 
     std::shared_ptr<variable> var = std::make_shared<variable>("j");
+    var->set_bound_reg(15);
+    var->set_variable_class(variable_output_type);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
 
     loop_body->set_lhs(op_1);
     std::shared_ptr<hl_expression_node> body_add_expr = std::make_shared<hl_expression_node>(expr_add);
 
     var = std::make_shared<variable>( "a");
+    var->set_bound_reg(2);
+    var->set_variable_class(variable_input_type);
     op_1 = std::make_shared<hl_ast_operand>(var);
 
 
     var = std::make_shared<variable>("h");
+    var->set_bound_reg(1);
+    var->set_variable_class(variable_input_type);
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
 
     body_add_expr->set_lhs(op_1);
-    body_add_expr->set_lhs(op_2);
+    body_add_expr->set_rhs(op_2);
     loop_body->set_rhs(body_add_expr);
     gold_standard->set_loop_content({loop_body});
     // LOOP INIT CONDITION
@@ -800,6 +806,133 @@ TEST( cTreeVisitor, loopTest) {
     if(Test::HasFailure()){
         std::cout << "TEST RESULT: " << result->pretty_print()<< std::endl;
         std::cout << "GOLD STANDARD: " << gold_standard->pretty_print()<< std::endl;
+    }
+
+}
+
+TEST( cTreeVisitor, nestedLoopTest) {
+    std::string input_file = "test_nested_loop_ast.c";
+    std::ifstream ifs(input_file);
+
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(ifs, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
+    std::shared_ptr<hl_ast_loop_node> result = std::static_pointer_cast<hl_ast_loop_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[3]);
+
+
+    // CONTENT EXPRESSION
+
+    std::shared_ptr<hl_expression_node> content_expr = std::make_shared<hl_expression_node>(expr_assign);
+
+    std::shared_ptr<variable> var = std::make_shared<variable>("j");
+    var->set_bound_reg(15);
+    var->set_variable_class(variable_output_type);
+    std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
+
+    content_expr->set_lhs(op_1);
+    std::shared_ptr<hl_expression_node> body_add_expr = std::make_shared<hl_expression_node>(expr_add);
+
+    var = std::make_shared<variable>( "a");
+    var->set_bound_reg(2);
+    var->set_variable_class(variable_input_type);
+    op_1 = std::make_shared<hl_ast_operand>(var);
+
+
+    var = std::make_shared<variable>("h");
+    var->set_bound_reg(1);
+    var->set_variable_class(variable_input_type);
+    std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
+
+    body_add_expr->set_lhs(op_1);
+    body_add_expr->set_rhs(op_2);
+    content_expr->set_rhs(body_add_expr);
+
+
+    // INNER LOOP
+    std::shared_ptr<hl_ast_loop_node> inner_loop = std::make_shared<hl_ast_loop_node>();
+
+    inner_loop->set_loop_content({content_expr});
+
+    //      LOOP INIT
+
+    var = std::make_shared<variable>( "k");
+    std::shared_ptr<hl_definition_node> init_def = std::make_shared<hl_definition_node>("k", c_type_int, var);
+
+    var = std::make_shared<variable>("constant",0);
+    std::shared_ptr<hl_ast_operand> def_val = std::make_shared<hl_ast_operand>(var);
+
+    init_def->set_scalar_initializer(def_val);
+    inner_loop->set_init_statement(init_def);
+
+    //       LOOP CONDITION
+
+    std::shared_ptr<hl_expression_node> loop_cond = std::make_shared<hl_expression_node>(expr_lt);
+
+    var = std::make_shared<variable>("k");
+    op_1 = std::make_shared<hl_ast_operand>(var);
+
+
+    var = std::make_shared<variable>("constant",4);
+    op_2 = std::make_shared<hl_ast_operand>(var);
+
+    loop_cond->set_rhs(op_2);
+    loop_cond->set_lhs(op_1);
+    inner_loop->set_condition(loop_cond);
+
+    //       LOOP ITERATION EXPR
+
+    std::shared_ptr<hl_expression_node> loop_iter = std::make_shared<hl_expression_node>(expr_incr_pre);
+
+    var = std::make_shared<variable>("k");
+    op_1 = std::make_shared<hl_ast_operand>(var);
+
+    loop_iter->set_rhs(op_1);
+    inner_loop->set_iteration_expr(loop_iter);
+
+    std::shared_ptr<hl_ast_loop_node> outer_loop = std::make_shared<hl_ast_loop_node>();
+
+    // LOOP BODY
+
+    outer_loop->set_loop_content({content_expr, inner_loop, content_expr});
+
+    // LOOP INIT CONDITION
+    var = std::make_shared<variable>( "i");
+    init_def = std::make_shared<hl_definition_node>("i", c_type_int, var);
+
+    var = std::make_shared<variable>("constant",0);
+    def_val = std::make_shared<hl_ast_operand>(var);
+
+    init_def->set_scalar_initializer(def_val);
+    outer_loop->set_init_statement(init_def);
+
+    // LOOP CONDITION
+    loop_cond = std::make_shared<hl_expression_node>(expr_lt);
+
+    var = std::make_shared<variable>("i");
+    op_1 = std::make_shared<hl_ast_operand>(var);
+
+
+    var = std::make_shared<variable>("constant",4);
+    op_2 = std::make_shared<hl_ast_operand>(var);
+
+    loop_cond->set_rhs(op_2);
+    loop_cond->set_lhs(op_1);
+    outer_loop->set_condition(loop_cond);
+    // LOOP ITERATION EXPR
+    loop_iter = std::make_shared<hl_expression_node>(expr_incr_pre);
+
+    var = std::make_shared<variable>("i");
+    op_1 = std::make_shared<hl_ast_operand>(var);
+
+    loop_iter->set_rhs(op_1);
+    outer_loop->set_iteration_expr(loop_iter);
+
+    EXPECT_EQ(*result, *outer_loop);
+    if(Test::HasFailure()){
+        std::cout << "TEST RESULT: " << result->pretty_print()<< std::endl;
+        std::cout << "GOLD STANDARD: " << outer_loop->pretty_print()<< std::endl;
     }
 
 }

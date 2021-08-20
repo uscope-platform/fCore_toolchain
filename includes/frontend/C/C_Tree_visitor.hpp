@@ -91,7 +91,9 @@ public:
     void exitElseContent(C_parser::C_grammarParser::ElseContentContext *ctx) override;
     void exitIfContent(C_parser::C_grammarParser::IfContentContext *ctx) override;
     void exitConditionContent(C_parser::C_grammarParser::ConditionContentContext *ctx) override;
+    void exitConditionalBlockItem(C_parser::C_grammarParser::ConditionalBlockItemContext *ctx) override;
 
+    void exitForBlockItem(C_parser::C_grammarParser::ForBlockItemContext *ctx) override;
     void enterIterationStatement(C_parser::C_grammarParser::IterationStatementContext *ctx) override;
     void exitIterationStatement(C_parser::C_grammarParser::IterationStatementContext *ctx) override;
     void exitForIterationExpression(C_parser::C_grammarParser::ForIterationExpressionContext *ctx) override;
@@ -154,6 +156,8 @@ private:
 
     std::stack<std::shared_ptr<hl_ast_node>> outer_block_nodes;
     std::stack<std::vector<std::shared_ptr<hl_ast_node>>> outer_block_contents;
+
+    std::stack<std::shared_ptr<hl_ast_node>> outer_block_current_item;
 
     std::stack<std::string> outer_block_types;
 

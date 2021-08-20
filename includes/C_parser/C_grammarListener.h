@@ -178,6 +178,9 @@ public:
   virtual void enterElseContent(C_grammarParser::ElseContentContext *ctx) = 0;
   virtual void exitElseContent(C_grammarParser::ElseContentContext *ctx) = 0;
 
+  virtual void enterConditionalBlockItem(C_grammarParser::ConditionalBlockItemContext *ctx) = 0;
+  virtual void exitConditionalBlockItem(C_grammarParser::ConditionalBlockItemContext *ctx) = 0;
+
   virtual void enterConditionContent(C_grammarParser::ConditionContentContext *ctx) = 0;
   virtual void exitConditionContent(C_grammarParser::ConditionContentContext *ctx) = 0;
 
@@ -189,6 +192,9 @@ public:
 
   virtual void enterForContent(C_grammarParser::ForContentContext *ctx) = 0;
   virtual void exitForContent(C_grammarParser::ForContentContext *ctx) = 0;
+
+  virtual void enterForBlockItem(C_grammarParser::ForBlockItemContext *ctx) = 0;
+  virtual void exitForBlockItem(C_grammarParser::ForBlockItemContext *ctx) = 0;
 
   virtual void enterForExitCondition(C_grammarParser::ForExitConditionContext *ctx) = 0;
   virtual void exitForExitCondition(C_grammarParser::ForExitConditionContext *ctx) = 0;

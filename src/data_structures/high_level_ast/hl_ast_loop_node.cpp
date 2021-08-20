@@ -30,8 +30,8 @@ std::string hl_ast_loop_node::pretty_print() {
     ss << condition->pretty_print() << "; ";
     ss << iteration_expr->pretty_print() << ") {"<< std::endl;
 
-    if(!content.empty()){
-        for(const auto& item:content){
+    if(!loop_content.empty()){
+        for(const auto& item:loop_content){
             ss << item->pretty_print() << ";" << std::endl;
         }
     }
@@ -46,7 +46,7 @@ bool operator==(const hl_ast_loop_node &lhs, const hl_ast_loop_node &rhs) {
     ret_val &= hl_ast_node::compare_content_by_type( lhs.condition, rhs.condition);
     ret_val &= hl_ast_node::compare_content_by_type( lhs.iteration_expr, rhs.iteration_expr);
 
-    ret_val &= hl_ast_node::compare_vectors(lhs.content, rhs.content);
+    ret_val &= hl_ast_node::compare_vectors(lhs.loop_content, rhs.loop_content);
 
     return ret_val;
 }
