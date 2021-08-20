@@ -89,13 +89,15 @@ array_initialization_propagation_pass::process_operand(std::shared_ptr<hl_ast_op
             return node;
         } else{
 
+            if(def_map.count(node->get_name())==0){
+                return node;
+            }
+
             if(!def_map[node->get_name()]->is_initialized()){
                 return node;
             }
 
-            if(def_map.count(node->get_name())==0){
-                throw std::runtime_error("ERROR: The array " + node->get_name() +" is not defined");
-            }
+
             std::vector<int> shape = def_map[node->get_name()]->get_array_shape();
             int linearized_idx = idx.back();
 

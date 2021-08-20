@@ -32,6 +32,7 @@ public:
     std::string get_name() {return name;};
     std::string pretty_print();
     std::vector<std::shared_ptr<hl_ast_node>> get_arguments() { return arguments;};
+    void set_arguments(std::vector<std::shared_ptr<hl_ast_node>> args) {arguments = args;};
     void set_body(std::vector<std::shared_ptr<hl_ast_node>> i);
     std::vector<std::shared_ptr<hl_ast_node>> get_body() { return function_body;};
     void set_return(std::shared_ptr<hl_ast_node> r);

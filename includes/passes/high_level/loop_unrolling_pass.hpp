@@ -33,6 +33,9 @@ public:
     std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
     int get_pass_type() override { return GLOBAL_PASS;};
 private:
+
+    std::shared_ptr<hl_ast_node> process_function_def(const std::shared_ptr<hl_function_def_node> &node);
+
     std::vector<std::shared_ptr<hl_ast_node>> process_loop(const std::shared_ptr<hl_ast_loop_node>& element);
     unsigned int process_loop_initializer(const std::shared_ptr<hl_ast_node>& raw_initializer);
     bool evaluate_loop(const std::shared_ptr<hl_expression_node>& condition, const std::shared_ptr<hl_expression_node>& iteration_exp, std::shared_ptr<hl_ast_operand> &loop_var);
@@ -43,7 +46,8 @@ private:
     std::shared_ptr<hl_expression_node> substitute_index_in_expression(const std::shared_ptr<hl_expression_node>& node, const std::string& idx_name, int value);
     std::shared_ptr<hl_definition_node> substitute_index_in_definition(const std::shared_ptr<hl_definition_node>& node, const std::string& idx_name, int value);
     std::shared_ptr<hl_ast_operand> substitute_index_in_operand(const std::shared_ptr<hl_ast_operand>& node, const std::string& idx_name, int value);
-
+    std::shared_ptr<hl_ast_conditional_node> substitute_index_in_conditional(const std::shared_ptr<hl_ast_conditional_node> &node, const std::string &idx_name, int value);
+    std::shared_ptr<hl_function_call_node> substitute_index_in_function_call(const std::shared_ptr<hl_function_call_node> &node, const std::string &idx_name, int value);
 
     std::vector<std::shared_ptr<hl_ast_node>> proces_array_of_indices(const std::vector<std::shared_ptr<hl_ast_node>>& old_idx_array, const std::string& idx_name, int value);
     const unsigned int max_loop_iterations = 32767;

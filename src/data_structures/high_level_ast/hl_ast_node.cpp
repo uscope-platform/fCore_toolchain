@@ -169,18 +169,41 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_def(const std::shared_ptr<hl
         }
         copied_obj->set_array_initializer(initializer);
     }
-    copied_obj->set_array_index(orig->get_array_index());
+
+
+    std::vector<std::shared_ptr<hl_ast_node>> index;
+    for(const auto& i:orig->get_array_index()){
+        index.push_back(deep_copy(i));
+    }
+    copied_obj->set_array_index(index);
+
     std::vector<int> shape = orig->get_array_shape();
     copied_obj->set_array_shape(shape);
-    copied_obj->set_content(orig->get_content());
+
     return copied_obj;
 }
 
 std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_conditional(const std::shared_ptr<hl_ast_node> &node) {
-    std::shared_ptr<hl_ast_node> orig = std::static_pointer_cast<hl_ast_node>(node);
-    std::shared_ptr<hl_ast_node> copied_obj = std::make_shared<hl_ast_node>(node->node_type);
+    std::shared_ptr<hl_ast_conditional_node> orig = std::static_pointer_cast<hl_ast_conditional_node>(node);
+    std::shared_ptr<hl_ast_conditional_node> copied_obj = std::make_shared<hl_ast_conditional_node>();
 
-    copied_obj->set_content(orig->get_content());
+
+    std::shared_ptr<hl_ast_node> cond = deep_copy(orig->get_condition());
+    copied_obj->set_condition(cond);
+
+
+    std::vector<std::shared_ptr<hl_ast_node>> block;
+    for(const auto& i:orig->get_if_block()){
+        block.push_back(deep_copy(i));
+    }
+    copied_obj->set_if_block(block);
+
+    block.clear();
+    for(const auto& i:orig->get_else_block()){
+        block.push_back(deep_copy(i));
+    }
+    copied_obj->set_else_block(block);
+
     return copied_obj;
 }
 
@@ -188,10 +211,15 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_loop(const std::shared_ptr<h
     std::shared_ptr<hl_ast_loop_node> orig = std::static_pointer_cast<hl_ast_loop_node>(node);
     std::shared_ptr<hl_ast_loop_node> copied_obj = std::make_shared<hl_ast_loop_node>();
 
-    copied_obj->set_condition(orig->get_condition());
-    copied_obj->set_iteration_expr(orig->get_iteration_expr());
-    copied_obj->set_init_statement(orig->get_init_statement());
-    copied_obj->set_loop_content(orig->get_loop_content());
+    copied_obj->set_condition(std::static_pointer_cast<hl_expression_node>(deep_copy(orig->get_condition())));
+    copied_obj->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(deep_copy(orig->get_iteration_expr())));
+    copied_obj->set_init_statement(std::static_pointer_cast<hl_definition_node>(deep_copy(orig->get_init_statement())));
+
+    std::vector<std::shared_ptr<hl_ast_node>> block;
+    for(const auto& i:orig->get_loop_content()){
+        block.push_back(deep_copy(i));
+    }
+    copied_obj->set_loop_content(block);
 
     return copied_obj;
 }

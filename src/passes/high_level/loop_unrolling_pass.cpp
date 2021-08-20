@@ -25,18 +25,37 @@ loop_unrolling_pass::loop_unrolling_pass() : pass_base<hl_ast_node>("C loop unro
 
 std::shared_ptr<hl_ast_node> loop_unrolling_pass::process_global(std::shared_ptr<hl_ast_node> element) {
     std::shared_ptr<hl_ast_node> retval = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
-    std::vector<std::shared_ptr<hl_ast_node>> body;
+    std::vector<std::shared_ptr<hl_ast_node>> new_content;
 
     for(const auto& item:element->get_content()){
-        if(item->node_type == hl_ast_node_type_loop){
-            std::vector<std::shared_ptr<hl_ast_node>> unrolled_loop = process_loop(std::static_pointer_cast<hl_ast_loop_node>(item));
-            body.insert(body.end(), unrolled_loop.begin(), unrolled_loop.end());
+        if(item->node_type == hl_ast_node_type_function_def){
+            new_content.push_back(process_function_def(std::static_pointer_cast<hl_function_def_node>(item)));
         } else {
-            body.push_back(item);
+            new_content.push_back(item);
         }
     }
-    retval->set_content(body);
+    retval->set_content(new_content);
     return retval;
+}
+
+std::shared_ptr<hl_ast_node>
+loop_unrolling_pass::process_function_def(const std::shared_ptr<hl_function_def_node> &node) {
+
+    std::shared_ptr<hl_function_def_node> retval = node;
+    std::vector<std::shared_ptr<hl_ast_node>> new_body;
+
+    for(const auto& item:node->get_body()){
+        if(item->node_type == hl_ast_node_type_loop){
+            std::vector<std::shared_ptr<hl_ast_node>> unrolled_loop = process_loop(std::static_pointer_cast<hl_ast_loop_node>(item));
+            new_body.insert(new_body.end(), unrolled_loop.begin(), unrolled_loop.end());
+        } else {
+            new_body.push_back(item);
+        }
+    }
+    retval->set_body(new_body);
+
+    return retval;
+
 }
 
 std::vector<std::shared_ptr<hl_ast_node>> loop_unrolling_pass::process_loop(const std::shared_ptr<hl_ast_loop_node>& element) {
@@ -161,6 +180,10 @@ void loop_unrolling_pass::update_expression(std::shared_ptr<hl_expression_node> 
 std::shared_ptr<hl_ast_node>
 loop_unrolling_pass::substitute_index(std::shared_ptr<hl_ast_node> element, std::string idx_name, int value) {
     switch (element->node_type) {
+        case hl_ast_node_type_function_call:
+            return substitute_index_in_function_call(std::static_pointer_cast<hl_function_call_node>(element), idx_name, value);
+        case hl_ast_node_type_conditional:
+            return substitute_index_in_conditional(std::static_pointer_cast<hl_ast_conditional_node>(element), idx_name, value);
         case hl_ast_node_type_expr:
             return substitute_index_in_expression(std::static_pointer_cast<hl_expression_node>(element), idx_name, value);
         case hl_ast_node_type_operand:
@@ -219,6 +242,40 @@ loop_unrolling_pass::substitute_index_in_definition(const std::shared_ptr<hl_def
         ret_val->set_array_index(proces_array_of_indices(node->get_array_index(),idx_name, value));
     }
     return ret_val;
+}
+
+
+
+std::shared_ptr<hl_ast_conditional_node>
+loop_unrolling_pass::substitute_index_in_conditional(const std::shared_ptr<hl_ast_conditional_node> &node,
+                                                     const std::string &idx_name, int value) {
+    std::shared_ptr<hl_ast_conditional_node> new_node = std::static_pointer_cast<hl_ast_conditional_node>(hl_ast_node::deep_copy(node));
+
+    new_node->set_condition(substitute_index(new_node->get_condition(), idx_name, value));
+    std::vector<std::shared_ptr<hl_ast_node>> new_if_content;
+    for(auto &item:new_node->get_if_block()){
+        new_if_content.push_back(substitute_index(item, idx_name, value));
+    }
+    new_node->set_if_block(new_if_content);
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_else_content;
+    for(auto &item:new_node->get_else_block()){
+        new_else_content.push_back(substitute_index(item, idx_name, value));
+    }
+    new_node->set_else_block(new_else_content);
+
+    return new_node;
+}
+
+std::shared_ptr<hl_function_call_node>
+loop_unrolling_pass::substitute_index_in_function_call(const std::shared_ptr<hl_function_call_node> &node,
+                                                       const std::string &idx_name, int value) {
+    std::vector<std::shared_ptr<hl_ast_node>> new_args;
+    for(auto &item:node->get_arguments()){
+        new_args.push_back(substitute_index(item, idx_name, value));
+    }
+    node->set_arguments(new_args);
+    return node;
 }
 
 std::vector<std::shared_ptr<hl_ast_node>>
