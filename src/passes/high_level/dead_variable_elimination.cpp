@@ -37,7 +37,7 @@ std::shared_ptr<hl_ast_node> dead_variable_elimination::process_global(std::shar
         } else if(item->node_type == hl_ast_node_type_expr){
             std::shared_ptr<hl_expression_node> node =std::static_pointer_cast<hl_expression_node>(item);
             if(node->get_type() == expr_assign){
-                std::shared_ptr<hl_definition_node> lhs = std::static_pointer_cast<hl_definition_node>(node->get_lhs());
+                std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(node->get_lhs());
                 defined_variables.insert(std::make_pair(lhs->get_name(), true));
             }
         }

@@ -88,6 +88,11 @@ array_initialization_propagation_pass::process_operand(std::shared_ptr<hl_ast_op
         if(std::count(dirty_idx_vect.begin(), dirty_idx_vect.end(),idx)){
             return node;
         } else{
+
+            if(!def_map[node->get_name()]->is_initialized()){
+                return node;
+            }
+
             if(def_map.count(node->get_name())==0){
                 throw std::runtime_error("ERROR: The array " + node->get_name() +" is not defined");
             }
@@ -101,13 +106,7 @@ array_initialization_propagation_pass::process_operand(std::shared_ptr<hl_ast_op
                 }
                 linearized_idx += interm_factor;
             }
-            if(def_map[node->get_name()]->is_initialized()){
-                std::shared_ptr<hl_ast_operand> retval = std::static_pointer_cast<hl_ast_operand>(def_map[node->get_name()]->get_array_initializer()[linearized_idx]);
-                return retval;
-            } else {
-                return node;
-            }
-
+            return  std::static_pointer_cast<hl_ast_operand>(def_map[node->get_name()]->get_array_initializer()[linearized_idx]);
         }
     } else{
         return node;

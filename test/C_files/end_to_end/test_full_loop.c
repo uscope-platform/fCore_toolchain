@@ -35,7 +35,7 @@ int main(){
     for(int i = 0+5; i+1<8; ++i){
         if(3<5){
             j = a[i] + h[i];
-            b[i] = add(h[i],a[i]);
+            b[i] = add(h[i], a[i]);
         }
     }
 }

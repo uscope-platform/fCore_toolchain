@@ -29,14 +29,19 @@ inline_constant_extraction::process_global(std::shared_ptr<hl_ast_node> element)
     for(auto item:element->get_content()){
         if(item->node_type == hl_ast_node_type_definition){
             std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(item);
-            if(node->get_scalar_initializer()->node_type == hl_ast_node_type_expr){
-                std::shared_ptr<hl_expression_node> expr = std::static_pointer_cast<hl_expression_node>(
-                        node->get_scalar_initializer());
-                std::vector<std::shared_ptr<hl_ast_node>> res = process_node(expr);
-                node->set_scalar_initializer(res[0]);
-                if(res.size()>1)
-                    new_content.insert(new_content.end(), res.begin()+1, res.end());
-                new_content.push_back(node);
+
+            if(node->is_initialized()){
+                if(node->get_scalar_initializer()->node_type == hl_ast_node_type_expr){
+                    std::shared_ptr<hl_expression_node> expr = std::static_pointer_cast<hl_expression_node>(
+                            node->get_scalar_initializer());
+                    std::vector<std::shared_ptr<hl_ast_node>> res = process_node(expr);
+                    node->set_scalar_initializer(res[0]);
+                    if(res.size()>1)
+                        new_content.insert(new_content.end(), res.begin()+1, res.end());
+                    new_content.push_back(node);
+                } else {
+                    new_content.push_back(item);
+                }
             } else{
                 new_content.push_back(item);
             }

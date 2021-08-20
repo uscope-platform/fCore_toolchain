@@ -70,7 +70,16 @@ void C_Tree_visitor::exitFunctionDefinition(C_parser::C_grammarParser::FunctionD
 }
 
 void C_Tree_visitor::exitParameterDeclaration(C_parser::C_grammarParser::ParameterDeclarationContext *ctx) {
-    std::string id_name = ctx->declarator()->directDeclarator()->Identifier()->getText();
+    std::string id_name;
+    unsigned int n_dimensions;
+    if(ctx->declarator()->directDeclarator()->directDeclarator() == nullptr){
+        id_name = ctx->declarator()->directDeclarator()->Identifier()->getText();
+        n_dimensions = 0;
+    } else {
+        id_name =  id_name = ctx->declarator()->directDeclarator()->directDeclarator()->Identifier()->getText();
+        n_dimensions = ctx->declarator()->directDeclarator()->arrayDeclarator().size();
+    }
+
     std::string type = ctx->typeSpecifier()->getText();
 
     std::shared_ptr<variable> var;
@@ -81,6 +90,24 @@ void C_Tree_visitor::exitParameterDeclaration(C_parser::C_grammarParser::Paramet
     }
 
     std::shared_ptr<hl_definition_node> identifier = std::make_shared<hl_definition_node>(id_name, hl_ast_node::string_to_type(type), var);
+    if(n_dimensions>0){
+        std::vector<int> shape;
+
+        std::vector<std::shared_ptr<hl_ast_node>> idx_array;
+        for(unsigned int i = 0; i< n_dimensions; ++i){
+            shape.insert(shape.begin(), std::static_pointer_cast<hl_ast_operand>(expressions_stack.top())->get_int_value());
+            idx_array.insert(idx_array.begin(), expressions_stack.top());
+            expressions_stack.pop();
+        }
+
+        identifier->set_array_shape(shape);
+        identifier->set_array_index(idx_array);
+    }
+
+
+
+
+
     if(in_function_declaration) {
         parameters_list.push_back(identifier);
     }

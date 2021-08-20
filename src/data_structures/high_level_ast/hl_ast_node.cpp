@@ -185,10 +185,14 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_conditional(const std::share
 }
 
 std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_loop(const std::shared_ptr<hl_ast_node> &node) {
-    std::shared_ptr<hl_ast_node> orig = std::static_pointer_cast<hl_ast_node>(node);
-    std::shared_ptr<hl_ast_node> copied_obj = std::make_shared<hl_ast_node>(node->node_type);
+    std::shared_ptr<hl_ast_loop_node> orig = std::static_pointer_cast<hl_ast_loop_node>(node);
+    std::shared_ptr<hl_ast_loop_node> copied_obj = std::make_shared<hl_ast_loop_node>();
 
-    copied_obj->set_content(orig->get_content());
+    copied_obj->set_condition(orig->get_condition());
+    copied_obj->set_iteration_expr(orig->get_iteration_expr());
+    copied_obj->set_init_statement(orig->get_init_statement());
+    copied_obj->set_loop_content(orig->get_loop_content());
+
     return copied_obj;
 }
 
