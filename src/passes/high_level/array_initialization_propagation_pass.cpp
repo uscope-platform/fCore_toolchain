@@ -34,6 +34,8 @@ array_initialization_propagation_pass::process_global(std::shared_ptr<hl_ast_nod
     return element;
 }
 
+
+
 std::shared_ptr<hl_ast_node>
 array_initialization_propagation_pass::process_node_by_type(const std::shared_ptr<hl_ast_node>& node) {
     switch(node->node_type) {
@@ -44,11 +46,12 @@ array_initialization_propagation_pass::process_node_by_type(const std::shared_pt
         case hl_ast_node_type_definition:
             return process_definition(std::static_pointer_cast<hl_definition_node>(node));
         case hl_ast_node_type_conditional:
-        case hl_ast_node_type_loop:
+            return process_conditional(std::static_pointer_cast<hl_ast_conditional_node>(node));
         case hl_ast_node_type_function_def:
+            return process_function_definition(std::static_pointer_cast<hl_function_def_node>(node));
         case hl_ast_node_type_function_call:
-        case hl_ast_node_type_program_root:
-        case hl_ast_node_type_code_block:
+            return process_function_call(std::static_pointer_cast<hl_function_call_node>(node));
+        default:
             throw std::runtime_error("INTERNAL ERROR: Unexpected node found in the AST during array scalarization");
     }
 }
@@ -123,6 +126,52 @@ array_initialization_propagation_pass::process_definition(std::shared_ptr<hl_def
     } else {
 
     }
+    return node;
+}
+
+std::shared_ptr<hl_function_def_node>
+array_initialization_propagation_pass::process_function_definition(std::shared_ptr<hl_function_def_node> node) {
+    std::vector<std::shared_ptr<hl_ast_node>> new_body;
+
+    for(auto &item:node->get_body()){
+        new_body.push_back(process_node_by_type(item));
+    }
+    node->set_body(new_body);
+    if(node->get_return() != nullptr){
+        node->set_return(process_node_by_type(node->get_return()));
+    }
+
+    return node;
+}
+
+std::shared_ptr<hl_function_call_node>
+array_initialization_propagation_pass::process_function_call(std::shared_ptr<hl_function_call_node> node) {
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_args;
+    for(auto &item:node->get_arguments()){
+        new_args.push_back(process_node_by_type(item));
+    }
+    node->set_arguments(new_args);
+
+    return node;
+}
+
+std::shared_ptr<hl_ast_conditional_node>
+array_initialization_propagation_pass::process_conditional(std::shared_ptr<hl_ast_conditional_node> node) {
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_block;
+    for(auto &item:node->get_if_block()){
+        new_block.push_back(process_node_by_type(item));
+    }
+    node->set_if_block(new_block);
+
+    new_block.clear();
+    for(auto &item:node->get_else_block()){
+        new_block.push_back(process_node_by_type(item));
+    }
+    node->set_else_block(new_block);
+
+    node->set_condition(process_node_by_type(node->get_condition()));
     return node;
 }
 
