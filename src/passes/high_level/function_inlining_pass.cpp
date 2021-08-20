@@ -163,12 +163,24 @@ function_inlining_pass::substitute_operand_arguments(const std::shared_ptr<hl_as
     std::vector<std::shared_ptr<hl_ast_node>> tmp_vect;
 
     if(p != nullptr){
-        for(auto &item: p->get_array_index()){
-            tmp_vect.push_back(substitute_arguments(item, parameters));
-        }
-        statement->set_array_index(tmp_vect);
 
-       statement->set_variable(p->get_variable());
+        if(p->get_variable()->get_type() != var_type_array){
+            for(auto &item: statement->get_array_index()){
+                tmp_vect.push_back(substitute_arguments(item, parameters));
+            }
+            statement->set_array_index(tmp_vect);
+
+            statement->set_name(p->get_name());
+        } else{
+            for(auto &item: p->get_array_index()){
+                tmp_vect.push_back(substitute_arguments(item, parameters));
+            }
+            statement->set_array_index(tmp_vect);
+
+            statement->set_variable(p->get_variable());
+        }
+
+
     }
 
     return statement;

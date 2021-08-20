@@ -69,7 +69,9 @@ std::shared_ptr<hl_ast_operand> array_scalarization_pass::process_operand(std::s
 
     std::vector<std::shared_ptr<hl_ast_node>> old_array_idx = node->get_array_index();
     std::string var_name = node->get_variable()->get_name();
-
+    if(old_array_idx.empty()){
+        throw std::runtime_error("ERROR: All array operations must be performed element wise and thus have a compile time known index");
+    }
     std::shared_ptr<variable> var = std::make_shared<variable>(mangle_name(old_array_idx, var_name));
     node->set_variable(var);
     node->set_array_index({});

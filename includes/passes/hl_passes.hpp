@@ -72,7 +72,7 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::vec
 
 
     if(order.empty()){
-        manager.set_pass_order({1,2,3,8,9,10,4,5,6,7,11,12,-1, 13});
+        manager.set_pass_order({1,2,3,8,4,5,6,9,10,7,11,12,-1, 13});
     } else {
         manager.set_pass_order(order);
     }

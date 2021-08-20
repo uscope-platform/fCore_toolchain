@@ -120,10 +120,14 @@ array_initialization_propagation_pass::process_operand(std::shared_ptr<hl_ast_op
 
 std::shared_ptr<hl_definition_node>
 array_initialization_propagation_pass::process_definition(std::shared_ptr<hl_definition_node> node) {
+
     if(!node->is_scalar()) {
         def_map[node->get_name()] = node;
         dirty_elements_idx[node->get_name()] = std::vector<std::vector<int>>();
     } else {
+        if(node->is_initialized()){
+            node->set_scalar_initializer(process_node_by_type(node->get_scalar_initializer()));
+        }
 
     }
     return node;
