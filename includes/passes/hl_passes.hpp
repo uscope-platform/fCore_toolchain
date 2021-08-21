@@ -49,18 +49,20 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::vec
     manager.add_morphing_pass(std::make_shared<division_implementation_pass>()); // pass #2
     manager.add_morphing_pass(std::make_shared<intrinsics_implementation_pass>()); // pass #3
 
+    manager.add_morphing_pass(std::make_shared<loop_unrolling_pass>()); // pass #4
+
     auto inlining_pass = std::make_shared<function_inlining_pass>();
     inlining_pass->set_functions_map(mapping_pass->get_map_ref());
-    manager.add_morphing_pass(inlining_pass); // pass #4
+    manager.add_morphing_pass(inlining_pass); // pass #5
 
-    manager.add_morphing_pass(std::make_shared<inlined_function_elimination>(entry_point)); // pass #5
-    manager.add_morphing_pass(std::make_shared<code_block_inlining_pass>()); // pass #6
+    manager.add_morphing_pass(std::make_shared<inlined_function_elimination>(entry_point)); // pass #6
+    manager.add_morphing_pass(std::make_shared<code_block_inlining_pass>()); // pass #7
 
-    manager.add_morphing_pass(std::make_shared<conditional_implementation_pass>()); // pass #7
-    manager.add_morphing_pass(std::make_shared<loop_unrolling_pass>()); // pass #8
-    manager.add_morphing_pass(std::make_shared<array_initialization_propagation_pass>()); // pass #9
-    manager.add_morphing_pass(std::make_shared<array_scalarization_pass>()); // pass #10
+    manager.add_morphing_pass(std::make_shared<array_initialization_propagation_pass>()); // pass #8
 
+    manager.add_morphing_pass(std::make_shared<array_scalarization_pass>()); // pass #9
+
+    manager.add_morphing_pass(std::make_shared<conditional_implementation_pass>()); // pass #10
     manager.add_morphing_pass(std::make_shared<normalization_pass>());// pass #11
     manager.add_morphing_pass(std::make_shared<dead_variable_elimination>()); // pass #12
 
@@ -70,9 +72,8 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::vec
     manager.add_morphing_pass_group({const_fold, const_prop}); // group #-1
     manager.add_morphing_pass(std::make_shared<inline_constant_extraction>()); // pass #13
 
-
     if(order.empty()){
-        manager.set_pass_order({1,2,3,8,4,5,6,9,10,7,11,12,-1, 13});
+        manager.set_pass_order({1,2,3,4,5,6,7,8,9,10,11,12,-1, 13});
     } else {
         manager.set_pass_order(order);
     }
