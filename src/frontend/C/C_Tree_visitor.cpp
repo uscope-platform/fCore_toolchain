@@ -425,6 +425,49 @@ void C_Tree_visitor::exitLogicalAndExpression(C_parser::C_grammarParser::Logical
 void C_Tree_visitor::exitAssignmentExpression(C_parser::C_grammarParser::AssignmentExpressionContext *ctx) {
     std::string dbg = ctx->getText();
     if(ctx->unaryExpression()!= nullptr){
+        assignment_type_t operator_type;
+        if(ctx->assignmentOperator()!= nullptr){
+            std::string raw_operator = ctx->assignmentOperator()->getText();
+            if(raw_operator.size()==1)
+                operator_type = regular_assignment;
+            else{
+                char assignment_qualifier = raw_operator.at(0);
+                switch (assignment_qualifier) {
+                    case '+':
+                        operator_type = addition_assignment;
+                        break;
+                    case '-':
+                        operator_type = subtraction_assignment;
+                        break;
+                    case '*':
+                        operator_type = multiplication_assignment;
+                        break;
+                    case '/':
+                        operator_type = division_assignment;
+                        break;
+                    case '%':
+                        operator_type = modulo_assignment;
+                        break;
+                    case '&':
+                        operator_type = and_assignment;
+                        break;
+                    case '|':
+                        operator_type = or_assignment;
+                        break;
+                    case '^':
+                        operator_type = xor_assignment;
+                        break;
+                    case '<':
+                        operator_type = lsh_assignment;
+                        break;
+                    case '>':
+                        operator_type = rsh_assignment;
+                        break;
+                    default:
+                        throw std::runtime_error("ERORR: unknown assignment qualifier.");
+                }
+            }
+        }
         std::shared_ptr<hl_expression_node> value = std::static_pointer_cast<hl_expression_node>(expressions_stack.top());
         expressions_stack.pop();
         std::shared_ptr<hl_ast_operand> target = std::static_pointer_cast<hl_ast_operand>(expressions_stack.top());
@@ -432,6 +475,7 @@ void C_Tree_visitor::exitAssignmentExpression(C_parser::C_grammarParser::Assignm
         std::shared_ptr<hl_expression_node> assignment = std::make_shared<hl_expression_node>(expr_assign);
         assignment->set_lhs(target);
         assignment->set_rhs(value);
+        assignment->set_assignment_type(operator_type);
         expressions_stack.push(assignment);
     }
 }

@@ -476,7 +476,7 @@ TEST( cTreeVisitor, assignmentExpressions) {
     parser.parse();
     //std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.block_content;
 
-
+    std::vector<std::shared_ptr<hl_ast_node>> func_body;
 
     std::shared_ptr<variable> var = std::make_shared<variable>("c");
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
@@ -492,24 +492,41 @@ TEST( cTreeVisitor, assignmentExpressions) {
     var = std::make_shared<variable>("test");
     std::shared_ptr<hl_ast_operand> op_3 = std::make_shared<hl_ast_operand>(var);
 
-    std::shared_ptr<hl_expression_node> gs_2 = std::make_shared<hl_expression_node>(expr_assign);
-    gs_2->set_lhs(op_3);
-    gs_2->set_rhs(gs_1);
+    std::shared_ptr<hl_expression_node> assignment = std::make_shared<hl_expression_node>(expr_assign);
+    assignment->set_lhs(op_3);
+    assignment->set_rhs(gs_1);
+
+    func_body.push_back(assignment);
+
+    std::vector<assignment_type_t> assignment_types = {addition_assignment, subtraction_assignment, multiplication_assignment, division_assignment, modulo_assignment, and_assignment, or_assignment, xor_assignment, lsh_assignment, rsh_assignment};
+    for(auto item:assignment_types){
+        assignment = std::make_shared<hl_expression_node>(expr_assign);
+        assignment->set_assignment_type(item);
+        assignment->set_lhs(op_3);
+        assignment->set_rhs(gs_1);
+        func_body.push_back(assignment);
+    }
+
+    std::shared_ptr<hl_function_def_node> gold_standard = std::make_shared<hl_function_def_node>();
+
+    std::vector<std::shared_ptr<hl_ast_node>> res_body;
+
+    gold_standard->set_body(func_body);
+    std::string f_name = "main";
+    gold_standard->set_name(f_name);
+    gold_standard->set_return_type(c_type_int);
 
 
-
-    std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(parser.visitor.current_block_item);
-
-    EXPECT_EQ(*res, *gs_2);
+    std::shared_ptr<hl_function_def_node> result = std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0]);
+    EXPECT_EQ(*result, *gold_standard);
     if(Test::HasFailure()){
-        std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res)->pretty_print()<< std::endl;
-        std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_2)->pretty_print()<< std::endl;
+        std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_function_def_node>(result)->pretty_print()<< std::endl;
+        std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_function_def_node>(gold_standard)->pretty_print()<< std::endl;
     }
 }
 
-
 TEST( cTreeVisitor, function_def) {
-    std::string input_file = "test_assignment_expressions.c";
+    std::string input_file = "test_function_def.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();

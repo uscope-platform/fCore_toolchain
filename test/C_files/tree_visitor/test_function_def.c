@@ -18,14 +18,4 @@
 
 int main(){
     test = c^5;
-    test += c^5;
-    test -= c^5;
-    test *= c^5;
-    test /= c^5;
-    test %= c^5;
-    test &= c^5;
-    test |= c^5;
-    test ^= c^5;
-    test <<= c^5;
-    test >>= c^5;
 }

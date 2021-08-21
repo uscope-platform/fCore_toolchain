@@ -20,6 +20,7 @@
 
 hl_expression_node::hl_expression_node(expression_type_t et) : hl_ast_node(hl_ast_node_type_expr) {
     expr_type = et;
+    assignment_type = regular_assignment;
     type_print = {
             {expr_add, "+"},
             {expr_sub, "-"},
@@ -49,6 +50,20 @@ hl_expression_node::hl_expression_node(expression_type_t et) : hl_ast_node(hl_as
             {expr_assign, "="},
             {expr_reciprocal, "1/"}
     };
+
+    assign_prefix_print = {
+            {regular_assignment, ""},
+            {addition_assignment, "+"},
+            {subtraction_assignment, "-"},
+            {multiplication_assignment, "*"},
+            {division_assignment, "/"},
+            {modulo_assignment, "%"},
+            {and_assignment, "&"},
+            {or_assignment,"|"},
+            {xor_assignment,"^"},
+            {lsh_assignment,"<<"},
+            {rsh_assignment,">>"},
+    };
 }
 
 void hl_expression_node::set_lhs(const std::shared_ptr<hl_ast_node> &node) {
@@ -69,6 +84,7 @@ std::shared_ptr<hl_ast_node> hl_expression_node::get_rhs() {
 
 bool operator==(const hl_expression_node &lhs, const hl_expression_node &rhs) {
     bool ret_val = true;
+
     if(lhs.lhs != nullptr && rhs.lhs != nullptr){
         if(lhs.lhs->node_type == hl_ast_node_type_expr && rhs.lhs->node_type ==  hl_ast_node_type_expr){
             std::shared_ptr<hl_expression_node> ex_1 = std::static_pointer_cast<hl_expression_node>(lhs.lhs);
@@ -100,6 +116,7 @@ bool operator==(const hl_expression_node &lhs, const hl_expression_node &rhs) {
     else return false;
 
     ret_val &= lhs.expr_type == rhs.expr_type;
+    ret_val &= lhs.assignment_type == rhs.assignment_type;
 
     return ret_val;
 }
@@ -116,7 +133,8 @@ std::string hl_expression_node::pretty_print() {
         }
 
     }
-    ss << type_print[expr_type];
+
+    ss << assign_prefix_print[assignment_type] << type_print[expr_type];
 
     if (rhs->node_type == hl_ast_node_type_operand) {
 
