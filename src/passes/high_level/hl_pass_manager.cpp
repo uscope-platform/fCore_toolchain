@@ -154,7 +154,7 @@ std::shared_ptr<hl_expression_node>
 hl_pass_manager::process_expression(const std::shared_ptr<hl_expression_node> &subtree,
                                     const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
 
-    std::shared_ptr<hl_expression_node> result = std::make_shared<hl_expression_node>(subtree->get_type());
+    std::shared_ptr<hl_expression_node> result = std::static_pointer_cast<hl_expression_node>(hl_ast_node::deep_copy(subtree));
 
     std::shared_ptr<hl_ast_node> rhs = process_terminal_by_type(subtree->get_rhs(), pass);
     result->set_rhs(rhs);

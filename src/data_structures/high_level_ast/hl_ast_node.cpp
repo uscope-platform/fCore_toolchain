@@ -148,6 +148,8 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_expr(const std::shared_ptr<h
     copied_obj->set_lhs(lhs);
     copied_obj->set_rhs(rhs);
 
+    copied_obj->set_assignment_type(orig->get_assignment_type());
+
     copied_obj->set_content(orig->get_content());
     return copied_obj;
 }

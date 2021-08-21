@@ -27,6 +27,8 @@ public:
     operating_assignment_implementation_pass();
     std::shared_ptr<hl_ast_node> process_leaf(std::shared_ptr<hl_ast_node> element) override;
     int get_pass_type() override { return LEAF_PASS;};
+private:
+    static std::shared_ptr<hl_expression_node> create_top_expression(assignment_type_t a);
 };
 
 
