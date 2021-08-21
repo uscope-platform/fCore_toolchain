@@ -21,9 +21,8 @@ int main(){
 
     if( i == 0){
         int a = 2;
-    } else{
+    } else
         int a = 3;
-    }
 
     #pragma output(test, r7);
     int test  = i + a;

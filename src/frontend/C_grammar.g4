@@ -276,11 +276,11 @@ expressionStatement
     ;
 
 ifContent
-    : '{' conditionalBlockItem* '}'
+    :  ('{' conditionalBlockItem* '}'| conditionalBlockItem )
     ;
 
 elseContent
-    : '{' conditionalBlockItem* '}'
+    :  ('{' conditionalBlockItem* '}'| conditionalBlockItem )
     ;
 
 conditionalBlockItem
@@ -303,7 +303,7 @@ iterationStatement
 
 
 forContent
-    : '{' forBlockItem* '}'
+    : ('{' forBlockItem* '}'| forBlockItem )
     ;
 
 forBlockItem
