@@ -200,8 +200,17 @@ hl_pass_manager::process_definition(const std::shared_ptr<hl_definition_node> &s
 
 std::shared_ptr<hl_ast_loop_node> hl_pass_manager::process_loop(const std::shared_ptr<hl_ast_loop_node> &subtree,
                                                                 const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
-    return std::shared_ptr<hl_ast_loop_node>();
 
+    subtree->set_condition(std::static_pointer_cast<hl_expression_node>(process_terminal_by_type(subtree->get_condition(), pass)));
+    subtree->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(process_terminal_by_type(subtree->get_iteration_expr(), pass)));
+    subtree->set_init_statement(std::static_pointer_cast<hl_definition_node>(process_terminal_by_type(subtree->get_init_statement(), pass)));
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_block_content;
+    for(auto &item:subtree->get_loop_content()){
+        new_block_content.push_back(process_terminal_by_type(item, pass));
+    }
+    subtree->set_loop_content(new_block_content);
+    return subtree;
 }
 
 std::shared_ptr<hl_ast_conditional_node>
