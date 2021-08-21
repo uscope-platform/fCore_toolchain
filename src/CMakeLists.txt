@@ -50,6 +50,7 @@ set(FCORE_CC_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/hl_pass_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/hl_variable_mapping.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/function_mapping.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/operating_assignment_implementation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/inlined_function_elimination.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/inline_constant_extraction.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/intrinsics_implementation_pass.cpp
