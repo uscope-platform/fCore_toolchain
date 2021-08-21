@@ -33,6 +33,11 @@ std::shared_ptr<hl_ast_node> function_inlining_pass::process_leaf(std::shared_pt
     std::shared_ptr<hl_ast_node> ret_val = element;
     if(element->node_type == hl_ast_node_type_function_call){
         std::shared_ptr<hl_function_call_node> f_call = std::static_pointer_cast<hl_function_call_node>(element);
+
+        if(functions_map->count(f_call->get_name())==0){
+            throw std::runtime_error("ERROR: Function " + f_call->get_name() + " is not defined");
+        }
+
         std::shared_ptr<hl_function_def_node> f_def = functions_map->at(f_call->get_name());
 
         // MAP ARGUMENTS OF  THE CALL WITH its name
