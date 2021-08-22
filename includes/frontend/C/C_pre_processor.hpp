@@ -39,12 +39,13 @@ public:
     void set_absolute_includes(std::vector<std::string> list);
     void process_file();
     std::unordered_map<std::string, std::shared_ptr<variable>> get_iom_map() { return iom_map;};
-
+    void substitute_defines();
+    std::string substitute_defines_in_line(std::string &line, const std::pair<std::string, std::shared_ptr<define>>& item);
 private:
 
 
     void process_pragmas(const std::string& line);
-    void process_define(const std::string& line);
+    bool process_define(const std::string& line);
     std::string process_rel_includes(const std::string& line);
     std::string process_abs_includes(const std::string& line);
 

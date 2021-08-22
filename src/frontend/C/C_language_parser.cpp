@@ -38,6 +38,7 @@ void C_language_parser::pre_process(const std::vector<std::string> &abs_includes
     preproc->set_absolute_includes(abs_includes);
     preproc->set_relative_includes(rel_includes);
     preproc->process_file();
+    preproc->substitute_defines();
     preprocessed_content = preproc->get_preprocessed_file();
     visitor.set_iom_map( preproc->get_iom_map());
 }

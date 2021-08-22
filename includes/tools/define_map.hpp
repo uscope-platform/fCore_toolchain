@@ -33,6 +33,11 @@ public:
     void insert(const std::string& key, std::shared_ptr<define>item);
     unsigned int count(const std::string& key);
 
+    unsigned int size() {return defines.size();};
+    std::__detail::_Node_iterator<std::pair<const std::basic_string<char>, std::shared_ptr<define>>, false, true> begin() {return defines.begin();}
+    std::__detail::_Node_const_iterator<std::pair<const std::basic_string<char>, std::shared_ptr<define>>, false, true> begin() const { return defines.begin();}
+    std::__detail::_Node_iterator<std::pair<const std::basic_string<char>, std::shared_ptr<define>>, false, true> end() {return defines.end();}
+    std::__detail::_Node_const_iterator<std::pair<const std::basic_string<char>, std::shared_ptr<define>>, false, true> end() const { return defines.end();}
 
 private:
     std::unordered_map<std::string, std::shared_ptr<define>> defines;

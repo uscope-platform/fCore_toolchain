@@ -33,3 +33,4 @@ std::shared_ptr<define> define_map::at(const std::string &key) {
 std::shared_ptr<define> define_map::operator[](const std::string &key) {
     return defines[key];
 }
+

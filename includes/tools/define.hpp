@@ -24,6 +24,7 @@
 class define {
 public:
     define(int l, std::string n, std::string c);
+    std::string get_content() {return content;};
     friend bool operator==(const define& lhs, const define& rhs);
 private:
     int line;
