@@ -199,19 +199,20 @@ std::string C_pre_processor::substitute_defines_in_line(std::string &line, const
         lengths.push_back(m.length());
     }
 
+    //USE POSITIONS AND LENGTHS
     unsigned int substring_start = 0;
-    for(auto pos:positions){
-        std::string preceding_symbol = {line[pos-1]};
-        std::string following_symbol = {line[pos+1]};
+    for(int i = 0; i<positions.size(); i++){
+        std::string preceding_symbol = {line[positions[i]-1]};
+        std::string following_symbol = {line[positions[i]+lengths[i]]};
 
-        operating_line += line.substr(substring_start, pos-substring_start);
+        operating_line += line.substr(substring_start, positions[i]-substring_start);
 
         if(!(std::regex_match(preceding_symbol, std::regex("[a-zA-Z_]")) || std::regex_match(following_symbol, std::regex("[a-zA-Z_]"))) ){
             operating_line += item.second->get_content();
         } else{
             operating_line += item.first;
         }
-        substring_start = pos+1;
+        substring_start = positions[i]+lengths[i];
     }
     operating_line += line.substr(substring_start, line.size()-substring_start);
     return operating_line;

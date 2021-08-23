@@ -74,15 +74,17 @@ TEST( cFrontend, preprocessor_define) {
 
     C_language_parser parser(ifs,result_def);
     parser.pre_process({}, {});
+    parser.parse();
 
-    std::shared_ptr<define_map> gold_standard = std::make_shared<define_map>();
-    std::shared_ptr<define> def_1 = std::make_shared<define>(0, "TEST", "15");
-    std::shared_ptr<define> def_2 = std::make_shared<define>(0, "TEST2", "function(12,15)");
-    gold_standard->insert("TEST", def_1);
-    gold_standard->insert("TEST2", def_2);
+    std::shared_ptr<hl_definition_node> result = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
 
-    ASSERT_EQ(*result_def->at("TEST"), *gold_standard->at("TEST"));
-    ASSERT_EQ(*result_def->at("TEST2"), *gold_standard->at("TEST2"));
+    std::shared_ptr<variable> var = std::make_shared<variable>("a");
+    std::shared_ptr<hl_definition_node> gold_standard = std::make_shared<hl_definition_node>("a", c_type_int, var);
+    var = std::make_shared<variable>("constant", 15);
+    std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
+    gold_standard->set_scalar_initializer(op);
+
+    ASSERT_EQ(*result, *gold_standard);
 }
 
 TEST( cFrontend, preprocessor_include) {
@@ -94,9 +96,19 @@ TEST( cFrontend, preprocessor_include) {
 
     C_language_parser parser(ifs,result_def);
     parser.pre_process({}, {"include_test.h"});
-    std::string result = parser.preproc->get_preprocessed_file();
-    std::string gold_standard = "#define TEST\n#define test_include 42\n\n";
-    EXPECT_EQ(gold_standard, result);
+    parser.parse();
+
+    std::shared_ptr<hl_definition_node> result = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
+
+
+    std::shared_ptr<variable> var = std::make_shared<variable>("a");
+    std::shared_ptr<hl_definition_node> gold_standard = std::make_shared<hl_definition_node>("a", c_type_int, var);
+    var = std::make_shared<variable>("constant", 42);
+    std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
+    gold_standard->set_scalar_initializer(op);
+
+
+    EXPECT_EQ(*gold_standard, *result);
 }
 
 TEST( cFrontend, preprocessor_include_fail) {

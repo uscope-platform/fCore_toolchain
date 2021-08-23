@@ -40,7 +40,7 @@ public:
     void process_file();
     std::unordered_map<std::string, std::shared_ptr<variable>> get_iom_map() { return iom_map;};
     void substitute_defines();
-    std::string substitute_defines_in_line(std::string &line, const std::pair<std::string, std::shared_ptr<define>>& item);
+    static std::string substitute_defines_in_line(std::string &line, const std::pair<std::string, std::shared_ptr<define>>& item);
 private:
 
 

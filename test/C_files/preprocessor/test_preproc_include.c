@@ -16,5 +16,10 @@
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.30/06/2021.
 //
 
-#define TEST
- #include "include_test.h"
+
+#include "include_test.h"
+
+int main(){
+    #pragma input(r19,a);
+    int a = TEST_INCLUDE;
+}

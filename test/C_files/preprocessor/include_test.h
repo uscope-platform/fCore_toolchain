@@ -1,1 +1,1 @@
-#define test_include 42
+#define TEST_INCLUDE 42

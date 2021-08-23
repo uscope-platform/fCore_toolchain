@@ -17,4 +17,9 @@
 //
 
 #define TEST 15
- #define TEST2 function(12,15)
+
+
+int main(){
+    #pragma input(r19,a);
+    int a = TEST;
+}
