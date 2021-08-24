@@ -49,10 +49,12 @@ array_initialization_propagation_pass::process_node_by_type(const std::shared_pt
             return process_conditional(std::static_pointer_cast<hl_ast_conditional_node>(node));
         case hl_ast_node_type_function_def:
             return process_function_definition(std::static_pointer_cast<hl_function_def_node>(node));
+        case hl_ast_node_type_loop:
+            return process_loop(std::static_pointer_cast<hl_ast_loop_node>(node));
         case hl_ast_node_type_function_call:
             return process_function_call(std::static_pointer_cast<hl_function_call_node>(node));
         default:
-            throw std::runtime_error("INTERNAL ERROR: Unexpected node found in the AST during array scalarization");
+            throw std::runtime_error("INTERNAL ERROR: Unexpected node found in the AST during array initialization propagation");
     }
 }
 
@@ -176,6 +178,22 @@ array_initialization_propagation_pass::process_conditional(std::shared_ptr<hl_as
     node->set_else_block(new_block);
 
     node->set_condition(process_node_by_type(node->get_condition()));
+    return node;
+}
+
+std::shared_ptr<hl_ast_loop_node>
+array_initialization_propagation_pass::process_loop(std::shared_ptr<hl_ast_loop_node> node) {
+
+    node->set_init_statement(std::static_pointer_cast<hl_definition_node>(process_node_by_type(node->get_init_statement())));
+    node->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(process_node_by_type(node->get_iteration_expr())));
+    node->set_condition(std::static_pointer_cast<hl_expression_node>(process_node_by_type(node->get_condition())));
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_content;
+    for(auto &item:node->get_loop_content()){
+        new_content.push_back(process_node_by_type(item));
+    }
+    node->set_loop_content(new_content);
+
     return node;
 }
 

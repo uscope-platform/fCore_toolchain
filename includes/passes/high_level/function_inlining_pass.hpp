@@ -29,12 +29,12 @@ public:
     void set_functions_map(std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>>> map);
     std::shared_ptr<hl_ast_node> process_leaf(std::shared_ptr<hl_ast_node> element) override;
 
-    std::shared_ptr<hl_ast_node> substitute_arguments(const std::shared_ptr<hl_ast_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>>& parameters);
-    std::shared_ptr<hl_ast_node> substitute_loop_arguments(const std::shared_ptr<hl_ast_loop_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>>& parameters);
-    std::shared_ptr<hl_ast_node> substitute_conditional_arguments(const std::shared_ptr<hl_ast_conditional_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>>& parameters);
-    std::shared_ptr<hl_ast_node> substitute_expression_arguments(const std::shared_ptr<hl_expression_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>>& parameters);
-    std::shared_ptr<hl_ast_node> substitute_definition_arguments(const std::shared_ptr<hl_definition_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>>& parameters);
-    std::shared_ptr<hl_ast_node> substitute_operand_arguments(const std::shared_ptr<hl_ast_operand> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>>& parameters);
+    std::shared_ptr<hl_ast_node> substitute_arguments(const std::shared_ptr<hl_ast_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
+    std::shared_ptr<hl_ast_node> substitute_loop_arguments(const std::shared_ptr<hl_ast_loop_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
+    std::shared_ptr<hl_ast_node> substitute_conditional_arguments(const std::shared_ptr<hl_ast_conditional_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
+    std::shared_ptr<hl_ast_node> substitute_expression_arguments(const std::shared_ptr<hl_expression_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
+    std::shared_ptr<hl_ast_node> substitute_definition_arguments(const std::shared_ptr<hl_definition_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
+    std::shared_ptr<hl_ast_node> substitute_operand_arguments(const std::shared_ptr<hl_ast_operand> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
     int get_pass_type() override { return LEAF_PASS;};
 private:
     std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>>> functions_map;

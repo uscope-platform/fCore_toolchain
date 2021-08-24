@@ -74,7 +74,7 @@ configure_file(C_files/end_to_end/test_full_nested_loop.c ${CMAKE_CURRENT_BINARY
 configure_file(C_files/end_to_end/test_pragma_io.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_array_initialization.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_array_initialization_through_function.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-
+configure_file(C_files/end_to_end/test_constant_argument_inlining.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
 # DISASSEMBLER TESTING FILES
 configure_file(disassembler_files/test_add.hex ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)

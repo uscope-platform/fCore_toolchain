@@ -21,7 +21,6 @@
 #include <cstdlib>
 
 #include "fcore_dis.hpp"
-#include "../third_party/json.hpp"
 
 TEST( Disassembler, disassembler_mem) {
     std::string input_file = "test_add.mem";

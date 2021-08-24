@@ -74,7 +74,7 @@ std::shared_ptr<hl_ast_node> function_inlining_pass::process_leaf(std::shared_pt
 
 
  std::shared_ptr<hl_ast_node> function_inlining_pass::substitute_arguments(const std::shared_ptr<hl_ast_node> &statement,
-                                                                           std::unordered_map<std::string, std::shared_ptr<hl_ast_node>>& parameters) {
+                                                                           std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
     std::shared_ptr<hl_ast_node> retval = statement;
     if (statement->node_type == hl_ast_node_type_expr){
         return substitute_expression_arguments(std::static_pointer_cast<hl_expression_node>(statement), parameters);
@@ -92,7 +92,7 @@ std::shared_ptr<hl_ast_node> function_inlining_pass::process_leaf(std::shared_pt
 
 std::shared_ptr<hl_ast_node>
 function_inlining_pass::substitute_loop_arguments(const std::shared_ptr<hl_ast_loop_node> &statement,
-                                                  std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> &parameters) {
+                                                  std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
 
     std::vector<std::shared_ptr<hl_ast_node>> tmp_vect;
     for(auto &item: statement->get_loop_content()){
@@ -109,7 +109,7 @@ function_inlining_pass::substitute_loop_arguments(const std::shared_ptr<hl_ast_l
 
 std::shared_ptr<hl_ast_node>
 function_inlining_pass::substitute_conditional_arguments(const std::shared_ptr<hl_ast_conditional_node> &statement,
-                                                         std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> &parameters) {
+                                                         std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
 
     std::vector<std::shared_ptr<hl_ast_node>> tmp_vect;
     for(auto &item: statement->get_if_block()){
@@ -129,18 +129,18 @@ function_inlining_pass::substitute_conditional_arguments(const std::shared_ptr<h
 
 std::shared_ptr<hl_ast_node>
 function_inlining_pass::substitute_expression_arguments(const std::shared_ptr<hl_expression_node> &statement,
-                                                        std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> &parameters) {
+                                                        std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
 
-    std::shared_ptr<hl_ast_node> tmp = statement->get_lhs();
-    statement->set_lhs(substitute_arguments(tmp, parameters));
-    tmp = statement->get_rhs();
-    statement->set_rhs(substitute_arguments(tmp, parameters));
+    std::shared_ptr<hl_ast_node> tmp_lhs = substitute_arguments(statement->get_lhs(), parameters);
+    statement->set_lhs(tmp_lhs);
+    std::shared_ptr<hl_ast_node> tmp_rhs = substitute_arguments(statement->get_rhs(), parameters);
+    statement->set_rhs(tmp_rhs);
     return statement;
 }
 
 std::shared_ptr<hl_ast_node>
 function_inlining_pass::substitute_definition_arguments(const std::shared_ptr<hl_definition_node> &statement,
-                                                        std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> &parameters) {
+                                                        std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
     std::shared_ptr<hl_ast_node> tmp = statement->get_scalar_initializer();
     statement->set_scalar_initializer(
             std::static_pointer_cast<hl_expression_node>(substitute_arguments(tmp, parameters)));
@@ -161,33 +161,45 @@ function_inlining_pass::substitute_definition_arguments(const std::shared_ptr<hl
 }
 
 std::shared_ptr<hl_ast_node>
-function_inlining_pass::substitute_operand_arguments(const std::shared_ptr<hl_ast_operand> &statement,
-                                                     std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> &parameters) {
+function_inlining_pass::substitute_operand_arguments(const std::shared_ptr<hl_ast_operand> &old_operand,
+                                                     std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
 
-    std::shared_ptr<hl_ast_operand> p = std::static_pointer_cast<hl_ast_operand>(parameters[statement->get_name()]);
+
+    std::string old_operand_name = old_operand->get_name();
+
+    std::shared_ptr<hl_ast_operand> new_operand;
+
+    std::shared_ptr<hl_ast_operand> p = std::static_pointer_cast<hl_ast_operand>(parameters[old_operand->get_name()]);
     std::vector<std::shared_ptr<hl_ast_node>> tmp_vect;
 
     if(p != nullptr){
-
         if(p->get_variable()->get_type() != var_type_array){
-            for(auto &item: statement->get_array_index()){
+
+            new_operand = std::static_pointer_cast<hl_ast_operand>(hl_ast_node::deep_copy(p));
+
+            for(auto &item: old_operand->get_array_index()){
                 tmp_vect.push_back(substitute_arguments(item, parameters));
             }
-            statement->set_array_index(tmp_vect);
-
-            statement->set_name(p->get_name());
+            if(!tmp_vect.empty()){
+                new_operand->set_type(var_type_array);
+            }
+            new_operand->set_array_index(tmp_vect);
         } else{
+            new_operand = std::static_pointer_cast<hl_ast_operand>(hl_ast_node::deep_copy(p));
+
             for(auto &item: p->get_array_index()){
                 tmp_vect.push_back(substitute_arguments(item, parameters));
             }
-            statement->set_array_index(tmp_vect);
+            if(!tmp_vect.empty()){
+                new_operand->set_type(var_type_array);
+            }
 
-            statement->set_variable(p->get_variable());
+            new_operand->set_array_index(tmp_vect);
         }
-
-
+    } else {
+        new_operand = std::static_pointer_cast<hl_ast_operand>(hl_ast_node::deep_copy(old_operand));
     }
 
-    return statement;
+    return new_operand;
 }
 

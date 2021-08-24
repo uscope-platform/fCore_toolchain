@@ -36,7 +36,7 @@ private:
     std::shared_ptr<hl_function_def_node> process_function_definition(std::shared_ptr<hl_function_def_node> node);
     std::shared_ptr<hl_function_call_node> process_function_call(std::shared_ptr<hl_function_call_node> node);
     std::shared_ptr<hl_ast_conditional_node> process_conditional(std::shared_ptr<hl_ast_conditional_node>node);
-
+    std::shared_ptr<hl_ast_loop_node> process_loop(std::shared_ptr<hl_ast_loop_node> node);
 
     std::unordered_map<std::string, std::pair<int, std::string>> function_calls_map;
     std::unordered_map<std::string, std::shared_ptr<hl_definition_node>> def_map;

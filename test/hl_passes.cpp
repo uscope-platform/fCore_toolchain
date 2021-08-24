@@ -45,7 +45,7 @@ TEST(HlPassesTest, divisionImplementation) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep, {1,2,3,14,4,5,6,8,9,11});
+    hl_pass_manager manager = create_hl_pass_manager(ep, {1,2,3,14,5,6,4,8,9,11});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> result = parser.AST;
@@ -198,7 +198,7 @@ TEST(HlPassesTest, normalization) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,14,4,5,6,8,9,11});
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,14,5,6,4,8,9,11});
     manager.run_morphing_passes(parser.AST);
 
     normalization_pass p;
@@ -261,7 +261,7 @@ TEST(HlPassesTest, function_elimination) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,14,4,5,6,8,9,11});
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,14,5,6,4,8,9,11});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> raw_result =parser.AST;
@@ -320,7 +320,7 @@ TEST(HlPassesTest, hl_ast_lowering) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,14,4,5,6,8,9,11});
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,14,5,6,4,8,9,11});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -366,7 +366,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,14,4,5,6,8,9,11});
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,14,5,6,4,8,9,11});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -454,7 +454,7 @@ TEST(HlPassesTest, loop_unrolling_array) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,14,4,5,6,7,10});
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,14,5,6,7,4,10});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -512,7 +512,7 @@ TEST(HlPassesTest, test_matrix_scalarization) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,14,4,5,6,7,8,9,10});
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,14,5,6,7,4,8,9,10});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -589,7 +589,7 @@ TEST(HlPassesTest, test_operating_assignments_implementation) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,14,4,5,6,7,8,9,10});
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,14,5,6,7,4,8,9,10});
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;

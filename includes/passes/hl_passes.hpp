@@ -76,7 +76,7 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::vec
     manager.add_morphing_pass(std::make_shared<operating_assignment_implementation_pass>()); // pass #14
 
     if(order.empty()){
-        manager.set_pass_order({1,2,3,14,4,5,6,7,8,9,10,11,12,-1, 13});
+        manager.set_pass_order({1,2,3,14,5,6,7,4,8,9,10,11,12,-1, 13});
     } else {
         manager.set_pass_order(order);
     }

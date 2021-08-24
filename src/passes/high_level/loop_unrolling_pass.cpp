@@ -31,7 +31,12 @@ std::shared_ptr<hl_ast_node> loop_unrolling_pass::process_global(std::shared_ptr
         if(item->node_type == hl_ast_node_type_function_def){
             new_content.push_back(process_function_def(std::static_pointer_cast<hl_function_def_node>(item)));
         } else {
-            new_content.push_back(item);
+            if(item->node_type == hl_ast_node_type_loop){
+                std::vector<std::shared_ptr<hl_ast_node>> unrolled_loop = process_loop(std::static_pointer_cast<hl_ast_loop_node>(item));
+                new_content.insert(new_content.end(), unrolled_loop.begin(), unrolled_loop.end());
+            } else {
+                new_content.push_back(item);
+            }
         }
     }
     retval->set_content(new_content);

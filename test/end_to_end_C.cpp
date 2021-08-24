@@ -237,3 +237,19 @@ TEST(EndToEndC, array_initialization_through_function) {
 
     ASSERT_EQ(gold_standard, result);
 }
+
+
+TEST(EndToEndC, constant_argument_inlining) {
+    std::string input_file = "test_constant_argument_inlining.c";
+
+    std::vector<std::string> includes;
+    std::ifstream stream(input_file);
+
+    fcore_cc compiler(stream, includes, true);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x246, 0x40400000};
+
+    ASSERT_EQ(gold_standard, result);
+}

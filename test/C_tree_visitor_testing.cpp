@@ -1086,34 +1086,3 @@ TEST( cTreeVisitor, array_init){
     ASSERT_TRUE(hl_ast_node::compare_vectors(result, gold_standard));
 
 }
-
-
-
-
-
-TEST( HlAstDeepCopy, definition){
-    std::vector<std::shared_ptr<hl_ast_node>> init;
-    std::shared_ptr<variable> var;
-    std::shared_ptr<hl_ast_operand> op;
-    for(int i = 1; i<6;++i){
-        var = std::make_shared<variable>("constant", i);
-        op = std::make_shared<hl_ast_operand>(var);
-        init.push_back(op);
-    }
-
-    var = std::make_shared<variable>("array_test");
-    var->set_type(var_type_array);
-    std::shared_ptr<hl_definition_node> gold_standard = std::make_shared<hl_definition_node>("array_test", c_type_int, var);
-    var = std::make_shared<variable>("constant", 5);
-    op = std::make_shared<hl_ast_operand>(var);
-    gold_standard->set_array_index({op});
-
-    gold_standard->set_array_initializer(init);
-    std::vector<int> shape = {5};
-    gold_standard->set_array_shape(shape);
-
-    std::shared_ptr<hl_definition_node> result = std::static_pointer_cast<hl_definition_node>(hl_ast_node::deep_copy(gold_standard));
-
-    ASSERT_EQ(*result, *gold_standard);
-
-}
