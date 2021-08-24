@@ -86,6 +86,8 @@ public:
     unsigned int get_array_length() const {return array_length;};
     void set_array_length(unsigned int al) {array_length = al;};
 
+    static std::shared_ptr<variable> deep_copy(const std::shared_ptr<variable>& original);
+
 private:
 
     variable_class_t variable_class;

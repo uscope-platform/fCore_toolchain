@@ -7,7 +7,8 @@ set(TEST_SOURCES
         C_preprocessor.cpp
         C_tree_visitor_testing.cpp
         hl_passes.cpp
-        disassembler_testing.cpp)
+        disassembler_testing.cpp
+        deep_copy.cpp)
 
 
 add_executable(test_target ${FCORE_SRCS} ${TEST_SOURCES} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS})

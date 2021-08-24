@@ -150,3 +150,20 @@ void variable::set_const_i(int i) {
         throw std::runtime_error("INTERNAL ERROR: Setting the integer  value of a non integer point variable is not allowed");
     }
 }
+
+std::shared_ptr<variable> variable::deep_copy(const std::shared_ptr <variable>& original) {
+    std::shared_ptr<variable> copied_var = std::make_shared<variable>();
+
+    copied_var->name = original->name;
+    copied_var->variable_type = original->variable_type;
+    copied_var->variable_class = original->variable_class;
+    copied_var->first_occurrence = original->first_occurrence;
+    copied_var->last_occurrence = original->last_occurrence;
+    copied_var->array_length = original->array_length;
+    copied_var->bound_register = original->bound_register;
+    copied_var->used = original->used;
+    copied_var->const_i = original->const_i;
+    copied_var->const_f = original->const_f;
+
+    return copied_var;
+}

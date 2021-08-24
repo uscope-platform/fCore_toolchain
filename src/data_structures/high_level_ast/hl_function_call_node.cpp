@@ -59,11 +59,3 @@ bool operator==(const hl_function_call_node &lhs, const hl_function_call_node &r
 
     return ret_val;
 }
-
-void hl_function_call_node::set_body(std::vector<std::shared_ptr<hl_ast_node>> i) {
-    function_body = std::move(i);
-}
-
-void hl_function_call_node::set_return(std::shared_ptr<hl_ast_node> r) {
-    function_return = std::move(r);
-}

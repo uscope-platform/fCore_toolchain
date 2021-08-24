@@ -156,7 +156,8 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_expr(const std::shared_ptr<h
 
 std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_def(const std::shared_ptr<hl_ast_node> &node) {
     std::shared_ptr<hl_definition_node> orig = std::static_pointer_cast<hl_definition_node>(node);
-    std::shared_ptr<hl_definition_node> copied_obj = std::make_shared<hl_definition_node>(orig->get_name(), orig->get_type(), orig->get_variable());
+    std::shared_ptr<variable> new_var = variable::deep_copy(orig->get_variable());
+    std::shared_ptr<hl_definition_node> copied_obj = std::make_shared<hl_definition_node>(orig->get_name(), orig->get_type(), new_var);
     copied_obj->set_constant(orig->is_constant());
     if(orig->is_initialized()){
         std::vector<std::shared_ptr<hl_ast_node>> initializer;
@@ -239,11 +240,13 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_function_def(const std::shar
     for(const auto& i:orig->get_parameters_list()){
         params.push_back(std::static_pointer_cast<hl_definition_node>(deep_copy_def(i)));
     }
+    copied_obj->set_parameters_list(params);
 
     std::vector<std::shared_ptr<hl_ast_node>> body;
     for(const auto& i:orig->get_body()){
         body.push_back(deep_copy(i));
     }
+    copied_obj->set_body(body);
 
     copied_obj->set_content(orig->get_content());
     return copied_obj;
@@ -251,9 +254,15 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_function_def(const std::shar
 
 std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_operands(const std::shared_ptr<hl_ast_node> &node) {
     std::shared_ptr<hl_ast_operand> orig = std::static_pointer_cast<hl_ast_operand>(node);
-    std::shared_ptr<hl_ast_operand> copied_obj = std::make_shared<hl_ast_operand>(orig->get_variable());
-    copied_obj->set_array_index(orig->get_array_index());
-    copied_obj->set_content(orig->get_content());
+
+    std::shared_ptr<variable> new_var = variable::deep_copy(orig->get_variable());
+    std::shared_ptr<hl_ast_operand> copied_obj = std::make_shared<hl_ast_operand>(new_var);
+    
+    std::vector<std::shared_ptr<hl_ast_node>> new_array_idx;
+    for(auto &item:orig->get_array_index()){
+        new_array_idx.push_back(deep_copy(item));
+    }
+    copied_obj->set_array_index(new_array_idx);
 
     return copied_obj;
 }
@@ -264,13 +273,8 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_function_call(const std::sha
     for(const auto &i :orig->get_arguments()){
         args.push_back(deep_copy(i));
     }
-    std::vector<std::shared_ptr<hl_ast_node>> impl;
-    for(const auto &i :orig->get_body()){
-        impl.push_back(deep_copy(i));
-    }
 
     std::shared_ptr<hl_function_call_node> copied_obj = std::make_shared<hl_function_call_node>(orig->get_name(), args);
-    copied_obj->set_body(impl);
     copied_obj->set_content(orig->get_content());
     return copied_obj;
 }
