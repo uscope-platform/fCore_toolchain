@@ -53,9 +53,7 @@ static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::vec
 
     manager.add_morphing_pass(std::make_shared<loop_unrolling_pass>()); // pass #4
 
-    auto inlining_pass = std::make_shared<function_inlining_pass>();
-    inlining_pass->set_functions_map(mapping_pass->get_map_ref());
-    manager.add_morphing_pass(inlining_pass); // pass #5
+    manager.add_morphing_pass(std::make_shared<function_inlining_pass>()); // pass #5
 
     manager.add_morphing_pass(std::make_shared<inlined_function_elimination>(entry_point)); // pass #6
     manager.add_morphing_pass(std::make_shared<code_block_inlining_pass>()); // pass #7

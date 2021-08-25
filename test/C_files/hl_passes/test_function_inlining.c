@@ -17,11 +17,15 @@
 //
 
 
-int add(int a, int b){
+int add_1(int a, int b){
     int c = a+b;
     return c+b;
 }
 
+int add_2(int a, int b){
+    return a+b+b;
+}
 int main(){
-    add(2,t);
+    add_1(2,t);
+    add_2(2,t);
 }

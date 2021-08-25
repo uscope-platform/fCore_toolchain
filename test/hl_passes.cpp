@@ -143,13 +143,14 @@ TEST(HlPassesTest, functionInlining) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,14,5,6});
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,14,5,6,7});
 
     manager.run_morphing_passes(parser.AST);
 
-    std::shared_ptr<hl_ast_node> res = parser.AST->get_content()[0];
+    std::shared_ptr<hl_ast_node> res = parser.AST;
 
-    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
+    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+
     // CALL BODY
     std::shared_ptr<variable> var = std::make_shared<variable>("c");
     std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("c", c_type_int, var);
@@ -165,6 +166,12 @@ TEST(HlPassesTest, functionInlining) {
     exadd->set_lhs(op_1);
     def->set_scalar_initializer(exadd);
 
+    gold_standard->add_content(def);
+
+    std::shared_ptr<hl_expression_node> ex_add2 = std::make_shared<hl_expression_node>(expr_add);
+    ex_add2->set_lhs(exadd);
+    ex_add2->set_rhs(op_2);
+
     exadd = std::make_shared<hl_expression_node>(expr_add);
 
     var = std::make_shared<variable>("c");
@@ -176,7 +183,10 @@ TEST(HlPassesTest, functionInlining) {
     exadd->set_rhs(op_2);
     exadd->set_lhs(op_1);
 
-    gold_standard->set_content({def, exadd});
+    gold_standard->add_content(exadd);
+    gold_standard->add_content(ex_add2);
+
+
     EXPECT_EQ(*res, *gold_standard);
     if(Test::HasFailure()){
         std::cout << "TEST RESULT: " << res->pretty_print()<< std::endl;

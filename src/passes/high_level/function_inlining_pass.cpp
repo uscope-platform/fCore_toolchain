@@ -23,55 +23,173 @@ function_inlining_pass::function_inlining_pass() : pass_base<hl_ast_node>("funct
 
 }
 
+std::shared_ptr<hl_ast_node> function_inlining_pass::process_global(std::shared_ptr<hl_ast_node> element) {
 
-void function_inlining_pass::set_functions_map(
-        std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>>> map) {
-    functions_map = std::move(map);
+    for(auto &item:element->get_content()){
+        if(item->node_type == hl_ast_node_type_function_def){
+            std::shared_ptr<hl_function_def_node> function_def = std::static_pointer_cast<hl_function_def_node>(item);
+            functions_map[function_def->get_name()] = function_def;
+        }
+    }
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_content;
+    for(auto &item:element->get_content()){
+        new_content.push_back(process_element(item));
+    }
+    element->set_content(new_content);
+    return element;
 }
 
-std::shared_ptr<hl_ast_node> function_inlining_pass::process_leaf(std::shared_ptr<hl_ast_node> element) {
-    std::shared_ptr<hl_ast_node> ret_val = element;
-    if(element->node_type == hl_ast_node_type_function_call){
-        std::shared_ptr<hl_function_call_node> f_call = std::static_pointer_cast<hl_function_call_node>(element);
-
-        if(functions_map->count(f_call->get_name())==0){
-            throw std::runtime_error("ERROR: Function " + f_call->get_name() + " is not defined");
-        }
-
-        std::shared_ptr<hl_function_def_node> f_def = functions_map->at(f_call->get_name());
-
-        // MAP ARGUMENTS OF  THE CALL WITH its name
-        int idx = 0;
-        std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> arguments_map;
-        for(const auto& arg: f_call->get_arguments()){
-            std::string arg_name = f_def->get_parameters_list()[idx]->get_name();
-            arguments_map[arg_name] = hl_ast_node::deep_copy(arg);
-            ++idx;
-
-        }
-
-        std::shared_ptr<hl_ast_node> inlined_code = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
-
-        // SUBSTITUTE THE ARGUMENTS OF THE CALL WITHIN THE FUNCTION BODY
-        std::vector<std::shared_ptr<hl_ast_node>> body;
-
-
-        for(auto &i: f_def->get_body()){
-            std::shared_ptr<hl_ast_node> copied_node = hl_ast_node::deep_copy(i);
-            body.push_back(substitute_arguments(copied_node,arguments_map));
-        }
-        inlined_code->set_content(body);
-
-        if(f_def->get_return() != nullptr){
-            inlined_code->add_content(substitute_arguments(hl_ast_node::deep_copy(f_def->get_return()), arguments_map));
-        }
-
-
-        ret_val = inlined_code;
+std::shared_ptr<hl_ast_node> function_inlining_pass::process_element(std::shared_ptr<hl_ast_node> element) {
+    switch (element->node_type) {
+        case hl_ast_node_type_expr:
+            return process_expression(std::static_pointer_cast<hl_expression_node>(element));
+        case hl_ast_node_type_definition:
+            return process_definition(std::static_pointer_cast<hl_definition_node>(element));
+        case hl_ast_node_type_conditional:
+            return process_conditional(std::static_pointer_cast<hl_ast_conditional_node>(element));
+        case hl_ast_node_type_loop:
+            return process_loop(std::static_pointer_cast<hl_ast_loop_node>(element));
+        case hl_ast_node_type_function_def:
+            return process_function_def(std::static_pointer_cast<hl_function_def_node>(element));
+        case hl_ast_node_type_operand:
+            return process_operand(std::static_pointer_cast<hl_ast_operand>(element));
+        case hl_ast_node_type_function_call:
+            return process_function_call(std::static_pointer_cast<hl_function_call_node>(element));
+        default:
+            return element;
     }
+}
+
+std::shared_ptr<hl_ast_loop_node> function_inlining_pass::process_loop(std::shared_ptr<hl_ast_loop_node> element) {
+
+    element->set_condition(process_expression(element->get_condition()));
+    element->set_init_statement(process_definition(element->get_init_statement()));
+    element->set_iteration_expr(process_expression(element->get_iteration_expr()));
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_content;
+    for(auto &item:element->get_loop_content()){
+        new_content.push_back(process_element(item));
+    }
+    element->set_loop_content(new_content);
+
+    return element;
+}
+
+std::shared_ptr<hl_ast_conditional_node>
+function_inlining_pass::process_conditional(std::shared_ptr<hl_ast_conditional_node> element) {
+    element->set_condition(process_element(element->get_condition()));
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_content;
+    for(auto &item:element->get_if_block()){
+        new_content.push_back(process_element(item));
+    }
+    element->set_if_block(new_content);
+
+    new_content.clear();
+    for(auto &item:element->get_else_block()){
+        new_content.push_back(process_element(item));
+    }
+    element->set_else_block(new_content);
+
+    return element;
+}
+
+std::shared_ptr<hl_expression_node>
+function_inlining_pass::process_expression(std::shared_ptr<hl_expression_node> element) {
+    if(!element->is_unary()){
+        element->set_lhs(process_element(element->get_lhs()));
+    }
+    element->set_rhs(process_element(element->get_rhs()));
+
+    return element;
+}
+
+std::shared_ptr<hl_definition_node>
+function_inlining_pass::process_definition(std::shared_ptr<hl_definition_node> element) {
+
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_content;
+    for(auto &item:element->get_array_index()){
+        new_content.push_back(process_element(item));
+    }
+    element->set_array_index(new_content);
+
+
+    if(element->is_initialized()){
+        new_content.clear();
+        for(auto &item:element->get_array_initializer()){
+            new_content.push_back(process_element(item));
+        }
+        element->set_array_initializer(new_content);
+
+    }
+
+    return element;
+}
+
+std::shared_ptr<hl_function_def_node>
+function_inlining_pass::process_function_def(std::shared_ptr<hl_function_def_node> element) {
+
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_content;
+    for(auto &item:element->get_body()){
+        new_content.push_back(process_element(item));
+    }
+    element->set_body(new_content);
+    if(element->get_return() != nullptr){
+        element->set_return(process_element(element->get_return()));
+    }
+
+    return element;
+}
+
+std::shared_ptr<hl_ast_operand> function_inlining_pass::process_operand(std::shared_ptr<hl_ast_operand> element) {
+    return element;
+}
+
+
+std::shared_ptr<hl_ast_node>
+function_inlining_pass::process_function_call(std::shared_ptr<hl_function_call_node> f_call) {
+    std::shared_ptr<hl_ast_node> ret_val;
+
+
+    if(functions_map.count(f_call->get_name())==0){
+        throw std::runtime_error("ERROR: Function " + f_call->get_name() + " is not defined");
+    }
+
+    std::shared_ptr<hl_function_def_node> f_def = functions_map[f_call->get_name()];
+
+    // MAP ARGUMENTS OF  THE CALL WITH its name
+    int idx = 0;
+    std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> arguments_map;
+    for(const auto& arg: f_call->get_arguments()){
+        std::string arg_name = f_def->get_parameters_list()[idx]->get_name();
+        arguments_map[arg_name] = hl_ast_node::deep_copy(arg);
+        ++idx;
+
+    }
+
+    std::shared_ptr<hl_ast_node> inlined_code = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
+
+    // SUBSTITUTE THE ARGUMENTS OF THE CALL WITHIN THE FUNCTION BODY
+    std::vector<std::shared_ptr<hl_ast_node>> body;
+
+
+    for(auto &i: f_def->get_body()){
+        std::shared_ptr<hl_ast_node> copied_node = hl_ast_node::deep_copy(i);
+        body.push_back(substitute_arguments(copied_node,arguments_map));
+    }
+    inlined_code->set_content(body);
+
+    if(f_def->get_return() != nullptr){
+        inlined_code->add_content(substitute_arguments(hl_ast_node::deep_copy(f_def->get_return()), arguments_map));
+    }
+
+
+    ret_val = inlined_code;
     return ret_val;
 }
-
 
  std::shared_ptr<hl_ast_node> function_inlining_pass::substitute_arguments(const std::shared_ptr<hl_ast_node> &statement,
                                                                            std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
@@ -202,4 +320,3 @@ function_inlining_pass::substitute_operand_arguments(const std::shared_ptr<hl_as
 
     return new_operand;
 }
-
