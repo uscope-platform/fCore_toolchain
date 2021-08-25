@@ -323,51 +323,44 @@ TEST(HlPassesTest, hl_ast_lowering) {
 TEST(HlPassesTest, intrinsics_implementation) {
 
 
-    std::string input_file = "test_intrinsics_implementation.c";
-    std::ifstream ifs(input_file);
+    std::shared_ptr<hl_ast_node> input_root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::vector<std::shared_ptr<hl_ast_node>> function_body;
+    std::shared_ptr<hl_function_def_node> main_fcn = std::make_shared<hl_function_def_node>();
+    main_fcn->set_name("main");
+    main_fcn->set_return_type(c_type_int);
 
-
-    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-
-    C_language_parser parser(ifs, result_def);
-    parser.pre_process({}, {});
-    parser.parse();
-
-    std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,7,8,9,11});
-    manager.run_morphing_passes(parser.AST);
-
-    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
-
-    std::shared_ptr<variable> var = std::make_shared<variable>("intermediate_expr_0");
-    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int, var);
-
-    var = std::make_shared<variable>("constant", 4);
-    std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
-
-    var = std::make_shared<variable>("constant", 5);
-    std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
-
-    std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(expr_mult);
-    ex_1->set_lhs(op_1);
-    ex_1->set_rhs(op_2);
-    def_1->set_scalar_initializer(ex_1);
+    std::shared_ptr<variable> var = std::make_shared<variable>("b");
+    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("b", c_type_float, var);
+    var = std::make_shared<variable>("c");
+    std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("c", c_type_float, var);
 
     var = std::make_shared<variable>("a");
     var->set_variable_class(variable_output_type);
     var->set_bound_reg(10);
-    std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int, var);
+    std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
 
-    var = std::make_shared<variable>("intermediate_expr_0");
-    op_1 = std::make_shared<hl_ast_operand>(var);
+    std::vector<std::shared_ptr<hl_ast_node>> args = {op};
+    std::shared_ptr<hl_function_call_node> call_1 = std::make_shared<hl_function_call_node>("itf", args);
+    def_1->set_scalar_initializer(call_1);
+    function_body.push_back(def_1);
 
-    var = std::make_shared<variable>("constant", 6);
-    op_2 = std::make_shared<hl_ast_operand>(var);
 
-    ex_1= std::make_shared<hl_expression_node>(expr_add);
-    ex_1->set_lhs(op_1);
-    ex_1->set_rhs(op_2);
-    def_2->set_scalar_initializer(ex_1);
+    args = {op};
+    var = std::make_shared<variable>("constant", 100);
+    op = std::make_shared<hl_ast_operand>(var);
+    args.push_back(op);
+    std::shared_ptr<hl_function_call_node> call_2 = std::make_shared<hl_function_call_node>("satp", args);
+    def_2->set_scalar_initializer(call_2);
+    function_body.push_back(def_2);
+
+    main_fcn->set_body(function_body);
+    input_root->add_content(main_fcn);
+
+    std::string ep = "main";
+    hl_pass_manager manager = create_hl_pass_manager(ep,{2});
+    manager.run_morphing_passes(input_root);
+
+    std::shared_ptr<hl_ast_node> result = input_root;
 
     var = std::make_shared<variable>("b");
     std::shared_ptr<hl_definition_node> def_3 = std::make_shared<hl_definition_node>("b", c_type_float, var);
@@ -375,9 +368,9 @@ TEST(HlPassesTest, intrinsics_implementation) {
     var = std::make_shared<variable>("a");
     var->set_variable_class(variable_output_type);
     var->set_bound_reg(10);
-    op_1 = std::make_shared<hl_ast_operand>(var);
+    std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
 
-    ex_1= std::make_shared<hl_expression_node>(expr_itf);
+    std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(expr_itf);
     ex_1->set_rhs(op_1);
     def_3->set_scalar_initializer(ex_1);
 
@@ -392,7 +385,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
 
     var = std::make_shared<variable>("constant",100);
-    op_2 = std::make_shared<hl_ast_operand>(var);
+    std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
 
     ex_1= std::make_shared<hl_expression_node>(expr_satp);
     ex_1->set_lhs(op_1);
@@ -401,9 +394,15 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
     std::vector<std::shared_ptr<hl_ast_node>> arguments = {};
     std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
-    gold_standard->set_content({def_1, def_2 , def_3, def_4});
 
-    ASSERT_EQ(*gold_standard, *normalized_ast);
+    main_fcn->set_body({def_3, def_4});
+    gold_standard->add_content(main_fcn);
+
+    ASSERT_EQ(*gold_standard, *result);
+    if(Test::HasFailure()){
+        std::cout << "TEST RESULT: " << result->pretty_print()<< std::endl;
+        std::cout << "GOLD STANDARD: " << gold_standard->pretty_print()<< std::endl;
+    }
 
 }
 

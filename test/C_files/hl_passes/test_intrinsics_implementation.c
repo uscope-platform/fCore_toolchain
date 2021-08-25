@@ -20,8 +20,7 @@
 int main(){
 
     #pragma output (a, r10)
-    int a = 4*5+6;
     float b = itf(a);
     float c = satp(a, 100);
-    // b = 1*2+7;
+
 }
