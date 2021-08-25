@@ -22,8 +22,8 @@ int add_1(int a, int b){
     return c+b;
 }
 
-int add_2(int a, int b){
-    return a+b+b;
+int add_2(int e, int f){
+    return e+f+f;
 }
 int main(){
     add_1(2,t);

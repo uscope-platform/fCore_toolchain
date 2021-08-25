@@ -64,6 +64,7 @@ void C_Tree_visitor::exitFunctionDefinition(C_parser::C_grammarParser::FunctionD
     current_function->set_parameters_list(parameters_list);
     current_function->set_body(function_body);
     function_body.clear();
+    parameters_list.clear();
     in_function_declaration = false;
     functions.push_back(current_function);
 
