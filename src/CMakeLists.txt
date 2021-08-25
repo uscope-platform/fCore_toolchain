@@ -84,8 +84,13 @@ set(FCORE_DIS_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/fcore_dis.cpp
         )
 
+set(FCORE_EMU_SRCS
+        ${FCORE_COMMON_SRCS_I}
+        ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/fcore_emu.cpp
+        )
 
-set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_DIS_SRCS} PARENT_SCOPE)
+set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_DIS_SRCS} ${FCORE_EMU_SRCS} PARENT_SCOPE)
 
 
 # Standalone assembler executable
@@ -99,7 +104,10 @@ target_link_libraries(fCore_cc PUBLIC antlr4-runtime)
 # Standalone disassembler executable
 add_executable(fCore_dis ${FCORE_DIS_SRCS} fcore_dis_main.cpp)
 
+# Standalone disassembler executable
+add_executable(fCore_emu ${FCORE_EMU_SRCS} fcore_emu_main.cpp)
 
 install(TARGETS fCore_has DESTINATION /usr/bin)
 install(TARGETS fCore_cc DESTINATION /usr/bin)
 install(TARGETS fCore_dis DESTINATION /usr/bin)
+install(TARGETS fCore_emu DESTINATION /usr/bin)

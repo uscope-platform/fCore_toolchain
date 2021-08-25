@@ -13,11 +13,12 @@
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.
+// along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/
 
-#include "fcore_dis.hpp"
 
-fcore_dis::fcore_dis(std::istream &input, bin_loader_input_type_t in_type) {
+#include "fcore_emu.hpp"
+
+fcore_emu::fcore_emu(std::istream &input, bin_loader_input_type_t in_type) {
     error_code = "";
     try{
 
@@ -28,7 +29,7 @@ fcore_dis::fcore_dis(std::istream &input, bin_loader_input_type_t in_type) {
 
         stream_pass_manager sman;
         program_stream = sman.process_stream(program_stream);
-        gen = std::make_unique<assembly_generator>(program_stream);
+        emulator backend(program_stream);
 
     } catch(std::runtime_error &e){
         error_code = e.what();
@@ -36,30 +37,6 @@ fcore_dis::fcore_dis(std::istream &input, bin_loader_input_type_t in_type) {
     }
 }
 
-std::string fcore_dis::get_errors() {
-    return error_code;
+void fcore_emu::write_json(const std::string &output_file) {
+
 }
-
-void fcore_dis::write_json(const std::string &output_file) {
-    nlohmann::json j;
-    j["error_code"] = error_code;
-    if(error_code.empty()){
-        j["disassembled_program"] = gen->get_program();
-    } else{
-        j["disassembled_program"] = "";
-    }
-    std::string str = j.dump();
-    std::ofstream ss(output_file);
-    ss<<str;
-    ss.close();
-}
-
-std::string fcore_dis::get_disassenbled_program() {
-    return gen->get_program();
-}
-
-void fcore_dis::write_disassembled_program(const std::string &output_file) {
-    gen->write_program(output_file);
-}
-
-

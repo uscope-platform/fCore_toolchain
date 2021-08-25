@@ -23,7 +23,7 @@
 #include "fcore_dis.hpp"
 
 int main(int argc, char **argv) {
-    CLI::App app{"fCore High level assembler"};
+    CLI::App app{"fCore disassembler"};
 
     bool input_hex = false;
     bool input_mem = false;

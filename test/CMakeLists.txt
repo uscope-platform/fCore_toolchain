@@ -63,7 +63,6 @@ configure_file(C_files/hl_passes/test_loop_unrolling_pass.c ${CMAKE_CURRENT_BINA
 configure_file(C_files/hl_passes/test_array_scalarization.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/hl_passes/test_matrix_scalarization.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
-
 # FULL PROGRAMS
 configure_file(C_files/end_to_end/test_intrinsics_implementation.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_full_conditional.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
