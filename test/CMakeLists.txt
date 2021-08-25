@@ -60,13 +60,13 @@ configure_file(C_files/tree_visitor/test_function_def.c ${CMAKE_CURRENT_BINARY_D
 #OPTIMIZATION PASSES
 configure_file(C_files/hl_passes/test_function_inlining.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/hl_passes/test_normalization.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/hl_passes/test_intrinsics_implementation.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/hl_passes/test_loop_unrolling_pass.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/hl_passes/test_array_scalarization.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/hl_passes/test_matrix_scalarization.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-configure_file(C_files/hl_passes/test_operating_assignments_implementation.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+
 
 # FULL PROGRAMS
+configure_file(C_files/end_to_end/test_intrinsics_implementation.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_full_conditional.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_full_loop.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_full_nested_loop.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
