@@ -56,7 +56,7 @@ public:
 
     virtual bool is_terminal();
 
-    virtual std::string pretty_print() {return "";};
+    virtual std::string pretty_print();
 
     friend bool operator==(const hl_ast_node& lhs, const hl_ast_node& rhs);
 

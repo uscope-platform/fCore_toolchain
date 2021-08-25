@@ -306,3 +306,12 @@ bool hl_ast_node::compare_vectors(const std::vector<std::shared_ptr<hl_ast_node>
     return ret_val;
 }
 
+std::string hl_ast_node::pretty_print() {
+    std::ostringstream ss;
+
+    for(auto &item:content){
+        ss << item->pretty_print()<<std::endl;
+    }
+    return ss.str();
+}
+

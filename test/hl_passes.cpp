@@ -35,54 +35,55 @@
 TEST(HlPassesTest, divisionImplementation) {
 
 
-    std::string input_file = "test_division_implementation.c";
-    std::ifstream ifs(input_file);
+    std::shared_ptr<hl_ast_node> input_root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
-    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+    std::shared_ptr<variable> var = std::make_shared<variable>("a");
 
-    C_language_parser parser(ifs, result_def);
-    parser.pre_process({}, {});
-    parser.parse();
+    std::shared_ptr<hl_definition_node> define = std::make_shared<hl_definition_node>("a", c_type_float, var);
 
+    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(expr_div);
+    var = std::make_shared<variable>("constant", 4);
+    std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
+    exp->set_lhs(op);
+    var = std::make_shared<variable>("constant", 6);
+    op = std::make_shared<hl_ast_operand>(var);
+    exp->set_rhs(op);
+
+    define->set_scalar_initializer(exp);
+
+    input_root->add_content(define);
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep, {1,2,3,4,5,7,8,9,11});
-    manager.run_morphing_passes(parser.AST);
+    hl_pass_manager manager = create_hl_pass_manager(ep, {1});
+    manager.run_morphing_passes(input_root);
 
-    std::shared_ptr<hl_ast_node> result = parser.AST;
+    std::shared_ptr<hl_ast_node> result =  input_root;
+
+    std::shared_ptr<hl_expression_node> mult_exp = std::make_shared<hl_expression_node>(expr_mult);
 
 
-    std::shared_ptr<variable> var = std::make_shared<variable>("constant",6);
+    var = std::make_shared<variable>("constant", 4);
     std::shared_ptr<hl_ast_operand> op_1= std::make_shared<hl_ast_operand>(var);
+    mult_exp->set_lhs(op_1);
 
+    var = std::make_shared<variable>("constant",6);
+    op_1= std::make_shared<hl_ast_operand>(var);
     std::shared_ptr<hl_expression_node> rec_exp = std::make_shared<hl_expression_node>(expr_reciprocal);
     rec_exp->set_rhs(op_1);
 
-    var = std::make_shared<variable>("intermediate_expr_0");
-    std::shared_ptr<hl_definition_node> rec_def = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int, var);
-    rec_def->set_scalar_initializer(rec_exp);
-
-    var = std::make_shared<variable>("constant", 4);
-    op_1= std::make_shared<hl_ast_operand>(var);
-
-    var = std::make_shared<variable>("intermediate_expr_0");
-    std::shared_ptr<hl_ast_operand> op_2= std::make_shared<hl_ast_operand>(var);
-
-    std::shared_ptr<hl_expression_node> mult_exp = std::make_shared<hl_expression_node>(expr_mult);
-    mult_exp->set_lhs(op_1);
-    mult_exp->set_rhs(op_2);
+    mult_exp->set_rhs(rec_exp);
 
     var = std::make_shared<variable>("a");
-    std::shared_ptr<hl_definition_node> mult_def = std::make_shared<hl_definition_node>("a", c_type_int, var);
+    std::shared_ptr<hl_definition_node> mult_def = std::make_shared<hl_definition_node>("a", c_type_float, var);
     mult_def->set_scalar_initializer(mult_exp);
 
 
     std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
-    gold_standard->set_content({rec_def, mult_def});
+    gold_standard->add_content(mult_def);
 
     EXPECT_EQ( *gold_standard, *result);
     if(Test::HasFailure()){
-        std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(parser.AST->get_content()[0])->pretty_print()<< std::endl;
-        std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(result)->pretty_print()<< std::endl;
+        std::cout << "TEST RESULT: " << result->pretty_print()<< std::endl;
+        std::cout << "GOLD STANDARD: " << gold_standard->pretty_print()<< std::endl;
     }
 }
 
