@@ -58,7 +58,6 @@ configure_file(C_files/tree_visitor/test_array_init.c ${CMAKE_CURRENT_BINARY_DIR
 configure_file(C_files/tree_visitor/test_function_def.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
 #OPTIMIZATION PASSES
-configure_file(C_files/hl_passes/test_function_inlining.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/hl_passes/test_normalization.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/hl_passes/test_loop_unrolling_pass.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(C_files/hl_passes/test_array_scalarization.c ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
