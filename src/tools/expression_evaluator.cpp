@@ -56,20 +56,21 @@ expression_evaluator::evaluate_unary_expression(std::shared_ptr<hl_expression_no
     std::shared_ptr<hl_ast_operand> rhs = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_rhs()));
 
     c_types_t expr_type = c_type_int;
-
-    if(rhs->get_type() == var_type_float_const){
+    //In order for the result type to be flating point either the operand is a float or the expression is reciprocal, which
+    //always results in a float
+    if(rhs->get_type() == var_type_float_const || expression->get_type() == expr_reciprocal){
         expr_type = c_type_float;
     }
 
     if(expression->get_type() != expr_fti || expression->get_type() != expr_itf  ){
-        if(rhs->get_type() == var_type_float_const){
+        if(expr_type == c_type_float){
             float operand = rhs->get_float_val();
 
             std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
             retval = std::make_shared<hl_ast_operand>(var);
 
             retval->set_immediate(evaluate_unary_expr_f(operand, expression->get_type()));
-        } else if(rhs->get_type()==var_type_int_const){
+        } else {
             int operand = rhs->get_int_value();
 
             std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
@@ -92,11 +93,7 @@ expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_
 
     c_types_t expr_type = c_type_int;
 
-    if(rhs->get_type() == var_type_float_const){
-        expr_type = c_type_float;
-    }
-
-    if(lhs->get_type() == var_type_float_const){
+    if(rhs->get_type() == var_type_float_const || lhs->get_type() == var_type_float_const){
         expr_type = c_type_float;
     }
 

@@ -51,7 +51,6 @@ fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes, bool
         error_code = e.what();
         std::cerr << error_code << std::endl;
     }
-
 }
 
 
