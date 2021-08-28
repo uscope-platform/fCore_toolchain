@@ -166,7 +166,7 @@ TEST(EndToEndC, array_scalarization) {
     std::vector<std::string> includes;
     std::ifstream stream(input_file);
 
-    fcore_cc compiler(stream, includes,false);
+    fcore_cc compiler(stream, includes,true);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -250,6 +250,21 @@ TEST(EndToEndC, constant_argument_inlining) {
 
 
     std::vector<uint32_t> gold_standard = {0x246, 0x40400000};
+
+    ASSERT_EQ(gold_standard, result);
+}
+
+TEST(EndToEndC, array_io_definition) {
+    std::string input_file = "test_array_io_definition.c";
+
+    std::vector<std::string> includes;
+    std::ifstream stream(input_file);
+
+    fcore_cc compiler(stream, includes, true);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x63881};
 
     ASSERT_EQ(gold_standard, result);
 }

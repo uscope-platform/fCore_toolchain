@@ -72,7 +72,15 @@ std::shared_ptr<hl_ast_operand> array_scalarization_pass::process_operand(std::s
     if(old_array_idx.empty()){
         throw std::runtime_error("ERROR: All array operations must be performed element wise and thus have a compile time known index");
     }
+
     std::shared_ptr<variable> var = std::make_shared<variable>(mangle_name(old_array_idx, var_name));
+
+    if(old_array_idx.size() == 1){
+        std::shared_ptr<hl_ast_operand> bound_reg_op = std::static_pointer_cast<hl_ast_operand>(old_array_idx[0]);
+        if(node->get_variable()->get_bound_reg_array().size()>1)
+            var->set_bound_reg(node->get_variable()->get_bound_reg(bound_reg_op->get_int_value()));
+    }
+
     node->set_variable(var);
     node->set_array_index({});
 
@@ -158,6 +166,7 @@ array_scalarization_pass::process_conditional(std::shared_ptr<hl_ast_conditional
     node->set_condition(process_element(node->get_condition()));
     return node;
 }
+
 
 
 

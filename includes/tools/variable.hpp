@@ -74,7 +74,7 @@ public:
     [[nodiscard]]  unsigned int get_bound_reg(unsigned int idx) const { return bound_register[idx];};
     [[nodiscard]]  void set_bound_reg(unsigned int idx, unsigned int val) { bound_register[idx] = val;};
 
-    [[nodiscard]]  std::vector<unsigned int> get_bound_reg_array(unsigned int idx) const { return bound_register;};
+    [[nodiscard]]  std::vector<unsigned int> get_bound_reg_array() const { return bound_register;};
     [[nodiscard]]  void set_bound_reg_array(std::vector<unsigned int> reg) { bound_register = std::move(reg);};
 
     [[nodiscard]] uint32_t get_value() const;
