@@ -26,7 +26,7 @@ variable::variable() {
     variable_class = variable_regular_type;
     first_occurrence = 32768;
     last_occurrence = 0;
-    bound_register = 0;
+    bound_register.push_back(0);
     array_length = 0;
 }
 
@@ -39,7 +39,7 @@ variable::variable(std::string n, float value) {
     variable_class = variable_regular_type;
     first_occurrence = 32768;
     last_occurrence = 0;
-    bound_register = 0;
+    bound_register.push_back(0);
     array_length = 0;
     const_i = 0;
 }
@@ -52,7 +52,7 @@ variable::variable(std::string n, int value) {
     variable_class = variable_regular_type;
     first_occurrence = 32768;
     last_occurrence = 0;
-    bound_register = 0;
+    bound_register.push_back(0);
     array_length = 0;
     const_f = 0;
 }
@@ -66,7 +66,7 @@ variable::variable(std::string n) {
     variable_class = variable_regular_type;
     first_occurrence = 32768;
     last_occurrence = 0;
-    bound_register = 0;
+    bound_register.push_back(0);
     array_length = 0;
     const_f = 0;
 }

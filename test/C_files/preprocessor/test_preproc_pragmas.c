@@ -17,3 +17,4 @@
 //
 
  #pragma output (test, r10)
+ #pragma output(test_array, {r10,r15,r27})

@@ -54,16 +54,17 @@ TEST( cFrontend, preprocessor_pragma) {
     std::unordered_map<std::string, std::shared_ptr<variable>> iom_map = parser.preproc->get_iom_map();
 
     std::shared_ptr<variable_map> gold_standard = std::make_shared<variable_map>();
-    std::string type = "output";
-    std::string var_name = "test";
-    std::string reg = "10";
-    std::shared_ptr<variable> v = std::make_shared<variable>( var_name);
-    variable_class_t  vc = type == "output" ? variable_output_type : variable_input_type;
-    v->set_variable_class(vc);
-    v->set_bound_reg(std::stoul(reg));
 
+    std::shared_ptr<variable> v = std::make_shared<variable>( "test");
+
+    v->set_variable_class(variable_output_type);
+    v->set_bound_reg(10);
 
     ASSERT_EQ(*iom_map["test"], *v);
+    v = std::make_shared<variable>( "test_array");
+    v->set_variable_class(variable_output_type);
+    v->set_bound_reg_array({10, 15, 27});
+    ASSERT_EQ(*iom_map["test_array"], *v);
 }
 
 TEST( cFrontend, preprocessor_define) {
@@ -79,6 +80,8 @@ TEST( cFrontend, preprocessor_define) {
     std::shared_ptr<hl_definition_node> result = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
 
     std::shared_ptr<variable> var = std::make_shared<variable>("a");
+    var->set_bound_reg(19);
+    var->set_variable_class(variable_input_type);
     std::shared_ptr<hl_definition_node> gold_standard = std::make_shared<hl_definition_node>("a", c_type_int, var);
     var = std::make_shared<variable>("constant", 15);
     std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
@@ -100,8 +103,9 @@ TEST( cFrontend, preprocessor_include) {
 
     std::shared_ptr<hl_definition_node> result = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
 
-
     std::shared_ptr<variable> var = std::make_shared<variable>("a");
+    var->set_bound_reg(19);
+    var->set_variable_class(variable_input_type);
     std::shared_ptr<hl_definition_node> gold_standard = std::make_shared<hl_definition_node>("a", c_type_int, var);
     var = std::make_shared<variable>("constant", 42);
     std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);

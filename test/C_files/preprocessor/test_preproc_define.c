@@ -20,6 +20,6 @@
 
 
 int main(){
-    #pragma input(r19,a);
+    #pragma input(a, r19);
     int a = TEST;
 }
