@@ -12,6 +12,9 @@ jobs:
                   sudo apt update
                   sudo apt install -y gcc g++ cmake pkg-config uuid uuid-dev uuid-runtime libantlr4-runtime4.8 libantlr4-runtime-dev libgtest-dev
       - run:
+          name: Install required libraries
+          command: 'sudo cp third_party/fp_ip_cmodel/lib/* /usr/lib'
+      - run:
           name: Creating Build Files
           command: 'cmake -H. -Bbuild -DBUILD_TESTS=True'
       - run:
