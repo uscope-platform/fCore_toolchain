@@ -21,6 +21,7 @@
 #include <utility>
 
 #include "data_structures/instruction_stream.hpp"
+#include "floating_point_v7_1_bitacc_cmodel.h"
 
 class emulator {
 public:

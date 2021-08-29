@@ -106,6 +106,7 @@ add_executable(fCore_dis ${FCORE_DIS_SRCS} fcore_dis_main.cpp)
 
 # Standalone disassembler executable
 add_executable(fCore_emu ${FCORE_EMU_SRCS} fcore_emu_main.cpp)
+target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel)
 
 install(TARGETS fCore_has DESTINATION /usr/bin)
 install(TARGETS fCore_cc DESTINATION /usr/bin)
