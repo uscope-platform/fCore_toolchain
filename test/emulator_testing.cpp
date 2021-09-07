@@ -21,7 +21,7 @@
 
 TEST(Emulator, emulator_add) {
 
-    std::string input_file = "test_emu_add.s";
+    std::string input_file = "emu/test_emu_add.s";
     std::ifstream stream(input_file);
     fcore_emu emu_engine(stream, bin_loader_mem_input);
 

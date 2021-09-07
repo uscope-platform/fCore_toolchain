@@ -29,7 +29,7 @@
 TEST(EndToEndC, minimal_c_end_to_end) {
 
 
-    std::string input_file = "test_normalization.c";
+    std::string input_file = "c_e2e/test_normalization.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -73,7 +73,7 @@ TEST(EndToEndC, minimal_c_end_to_end) {
 TEST(EndToEndC, fcore_cc) {
 
 
-    std::string input_file = "test_normalization.c";
+    std::string input_file = "c_e2e/test_normalization.c";
     std::ifstream ifs(input_file);
 
     std::vector<std::string> includes;
@@ -89,7 +89,7 @@ TEST(EndToEndC, fcore_cc) {
 TEST(EndToEndC, end_to_end_intrinsics) {
 
 
-    std::string input_file = "test_intrinsics_implementation.c";
+    std::string input_file = "c_e2e/test_intrinsics_implementation.c";
     std::ifstream ifs(input_file);
 
     std::vector<std::string> includes;
@@ -104,7 +104,7 @@ TEST(EndToEndC, end_to_end_intrinsics) {
 
 
 TEST(EndToEndC, json_writing) {
-    std::string input_file = "test_intrinsics_implementation.c";
+    std::string input_file = "c_e2e/test_intrinsics_implementation.c";
 
     std::string test_json = "/tmp/e2e_c_json_test.json";
 
@@ -129,7 +129,7 @@ TEST(EndToEndC, json_writing) {
 }
 
 TEST(EndToEndC, pragma_io) {
-    std::string input_file = "test_pragma_io.c";
+    std::string input_file = "c_e2e/test_pragma_io.c";
 
 
     std::vector<std::string> includes;
@@ -145,7 +145,7 @@ TEST(EndToEndC, pragma_io) {
 }
 
 TEST(EndToEndC, conditional) {
-    std::string input_file = "test_full_conditional.c";
+    std::string input_file = "c_e2e/test_full_conditional.c";
 
 
     std::vector<std::string> includes;
@@ -161,7 +161,7 @@ TEST(EndToEndC, conditional) {
 }
 
 TEST(EndToEndC, array_scalarization) {
-    std::string input_file = "test_array_scalarization.c";
+    std::string input_file = "c_e2e/test_array_scalarization.c";
 
     std::vector<std::string> includes;
     std::ifstream stream(input_file);
@@ -177,7 +177,7 @@ TEST(EndToEndC, array_scalarization) {
 
 
 TEST(EndToEndC, loop) {
-    std::string input_file = "test_full_loop.c";
+    std::string input_file = "c_e2e/test_full_loop.c";
 
     std::vector<std::string> includes;
     std::ifstream stream(input_file);
@@ -193,7 +193,7 @@ TEST(EndToEndC, loop) {
 
 
 TEST(EndToEndC, nested_loop) {
-    std::string input_file = "test_full_nested_loop.c";
+    std::string input_file = "c_e2e/test_full_nested_loop.c";
 
     std::vector<std::string> includes;
     std::ifstream stream(input_file);
@@ -208,7 +208,7 @@ TEST(EndToEndC, nested_loop) {
 }
 
 TEST(EndToEndC, array_initialization) {
-    std::string input_file = "test_array_initialization.c";
+    std::string input_file = "c_e2e/test_array_initialization.c";
 
     std::vector<std::string> includes;
     std::ifstream stream(input_file);
@@ -224,7 +224,7 @@ TEST(EndToEndC, array_initialization) {
 
 
 TEST(EndToEndC, array_initialization_through_function) {
-    std::string input_file = "test_array_initialization_through_function.c";
+    std::string input_file = "c_e2e/test_array_initialization_through_function.c";
 
     std::vector<std::string> includes;
     std::ifstream stream(input_file);
@@ -240,7 +240,7 @@ TEST(EndToEndC, array_initialization_through_function) {
 
 
 TEST(EndToEndC, constant_argument_inlining) {
-    std::string input_file = "test_constant_argument_inlining.c";
+    std::string input_file = "c_e2e/test_constant_argument_inlining.c";
 
     std::vector<std::string> includes;
     std::ifstream stream(input_file);
@@ -255,7 +255,7 @@ TEST(EndToEndC, constant_argument_inlining) {
 }
 
 TEST(EndToEndC, array_io_definition) {
-    std::string input_file = "test_array_io_definition.c";
+    std::string input_file = "c_e2e/test_array_io_definition.c";
 
     std::vector<std::string> includes;
     std::ifstream stream(input_file);

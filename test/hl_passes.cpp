@@ -375,7 +375,7 @@ TEST(HlPassesTest, functionInlining) {
 TEST(HlPassesTest, function_elimination) {
 
 
-    std::string input_file = "test_normalization.c";
+    std::string input_file = "hl_opt/test_normalization.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -434,7 +434,7 @@ TEST(HlPassesTest, function_elimination) {
 TEST(HlPassesTest, normalization) {
 
 
-    std::string input_file = "test_normalization.c";
+    std::string input_file = "hl_opt/test_normalization.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -498,7 +498,7 @@ TEST(HlPassesTest, normalization) {
 TEST(HlPassesTest, hl_ast_lowering) {
 
 
-    std::string input_file = "test_normalization.c";
+    std::string input_file = "hl_opt/test_normalization.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -544,7 +544,7 @@ TEST(HlPassesTest, hl_ast_lowering) {
 TEST(HlPassesTest, loop_unrolling_array) {
 
 
-    std::string input_file = "test_loop_unrolling_pass.c";
+    std::string input_file = "hl_opt/test_loop_unrolling_pass.c";
     std::ifstream ifs(input_file);
 
 
@@ -602,7 +602,7 @@ TEST(HlPassesTest, loop_unrolling_array) {
 TEST(HlPassesTest, test_matrix_scalarization) {
 
 
-    std::string input_file = "test_matrix_scalarization.c";
+    std::string input_file = "hl_opt/test_matrix_scalarization.c";
     std::ifstream ifs(input_file);
 
 

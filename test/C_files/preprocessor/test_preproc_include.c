@@ -17,7 +17,7 @@
 //
 
 
-#include "include_test.h"
+#include "c_prep/include_test.h"
 
 int main(){
     #pragma input(a, r19);

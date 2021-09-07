@@ -32,7 +32,7 @@ static inline uint32_t Reverse32(uint32_t value)
 }
 
 TEST( EndToEndAsm, simple_file ) {
-    std::string input_file = "test_add.s";
+    std::string input_file = "asm/test_add.s";
 
     std::string include_dir;
     std::vector<std::string> include_files = {};
@@ -83,7 +83,7 @@ TEST( EndToEndAsm, simple_file ) {
 }
 
 TEST( EndToEndAsm, for_file ) {
-    std::string input_file = "test_for.s";
+    std::string input_file = "asm/test_for.s";
 
     std::string include_dir;
     std::vector<std::string> include_files = {};
@@ -98,7 +98,7 @@ TEST( EndToEndAsm, for_file ) {
 }
 
 TEST( EndToEndAsm, branch_file ) {
-    std::string input_file = "test_branch.s";
+    std::string input_file = "asm/test_branch.s";
 
     std::string include_dir;
     std::vector<std::string> include_files = {};
@@ -113,7 +113,7 @@ TEST( EndToEndAsm, branch_file ) {
 }
 
 TEST(EndToEndAsm, variables_file) {
-    std::string input_file = "test_variables.s";
+    std::string input_file = "asm/test_variables.s";
 
     std::string include_dir;
     std::vector<std::string> include_files = {};
@@ -127,7 +127,7 @@ TEST(EndToEndAsm, variables_file) {
 }
 
 TEST(EndToEndAsm, load_constant_file) {
-    std::string input_file = "test_ldc.s";
+    std::string input_file = "asm/test_ldc.s";
 
     std::string include_dir;
     std::vector<std::string> include_files = {};
@@ -142,7 +142,7 @@ TEST(EndToEndAsm, load_constant_file) {
 }
 
 TEST(EndToEndAsm, embeddable_wrapper_pass) {
-    std::string input_file = "test_ldc.s";
+    std::string input_file = "asm/test_ldc.s";
     int hex_size;
     auto *hex_result = (uint32_t*) malloc(4096*sizeof(uint32_t));
 
@@ -159,7 +159,7 @@ TEST(EndToEndAsm, embeddable_wrapper_pass) {
 
 
 TEST(EndToEndAsm, json_writing) {
-    std::string input_file = "test_ldc.s";
+    std::string input_file = "asm/test_ldc.s";
 
     std::string test_json = "/tmp/e2e_asm_json_test.json";
     std::string include_dir;

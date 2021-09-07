@@ -24,7 +24,7 @@
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
 TEST( cTreeVisitor, unaryExpressions) {
-    std::string input_file = "test_unary_expressions.c";
+    std::string input_file = "c_ast/test_unary_expressions.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -91,7 +91,7 @@ TEST( cTreeVisitor, unaryExpressions) {
 
 
 TEST( cTreeVisitor, multiplicativeExpressions) {
-    std::string input_file = "test_multiplicative_expressions.c";
+    std::string input_file = "c_ast/test_multiplicative_expressions.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -143,7 +143,7 @@ TEST( cTreeVisitor, multiplicativeExpressions) {
 
 
 TEST( cTreeVisitor, additiveExpressions) {
-    std::string input_file = "test_additive_expressions.c";
+    std::string input_file = "c_ast/test_additive_expressions.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -185,7 +185,7 @@ TEST( cTreeVisitor, additiveExpressions) {
 
 
 TEST( cTreeVisitor, shiftExpressions) {
-    std::string input_file = "test_shift_expressions.c";
+    std::string input_file = "c_ast/test_shift_expressions.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -228,7 +228,7 @@ TEST( cTreeVisitor, shiftExpressions) {
 
 
 TEST( cTreeVisitor, relationalExpressions) {
-    std::string input_file = "test_relational_expressions.c";
+    std::string input_file = "c_ast/test_relational_expressions.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -282,7 +282,7 @@ TEST( cTreeVisitor, relationalExpressions) {
 
 
 TEST( cTreeVisitor, equalityExpressions) {
-    std::string input_file = "test_equality_expressions.c";
+    std::string input_file = "c_ast/test_equality_expressions.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -326,7 +326,7 @@ TEST( cTreeVisitor, equalityExpressions) {
 
 
 TEST( cTreeVisitor, andBinExpressions) {
-    std::string input_file = "test_andb_expressions.c";
+    std::string input_file = "c_ast/test_andb_expressions.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -358,7 +358,7 @@ TEST( cTreeVisitor, andBinExpressions) {
 }
 
 TEST( cTreeVisitor, exOrBinExpressions) {
-    std::string input_file = "test_exorb_expressions.c";
+    std::string input_file = "c_ast/test_exorb_expressions.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -396,7 +396,7 @@ TEST( cTreeVisitor, exOrBinExpressions) {
 
 
 TEST( cTreeVisitor, orLogExpressions) {
-    std::string input_file = "test_orl_expressions.c";
+    std::string input_file = "c_ast/test_orl_expressions.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -430,7 +430,7 @@ TEST( cTreeVisitor, orLogExpressions) {
 }
 
 TEST( cTreeVisitor, andLogExpressions) {
-    std::string input_file = "test_andl_expressions.c";
+    std::string input_file = "c_ast/test_andl_expressions.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -466,7 +466,7 @@ TEST( cTreeVisitor, andLogExpressions) {
 
 
 TEST( cTreeVisitor, assignmentExpressions) {
-    std::string input_file = "test_assignment_expressions.c";
+    std::string input_file = "c_ast/test_assignment_expressions.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -526,7 +526,7 @@ TEST( cTreeVisitor, assignmentExpressions) {
 }
 
 TEST( cTreeVisitor, function_def) {
-    std::string input_file = "test_function_def.c";
+    std::string input_file = "c_ast/test_function_def.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -578,7 +578,7 @@ TEST( cTreeVisitor, function_def) {
 
 
 TEST( cTreeVisitor, function_call) {
-    std::string input_file = "test_function_call.c";
+    std::string input_file = "c_ast/test_function_call.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -618,7 +618,7 @@ TEST( cTreeVisitor, function_call) {
 
 
 TEST( cTreeVisitor, definition) {
-    std::string input_file = "test_definition.c";
+    std::string input_file = "c_ast/test_definition.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -656,7 +656,7 @@ TEST( cTreeVisitor, definition) {
 
 
 TEST( cTreeVisitor, returnTest) {
-    std::string input_file = "test_return.c";
+    std::string input_file = "c_ast/test_return.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -699,7 +699,7 @@ TEST( cTreeVisitor, returnTest) {
 
 
 TEST( cTreeVisitor, ConditionalTest) {
-    std::string input_file = "test_conditional.c";
+    std::string input_file = "c_ast/test_conditional.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -749,7 +749,7 @@ TEST( cTreeVisitor, ConditionalTest) {
 }
 
 TEST( cTreeVisitor, loopTest) {
-    std::string input_file = "test_loop_ast.c";
+    std::string input_file = "c_ast/test_loop_ast.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -828,7 +828,7 @@ TEST( cTreeVisitor, loopTest) {
 }
 
 TEST( cTreeVisitor, nestedLoopTest) {
-    std::string input_file = "test_nested_loop_ast.c";
+    std::string input_file = "c_ast/test_nested_loop_ast.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -955,7 +955,7 @@ TEST( cTreeVisitor, nestedLoopTest) {
 }
 
 TEST( cTreeVisitor, array_test){
-    std::string input_file = "test_array.c";
+    std::string input_file = "c_ast/test_array.c";
     std::ifstream ifs(input_file);
 
 
@@ -1024,7 +1024,7 @@ TEST( cTreeVisitor, array_test){
 
 
 TEST( cTreeVisitor, array_init){
-    std::string input_file = "test_array_init.c";
+    std::string input_file = "c_ast/test_array_init.c";
     std::ifstream ifs(input_file);
 
 
