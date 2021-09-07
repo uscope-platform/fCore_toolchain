@@ -749,7 +749,7 @@ TEST( cTreeVisitor, ConditionalTest) {
 }
 
 TEST( cTreeVisitor, loopTest) {
-    std::string input_file = "c_ast/test_loop_ast.c";
+    std::string input_file = "c_ast/test_loop.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -828,7 +828,7 @@ TEST( cTreeVisitor, loopTest) {
 }
 
 TEST( cTreeVisitor, nestedLoopTest) {
-    std::string input_file = "c_ast/test_nested_loop_ast.c";
+    std::string input_file = "c_ast/test_nested_loop.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();

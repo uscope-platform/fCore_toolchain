@@ -544,7 +544,7 @@ TEST(HlPassesTest, hl_ast_lowering) {
 TEST(HlPassesTest, loop_unrolling_array) {
 
 
-    std::string input_file = "hl_opt/test_loop_unrolling_pass.c";
+    std::string input_file = "hl_opt/test_loop_unrolling.c";
     std::ifstream ifs(input_file);
 
 

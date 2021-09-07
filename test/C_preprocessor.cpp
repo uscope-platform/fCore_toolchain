@@ -22,7 +22,7 @@
 #include <stdexcept>
 
 TEST( cFrontend, preprocessor_decomment) {
-    std::string input_file = "c_prep/test_preproc_comments.c";
+    std::string input_file = "c_prep/test_comments.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -44,7 +44,7 @@ TEST( cFrontend, preprocessor_decomment) {
 }
 
 TEST( cFrontend, preprocessor_pragma) {
-    std::string input_file = "c_prep/test_preproc_pragmas.c";
+    std::string input_file = "c_prep/test_pragmas.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -68,7 +68,7 @@ TEST( cFrontend, preprocessor_pragma) {
 }
 
 TEST( cFrontend, preprocessor_define) {
-    std::string input_file = "c_prep/test_preproc_define.c";
+    std::string input_file = "c_prep/test_define.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -91,7 +91,7 @@ TEST( cFrontend, preprocessor_define) {
 }
 
 TEST( cFrontend, preprocessor_include) {
-    std::string input_file = "c_prep/test_preproc_include.c";
+    std::string input_file = "c_prep/test_include.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -116,7 +116,7 @@ TEST( cFrontend, preprocessor_include) {
 }
 
 TEST( cFrontend, preprocessor_include_fail) {
-    std::string input_file = "c_prep/test_preproc_include_fail.c";
+    std::string input_file = "c_prep/test_include_fail.c";
     std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
