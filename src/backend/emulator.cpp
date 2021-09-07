@@ -61,7 +61,11 @@ void emulator::run_instruction_by_type(const std::shared_ptr<ll_instruction_node
 }
 
 void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_node>& node) {
-
+    std::string opcode = node->get_opcode();
+    if(opcode == "add"){
+        float result = execute_add(memory[node->get_operand_a()->get_bound_reg()], memory[node->get_operand_b()->get_bound_reg()]);
+        int i = 0;
+    }
 }
 
 void emulator::run_independent_instruction(const std::shared_ptr<ll_independent_inst_node>& node) {

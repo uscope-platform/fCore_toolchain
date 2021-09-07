@@ -8,7 +8,8 @@ set(TEST_SOURCES
         C_tree_visitor_testing.cpp
         hl_passes.cpp
         disassembler_testing.cpp
-        deep_copy.cpp)
+        deep_copy.cpp
+        emulator_testing.cpp)
 
 
 add_executable(test_target ${FCORE_SRCS} ${TEST_SOURCES} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS})
@@ -77,3 +78,7 @@ configure_file(C_files/end_to_end/test_array_io_definition.c ${CMAKE_CURRENT_BIN
 # DISASSEMBLER TESTING FILES
 configure_file(disassembler_files/test_add.hex ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 configure_file(disassembler_files/test_add.mem ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+
+# EMULATOR TESTING FILES
+configure_file(emulator_files/test_emu_add.mem ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+configure_file(emulator_files/test_emu_load.mem ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
