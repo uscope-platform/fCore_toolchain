@@ -47,11 +47,14 @@ private:
     uint32_t execute_itf(uint32_t a);
     static uint32_t execute_not(uint32_t a);
     static uint32_t execute_and(uint32_t a, uint32_t b);
+    uint32_t execute_satp(uint32_t a, uint32_t b);
+    uint32_t execute_satn(uint32_t a, uint32_t b);
     static uint32_t execute_or(uint32_t a, uint32_t b);
     uint32_t execute_compare_gt(uint32_t a, uint32_t b);
     uint32_t execute_compare_le(uint32_t a, uint32_t b);
     uint32_t execute_compare_eq(uint32_t a, uint32_t b);
     uint32_t execute_compare_ne(uint32_t a, uint32_t b);
+
     xip_fpo_t xil_a, xil_b, xil_res;
     xip_fpo_fix_t xil_a_fixed_point;
     instruction_stream stream;

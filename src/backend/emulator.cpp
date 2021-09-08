@@ -80,6 +80,10 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
         memory[dest] = execute_and(memory[op_a], memory[op_b]);
     } else if (opcode == "or"){
         memory[dest] = execute_or(memory[op_a], memory[op_b]);
+    } else if (opcode == "satp"){
+        memory[dest] = execute_satp(memory[op_a], memory[op_b]);
+    } else if (opcode == "satn"){
+        memory[dest] = execute_satn(memory[op_a], memory[op_b]);
     }
 }
 
@@ -315,4 +319,41 @@ uint32_t emulator::execute_and(uint32_t a, uint32_t b) {
 
 uint32_t emulator::execute_not(uint32_t a) {
     return ~a;
+}
+
+uint32_t emulator::execute_satp(uint32_t a, uint32_t b) {
+    float raw_a, raw_b;
+    uint32_t res;
+    memcpy(&raw_a, &a, sizeof(uint32_t));
+    memcpy(&raw_b, &b, sizeof(uint32_t));
+    xip_fpo_set_flt(xil_a, raw_a);
+    xip_fpo_set_flt(xil_b, raw_b);
+    float raw_res;
+
+    if(raw_a>raw_b){
+        raw_res = raw_b;
+    } else {
+        raw_res = raw_a;
+    }
+
+    memcpy(&res, &raw_res, sizeof(uint32_t));
+    return res;
+}
+
+uint32_t emulator::execute_satn(uint32_t a, uint32_t b) {
+    float raw_a, raw_b;
+    uint32_t res;
+    memcpy(&raw_a, &a, sizeof(uint32_t));
+    memcpy(&raw_b, &b, sizeof(uint32_t));
+    xip_fpo_set_flt(xil_a, raw_a);
+    xip_fpo_set_flt(xil_b, raw_b);
+    float raw_res;
+    if(raw_a<raw_b){
+        raw_res = raw_b;
+    } else {
+        raw_res = raw_a;
+    }
+
+    memcpy(&res, &raw_res, sizeof(uint32_t));
+    return res;
 }

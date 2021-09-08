@@ -111,3 +111,26 @@ TEST(Emulator, emulator_nor) {
     std::vector<uint32_t> memory = emu_engine.get_memory_snapshot();
     ASSERT_EQ(memory[1], 0x3BF72999);
 }
+
+
+TEST(Emulator, emulator_satn) {
+
+    std::string input_file = "emu/test_satn.mem";
+    std::ifstream stream(input_file);
+    fcore_emu emu_engine(stream, bin_loader_mem_input);
+    std::vector<uint32_t> memory = emu_engine.get_memory_snapshot();
+
+    ASSERT_EQ(memory[4], 0xc3fa0000);
+    ASSERT_EQ(memory[5], 0xc408d666);
+}
+
+
+TEST(Emulator, emulator_satp) {
+
+    std::string input_file = "emu/test_satp.mem";
+    std::ifstream stream(input_file);
+    fcore_emu emu_engine(stream, bin_loader_mem_input);
+    std::vector<uint32_t> memory = emu_engine.get_memory_snapshot();
+    ASSERT_EQ(memory[4], 0x43fa0000);
+    ASSERT_EQ(memory[5], 0x4408d666);
+}
