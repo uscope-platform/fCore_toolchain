@@ -42,6 +42,9 @@ void binary_loader::construct_ast(std::vector<uint32_t> &program) {
         uint32_t instruction = *it;
         uint32_t opcode = instruction & (1<<fcore_opcode_width)-1;
         std::shared_ptr<ll_ast_node> instr_node;
+        if (fcore_opcodes_reverse.count(opcode)==0){
+            throw std::runtime_error("ERROR: unknown opcode: " + std::to_string(opcode));
+        }
         switch (fcore_op_types[fcore_opcodes_reverse[opcode]]) {
             case isa_independent_instruction:
                 instr_node = process_independent_instruction(instruction);

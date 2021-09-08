@@ -48,6 +48,26 @@ TEST( Disassembler, disassembler_hex) {
     ASSERT_EQ(result, gold_standard);
 }
 
+TEST( Disassembler, disassembler_file_out) {
+    std::string input_file = "dis/test_add.mem";
+    std::ifstream ifs(input_file);
+
+    fcore_dis disassembler(ifs, bin_loader_mem_input);
+
+    unsigned int filename = rand();
+    std::string outfile_name = std::filesystem::temp_directory_path().string() + "/" + std::to_string(filename);
+    disassembler.write_disassembled_program(outfile_name);
+
+    std::ifstream result_file(outfile_name);
+    std::ostringstream sstr;
+    sstr << result_file.rdbuf();
+
+    std::string result_content = sstr.str();
+
+    std::string gold_standard = "ldc r4, 100.000000\nldc r5, 200.000000\nadd r24, r5, r6\nstop\n";
+
+    ASSERT_EQ(result_content, gold_standard);
+}
 
 TEST( Disassembler, disassembler_json) {
     std::string input_file = "dis/test_add.hex";
@@ -71,4 +91,32 @@ TEST( Disassembler, disassembler_json) {
     gold_standard["disassembled_program"] = "ldc r4, 100.000000\nldc r5, 200.000000\nadd r24, r5, r6\nstop\n";
 
     ASSERT_EQ(result, gold_standard);
+}
+
+
+TEST( Disassembler, disassembler_error) {
+    std::string input_file = "dis/test_error.mem";
+    std::ifstream ifs(input_file);
+
+    fcore_dis disassembler(ifs, bin_loader_mem_input);
+    std::string exception = disassembler.get_errors();
+    std::string gold_standard = "ERROR: unknown opcode: 7";
+    ASSERT_EQ(exception, gold_standard);
+
+
+    unsigned int filename = rand();
+    std::string outfile_name = std::filesystem::temp_directory_path().string() + "/" + std::to_string(filename);
+    disassembler.write_json(outfile_name);
+
+    std::ifstream result_file(outfile_name);
+    std::ostringstream sstr;
+    sstr << result_file.rdbuf();
+
+    auto result = nlohmann::json::parse(sstr.str());
+
+    nlohmann::json gold_standard_j;
+    gold_standard_j["error_code"] = gold_standard;
+    gold_standard_j["disassembled_program"] = "";
+
+    ASSERT_EQ(result, gold_standard_j);
 }

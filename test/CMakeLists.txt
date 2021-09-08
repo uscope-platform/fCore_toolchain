@@ -93,6 +93,7 @@ set(DIS_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/dis)
 make_directory(${DIS_TEST_FILES_DIR})
 configure_file(disassembler_files/test_add.hex ${DIS_TEST_FILES_DIR} COPYONLY)
 configure_file(disassembler_files/test_add.mem ${DIS_TEST_FILES_DIR} COPYONLY)
+configure_file(disassembler_files/test_error.mem ${DIS_TEST_FILES_DIR} COPYONLY)
 
 # EMULATOR TESTING FILES
 set(EMU_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/emu)

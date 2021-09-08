@@ -32,7 +32,6 @@ fcore_dis::fcore_dis(std::istream &input, bin_loader_input_type_t in_type) {
 
     } catch(std::runtime_error &e){
         error_code = e.what();
-        int i = 0;
     }
 }
 
