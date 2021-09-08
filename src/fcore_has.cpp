@@ -18,22 +18,6 @@
 #include "fcore_has.hpp"
 
 
-
-std::tuple<std::vector<uint32_t>, int> fCore_has_embeddable_s(const std::string& content){
-    std::string ret_val;
-    std::istringstream stream(content);
-    std::vector<std::string> include_files;
-    auto *iss = new std::istringstream(REGISTER_DEFINITION_STRING);
-    std::vector<std::istream*> includes = {iss};
-
-    fcore_has assembler(stream,includes);
-    std::vector<uint32_t> hex = assembler.get_hexfile(false);
-    unsigned int int_size = assembler.get_program_size();
-    std::cout<<int_size<<std::endl;
-    std::tuple<std::vector<uint32_t>, int> ret(hex, int_size);
-    return ret;
-}
-
 void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size){
     std::string ret_val;
     std::ifstream stream;
@@ -100,8 +84,6 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
         program_stream = sman.process_stream(program_stream);
 
         writer.process_stream(program_stream, false);
-
-
 
     } catch(std::runtime_error &e){
         error_code = e.what();
