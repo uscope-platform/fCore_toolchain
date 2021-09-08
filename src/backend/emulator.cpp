@@ -76,6 +76,10 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
         memory[dest] = execute_sub(memory[op_a], memory[op_b]);
     } else if (opcode == "mul"){
         memory[dest] = execute_mul(memory[op_a], memory[op_b]);
+    } else if (opcode == "and"){
+        memory[dest] = execute_and(memory[op_a], memory[op_b]);
+    } else if (opcode == "or"){
+        memory[dest] = execute_or(memory[op_a], memory[op_b]);
     }
 }
 
@@ -93,6 +97,12 @@ void emulator::run_conversion_instruction(const std::shared_ptr<ll_conversion_in
     uint32_t src = std::stoul(raw_src.substr(1, raw_src.size()-1));
     if(opcode == "rec"){
         memory[dest] = execute_rec(memory[src]);
+    } else if(opcode == "fti"){
+        memory[dest] = execute_fti(memory[src]);
+    } else if(opcode == "itf"){
+        memory[dest] = execute_itf(memory[src]);
+    } else if (opcode == "not"){
+        memory[dest] = execute_not(memory[src]);
     }
 
 }
@@ -181,7 +191,11 @@ uint32_t emulator::execute_rec(uint32_t a) {
 }
 
 uint32_t emulator::execute_fti(uint32_t a) {
-    xip_fpo_set_ui(xil_a, a);
+    float raw_a;
+    uint32_t res;
+    memcpy(&raw_a, &a, sizeof(uint32_t));
+    xip_fpo_set_flt(xil_a, raw_a);
+
     xip_fpo_exc_t exc = xip_fpo_flttofix(xil_a_fixed_point, xil_a);
 
     if ( exc != 0) {
@@ -199,7 +213,10 @@ uint32_t emulator::execute_itf(uint32_t a) {
         throw std::runtime_error("An exception occurred during the conversion of "+ std::to_string(a) + "to float from integer");
     }
 
-    return xip_fpo_get_ui(xil_res);
+    uint32_t res;
+    float raw_res = xip_fpo_get_flt(xil_res);
+    memcpy(&res, &raw_res, sizeof(uint32_t));
+    return res;
 }
 
 uint32_t emulator::execute_compare_gt(uint32_t a, uint32_t b) {
@@ -286,4 +303,16 @@ uint32_t emulator::execute_compare_ne(uint32_t a, uint32_t b) {
     } else {
         return 0;
     }
+}
+
+uint32_t emulator::execute_or(uint32_t a, uint32_t b) {
+    return a | b;
+}
+
+uint32_t emulator::execute_and(uint32_t a, uint32_t b) {
+    return a & b;
+}
+
+uint32_t emulator::execute_not(uint32_t a) {
+    return ~a;
 }

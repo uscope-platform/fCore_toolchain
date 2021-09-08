@@ -66,3 +66,48 @@ TEST(Emulator, emulator_rec) {
     std::vector<uint32_t> memory = emu_engine.get_memory_snapshot();
     ASSERT_EQ(memory[1], 0x3fa41a42);
 }
+
+TEST(Emulator, emulator_itf) {
+
+    std::string input_file = "emu/test_itf.mem";
+    std::ifstream stream(input_file);
+    fcore_emu emu_engine(stream, bin_loader_mem_input);
+    std::vector<uint32_t> memory = emu_engine.get_memory_snapshot();
+    ASSERT_EQ(memory[1], 0x40400000);
+}
+
+TEST(Emulator, emulator_fti) {
+
+    std::string input_file = "emu/test_fti.mem";
+    std::ifstream stream(input_file);
+    fcore_emu emu_engine(stream, bin_loader_mem_input);
+    std::vector<uint32_t> memory = emu_engine.get_memory_snapshot();
+    ASSERT_EQ(memory[1], 15);
+}
+
+TEST(Emulator, emulator_and) {
+
+    std::string input_file = "emu/test_and.mem";
+    std::ifstream stream(input_file);
+    fcore_emu emu_engine(stream, bin_loader_mem_input);
+    std::vector<uint32_t> memory = emu_engine.get_memory_snapshot();
+    ASSERT_EQ(memory[3], 0x40000000);
+}
+
+TEST(Emulator, emulator_or) {
+
+    std::string input_file = "emu/test_or.mem";
+    std::ifstream stream(input_file);
+    fcore_emu emu_engine(stream, bin_loader_mem_input);
+    std::vector<uint32_t> memory = emu_engine.get_memory_snapshot();
+    ASSERT_EQ(memory[3], 0xC578D666);
+}
+
+TEST(Emulator, emulator_nor) {
+
+    std::string input_file = "emu/test_not.mem";
+    std::ifstream stream(input_file);
+    fcore_emu emu_engine(stream, bin_loader_mem_input);
+    std::vector<uint32_t> memory = emu_engine.get_memory_snapshot();
+    ASSERT_EQ(memory[1], 0x3BF72999);
+}

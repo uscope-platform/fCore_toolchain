@@ -45,6 +45,9 @@ private:
     uint32_t execute_rec(uint32_t a);
     uint32_t execute_fti(uint32_t a);
     uint32_t execute_itf(uint32_t a);
+    static uint32_t execute_not(uint32_t a);
+    static uint32_t execute_and(uint32_t a, uint32_t b);
+    static uint32_t execute_or(uint32_t a, uint32_t b);
     uint32_t execute_compare_gt(uint32_t a, uint32_t b);
     uint32_t execute_compare_le(uint32_t a, uint32_t b);
     uint32_t execute_compare_eq(uint32_t a, uint32_t b);
