@@ -134,3 +134,55 @@ TEST(Emulator, emulator_satp) {
     ASSERT_EQ(memory[4], 0x43fa0000);
     ASSERT_EQ(memory[5], 0x4408d666);
 }
+
+TEST(Emulator, emulator_beq) {
+
+    std::string input_file = "emu/test_beq.mem";
+    std::ifstream stream(input_file);
+    fcore_emu emu_engine(stream, bin_loader_mem_input);
+    std::vector<uint32_t> memory = emu_engine.get_memory_snapshot();
+    ASSERT_EQ(memory[4], 0xffffffff);
+    ASSERT_EQ(memory[5], 0x0);
+}
+
+TEST(Emulator, emulator_bne) {
+
+    std::string input_file = "emu/test_bne.mem";
+    std::ifstream stream(input_file);
+    fcore_emu emu_engine(stream, bin_loader_mem_input);
+    std::vector<uint32_t> memory = emu_engine.get_memory_snapshot();
+    ASSERT_EQ(memory[4], 0xffffffff);
+    ASSERT_EQ(memory[5], 0x0);
+}
+
+
+TEST(Emulator, emulator_bgt) {
+
+    std::string input_file = "emu/test_bgt.mem";
+    std::ifstream stream(input_file);
+    fcore_emu emu_engine(stream, bin_loader_mem_input);
+    std::vector<uint32_t> memory = emu_engine.get_memory_snapshot();
+    ASSERT_EQ(memory[4], 0xffffffff);
+    ASSERT_EQ(memory[5], 0x0);
+}
+
+TEST(Emulator, emulator_ble) {
+
+    std::string input_file = "emu/test_ble.mem";
+    std::ifstream stream(input_file);
+    fcore_emu emu_engine(stream, bin_loader_mem_input);
+    std::vector<uint32_t> memory = emu_engine.get_memory_snapshot();
+    ASSERT_EQ(memory[4], 0xffffffff);
+    ASSERT_EQ(memory[5], 0x0);
+    ASSERT_EQ(memory[6], 0xffffffff);
+}
+
+TEST(Emulator, emulator_stop) {
+
+    std::string input_file = "emu/test_stop.mem";
+    std::ifstream stream(input_file);
+    fcore_emu emu_engine(stream, bin_loader_mem_input);
+    std::vector<uint32_t> memory = emu_engine.get_memory_snapshot();
+    ASSERT_EQ(memory[1], 0xc3fa8000);
+
+}

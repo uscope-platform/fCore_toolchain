@@ -24,7 +24,7 @@ emulator::emulator(instruction_stream &s) :memory(2<< (fcore_register_address_wi
     xip_fpo_init2(xil_b, 8, 24);
     xip_fpo_init2(xil_res, 8, 24);
     xip_fpo_fix_init2(xil_a_fixed_point, 32, 0);
-
+    stop_requested = false;
 }
 
 
@@ -34,9 +34,12 @@ void emulator::set_inputs(std::unordered_map<uint32_t, uint32_t>) {
 
 void emulator::run_program() {
     for(auto &item:stream){
+        if(stop_requested) {
+            stop_requested = false;
+            break;
+        }
         run_instruction_by_type(item);
     }
-    int i = 0;
 }
 
 void emulator::run_instruction_by_type(const std::shared_ptr<ll_instruction_node>& node) {
@@ -84,11 +87,23 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
         memory[dest] = execute_satp(memory[op_a], memory[op_b]);
     } else if (opcode == "satn"){
         memory[dest] = execute_satn(memory[op_a], memory[op_b]);
+    } else if (opcode == "beq"){
+        memory[dest] = execute_compare_eq(memory[op_a], memory[op_b]);
+    } else if (opcode == "bne"){
+        memory[dest] = execute_compare_ne(memory[op_a], memory[op_b]);
+    } else if (opcode == "bgt"){
+        memory[dest] = execute_compare_gt(memory[op_a], memory[op_b]);
+    } else if (opcode == "ble"){
+        memory[dest] = execute_compare_le(memory[op_a], memory[op_b]);
     }
 }
 
 void emulator::run_independent_instruction(const std::shared_ptr<ll_independent_inst_node>& node) {
-
+    std::string opcode = node->get_opcode();
+    if(opcode == "nop"){
+    } else if (opcode == "stop"){
+        stop_requested = true;
+    }
 }
 
 void emulator::run_conversion_instruction(const std::shared_ptr<ll_conversion_instr_node>& node) {

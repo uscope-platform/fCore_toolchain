@@ -59,6 +59,8 @@ private:
     xip_fpo_fix_t xil_a_fixed_point;
     instruction_stream stream;
 
+    bool stop_requested;
+
     std::vector<uint32_t> memory;
 };
 
