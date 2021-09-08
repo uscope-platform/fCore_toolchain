@@ -17,16 +17,13 @@
 
 #include "backend/emulator.hpp"
 
-emulator::emulator(instruction_stream &s) {
-    stream = std::move(s);
+emulator::emulator(instruction_stream &s) :memory(2<< (fcore_register_address_width-1), 0) {
+    stream = s;
 
     xip_fpo_init2(xil_a, 8, 24);
     xip_fpo_init2(xil_b, 8, 24);
     xip_fpo_init2(xil_res, 8, 24);
     xip_fpo_fix_init2(xil_a_fixed_point, 32, 0);
-
-    memory.reserve(2<< fcore_register_address_width);
-    std::fill(memory.begin(), memory.end(), 0);
 
 }
 
@@ -39,6 +36,7 @@ void emulator::run_program() {
     for(auto &item:stream){
         run_instruction_by_type(item);
     }
+    int i = 0;
 }
 
 void emulator::run_instruction_by_type(const std::shared_ptr<ll_instruction_node>& node) {
@@ -62,9 +60,22 @@ void emulator::run_instruction_by_type(const std::shared_ptr<ll_instruction_node
 
 void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_node>& node) {
     std::string opcode = node->get_opcode();
+
+    std::string raw_dest = node->get_destination()->get_name();
+    uint32_t dest = std::stoul(raw_dest.substr(1, raw_dest.size()-1));
+
+    std::string raw_op_a = node->get_operand_a()->get_name();
+    uint32_t op_a = std::stoul(raw_op_a.substr(1, raw_op_a.size()-1));
+
+    std::string raw_op_b = node->get_operand_b()->get_name();
+    uint32_t op_b = std::stoul(raw_op_b.substr(1, raw_op_b.size()-1));
+
     if(opcode == "add"){
-        float result = execute_add(memory[node->get_operand_a()->get_bound_reg()], memory[node->get_operand_b()->get_bound_reg()]);
-        int i = 0;
+        memory[dest] = execute_add(memory[op_a], memory[op_b]);
+    } else if (opcode == "sub"){
+        memory[dest] = execute_sub(memory[op_a], memory[op_b]);
+    } else if (opcode == "mul"){
+        memory[dest] = execute_mul(memory[op_a], memory[op_b]);
     }
 }
 
@@ -73,54 +84,100 @@ void emulator::run_independent_instruction(const std::shared_ptr<ll_independent_
 }
 
 void emulator::run_conversion_instruction(const std::shared_ptr<ll_conversion_instr_node>& node) {
+    std::string opcode = node->get_opcode();
+
+    std::string raw_dest = node->get_destination()->get_name();
+    uint32_t dest = std::stoul(raw_dest.substr(1, raw_dest.size()-1));
+
+    std::string raw_src = node->get_source()->get_name();
+    uint32_t src = std::stoul(raw_src.substr(1, raw_src.size()-1));
+    if(opcode == "rec"){
+        memory[dest] = execute_rec(memory[src]);
+    }
 
 }
 
 void emulator::run_load_constant_instruction(const std::shared_ptr<ll_load_constant_instr_node>& node) {
+    uint32_t const_val;
+    float raw_const = node->get_constant_f();
 
+    memcpy(&const_val, &raw_const, sizeof(uint32_t));
+
+    std::string raw_dest = node->get_destination()->get_name();
+    uint32_t dest = std::stoul(raw_dest.substr(1, raw_dest.size()-1));
+
+    memory[dest] = const_val;
 }
 
 uint32_t emulator::execute_add(uint32_t a, uint32_t b) {
-    xip_fpo_set_ui(xil_a, a);
-    xip_fpo_set_ui(xil_b, b);
-    xip_fpo_exc_t exc = xip_fpo_add(xil_res, xil_a, xil_b);
+    float raw_a, raw_b;
+    uint32_t res;
+    memcpy(&raw_a, &a, sizeof(uint32_t));
+    memcpy(&raw_b, &b, sizeof(uint32_t));
+    xip_fpo_set_flt(xil_a, raw_a);
+    xip_fpo_set_flt(xil_b, raw_b);
 
+    xip_fpo_exc_t exc = xip_fpo_add(xil_res, xil_a, xil_b);
     if ( exc != 0) {
         throw std::runtime_error("An exception occurred in the addition of"+ std::to_string(a) + " and " + std::to_string(b));
     }
-    return xip_fpo_get_ui(xil_res);
+    float raw_res = xip_fpo_get_flt(xil_res);
+    memcpy(&res, &raw_res, sizeof(uint32_t));
+    return res;
 }
 
 uint32_t emulator::execute_sub(uint32_t a, uint32_t b) {
-    xip_fpo_set_ui(xil_a, a);
-    xip_fpo_set_ui(xil_b, b);
+    float raw_a, raw_b;
+    uint32_t res;
+    memcpy(&raw_a, &a, sizeof(uint32_t));
+    memcpy(&raw_b, &b, sizeof(uint32_t));
+    xip_fpo_set_flt(xil_a, raw_a);
+    xip_fpo_set_flt(xil_b, raw_b);
+
     xip_fpo_exc_t exc = xip_fpo_sub(xil_res, xil_a, xil_b);
 
     if ( exc != 0) {
         throw std::runtime_error("An exception occurred in the subtraction of"+ std::to_string(a) + " and " + std::to_string(b));
     }
-    return xip_fpo_get_ui(xil_res);
+
+    float raw_res = xip_fpo_get_flt(xil_res);
+    memcpy(&res, &raw_res, sizeof(uint32_t));
+    return res;
 }
 
 uint32_t emulator::execute_mul(uint32_t a, uint32_t b) {
-    xip_fpo_set_ui(xil_a, a);
-    xip_fpo_set_ui(xil_b, b);
-    xip_fpo_exc_t exc = xip_fpo_mul(xil_res, xil_a, xil_b);
+    float raw_a, raw_b;
+    uint32_t res;
+    memcpy(&raw_a, &a, sizeof(uint32_t));
+    memcpy(&raw_b, &b, sizeof(uint32_t));
+    xip_fpo_set_flt(xil_a, raw_a);
+    xip_fpo_set_flt(xil_b, raw_b);
 
+    xip_fpo_exc_t exc = xip_fpo_mul(xil_res, xil_a, xil_b);
     if ( exc != 0) {
         throw std::runtime_error("An exception occurred in the multiplication of"+ std::to_string(a) + " and " + std::to_string(b));
     }
-    return xip_fpo_get_ui(xil_res);
+
+    float raw_res = xip_fpo_get_flt(xil_res);
+    memcpy(&res, &raw_res, sizeof(uint32_t));
+    return res;
 }
 
 uint32_t emulator::execute_rec(uint32_t a) {
-    xip_fpo_set_ui(xil_a, a);
+    float raw_a;
+    uint32_t res;
+    memcpy(&raw_a, &a, sizeof(uint32_t));
+    xip_fpo_set_flt(xil_a, raw_a);
+
     xip_fpo_exc_t exc = xip_fpo_rec(xil_res, xil_a);
 
     if ( exc != 0) {
         throw std::runtime_error("An exception occurred during the calculation of the reciprocal of"+ std::to_string(a));
     }
-    return xip_fpo_get_ui(xil_res);
+
+    float raw_res = xip_fpo_get_flt(xil_res);
+    memcpy(&res, &raw_res, sizeof(uint32_t));
+    return res;
 }
 
 uint32_t emulator::execute_fti(uint32_t a) {
@@ -146,8 +203,12 @@ uint32_t emulator::execute_itf(uint32_t a) {
 }
 
 uint32_t emulator::execute_compare_gt(uint32_t a, uint32_t b) {
-    xip_fpo_set_ui(xil_a, a);
-    xip_fpo_set_ui(xil_b, b);
+    float raw_a, raw_b;
+    uint32_t res;
+    memcpy(&raw_a, &a, sizeof(uint32_t));
+    memcpy(&raw_b, &b, sizeof(uint32_t));
+    xip_fpo_set_flt(xil_a, raw_a);
+    xip_fpo_set_flt(xil_b, raw_b);
 
     int res_int;
     xip_fpo_exc_t exc = xip_fpo_greater(&res_int, xil_a, xil_b);
@@ -164,8 +225,12 @@ uint32_t emulator::execute_compare_gt(uint32_t a, uint32_t b) {
 }
 
 uint32_t emulator::execute_compare_le(uint32_t a, uint32_t b) {
-    xip_fpo_set_ui(xil_a, a);
-    xip_fpo_set_ui(xil_b, b);
+    float raw_a, raw_b;
+    uint32_t res;
+    memcpy(&raw_a, &a, sizeof(uint32_t));
+    memcpy(&raw_b, &b, sizeof(uint32_t));
+    xip_fpo_set_flt(xil_a, raw_a);
+    xip_fpo_set_flt(xil_b, raw_b);
 
     int res_int;
     xip_fpo_exc_t exc = xip_fpo_lessequal(&res_int, xil_a, xil_b);
@@ -181,8 +246,12 @@ uint32_t emulator::execute_compare_le(uint32_t a, uint32_t b) {
 }
 
 uint32_t emulator::execute_compare_eq(uint32_t a, uint32_t b) {
-    xip_fpo_set_ui(xil_a, a);
-    xip_fpo_set_ui(xil_b, b);
+    float raw_a, raw_b;
+    uint32_t res;
+    memcpy(&raw_a, &a, sizeof(uint32_t));
+    memcpy(&raw_b, &b, sizeof(uint32_t));
+    xip_fpo_set_flt(xil_a, raw_a);
+    xip_fpo_set_flt(xil_b, raw_b);
 
     int res_int;
     xip_fpo_exc_t exc = xip_fpo_equal(&res_int, xil_a, xil_b);
@@ -198,8 +267,12 @@ uint32_t emulator::execute_compare_eq(uint32_t a, uint32_t b) {
 }
 
 uint32_t emulator::execute_compare_ne(uint32_t a, uint32_t b) {
-    xip_fpo_set_ui(xil_a, a);
-    xip_fpo_set_ui(xil_b, b);
+    float raw_a, raw_b;
+    uint32_t res;
+    memcpy(&raw_a, &a, sizeof(uint32_t));
+    memcpy(&raw_b, &b, sizeof(uint32_t));
+    xip_fpo_set_flt(xil_a, raw_a);
+    xip_fpo_set_flt(xil_b, raw_b);
 
     int res_int;
     xip_fpo_exc_t exc = xip_fpo_notequal(&res_int, xil_a, xil_b);

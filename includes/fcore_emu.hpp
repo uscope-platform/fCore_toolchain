@@ -19,6 +19,9 @@
 #define FCORE_TOOLCHAIN_FCORE_EMU_H
 
 #include <istream>
+#include <fstream>
+
+#include "../third_party/json.hpp"
 #include "data_structures/low_level_ast/low_level_ast.hpp"
 #include "frontend/binary_loader.hpp"
 #include "tools/instruction_stream_builder.hpp"
@@ -30,10 +33,11 @@ class fcore_emu {
 public:
     fcore_emu(std::istream &input, bin_loader_input_type_t in_type);
     void write_json(const std::string& output_file);
-
+    std::vector<uint32_t> get_memory_snapshot(){return memory;};
 private:
     std::shared_ptr<ll_ast_node> ll_ast;
     std::string error_code;
+    std::vector<uint32_t> memory;
 };
 
 

@@ -30,6 +30,8 @@ fcore_emu::fcore_emu(std::istream &input, bin_loader_input_type_t in_type) {
         stream_pass_manager sman;
         program_stream = sman.process_stream(program_stream);
         emulator backend(program_stream);
+        backend.run_program();
+        memory = backend.get_memory();
 
     } catch(std::runtime_error &e){
         error_code = e.what();
@@ -38,5 +40,11 @@ fcore_emu::fcore_emu(std::istream &input, bin_loader_input_type_t in_type) {
 }
 
 void fcore_emu::write_json(const std::string &output_file) {
+    nlohmann::json j;
+    j["registers"] = memory;
 
+    std::string str = j.dump();
+    std::ofstream ss(output_file);
+    ss<<str;
+    ss.close();
 }
