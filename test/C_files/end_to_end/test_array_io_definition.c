@@ -1,3 +1,4 @@
+
 // Copyright (C) 2020 Filippo Savi - All Rights Reserved
 
 // This file is part of fCore_toolchain.
@@ -20,6 +21,14 @@
 int main(){
     #pragma input(a, {r4,r7});
     #pragma output(b, r3);
+    #pragma output(c, {r8,r9});
+    #pragma memory(d, {r10,r11});
     float a[2];
     float b = a[0] + a[1];
+    float c[2];
+    c[0] = a[0] + a[1];
+    c[1] = a[0] - a[1];
+    float d[2];
+    d[0] = a[0] * a[1];
+    d[1] = a[0] * b;
 }
