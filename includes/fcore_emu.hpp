@@ -32,12 +32,18 @@
 class fcore_emu {
 public:
     fcore_emu(std::istream &input, bin_loader_input_type_t in_type);
+    void set_inputs(std::istream &input);
+    void emulate_program();
     void write_json(const std::string& output_file);
     std::vector<uint32_t> get_memory_snapshot(){return memory;};
+
 private:
     std::shared_ptr<ll_ast_node> ll_ast;
     std::string error_code;
     std::vector<uint32_t> memory;
+    std::vector<std::pair<unsigned int, std::vector<float>>> inputs;
+    instruction_stream program_stream;
+    bool error_occurred = false;
 };
 
 

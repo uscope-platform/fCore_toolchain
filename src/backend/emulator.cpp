@@ -28,17 +28,35 @@ emulator::emulator(instruction_stream &s) :memory(2<< (fcore_register_address_wi
 }
 
 
-void emulator::set_inputs(std::unordered_map<uint32_t, uint32_t>) {
-    throw std::logic_error("Inputs emulation is not implemented yet!!");
+void emulator::set_inputs(std::vector<std::pair<unsigned int, std::vector<float>>> &in) {
+    inputs = in;
 }
 
 void emulator::run_program() {
+    if(!inputs.empty()){
+        unsigned int n_rounds = inputs[0].second.size();
+        run_program_with_inputs(n_rounds);
+    } else {
+        run_round();
+    }
+}
+
+void emulator::run_program_with_inputs(unsigned int rounds) {
+    for(unsigned int i = 0; i<rounds; i++){
+        for(auto item:inputs){
+            memory[item.first] = float_to_uint32(item.second[i]);
+        }
+        run_round();
+    }
+}
+
+void emulator::run_round() {
     for(auto &item:stream){
+        run_instruction_by_type(item);
         if(stop_requested) {
             stop_requested = false;
             break;
         }
-        run_instruction_by_type(item);
     }
 }
 
@@ -139,29 +157,23 @@ void emulator::run_load_constant_instruction(const std::shared_ptr<ll_load_const
 }
 
 uint32_t emulator::execute_add(uint32_t a, uint32_t b) {
-    float raw_a, raw_b;
-    uint32_t res;
-    memcpy(&raw_a, &a, sizeof(uint32_t));
-    memcpy(&raw_b, &b, sizeof(uint32_t));
-    xip_fpo_set_flt(xil_a, raw_a);
-    xip_fpo_set_flt(xil_b, raw_b);
+    xip_fpo_set_flt(xil_a, uint32_to_float(a));
+    xip_fpo_set_flt(xil_b, uint32_to_float(b));
 
     xip_fpo_exc_t exc = xip_fpo_add(xil_res, xil_a, xil_b);
     if ( exc != 0) {
         throw std::runtime_error("An exception occurred in the addition of"+ std::to_string(a) + " and " + std::to_string(b));
     }
-    float raw_res = xip_fpo_get_flt(xil_res);
-    memcpy(&res, &raw_res, sizeof(uint32_t));
-    return res;
+    float dbg_a = uint32_to_float(a);
+    float dbg_b = uint32_to_float(b);
+
+    float dbg = xip_fpo_get_flt(xil_res);
+    return float_to_uint32(xip_fpo_get_flt(xil_res));
 }
 
 uint32_t emulator::execute_sub(uint32_t a, uint32_t b) {
-    float raw_a, raw_b;
-    uint32_t res;
-    memcpy(&raw_a, &a, sizeof(uint32_t));
-    memcpy(&raw_b, &b, sizeof(uint32_t));
-    xip_fpo_set_flt(xil_a, raw_a);
-    xip_fpo_set_flt(xil_b, raw_b);
+    xip_fpo_set_flt(xil_a, uint32_to_float(a));
+    xip_fpo_set_flt(xil_b, uint32_to_float(b));
 
     xip_fpo_exc_t exc = xip_fpo_sub(xil_res, xil_a, xil_b);
 
@@ -169,34 +181,23 @@ uint32_t emulator::execute_sub(uint32_t a, uint32_t b) {
         throw std::runtime_error("An exception occurred in the subtraction of"+ std::to_string(a) + " and " + std::to_string(b));
     }
 
-    float raw_res = xip_fpo_get_flt(xil_res);
-    memcpy(&res, &raw_res, sizeof(uint32_t));
-    return res;
+    return float_to_uint32(xip_fpo_get_flt(xil_res));
 }
 
 uint32_t emulator::execute_mul(uint32_t a, uint32_t b) {
-    float raw_a, raw_b;
-    uint32_t res;
-    memcpy(&raw_a, &a, sizeof(uint32_t));
-    memcpy(&raw_b, &b, sizeof(uint32_t));
-    xip_fpo_set_flt(xil_a, raw_a);
-    xip_fpo_set_flt(xil_b, raw_b);
+    xip_fpo_set_flt(xil_a, uint32_to_float(a));
+    xip_fpo_set_flt(xil_b, uint32_to_float(b));
 
     xip_fpo_exc_t exc = xip_fpo_mul(xil_res, xil_a, xil_b);
     if ( exc != 0) {
         throw std::runtime_error("An exception occurred in the multiplication of"+ std::to_string(a) + " and " + std::to_string(b));
     }
 
-    float raw_res = xip_fpo_get_flt(xil_res);
-    memcpy(&res, &raw_res, sizeof(uint32_t));
-    return res;
+    return float_to_uint32(xip_fpo_get_flt(xil_res));
 }
 
 uint32_t emulator::execute_rec(uint32_t a) {
-    float raw_a;
-    uint32_t res;
-    memcpy(&raw_a, &a, sizeof(uint32_t));
-    xip_fpo_set_flt(xil_a, raw_a);
+    xip_fpo_set_flt(xil_a, uint32_to_float(a));
 
     xip_fpo_exc_t exc = xip_fpo_rec(xil_res, xil_a);
 
@@ -204,16 +205,11 @@ uint32_t emulator::execute_rec(uint32_t a) {
         throw std::runtime_error("An exception occurred during the calculation of the reciprocal of"+ std::to_string(a));
     }
 
-    float raw_res = xip_fpo_get_flt(xil_res);
-    memcpy(&res, &raw_res, sizeof(uint32_t));
-    return res;
+    return float_to_uint32(xip_fpo_get_flt(xil_res));
 }
 
 uint32_t emulator::execute_fti(uint32_t a) {
-    float raw_a;
-    uint32_t res;
-    memcpy(&raw_a, &a, sizeof(uint32_t));
-    xip_fpo_set_flt(xil_a, raw_a);
+    xip_fpo_set_flt(xil_a, uint32_to_float(a));
 
     xip_fpo_exc_t exc = xip_fpo_flttofix(xil_a_fixed_point, xil_a);
 
@@ -232,19 +228,12 @@ uint32_t emulator::execute_itf(uint32_t a) {
         throw std::runtime_error("An exception occurred during the conversion of "+ std::to_string(a) + "to float from integer");
     }
 
-    uint32_t res;
-    float raw_res = xip_fpo_get_flt(xil_res);
-    memcpy(&res, &raw_res, sizeof(uint32_t));
-    return res;
+    return float_to_uint32(xip_fpo_get_flt(xil_res));
 }
 
 uint32_t emulator::execute_compare_gt(uint32_t a, uint32_t b) {
-    float raw_a, raw_b;
-    uint32_t res;
-    memcpy(&raw_a, &a, sizeof(uint32_t));
-    memcpy(&raw_b, &b, sizeof(uint32_t));
-    xip_fpo_set_flt(xil_a, raw_a);
-    xip_fpo_set_flt(xil_b, raw_b);
+    xip_fpo_set_flt(xil_a, uint32_to_float(a));
+    xip_fpo_set_flt(xil_b, uint32_to_float(b));
 
     int res_int;
     xip_fpo_exc_t exc = xip_fpo_greater(&res_int, xil_a, xil_b);
@@ -261,12 +250,8 @@ uint32_t emulator::execute_compare_gt(uint32_t a, uint32_t b) {
 }
 
 uint32_t emulator::execute_compare_le(uint32_t a, uint32_t b) {
-    float raw_a, raw_b;
-    uint32_t res;
-    memcpy(&raw_a, &a, sizeof(uint32_t));
-    memcpy(&raw_b, &b, sizeof(uint32_t));
-    xip_fpo_set_flt(xil_a, raw_a);
-    xip_fpo_set_flt(xil_b, raw_b);
+    xip_fpo_set_flt(xil_a, uint32_to_float(a));
+    xip_fpo_set_flt(xil_b, uint32_to_float(b));
 
     int res_int;
     xip_fpo_exc_t exc = xip_fpo_lessequal(&res_int, xil_a, xil_b);
@@ -282,12 +267,8 @@ uint32_t emulator::execute_compare_le(uint32_t a, uint32_t b) {
 }
 
 uint32_t emulator::execute_compare_eq(uint32_t a, uint32_t b) {
-    float raw_a, raw_b;
-    uint32_t res;
-    memcpy(&raw_a, &a, sizeof(uint32_t));
-    memcpy(&raw_b, &b, sizeof(uint32_t));
-    xip_fpo_set_flt(xil_a, raw_a);
-    xip_fpo_set_flt(xil_b, raw_b);
+    xip_fpo_set_flt(xil_a, uint32_to_float(a));
+    xip_fpo_set_flt(xil_b, uint32_to_float(b));
 
     int res_int;
     xip_fpo_exc_t exc = xip_fpo_equal(&res_int, xil_a, xil_b);
@@ -303,12 +284,8 @@ uint32_t emulator::execute_compare_eq(uint32_t a, uint32_t b) {
 }
 
 uint32_t emulator::execute_compare_ne(uint32_t a, uint32_t b) {
-    float raw_a, raw_b;
-    uint32_t res;
-    memcpy(&raw_a, &a, sizeof(uint32_t));
-    memcpy(&raw_b, &b, sizeof(uint32_t));
-    xip_fpo_set_flt(xil_a, raw_a);
-    xip_fpo_set_flt(xil_b, raw_b);
+    xip_fpo_set_flt(xil_a, uint32_to_float(a));
+    xip_fpo_set_flt(xil_b, uint32_to_float(b));
 
     int res_int;
     xip_fpo_exc_t exc = xip_fpo_notequal(&res_int, xil_a, xil_b);
@@ -337,12 +314,9 @@ uint32_t emulator::execute_not(uint32_t a) {
 }
 
 uint32_t emulator::execute_satp(uint32_t a, uint32_t b) {
-    float raw_a, raw_b;
-    uint32_t res;
-    memcpy(&raw_a, &a, sizeof(uint32_t));
-    memcpy(&raw_b, &b, sizeof(uint32_t));
-    xip_fpo_set_flt(xil_a, raw_a);
-    xip_fpo_set_flt(xil_b, raw_b);
+    float raw_a = uint32_to_float(a);
+    float raw_b = uint32_to_float(b);
+
     float raw_res;
 
     if(raw_a>raw_b){
@@ -351,17 +325,13 @@ uint32_t emulator::execute_satp(uint32_t a, uint32_t b) {
         raw_res = raw_a;
     }
 
-    memcpy(&res, &raw_res, sizeof(uint32_t));
-    return res;
+    return float_to_uint32(raw_res);
 }
 
 uint32_t emulator::execute_satn(uint32_t a, uint32_t b) {
-    float raw_a, raw_b;
-    uint32_t res;
-    memcpy(&raw_a, &a, sizeof(uint32_t));
-    memcpy(&raw_b, &b, sizeof(uint32_t));
-    xip_fpo_set_flt(xil_a, raw_a);
-    xip_fpo_set_flt(xil_b, raw_b);
+    float raw_a = uint32_to_float(a);
+    float raw_b = uint32_to_float(b);
+
     float raw_res;
     if(raw_a<raw_b){
         raw_res = raw_b;
@@ -369,6 +339,17 @@ uint32_t emulator::execute_satn(uint32_t a, uint32_t b) {
         raw_res = raw_a;
     }
 
-    memcpy(&res, &raw_res, sizeof(uint32_t));
-    return res;
+    return float_to_uint32(raw_res);
+}
+
+uint32_t emulator::float_to_uint32(float f) {
+    uint32_t ret;
+    memcpy(&ret, &f, sizeof(f));
+    return ret;
+}
+
+float emulator::uint32_to_float(uint32_t u) {
+    float ret;
+    memcpy(&ret, &u, sizeof(u));
+    return ret;
 }

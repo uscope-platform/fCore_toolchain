@@ -27,11 +27,15 @@ class emulator {
 public:
     explicit emulator(instruction_stream &s);
 
-    void set_inputs(std::unordered_map<uint32_t, uint32_t>);
+    void set_inputs(std::vector<std::pair<unsigned int, std::vector<float>>> &in);
     void run_program();
+    void run_program_with_inputs(unsigned int rounds);
+    void run_round();
     std::vector<uint32_t> get_memory() { return memory;};
 private:
 
+    static uint32_t float_to_uint32(float f);
+    static float uint32_to_float(uint32_t u);
     void run_instruction_by_type(const std::shared_ptr<ll_instruction_node>& node);
 
     void run_register_instruction(const std::shared_ptr<ll_register_instr_node>& node);
@@ -62,6 +66,7 @@ private:
     bool stop_requested;
 
     std::vector<uint32_t> memory;
+    std::vector<std::pair<unsigned int, std::vector<float>>> inputs;
 };
 
 
