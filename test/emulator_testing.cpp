@@ -244,7 +244,7 @@ TEST(Emulator, emulator_error) {
     nlohmann::json gold_standard_j;
     gold_standard_j["error_code"] = "ERROR: malformed inputs file header";
     gold_standard_j["registers"] = result["registers"];
-
+    gold_standard_j["registers_f"] = result["registers_f"];
     ASSERT_EQ(result, gold_standard_j);
 }
 

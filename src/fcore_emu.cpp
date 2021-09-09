@@ -37,7 +37,14 @@ fcore_emu::fcore_emu(std::istream &input, bin_loader_input_type_t in_type) {
 
 void fcore_emu::write_json(const std::string &output_file) {
     nlohmann::json j;
+    std::vector<float> mem_f;
+    for(auto &item:memory){
+        float val;
+        memcpy(&val, &item, sizeof(float));
+        mem_f.push_back(val);
+    }
     j["registers"] = memory;
+    j["registers_f"] = mem_f;
     j["error_code"] = error_code;
     std::string str = j.dump();
     std::ofstream ss(output_file);

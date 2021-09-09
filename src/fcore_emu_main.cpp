@@ -30,13 +30,15 @@ int main(int argc, char **argv) {
     bool input_hex = false;
     bool input_mem = false;
     bool output_force = false;
-    std::string input_file;
+    std::string input_program;
+    std::string inputs_file;
     std::string output_file;
-    app.add_option("input_file", input_file, "Input file path")->required()->check(CLI::ExistingFile);
+    app.add_option("input_program", input_program, "Input program path")->required()->check(CLI::ExistingFile);
     app.add_flag("--mem", input_mem, "the input is a verilog mem file");
     app.add_flag("--hex", input_hex, "the input is a binary file");
     app.add_flag("--f", output_force, "force the rewriting of an existing product file");
     app.add_option("--o", output_file, "Output file path");
+    app.add_option("--inputs_csv", inputs_file, "Path of a csv file containing input vectors for the emulated core");
     CLI11_PARSE(app, argc, argv);
 
     if(!input_hex && !input_mem){
@@ -59,14 +61,20 @@ int main(int argc, char **argv) {
 
     bin_loader_input_type_t in_type;
     if(input_mem) {
-        stream.open(input_file);
+        stream.open(input_program);
         in_type = bin_loader_mem_input;
     } else {
-        stream.open(input_file, std::ifstream::binary);
+        stream.open(input_program, std::ifstream::binary);
         in_type = bin_loader_hex_input;
     }
 
     fcore_emu emu_engine(stream, in_type);
+
+    if(!inputs_file.empty()){
+        std::ifstream in_stream(inputs_file);
+        emu_engine.set_inputs(in_stream);
+    }
+    emu_engine.emulate_program();
 
     emu_engine.write_json(output_file);
 
