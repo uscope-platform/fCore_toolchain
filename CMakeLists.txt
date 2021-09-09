@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 project(fCore_toolchain)
 
+include(GNUInstallDirs)
 
 option(BUILD_TESTS "Build test programs" OFF)
 
