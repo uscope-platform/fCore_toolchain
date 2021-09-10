@@ -308,6 +308,12 @@ function_inlining_pass::substitute_operand_arguments(const std::shared_ptr<hl_as
             for(auto &item: p->get_array_index()){
                 tmp_vect.push_back(substitute_arguments(item, parameters));
             }
+            std::vector<std::shared_ptr<hl_ast_node>> old_idx = old_operand->get_array_index();
+
+            if(!old_idx.empty()) {
+                tmp_vect.insert(tmp_vect.end(), old_idx.begin(), old_idx.end());
+            }
+
             if(!tmp_vect.empty()){
                 new_operand->set_type(var_type_array);
             }

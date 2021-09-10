@@ -674,3 +674,41 @@ TEST(HlPassesTest, test_matrix_scalarization) {
     gold_standard->add_content(ex);
     ASSERT_EQ(*normalized_ast, *gold_standard);
 }
+
+
+TEST(HlPassesTest, function_inlining_array) {
+
+    std::string input_file = "hl_opt/test_function_inlining_array.c";
+    std::ifstream ifs(input_file);
+
+
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(ifs, result_def);
+    parser.pre_process({}, {});
+    parser.parse();
+
+    std::string ep = "main";
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,9,10});
+    manager.run_morphing_passes(parser.AST);
+
+    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST->get_content()[3];
+
+    std::shared_ptr<hl_expression_node> gold_standard = std::make_shared<hl_expression_node>(expr_assign);
+
+    std::shared_ptr<variable> var = std::make_shared<variable>("_fcmglr_flattened_array_c_1_1");
+    std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
+    gold_standard->set_lhs(op);
+
+    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(expr_add);
+    var = std::make_shared<variable>("constant", 5.0f);
+    op = std::make_shared<hl_ast_operand>(var);
+    exp->set_lhs(op);
+
+    var = std::make_shared<variable>("constant", 2.0f);
+    op = std::make_shared<hl_ast_operand>(var);
+    exp->set_rhs(op);
+
+    ASSERT_EQ(*normalized_ast, *gold_standard);
+
+}
