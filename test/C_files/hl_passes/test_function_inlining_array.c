@@ -15,28 +15,22 @@
 // You should have received a copy of the GNU General Public License
 // along with fCore_toolchain.  If not, see <https://www.gnu.org/licenses/>.07/07/2021.
 //
-
 #define MAX_MATRIX 3
 
-void matrix_matrix_mult(float mat_1[MAX_MATRIX][MAX_MATRIX], float mat_2[MAX_MATRIX][MAX_MATRIX], float mat_3[MAX_MATRIX][MAX_MATRIX], int M, int N){
-    for (int i = 0; i < M; ++i) {
-        for (int j = 0; j < N; ++j) {
-            mat_3[i][j] = mat_1[i][j]+ mat_2[i][j];
-        }
-    }
-
+void matrix_matrix_add(float mat_1[MAX_MATRIX][MAX_MATRIX], float mat_2[MAX_MATRIX][MAX_MATRIX], float mat_3[MAX_MATRIX][MAX_MATRIX], int M, int N){
+    mat_3[1][1] = mat_1[1][1]+ mat_2[0][1];
 }
 
 int main(){
 
-
-#pragma input(test_in, r25)
+    float test_in;
+    #pragma input(test_in, r25)
 
     float a[2][2] = {{1.0, 2.0}, {4.0, 5.0}};
     float b[2][2] = {{1.0, 2.0}, {4.0, 5.0}};
     #pragma output(c, {r12, r13, r14, r15})
     float c[2][2];
-    matrix_matrix_mult(a, b, c, 2, 2);
-
+    matrix_matrix_add(a, b, c, 2, 2);
+    c[1][1] = test_in*c[1][1];
     return 0;
 }

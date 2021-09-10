@@ -692,7 +692,7 @@ TEST(HlPassesTest, function_inlining_array) {
     hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,9,10});
     manager.run_morphing_passes(parser.AST);
 
-    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST->get_content()[3];
+    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST->get_content()[5];
 
     std::shared_ptr<hl_expression_node> gold_standard = std::make_shared<hl_expression_node>(expr_assign);
 
