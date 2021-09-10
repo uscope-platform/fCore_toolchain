@@ -18,6 +18,7 @@ set(FCORE_COMMON_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/variable.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/variable_map.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/define_map.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tools/array_linearizer.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/ll_pass_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/loop_implementation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/pseudo_instructions_pass.cpp

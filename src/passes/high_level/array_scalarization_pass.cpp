@@ -79,7 +79,21 @@ std::shared_ptr<hl_ast_operand> array_scalarization_pass::process_operand(std::s
         std::shared_ptr<hl_ast_operand> bound_reg_op = std::static_pointer_cast<hl_ast_operand>(old_array_idx[0]);
         if(node->get_variable()->get_bound_reg_array().size()>1)
             var->set_bound_reg(node->get_variable()->get_bound_reg(bound_reg_op->get_int_value()));
+    } else{
+        std::vector<int> idx;
+        idx.reserve(old_array_idx.size());
+        for(auto &item:old_array_idx){
+            idx.push_back(std::static_pointer_cast<hl_ast_operand>(item)->get_int_value());
+        }
+        if(def_map[node->get_name()] != nullptr){
+            unsigned int linearized_idx = linearize_array(def_map[node->get_name()]->get_array_shape(),idx);
+            if(node->get_variable()->get_bound_reg_array().size()!=1){
+                var->set_bound_reg(node->get_variable()->get_bound_reg(linearized_idx));
+            }
+        }
     }
+
+
 
     node->set_variable(var);
     node->set_array_index({});
@@ -89,6 +103,10 @@ std::shared_ptr<hl_ast_operand> array_scalarization_pass::process_operand(std::s
 
 std::shared_ptr<hl_definition_node>
 array_scalarization_pass::process_definition(std::shared_ptr<hl_definition_node> node) {
+
+    if(!node->is_scalar()) {
+        def_map[node->get_name()] = node;
+    }
 
     if(node->is_initialized()){
         node->set_scalar_initializer(process_element(node->get_scalar_initializer()));

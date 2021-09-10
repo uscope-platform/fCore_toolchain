@@ -268,3 +268,19 @@ TEST(EndToEndC, array_io_definition) {
 
     ASSERT_EQ(gold_standard, result);
 }
+
+
+TEST(EndToEndC, multidimensional_array_io_definition) {
+    std::string input_file = "c_e2e/test_multidim_array_io_definition.c";
+
+    std::vector<std::string> includes;
+    std::ifstream stream(input_file);
+
+    fcore_cc compiler(stream, includes, true);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x23881, 0x103881, 0x143882, 0x123881, 0x163882, 0x183883, 0x200883, 0x1a3883, 0x240883};
+
+    ASSERT_EQ(gold_standard, result);
+}

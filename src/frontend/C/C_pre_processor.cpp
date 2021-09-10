@@ -111,7 +111,7 @@ void C_pre_processor::process_pragmas(const std::string& line) {
         } else {
             std::smatch regs_match;
             std::vector<unsigned int> array_bound_reg;
-            while(std::regex_search(reg, regs_match, std::regex(R"((r(\d+))*\,?)"))){
+            while(std::regex_search(reg, regs_match, std::regex(R"((r(\d+))*\s?\,?\s?)"))){
                 std::string reg_number = regs_match[2].str();
                 if(reg_number.empty()) break;
                 array_bound_reg.push_back(std::stoul(reg_number));

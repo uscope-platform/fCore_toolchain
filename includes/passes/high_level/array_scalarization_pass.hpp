@@ -20,6 +20,7 @@
 #define FCORE_TOOLCHAIN_ARRAY_SCALARIZATION_PASS_HPP
 
 #include "passes/pass_base.hpp"
+#include "tools/array_linearizer.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
 class array_scalarization_pass : public pass_base<hl_ast_node> {
@@ -38,6 +39,7 @@ private:
     std::shared_ptr<hl_ast_conditional_node> process_conditional(std::shared_ptr<hl_ast_conditional_node> node);
 
     std::string mangle_name(std::vector<std::shared_ptr<hl_ast_node>> old_array_idx, std::string var_name);
+    std::unordered_map<std::string, std::shared_ptr<hl_definition_node>> def_map;
 
 };
 

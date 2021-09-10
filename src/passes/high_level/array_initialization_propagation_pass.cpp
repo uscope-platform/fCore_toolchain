@@ -102,17 +102,10 @@ array_initialization_propagation_pass::process_operand(std::shared_ptr<hl_ast_op
                 return node;
             }
 
-
             std::vector<int> shape = def_map[node->get_name()]->get_array_shape();
-            int linearized_idx = idx.back();
 
-            for(int i = idx.size()-2; i>=0; --i){
-                int interm_factor = 1;
-                for(int j = shape.size()-1; j>i; --j){
-                     interm_factor *= idx[i]*shape[j];
-                }
-                linearized_idx += interm_factor;
-            }
+            unsigned int linearized_idx = linearize_array(shape, idx);
+
             return  std::static_pointer_cast<hl_ast_operand>(def_map[node->get_name()]->get_array_initializer()[linearized_idx]);
         }
     } else{

@@ -105,10 +105,6 @@ void C_Tree_visitor::exitParameterDeclaration(C_parser::C_grammarParser::Paramet
         identifier->set_array_index(idx_array);
     }
 
-
-
-
-
     if(in_function_declaration) {
         parameters_list.push_back(identifier);
     }

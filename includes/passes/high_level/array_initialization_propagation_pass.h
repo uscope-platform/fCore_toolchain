@@ -20,6 +20,7 @@
 #define FCORE_TOOLCHAIN_ARRAY_INITIALIZATION_PROPAGATION_H
 
 #include "passes/pass_base.hpp"
+#include "tools/array_linearizer.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
 class array_initialization_propagation_pass : public pass_base<hl_ast_node>{
@@ -38,7 +39,6 @@ private:
     std::shared_ptr<hl_ast_conditional_node> process_conditional(std::shared_ptr<hl_ast_conditional_node>node);
     std::shared_ptr<hl_ast_loop_node> process_loop(std::shared_ptr<hl_ast_loop_node> node);
 
-    std::unordered_map<std::string, std::pair<int, std::string>> function_calls_map;
     std::unordered_map<std::string, std::shared_ptr<hl_definition_node>> def_map;
     std::unordered_map<std::string, std::vector<std::vector<int>>> dirty_elements_idx;
 };
