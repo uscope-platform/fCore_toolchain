@@ -30,12 +30,11 @@ TEST(EndToEndC, minimal_c_end_to_end) {
 
 
     std::string input_file = "c_e2e/test_normalization.c";
-    std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_def);
-    parser.pre_process({}, {});
+    C_language_parser parser(input_file, result_def);
+    parser.pre_process({});
     parser.parse();
 
     std::string ep = "main";
@@ -74,11 +73,10 @@ TEST(EndToEndC, fcore_cc) {
 
 
     std::string input_file = "c_e2e/test_normalization.c";
-    std::ifstream ifs(input_file);
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(ifs, includes, false);
+    fcore_cc compiler(input_file, includes, false);
     std::vector<uint32_t> result = compiler.get_hexfile(false);
 
     std::vector<uint32_t> gold_standard = {0x146, 1104150528};
@@ -90,11 +88,10 @@ TEST(EndToEndC, end_to_end_intrinsics) {
 
 
     std::string input_file = "c_e2e/test_intrinsics_implementation.c";
-    std::ifstream ifs(input_file);
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(ifs, includes,true);
+    fcore_cc compiler(input_file, includes,true);
     std::vector<uint32_t> result = compiler.get_hexfile(false);
 
     std::vector<uint32_t> gold_standard = {0x944,0x26,0x42C80000, 0x40950};
@@ -109,9 +106,8 @@ TEST(EndToEndC, json_writing) {
     std::string test_json = "/tmp/e2e_c_json_test.json";
 
     std::vector<std::string> includes;
-    std::ifstream stream(input_file);
 
-    fcore_cc compiler(stream, includes,false);
+    fcore_cc compiler(input_file, includes,false);
     compiler.write_json(test_json);
 
     nlohmann::json out;
@@ -131,11 +127,9 @@ TEST(EndToEndC, json_writing) {
 TEST(EndToEndC, pragma_io) {
     std::string input_file = "c_e2e/test_pragma_io.c";
 
-
     std::vector<std::string> includes;
-    std::ifstream stream(input_file);
 
-    fcore_cc compiler(stream, includes,false);
+    fcore_cc compiler(input_file, includes,false);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -149,9 +143,8 @@ TEST(EndToEndC, conditional) {
 
 
     std::vector<std::string> includes;
-    std::ifstream stream(input_file);
 
-    fcore_cc compiler(stream, includes,false);
+    fcore_cc compiler(input_file, includes,false);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -164,9 +157,8 @@ TEST(EndToEndC, array_scalarization) {
     std::string input_file = "c_e2e/test_array_scalarization.c";
 
     std::vector<std::string> includes;
-    std::ifstream stream(input_file);
 
-    fcore_cc compiler(stream, includes,true);
+    fcore_cc compiler(input_file, includes,true);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -180,9 +172,8 @@ TEST(EndToEndC, loop) {
     std::string input_file = "c_e2e/test_full_loop.c";
 
     std::vector<std::string> includes;
-    std::ifstream stream(input_file);
 
-    fcore_cc compiler(stream, includes,false);
+    fcore_cc compiler(input_file, includes,false);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -196,9 +187,8 @@ TEST(EndToEndC, nested_loop) {
     std::string input_file = "c_e2e/test_full_nested_loop.c";
 
     std::vector<std::string> includes;
-    std::ifstream stream(input_file);
 
-    fcore_cc compiler(stream, includes, true);
+    fcore_cc compiler(input_file, includes, true);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -211,9 +201,8 @@ TEST(EndToEndC, array_initialization) {
     std::string input_file = "c_e2e/test_array_initialization.c";
 
     std::vector<std::string> includes;
-    std::ifstream stream(input_file);
 
-    fcore_cc compiler(stream, includes, true);
+    fcore_cc compiler(input_file, includes, true);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -227,9 +216,8 @@ TEST(EndToEndC, array_initialization_through_function) {
     std::string input_file = "c_e2e/test_array_initialization_through_function.c";
 
     std::vector<std::string> includes;
-    std::ifstream stream(input_file);
 
-    fcore_cc compiler(stream, includes, true);
+    fcore_cc compiler(input_file, includes, true);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -243,9 +231,8 @@ TEST(EndToEndC, constant_argument_inlining) {
     std::string input_file = "c_e2e/test_constant_argument_inlining.c";
 
     std::vector<std::string> includes;
-    std::ifstream stream(input_file);
 
-    fcore_cc compiler(stream, includes, true);
+    fcore_cc compiler(input_file, includes, true);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -258,9 +245,8 @@ TEST(EndToEndC, array_io_definition) {
     std::string input_file = "c_e2e/test_array_io_definition.c";
 
     std::vector<std::string> includes;
-    std::ifstream stream(input_file);
 
-    fcore_cc compiler(stream, includes, true);
+    fcore_cc compiler(input_file, includes, true);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -274,9 +260,8 @@ TEST(EndToEndC, multidimensional_array_io_definition) {
     std::string input_file = "c_e2e/test_multidim_array_io_definition.c";
 
     std::vector<std::string> includes;
-    std::ifstream stream(input_file);
 
-    fcore_cc compiler(stream, includes, true);
+    fcore_cc compiler(input_file, includes, true);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 

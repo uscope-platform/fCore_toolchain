@@ -23,12 +23,11 @@
 
 TEST( cFrontend, preprocessor_decomment) {
     std::string input_file = "c_prep/test_comments.c";
-    std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs,result_def);
-    parser.pre_process({}, {});
+    C_language_parser parser(input_file,result_def);
+    parser.pre_process({});
 
     define def_1(0, "TEST", "15");
     define def_2(0, "TESTT", "1 ");
@@ -45,12 +44,11 @@ TEST( cFrontend, preprocessor_decomment) {
 
 TEST( cFrontend, preprocessor_pragma) {
     std::string input_file = "c_prep/test_pragmas.c";
-    std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_def);
-    parser.pre_process({}, {});
+    C_language_parser parser(input_file, result_def);
+    parser.pre_process({});
     std::unordered_map<std::string, std::shared_ptr<variable>> iom_map = parser.preproc->get_iom_map();
 
     std::shared_ptr<variable_map> gold_standard = std::make_shared<variable_map>();
@@ -69,12 +67,11 @@ TEST( cFrontend, preprocessor_pragma) {
 
 TEST( cFrontend, preprocessor_define) {
     std::string input_file = "c_prep/test_define.c";
-    std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs,result_def);
-    parser.pre_process({}, {});
+    C_language_parser parser(input_file,result_def);
+    parser.pre_process({});
     parser.parse();
 
     std::shared_ptr<hl_definition_node> result = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
@@ -92,13 +89,12 @@ TEST( cFrontend, preprocessor_define) {
 
 TEST( cFrontend, preprocessor_include) {
     std::string input_file = "c_prep/test_include.c";
-    std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
 
-    C_language_parser parser(ifs,result_def);
-    parser.pre_process({}, {"c_prep/include_test.h"});
+    C_language_parser parser(input_file,result_def);
+    parser.pre_process({});
     parser.parse();
 
     std::shared_ptr<hl_definition_node> result = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
@@ -117,10 +113,9 @@ TEST( cFrontend, preprocessor_include) {
 
 TEST( cFrontend, preprocessor_include_fail) {
     std::string input_file = "c_prep/test_include_fail.c";
-    std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-    C_language_parser parser(ifs,result_def);
-    EXPECT_THROW(parser.pre_process({}, {}), std::runtime_error);
+    C_language_parser parser(input_file,result_def);
+    EXPECT_THROW(parser.pre_process({}), std::runtime_error);
 
 }

@@ -39,7 +39,7 @@
 
 class fcore_cc {
 public:
-    fcore_cc(std::istream &input, std::vector<std::string> &includes, bool print_debug);
+    fcore_cc(std::string &path, std::vector<std::string> &includes, bool print_debug);
     std::vector<uint32_t> get_hexfile(bool endian_swap);
     std::string get_errors();
     std::vector<std::string> get_verilog_memfile();

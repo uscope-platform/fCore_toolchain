@@ -21,7 +21,9 @@
 
 #include <utility>
 
-C_pre_processor::C_pre_processor(std::istream &file, std::shared_ptr<define_map> &defmap) {
+C_pre_processor::C_pre_processor(std::string &path, std::shared_ptr<define_map> &defmap) {
+    std::ifstream file(path);
+    file_path = path;
     working_content = std::string((std::istreambuf_iterator<char>(file)),std::istreambuf_iterator<char>());
     dmap = defmap;
 }
@@ -143,17 +145,12 @@ std::string C_pre_processor::process_rel_includes(const std::string& line) {
     if(std::regex_search( line,match,rel_include_regex)){
         std::string target = match.str(1);
         if(!target.empty()){
-            if(std::find(allowed_relative_includes.begin(), allowed_relative_includes.end(), target) != allowed_relative_includes.end()){
-                std::ifstream ifs(std::filesystem::canonical("./" + target));
-                C_pre_processor include_preproc(ifs, dmap);
-                iom_map.insert(include_preproc.get_iom_map().begin(), iom_map.end());
-                include_preproc.set_relative_includes(allowed_relative_includes);
-                include_preproc.set_absolute_includes(allowed_absolute_includes);
-                include_preproc.process_file();
-                return include_preproc.get_preprocessed_file();
-            } else {
-                throw std::runtime_error("included file: " + target + " not found");
-            }
+            std::string target_path = std::filesystem::canonical("./" + target);
+            C_pre_processor include_preproc(target_path, dmap);
+            iom_map.insert(include_preproc.get_iom_map().begin(), iom_map.end());
+            include_preproc.set_absolute_includes(allowed_absolute_includes);
+            include_preproc.process_file();
+            return include_preproc.get_preprocessed_file();
         }
     }
     return "";
@@ -175,9 +172,6 @@ std::string C_pre_processor::process_abs_includes(const std::string &line) {
     return "";
 }
 
-void C_pre_processor::set_relative_includes(std::vector<std::string> list) {
-    allowed_relative_includes = std::move(list);
-}
 
 void C_pre_processor::set_absolute_includes(std::vector<std::string> list) {
     allowed_absolute_includes = std::move(list);

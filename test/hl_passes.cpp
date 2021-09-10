@@ -376,12 +376,11 @@ TEST(HlPassesTest, function_elimination) {
 
 
     std::string input_file = "hl_opt/test_normalization.c";
-    std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_def);
-    parser.pre_process({}, {});
+    C_language_parser parser(input_file, result_def);
+    parser.pre_process({});
     parser.parse();
 
     std::string ep = "main";
@@ -435,12 +434,11 @@ TEST(HlPassesTest, normalization) {
 
 
     std::string input_file = "hl_opt/test_normalization.c";
-    std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_def);
-    parser.pre_process({}, {});
+    C_language_parser parser(input_file, result_def);
+    parser.pre_process({});
     parser.parse();
 
     std::string ep = "main";
@@ -499,12 +497,11 @@ TEST(HlPassesTest, hl_ast_lowering) {
 
 
     std::string input_file = "hl_opt/test_normalization.c";
-    std::ifstream ifs(input_file);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_def);
-    parser.pre_process({}, {});
+    C_language_parser parser(input_file, result_def);
+    parser.pre_process({});
     parser.parse();
 
     std::string ep = "main";
@@ -545,13 +542,11 @@ TEST(HlPassesTest, loop_unrolling_array) {
 
 
     std::string input_file = "hl_opt/test_loop_unrolling.c";
-    std::ifstream ifs(input_file);
-
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_def);
-    parser.pre_process({}, {});
+    C_language_parser parser(input_file, result_def);
+    parser.pre_process({});
     parser.parse();
 
     std::string ep = "main";
@@ -603,13 +598,12 @@ TEST(HlPassesTest, test_matrix_scalarization) {
 
 
     std::string input_file = "hl_opt/test_matrix_scalarization.c";
-    std::ifstream ifs(input_file);
 
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_def);
-    parser.pre_process({}, {});
+    C_language_parser parser(input_file, result_def);
+    parser.pre_process({});
     parser.parse();
 
     std::string ep = "main";
@@ -679,13 +673,11 @@ TEST(HlPassesTest, test_matrix_scalarization) {
 TEST(HlPassesTest, function_inlining_array) {
 
     std::string input_file = "hl_opt/test_function_inlining_array.c";
-    std::ifstream ifs(input_file);
-
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(ifs, result_def);
-    parser.pre_process({}, {});
+    C_language_parser parser(input_file, result_def);
+    parser.pre_process({});
     parser.parse();
 
     std::string ep = "main";

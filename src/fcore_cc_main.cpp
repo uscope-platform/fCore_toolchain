@@ -48,11 +48,8 @@ int main(int argc, char **argv) {
         }
     }
 
-    std::ifstream stream;
-    stream.open(input_file);
-
     std::vector<std::string> include_files = {""};
-    fcore_cc cc_engine(stream, include_files, false);
+    fcore_cc cc_engine(input_file, include_files, false);
 
     if(output_hex){
         cc_engine.write_hexfile(output_file);

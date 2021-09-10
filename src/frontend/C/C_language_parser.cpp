@@ -27,16 +27,15 @@ C_language_parser::C_language_parser(){
     dmap = std::make_shared<define_map>();
 }
 
-C_language_parser::C_language_parser(std::istream &stream, std::shared_ptr<define_map> &existing_defmap) {
+C_language_parser::C_language_parser(std::string &path, std::shared_ptr<define_map> &existing_defmap) {
     dmap = existing_defmap;
-    preproc = std::make_unique<C_pre_processor>(stream,dmap);
+    preproc = std::make_unique<C_pre_processor>(path,dmap);
 
 }
 
 
-void C_language_parser::pre_process(const std::vector<std::string> &abs_includes, const std::vector<std::string> &rel_includes) {
+void C_language_parser::pre_process(const std::vector<std::string> &abs_includes) {
     preproc->set_absolute_includes(abs_includes);
-    preproc->set_relative_includes(rel_includes);
     preproc->process_file();
     preproc->substitute_defines();
     preprocessed_content = preproc->get_preprocessed_file();

@@ -19,12 +19,12 @@
 #include "fcore_cc.hpp"
 
 
-fcore_cc::fcore_cc(std::istream &input, std::vector<std::string> &includes, bool print_debug) {
+fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool print_debug) {
     std::shared_ptr<define_map> defines_map = std::make_shared<define_map>();
     error_code = "";
     try{
-        C_language_parser target_parser(input, defines_map);
-        target_parser.pre_process({}, {});
+        C_language_parser target_parser(path, defines_map);
+        target_parser.pre_process({});
         target_parser.parse();
         hl_ast = target_parser.AST;
         std::string ep = "main";

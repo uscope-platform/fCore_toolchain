@@ -38,9 +38,9 @@
 class C_language_parser{
     public:
     explicit C_language_parser();
-    C_language_parser(std::istream &stream, std::shared_ptr<define_map> &new_defmap);
+    C_language_parser(std::string &path, std::shared_ptr<define_map> &new_defmap);
 
-    void pre_process(const std::vector<std::string> &abs_includes, const std::vector<std::string> &rel_includes);
+    void pre_process(const std::vector<std::string> &abs_includes);
     void parse();
 
     unsigned int n_inputs() const {return n_inputs_;};
