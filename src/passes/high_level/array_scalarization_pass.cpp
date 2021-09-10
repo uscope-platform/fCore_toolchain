@@ -85,15 +85,11 @@ std::shared_ptr<hl_ast_operand> array_scalarization_pass::process_operand(std::s
         for(auto &item:old_array_idx){
             idx.push_back(std::static_pointer_cast<hl_ast_operand>(item)->get_int_value());
         }
-        if(def_map[node->get_name()] != nullptr){
-            unsigned int linearized_idx = linearize_array(def_map[node->get_name()]->get_array_shape(),idx);
-            if(node->get_variable()->get_bound_reg_array().size()!=1){
-                var->set_bound_reg(node->get_variable()->get_bound_reg(linearized_idx));
-            }
+        unsigned int linearized_idx = linearize_array(def_map[node->get_name()]->get_array_shape(),idx);
+        if(node->get_variable()->get_bound_reg_array().size()!=1){
+            var->set_bound_reg(node->get_variable()->get_bound_reg(linearized_idx));
         }
     }
-
-
 
     node->set_variable(var);
     node->set_array_index({});

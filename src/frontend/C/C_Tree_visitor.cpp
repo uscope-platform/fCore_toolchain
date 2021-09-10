@@ -128,10 +128,9 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
         var = iom_map[name];
     } else {
         var = std::make_shared<variable>( name);
-        if(in_array_declaration)
-            var->set_type(var_type_array);
     }
-
+    if(in_array_declaration)
+        var->set_type(var_type_array);
     std::shared_ptr<hl_definition_node> node = std::make_shared<hl_definition_node>(name, hl_ast_node::string_to_type(type_name), var);
     node->set_constant(is_const);
 
