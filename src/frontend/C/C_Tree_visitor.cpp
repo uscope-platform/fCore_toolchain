@@ -464,9 +464,9 @@ void C_Tree_visitor::exitAssignmentExpression(C_parser::C_grammarParser::Assignm
                 }
             }
         }
-        std::shared_ptr<hl_expression_node> value = std::static_pointer_cast<hl_expression_node>(expressions_stack.top());
+        std::shared_ptr<hl_ast_node> value = expressions_stack.top();
         expressions_stack.pop();
-        std::shared_ptr<hl_ast_operand> target = std::static_pointer_cast<hl_ast_operand>(expressions_stack.top());
+        std::shared_ptr<hl_ast_node> target = expressions_stack.top();
         expressions_stack.pop();
         std::shared_ptr<hl_expression_node> assignment = std::make_shared<hl_expression_node>(expr_assign);
         assignment->set_lhs(target);

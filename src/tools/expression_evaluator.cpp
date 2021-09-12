@@ -53,7 +53,15 @@ expression_evaluator::evaluate_expression(std::shared_ptr<hl_expression_node> ex
 std::shared_ptr<hl_ast_operand>
 expression_evaluator::evaluate_unary_expression(std::shared_ptr<hl_expression_node> expression) {
     std::shared_ptr<hl_ast_operand> retval;
-    std::shared_ptr<hl_ast_operand> rhs = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_rhs()));
+
+    std::shared_ptr<hl_ast_operand> rhs;
+    if(expression->get_rhs()->node_type ==hl_ast_node_type_expr){
+        rhs = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_rhs()));
+    } else if(expression->get_rhs()->node_type ==hl_ast_node_type_operand) {
+        rhs = std::static_pointer_cast<hl_ast_operand>(expression->get_rhs());
+    } else {
+        throw std::runtime_error("ERROR: node type not expected during expression evaluation");
+    }
 
     c_types_t expr_type = c_type_int;
     //In order for the result type to be flating point either the operand is a float or the expression is reciprocal, which
@@ -88,16 +96,29 @@ expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_
 
     std::shared_ptr<hl_ast_operand> retval;
 
-    std::shared_ptr<hl_ast_operand> lhs = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_lhs()));
-    std::shared_ptr<hl_ast_operand> rhs = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_rhs()));
+    std::shared_ptr<hl_ast_operand> lhs;
+    if(expression->get_lhs()->node_type ==hl_ast_node_type_expr){
+        lhs = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_lhs()));
+    } else if(expression->get_lhs()->node_type ==hl_ast_node_type_operand) {
+        lhs = std::static_pointer_cast<hl_ast_operand>(expression->get_lhs());
+    } else {
+        throw std::runtime_error("ERROR: node type not expected during expression evaluation");
+    }
+
+    std::shared_ptr<hl_ast_operand> rhs;
+    if(expression->get_rhs()->node_type ==hl_ast_node_type_expr){
+        rhs = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_rhs()));
+    } else if(expression->get_rhs()->node_type ==hl_ast_node_type_operand) {
+        rhs = std::static_pointer_cast<hl_ast_operand>(expression->get_rhs());
+    } else {
+        throw std::runtime_error("ERROR: node type not expected during expression evaluation");
+    }
 
     c_types_t expr_type = c_type_int;
 
     if(rhs->get_type() == var_type_float_const || lhs->get_type() == var_type_float_const){
         expr_type = c_type_float;
     }
-
-
 
     if(expr_type == c_type_int) {
         int op_a = lhs->get_int_value();

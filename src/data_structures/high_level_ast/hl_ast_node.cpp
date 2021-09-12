@@ -280,10 +280,14 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_function_call(const std::sha
 }
 
 std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_program_root(const std::shared_ptr<hl_ast_node> &node) {
-    std::shared_ptr<hl_ast_node> orig = std::static_pointer_cast<hl_function_def_node>(node);
     std::shared_ptr<hl_ast_node> copied_obj = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
-    copied_obj->set_content(orig->get_content());
+    std::vector<std::shared_ptr<hl_ast_node>> args;
+    for(const auto &i :node->get_content()){
+        args.push_back(deep_copy(i));
+    }
+
+    copied_obj->set_content(args);
     return copied_obj;
 }
 

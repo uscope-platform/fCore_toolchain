@@ -150,7 +150,7 @@ std::vector<std::shared_ptr<hl_ast_node>> hl_pass_manager::process_nodes(const s
 
 }
 
-std::shared_ptr<hl_expression_node>
+std::shared_ptr<hl_ast_node>
 hl_pass_manager::process_expression(const std::shared_ptr<hl_expression_node> &subtree,
                                     const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
 
@@ -164,7 +164,8 @@ hl_pass_manager::process_expression(const std::shared_ptr<hl_expression_node> &s
         result->set_lhs(lhs);
     }
 
-    return std::static_pointer_cast<hl_expression_node>(pass->process_leaf(result));
+
+    return pass->process_leaf(result);
 
 }
 

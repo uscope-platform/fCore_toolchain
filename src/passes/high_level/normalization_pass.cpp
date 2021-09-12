@@ -129,12 +129,18 @@ normalization_pass::extract_intermediate_expression(std::shared_ptr<hl_expressio
             expr_type = c_type_float;
         } else if(type_lhs == var_type_float_const){
             expr_type = c_type_float;
+        } else if(type_rhs == var_type_int_const){
+            expr_type = c_type_int;
+        } else {
+            expr_type = c_type_float;
         }
     } else{
         if(type_rhs == var_type_float_const){
             expr_type = c_type_float;
         } else if(type_rhs == var_type_int_const){
             expr_type = c_type_int;
+        } else {
+            expr_type = c_type_float;
         }
     }
 
