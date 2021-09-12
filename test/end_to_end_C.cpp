@@ -56,7 +56,9 @@ TEST(EndToEndC, minimal_c_end_to_end) {
 
     instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
 
-    stream_pass_manager sman;
+    std::unordered_map<std::string, std::shared_ptr<variable>> iom = parser.get_iom_map();
+
+    stream_pass_manager sman(iom);
     program_stream = sman.process_stream(program_stream);
 
     writer.process_stream(program_stream, false);

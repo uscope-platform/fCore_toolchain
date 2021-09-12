@@ -41,8 +41,9 @@ fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool p
         ll_manager.run_morphing_passes(ll_ast);
 
         instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
+        std::unordered_map<std::string, std::shared_ptr<variable>> iom = target_parser.get_iom_map();
 
-        stream_pass_manager sman;
+        stream_pass_manager sman(iom);
         program_stream = sman.process_stream(program_stream);
 
         writer.process_stream(program_stream, print_debug);

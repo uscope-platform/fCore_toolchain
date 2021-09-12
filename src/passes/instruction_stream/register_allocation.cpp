@@ -18,8 +18,9 @@
 #include "passes/instruction_stream/register_allocation.hpp"
 
 
-register_allocation::register_allocation(std::shared_ptr<variable_map> vmap) : stream_pass_base("register allocation") {
+register_allocation::register_allocation(std::shared_ptr<variable_map> vmap, std::unordered_map<std::string, std::shared_ptr<variable>> &iom) : stream_pass_base("register allocation") {
 var_map = std::move(vmap);
+iom_map = iom;
 //pre_initialize the registers statuses;
 used.reserve(pow(2, fcore_opcode_width));
 for(int i = 0; i< pow(2, fcore_opcode_width); ++i) {
@@ -29,6 +30,14 @@ for(int i = 0; i< pow(2, fcore_opcode_width); ++i) {
 //exclude form allocation pool the register that are used explicitly by the user
 for(int i= 0; i<pow(2, fcore_opcode_width); i++){
     used[i] = var_map->at("r"+std::to_string(i))->is_used();
+}
+
+for( auto&item:iom_map){
+    if(item.second->get_variable_class() == variable_memory_type || item.second->get_variable_class() == variable_output_type){
+        for(auto &idx:item.second->get_bound_reg_array()){
+            used[idx] = true;
+        }
+    }
 }
 
 //exclude form allocation pool the inputs and outputs
@@ -59,7 +68,7 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
                 item = register_mapping[item->to_str()];
             }else if(m.empty() && !item->is_constant()){
                 bool found = false;
-                for(int i = 0; i<16;i++){
+                for(int i = 0; i<(2<<fcore_register_address_width);i++){
 
                     if(!reg_map.is_used(i, item->get_first_occurrence(), item->get_last_occurrence())){
                         found = true;

@@ -105,8 +105,11 @@ array_initialization_propagation_pass::process_operand(std::shared_ptr<hl_ast_op
             std::vector<int> shape = def_map[node->get_name()]->get_array_shape();
 
             unsigned int linearized_idx = linearize_array(shape, idx);
-
-            return  std::static_pointer_cast<hl_ast_operand>(def_map[node->get_name()]->get_array_initializer()[linearized_idx]);
+            std::shared_ptr<hl_ast_operand> ret_operand = std::static_pointer_cast<hl_ast_operand>(hl_ast_node::deep_copy(def_map[node->get_name()]->get_array_initializer()[linearized_idx]));
+            ret_operand->set_name(node->get_name());
+            ret_operand->get_variable()->set_bound_reg(node->get_variable()->get_bound_reg());
+            ret_operand->get_variable()->set_variable_class(node->get_variable()->get_variable_class());
+            return  ret_operand;
         }
     } else{
         return node;

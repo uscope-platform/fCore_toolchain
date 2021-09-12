@@ -18,13 +18,13 @@
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 
 
-stream_pass_manager::stream_pass_manager() {
-
+stream_pass_manager::stream_pass_manager(std::unordered_map<std::string, std::shared_ptr<variable>> &iom) {
+    iom_map = iom;
     std::shared_ptr<variable_map> var_map = std::make_shared<variable_map>();
 
     passes.push_back(std::make_shared<variable_mapping>(var_map));
     passes.push_back(std::make_shared<variable_lifetime_mapping>(var_map));
-    passes.push_back(std::make_shared<register_allocation>(var_map));
+    passes.push_back(std::make_shared<register_allocation>(var_map, iom_map));
 }
 
 instruction_stream stream_pass_manager::process_stream(instruction_stream stream) {

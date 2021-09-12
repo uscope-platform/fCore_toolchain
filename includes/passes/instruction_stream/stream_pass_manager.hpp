@@ -31,11 +31,12 @@
 
 class stream_pass_manager {
 public:
-    stream_pass_manager();
+    stream_pass_manager(std::unordered_map<std::string, std::shared_ptr<variable>> &iom);
     instruction_stream process_stream(instruction_stream stream);
     instruction_stream apply_pass(const instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass);
 private:
     std::vector<std::shared_ptr<stream_pass_base>> passes;
+    std::unordered_map<std::string, std::shared_ptr<variable>> iom_map;
 };
 
 

@@ -98,6 +98,7 @@ expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_
     }
 
 
+
     if(expr_type == c_type_int) {
         int op_a = lhs->get_int_value();
         int op_b = rhs->get_int_value();

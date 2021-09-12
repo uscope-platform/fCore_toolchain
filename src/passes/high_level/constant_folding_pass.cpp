@@ -24,13 +24,12 @@ constant_folding_pass::constant_folding_pass() : pass_base<hl_ast_node>("Constan
 }
 
 std::shared_ptr<hl_ast_node> constant_folding_pass::process_leaf(std::shared_ptr<hl_ast_node> element) {
+    std::shared_ptr<hl_ast_node> ret_val = element;
     if(element->node_type==hl_ast_node_type_expr){
         std::shared_ptr<hl_expression_node> expression = std::static_pointer_cast<hl_expression_node>(element);
         if(expression_evaluator::is_constant_expression(expression)){
-            return expression_evaluator::evaluate_expression(expression);
-        } else {
-            return element;
+            ret_val =  expression_evaluator::evaluate_expression(expression);
         }
     }
-    return element;
+    return ret_val;
 }
