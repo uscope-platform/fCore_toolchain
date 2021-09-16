@@ -29,7 +29,9 @@ std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_pt
     for(auto & i : content){
         if(i->node_type == hl_ast_node_type_definition){
             std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(i);
-            if(node->get_variable()->get_variable_class() != variable_regular_type || !node->is_initialized()) {
+            if(node->get_name().rfind("IOM_init_constant_", 0) == 0){
+                new_content.push_back(i);
+            } else if(node->get_variable()->get_variable_class() != variable_regular_type || !node->is_initialized()) {
                 new_content.push_back(i);
             } else if(node->get_scalar_initializer()->node_type == hl_ast_node_type_operand){
                 std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(

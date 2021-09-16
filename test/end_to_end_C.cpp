@@ -271,3 +271,17 @@ TEST(EndToEndC, multidimensional_array_io_definition) {
 
     ASSERT_EQ(gold_standard, result);
 }
+
+TEST(EndToEndC, iom_initialization){
+    std::string input_file = "c_e2e/test_iom_initialization.c";
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(input_file, includes, true);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x106,0x3F800000,0x126, 0x40000000, 0x146, 0x40400000, 0x166, 0x40800000, 0x286, 0x40400000};
+
+    ASSERT_EQ(gold_standard, result);
+}

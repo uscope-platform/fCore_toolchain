@@ -42,15 +42,16 @@ std::shared_ptr<hl_ast_node> dead_variable_elimination::process_global(std::shar
             }
         }
     }
+
     for(const auto& item:element->get_content()){
 
         if(item->node_type == hl_ast_node_type_definition){
             std::shared_ptr<hl_definition_node> node =std::static_pointer_cast<hl_definition_node>(item);
             if(defined_variables.count(node->get_name())>0){
-                new_body.push_back(item);
+                new_body.push_back(hl_ast_node::deep_copy(item));
             }
         } else {
-            new_body.push_back(item);
+            new_body.push_back(hl_ast_node::deep_copy(item));
         }
     }
 

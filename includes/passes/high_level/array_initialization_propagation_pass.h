@@ -30,10 +30,10 @@ public:
     int get_pass_type() override { return GLOBAL_PASS;};
 
 private:
-    std::shared_ptr<hl_ast_node> process_node_by_type(const std::shared_ptr<hl_ast_node>& node);
+    std::vector<std::shared_ptr<hl_ast_node>> process_node_by_type(const std::shared_ptr<hl_ast_node>& node);
     std::shared_ptr<hl_expression_node> process_expression(std::shared_ptr<hl_expression_node> node);
     std::shared_ptr<hl_ast_operand> process_operand(std::shared_ptr<hl_ast_operand> node);
-    std::shared_ptr<hl_definition_node> process_definition(std::shared_ptr<hl_definition_node> node);
+    std::vector<std::shared_ptr<hl_ast_node>> process_definition(std::shared_ptr<hl_definition_node> node);
     std::shared_ptr<hl_function_def_node> process_function_definition(std::shared_ptr<hl_function_def_node> node);
     std::shared_ptr<hl_function_call_node> process_function_call(std::shared_ptr<hl_function_call_node> node);
     std::shared_ptr<hl_ast_conditional_node> process_conditional(std::shared_ptr<hl_ast_conditional_node>node);
@@ -41,6 +41,7 @@ private:
 
     std::unordered_map<std::string, std::shared_ptr<hl_definition_node>> def_map;
     std::unordered_map<std::string, std::vector<std::vector<int>>> dirty_elements_idx;
+    unsigned int n_init_iom = 0;
 };
 
 

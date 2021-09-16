@@ -89,6 +89,7 @@ configure_file(C_files/end_to_end/test_array_initialization_through_function.c $
 configure_file(C_files/end_to_end/test_constant_argument_inlining.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_array_io_definition.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_multidim_array_io_definition.c  ${C_E2E_TEST_FILES_DIR} COPYONLY)
+configure_file(C_files/end_to_end/test_iom_initialization.c  ${C_E2E_TEST_FILES_DIR} COPYONLY)
 
 # DISASSEMBLER TESTING FILES
 set(DIS_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/dis)
