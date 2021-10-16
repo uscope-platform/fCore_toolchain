@@ -4,6 +4,7 @@ project(fCore_toolchain)
 include(GNUInstallDirs)
 
 option(BUILD_TESTS "Build test programs" OFF)
+option(INCLUDE_EMULATOR "Include the emulator in the build" OFF)
 
 include_directories(/usr/include/antlr4-runtime)
 include_directories(includes)

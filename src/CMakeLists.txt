@@ -107,11 +107,11 @@ install(TARGETS fCore_has DESTINATION /usr/bin)
 install(TARGETS fCore_cc DESTINATION /usr/bin)
 install(TARGETS fCore_dis DESTINATION /usr/bin)
 
-if(NOT DEFINED ${EXCLUDE_EMULATOR})
+if(${INCLUDE_EMULATOR})
     add_executable(fCore_emu ${FCORE_EMU_SRCS} fcore_emu_main.cpp)
     target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel)
 
     install(TARGETS fCore_emu DESTINATION /usr/bin)
     install(FILES ../third_party/fp_ip_cmodel/lib/libIp_floating_point_v7_1_bitacc_cmodel.so
             DESTINATION ${CMAKE_INSTALL_LIBDIR})
-endif(NOT DEFINED ${EXCLUDE_EMULATOR})
+endif(${INCLUDE_EMULATOR})
