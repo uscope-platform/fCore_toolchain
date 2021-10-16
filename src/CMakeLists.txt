@@ -94,24 +94,24 @@ set(FCORE_EMU_SRCS
 set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_DIS_SRCS} ${FCORE_EMU_SRCS} PARENT_SCOPE)
 
 
-# Standalone assembler executable
 add_executable(fCore_has ${FCORE_AS_SRCS} ${ASM_PARSER_SRCS} fcore_has_main.cpp)
 target_link_libraries(fCore_has PUBLIC antlr4-runtime)
 
-# Standalone C compiler executable
 add_executable(fCore_cc ${FCORE_CC_SRCS} ${C_PARSER_SRCS} fcore_cc_main.cpp)
 target_link_libraries(fCore_cc PUBLIC antlr4-runtime)
 
-# Standalone disassembler executable
 add_executable(fCore_dis ${FCORE_DIS_SRCS} fcore_dis_main.cpp)
 
-# Standalone disassembler executable
-add_executable(fCore_emu ${FCORE_EMU_SRCS} fcore_emu_main.cpp)
-target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel)
 
 install(TARGETS fCore_has DESTINATION /usr/bin)
 install(TARGETS fCore_cc DESTINATION /usr/bin)
 install(TARGETS fCore_dis DESTINATION /usr/bin)
-install(TARGETS fCore_emu DESTINATION /usr/bin)
-install(FILES ../third_party/fp_ip_cmodel/lib/libIp_floating_point_v7_1_bitacc_cmodel.so
-        DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+if(NOT DEFINED ${EXCLUDE_EMULATOR})
+    add_executable(fCore_emu ${FCORE_EMU_SRCS} fcore_emu_main.cpp)
+    target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel)
+
+    install(TARGETS fCore_emu DESTINATION /usr/bin)
+    install(FILES ../third_party/fp_ip_cmodel/lib/libIp_floating_point_v7_1_bitacc_cmodel.so
+            DESTINATION ${CMAKE_INSTALL_LIBDIR})
+endif(NOT DEFINED ${EXCLUDE_EMULATOR})
