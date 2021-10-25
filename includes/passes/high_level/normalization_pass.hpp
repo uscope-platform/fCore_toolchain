@@ -36,12 +36,12 @@ public:
 
     norm_pair_t process_node_by_type(std::shared_ptr<hl_ast_node> n);
     norm_pair_t process_node_def(const std::shared_ptr<hl_definition_node>& n);
-    norm_pair_t process_node_exp(std::shared_ptr<hl_expression_node> n);
+    norm_pair_t process_node_exp(const std::shared_ptr<hl_expression_node>& n);
 
+    c_types_t get_expression_type(std::shared_ptr<hl_expression_node> expr);
     int get_pass_type() override { return GLOBAL_PASS;};
 private:
     int intermediate_ordinal = 0;
-    std::vector<std::shared_ptr<hl_ast_node>> additional_statements;
 };
 
 

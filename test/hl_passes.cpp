@@ -387,8 +387,8 @@ TEST(HlPassesTest, function_elimination) {
 
     std::shared_ptr<hl_ast_node> raw_result =parser.AST;
 
-    std::shared_ptr<variable> var = std::make_shared<variable>("intermediate_expr_0");
-    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int, var);
+    std::shared_ptr<variable> var = std::make_shared<variable>("intermediate_expression_0");
+    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expression_0", c_type_int, var);
 
 
     var = std::make_shared<variable>("constant", 4);
@@ -409,7 +409,7 @@ TEST(HlPassesTest, function_elimination) {
     std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int, var);
 
 
-    var = std::make_shared<variable>("intermediate_expr_0");
+    var = std::make_shared<variable>("intermediate_expression_0");
     op_1 = std::make_shared<hl_ast_operand>(var);
 
     var = std::make_shared<variable>("constant",6);
@@ -446,8 +446,8 @@ TEST(HlPassesTest, simple_normalization) {
     normalization_pass p;
     std::shared_ptr<hl_ast_node> raw_result = p.process_global(parser.AST);
 
-    std::shared_ptr<variable> var = std::make_shared<variable>("intermediate_expr_0");
-    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expr_0", c_type_int, var);
+    std::shared_ptr<variable> var = std::make_shared<variable>("intermediate_expression_0");
+    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expression_0", c_type_int, var);
 
 
 
@@ -470,7 +470,7 @@ TEST(HlPassesTest, simple_normalization) {
     std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int, var);
 
 
-    var = std::make_shared<variable>("intermediate_expr_0");
+    var = std::make_shared<variable>("intermediate_expression_0");
     op_1 = std::make_shared<hl_ast_operand>(var);
 
 
@@ -518,12 +518,12 @@ TEST(HlPassesTest, hl_ast_lowering) {
 
     std::shared_ptr<variable> op_a = std::make_shared<variable>("constant", 4);
     std::shared_ptr<variable> op_b = std::make_shared<variable>("constant", 5);
-    std::shared_ptr<variable> dest = std::make_shared<variable>("intermediate_expr_0");
+    std::shared_ptr<variable> dest = std::make_shared<variable>("intermediate_expression_0");
 
     std::shared_ptr<ll_register_instr_node> op_1 = std::make_shared<ll_register_instr_node>("mul", op_a, op_b, dest);
 
 
-    op_a = std::make_shared<variable>("intermediate_expr_0");
+    op_a = std::make_shared<variable>("intermediate_expression_0");
     op_b = std::make_shared<variable>("constant", 6);
     dest = std::make_shared<variable>("a");
 
@@ -756,30 +756,30 @@ TEST(HlPassesTest, complex_normalization) {
     std::shared_ptr<hl_expression_node> expr_1 = std::make_shared<hl_expression_node>(expr_mult);
 
     std::shared_ptr<variable> var = std::make_shared<variable>("fwd_in");
-    std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
-    expr_1->set_rhs(op);
+    std::shared_ptr<hl_ast_operand> fwd_op = std::make_shared<hl_ast_operand>(var);
+    expr_1->set_rhs(fwd_op);
 
     var = std::make_shared<variable>("Ts");
-    op = std::make_shared<hl_ast_operand>(var);
-    expr_1->set_lhs(op);
+    std::shared_ptr<hl_ast_operand> ts_op = std::make_shared<hl_ast_operand>(var);
+    expr_1->set_lhs(ts_op);
     // OUTER MULTIPLICATION
     std::shared_ptr<hl_expression_node> expr_2 = std::make_shared<hl_expression_node>(expr_mult);
     expr_2->set_lhs(expr_1);
 
     var = std::make_shared<variable>("omega");
-    op = std::make_shared<hl_ast_operand>(var);
-    expr_2->set_rhs(op);
+    std::shared_ptr<hl_ast_operand> w_op = std::make_shared<hl_ast_operand>(var);
+    expr_2->set_rhs(w_op);
     // ADDITION
     expr_1 = std::make_shared<hl_expression_node>(expr_add);
     expr_1->set_rhs(expr_2);
 
     var = std::make_shared<variable>("integ_1");
-    op = std::make_shared<hl_ast_operand>(var);
-    expr_1->set_lhs(op);
+    std::shared_ptr<hl_ast_operand> integ_op = std::make_shared<hl_ast_operand>(var);
+    expr_1->set_lhs(integ_op);
 
     expr_2 = std::make_shared<hl_expression_node>(expr_assign);
     expr_2->set_rhs(expr_1);
-    expr_2->set_lhs(op);
+    expr_2->set_lhs(integ_op);
 
 
     std::shared_ptr<hl_ast_node> input_root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
@@ -789,5 +789,42 @@ TEST(HlPassesTest, complex_normalization) {
     std::string ep = "main";
     hl_pass_manager manager = create_hl_pass_manager(ep,{11});
     manager.run_morphing_passes(input_root);
-    ASSERT_EQ(1, 3);
+
+
+    var = std::make_shared<variable>("intermediate_expression_0");
+    std::shared_ptr<hl_definition_node> ie0_def = std::make_shared<hl_definition_node>("intermediate_expression_0", c_type_float, var);
+    std::shared_ptr<hl_ast_operand> ie0_op = std::make_shared<hl_ast_operand>(var);
+    std::shared_ptr<hl_expression_node> expr = std::make_shared<hl_expression_node>(expr_mult);
+    expr->set_rhs(fwd_op);
+    expr->set_lhs(ts_op);
+    ie0_def->set_scalar_initializer(expr);
+
+    var = std::make_shared<variable>("intermediate_expression_1");
+    std::shared_ptr<hl_definition_node> ie1_def = std::make_shared<hl_definition_node>("intermediate_expression_1", c_type_float, var);
+    std::shared_ptr<hl_ast_operand> ie1_op = std::make_shared<hl_ast_operand>(var);
+    expr = std::make_shared<hl_expression_node>(expr_mult);
+    expr->set_rhs(w_op);
+    expr->set_lhs(ie0_op);
+    ie1_def->set_scalar_initializer(expr);
+
+
+    expr = std::make_shared<hl_expression_node>(expr_add);
+    expr->set_rhs(ie1_op);
+    expr->set_lhs(integ_op);
+
+
+    std::shared_ptr<hl_expression_node> expr_as = std::make_shared<hl_expression_node>(expr_assign);
+    expr_as->set_rhs(expr);
+    expr_as->set_lhs(integ_op);
+
+    std::shared_ptr<hl_ast_node> gold_standard= std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    gold_standard->add_content(ie0_def);
+    gold_standard->add_content(ie1_def);
+    gold_standard->add_content(expr_as);
+
+
+
+
+
+    ASSERT_EQ(*gold_standard, *input_root);
 }
