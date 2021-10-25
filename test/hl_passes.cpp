@@ -702,3 +702,50 @@ TEST(HlPassesTest, function_inlining_array) {
     ASSERT_EQ(*normalized_ast, *gold_standard);
 
 }
+
+TEST(HlPassesTest, function_return_inlining) {
+
+    std::string input_file = "hl_opt/test_return_inlining.c";
+
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(input_file, result_def);
+    parser.pre_process({});
+    parser.parse();
+
+    std::string ep = "main";
+    hl_pass_manager manager = create_hl_pass_manager(ep,{});
+    manager.run_morphing_passes(parser.AST);
+
+    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
+
+    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+
+    std::shared_ptr<variable> var = std::make_shared<variable>("inlined_variable_0");
+    std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("inlined_variable_0", c_type_float, var);
+    var = std::make_shared<variable>("constant", 807.000977f);
+    std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
+    def->set_scalar_initializer(op);
+    gold_standard->add_content(def);
+
+    var = std::make_shared<variable>("ret");
+    var->set_bound_reg(12);
+    var->set_variable_class(variable_output_type);
+    def = std::make_shared<hl_definition_node>("ret", c_type_float, var);
+    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(expr_add);
+
+    var = std::make_shared<variable>("inlined_variable_0");
+    op = std::make_shared<hl_ast_operand>(var);
+    exp->set_lhs(op);
+
+    var = std::make_shared<variable>("test_in");
+    var->set_bound_reg(25);
+    var->set_variable_class(variable_input_type);
+    op = std::make_shared<hl_ast_operand>(var);
+    exp->set_rhs(op);
+
+    def->set_scalar_initializer(exp);
+    gold_standard->add_content(def);
+
+    ASSERT_EQ(*normalized_ast, *gold_standard);
+}

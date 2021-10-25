@@ -32,42 +32,58 @@ std::shared_ptr<hl_ast_node> function_inlining_pass::process_global(std::shared_
 
     std::vector<std::shared_ptr<hl_ast_node>> new_content;
     for(auto &item:element->get_content()){
-        new_content.push_back(process_element(item));
+        std::vector<std::shared_ptr<hl_ast_node>> processed_elements = process_element(item);
+        new_content.insert(new_content.end(), processed_elements.begin(), processed_elements.end());
     }
     element->set_content(new_content);
     return element;
 }
 
-std::shared_ptr<hl_ast_node> function_inlining_pass::process_element(std::shared_ptr<hl_ast_node> element) {
+std::vector<std::shared_ptr<hl_ast_node>> function_inlining_pass::process_element(std::shared_ptr<hl_ast_node> element) {
     switch (element->node_type) {
         case hl_ast_node_type_expr:
-            return process_expression(std::static_pointer_cast<hl_expression_node>(element));
+            return {process_expression(std::static_pointer_cast<hl_expression_node>(element))};
         case hl_ast_node_type_definition:
-            return process_definition(std::static_pointer_cast<hl_definition_node>(element));
+            return {process_definition(std::static_pointer_cast<hl_definition_node>(element))};
         case hl_ast_node_type_conditional:
-            return process_conditional(std::static_pointer_cast<hl_ast_conditional_node>(element));
+            return {process_conditional(std::static_pointer_cast<hl_ast_conditional_node>(element))};
         case hl_ast_node_type_loop:
-            return process_loop(std::static_pointer_cast<hl_ast_loop_node>(element));
+            return {process_loop(std::static_pointer_cast<hl_ast_loop_node>(element))};
         case hl_ast_node_type_function_def:
-            return process_function_def(std::static_pointer_cast<hl_function_def_node>(element));
+            return {process_function_def(std::static_pointer_cast<hl_function_def_node>(element))};
         case hl_ast_node_type_operand:
-            return process_operand(std::static_pointer_cast<hl_ast_operand>(element));
+            return {process_operand(std::static_pointer_cast<hl_ast_operand>(element))};
         case hl_ast_node_type_function_call:
             return process_function_call(std::static_pointer_cast<hl_function_call_node>(element));
         default:
-            return element;
+            return {element};
     }
 }
 
 std::shared_ptr<hl_ast_loop_node> function_inlining_pass::process_loop(std::shared_ptr<hl_ast_loop_node> element) {
 
-    element->set_condition(process_expression(element->get_condition()));
-    element->set_init_statement(process_definition(element->get_init_statement()));
-    element->set_iteration_expr(process_expression(element->get_iteration_expr()));
+    std::vector<std::shared_ptr<hl_ast_node>> processed_condition = process_expression(element->get_condition());
+    if(processed_condition.size()>1){
+        throw std::runtime_error("ERROR: internal error #5923");
+    }
+    element->set_condition(std::static_pointer_cast<hl_expression_node>(processed_condition[0]));
+
+    std::vector<std::shared_ptr<hl_ast_node>> processed_init = process_definition(element->get_init_statement());
+    if(processed_init.size()>1){
+        throw std::runtime_error("ERROR: internal error #5924");
+    }
+    element->set_init_statement(std::static_pointer_cast<hl_definition_node>(processed_init[0]));
+
+    std::vector<std::shared_ptr<hl_ast_node>> processed_iter_expr = process_expression(element->get_iteration_expr());
+    if(processed_iter_expr.size()>1){
+        throw std::runtime_error("ERROR: internal error #5925");
+    }
+    element->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(processed_iter_expr[0]));
 
     std::vector<std::shared_ptr<hl_ast_node>> new_content;
     for(auto &item:element->get_loop_content()){
-        new_content.push_back(process_element(item));
+        std::vector<std::shared_ptr<hl_ast_node>> processed_elements = process_element(item);
+        new_content.insert(new_content.end(), processed_elements.begin(), processed_elements.end());
     }
     element->set_loop_content(new_content);
 
@@ -76,40 +92,64 @@ std::shared_ptr<hl_ast_loop_node> function_inlining_pass::process_loop(std::shar
 
 std::shared_ptr<hl_ast_conditional_node>
 function_inlining_pass::process_conditional(std::shared_ptr<hl_ast_conditional_node> element) {
-    element->set_condition(process_element(element->get_condition()));
+    element->set_condition(process_element(element->get_condition())[0]);
 
     std::vector<std::shared_ptr<hl_ast_node>> new_content;
     for(auto &item:element->get_if_block()){
-        new_content.push_back(process_element(item));
+        std::vector<std::shared_ptr<hl_ast_node>> processed_elements = process_element(item);
+        new_content.insert(new_content.end(), processed_elements.begin(), processed_elements.end());
     }
     element->set_if_block(new_content);
 
     new_content.clear();
     for(auto &item:element->get_else_block()){
-        new_content.push_back(process_element(item));
+        std::vector<std::shared_ptr<hl_ast_node>> processed_elements = process_element(item);
+        new_content.insert(new_content.end(), processed_elements.begin(), processed_elements.end());
     }
     element->set_else_block(new_content);
 
     return element;
 }
 
-std::shared_ptr<hl_expression_node>
+std::vector<std::shared_ptr<hl_ast_node>>
 function_inlining_pass::process_expression(std::shared_ptr<hl_expression_node> element) {
+    std::vector<std::shared_ptr<hl_ast_node>> ret_val;
     if(!element->is_unary()){
-        element->set_lhs(process_element(element->get_lhs()));
+        std::vector<std::shared_ptr<hl_ast_node>> processed_elements = process_element(element->get_lhs());
+        if(processed_elements.size() == 1)
+            element->set_lhs(processed_elements[0]);
+        else{
+            element->set_lhs(processed_elements[1]);
+            ret_val.push_back(processed_elements[0]);
+        }
     }
-    element->set_rhs(process_element(element->get_rhs()));
 
-    return element;
+    std::vector<std::shared_ptr<hl_ast_node>> processed_elements = process_element(element->get_rhs());
+    if(processed_elements.size() == 1)
+        element->set_rhs(processed_elements[0]);
+    else{
+        element->set_rhs(processed_elements[1]);
+        ret_val.push_back(processed_elements[0]);
+    }
+
+    ret_val.push_back(element);
+    return ret_val;
 }
 
-std::shared_ptr<hl_definition_node>
+std::vector<std::shared_ptr<hl_ast_node>>
 function_inlining_pass::process_definition(std::shared_ptr<hl_definition_node> element) {
 
+    std::vector<std::shared_ptr<hl_ast_node>> ret_val;
 
     std::vector<std::shared_ptr<hl_ast_node>> new_content;
     for(auto &item:element->get_array_index()){
-        new_content.push_back(process_element(item));
+        std::vector<std::shared_ptr<hl_ast_node>> processed_elements = process_element(item);
+        if(processed_elements.size() == 1)
+            new_content.push_back(processed_elements[0]);
+        else{
+            new_content.push_back(processed_elements[1]);
+            ret_val.push_back(processed_elements[0]);
+        }
     }
     element->set_array_index(new_content);
 
@@ -117,13 +157,19 @@ function_inlining_pass::process_definition(std::shared_ptr<hl_definition_node> e
     if(element->is_initialized()){
         new_content.clear();
         for(auto &item:element->get_array_initializer()){
-            new_content.push_back(process_element(item));
+            std::vector<std::shared_ptr<hl_ast_node>> processed_elements = process_element(item);
+            if(processed_elements.size() == 1)
+                new_content.push_back(processed_elements[0]);
+            else{
+                new_content.push_back(processed_elements[1]);
+                ret_val.push_back(processed_elements[0]);
+            }
         }
         element->set_array_initializer(new_content);
-
     }
 
-    return element;
+    ret_val.push_back(element);
+    return ret_val;
 }
 
 std::shared_ptr<hl_function_def_node>
@@ -132,13 +178,20 @@ function_inlining_pass::process_function_def(std::shared_ptr<hl_function_def_nod
 
     std::vector<std::shared_ptr<hl_ast_node>> new_content;
     for(auto &item:element->get_body()){
-        new_content.push_back(process_element(item));
-    }
-    element->set_body(new_content);
-    if(element->get_return() != nullptr){
-        element->set_return(process_element(element->get_return()));
+        std::vector<std::shared_ptr<hl_ast_node>> processed_elements = process_element(item);
+        new_content.insert(new_content.end(), processed_elements.begin(), processed_elements.end());
     }
 
+    if(element->get_return() != nullptr){
+        std::vector<std::shared_ptr<hl_ast_node>> processed_return = process_element(element->get_return());
+        if(processed_return.size() == 1)
+            element->set_return(processed_return[0]);
+        else{
+            element->set_return(processed_return[1]);
+            new_content.push_back(processed_return[0]);
+        }
+    }
+    element->set_body(new_content);
     return element;
 }
 
@@ -147,7 +200,7 @@ std::shared_ptr<hl_ast_operand> function_inlining_pass::process_operand(std::sha
 }
 
 
-std::shared_ptr<hl_ast_node>
+std::vector<std::shared_ptr<hl_ast_node>>
 function_inlining_pass::process_function_call(std::shared_ptr<hl_function_call_node> f_call) {
     std::shared_ptr<hl_ast_node> ret_val;
 
@@ -180,14 +233,15 @@ function_inlining_pass::process_function_call(std::shared_ptr<hl_function_call_n
     }
     inlined_code->set_content(body);
 
+    std::shared_ptr<hl_ast_node> inlined_return = nullptr;
+
     if(f_def->get_return() != nullptr){
-        inlined_code->add_content(substitute_arguments(hl_ast_node::deep_copy(f_def->get_return()), arguments_map));
+        inlined_return = substitute_arguments(hl_ast_node::deep_copy(f_def->get_return()), arguments_map);
+        return {inlined_code, inlined_return};
     }
 
-
-    ret_val = inlined_code;
-    return ret_val;
-}
+    return {inlined_code};
+    }
 
  std::shared_ptr<hl_ast_node> function_inlining_pass::substitute_arguments(const std::shared_ptr<hl_ast_node> &statement,
                                                                            std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
@@ -246,9 +300,10 @@ function_inlining_pass::substitute_conditional_arguments(const std::shared_ptr<h
 std::shared_ptr<hl_ast_node>
 function_inlining_pass::substitute_expression_arguments(const std::shared_ptr<hl_expression_node> &statement,
                                                         std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
-
-    std::shared_ptr<hl_ast_node> tmp_lhs = substitute_arguments(statement->get_lhs(), parameters);
-    statement->set_lhs(tmp_lhs);
+    if(!statement->is_unary()){
+        std::shared_ptr<hl_ast_node> tmp_lhs = substitute_arguments(statement->get_lhs(), parameters);
+        statement->set_lhs(tmp_lhs);
+    }
     std::shared_ptr<hl_ast_node> tmp_rhs = substitute_arguments(statement->get_rhs(), parameters);
     statement->set_rhs(tmp_rhs);
     return statement;
@@ -257,9 +312,11 @@ function_inlining_pass::substitute_expression_arguments(const std::shared_ptr<hl
 std::shared_ptr<hl_ast_node>
 function_inlining_pass::substitute_definition_arguments(const std::shared_ptr<hl_definition_node> &statement,
                                                         std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
-    std::shared_ptr<hl_ast_node> tmp = statement->get_scalar_initializer();
-    statement->set_scalar_initializer(
-            std::static_pointer_cast<hl_expression_node>(substitute_arguments(tmp, parameters)));
+    if(statement->is_initialized()){
+        std::shared_ptr<hl_ast_node> tmp = statement->get_scalar_initializer();
+        statement->set_scalar_initializer(
+                std::static_pointer_cast<hl_expression_node>(substitute_arguments(tmp, parameters)));
+    }
 
     std::vector<std::shared_ptr<hl_ast_node>> tmp_vect;
     for(auto &item: statement->get_array_index()){
