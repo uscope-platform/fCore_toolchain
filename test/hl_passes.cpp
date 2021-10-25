@@ -428,7 +428,7 @@ TEST(HlPassesTest, function_elimination) {
 
 }
 
-TEST(HlPassesTest, normalization) {
+TEST(HlPassesTest, simple_normalization) {
 
 
     std::string input_file = "hl_opt/test_normalization.c";
@@ -748,4 +748,46 @@ TEST(HlPassesTest, function_return_inlining) {
     gold_standard->add_content(def);
 
     ASSERT_EQ(*normalized_ast, *gold_standard);
+}
+
+
+TEST(HlPassesTest, complex_normalization) {
+    // INNER MULTIPLICATION
+    std::shared_ptr<hl_expression_node> expr_1 = std::make_shared<hl_expression_node>(expr_mult);
+
+    std::shared_ptr<variable> var = std::make_shared<variable>("fwd_in");
+    std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
+    expr_1->set_rhs(op);
+
+    var = std::make_shared<variable>("Ts");
+    op = std::make_shared<hl_ast_operand>(var);
+    expr_1->set_lhs(op);
+    // OUTER MULTIPLICATION
+    std::shared_ptr<hl_expression_node> expr_2 = std::make_shared<hl_expression_node>(expr_mult);
+    expr_2->set_lhs(expr_1);
+
+    var = std::make_shared<variable>("omega");
+    op = std::make_shared<hl_ast_operand>(var);
+    expr_2->set_rhs(op);
+    // ADDITION
+    expr_1 = std::make_shared<hl_expression_node>(expr_add);
+    expr_1->set_rhs(expr_2);
+
+    var = std::make_shared<variable>("integ_1");
+    op = std::make_shared<hl_ast_operand>(var);
+    expr_1->set_lhs(op);
+
+    expr_2 = std::make_shared<hl_expression_node>(expr_assign);
+    expr_2->set_rhs(expr_1);
+    expr_2->set_lhs(op);
+
+
+    std::shared_ptr<hl_ast_node> input_root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+
+
+    input_root->add_content(expr_2);
+    std::string ep = "main";
+    hl_pass_manager manager = create_hl_pass_manager(ep,{11});
+    manager.run_morphing_passes(input_root);
+    ASSERT_EQ(1, 3);
 }

@@ -26,18 +26,18 @@ typedef enum {
     expr_normalize_rhs = 2,
 } side_to_normalize;
 
+typedef std::pair<std::shared_ptr<hl_ast_node>, std::vector<std::shared_ptr<hl_ast_node>>> norm_pair_t;
 
 class normalization_pass : public pass_base<hl_ast_node> {
 public:
     normalization_pass();
     std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
-    std::shared_ptr<hl_ast_node> process_node_by_type_top(std::shared_ptr<hl_ast_node> n);
-    std::vector<std::pair<side_to_normalize, std::shared_ptr<hl_ast_node>>> process_node_expr_inner(std::shared_ptr<hl_expression_node> n);
-    std::shared_ptr<hl_expression_node> produce_normalized_expression(std::shared_ptr<hl_expression_node> original_node, const std::vector<std::pair<side_to_normalize, std::shared_ptr<hl_ast_node>>>& extracted_intermediate);
-    std::shared_ptr<hl_definition_node> process_node_def(std::shared_ptr<hl_definition_node> n);
-    std::shared_ptr<hl_expression_node> process_node_exp(std::shared_ptr<hl_expression_node> n);
-    std::shared_ptr<hl_ast_operand> extract_intermediate_expression(std::shared_ptr<hl_expression_node> n);
-    std::shared_ptr<hl_ast_node> process_code_block(std::shared_ptr<hl_ast_node> n);
+    bool is_normal(const std::shared_ptr<hl_ast_node>& element);
+
+    norm_pair_t process_node_by_type(std::shared_ptr<hl_ast_node> n);
+    norm_pair_t process_node_def(const std::shared_ptr<hl_definition_node>& n);
+    norm_pair_t process_node_exp(std::shared_ptr<hl_expression_node> n);
+
     int get_pass_type() override { return GLOBAL_PASS;};
 private:
     int intermediate_ordinal = 0;
