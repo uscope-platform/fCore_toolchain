@@ -283,3 +283,18 @@ TEST(EndToEndC, iom_initialization){
 
     ASSERT_EQ(gold_standard, result);
 }
+
+
+TEST(EndToEndC, test_move){
+    std::string input_file = "c_e2e/test_move.c";
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(input_file, includes, true);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x140021};
+
+    ASSERT_EQ(gold_standard, result);
+}

@@ -72,26 +72,30 @@ std::shared_ptr<hl_ast_node> constant_propagation::substitute_constant(std::shar
             node->set_rhs(new_rhs);
             return node;
         } else{
-            std::shared_ptr<hl_ast_node> new_lhs;
-            std::shared_ptr<hl_ast_node> new_rhs;
 
 
-            if(node->get_rhs()->node_type == hl_ast_node_type_operand) {
-                std::shared_ptr<hl_ast_operand> rhs = std::static_pointer_cast<hl_ast_operand>(node->get_rhs());
-                new_rhs = process_operand(rhs);
-            } else {
-                new_rhs = substitute_constant(node->get_rhs());
+            if(node->get_type() != expr_assign){
+                std::shared_ptr<hl_ast_node> new_lhs;
+                std::shared_ptr<hl_ast_node> new_rhs;
+
+
+                if(node->get_rhs()->node_type == hl_ast_node_type_operand) {
+                    std::shared_ptr<hl_ast_operand> rhs = std::static_pointer_cast<hl_ast_operand>(node->get_rhs());
+                    new_rhs = process_operand(rhs);
+                } else {
+                    new_rhs = substitute_constant(node->get_rhs());
+                }
+
+                if(node->get_lhs()->node_type == hl_ast_node_type_operand) {
+                    std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(node->get_lhs());
+                    new_lhs = process_operand(lhs);
+                } else {
+                    new_rhs = substitute_constant(node->get_rhs());
+                }
+
+                node->set_rhs(new_rhs);
+                node->set_lhs(new_lhs);
             }
-
-            if(node->get_lhs()->node_type == hl_ast_node_type_operand) {
-                std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(node->get_lhs());
-                new_lhs = process_operand(lhs);
-            } else {
-                new_rhs = substitute_constant(node->get_rhs());
-            }
-
-            node->set_rhs(new_rhs);
-            node->set_lhs(new_lhs);
             return node;
         }
     } else if(element->node_type == hl_ast_node_type_definition){
