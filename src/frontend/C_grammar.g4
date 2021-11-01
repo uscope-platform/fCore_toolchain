@@ -459,9 +459,10 @@ HexQuad
     :   HexadecimalDigit HexadecimalDigit HexadecimalDigit HexadecimalDigit
     ;
 
+
 constant
-    :   IntegerConstant
-    |   FloatingConstant
+    :   ('-')? IntegerConstant
+    |   ('-')? FloatingConstant
     |   CharacterConstant
     ;
 

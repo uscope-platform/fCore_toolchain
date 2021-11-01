@@ -1368,6 +1368,7 @@ public:
     ConstantContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *IntegerConstant();
+    antlr4::tree::TerminalNode *Minus();
     antlr4::tree::TerminalNode *FloatingConstant();
     antlr4::tree::TerminalNode *CharacterConstant();
 

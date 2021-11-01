@@ -67,13 +67,13 @@ public:
     [[nodiscard]] bool is_float() const {return variable_type == var_type_float_const;};
 
     [[nodiscard]]  unsigned int get_bound_reg() const { return bound_register[0];};
-    [[nodiscard]]  void set_bound_reg(unsigned int reg) { bound_register[0] = reg;};
+    void set_bound_reg(unsigned int reg) { bound_register[0] = reg;};
 
     [[nodiscard]]  unsigned int get_bound_reg(unsigned int idx) const { return bound_register[idx];};
-    [[nodiscard]]  void set_bound_reg(unsigned int idx, unsigned int val) { bound_register[idx] = val;};
+    void set_bound_reg(unsigned int idx, unsigned int val) { bound_register[idx] = val;};
 
     [[nodiscard]]  std::vector<unsigned int> get_bound_reg_array() const { return bound_register;};
-    [[nodiscard]]  void set_bound_reg_array(std::vector<unsigned int> reg) { bound_register = std::move(reg);};
+    void set_bound_reg_array(std::vector<unsigned int> reg) { bound_register = std::move(reg);};
 
     [[nodiscard]] uint32_t get_value() const;
     friend bool operator==(const variable& lhs, const variable& rhs);

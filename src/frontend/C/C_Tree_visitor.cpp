@@ -256,15 +256,21 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
         if(ctx->constant()->FloatingConstant() != nullptr){
 
             std::string constant = ctx->constant()->FloatingConstant()->getText();
-
-            std::shared_ptr<variable> var = std::make_shared<variable>("constant",std::stof(constant));
+            float const_value = std::stoi(constant);
+            if(ctx->constant()->Minus() != nullptr){
+                const_value = -const_value;
+            }
+            std::shared_ptr<variable> var = std::make_shared<variable>("constant",const_value);
             operand = std::make_shared<hl_ast_operand>( var);
 
         } else if(ctx->constant()->IntegerConstant() != nullptr){
 
             std::string constant = ctx->constant()->IntegerConstant()->getText();
-
-            std::shared_ptr<variable> var = std::make_shared<variable>("constant", std::stoi(constant));
+            int const_value = std::stoi(constant);
+            if(ctx->constant()->Minus() != nullptr){
+                const_value = -const_value;
+            }
+            std::shared_ptr<variable> var = std::make_shared<variable>("constant", const_value);
             operand = std::make_shared<hl_ast_operand>( var);
 
         } else if(ctx->constant()->CharacterConstant() != nullptr){
