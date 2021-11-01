@@ -38,6 +38,7 @@ public:
     std::shared_ptr<hl_ast_node> get_return();
     std::vector<std::shared_ptr<hl_ast_node>> get_body();
     std::string pretty_print() override;
+    nlohmann::json dump() override;
     friend bool operator==(const hl_function_def_node& lhs, const hl_function_def_node& rhs);
     bool is_terminal() override {
         return false;

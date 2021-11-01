@@ -48,3 +48,13 @@ bool operator==(const hl_ast_loop_node &lhs, const hl_ast_loop_node &rhs) {
 
     return ret_val;
 }
+
+nlohmann::json hl_ast_loop_node::dump() {
+    nlohmann::json retval = hl_ast_node::dump();
+    retval["loop_content"] = hl_ast_node::dump_array(loop_content);
+    retval["iteration_expr"] = iteration_expr->dump();
+    retval["condition"] = condition->dump();
+    retval["init_statement"] = init_statement->dump();
+
+    return retval;
+}

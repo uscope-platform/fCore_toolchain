@@ -57,3 +57,7 @@ bool operator==(const hl_function_call_node &lhs, const hl_function_call_node &r
 
     return ret_val;
 }
+
+nlohmann::json hl_function_call_node::dump() {
+    return hl_ast_node::dump();
+}

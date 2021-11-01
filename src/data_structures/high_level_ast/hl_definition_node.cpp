@@ -103,3 +103,17 @@ unsigned int hl_definition_node::get_array_size() {
     }
     return retval;
 }
+
+nlohmann::json hl_definition_node::dump() {
+    nlohmann::json retval = hl_ast_node::dump();
+
+    retval["array_index"] = hl_ast_node::dump_array(array_index);
+    retval["initializer"] = hl_ast_node::dump_array(initializer);
+    retval["array_shape"] = array_shape;
+    retval["inner_variable"] = inner_variable->dump();
+    retval["name"] = name;
+    retval["constant"] = constant;
+    retval["type"] = c_types_to_string(type);
+
+    return retval;
+}

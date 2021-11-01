@@ -105,3 +105,10 @@ void hl_ast_operand::set_variable(std::shared_ptr<variable> v) {
 std::shared_ptr<variable> hl_ast_operand::get_variable() {
     return inner_variable;
 }
+
+nlohmann::json hl_ast_operand::dump() {
+    nlohmann::json retval = hl_ast_node::dump();
+    retval["inner_variable"] = inner_variable->dump();
+    std::vector<nlohmann::json> array_index_dump;
+    retval["array_index"] = hl_ast_node::dump_array(array_index);
+}

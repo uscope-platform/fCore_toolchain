@@ -51,6 +51,8 @@ public:
 
     unsigned int get_array_size();
     unsigned int get_flattened_idx(std::vector<int> md_idx);
+    nlohmann::json dump() override;
+
     std::string pretty_print() override;
     bool is_terminal() override {
         return true;

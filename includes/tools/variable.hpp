@@ -22,6 +22,8 @@
 #include <regex>
 #include <iostream>
 
+#include "../third_party/json.hpp"
+
 typedef enum {
     variable_input_type = 0,
     variable_output_type = 1,
@@ -89,6 +91,8 @@ public:
 
     unsigned int get_array_length() const {return array_length;};
     void set_array_length(unsigned int al) {array_length = al;};
+
+    nlohmann::json dump();
 
     static std::shared_ptr<variable> deep_copy(const std::shared_ptr<variable>& original);
 

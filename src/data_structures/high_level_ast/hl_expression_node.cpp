@@ -171,3 +171,7 @@ bool hl_expression_node::is_unary() {
 bool hl_expression_node::is_hardware_compatible(expression_type_t et) {
     return false;
 }
+
+nlohmann::json hl_expression_node::dump() {
+    return hl_ast_node::dump();
+}

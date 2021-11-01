@@ -72,3 +72,11 @@ void hl_ast_conditional_node::set_condition(std::shared_ptr<hl_ast_node> node) {
 std::shared_ptr<hl_ast_node> hl_ast_conditional_node::get_condition() {
     return condition;
 }
+
+nlohmann::json hl_ast_conditional_node::dump() {
+    nlohmann::json retval = hl_ast_node::dump();
+    retval["if_block"] = hl_ast_node::dump_array(if_block);
+    retval["else_block"] = hl_ast_node::dump_array(else_block);
+    retval["condition"] = hl_ast_node::dump_by_type(condition);
+    return retval;
+}

@@ -88,6 +88,8 @@ public:
     std::string pretty_print() override;
     bool is_unary();
     static bool is_hardware_compatible(expression_type_t et);
+    nlohmann::json dump() override;
+
     bool is_terminal() override {
         return true;
     }

@@ -164,3 +164,20 @@ std::shared_ptr<variable> variable::deep_copy(const std::shared_ptr <variable>& 
 
     return copied_var;
 }
+
+nlohmann::json variable::dump() {
+    nlohmann::json ret_val;
+
+    ret_val["name"] = name;
+    ret_val["type"] = variable_type;
+    ret_val["class"] = variable_class;
+    ret_val["first_occurrence"] = first_occurrence;
+    ret_val["last_occurrence"] = last_occurrence;
+    ret_val["array_length"] = array_length;
+    ret_val["bound_register"] = bound_register;
+    ret_val["used"] = used;
+    ret_val["const_i"] = const_i;
+    ret_val["const_f"] = const_f;
+
+    return ret_val;
+}

@@ -317,3 +317,40 @@ std::string hl_ast_node::pretty_print() {
     return ss.str();
 }
 
+nlohmann::json hl_ast_node::dump() {
+    nlohmann::json retval;
+    retval["node_type"] = hl_ast_node_to_string(node_type);
+    return retval;
+}
+
+std::vector<nlohmann::json> hl_ast_node::dump_array(const std::vector<std::shared_ptr<hl_ast_node>>& vect) {
+    std::vector<nlohmann::json> ret_val;
+    for(auto &i: vect){
+        ret_val.push_back(hl_ast_node::dump_by_type(i));
+    }
+    return ret_val;
+}
+
+nlohmann::json hl_ast_node::dump_by_type(std::shared_ptr<hl_ast_node> node) {
+    switch (node->node_type) {
+        case hl_ast_node_type_operand:
+            break;
+        case hl_ast_node_type_expr:
+            break;
+        case hl_ast_node_type_definition:
+            break;
+        case hl_ast_node_type_conditional:
+            break;
+        case hl_ast_node_type_loop:
+            break;
+        case hl_ast_node_type_function_def:
+            break;
+        case hl_ast_node_type_function_call:
+            break;
+        case hl_ast_node_type_program_root:
+            break;
+        case hl_ast_node_type_code_block:
+            break;
+    }
+}
+

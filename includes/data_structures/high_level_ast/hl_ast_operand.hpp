@@ -18,6 +18,7 @@
 
 #include "hl_ast_node.hpp"
 #include "tools/variable.hpp"
+#include "../third_party/json.hpp"
 
 #include <string>
 
@@ -45,6 +46,7 @@ public:
     void set_variable(std::shared_ptr<variable> v);
     std::shared_ptr<variable> get_variable();
 
+    nlohmann::json dump() override;
 
     bool is_terminal() override {return true;}
     std::string pretty_print() override;

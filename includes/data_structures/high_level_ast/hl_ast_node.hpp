@@ -21,7 +21,7 @@
 #include <stdexcept>
 
 #include "data_structures/ast_node_base.hpp"
-
+#include "../third_party/json.hpp"
 
 
 typedef enum {
@@ -36,6 +36,20 @@ typedef enum {
     hl_ast_node_type_code_block = 9
 } hl_ast_node_type_t;
 
+constexpr std::string_view hl_ast_node_to_string(hl_ast_node_type_t i){
+    switch (i) {
+        case hl_ast_node_type_expr:return "hl_ast_node_type_expr";
+        case hl_ast_node_type_definition: return "hl_ast_node_type_definition";
+        case hl_ast_node_type_conditional: return "hl_ast_node_type_conditional";
+        case hl_ast_node_type_loop: return "hl_ast_node_type_loop";
+        case hl_ast_node_type_function_def: return "hl_ast_node_type_function_def";
+        case hl_ast_node_type_operand: return "hl_ast_node_type_operand";
+        case hl_ast_node_type_function_call: return "hl_ast_node_type_function_call";
+        case hl_ast_node_type_program_root: return "hl_ast_node_type_program_root";
+        case hl_ast_node_type_code_block: return "hl_ast_node_type_code_block";
+    }
+}
+
 typedef enum {
     c_type_void = 1,
     c_type_char = 2,
@@ -44,6 +58,17 @@ typedef enum {
     c_type_long = 5,
     c_type_float = 6
 } c_types_t;
+
+constexpr std::string_view c_types_to_string(c_types_t i){
+    switch (i) {
+        case c_type_void:return "c_type_void";
+        case c_type_char: return "c_type_char";
+        case c_type_short: return "c_type_short";
+        case c_type_int: return "c_type_int";
+        case c_type_long: return "c_type_long";
+        case c_type_float: return "c_type_float";
+    }
+}
 
 class hl_ast_node : public ast_node_base<hl_ast_node>{
 
@@ -60,6 +85,9 @@ public:
 
     static  bool compare_content_by_type(const std::shared_ptr<hl_ast_node>& lhs, const std::shared_ptr<hl_ast_node>& rhs);
 
+    virtual nlohmann::json dump();
+    static nlohmann::json dump_by_type(std::shared_ptr<hl_ast_node> node);
+    static std::vector<nlohmann::json> dump_array(const std::vector<std::shared_ptr<hl_ast_node>>& vect);
     static std::shared_ptr<hl_ast_node> deep_copy(const std::shared_ptr<hl_ast_node> &node);
     hl_ast_node_type_t node_type;
     static bool compare_vectors(const std::vector<std::shared_ptr<hl_ast_node>>& lhs, const std::vector<std::shared_ptr<hl_ast_node>>& rhs);

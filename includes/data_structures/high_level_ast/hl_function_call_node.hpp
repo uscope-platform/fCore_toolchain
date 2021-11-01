@@ -32,6 +32,7 @@ public:
     std::vector<std::shared_ptr<hl_ast_node>> get_arguments() { return arguments;};
     void set_arguments(std::vector<std::shared_ptr<hl_ast_node>> args) {arguments = args;};
     friend bool operator==(const hl_function_call_node& lhs, const hl_function_call_node& rhs);
+    nlohmann::json dump() override;
     bool is_terminal() override {
         return true;
     }

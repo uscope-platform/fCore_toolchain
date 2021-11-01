@@ -108,3 +108,20 @@ std::shared_ptr<hl_ast_node> hl_function_def_node::get_return() {
 std::string hl_function_def_node::get_name() {
     return name;
 }
+
+nlohmann::json hl_function_def_node::dump() {
+    nlohmann::json retval = hl_ast_node::dump();
+
+    std::vector<nlohmann::json> parameters_list_dump;
+    for(auto &i:parameters_list){
+        parameters_list_dump.push_back(i->dump());
+    }
+
+    retval["name"] = name;
+    retval["initializer"] = hl_ast_node::dump_array(function_body);
+    retval["return_expression"] = return_expression->dump();
+    retval["return_type"] = c_types_to_string(return_type);
+    retval["parameters_list"] = parameters_list_dump;
+
+    return retval;
+}
