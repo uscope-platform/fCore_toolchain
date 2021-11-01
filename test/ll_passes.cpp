@@ -35,7 +35,7 @@ TEST(llPassesTest, pseudo_inst_pass) {
     AST->add_content(instr);
 
 
-    ll_pass_manager manager = create_ll_pass_manager();
+    ll_pass_manager manager = create_ll_pass_manager(0);
     manager.run_morphing_passes(AST);
 
     binary_generator writer;
@@ -75,7 +75,7 @@ TEST(llPassesTest, instruction_count_pass) {
     AST->add_content(load_instr);
 
 
-    ll_pass_manager manager = create_ll_pass_manager();
+    ll_pass_manager manager = create_ll_pass_manager(0);
     manager.run_analysis_passes(AST);
     int count = manager.analysis_passes["instruction_counting"]->get_analysis_result()[0];
 
@@ -102,7 +102,7 @@ TEST(llPassesTest, loop_less) {
 
     AST->add_content(lvl_1);
 
-    ll_pass_manager manager = create_ll_pass_manager();
+    ll_pass_manager manager = create_ll_pass_manager(0);
     manager.run_morphing_passes(AST);
 
     binary_generator writer;
@@ -134,7 +134,7 @@ TEST(llPassesTest, loop_less_equal) {
 
     AST->add_content(lvl_1);
 
-    ll_pass_manager manager = create_ll_pass_manager();
+    ll_pass_manager manager = create_ll_pass_manager(0);
     manager.run_morphing_passes(AST);
 
     binary_generator writer;
@@ -169,7 +169,7 @@ TEST(llPassesTest, loop_more) {
     AST->add_content(lvl_1);
 
 
-    ll_pass_manager manager = create_ll_pass_manager();
+    ll_pass_manager manager = create_ll_pass_manager(0);
     manager.run_morphing_passes(AST);
 
     binary_generator writer;
@@ -201,7 +201,7 @@ TEST(llPassesTest, loop_more_equal) {
 
     AST->add_content(lvl_1);
 
-    ll_pass_manager manager = create_ll_pass_manager();
+    ll_pass_manager manager = create_ll_pass_manager(0);
     manager.run_morphing_passes(AST);
 
     binary_generator writer;

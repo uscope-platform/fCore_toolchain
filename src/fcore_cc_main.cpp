@@ -28,13 +28,15 @@ int main(int argc, char **argv) {
     bool output_hex = false;
     bool output_mem = false;
     bool output_json = false;
-    bool output_force = false;;
+    bool output_force = false;
     std::string input_file;
     std::string output_file;
+    int dump_ast_level = 0;
     app.add_option("input_file", input_file, "Input file path")->required()->check(CLI::ExistingFile);
     app.add_flag("--mem", output_mem, "produce binary output file");
     app.add_flag("--hex", output_hex, "produce verilog memory initialization output file");
     app.add_flag("--json", output_json, "produce a json file for output");
+    app.add_option("--dump-ast", dump_ast_level, "Dump the AST at various points in the compilation process as json");
     app.add_flag("--f", output_force, "force the rewriting of an existing product file");
     app.add_option("--o", output_file, "Output file path");
     CLI11_PARSE(app, argc, argv);

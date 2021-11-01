@@ -36,7 +36,7 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager hl_manager = create_hl_pass_manager(ep,{});
+    hl_pass_manager hl_manager = create_hl_pass_manager(ep,{},0);
     hl_manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -47,7 +47,7 @@ TEST(EndToEndC, minimal_c_end_to_end) {
     translator.translate();
     std::shared_ptr<ll_ast_node> ll_ast = translator.get_output_ast();
 
-    ll_pass_manager ll_manager = create_ll_pass_manager();
+    ll_pass_manager ll_manager = create_ll_pass_manager(0);
     ll_manager.run_morphing_passes(ll_ast);
 
     binary_generator writer;
@@ -76,7 +76,7 @@ TEST(EndToEndC, fcore_cc) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes, false);
+    fcore_cc compiler(input_file, includes, false, 0);
     std::vector<uint32_t> result = compiler.get_hexfile(false);
 
     std::vector<uint32_t> gold_standard = {0x146, 1104150528};
@@ -91,7 +91,7 @@ TEST(EndToEndC, end_to_end_intrinsics) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes,true);
+    fcore_cc compiler(input_file, includes,true, 0);
     std::vector<uint32_t> result = compiler.get_hexfile(false);
 
     std::vector<uint32_t> gold_standard = {0x944,0x26,0x42C80000, 0x40950};
@@ -107,7 +107,7 @@ TEST(EndToEndC, json_writing) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes,false);
+    fcore_cc compiler(input_file, includes,false, 0);
     compiler.write_json(test_json);
 
     nlohmann::json out;
@@ -129,7 +129,7 @@ TEST(EndToEndC, pragma_io) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes,true);
+    fcore_cc compiler(input_file, includes,true, 0);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -144,7 +144,7 @@ TEST(EndToEndC, conditional) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes,false);
+    fcore_cc compiler(input_file, includes,false, 0);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -158,7 +158,7 @@ TEST(EndToEndC, array_scalarization) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes,true);
+    fcore_cc compiler(input_file, includes,true, 0);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -173,7 +173,7 @@ TEST(EndToEndC, loop) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes,true);
+    fcore_cc compiler(input_file, includes,true, 0);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -188,7 +188,7 @@ TEST(EndToEndC, nested_loop) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes, true);
+    fcore_cc compiler(input_file, includes, true, 0);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -202,7 +202,7 @@ TEST(EndToEndC, array_initialization) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes, true);
+    fcore_cc compiler(input_file, includes, true, 0);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -217,7 +217,7 @@ TEST(EndToEndC, array_initialization_through_function) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes, true);
+    fcore_cc compiler(input_file, includes, true, 0);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -232,7 +232,7 @@ TEST(EndToEndC, constant_argument_inlining) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes, true);
+    fcore_cc compiler(input_file, includes, true, 0);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -246,7 +246,7 @@ TEST(EndToEndC, array_io_definition) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes, true);
+    fcore_cc compiler(input_file, includes, true, 0);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -261,7 +261,7 @@ TEST(EndToEndC, multidimensional_array_io_definition) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes, true);
+    fcore_cc compiler(input_file, includes, true, 0);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -275,7 +275,7 @@ TEST(EndToEndC, iom_initialization){
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes, true);
+    fcore_cc compiler(input_file, includes, true, 0);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -290,7 +290,7 @@ TEST(EndToEndC, test_move){
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes, true);
+    fcore_cc compiler(input_file, includes, true, 0);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -304,7 +304,7 @@ TEST(EndToEndC, test_complex_normalization){
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes, true);
+    fcore_cc compiler(input_file, includes, true, 0);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
@@ -318,7 +318,7 @@ TEST(InstructionStreamPasses, register_allocation){
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes, true);
+    fcore_cc compiler(input_file, includes, true, 0);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 

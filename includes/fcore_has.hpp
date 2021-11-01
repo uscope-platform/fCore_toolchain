@@ -39,9 +39,9 @@ extern "C"{
 
 class fcore_has {
 public:
-    fcore_has(std::istream &input,   std::vector<std::istream*> &includes);
-    fcore_has(std::istream &input,   const std::vector<std::string>& include_files,  const std::string& include_directory);
-    void construct_assembler(std::istream &input, std::vector<std::istream*> &includes);
+    fcore_has(std::istream &input,   std::vector<std::istream*> &includes, int dump_ast_level);
+    fcore_has(std::istream &input,   const std::vector<std::string>& include_files,  const std::string& include_directory, int dump_ast_level);
+    void construct_assembler(std::istream &input, std::vector<std::istream*> &includes, int dump_ast_level);
 
     static std::vector<std::istream*> process_includes(const std::vector<std::string>& include_files, const std::string& include_directory);
 

@@ -16,7 +16,7 @@
 #include "fcore_cc.hpp"
 
 
-fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool print_debug) {
+fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool print_debug, int dump_ast_level) {
     std::shared_ptr<define_map> defines_map = std::make_shared<define_map>();
     error_code = "";
     try{
@@ -25,7 +25,7 @@ fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool p
         target_parser.parse();
         hl_ast = target_parser.AST;
         std::string ep = "main";
-        hl_manager = create_hl_pass_manager(ep,{});
+        hl_manager = create_hl_pass_manager(ep,{}, dump_ast_level);
         hl_manager.run_morphing_passes(hl_ast);
 
         high_level_ast_lowering translator;
@@ -34,7 +34,7 @@ fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool p
         translator.translate();
         ll_ast = translator.get_output_ast();
 
-        ll_manager = create_ll_pass_manager();
+        ll_manager = create_ll_pass_manager(dump_ast_level);
         ll_manager.run_morphing_passes(ll_ast);
 
         instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);

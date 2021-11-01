@@ -41,7 +41,7 @@
 #include "data_structures/high_level_ast/hl_ast_node.hpp"
 
 
-static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::vector<int> order){
+static hl_pass_manager create_hl_pass_manager(std::string& entry_point, std::vector<int> order, int dump_ast_level){
     hl_pass_manager manager;
 
     manager.add_morphing_pass(std::make_shared<division_implementation_pass>()); // pass #1
