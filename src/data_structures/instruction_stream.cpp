@@ -39,4 +39,17 @@ unsigned long instruction_stream::size() {
     return stream_store.size();
 }
 
+bool operator==(const instruction_stream &lhs, const instruction_stream &rhs) {
+    bool retval = true;
+
+    if(lhs.stream_store.size() != rhs.stream_store.size()){
+        retval = false;
+    } else{
+        for(unsigned long i = 0; i<lhs.stream_store.size();++i){
+            retval &= ll_instruction_node::compare_content_by_type(lhs.stream_store[i],rhs.stream_store[i]);
+        }
+    }
+    return retval;
+}
+
 

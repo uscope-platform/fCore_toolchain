@@ -16,6 +16,13 @@
 
 #include "data_structures/low_level_ast/ll_instruction_node.hpp"
 
+#include "data_structures/low_level_ast/ll_register_instr_node.hpp"
+#include "data_structures/low_level_ast/ll_conversion_instr_node.hpp"
+#include "data_structures/low_level_ast/ll_independent_instr_node.hpp"
+#include "data_structures/low_level_ast/ll_load_constant_instr_node.hpp"
+#include "data_structures/low_level_ast/ll_pseudo_instr_node.hpp"
+#include "data_structures/low_level_ast/ll_intercalated_const_instr_node.hpp"
+
 ll_instruction_node::ll_instruction_node(isa_instruction_type t) : ll_ast_node(ll_type_instr) {
     instruction_type = t;
 }
@@ -36,8 +43,29 @@ bool ll_instruction_node::is_terminal() {
 
 bool operator==(const ll_instruction_node &lhs, const ll_instruction_node &rhs) {
     bool retval = true;
-    retval &= lhs.instruction_type == rhs.instruction_type;
-    retval &= lhs.opcode == rhs.opcode;
 
+    retval &= lhs.opcode == rhs.opcode;
     return retval;
+}
+
+
+bool
+ll_instruction_node::compare_content_by_type(const std::shared_ptr<ll_instruction_node> &lhs, const std::shared_ptr<ll_instruction_node> &rhs) {
+    if(lhs->get_type() != rhs->get_type()) return false;
+
+    switch (lhs->instruction_type) {
+        case isa_register_instruction:
+            return *std::static_pointer_cast<ll_register_instr_node>(lhs) == *std::static_pointer_cast<ll_register_instr_node>(rhs);
+        case isa_independent_instruction:
+            return *std::static_pointer_cast<ll_independent_inst_node>(lhs) == *std::static_pointer_cast<ll_independent_inst_node>(rhs);
+        case isa_pseudo_instruction:
+            return *std::static_pointer_cast<ll_pseudo_instr_node>(lhs) == *std::static_pointer_cast<ll_pseudo_instr_node>(rhs);
+        case isa_conversion_instruction:
+            return *std::static_pointer_cast<ll_conversion_instr_node>(lhs) == *std::static_pointer_cast<ll_conversion_instr_node>(rhs);
+        case isa_load_constant_instruction:
+            return *std::static_pointer_cast<ll_load_constant_instr_node>(lhs) == *std::static_pointer_cast<ll_load_constant_instr_node>(rhs);
+        case isa_intercalated_constant:
+            return *std::static_pointer_cast<ll_intercalated_const_instr_node>(lhs) == *std::static_pointer_cast<ll_intercalated_const_instr_node>(rhs);
+    }
+    return false;
 }

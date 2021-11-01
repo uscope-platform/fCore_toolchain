@@ -45,7 +45,7 @@ public:
     bool is_terminal() override;
 
     friend bool operator==(const ll_instruction_node& lhs, const ll_instruction_node& rhs);
-
+    static bool compare_content_by_type(const std::shared_ptr<ll_instruction_node> &lhs, const std::shared_ptr<ll_instruction_node> &rhs);
     [[nodiscard]] bool is_pseudo() const { return instruction_type == isa_pseudo_instruction;};
 
     isa_instruction_type get_type();

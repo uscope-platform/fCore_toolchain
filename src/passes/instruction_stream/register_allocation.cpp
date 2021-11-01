@@ -22,7 +22,7 @@ iom_map = iom;
 //pre_initialize the registers statuses;
 used.reserve(pow(2, fcore_opcode_width));
 for(int i = 0; i< pow(2, fcore_opcode_width); ++i) {
-    used[i] = false;
+    used.push_back(false);
 }
 
 //exclude form allocation pool the register that are used explicitly by the user
@@ -31,7 +31,7 @@ for(int i= 0; i<pow(2, fcore_opcode_width); i++){
 }
 
 for( auto&item:iom_map){
-    if(item.second->get_variable_class() == variable_memory_type || item.second->get_variable_class() == variable_output_type){
+    if(item.second->get_variable_class() == variable_memory_type || item.second->get_variable_class() == variable_output_type || item.second->get_variable_class() == variable_input_type){
         for(auto &idx:item.second->get_bound_reg_array()){
             used[idx] = true;
         }
@@ -68,7 +68,7 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
                 bool found = false;
                 for(int i = 0; i<(2<<fcore_register_address_width);i++){
 
-                    if(!reg_map.is_used(i, item->get_first_occurrence(), item->get_last_occurrence())){
+                    if(!reg_map.is_used(i, item->get_first_occurrence(), item->get_last_occurrence()) & !used[i]){
                         found = true;
                         reg_map.insert(item->to_str(), i, item->get_first_occurrence(), item->get_last_occurrence());
                         register_mapping[item->to_str()] = var_map->at("r"+std::to_string(i));

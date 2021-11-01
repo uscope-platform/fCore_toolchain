@@ -61,7 +61,6 @@ void binary_loader::construct_ast(std::vector<uint32_t> &program) {
             // Pseudo instructions and intercalated constants are either not present in the stream, or dont have an opcode
             case isa_pseudo_instruction:
             case isa_intercalated_constant:
-            case isa_immediate_instruction:
                 throw std::runtime_error("ERROR: something went wront during binary program loading.");
                 break;
         }

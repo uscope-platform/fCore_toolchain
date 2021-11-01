@@ -166,8 +166,6 @@ high_level_ast_lowering::translate_node(const std::shared_ptr<hl_ast_operand>& i
     } else{
         var = input->get_variable();
         std::shared_ptr<variable> op_b = std::make_shared<variable>("r0");
-        var->set_variable_class(variable_memory_type);
-        var->set_bound_reg(0);
         std::vector<std::shared_ptr<variable>> args = {var, op_b, dest};
         retval = create_ast_node(isa_register_instruction, args, "add");
         return retval;

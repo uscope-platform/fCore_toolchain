@@ -23,8 +23,8 @@ class instruction_stream {
 public:
     void push_back(const std::shared_ptr<ll_instruction_node>& item);
     void push_back(const instruction_stream &vector);
-    static bool empty(instruction_stream &stream);
-    static unsigned long size(instruction_stream & stream);
+    bool empty(instruction_stream &stream);
+    unsigned long size(instruction_stream & stream);
     bool empty();
     unsigned long size();
 
@@ -38,6 +38,8 @@ public:
 
     auto begin() const {return stream_store.begin();};
     auto end() const {return stream_store.end();};
+
+    friend bool operator==(const instruction_stream& lhs, const instruction_stream& rhs);
 
 private:
 

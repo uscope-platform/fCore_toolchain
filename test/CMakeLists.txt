@@ -9,7 +9,8 @@ set(TEST_SOURCES
         hl_passes.cpp
         disassembler_testing.cpp
         deep_copy.cpp
-        emulator_testing.cpp)
+        emulator_testing.cpp
+        )
 
 
 add_executable(test_target ${FCORE_SRCS} ${TEST_SOURCES} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS})
@@ -92,6 +93,8 @@ configure_file(C_files/end_to_end/test_array_io_definition.c ${C_E2E_TEST_FILES_
 configure_file(C_files/end_to_end/test_multidim_array_io_definition.c  ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_iom_initialization.c  ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_move.c  ${C_E2E_TEST_FILES_DIR} COPYONLY)
+configure_file(C_files/end_to_end/test_complex_normalization.c  ${C_E2E_TEST_FILES_DIR} COPYONLY)
+configure_file(C_files/end_to_end/test_register_allocation.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 
 # DISASSEMBLER TESTING FILES
 set(DIS_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/dis)

@@ -22,7 +22,6 @@
 
 
 typedef enum {
-    isa_immediate_instruction = 1,
     isa_independent_instruction = 2,
     isa_register_instruction = 3,
     isa_pseudo_instruction = 4,

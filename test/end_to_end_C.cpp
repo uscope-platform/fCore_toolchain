@@ -129,11 +129,11 @@ TEST(EndToEndC, pragma_io) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes,false);
+    fcore_cc compiler(input_file, includes,true);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x81021, 0x26, 0x40A00000, 0x40883, 0x26, 0x3e2aaaab, 0x140843};
+    std::vector<uint32_t> gold_standard = {0x81021, 0x66, 0x40A00000, 0xa1883, 0x66, 0x3e2aaaab, 0x1418a3};
 
     ASSERT_EQ(gold_standard, result);
 }
@@ -173,11 +173,11 @@ TEST(EndToEndC, loop) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes,false);
+    fcore_cc compiler(input_file, includes,true);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x1e1021, 0x60841, 0x1e1021, 0x60841};
+    std::vector<uint32_t> gold_standard = {0x1e2061, 0xa1881, 0x1e2061, 0xa1881};
 
    ASSERT_EQ(gold_standard, result);
 }
@@ -192,7 +192,7 @@ TEST(EndToEndC, nested_loop) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x61021, 0x81021, 0x62821, 0x62821, 0xc1021,0x81021, 0xc2821, 0x62821};
+    std::vector<uint32_t> gold_standard = {0xa2061, 0xc2061, 0xa3861, 0xa3861, 0x102061,0xc2061, 0x103861, 0xa3861};
 
      ASSERT_EQ(gold_standard, result);
 }
@@ -295,6 +295,34 @@ TEST(EndToEndC, test_move){
 
 
     std::vector<uint32_t> gold_standard = {0x140021};
+
+    ASSERT_EQ(gold_standard, result);
+}
+
+TEST(EndToEndC, test_complex_normalization){
+    std::string input_file = "c_e2e/test_complex_normalization.c";
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(input_file, includes, true);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x66, 0x40A00000, 0x81841, 0x66, 0x41880000, 0xa1823, 0x620a3, 0x141941};
+
+    ASSERT_EQ(gold_standard, result);
+}
+
+TEST(InstructionStreamPasses, register_allocation){
+    std::string input_file = "c_e2e/test_register_allocation.c";
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(input_file, includes, true);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x46, 0x41880000, 0x141023};
 
     ASSERT_EQ(gold_standard, result);
 }

@@ -822,9 +822,5 @@ TEST(HlPassesTest, complex_normalization) {
     gold_standard->add_content(ie1_def);
     gold_standard->add_content(expr_as);
 
-
-
-
-
     ASSERT_EQ(*gold_standard, *input_root);
 }
