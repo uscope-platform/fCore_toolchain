@@ -5,7 +5,7 @@ include(GNUInstallDirs)
 
 option(BUILD_TESTS "Build test programs" OFF)
 option(INCLUDE_EMULATOR "Include the emulator in the build" OFF)
-
+option(INCLUDE_COVERAGE "Build with support for code coverage" OFF)
 include_directories(/usr/include/antlr4-runtime)
 include_directories(includes)
 
@@ -22,8 +22,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -fsanitize=undefined")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
-add_compile_options(-Wno-attributes -fprofile-arcs -ftest-coverage)
-add_link_options(-fprofile-arcs -ftest-coverage)
+
+if(${INCLUDE_COVERAGE})
+    add_compile_options(-Wno-attributes -fprofile-arcs -ftest-coverage)
+    add_link_options(-fprofile-arcs -ftest-coverage)
+endif(${INCLUDE_COVERAGE})
 
 add_subdirectory(includes/asm_parser)
 add_subdirectory(includes/C_parser)
