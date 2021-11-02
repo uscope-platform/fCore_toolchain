@@ -49,6 +49,9 @@ public:
     loop_start_t get_loop_start();
     loop_end_t get_loop_end();
     loop_advance_t get_advance();
+
+    nlohmann::json dump() override;
+
     friend bool operator==(const ll_loop_node& lhs, const ll_loop_node& rhs);
 private:
     loop_start_t loop_start;

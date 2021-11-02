@@ -116,3 +116,9 @@ ll_ast_node::compare_content_by_type(const std::shared_ptr<ll_ast_node> &lhs, co
     }
     return false;
 }
+
+nlohmann::json ll_ast_node::dump() {
+    nlohmann::json ret_val;
+    ret_val["type"] = ll_ast_node_to_string(type);
+    return ret_val;
+}

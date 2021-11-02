@@ -45,3 +45,8 @@ bool operator==(const ll_independent_inst_node &lhs, const ll_independent_inst_n
 std::string ll_independent_inst_node::disassemble() {
     return opcode;
 }
+
+nlohmann::json ll_independent_inst_node::dump() {
+    nlohmann::json retval = ll_instruction_node::dump();
+    return retval;
+}

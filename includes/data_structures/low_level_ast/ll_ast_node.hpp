@@ -34,6 +34,16 @@ typedef enum {
     ll_type_code_block = 7,
 } ll_ast_node_type_t;
 
+constexpr std::string_view ll_ast_node_to_string(ll_ast_node_type_t i){
+    switch (i) {
+        case ll_type_instr:return "ll_type_instr";
+        case ll_type_for_block: return "ll_type_for_block";
+        case ll_type_program_head: return "ll_type_program_head";
+        case ll_type_pragma: return "ll_type_pragma";
+        case ll_type_code_block: return "ll_type_code_block";
+    }
+    return "";
+}
 
 class ll_ast_node : public ast_node_base<ll_ast_node> {
 
@@ -46,6 +56,7 @@ public:
     bool compare_content_by_type(const std::shared_ptr<ll_ast_node> &lhs, const std::shared_ptr<ll_ast_node> &rhs);
     ll_ast_node_type_t type;
 
+    virtual nlohmann::json dump();
     friend bool operator==(const ll_ast_node& lhs, const ll_ast_node& rhs);
 
 

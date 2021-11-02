@@ -52,6 +52,9 @@ public:
     std::string get_opcode(){return opcode;};
     virtual std::vector<std::shared_ptr<variable>> get_arguments() {return {};};
     virtual void set_arguments(const std::vector<std::shared_ptr<variable>> &a) {};
+
+    nlohmann::json dump() override;
+
 protected:
 
     isa_instruction_type instruction_type;

@@ -40,3 +40,9 @@ bool operator==(const ll_intercalated_const_instr_node &lhs, const ll_intercalat
     retval &= rhs.opcode == lhs.opcode;
     return retval;
 }
+
+nlohmann::json ll_intercalated_const_instr_node::dump() {
+    nlohmann::json retval = ll_instruction_node::dump();
+    retval["intercalated_constant"] = intercalated_constant;
+    return retval;
+}

@@ -68,3 +68,11 @@ std::string ll_register_instr_node::disassemble() {
     return opcode + " " + operand_a->get_name() + ", " + operand_b->get_name() + ", " + destination->get_name();
 }
 
+nlohmann::json ll_register_instr_node::dump() {
+    nlohmann::json retval = ll_instruction_node::dump();
+    retval["operand_a"] = operand_a->dump();
+    retval["operand_b"] = operand_b->dump();
+    retval["destination"] = destination->dump();
+    return retval;
+}
+

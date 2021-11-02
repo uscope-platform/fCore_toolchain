@@ -26,8 +26,9 @@
 
 class hl_pass_manager : public pass_manager_base<hl_ast_node> {
 public:
+    explicit hl_pass_manager( int dump_ast_level);
     void run_morphing_pass( std::shared_ptr<hl_ast_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass) override;
-    void run_morphing_pass_group(std::shared_ptr<hl_ast_node> &subtree, const std::vector<std::shared_ptr<pass_base<hl_ast_node>>>& group) override;
+    std::vector<nlohmann::json> run_morphing_pass_group(std::shared_ptr<hl_ast_node> &subtree, const std::vector<std::shared_ptr<pass_base<hl_ast_node>>>& group, int dal) override;
 
     std::shared_ptr<hl_ast_node> run_global_pass(const std::shared_ptr<hl_ast_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
 

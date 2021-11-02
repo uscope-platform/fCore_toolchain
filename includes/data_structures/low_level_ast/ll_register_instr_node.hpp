@@ -27,6 +27,8 @@ public:
     void print() override;
     int instruction_count() override;
 
+    nlohmann::json dump();
+
     friend bool operator==(const ll_register_instr_node& lhs, const ll_register_instr_node& rhs);
 
     std::shared_ptr<variable> get_operand_a() {return operand_a;};

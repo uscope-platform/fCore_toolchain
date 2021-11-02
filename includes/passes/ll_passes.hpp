@@ -29,7 +29,7 @@
 #include "passes/pass_base.hpp"
 
 static ll_pass_manager create_ll_pass_manager(int dump_ast_level){
-    ll_pass_manager manager;
+    ll_pass_manager manager(dump_ast_level);
     manager.add_morphing_pass(std::make_shared<loop_implementation_pass>());
     manager.add_morphing_pass(std::make_shared<pseudo_instructions_pass>());
     manager.add_morphing_pass(std::make_shared<load_intercalation_pass>());

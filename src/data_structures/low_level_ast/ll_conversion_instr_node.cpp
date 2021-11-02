@@ -58,3 +58,10 @@ void ll_conversion_instr_node::set_arguments(const std::vector<std::shared_ptr<v
 std::string ll_conversion_instr_node::disassemble() {
     return opcode + " " + source->get_name() + ", " + destination->get_name();
 }
+
+nlohmann::json ll_conversion_instr_node::dump() {
+    nlohmann::json retval = ll_instruction_node::dump();
+    retval["source"] = source->dump();
+    retval["destination"] = destination->dump();
+    return retval;
+}

@@ -320,6 +320,7 @@ std::string hl_ast_node::pretty_print() {
 nlohmann::json hl_ast_node::dump() {
     nlohmann::json retval;
     retval["node_type"] = hl_ast_node_to_string(node_type);
+    retval["content"] = dump_array(content);
     return retval;
 }
 
@@ -331,26 +332,18 @@ std::vector<nlohmann::json> hl_ast_node::dump_array(const std::vector<std::share
     return ret_val;
 }
 
-nlohmann::json hl_ast_node::dump_by_type(std::shared_ptr<hl_ast_node> node) {
+nlohmann::json hl_ast_node::dump_by_type(const std::shared_ptr<hl_ast_node>& node) {
     switch (node->node_type) {
-        case hl_ast_node_type_operand:
-            break;
-        case hl_ast_node_type_expr:
-            break;
-        case hl_ast_node_type_definition:
-            break;
-        case hl_ast_node_type_conditional:
-            break;
-        case hl_ast_node_type_loop:
-            break;
-        case hl_ast_node_type_function_def:
-            break;
-        case hl_ast_node_type_function_call:
-            break;
+        case hl_ast_node_type_operand: return std::static_pointer_cast<hl_ast_operand>(node)->dump();
+        case hl_ast_node_type_expr: return std::static_pointer_cast<hl_expression_node>(node)->dump();
+        case hl_ast_node_type_definition: return std::static_pointer_cast<hl_definition_node>(node)->dump();
+        case hl_ast_node_type_conditional: return std::static_pointer_cast<hl_ast_conditional_node>(node)->dump();
+        case hl_ast_node_type_loop: return std::static_pointer_cast<hl_ast_loop_node>(node)->dump();
+        case hl_ast_node_type_function_def: return std::static_pointer_cast<hl_function_def_node>(node)->dump();
+        case hl_ast_node_type_function_call: return std::static_pointer_cast<hl_function_call_node>(node)->dump();
         case hl_ast_node_type_program_root:
-            break;
         case hl_ast_node_type_code_block:
-            break;
+            return node->dump();
     }
 }
 

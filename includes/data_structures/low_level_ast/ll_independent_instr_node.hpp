@@ -28,6 +28,8 @@ public:
     void print() override;
     int instruction_count() override;
 
+    nlohmann::json dump() override;
+
     friend bool operator==(const ll_independent_inst_node& lhs, const ll_independent_inst_node& rhs);
 private:
 

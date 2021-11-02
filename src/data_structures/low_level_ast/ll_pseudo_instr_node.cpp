@@ -44,3 +44,14 @@ bool operator==(const ll_pseudo_instr_node &lhs, const ll_pseudo_instr_node &rhs
 int ll_pseudo_instr_node::instruction_count() {
     return 1;
 }
+
+nlohmann::json ll_pseudo_instr_node::dump() {
+    nlohmann::json retval = ll_instruction_node::dump();
+
+    std::vector<nlohmann::json> args_dump;
+    for(auto &i:arguments){
+        args_dump.push_back(i->dump());
+    }
+    retval["arguments"] = args_dump;
+    return retval;
+}

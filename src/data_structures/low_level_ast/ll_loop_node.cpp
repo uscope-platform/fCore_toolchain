@@ -76,3 +76,22 @@ bool operator==(const ll_loop_node &lhs, const ll_loop_node &rhs) {
 
 }
 
+nlohmann::json ll_loop_node::dump() {
+    nlohmann::json retval = ll_ast_node::dump();
+    nlohmann::json start;
+    nlohmann::json end;
+    nlohmann::json advance;
+
+    start["variable"] = loop_start.variable;
+    start["starting_value"] = loop_start.starting_value;
+    end["end_count"] = end_condition.end_count;
+    end["condition"] = end_condition.condition;
+    advance["direction"] = loop_advance.direction;
+    advance["loop_increment"] = loop_advance.loop_increment;
+
+    retval["start"] = start;
+    retval["end"] = end;
+    retval["advance"] = advance;
+    return retval;
+}
+

@@ -29,6 +29,8 @@ public:
     void set_arguments(std::vector<std::shared_ptr<variable>> a) {arguments = std::move(a);};
     int instruction_count() override;
 
+    nlohmann::json dump();
+    
     friend bool operator==(const ll_pseudo_instr_node& lhs, const ll_pseudo_instr_node& rhs);
 private:
     std::vector<std::shared_ptr<variable>> arguments;

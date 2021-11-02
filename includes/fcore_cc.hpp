@@ -46,6 +46,7 @@ public:
     void write_json(const std::string& output_file);
     uint32_t get_program_size();
     uint32_t get_inst_count();
+    nlohmann::json get_dump() {return dump;};
 private:
     std::shared_ptr<hl_ast_node> hl_ast;
     std::shared_ptr<ll_ast_node> ll_ast;
@@ -53,6 +54,7 @@ private:
     hl_pass_manager  hl_manager;
     ll_pass_manager ll_manager;
     std::string error_code;
+    nlohmann::json dump;
 };
 
 

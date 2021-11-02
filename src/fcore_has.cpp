@@ -36,11 +36,11 @@ void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size){
 }
 
 
-fcore_has::fcore_has(std::istream &input, std::vector<std::istream *> &includes, int dump_ast_level) {
+fcore_has::fcore_has(std::istream &input, std::vector<std::istream *> &includes, int dump_ast_level) : manager(dump_ast_level) {
     construct_assembler(input, includes, dump_ast_level);
 }
 
-fcore_has::fcore_has(std::istream &input, const std::vector<std::string>& include_files, const std::string& include_directory, int dump_ast_level) {
+fcore_has::fcore_has(std::istream &input, const std::vector<std::string>& include_files, const std::string& include_directory, int dump_ast_level): manager(dump_ast_level){
 
     std::vector<std::istream*> includes = process_includes(include_files, include_directory);
 
@@ -71,7 +71,6 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
         //merge the two together (right now just concatenate them)
         if(includes_ast != nullptr)
             AST->prepend_content(includes_ast->get_content());
-
 
         manager = create_ll_pass_manager(dump_ast_level);
         manager.run_morphing_passes(AST);

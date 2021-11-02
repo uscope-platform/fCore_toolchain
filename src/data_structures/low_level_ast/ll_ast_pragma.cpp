@@ -43,3 +43,9 @@ bool operator==(const ll_ast_pragma &lhs, const ll_ast_pragma &rhs) {
     retval &= lhs.directive == rhs.directive;
     return retval;
 }
+
+nlohmann::json ll_ast_pragma::dump() {
+    nlohmann::json retval = ll_ast_node::dump();
+    retval["directive"] = directive;
+    return retval;
+}

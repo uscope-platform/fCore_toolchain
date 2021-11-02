@@ -16,6 +16,10 @@
 
 #include "passes/low_level/ll_pass_manager.hpp"
 
+ll_pass_manager::ll_pass_manager(int dal) {
+    dump_ast_level = dal;
+}
+
 
 std::vector<std::shared_ptr<ll_ast_node>>
 ll_pass_manager::process_nodes(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>> &pass) {
@@ -67,4 +71,5 @@ void ll_pass_manager::run_morphing_pass(std::shared_ptr<ll_ast_node> &subtree,
             break;
     }
 }
+
 

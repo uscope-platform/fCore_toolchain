@@ -17,19 +17,30 @@
 #include "passes/high_level/hl_pass_manager.hpp"
 #include "passes/pass_base.hpp"
 
+hl_pass_manager::hl_pass_manager(int dal) {
+    dump_ast_level = dal;
+}
 
-void hl_pass_manager::run_morphing_pass_group(std::shared_ptr<hl_ast_node> &subtree,
-                                              const std::vector<std::shared_ptr<pass_base<hl_ast_node>>> &group) {
+std::vector<nlohmann::json> hl_pass_manager::run_morphing_pass_group(std::shared_ptr<hl_ast_node> &subtree,
+                                              const std::vector<std::shared_ptr<pass_base<hl_ast_node>>> &group, int dal) {
+
+    std::vector<nlohmann::json> ret_val;
 
     std::shared_ptr<hl_ast_node> old_tree;
     do{
         old_tree = hl_ast_node::deep_copy(subtree);
         for(auto &pass:group){
             run_morphing_pass(subtree, pass);
+            if(dal>1){
+                nlohmann::json ast_dump;
+                ast_dump["pass_name"] = pass->get_name();
+                ast_dump["ast"]= subtree->dump();
+                post_opt_dump.push_back(ast_dump);
+            }
         }
     } while (!(*old_tree == *subtree));
 
-
+    return ret_val;
 }
 
 

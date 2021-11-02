@@ -28,6 +28,7 @@ public:
     bool is_terminal() override;
     friend bool operator==(const ll_ast_pragma& lhs, const ll_ast_pragma& rhs);
     void print();
+    nlohmann::json dump() override;
 private:
     std::string directive;
 };

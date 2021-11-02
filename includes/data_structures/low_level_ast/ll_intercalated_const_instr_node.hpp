@@ -26,6 +26,9 @@ public:
     int instruction_count() override;
 
     friend bool operator==(const ll_intercalated_const_instr_node& lhs, const ll_intercalated_const_instr_node& rhs);
+
+    nlohmann::json dump();
+
 private:
     float intercalated_constant;
 };

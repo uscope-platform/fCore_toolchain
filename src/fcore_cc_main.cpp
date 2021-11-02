@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
     }
 
     std::vector<std::string> include_files = {""};
-    fcore_cc cc_engine(input_file, include_files, false);
+    fcore_cc cc_engine(input_file, include_files, false, dump_ast_level);
 
     if(output_hex){
         cc_engine.write_hexfile(output_file);
@@ -61,6 +61,13 @@ int main(int argc, char **argv) {
 
     if(output_json){
         cc_engine.write_json(output_file);
+    }
+
+    if(dump_ast_level>0){
+        std::string str = cc_engine.get_dump().dump();
+        std::ofstream ss(output_file+"_dump.json");
+        ss<<str;
+        ss.close();
     }
 
     return 0;

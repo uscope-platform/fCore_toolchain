@@ -67,3 +67,10 @@ int ll_load_constant_instr_node::get_constant_i() {
 std::string ll_load_constant_instr_node::disassemble() {
     return opcode + " " + destination->get_name() + ", " + std::to_string(constant->get_const_f());
 }
+
+nlohmann::json ll_load_constant_instr_node::dump() {
+    nlohmann::json retval = ll_instruction_node::dump();
+    retval["destination"] = destination->dump();
+    retval["constant"] = constant->dump();
+    return retval;
+}

@@ -16,7 +16,8 @@
 #include "fcore_cc.hpp"
 
 
-fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool print_debug, int dump_ast_level) {
+fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool print_debug, int dump_ast_level) : hl_manager(dump_ast_level),
+                                                                                                                  ll_manager(dump_ast_level) {
     std::shared_ptr<define_map> defines_map = std::make_shared<define_map>();
     error_code = "";
     try{
@@ -24,18 +25,22 @@ fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool p
         target_parser.pre_process({});
         target_parser.parse();
         hl_ast = target_parser.AST;
+
         std::string ep = "main";
         hl_manager = create_hl_pass_manager(ep,{}, dump_ast_level);
         hl_manager.run_morphing_passes(hl_ast);
 
-        high_level_ast_lowering translator;
+        if(dump_ast_level>0) dump["hl_passes"] = hl_manager.get_dump();
 
+        high_level_ast_lowering translator;
         translator.set_input_ast(hl_ast);
         translator.translate();
         ll_ast = translator.get_output_ast();
 
         ll_manager = create_ll_pass_manager(dump_ast_level);
         ll_manager.run_morphing_passes(ll_ast);
+
+        if(dump_ast_level>0) dump["ll_passes"] = ll_manager.get_dump();
 
         instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
         std::unordered_map<std::string, std::shared_ptr<variable>> iom = target_parser.get_iom_map();

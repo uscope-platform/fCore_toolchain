@@ -30,6 +30,17 @@ typedef enum {
     isa_intercalated_constant= 8
 }isa_instruction_type;
 
+constexpr std::string_view isa_instr_type_to_string(isa_instruction_type t){
+    switch (t) {
+        case isa_register_instruction: return "isa_register_instruction";
+        case isa_independent_instruction: return "isa_independent_instruction";
+        case isa_pseudo_instruction: return "isa_pseudo_instruction";
+        case isa_conversion_instruction: return "isa_conversion_instruction";
+        case isa_load_constant_instruction: return "isa_load_constant_instruction";
+        case isa_intercalated_constant: return "isa_intercalated_constant";
+    }
+}
+
 static const int fcore_register_address_width = 6;
 static const int fcore_opcode_width = 5;
 

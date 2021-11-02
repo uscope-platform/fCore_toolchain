@@ -111,4 +111,5 @@ nlohmann::json hl_ast_operand::dump() {
     retval["inner_variable"] = inner_variable->dump();
     std::vector<nlohmann::json> array_index_dump;
     retval["array_index"] = hl_ast_node::dump_array(array_index);
+    return retval;
 }

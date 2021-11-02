@@ -69,3 +69,10 @@ ll_instruction_node::compare_content_by_type(const std::shared_ptr<ll_instructio
     }
     return false;
 }
+
+nlohmann::json ll_instruction_node::dump() {
+    nlohmann::json retval = ll_ast_node::dump();
+    retval["opcode"] = opcode;
+    retval["instruction_type"] = isa_instr_type_to_string(instruction_type);
+    return retval;
+}
