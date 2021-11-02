@@ -57,6 +57,9 @@ public:
     ll_ast_node_type_t type;
 
     virtual nlohmann::json dump();
+    std::vector<nlohmann::json> dump_array(const std::vector<std::shared_ptr<ll_ast_node>>& vect);
+    nlohmann::json dump_by_type(const std::shared_ptr<ll_ast_node>& node);
+
     friend bool operator==(const ll_ast_node& lhs, const ll_ast_node& rhs);
 
 

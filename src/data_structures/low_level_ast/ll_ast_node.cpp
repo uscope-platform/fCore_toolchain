@@ -120,5 +120,26 @@ ll_ast_node::compare_content_by_type(const std::shared_ptr<ll_ast_node> &lhs, co
 nlohmann::json ll_ast_node::dump() {
     nlohmann::json ret_val;
     ret_val["type"] = ll_ast_node_to_string(type);
+    ret_val["content"] = dump_array(content);
     return ret_val;
+}
+
+std::vector<nlohmann::json> ll_ast_node::dump_array(const std::vector<std::shared_ptr<ll_ast_node>>& vect) {
+    std::vector<nlohmann::json> ret_val;
+    for(auto &i: vect){
+        ret_val.push_back(ll_ast_node::dump_by_type(i));
+    }
+    return ret_val;
+}
+
+nlohmann::json ll_ast_node::dump_by_type(const std::shared_ptr<ll_ast_node>& node) {
+    switch (node->type) {
+        case ll_type_for_block: return std::static_pointer_cast<ll_loop_node>(node)->dump();
+        case ll_type_instr: return ll_instruction_node::dump_instruction_by_type(std::static_pointer_cast<ll_instruction_node>(node));
+        case ll_type_program_head: return node->dump();
+        case ll_type_pragma: return std::static_pointer_cast<ll_ast_pragma>(node)->dump();
+        case ll_type_code_block: return node->dump();
+        default:
+            throw std::runtime_error("ERROR: Unknown node type has been dumped");
+    }
 }

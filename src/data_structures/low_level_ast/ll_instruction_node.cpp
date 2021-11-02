@@ -76,3 +76,17 @@ nlohmann::json ll_instruction_node::dump() {
     retval["instruction_type"] = isa_instr_type_to_string(instruction_type);
     return retval;
 }
+
+nlohmann::json ll_instruction_node::dump_instruction_by_type(const std::shared_ptr<ll_instruction_node> &node) {
+    switch (node->get_type()) {
+        case isa_independent_instruction: return std::static_pointer_cast<ll_independent_inst_node>(node)->dump();
+        case isa_register_instruction: return std::static_pointer_cast<ll_register_instr_node>(node)->dump();
+        case isa_pseudo_instruction: return std::static_pointer_cast<ll_pseudo_instr_node>(node)->dump();
+        case isa_conversion_instruction: return std::static_pointer_cast<ll_conversion_instr_node>(node)->dump();
+        case isa_load_constant_instruction: return std::static_pointer_cast<ll_load_constant_instr_node>(node)->dump();
+        case isa_intercalated_constant: return std::static_pointer_cast<ll_intercalated_const_instr_node>(node)->dump();
+        default:
+            throw std::runtime_error("ERROR: Unknown instruction node type has been dumped");
+    }
+}
+

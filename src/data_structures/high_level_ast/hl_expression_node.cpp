@@ -173,5 +173,12 @@ bool hl_expression_node::is_hardware_compatible(expression_type_t et) {
 }
 
 nlohmann::json hl_expression_node::dump() {
-    return hl_ast_node::dump();
+    nlohmann::json retval = hl_ast_node::dump();
+
+    retval["lhs"] = hl_ast_node::dump_by_type(lhs);
+    retval["rhs"] = hl_ast_node::dump_by_type(rhs);
+    retval["expr_type"] = expression_type_to_string(expr_type);
+    retval["assignment_type"] = assignment_type_to_string(assignment_type);
+
+    return retval;
 }

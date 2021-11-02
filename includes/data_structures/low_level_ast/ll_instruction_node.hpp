@@ -54,12 +54,14 @@ public:
     virtual void set_arguments(const std::vector<std::shared_ptr<variable>> &a) {};
 
     nlohmann::json dump() override;
+    static nlohmann::json dump_instruction_by_type(const std::shared_ptr<ll_instruction_node> &node);
 
 protected:
 
     isa_instruction_type instruction_type;
 
     std::string opcode;
+
 
 };
 

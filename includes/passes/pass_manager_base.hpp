@@ -63,7 +63,9 @@ void pass_manager_base<E>::add_morphing_pass(const std::shared_ptr<pass_base<E>>
 
 template<class E>
 void pass_manager_base<E>::run_morphing_passes(std::shared_ptr<E> AST) {
-    if(dump_ast_level>0) pre_opt_dump = AST->dump();
+    if(dump_ast_level>0) {
+        pre_opt_dump = AST->dump();
+    }
     for(auto& idx:pass_order){
         if(idx>=0){
             int pass_index = idx-1;

@@ -47,6 +47,7 @@ constexpr std::string_view hl_ast_node_to_string(hl_ast_node_type_t i){
         case hl_ast_node_type_function_call: return "hl_ast_node_type_function_call";
         case hl_ast_node_type_program_root: return "hl_ast_node_type_program_root";
         case hl_ast_node_type_code_block: return "hl_ast_node_type_code_block";
+        default: return "unknown hl ast type";
     }
 }
 
@@ -67,6 +68,7 @@ constexpr std::string_view c_types_to_string(c_types_t i){
         case c_type_int: return "c_type_int";
         case c_type_long: return "c_type_long";
         case c_type_float: return "c_type_float";
+        default: return "unknown c type";
     }
 }
 

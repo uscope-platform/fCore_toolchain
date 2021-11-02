@@ -38,6 +38,7 @@ constexpr std::string_view isa_instr_type_to_string(isa_instruction_type t){
         case isa_conversion_instruction: return "isa_conversion_instruction";
         case isa_load_constant_instruction: return "isa_load_constant_instruction";
         case isa_intercalated_constant: return "isa_intercalated_constant";
+        default: return "unknown_isa_instr_type";
     }
 }
 

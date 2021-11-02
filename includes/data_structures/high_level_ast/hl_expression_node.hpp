@@ -59,6 +59,44 @@ typedef enum {
     expr_satn = 31
 } expression_type_t;
 
+constexpr std::string_view expression_type_to_string(expression_type_t in){
+    switch(in){
+        case expr_add: return "expr_add";
+        case expr_sub: return "expr_sub";
+        case expr_mult: return "expr_mult";
+        case expr_div: return "expr_div";
+        case expr_incr_pre: return "expr_incr_pre";
+        case expr_incr_post: return "expr_incr_post";
+        case expr_decr_pre: return "expr_decr_pre";
+        case expr_decr_post: return "expr_decr_post";
+        case expr_modulo: return "expr_modulo";
+        case expr_and_l: return "expr_and_l";
+        case expr_and_b: return "expr_and_b";
+        case expr_or_l: return "expr_or_l";
+        case expr_or_b: return "expr_or_b";
+        case expr_not_l: return "expr_not_l";
+        case expr_not_b: return "expr_not_b";
+        case expr_xor_b: return "expr_xor_b";
+        case expr_lsh: return "expr_lsh";
+        case expr_rsh: return "expr_rsh";
+        case expr_eq: return "expr_eq";
+        case expr_neq: return "expr_neq";
+        case expr_neg: return "expr_neg";
+        case expr_lt: return "expr_lt";
+        case expr_gt: return "expr_gt";
+        case expr_lte: return "expr_lte";
+        case expr_gte: return "expr_gte";
+        case expr_assign: return "expr_assign";
+        case expr_call: return "expr_call";
+        case expr_reciprocal: return "expr_reciprocal";
+        case expr_itf: return "expr_itf";
+        case expr_fti: return "expr_fti";
+        case expr_satp: return "expr_satp";
+        case expr_satn: return "expr_satn";
+    }
+}
+
+
 typedef enum {
    regular_assignment = 0,
    addition_assignment = 1,
@@ -72,6 +110,22 @@ typedef enum {
    lsh_assignment = 9,
    rsh_assignment = 10,
 } assignment_type_t;
+
+constexpr std::string_view assignment_type_to_string(assignment_type_t in){
+    switch(in){
+        case regular_assignment: return "regular_assignment";
+        case addition_assignment: return "addition_assignment";
+        case subtraction_assignment: return "subtraction_assignment";
+        case multiplication_assignment: return "multiplication_assignment";
+        case division_assignment: return "division_assignment";
+        case modulo_assignment: return "modulo_assignment";
+        case and_assignment: return "and_assignment";
+        case or_assignment: return "or_assignment";
+        case xor_assignment: return "xor_assignment";
+        case lsh_assignment: return "lsh_assignment";
+        case rsh_assignment: return "rsh_assignment";
+    }
+}
 
 class hl_expression_node : public hl_ast_node{
 public:
