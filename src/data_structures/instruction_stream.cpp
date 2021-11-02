@@ -52,4 +52,14 @@ bool operator==(const instruction_stream &lhs, const instruction_stream &rhs) {
     return retval;
 }
 
+std::vector<nlohmann::json> instruction_stream::dump() {
+    std::vector<nlohmann::json> retval;
+
+    for(const auto &i:stream_store){
+        retval.push_back(ll_instruction_node::dump_instruction_by_type(i));
+    }
+
+    return retval;
+}
+
 

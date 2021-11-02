@@ -29,12 +29,17 @@
 
 class stream_pass_manager {
 public:
-    stream_pass_manager(std::unordered_map<std::string, std::shared_ptr<variable>> &iom);
+    stream_pass_manager(std::unordered_map<std::string, std::shared_ptr<variable>> &iom, int dal);
     instruction_stream process_stream(instruction_stream stream);
     instruction_stream apply_pass(const instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass);
+    nlohmann::json get_dump();
 private:
     std::vector<std::shared_ptr<stream_pass_base>> passes;
     std::unordered_map<std::string, std::shared_ptr<variable>> iom_map;
+    int dump_ast_level;
+    nlohmann::json pre_opt_dump;
+    std::vector<nlohmann::json> in_opt_dump;
+    nlohmann::json post_opt_dump;
 };
 
 

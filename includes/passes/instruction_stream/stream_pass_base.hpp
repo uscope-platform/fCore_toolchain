@@ -25,7 +25,7 @@ public:
     virtual std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) {
         return element;
     };
-
+    std::string get_name() {return name;};
 private:
     std::string name;
 };

@@ -16,8 +16,9 @@
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 
 
-stream_pass_manager::stream_pass_manager(std::unordered_map<std::string, std::shared_ptr<variable>> &iom) {
+stream_pass_manager::stream_pass_manager(std::unordered_map<std::string, std::shared_ptr<variable>> &iom, int dal) {
     iom_map = iom;
+    dump_ast_level = dal;
     std::shared_ptr<variable_map> var_map = std::make_shared<variable_map>();
 
     passes.push_back(std::make_shared<variable_mapping>(var_map));
@@ -26,11 +27,18 @@ stream_pass_manager::stream_pass_manager(std::unordered_map<std::string, std::sh
 }
 
 instruction_stream stream_pass_manager::process_stream(instruction_stream stream) {
+    if(dump_ast_level>0) pre_opt_dump = stream.dump();
     instruction_stream ret_val = std::move(stream);
     for(auto &pass:passes){
         ret_val = apply_pass(ret_val, pass);
+        if(dump_ast_level>1){
+            nlohmann::json ast_dump;
+            ast_dump["pass_name"] = pass->get_name();
+            ast_dump["ast"]= ret_val.dump();
+            in_opt_dump.push_back(ast_dump);
+        }
     }
-
+    if(dump_ast_level>0) post_opt_dump = ret_val.dump();
     return ret_val;
 }
 
@@ -40,5 +48,15 @@ stream_pass_manager::apply_pass(const instruction_stream& in_stream, const std::
     for(auto &instr:in_stream){
         retval.push_back(pass->apply_pass(instr));
     }
+    return retval;
+}
+
+nlohmann::json stream_pass_manager::get_dump() {
+    nlohmann::json retval;
+
+    retval["pre-opt"] = pre_opt_dump;
+    retval["in-opt"] = in_opt_dump;
+    retval["post-opt"] = post_opt_dump;
+
     return retval;
 }
