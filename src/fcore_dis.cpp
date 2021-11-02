@@ -25,7 +25,7 @@ fcore_dis::fcore_dis(std::istream &input, bin_loader_input_type_t in_type) {
         instruction_stream program_stream = instruction_stream_builder::build_stream(ast);
         std::unordered_map<std::string, std::shared_ptr<variable>> iom;
 
-        stream_pass_manager sman(iom);
+        stream_pass_manager sman(iom,0);
         program_stream = sman.process_stream(program_stream);
         gen = std::make_unique<assembly_generator>(program_stream);
 

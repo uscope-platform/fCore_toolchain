@@ -78,7 +78,7 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
         instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
 
         std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-        stream_pass_manager sman(iom);
+        stream_pass_manager sman(iom, dump_ast_level);
         program_stream = sman.process_stream(program_stream);
 
         writer.process_stream(program_stream, false);
