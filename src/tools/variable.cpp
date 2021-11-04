@@ -99,6 +99,10 @@ bool operator==(const variable &lhs, const variable &rhs) {
     cond &= lhs.name == rhs.name;
     cond &= lhs.bound_register == rhs.bound_register;
     cond &= lhs.used == rhs.used;
+    cond &= lhs.variable_type == rhs.variable_type;
+    cond &= lhs.array_length == rhs.array_length;
+    cond &= lhs.const_i == rhs.const_i;
+    cond &= lhs.const_f == rhs.const_f;
 
     return cond;
 }
