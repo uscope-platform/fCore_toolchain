@@ -256,7 +256,7 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
         if(ctx->constant()->FloatingConstant() != nullptr){
 
             std::string constant = ctx->constant()->FloatingConstant()->getText();
-            float const_value = std::stoi(constant);
+            float const_value = std::stof(constant);
             if(ctx->constant()->Minus() != nullptr){
                 const_value = -const_value;
             }

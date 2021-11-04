@@ -1080,3 +1080,25 @@ TEST( cTreeVisitor, array_init){
     ASSERT_TRUE(hl_ast_node::compare_vectors(result, gold_standard));
 
 }
+
+
+TEST( cTreeVisitor, float_const){
+    std::string input_file = "c_ast/test_float_constant.c";
+
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(input_file, result_def);
+    parser.pre_process({});
+    parser.parse();
+    std::shared_ptr<hl_definition_node> def = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
+    std::shared_ptr<hl_ast_operand> result = std::static_pointer_cast<hl_ast_operand>(def->get_scalar_initializer());
+
+
+    std::shared_ptr<variable> var = std::make_shared<variable>("constant", 20.47f);
+    std::shared_ptr<hl_ast_operand> gold_standard = std::make_shared<hl_ast_operand>(var);
+
+    ASSERT_EQ(*result,*gold_standard);
+
+}
+
+

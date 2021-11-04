@@ -65,6 +65,7 @@ configure_file(C_files/tree_visitor/test_loop.c ${C_AST_TEST_FILES_DIR} COPYONLY
 configure_file(C_files/tree_visitor/test_nested_loop.c ${C_AST_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/tree_visitor/test_array_init.c ${C_AST_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/tree_visitor/test_function_def.c ${C_AST_TEST_FILES_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_float_constant.c ${C_AST_TEST_FILES_DIR} COPYONLY)
 
 #OPTIMIZATION PASSES
 set(HL_OPT_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/hl_opt)
