@@ -314,8 +314,12 @@ function_inlining_pass::substitute_definition_arguments(const std::shared_ptr<hl
                                                         std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
     if(statement->is_initialized()){
         std::shared_ptr<hl_ast_node> tmp = statement->get_scalar_initializer();
-        statement->set_scalar_initializer(
-                std::static_pointer_cast<hl_expression_node>(substitute_arguments(tmp, parameters)));
+        std::shared_ptr<hl_ast_node> substituted_node = substitute_arguments(tmp, parameters);
+        if(substituted_node->node_type == hl_ast_node_type_expr || substituted_node->node_type == hl_ast_node_type_operand){
+            statement->set_scalar_initializer(substituted_node);
+        } else {
+            throw std::runtime_error("ERROR: unexpected node type detected");
+        }
     }
 
     std::vector<std::shared_ptr<hl_ast_node>> tmp_vect;

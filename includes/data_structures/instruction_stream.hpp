@@ -28,7 +28,7 @@ public:
     bool empty();
     unsigned long size();
 
-    std::vector<nlohmann::json> dump();
+    nlohmann::json dump();
 
     auto begin() {return stream_store.begin();};
     auto end() {return stream_store.end();};

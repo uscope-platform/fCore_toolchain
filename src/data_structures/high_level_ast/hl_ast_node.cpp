@@ -319,7 +319,10 @@ std::string hl_ast_node::pretty_print() {
 
 nlohmann::json hl_ast_node::dump() {
     nlohmann::json retval;
-    retval["node_type"] = hl_ast_node_to_string(node_type);
+    if(node_type==hl_ast_node_type_program_root)
+        retval["type"] = hl_ast_node_to_string(node_type);
+    else
+        retval["node_type"] = hl_ast_node_to_string(node_type);
     retval["content"] = dump_array(content);
     return retval;
 }

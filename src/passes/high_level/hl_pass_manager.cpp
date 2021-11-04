@@ -35,7 +35,7 @@ std::vector<nlohmann::json> hl_pass_manager::run_morphing_pass_group(std::shared
                 nlohmann::json ast_dump;
                 ast_dump["pass_name"] = pass->get_name();
                 ast_dump["ast"]= subtree->dump();
-                post_opt_dump.push_back(ast_dump);
+                in_opt_dump.push_back(ast_dump);
             }
         }
     } while (!(*old_tree == *subtree));

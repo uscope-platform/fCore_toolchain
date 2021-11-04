@@ -118,7 +118,7 @@ nlohmann::json hl_function_def_node::dump() {
     }
 
     retval["name"] = name;
-    retval["initializer"] = hl_ast_node::dump_array(function_body);
+    retval["function_body"] = hl_ast_node::dump_array(function_body);
     retval["return_expression"] = return_expression->dump();
     retval["return_type"] = c_types_to_string(return_type);
     retval["parameters_list"] = parameters_list_dump;

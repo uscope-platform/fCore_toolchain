@@ -30,7 +30,7 @@ fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool p
         hl_manager = create_hl_pass_manager(ep,{}, dump_ast_level);
         hl_manager.run_morphing_passes(hl_ast);
 
-        if(dump_ast_level>0) dump["hl_passes"] = hl_manager.get_dump();
+        if(dump_ast_level>0) dump["high_level"] = hl_manager.get_dump();
 
         high_level_ast_lowering translator;
         translator.set_input_ast(hl_ast);
@@ -40,7 +40,7 @@ fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool p
         ll_manager = create_ll_pass_manager(dump_ast_level);
         ll_manager.run_morphing_passes(ll_ast);
 
-        if(dump_ast_level>0) dump["ll_passes"] = ll_manager.get_dump();
+        if(dump_ast_level>0) dump["low_level"] = ll_manager.get_dump();
 
         instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
         std::unordered_map<std::string, std::shared_ptr<variable>> iom = target_parser.get_iom_map();
@@ -48,7 +48,7 @@ fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool p
         stream_pass_manager sman(iom, dump_ast_level);
         program_stream = sman.process_stream(program_stream);
 
-        if(dump_ast_level>0) dump["stream_passes"] = sman.get_dump();
+        if(dump_ast_level>0) dump["stream"] = sman.get_dump();
 
         writer.process_stream(program_stream, print_debug);
 
