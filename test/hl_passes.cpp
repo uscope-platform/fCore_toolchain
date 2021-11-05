@@ -614,6 +614,7 @@ TEST(HlPassesTest, test_matrix_scalarization) {
 
     //A VECTOR DEFINITION
     std::shared_ptr<variable> var = std::make_shared<variable>("a");
+    var->set_type(var_type_array);
     std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("a", c_type_int, var);
     std::vector<int> shape = {10,2};
     def->set_array_shape(shape);
@@ -625,6 +626,7 @@ TEST(HlPassesTest, test_matrix_scalarization) {
     gold_standard->add_content(def);
     //B VECTOR DEFINITION
     var = std::make_shared<variable>("b");
+    var->set_type(var_type_array);
     def = std::make_shared<hl_definition_node>("b", c_type_int, var);
     shape = {3};
     def->set_array_shape(shape);
@@ -821,6 +823,29 @@ TEST(HlPassesTest, complex_normalization) {
     gold_standard->add_content(ie0_def);
     gold_standard->add_content(ie1_def);
     gold_standard->add_content(expr_as);
+
+    ASSERT_EQ(*gold_standard, *input_root);
+}
+
+
+TEST(HlPassesTest, dead_load_elimination) {
+
+    std::shared_ptr<hl_ast_node> input_root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+
+    std::shared_ptr<variable> var = std::make_shared<variable>("Ts", 15.7f);
+    std::shared_ptr<hl_ast_operand> ts_op = std::make_shared<hl_ast_operand>(var);
+    input_root->add_content(ts_op);
+
+    var = std::make_shared<variable>("Ts", 158.6f);
+    ts_op = std::make_shared<hl_ast_operand>(var);
+    input_root->add_content(ts_op);
+
+    std::string ep = "main";
+    hl_pass_manager manager = create_hl_pass_manager(ep,{14}, 0);
+    manager.run_morphing_passes(input_root);
+
+
+    std::shared_ptr<hl_ast_node> gold_standard= std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
     ASSERT_EQ(*gold_standard, *input_root);
 }
