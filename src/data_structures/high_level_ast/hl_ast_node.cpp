@@ -158,17 +158,12 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_def(const std::shared_ptr<hl
     std::shared_ptr<hl_definition_node> copied_obj = std::make_shared<hl_definition_node>(orig->get_name(), orig->get_type(), new_var);
     copied_obj->set_constant(orig->is_constant());
     if(orig->is_initialized()){
-        std::vector<std::shared_ptr<hl_ast_node>> initializer;
-        for(auto &item:orig->get_array_initializer()){
-            if(orig->get_scalar_initializer()->node_type == hl_ast_node_type_expr){
-                initializer.push_back(std::static_pointer_cast<hl_expression_node>(deep_copy_expr(orig->get_scalar_initializer())));
-            } else if (orig->get_scalar_initializer()->node_type == hl_ast_node_type_operand){
-                initializer.push_back(std::static_pointer_cast<hl_ast_operand>(deep_copy_operands(orig->get_scalar_initializer())));
-            } else {
-                throw std::runtime_error("ERROR: Initializers should be either operands or expressions");
-            }
+        std::vector<std::shared_ptr<hl_ast_node>> old_initializer = orig->get_array_initializer();
+        std::vector<std::shared_ptr<hl_ast_node>> new_initializer;
+        for(auto &item:old_initializer){
+            new_initializer.push_back(deep_copy(item));
         }
-        copied_obj->set_array_initializer(initializer);
+        copied_obj->set_array_initializer(new_initializer);
     }
 
 
