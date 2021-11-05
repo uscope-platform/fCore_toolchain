@@ -962,6 +962,7 @@ TEST( cTreeVisitor, array_test){
 
     std::vector<std::shared_ptr<hl_ast_node>> gold_standard;
     std::shared_ptr<variable> var = std::make_shared<variable>("array_test");
+    var->set_type(var_type_array);
     std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("array_test", c_type_int, var);
 
 
@@ -971,6 +972,7 @@ TEST( cTreeVisitor, array_test){
     def_1->set_array_shape(shape);
     def_1->set_array_index({op_1});
     var = std::make_shared<variable>("test_matrix");
+    var->set_type(var_type_array);
     std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("test_matrix", c_type_int, var);
 
     var = std::make_shared<variable>("constant",2);
@@ -987,6 +989,7 @@ TEST( cTreeVisitor, array_test){
     std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(expr_add);
 
     var = std::make_shared<variable>( "array_test");
+    var->set_type(var_type_array);
     op_1 = std::make_shared<hl_ast_operand>(var);
 
     //lhs
@@ -998,6 +1001,7 @@ TEST( cTreeVisitor, array_test){
     //rhs
 
     var = std::make_shared<variable>( "test_matrix");
+    var->set_type(var_type_array);
     op_1 = std::make_shared<hl_ast_operand>(var);
 
 
