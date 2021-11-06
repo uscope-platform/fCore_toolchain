@@ -725,7 +725,7 @@ TEST(HlPassesTest, function_return_inlining) {
 
     std::shared_ptr<variable> var = std::make_shared<variable>("inlined_variable_0");
     std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("inlined_variable_0", c_type_float, var);
-    var = std::make_shared<variable>("constant", 807.000977f);
+    var = std::make_shared<variable>("c", 807.000977f);
     std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
     def->set_scalar_initializer(op);
     gold_standard->add_content(def);

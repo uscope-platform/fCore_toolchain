@@ -206,7 +206,7 @@ TEST(EndToEndC, array_initialization) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x26, 0x41b00000, 0x46, 0x40400000, 0x61023};
+    std::vector<uint32_t> gold_standard = {0x26, 0x41300000, 0x43823, 0x23843};
 
     ASSERT_EQ(gold_standard, result);
 }
