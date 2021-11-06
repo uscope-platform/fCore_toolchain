@@ -46,6 +46,7 @@ set(FCORE_CC_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_expression_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_function_call_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_ast_operand.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/dead_load_elimination.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/constant_folding_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/constant_propagation.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/hl_pass_manager.cpp

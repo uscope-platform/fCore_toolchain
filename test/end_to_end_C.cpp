@@ -177,7 +177,7 @@ TEST(EndToEndC, loop) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x1e2061, 0xa1881, 0x1e2061, 0xa1881};
+    std::vector<uint32_t> gold_standard = {0xa2061, 0x1e2061, 0xa1881};
 
    ASSERT_EQ(gold_standard, result);
 }
@@ -192,7 +192,7 @@ TEST(EndToEndC, nested_loop) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0xa2061, 0xc2061, 0xa3861, 0xa3861, 0x102061,0xc2061, 0x103861, 0xa3861};
+    std::vector<uint32_t> gold_standard = {0xa2061, 0xa2061, 0xa2061, 0xa2061};
 
      ASSERT_EQ(gold_standard, result);
 }

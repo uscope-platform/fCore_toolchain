@@ -832,13 +832,17 @@ TEST(HlPassesTest, dead_load_elimination) {
 
     std::shared_ptr<hl_ast_node> input_root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
-    std::shared_ptr<variable> var = std::make_shared<variable>("Ts", 15.7f);
-    std::shared_ptr<hl_ast_operand> ts_op = std::make_shared<hl_ast_operand>(var);
-    input_root->add_content(ts_op);
+    std::shared_ptr<variable> ts_var = std::make_shared<variable>("Ts", 15.7f);
+    std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("Ts", c_type_float, ts_var);
+    input_root->add_content(def);
 
-    var = std::make_shared<variable>("Ts", 158.6f);
-    ts_op = std::make_shared<hl_ast_operand>(var);
-    input_root->add_content(ts_op);
+    std::shared_ptr<variable> cvar = std::make_shared<variable>("constant", 158.6f);
+    std::shared_ptr<hl_ast_operand> constant_op = std::make_shared<hl_ast_operand>(cvar);
+    std::shared_ptr<hl_ast_operand> dest_op = std::make_shared<hl_ast_operand>(ts_var);
+    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(expr_assign);
+    exp->set_rhs(constant_op);
+    exp->set_lhs(dest_op);
+    input_root->add_content(exp);
 
     std::string ep = "main";
     hl_pass_manager manager = create_hl_pass_manager(ep,{14}, 0);
@@ -846,6 +850,6 @@ TEST(HlPassesTest, dead_load_elimination) {
 
 
     std::shared_ptr<hl_ast_node> gold_standard= std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
-
+    gold_standard->add_content(exp);
     ASSERT_EQ(*gold_standard, *input_root);
 }
