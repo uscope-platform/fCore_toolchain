@@ -31,7 +31,10 @@ public:
     std::shared_ptr<hl_ast_operand> process_operand(std::shared_ptr<hl_ast_operand> element);
     int get_pass_type() override { return GLOBAL_PASS;};
 private:
+    std::shared_ptr<hl_ast_node> map_constants(std::shared_ptr<hl_ast_node> element);
+    void map_assignments(std::shared_ptr<hl_ast_node> element);
     std::unordered_map<std::string, std::shared_ptr<hl_ast_operand>> constants_map;
+    std::vector<std::string> excluded_constants;
 };
 
 
