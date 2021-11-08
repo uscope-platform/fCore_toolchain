@@ -348,37 +348,41 @@ function_inlining_pass::substitute_operand_arguments(const std::shared_ptr<hl_as
 
     std::shared_ptr<hl_ast_operand> p = std::static_pointer_cast<hl_ast_operand>(parameters[old_operand->get_name()]);
     std::vector<std::shared_ptr<hl_ast_node>> tmp_vect;
-
     if(p != nullptr){
-        if(p->get_variable()->get_type() != var_type_array){
+        if(p->node_type == hl_ast_node_type_operand){
+            if(p->get_variable()->get_type() != var_type_array){
 
+                new_operand = std::static_pointer_cast<hl_ast_operand>(hl_ast_node::deep_copy(p));
+
+                for(auto &item: old_operand->get_array_index()){
+                    tmp_vect.push_back(substitute_arguments(item, parameters));
+                }
+                if(!tmp_vect.empty()){
+                    new_operand->set_type(var_type_array);
+                }
+                new_operand->set_array_index(tmp_vect);
+            } else{
+                new_operand = std::static_pointer_cast<hl_ast_operand>(hl_ast_node::deep_copy(p));
+
+                for(auto &item: p->get_array_index()){
+                    tmp_vect.push_back(substitute_arguments(item, parameters));
+                }
+                std::vector<std::shared_ptr<hl_ast_node>> old_idx = old_operand->get_array_index();
+
+                if(!old_idx.empty()) {
+                    tmp_vect.insert(tmp_vect.end(), old_idx.begin(), old_idx.end());
+                }
+
+                if(!tmp_vect.empty()){
+                    new_operand->set_type(var_type_array);
+                }
+
+                new_operand->set_array_index(tmp_vect);
+            }
+        } else if(p->node_type == hl_ast_node_type_expr){
             new_operand = std::static_pointer_cast<hl_ast_operand>(hl_ast_node::deep_copy(p));
-
-            for(auto &item: old_operand->get_array_index()){
-                tmp_vect.push_back(substitute_arguments(item, parameters));
-            }
-            if(!tmp_vect.empty()){
-                new_operand->set_type(var_type_array);
-            }
-            new_operand->set_array_index(tmp_vect);
-        } else{
-            new_operand = std::static_pointer_cast<hl_ast_operand>(hl_ast_node::deep_copy(p));
-
-            for(auto &item: p->get_array_index()){
-                tmp_vect.push_back(substitute_arguments(item, parameters));
-            }
-            std::vector<std::shared_ptr<hl_ast_node>> old_idx = old_operand->get_array_index();
-
-            if(!old_idx.empty()) {
-                tmp_vect.insert(tmp_vect.end(), old_idx.begin(), old_idx.end());
-            }
-
-            if(!tmp_vect.empty()){
-                new_operand->set_type(var_type_array);
-            }
-
-            new_operand->set_array_index(tmp_vect);
         }
+
     } else {
         new_operand = std::static_pointer_cast<hl_ast_operand>(hl_ast_node::deep_copy(old_operand));
     }

@@ -326,3 +326,21 @@ TEST(InstructionStreamPasses, register_allocation){
 
     ASSERT_EQ(gold_standard, result);
 }
+
+
+
+TEST(HlPassesTest, functionInliningExpression) {
+
+    std::string input_file = "c_e2e/test_function_inline_expression.c";
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(input_file, includes, true, 0);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x26, 0x40A00000, 0x40b23, 0x26, 0x3727C5AC, 0x61023, 0x218c1, 0x46, 0xC3160000, 0x21031, 0x46, 0x43160000, 0x21030, 0x40021};
+
+    ASSERT_EQ(gold_standard, result);
+
+}

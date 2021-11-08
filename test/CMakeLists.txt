@@ -96,6 +96,7 @@ configure_file(C_files/end_to_end/test_iom_initialization.c  ${C_E2E_TEST_FILES_
 configure_file(C_files/end_to_end/test_move.c  ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_complex_normalization.c  ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_register_allocation.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
+configure_file(C_files/end_to_end/test_function_inline_expression.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 
 # DISASSEMBLER TESTING FILES
 set(DIS_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/dis)
