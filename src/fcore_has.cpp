@@ -75,11 +75,15 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
         manager = create_ll_pass_manager(dump_ast_level);
         manager.run_morphing_passes(AST);
 
+        if(dump_ast_level>0) dump["low_level"] = manager.get_dump();
+
         instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
 
         std::unordered_map<std::string, std::shared_ptr<variable>> iom;
         stream_pass_manager sman(iom, dump_ast_level);
         program_stream = sman.process_stream(program_stream);
+
+        if(dump_ast_level>0) dump["stream"] = sman.get_dump();
 
         writer.process_stream(program_stream, false);
 

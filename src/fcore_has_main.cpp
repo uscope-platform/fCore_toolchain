@@ -69,6 +69,13 @@ int main(int argc, char **argv) {
         has_engine.write_json(output_file);
     }
 
+    if(dump_ast_level>0){
+        std::string str = has_engine.get_dump().dump();
+        std::ofstream ss(output_file+"_dump.json");
+        ss<<str;
+        ss.close();
+    }
+
     return 0;
 }
 

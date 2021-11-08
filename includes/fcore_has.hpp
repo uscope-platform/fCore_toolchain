@@ -53,11 +53,13 @@ public:
     void write_json(const std::string& output_file);
     uint32_t get_program_size();
     uint32_t get_inst_count();
+    nlohmann::json get_dump() {return dump;};
 private:
     std::shared_ptr<ll_ast_node> AST;
     binary_generator writer;
     ll_pass_manager manager;
     std::string error_code;
+    nlohmann::json dump;
 };
 
 
