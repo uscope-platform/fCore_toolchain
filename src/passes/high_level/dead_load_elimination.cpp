@@ -56,13 +56,22 @@ void dead_load_elimination::search_constants(std::shared_ptr<hl_ast_node> elemen
 
 std::shared_ptr<hl_ast_node> dead_load_elimination::purge_dead_loads(std::shared_ptr<hl_ast_node> element) {
     if(element->node_type == hl_ast_node_type_definition) {
-        std::string name = std::static_pointer_cast<hl_definition_node>(element)->get_name();
+        std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(element);
+        if(node->is_initialized()){
+            if(node->get_scalar_initializer()->node_type != hl_ast_node_type_operand){
+                return element;
+            }
+        }
+        std::string name = node->get_name();
         if(last_loads_map[name]==idx){
             return element;
         }
     } else if(element->node_type == hl_ast_node_type_expr){
         std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
         if(node->get_type() == expr_assign){
+            if(node->get_rhs()->node_type != hl_ast_node_type_operand){
+                return element;
+            }
             std::string name = std::static_pointer_cast<hl_ast_operand>(node->get_lhs())->get_name();
             if(last_loads_map[name]==idx){
                 return element;
