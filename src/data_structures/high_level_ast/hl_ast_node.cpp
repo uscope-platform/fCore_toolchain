@@ -128,8 +128,10 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy(const std::shared_ptr<hl_ast
         return deep_copy_operands(node);
     } else if(node->node_type == hl_ast_node_type_function_call){
         return deep_copy_function_call(node);
-    } else if(node->node_type == hl_ast_node_type_program_root){
+    } else if(node->node_type == hl_ast_node_type_program_root) {
         return deep_copy_program_root(node);
+    } else if(node->node_type == hl_ast_node_type_code_block){
+        return deep_copy_code_block(node);
     } else {
         throw std::runtime_error("HL ast node with unknown type");
     }
@@ -272,6 +274,7 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_function_call(const std::sha
     return copied_obj;
 }
 
+
 std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_program_root(const std::shared_ptr<hl_ast_node> &node) {
     std::shared_ptr<hl_ast_node> copied_obj = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
@@ -283,6 +286,20 @@ std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_program_root(const std::shar
     copied_obj->set_content(args);
     return copied_obj;
 }
+
+std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_code_block(const std::shared_ptr<hl_ast_node> &node) {
+    std::shared_ptr<hl_ast_node> copied_obj = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
+
+    std::vector<std::shared_ptr<hl_ast_node>> args;
+    for(const auto &i :node->get_content()){
+        args.push_back(deep_copy(i));
+    }
+
+    copied_obj->set_content(args);
+    return copied_obj;
+}
+
+
 
 bool hl_ast_node::compare_vectors(const std::vector<std::shared_ptr<hl_ast_node>> &lhs,
                                   const std::vector<std::shared_ptr<hl_ast_node>> &rhs) {
@@ -346,4 +363,3 @@ nlohmann::json hl_ast_node::dump_by_type(const std::shared_ptr<hl_ast_node>& nod
             throw std::runtime_error("ERROR: Unknown node type has been dumped");
     }
 }
-

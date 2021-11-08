@@ -93,6 +93,7 @@ constexpr std::string_view expression_type_to_string(expression_type_t in){
         case expr_fti: return "expr_fti";
         case expr_satp: return "expr_satp";
         case expr_satn: return "expr_satn";
+        default: return "unknown expression type";
     }
 }
 
@@ -124,6 +125,7 @@ constexpr std::string_view assignment_type_to_string(assignment_type_t in){
         case xor_assignment: return "xor_assignment";
         case lsh_assignment: return "lsh_assignment";
         case rsh_assignment: return "rsh_assignment";
+        default: return "unknown assignment type";
     }
 }
 

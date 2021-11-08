@@ -31,6 +31,7 @@ private:
     std::shared_ptr<hl_ast_node> process_loop(std::shared_ptr<hl_ast_loop_node> element);
     std::shared_ptr<hl_ast_node> process_definition(std::shared_ptr<hl_definition_node> element);
     std::shared_ptr<hl_ast_node> process_conditional(std::shared_ptr<hl_ast_conditional_node> element);
+    std::vector<std::shared_ptr<hl_ast_node>> process_code_block(const std::shared_ptr<hl_ast_node>& element);
 };
 
 

@@ -103,6 +103,7 @@ private:
     static std::shared_ptr<hl_ast_node> deep_copy_operands(const std::shared_ptr<hl_ast_node> &node);
     static std::shared_ptr<hl_ast_node> deep_copy_function_call(const std::shared_ptr<hl_ast_node> &node);
     static std::shared_ptr<hl_ast_node> deep_copy_program_root(const std::shared_ptr<hl_ast_node> &node);
+    static std::shared_ptr<hl_ast_node> deep_copy_code_block(const std::shared_ptr<hl_ast_node> &node);
 };
 
 

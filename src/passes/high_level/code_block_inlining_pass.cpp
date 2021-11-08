@@ -52,7 +52,7 @@ std::vector<std::shared_ptr<hl_ast_node>> code_block_inlining_pass::process_elem
         case hl_ast_node_type_definition:
             return {process_definition(std::static_pointer_cast<hl_definition_node>(element))};
         case hl_ast_node_type_code_block:
-            return element->get_content();
+            return process_code_block(element);
         default:
             return {element};
     }
@@ -124,6 +124,19 @@ std::vector<std::shared_ptr<hl_ast_node>> code_block_inlining_pass::process_expr
 
     ret_val.push_back(expr);
     return ret_val;
+}
+
+std::vector<std::shared_ptr<hl_ast_node>>
+code_block_inlining_pass::process_code_block(const std::shared_ptr<hl_ast_node>& element) {
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_content;
+
+    for(const auto &item:element->get_content()){
+        std::vector<std::shared_ptr<hl_ast_node>> processed_element = process_element_by_type(item);
+        new_content.insert(new_content.end(),processed_element.begin(), processed_element.end());
+    }
+
+    return new_content;
 }
 
 
