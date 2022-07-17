@@ -96,10 +96,11 @@ set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_
 
 
 add_executable(fCore_has ${FCORE_AS_SRCS} ${ASM_PARSER_SRCS} fcore_has_main.cpp)
-target_link_libraries(fCore_has PUBLIC antlr4-runtime)
+target_link_libraries(fCore_has PRIVATE ${CMAKE_BINARY_DIR}/antlr_runtime/dist/usr/local/lib/libantlr4-runtime.a)
+
 
 add_executable(fCore_cc ${FCORE_CC_SRCS} ${C_PARSER_SRCS} fcore_cc_main.cpp)
-target_link_libraries(fCore_cc PUBLIC antlr4-runtime)
+target_link_libraries(fCore_cc PRIVATE ${CMAKE_BINARY_DIR}/antlr_runtime/dist/usr/local/lib/libantlr4-runtime.a)
 
 add_executable(fCore_dis ${FCORE_DIS_SRCS} fcore_dis_main.cpp)
 
