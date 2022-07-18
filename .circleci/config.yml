@@ -10,7 +10,7 @@ jobs:
           name: Installing dependencies
           command: |
                   sudo apt update
-                  sudo apt install -y gcc g++ cmake pkg-config uuid uuid-dev uuid-runtime libantlr4-runtime4.8 libantlr4-runtime-dev libgtest-dev
+                  sudo apt install -y gcc g++ cmake pkg-config uuid uuid-dev uuid-runtime default-jre libgtest-dev
       - run:
           name: Install required libraries
           command: 'sudo cp third_party/fp_ip_cmodel/lib/* /usr/lib'
