@@ -9,11 +9,8 @@ option(INCLUDE_COVERAGE "Build with support for code coverage" OFF)
 
 
 set(ANTLR_VERSION 4.9.3)
-
 SET(ANTLR_JAR antlr-${ANTLR_VERSION}-complete.jar)
-
 set(ANTLR_CLASSPATH ${CMAKE_CURRENT_BINARY_DIR}/antlr_jar/${ANTLR_JAR})
-
 set(ANTLR_OPTIONS -Dlanguage=Cpp -visitor -listener  -encoding iso-8859-1)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/antlr_runtime/dist/usr/local/include/antlr4-runtime)
@@ -51,12 +48,15 @@ endif(${BUILD_TESTS})
 unset(BUILD_TESTS CACHE)
 
 include(ExternalProject)
+include(ProcessorCount)
+
+ProcessorCount(N_PROC)
 
 ExternalProject_Add(antlr_runtime
         GIT_REPOSITORY https://github.com/antlr/antlr4.git
         GIT_TAG ${ANTLR_VERSION}
         CONFIGURE_COMMAND cmake ${CMAKE_BINARY_DIR}/antlr_runtime-prefix/src/antlr_runtime/runtime/Cpp
-        BUILD_COMMAND "make"
+        CMAKE_ARGS -j${N_PROC}
         INSTALL_COMMAND DESTDIR=${CMAKE_BINARY_DIR}/antlr_runtime/dist make install
         )
 
