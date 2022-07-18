@@ -18,6 +18,9 @@ jobs:
           name: Creating Build Files
           command: 'cmake -H. -Bbuild -DBUILD_TESTS=True'
       - run:
+          name: Build antlr runtime
+          command: 'cmake --build build --target parsers'
+      - run:
           name: Creating Binary Files
           command: 'cmake --build build'
       - run:
