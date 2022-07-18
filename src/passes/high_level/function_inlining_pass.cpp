@@ -256,6 +256,8 @@ function_inlining_pass::process_function_call(std::shared_ptr<hl_function_call_n
         return substitute_conditional_arguments(std::static_pointer_cast<hl_ast_conditional_node>(statement), parameters);
     } else if(statement->node_type == hl_ast_node_type_loop){
         return substitute_loop_arguments(std::static_pointer_cast<hl_ast_loop_node>(statement), parameters);
+    } else if(statement->node_type == hl_ast_node_type_code_block){
+        return substitute_code_block(statement, parameters);
     }
      return retval;
 }
@@ -337,6 +339,22 @@ function_inlining_pass::substitute_definition_arguments(const std::shared_ptr<hl
 
 
     return statement;
+}
+std::shared_ptr<hl_ast_node>
+function_inlining_pass::substitute_code_block(const std::shared_ptr<hl_ast_node> &statement,
+                                              std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
+
+    std::shared_ptr<hl_ast_node> ret_code_block = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_content;
+
+    for(auto &item:statement->get_content()){
+        new_content.push_back(substitute_arguments(item, parameters));
+    }
+
+    ret_code_block->set_content(new_content);
+    return ret_code_block;
+
 }
 
 std::shared_ptr<hl_ast_node>

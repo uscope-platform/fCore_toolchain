@@ -873,6 +873,71 @@ TEST(HlPassesTest, nested_function_inlining) {
 
     std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
+    ///////////////////////////////////////////////////////////////////////////
+    ///                                  ADD                                ///
+    ///////////////////////////////////////////////////////////////////////////
+
+    std::shared_ptr<variable> var = std::make_shared<variable>("input_1");
+    var->set_bound_reg(5);
+    var->set_variable_class(variable_input_type);
+    std::shared_ptr<hl_ast_operand> in_1_op = std::make_shared<hl_ast_operand>(var);
+    var = std::make_shared<variable>("memory_2");
+    var->set_bound_reg(12);
+    var->set_variable_class(variable_memory_type);
+    std::shared_ptr<hl_ast_operand> mem_2_op = std::make_shared<hl_ast_operand>(var);
+
+
+
+    std::shared_ptr<hl_expression_node> exp_add = std::make_shared<hl_expression_node>(expr_add);
+    exp_add->set_rhs(mem_2_op);
+    exp_add->set_lhs(in_1_op);
+
+
+    var = std::make_shared<variable>("out");
+    std::shared_ptr<hl_definition_node> def_0 = std::make_shared<hl_definition_node>("out", c_type_float, var);
+    def_0->set_scalar_initializer(exp_add);
+    gold_standard->add_content(def_0);
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///                             CONSTANT LOAD                           ///
+    ///////////////////////////////////////////////////////////////////////////
+
+    var = std::make_shared<variable>("inlined_variable_0");
+    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("inlined_variable_0", c_type_int, var);
+
+    std::shared_ptr<variable> var_const = std::make_shared<variable>("constant", 120);
+    std::shared_ptr<hl_ast_operand> const_op = std::make_shared<hl_ast_operand>(var_const);
+    def_1->set_scalar_initializer(const_op);
+
+    gold_standard->add_content(def_1);
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///                             SATURATE                                ///
+    ///////////////////////////////////////////////////////////////////////////
+
+    var = std::make_shared<variable>("out");
+    std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
+    var = std::make_shared<variable>("inlined_variable_0");
+    std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
+
+
+    std::shared_ptr<hl_expression_node> expr_sat = std::make_shared<hl_expression_node>(expr_satp);
+    expr_sat->set_rhs(op_2);
+    expr_sat->set_lhs(op_1);
+
+
+    var = std::make_shared<variable>("memory_2");
+    var->set_bound_reg(12);
+    var->set_variable_class(variable_memory_type);
+    std::shared_ptr<hl_ast_operand> op_dest = std::make_shared<hl_ast_operand>(var);
+
+
+    std::shared_ptr<hl_expression_node> expr = std::make_shared<hl_expression_node>(expr_assign);
+    expr->set_rhs(expr_sat);
+    expr->set_lhs(op_dest);
+    gold_standard->add_content(expr);
+
     ASSERT_EQ(*normalized_ast, *gold_standard);
 }
 

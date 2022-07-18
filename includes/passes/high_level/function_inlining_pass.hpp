@@ -42,6 +42,7 @@ public:
     std::shared_ptr<hl_ast_node> substitute_expression_arguments(const std::shared_ptr<hl_expression_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
     std::shared_ptr<hl_ast_node> substitute_definition_arguments(const std::shared_ptr<hl_definition_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
     std::shared_ptr<hl_ast_node> substitute_operand_arguments(const std::shared_ptr<hl_ast_operand> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
+    std::shared_ptr<hl_ast_node> substitute_code_block(const std::shared_ptr<hl_ast_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
     int get_pass_type() override { return GLOBAL_PASS;};
 private:
     std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>> functions_map;
