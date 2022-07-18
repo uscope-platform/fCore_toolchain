@@ -63,8 +63,15 @@ FetchContent_Declare(
         SOURCE_SUBDIR runtime/Cpp
         GIT_TAG ${ANTLR_VERSION}
 )
+# Check if population has already been performed
+FetchContent_GetProperties(antlr_runtime_src)
+if(NOT antlr_runtime_src_POPULATED)
+    # Fetch the content using previously declared details
+    FetchContent_Populate(antlr_runtime_src)
 
-FetchContent_MakeAvailable(antlr_runtime_src)
+    # Bring the populated content into the build
+    add_subdirectory(${antlr_runtime_src_SOURCE_DIR}/runtime/Cpp ${antlr_runtime_src_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
 
 
 FetchContent_Declare(
@@ -74,4 +81,5 @@ FetchContent_Declare(
         DOWNLOAD_NAME ${ANTLR_JAR}
         DOWNLOAD_NO_EXTRACT ON
 )
+
 FetchContent_MakeAvailable(antlr_jar)
