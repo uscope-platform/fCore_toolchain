@@ -38,7 +38,6 @@ endif(${INCLUDE_COVERAGE})
 add_subdirectory(includes/asm_parser)
 add_subdirectory(includes/C_parser)
 
-
 add_subdirectory(src)
 
 if(${BUILD_TESTS})
@@ -48,15 +47,11 @@ endif(${BUILD_TESTS})
 unset(BUILD_TESTS CACHE)
 
 include(ExternalProject)
-include(ProcessorCount)
-
-ProcessorCount(N_PROC)
 
 ExternalProject_Add(antlr_runtime
         GIT_REPOSITORY https://github.com/antlr/antlr4.git
         GIT_TAG ${ANTLR_VERSION}
-        CONFIGURE_COMMAND cmake ${CMAKE_BINARY_DIR}/antlr_runtime-prefix/src/antlr_runtime/runtime/Cpp
-        CMAKE_ARGS -j${N_PROC}
+        SOURCE_SUBDIR runtime/Cpp
         INSTALL_COMMAND DESTDIR=${CMAKE_BINARY_DIR}/antlr_runtime/dist make install
         )
 

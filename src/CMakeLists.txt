@@ -33,7 +33,6 @@ set(FCORE_COMMON_SRCS_I
 
 
 set(FCORE_CC_SRCS
-        ${FCORE_COMMON_SRCS_I}
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/C/C_language_parser.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/C/C_pre_processor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/C/C_ErrorHandling.cpp
@@ -72,7 +71,6 @@ set(FCORE_CC_SRCS
 
 
 set(FCORE_AS_SRCS
-        ${FCORE_COMMON_SRCS_I}
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/asm/AsmTree_visitor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/asm/asm_language_parser.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/asm/AsmErrorHandling.cpp
@@ -81,29 +79,31 @@ set(FCORE_AS_SRCS
 
 
 set(FCORE_DIS_SRCS
-        ${FCORE_COMMON_SRCS_I}
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/assembly_generator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/fcore_dis.cpp
         )
 
 set(FCORE_EMU_SRCS
-        ${FCORE_COMMON_SRCS_I}
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/fcore_emu.cpp
         )
 
 set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_DIS_SRCS} ${FCORE_EMU_SRCS} PARENT_SCOPE)
 
+add_library(common_srcs ${FCORE_COMMON_SRCS_I})
+
 
 add_executable(fCore_has ${FCORE_AS_SRCS} ${ASM_PARSER_SRCS} fcore_has_main.cpp)
-target_link_libraries(fCore_has PRIVATE ${CMAKE_BINARY_DIR}/antlr_runtime/dist/usr/local/lib/libantlr4-runtime.a)
-
+target_link_libraries(fCore_has PRIVATE common_srcs ${CMAKE_BINARY_DIR}/antlr_runtime/dist/usr/local/lib/libantlr4-runtime.a)
 
 add_executable(fCore_cc ${FCORE_CC_SRCS} ${C_PARSER_SRCS} fcore_cc_main.cpp)
-target_link_libraries(fCore_cc PRIVATE ${CMAKE_BINARY_DIR}/antlr_runtime/dist/usr/local/lib/libantlr4-runtime.a)
+target_link_libraries(fCore_cc PRIVATE common_srcs ${CMAKE_BINARY_DIR}/antlr_runtime/dist/usr/local/lib/libantlr4-runtime.a)
 
 add_executable(fCore_dis ${FCORE_DIS_SRCS} fcore_dis_main.cpp)
+target_link_libraries(fCore_dis PRIVATE common_srcs)
 
+add_custom_target(toolchain)
+add_dependencies(toolchain fCore_has fCore_cc fCore_dis)
 
 install(TARGETS fCore_has DESTINATION /usr/bin)
 install(TARGETS fCore_cc DESTINATION /usr/bin)
@@ -111,7 +111,7 @@ install(TARGETS fCore_dis DESTINATION /usr/bin)
 
 if(${INCLUDE_EMULATOR})
     add_executable(fCore_emu ${FCORE_EMU_SRCS} fcore_emu_main.cpp)
-    target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel)
+    target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel common_srcs)
 
     install(TARGETS fCore_emu DESTINATION /usr/bin)
     install(FILES ../third_party/fp_ip_cmodel/lib/libIp_floating_point_v7_1_bitacc_cmodel.so
