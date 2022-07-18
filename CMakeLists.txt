@@ -6,7 +6,7 @@ include(GNUInstallDirs)
 option(BUILD_TESTS "Build test programs" OFF)
 option(INCLUDE_EMULATOR "Include the emulator in the build" OFF)
 option(INCLUDE_COVERAGE "Build with support for code coverage" OFF)
-
+option(CROSS_COMPILE "Cross compile for arm 32 bit" OFF)
 
 set(ANTLR_VERSION 4.9.3)
 SET(ANTLR_JAR antlr-${ANTLR_VERSION}-complete.jar)
@@ -35,8 +35,23 @@ if(${INCLUDE_COVERAGE})
     add_link_options(-fprofile-arcs -ftest-coverage)
 endif(${INCLUDE_COVERAGE})
 
+if(${CROSS_COMPILE})
+
+    set(CMAKE_C_COMPILER arm-linux-gnueabihf-gcc)
+    set(CMAKE_CXX_COMPILER arm-linux-gnueabihf-g++)
+    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+endif(${CROSS_COMPILE})
+
+message(STATUS "C compiler: ${CMAKE_C_COMPILER}")
+message(STATUS "C++ compiler: ${CMAKE_CXX_COMPILER}")
+
 add_subdirectory(includes/asm_parser)
 add_subdirectory(includes/C_parser)
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/_deps/antlr_runtime_src-src/runtime/Cpp/runtime/src)
 
 add_subdirectory(src)
 
@@ -48,22 +63,26 @@ unset(BUILD_TESTS CACHE)
 
 include(ExternalProject)
 
-ExternalProject_Add(antlr_runtime
-        GIT_REPOSITORY https://github.com/antlr/antlr4.git
-        GIT_TAG ${ANTLR_VERSION}
-        SOURCE_SUBDIR runtime/Cpp
-        INSTALL_COMMAND DESTDIR=${CMAKE_BINARY_DIR}/antlr_runtime/dist make install
-        )
-
 add_custom_target(parsers)
-add_dependencies(parsers c_parser_gen asm_parser_gen antlr_runtime)
+add_dependencies(parsers c_parser_gen asm_parser_gen)
 
-ExternalProject_Add(antlr_jar
+include(FetchContent)
+
+FetchContent_Declare(
+        antlr_runtime_src
+        GIT_REPOSITORY https://github.com/antlr/antlr4.git
+        SOURCE_SUBDIR runtime/Cpp
+        GIT_TAG ${ANTLR_VERSION}
+)
+
+FetchContent_MakeAvailable(antlr_runtime_src)
+
+
+FetchContent_Declare(
+        antlr_jar
         URL https://github.com/antlr/website-antlr4/blob/gh-pages/download/${ANTLR_JAR}?raw=true
         DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/antlr_jar
         DOWNLOAD_NAME ${ANTLR_JAR}
         DOWNLOAD_NO_EXTRACT ON
-        CONFIGURE_COMMAND ""
-        BUILD_COMMAND ""
-        INSTALL_COMMAND ""
-        )
+)
+FetchContent_MakeAvailable(antlr_jar)

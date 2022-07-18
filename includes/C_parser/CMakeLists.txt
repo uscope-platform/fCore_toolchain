@@ -21,5 +21,3 @@ add_custom_command(
 )
 
 add_custom_target(c_parser_gen DEPENDS  ${C_PARSER_GEN_SRCS})
-
-add_dependencies(c_parser_gen antlr_jar)
