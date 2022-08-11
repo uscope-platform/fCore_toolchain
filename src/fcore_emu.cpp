@@ -34,6 +34,15 @@ fcore_emu::fcore_emu(std::istream &input, bin_loader_input_type_t in_type) {
     }
 }
 
+void fcore_emu::set_specs(nlohmann::json &specs) {
+    run_specs = specs;
+    if(inputs.empty() && specs.contains("inputs_file")){
+        std::ifstream in_stream(specs["inputs_file"]);
+        set_inputs(in_stream);
+    }
+}
+
+
 void fcore_emu::write_json(const std::string &output_file) {
     nlohmann::json j;
     std::vector<std::string> str_mem_f;
@@ -44,6 +53,7 @@ void fcore_emu::write_json(const std::string &output_file) {
         str_mem_f.push_back("r"+std::to_string(i)+ ": " + std::to_string(val));
         str_mem.push_back("r"+std::to_string(i)+ ": " + std::to_string(memory[i]));
     }
+    j["outputs"] = outputs;
     j["registers"] = str_mem;
     j["registers_f"] = str_mem_f;
     j["error_code"] = error_code;
@@ -56,9 +66,14 @@ void fcore_emu::write_json(const std::string &output_file) {
 void fcore_emu::emulate_program() {
     try{
         emulator backend(program_stream);
+        if(run_specs.contains("outputs")){
+            std::vector<int> out_specs = run_specs["outputs"];
+            backend.set_outputs(out_specs);
+        }
         backend.set_inputs(inputs);
         backend.run_program();
         memory = backend.get_memory();
+        outputs = backend.get_outputs();
     } catch(std::runtime_error &e){
         error_occurred = true;
         error_code = e.what();

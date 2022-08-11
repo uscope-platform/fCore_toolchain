@@ -26,10 +26,12 @@ public:
     explicit emulator(instruction_stream &s);
 
     void set_inputs(std::vector<std::pair<unsigned int, std::vector<float>>> &in);
+    void set_outputs(std::vector<int> &out);
     void run_program();
     void run_program_with_inputs(unsigned int rounds);
     void run_round();
     std::vector<uint32_t> get_memory() { return memory;};
+    std::unordered_map<int, std::vector<float>> get_outputs() { return outputs;};
 private:
 
     static uint32_t float_to_uint32(float f);
@@ -64,6 +66,8 @@ private:
     bool stop_requested;
 
     std::vector<uint32_t> memory;
+    std::vector<int> output_idx;
+    std::unordered_map<int, std::vector<float>> outputs{};
     std::vector<std::pair<unsigned int, std::vector<float>>> inputs;
 };
 

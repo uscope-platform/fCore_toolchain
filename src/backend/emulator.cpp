@@ -30,6 +30,11 @@ void emulator::set_inputs(std::vector<std::pair<unsigned int, std::vector<float>
     inputs = in;
 }
 
+void emulator::set_outputs(std::vector<int> &out) {
+    output_idx = out;
+}
+
+
 void emulator::run_program() {
     if(!inputs.empty()){
         unsigned int n_rounds = inputs[0].second.size();
@@ -45,6 +50,9 @@ void emulator::run_program_with_inputs(unsigned int rounds) {
             memory[item.first] = float_to_uint32(item.second[i]);
         }
         run_round();
+        for (auto &item:output_idx) {
+            outputs[item].push_back(uint32_to_float(memory[item]));
+        }
     }
 }
 

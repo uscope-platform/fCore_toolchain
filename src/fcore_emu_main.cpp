@@ -31,11 +31,13 @@ int main(int argc, char **argv) {
     std::string input_program;
     std::string inputs_file;
     std::string output_file;
+    std::string spec_file;
     app.add_option("input_program", input_program, "Input program path")->required()->check(CLI::ExistingFile);
     app.add_flag("--mem", input_mem, "the input is a verilog mem file");
     app.add_flag("--hex", input_hex, "the input is a binary file");
     app.add_flag("--f", output_force, "force the rewriting of an existing product file");
     app.add_option("--o", output_file, "Output file path");
+    app.add_option("--spec", spec_file , "JSON specification file path")->check(CLI::ExistingFile);
     app.add_option("--inputs_csv", inputs_file, "Path of a csv file containing input vectors for the emulated core");
     CLI11_PARSE(app, argc, argv);
 
@@ -72,6 +74,14 @@ int main(int argc, char **argv) {
         std::ifstream in_stream(inputs_file);
         emu_engine.set_inputs(in_stream);
     }
+
+    if(!spec_file.empty()){
+        nlohmann::json specs;
+        std::ifstream spec_stream(spec_file);
+        spec_stream >> specs;
+        emu_engine.set_specs(specs);
+    }
+
     emu_engine.emulate_program();
 
     emu_engine.write_json(output_file);
