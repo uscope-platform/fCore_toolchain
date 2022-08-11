@@ -19,9 +19,9 @@ public:
     T__20 = 21, T__21 = 22, T__22 = 23, T__23 = 24, T__24 = 25, T__25 = 26, 
     T__26 = 27, T__27 = 28, T__28 = 29, T__29 = 30, T__30 = 31, T__31 = 32, 
     T__32 = 33, T__33 = 34, T__34 = 35, T__35 = 36, T__36 = 37, T__37 = 38, 
-    Register = 39, Identifier = 40, Hexnum = 41, Integer = 42, Octalnum = 43, 
-    FloatingPointLiteral = 44, String = 45, Label = 46, WS = 47, BlockComment = 48, 
-    LineComment = 49
+    T__38 = 39, T__39 = 40, Register = 41, Identifier = 42, Hexnum = 43, 
+    Integer = 44, Octalnum = 45, FloatingPointLiteral = 46, String = 47, 
+    Label = 48, WS = 49, BlockComment = 50, LineComment = 51
   };
 
   enum {

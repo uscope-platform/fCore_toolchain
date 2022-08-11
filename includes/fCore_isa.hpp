@@ -65,6 +65,8 @@ static std::map <std::string, uint32_t>  fcore_opcodes {
     std::make_pair ("satp", 16u),
     std::make_pair ("satn", 17u),
     std::make_pair ("rec", 18u),
+    std::make_pair ("popcnt", 19u),
+    std::make_pair ("abs", 20u)
 };
 
 static std::map <uint32_t, std::string>  fcore_opcodes_reverse {
@@ -85,7 +87,8 @@ static std::map <uint32_t, std::string>  fcore_opcodes_reverse {
     std::make_pair (fcore_opcodes["not"], "not"),
     std::make_pair (fcore_opcodes["satp"], "satp"),
     std::make_pair (fcore_opcodes["satn"], "satn"),
-    std::make_pair (fcore_opcodes["rec"], "rec")
+    std::make_pair (fcore_opcodes["rec"], "rec"),
+    std::make_pair (fcore_opcodes["abs"], "abs")
 };
 
 static std::map <std::string, isa_instruction_type>  fcore_op_types {
@@ -107,6 +110,7 @@ static std::map <std::string, isa_instruction_type>  fcore_op_types {
     std::make_pair ("satp", isa_register_instruction),
     std::make_pair ("satn", isa_register_instruction),
     std::make_pair ("rec", isa_conversion_instruction),
+    std::make_pair ("abs", isa_conversion_instruction),
 };
 
 
