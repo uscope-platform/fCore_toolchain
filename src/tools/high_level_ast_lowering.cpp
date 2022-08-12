@@ -143,7 +143,10 @@ high_level_ast_lowering::process_regular_expression(std::shared_ptr<hl_expressio
     std::shared_ptr<ll_ast_node> retval;
     expression_type_t op_type = input->get_type();
     std::string opcode = expr_instruction_mapping[op_type];
-    if(!fcore_implemented_operations[op_type]) throw std::runtime_error("ERROR: The required operation is not implementable on the fCore hardware");
+    if(!fcore_implemented_operations[op_type]) {
+        throw std::runtime_error("ERROR: The required operation is not implementable on the fCore hardware");
+    }
+
 
     std::shared_ptr<variable> op_a = std::static_pointer_cast<hl_ast_operand>(input->get_lhs())->get_variable();
     std::shared_ptr<variable> op_b = std::static_pointer_cast<hl_ast_operand>(input->get_rhs())->get_variable();

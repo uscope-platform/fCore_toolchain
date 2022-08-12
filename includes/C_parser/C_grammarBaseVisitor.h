@@ -1,5 +1,5 @@
 
-// Generated from /home/fils/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.9.3
+// Generated from /home/fils/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.10.1
 
 #pragma once
 
@@ -17,279 +17,279 @@ namespace C_parser {
 class  C_grammarBaseVisitor : public C_grammarVisitor {
 public:
 
-  virtual antlrcpp::Any visitCompilationUnit(C_grammarParser::CompilationUnitContext *ctx) override {
+  virtual std::any visitCompilationUnit(C_grammarParser::CompilationUnitContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitPrimaryExpression(C_grammarParser::PrimaryExpressionContext *ctx) override {
+  virtual std::any visitPrimaryExpression(C_grammarParser::PrimaryExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitUnaryExpression(C_grammarParser::UnaryExpressionContext *ctx) override {
+  virtual std::any visitUnaryExpression(C_grammarParser::UnaryExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitArrayAccessExpression(C_grammarParser::ArrayAccessExpressionContext *ctx) override {
+  virtual std::any visitArrayAccessExpression(C_grammarParser::ArrayAccessExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitUnaryOperator(C_grammarParser::UnaryOperatorContext *ctx) override {
+  virtual std::any visitUnaryOperator(C_grammarParser::UnaryOperatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitMultiplicativeOperator(C_grammarParser::MultiplicativeOperatorContext *ctx) override {
+  virtual std::any visitMultiplicativeOperator(C_grammarParser::MultiplicativeOperatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitMultiplicativeExpression(C_grammarParser::MultiplicativeExpressionContext *ctx) override {
+  virtual std::any visitMultiplicativeExpression(C_grammarParser::MultiplicativeExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitAdditiveOperator(C_grammarParser::AdditiveOperatorContext *ctx) override {
+  virtual std::any visitAdditiveOperator(C_grammarParser::AdditiveOperatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitAdditiveExpression(C_grammarParser::AdditiveExpressionContext *ctx) override {
+  virtual std::any visitAdditiveExpression(C_grammarParser::AdditiveExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitShiftOperator(C_grammarParser::ShiftOperatorContext *ctx) override {
+  virtual std::any visitShiftOperator(C_grammarParser::ShiftOperatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitShiftExpression(C_grammarParser::ShiftExpressionContext *ctx) override {
+  virtual std::any visitShiftExpression(C_grammarParser::ShiftExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitRelationalOperator(C_grammarParser::RelationalOperatorContext *ctx) override {
+  virtual std::any visitRelationalOperator(C_grammarParser::RelationalOperatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitRelationalExpression(C_grammarParser::RelationalExpressionContext *ctx) override {
+  virtual std::any visitRelationalExpression(C_grammarParser::RelationalExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitEqualityOperator(C_grammarParser::EqualityOperatorContext *ctx) override {
+  virtual std::any visitEqualityOperator(C_grammarParser::EqualityOperatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitEqualityExpression(C_grammarParser::EqualityExpressionContext *ctx) override {
+  virtual std::any visitEqualityExpression(C_grammarParser::EqualityExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitAndExpression(C_grammarParser::AndExpressionContext *ctx) override {
+  virtual std::any visitAndExpression(C_grammarParser::AndExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitExclusiveOrExpression(C_grammarParser::ExclusiveOrExpressionContext *ctx) override {
+  virtual std::any visitExclusiveOrExpression(C_grammarParser::ExclusiveOrExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitInclusiveOrExpression(C_grammarParser::InclusiveOrExpressionContext *ctx) override {
+  virtual std::any visitInclusiveOrExpression(C_grammarParser::InclusiveOrExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitLogicalAndExpression(C_grammarParser::LogicalAndExpressionContext *ctx) override {
+  virtual std::any visitLogicalAndExpression(C_grammarParser::LogicalAndExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitLogicalOrExpression(C_grammarParser::LogicalOrExpressionContext *ctx) override {
+  virtual std::any visitLogicalOrExpression(C_grammarParser::LogicalOrExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitConditionalExpression(C_grammarParser::ConditionalExpressionContext *ctx) override {
+  virtual std::any visitConditionalExpression(C_grammarParser::ConditionalExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitAssignmentExpression(C_grammarParser::AssignmentExpressionContext *ctx) override {
+  virtual std::any visitAssignmentExpression(C_grammarParser::AssignmentExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitAssignmentOperator(C_grammarParser::AssignmentOperatorContext *ctx) override {
+  virtual std::any visitAssignmentOperator(C_grammarParser::AssignmentOperatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitExpression(C_grammarParser::ExpressionContext *ctx) override {
+  virtual std::any visitExpression(C_grammarParser::ExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitConstantExpression(C_grammarParser::ConstantExpressionContext *ctx) override {
+  virtual std::any visitConstantExpression(C_grammarParser::ConstantExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitDeclaration(C_grammarParser::DeclarationContext *ctx) override {
+  virtual std::any visitDeclaration(C_grammarParser::DeclarationContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitInitDeclaratorList(C_grammarParser::InitDeclaratorListContext *ctx) override {
+  virtual std::any visitInitDeclaratorList(C_grammarParser::InitDeclaratorListContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitInitDeclarator(C_grammarParser::InitDeclaratorContext *ctx) override {
+  virtual std::any visitInitDeclarator(C_grammarParser::InitDeclaratorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitTypeSpecifier(C_grammarParser::TypeSpecifierContext *ctx) override {
+  virtual std::any visitTypeSpecifier(C_grammarParser::TypeSpecifierContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext *ctx) override {
+  virtual std::any visitSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitDeclarator(C_grammarParser::DeclaratorContext *ctx) override {
+  virtual std::any visitDeclarator(C_grammarParser::DeclaratorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitDirectDeclarator(C_grammarParser::DirectDeclaratorContext *ctx) override {
+  virtual std::any visitDirectDeclarator(C_grammarParser::DirectDeclaratorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitArrayDeclarator(C_grammarParser::ArrayDeclaratorContext *ctx) override {
+  virtual std::any visitArrayDeclarator(C_grammarParser::ArrayDeclaratorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext *ctx) override {
+  virtual std::any visitNestedParenthesesBlock(C_grammarParser::NestedParenthesesBlockContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitParameterTypeList(C_grammarParser::ParameterTypeListContext *ctx) override {
+  virtual std::any visitParameterTypeList(C_grammarParser::ParameterTypeListContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitParameterList(C_grammarParser::ParameterListContext *ctx) override {
+  virtual std::any visitParameterList(C_grammarParser::ParameterListContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitParameterDeclaration(C_grammarParser::ParameterDeclarationContext *ctx) override {
+  virtual std::any visitParameterDeclaration(C_grammarParser::ParameterDeclarationContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitIdentifierList(C_grammarParser::IdentifierListContext *ctx) override {
+  virtual std::any visitIdentifierList(C_grammarParser::IdentifierListContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitTypeName(C_grammarParser::TypeNameContext *ctx) override {
+  virtual std::any visitTypeName(C_grammarParser::TypeNameContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitTypedefName(C_grammarParser::TypedefNameContext *ctx) override {
+  virtual std::any visitTypedefName(C_grammarParser::TypedefNameContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitInitializer(C_grammarParser::InitializerContext *ctx) override {
+  virtual std::any visitInitializer(C_grammarParser::InitializerContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitFunctionCallExpression(C_grammarParser::FunctionCallExpressionContext *ctx) override {
+  virtual std::any visitFunctionCallExpression(C_grammarParser::FunctionCallExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitArgumentExpressionList(C_grammarParser::ArgumentExpressionListContext *ctx) override {
+  virtual std::any visitArgumentExpressionList(C_grammarParser::ArgumentExpressionListContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitArgumentExpression(C_grammarParser::ArgumentExpressionContext *ctx) override {
+  virtual std::any visitArgumentExpression(C_grammarParser::ArgumentExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitInitializerList(C_grammarParser::InitializerListContext *ctx) override {
+  virtual std::any visitInitializerList(C_grammarParser::InitializerListContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitDesignation(C_grammarParser::DesignationContext *ctx) override {
+  virtual std::any visitDesignation(C_grammarParser::DesignationContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitDesignatorList(C_grammarParser::DesignatorListContext *ctx) override {
+  virtual std::any visitDesignatorList(C_grammarParser::DesignatorListContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitDesignator(C_grammarParser::DesignatorContext *ctx) override {
+  virtual std::any visitDesignator(C_grammarParser::DesignatorContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitStatement(C_grammarParser::StatementContext *ctx) override {
+  virtual std::any visitStatement(C_grammarParser::StatementContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitCompoundStatement(C_grammarParser::CompoundStatementContext *ctx) override {
+  virtual std::any visitCompoundStatement(C_grammarParser::CompoundStatementContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitBlockItem(C_grammarParser::BlockItemContext *ctx) override {
+  virtual std::any visitBlockItem(C_grammarParser::BlockItemContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitExpressionStatement(C_grammarParser::ExpressionStatementContext *ctx) override {
+  virtual std::any visitExpressionStatement(C_grammarParser::ExpressionStatementContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitIfContent(C_grammarParser::IfContentContext *ctx) override {
+  virtual std::any visitIfContent(C_grammarParser::IfContentContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitElseContent(C_grammarParser::ElseContentContext *ctx) override {
+  virtual std::any visitElseContent(C_grammarParser::ElseContentContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitConditionalBlockItem(C_grammarParser::ConditionalBlockItemContext *ctx) override {
+  virtual std::any visitConditionalBlockItem(C_grammarParser::ConditionalBlockItemContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitConditionContent(C_grammarParser::ConditionContentContext *ctx) override {
+  virtual std::any visitConditionContent(C_grammarParser::ConditionContentContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitSelectionStatement(C_grammarParser::SelectionStatementContext *ctx) override {
+  virtual std::any visitSelectionStatement(C_grammarParser::SelectionStatementContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitIterationStatement(C_grammarParser::IterationStatementContext *ctx) override {
+  virtual std::any visitIterationStatement(C_grammarParser::IterationStatementContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitForContent(C_grammarParser::ForContentContext *ctx) override {
+  virtual std::any visitForContent(C_grammarParser::ForContentContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitForBlockItem(C_grammarParser::ForBlockItemContext *ctx) override {
+  virtual std::any visitForBlockItem(C_grammarParser::ForBlockItemContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitForExitCondition(C_grammarParser::ForExitConditionContext *ctx) override {
+  virtual std::any visitForExitCondition(C_grammarParser::ForExitConditionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitForDeclaration(C_grammarParser::ForDeclarationContext *ctx) override {
+  virtual std::any visitForDeclaration(C_grammarParser::ForDeclarationContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitForIterationExpression(C_grammarParser::ForIterationExpressionContext *ctx) override {
+  virtual std::any visitForIterationExpression(C_grammarParser::ForIterationExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitReturnStatement(C_grammarParser::ReturnStatementContext *ctx) override {
+  virtual std::any visitReturnStatement(C_grammarParser::ReturnStatementContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitTranslationUnit(C_grammarParser::TranslationUnitContext *ctx) override {
+  virtual std::any visitTranslationUnit(C_grammarParser::TranslationUnitContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitExternalDeclaration(C_grammarParser::ExternalDeclarationContext *ctx) override {
+  virtual std::any visitExternalDeclaration(C_grammarParser::ExternalDeclarationContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitFunctionDefinition(C_grammarParser::FunctionDefinitionContext *ctx) override {
+  virtual std::any visitFunctionDefinition(C_grammarParser::FunctionDefinitionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitDeclarationList(C_grammarParser::DeclarationListContext *ctx) override {
+  virtual std::any visitDeclarationList(C_grammarParser::DeclarationListContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitConstant(C_grammarParser::ConstantContext *ctx) override {
+  virtual std::any visitConstant(C_grammarParser::ConstantContext *ctx) override {
     return visitChildren(ctx);
   }
 

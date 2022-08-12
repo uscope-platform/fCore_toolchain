@@ -7,7 +7,7 @@ option(BUILD_TESTS "Build test programs" OFF)
 option(INCLUDE_EMULATOR "Include the emulator in the build" OFF)
 option(INCLUDE_COVERAGE "Build with support for code coverage" OFF)
 
-set(ANTLR_VERSION 4.9.3)
+set(ANTLR_VERSION 4.10.1)
 SET(ANTLR_JAR antlr-${ANTLR_VERSION}-complete.jar)
 set(ANTLR_CLASSPATH ${CMAKE_CURRENT_BINARY_DIR}/antlr_jar/${ANTLR_JAR})
 set(ANTLR_OPTIONS -Dlanguage=Cpp -visitor -listener  -encoding iso-8859-1)
@@ -22,7 +22,7 @@ link_directories(third_party/fp_ip_cmodel/lib)
 install (FILES third_party/fp_ip_cmodel/lib/libgmp.so.11 DESTINATION /usr/lib/x86_64-linux-gnu)
 install (FILES third_party/fp_ip_cmodel/lib/libmpfr.so.4 DESTINATION /usr/lib/x86_64-linux-gnu)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -fsanitize=undefined")
@@ -83,3 +83,4 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(antlr_jar)
+
