@@ -40,7 +40,10 @@ high_level_ast_lowering::high_level_ast_lowering() {
             {expr_itf, "itf"},
             {expr_fti, "fti"},
             {expr_satp, "satp"},
-            {expr_satn, "satn"}
+            {expr_satn, "satn"},
+            {expr_popcnt, "popcnt"},
+            {expr_abs, "abs"},
+            {expr_efi, "efi"}
     };
 }
 
@@ -129,7 +132,9 @@ high_level_ast_lowering::process_unary_expression(std::shared_ptr<hl_expression_
     std::shared_ptr<ll_ast_node> retval;
     expression_type_t op_type = input->get_type();
     std::string opcode = expr_instruction_mapping[op_type];
-    if(!fcore_implemented_operations[op_type]) throw std::runtime_error("ERROR: The required operation is not implementable on the fCore hardware");
+    if(!fcore_implemented_operations[op_type]){
+        throw std::runtime_error("ERROR: The required operation is not implementable on the fCore hardware");
+    }
 
     std::shared_ptr<variable> op_b = std::static_pointer_cast<hl_ast_operand>(input->get_rhs())->get_variable();
     std::vector<std::shared_ptr<variable>> args = {op_b, dest};

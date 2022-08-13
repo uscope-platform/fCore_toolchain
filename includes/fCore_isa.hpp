@@ -90,7 +90,8 @@ static std::map <uint32_t, std::string>  fcore_opcodes_reverse {
     std::make_pair (fcore_opcodes["satn"], "satn"),
     std::make_pair (fcore_opcodes["rec"], "rec"),
     std::make_pair (fcore_opcodes["abs"], "abs"),
-    std::make_pair (fcore_opcodes["efi"], "efi")
+    std::make_pair (fcore_opcodes["efi"], "efi"),
+    std::make_pair(fcore_opcodes["popcnt"], "popcnt")
 };
 
 static std::map <std::string, isa_instruction_type>  fcore_op_types {
@@ -114,6 +115,7 @@ static std::map <std::string, isa_instruction_type>  fcore_op_types {
     std::make_pair ("rec", isa_conversion_instruction),
     std::make_pair ("abs", isa_conversion_instruction),
     std::make_pair ("efi", isa_register_instruction),
+    std::make_pair("popcnt", isa_conversion_instruction)
 };
 
 
@@ -150,6 +152,9 @@ static std::map <expression_type_t, bool> fcore_implemented_operations {
     std::make_pair(expr_itf, true),
     std::make_pair(expr_satp, true),
     std::make_pair(expr_satn, true),
+    std::make_pair(expr_popcnt, true),
+    std::make_pair(expr_efi, true),
+    std::make_pair(expr_abs, true)
 };
 
 static std::map <std::string, std::string>  fcore_pseudo_op {

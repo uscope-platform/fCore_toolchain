@@ -20,13 +20,20 @@ intrinsics_implementation_pass::intrinsics_implementation_pass() : pass_base<hl_
         std::make_pair("itf", expr_itf),
         std::make_pair("fti", expr_fti),
         std::make_pair("satp", expr_satp),
-        std::make_pair("satn", expr_satn)
+        std::make_pair("satn", expr_satn),
+        std::make_pair("abs", expr_abs),
+        std::make_pair("popcnt", expr_popcnt),
+        std::make_pair("efi", expr_efi)
+
     };
     n_arguments = {
         std::make_pair("itf", 1),
         std::make_pair("fti", 1),
         std::make_pair("satp", 2),
-        std::make_pair("satn", 2)
+        std::make_pair("satn", 2),
+        std::make_pair("abs", 1),
+        std::make_pair("popcnt", 1),
+        std::make_pair("efi", 2)
     };
 }
 

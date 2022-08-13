@@ -165,6 +165,8 @@ bool hl_expression_node::is_unary() {
     res |= expr_type == expr_call;
     res |= expr_type == expr_itf;
     res |= expr_type == expr_fti;
+    res |= expr_type == expr_abs;
+    res |= expr_type == expr_popcnt;
     return res;
 }
 
