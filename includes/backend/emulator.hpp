@@ -34,6 +34,8 @@ public:
     std::unordered_map<int, std::vector<float>> get_outputs() { return outputs;};
 private:
 
+    std::vector<uint32_t> efi_sort(std::vector<float> &in);
+
     static uint32_t float_to_uint32(float f);
     static float uint32_to_float(uint32_t u);
     void run_instruction_by_type(const std::shared_ptr<ll_instruction_node>& node);
@@ -58,7 +60,7 @@ private:
     uint32_t execute_compare_le(uint32_t a, uint32_t b);
     uint32_t execute_compare_eq(uint32_t a, uint32_t b);
     uint32_t execute_compare_ne(uint32_t a, uint32_t b);
-
+    void execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest);
     xip_fpo_t xil_a, xil_b, xil_res;
     xip_fpo_fix_t xil_a_fixed_point;
     instruction_stream stream;

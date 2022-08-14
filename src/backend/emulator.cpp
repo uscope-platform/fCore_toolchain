@@ -119,6 +119,8 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
         memory[dest] = execute_compare_gt(memory[op_a], memory[op_b]);
     } else if (opcode == "ble"){
         memory[dest] = execute_compare_le(memory[op_a], memory[op_b]);
+    } else if (opcode == "efi"){
+        execute_efi(op_a, op_b, dest);
     }
 }
 
@@ -170,10 +172,7 @@ uint32_t emulator::execute_add(uint32_t a, uint32_t b) {
     if ( exc != 0) {
         throw std::runtime_error("An exception occurred in the addition of"+ std::to_string(a) + " and " + std::to_string(b));
     }
-    float dbg_a = uint32_to_float(a);
-    float dbg_b = uint32_to_float(b);
 
-    float dbg = xip_fpo_get_flt(xil_res);
     return float_to_uint32(xip_fpo_get_flt(xil_res));
 }
 
@@ -348,10 +347,66 @@ uint32_t emulator::execute_satn(uint32_t a, uint32_t b) {
     return float_to_uint32(raw_res);
 }
 
+
+
+class cell {
+public:
+    cell(double v, int s, bool o);
+    bool operator <(const cell &b) const;
+    double voltage;
+    float idx;  // Does not participate in comparisons
+    bool order;
+};
+
+
+cell::cell(double v, int s, bool o) {
+    voltage = v;
+    idx = s;
+    order = o;
+}
+
+bool cell::operator<(const cell &b) const {
+    if(order)
+        return voltage > b.voltage;
+    else
+        return b.voltage > voltage;
+}
+
+void emulator::execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest) {
+    std::vector<float> in;
+    for(int i = 0; i<op_b; i++){
+        in.push_back(uint32_to_float(memory[op_a+i]));
+    }
+    std::vector<uint32_t> out = efi_sort(in);
+    for (int i = 0; i < out.size(); ++i) {
+        memory[dest+i] = out[i];
+    }
+}
+
+std::vector<uint32_t> emulator::efi_sort(std::vector<float> &in) {
+    bool descending_order  = in[0] == 1.0;
+    std::vector<cell> cells;
+    std::vector<uint32_t> idx;
+    idx.reserve(in.size());
+    cells.reserve(in.size());
+
+    for (int i = 1; i < in.size(); i++) {
+        cells.emplace_back(in[i], i, descending_order);
+    }
+
+    std::sort(cells.begin(), cells.end());
+
+
+    for(auto &item:cells){
+        idx.push_back((uint32_t)(item.idx));
+    }
+    return idx;
+}
+
 uint32_t emulator::float_to_uint32(float f) {
     uint32_t ret;
     memcpy(&ret, &f, sizeof(f));
-    return ret;
+       return ret;
 }
 
 float emulator::uint32_to_float(uint32_t u) {
