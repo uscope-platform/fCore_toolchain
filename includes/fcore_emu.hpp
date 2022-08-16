@@ -37,13 +37,15 @@ public:
     void emulate_program();
     void write_json(const std::string& output_file);
     std::vector<uint32_t> get_memory_snapshot(){return memory;};
-    std::unordered_map<int, std::vector<float>> get_outputs(){return outputs;};
+    std::unordered_map<int, std::vector<uint32_t>> get_outputs(){return outputs;};
 private:
     std::shared_ptr<ll_ast_node> ll_ast;
     std::string error_code;
     std::vector<uint32_t> memory;
-    std::vector<std::pair<unsigned int, std::vector<float>>> inputs;
-    std::unordered_map<int, std::vector<float>> outputs;
+    std::vector<std::pair<unsigned int, std::vector<uint32_t>>> inputs;
+    std::unordered_map<unsigned int, std::string> in_types;
+    std::unordered_map<int, std::vector<uint32_t>> outputs;
+    std::unordered_map<unsigned int, std::pair<std::string, std::string>> output_types;
     instruction_stream program_stream;
     nlohmann::json run_specs;
     bool error_occurred = false;

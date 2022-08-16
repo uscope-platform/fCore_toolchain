@@ -23,21 +23,23 @@
 #include "fCore_isa.hpp"
 class emulator {
 public:
-    explicit emulator(instruction_stream &s);
+    explicit
+    emulator(instruction_stream &s);
 
-    void set_inputs(std::vector<std::pair<unsigned int, std::vector<float>>> &in);
+    void set_inputs(std::vector<std::pair<unsigned int, std::vector<uint32_t>>> &in);
     void set_outputs(std::vector<int> &out);
     void run_program();
     void run_program_with_inputs(unsigned int rounds);
     void run_round();
     std::vector<uint32_t> get_memory() { return memory;};
-    std::unordered_map<int, std::vector<float>> get_outputs() { return outputs;};
+    std::unordered_map<int, std::vector<uint32_t>> get_outputs() { return outputs;};
+
+    static uint32_t float_to_uint32(float f);
+    static float uint32_to_float(uint32_t u);
 private:
 
     std::vector<uint32_t> efi_sort(std::vector<float> &in);
 
-    static uint32_t float_to_uint32(float f);
-    static float uint32_to_float(uint32_t u);
     void run_instruction_by_type(const std::shared_ptr<ll_instruction_node>& node);
 
     void run_register_instruction(const std::shared_ptr<ll_register_instr_node>& node);
@@ -53,6 +55,8 @@ private:
     uint32_t execute_itf(uint32_t a);
     static uint32_t execute_not(uint32_t a);
     static uint32_t execute_and(uint32_t a, uint32_t b);
+    uint32_t execute_abs(uint32_t a);
+    uint32_t execute_popcnt(uint32_t a);
     uint32_t execute_satp(uint32_t a, uint32_t b);
     uint32_t execute_satn(uint32_t a, uint32_t b);
     static uint32_t execute_or(uint32_t a, uint32_t b);
@@ -69,8 +73,8 @@ private:
 
     std::vector<uint32_t> memory;
     std::vector<int> output_idx;
-    std::unordered_map<int, std::vector<float>> outputs{};
-    std::vector<std::pair<unsigned int, std::vector<float>>> inputs;
+    std::unordered_map<int, std::vector<uint32_t>> outputs{};
+    std::vector<std::pair<unsigned int, std::vector<uint32_t>>> inputs;
 };
 
 

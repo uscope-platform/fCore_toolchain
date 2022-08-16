@@ -84,3 +84,4 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(antlr_jar)
 
+add_subdirectory(efi_emulator)

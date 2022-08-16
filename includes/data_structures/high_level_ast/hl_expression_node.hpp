@@ -59,8 +59,10 @@ typedef enum {
     expr_satn = 31,
     expr_abs = 32,
     expr_popcnt = 33,
-    expr_efi = 34
-
+    expr_efi = 34,
+    expr_bset = 35,
+    expr_bclr = 36,
+    expr_binv = 37
 } expression_type_t;
 
 constexpr std::string_view expression_type_to_string(expression_type_t in){
@@ -100,6 +102,9 @@ constexpr std::string_view expression_type_to_string(expression_type_t in){
         case expr_abs: return "expr_abs";
         case expr_efi: return "expr_efi";
         case expr_popcnt: return "expr_popcnt";
+        case expr_bset: return "bset";
+        case expr_bclr: return "bclr";
+        case expr_binv: return "binv";
         default: return "unknown expression type";
     }
 }

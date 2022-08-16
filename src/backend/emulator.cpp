@@ -15,6 +15,8 @@
 
 #include "backend/emulator.hpp"
 
+#include <utility>
+
 emulator::emulator(instruction_stream &s) :memory(2<< (fcore_register_address_width-1), 0) {
     stream = s;
 
@@ -26,7 +28,7 @@ emulator::emulator(instruction_stream &s) :memory(2<< (fcore_register_address_wi
 }
 
 
-void emulator::set_inputs(std::vector<std::pair<unsigned int, std::vector<float>>> &in) {
+void emulator::set_inputs(std::vector<std::pair<unsigned int, std::vector<uint32_t>>> &in) {
     inputs = in;
 }
 
@@ -47,16 +49,17 @@ void emulator::run_program() {
 void emulator::run_program_with_inputs(unsigned int rounds) {
     for(unsigned int i = 0; i<rounds; i++){
         for(auto item:inputs){
-            memory[item.first] = float_to_uint32(item.second[i]);
+            memory[item.first] = item.second[i];
         }
         run_round();
         for (auto &item:output_idx) {
-            outputs[item].push_back(uint32_to_float(memory[item]));
+            outputs[item].push_back(memory[item]);
         }
     }
 }
 
 void emulator::run_round() {
+    float *dbg = (float*)memory.data();
     for(auto &item:stream){
         run_instruction_by_type(item);
         if(stop_requested) {
@@ -121,6 +124,8 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
         memory[dest] = execute_compare_le(memory[op_a], memory[op_b]);
     } else if (opcode == "efi"){
         execute_efi(op_a, op_b, dest);
+    } else {
+        throw std::runtime_error("EMULATION ERROR: Encountered the following unimplemented operation: " + opcode);
     }
 }
 
@@ -129,6 +134,8 @@ void emulator::run_independent_instruction(const std::shared_ptr<ll_independent_
     if(opcode == "nop"){
     } else if (opcode == "stop"){
         stop_requested = true;
+    } else {
+        throw std::runtime_error("EMULATION ERROR: Encountered the following unimplemented operation: " + opcode);
     }
 }
 
@@ -148,8 +155,14 @@ void emulator::run_conversion_instruction(const std::shared_ptr<ll_conversion_in
         memory[dest] = execute_itf(memory[src]);
     } else if (opcode == "not"){
         memory[dest] = execute_not(memory[src]);
+    } else if(opcode == "abs") {
+        memory[dest] = execute_abs(memory[src]);
+    } else if(opcode == "popcnt") {
+        memory[dest] = execute_popcnt(memory[src]);
+        int i = 0;
+    } else {
+            throw std::runtime_error("EMULATION ERROR: Encountered the following unimplemented operation: " + opcode);
     }
-
 }
 
 void emulator::run_load_constant_instruction(const std::shared_ptr<ll_load_constant_instr_node>& node) {
@@ -316,6 +329,16 @@ uint32_t emulator::execute_and(uint32_t a, uint32_t b) {
 
 uint32_t emulator::execute_not(uint32_t a) {
     return ~a;
+}
+
+uint32_t emulator::execute_abs(uint32_t a) {
+    return a&0x7fffffff;
+}
+
+uint32_t emulator::execute_popcnt(uint32_t a) {
+    int count;
+    for (count = 0; a != 0; count++, a &= a-1);
+    return count;
 }
 
 uint32_t emulator::execute_satp(uint32_t a, uint32_t b) {

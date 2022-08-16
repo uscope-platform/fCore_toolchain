@@ -36,10 +36,16 @@ fcore_emu::fcore_emu(std::istream &input, bin_loader_input_type_t in_type) {
 
 void fcore_emu::set_specs(nlohmann::json &specs) {
     run_specs = specs;
+    if(specs.contains("input_types")){
+        for(auto &item :specs["input_types"].items()){
+            in_types[std::stoul(item.key())] = item.value();
+        }
+    }
     if(inputs.empty() && specs.contains("inputs_file")){
         std::ifstream in_stream(specs["inputs_file"]);
         set_inputs(in_stream);
     }
+
 }
 
 
@@ -53,7 +59,19 @@ void fcore_emu::write_json(const std::string &output_file) {
         str_mem_f.push_back("r"+std::to_string(i)+ ": " + std::to_string(val));
         str_mem.push_back("r"+std::to_string(i)+ ": " + std::to_string(memory[i]));
     }
-    j["outputs"] = outputs;
+    nlohmann::json outs;
+    for(auto &item:outputs){
+        if(output_types[item.first].second == "i"){
+            outs[output_types[item.first].first] = item.second;
+        } else{
+            std::vector<float> casted_vect;
+            for(auto &o:item.second)
+                casted_vect.push_back(emulator::uint32_to_float(o));
+            outs[output_types[item.first].first] = casted_vect;
+        }
+    }
+
+    j["outputs"] = outs;
     j["registers"] = str_mem;
     j["registers_f"] = str_mem_f;
     j["error_code"] = error_code;
@@ -67,8 +85,12 @@ void fcore_emu::emulate_program() {
     try{
         emulator backend(program_stream);
         if(run_specs.contains("outputs")){
-            std::vector<int> out_specs = run_specs["outputs"];
-            backend.set_outputs(out_specs);
+            std::vector<int> outputs;
+            for(auto &item: run_specs["outputs"]){
+                outputs.push_back(item["reg_n"]);
+                output_types[item["reg_n"]] = std::make_pair(item["name"], item["type"]);
+            }
+            backend.set_outputs(outputs);
         }
         backend.set_inputs(inputs);
         backend.run_program();
@@ -98,13 +120,22 @@ void fcore_emu::set_inputs(std::istream &input) {
             addresses.push_back(std::stoul(str.substr(1, str.size()-1)));
         }
 
-        std::vector<std::vector<float>> inputs_store(addresses.size(), std::vector<float>());
+        std::vector<std::vector<uint32_t>> inputs_store(addresses.size(), std::vector<uint32_t>());
         // PARSE CONTENT
         while (std::getline(input, line)) {
             iss = std::istringstream{line};
             int idx = 0;
             while(iss>>str){
-                inputs_store[idx].push_back(std::stof(str));
+                if(in_types.contains(addresses[idx])){
+                    if(in_types[addresses[idx]] =="i"){
+                        inputs_store[idx].push_back(std::stoul(str));
+                    } else if(in_types[addresses[idx]]=="f"){
+                        inputs_store[idx].push_back(emulator::float_to_uint32(std::stof(str)));
+                    }
+                } else{
+                    inputs_store[idx].push_back(emulator::float_to_uint32(std::stof(str)));
+                }
+
                 ++idx;
             }
         }

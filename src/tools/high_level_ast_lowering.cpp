@@ -43,7 +43,10 @@ high_level_ast_lowering::high_level_ast_lowering() {
             {expr_satn, "satn"},
             {expr_popcnt, "popcnt"},
             {expr_abs, "abs"},
-            {expr_efi, "efi"}
+            {expr_efi, "efi"},
+            {expr_bclr, "bclr"},
+            {expr_bset, "bset"},
+            {expr_binv, "binv"}
     };
 }
 
