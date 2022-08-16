@@ -124,7 +124,7 @@ static std::map <std::string, isa_instruction_type>  fcore_op_types {
     std::make_pair("popcnt", isa_conversion_instruction),
     std::make_pair("bset",isa_register_instruction),
     std::make_pair("bclr",isa_register_instruction),
-    std::make_pair("binv",isa_conversion_instruction),
+    std::make_pair("binv",isa_register_instruction),
 };
 
 

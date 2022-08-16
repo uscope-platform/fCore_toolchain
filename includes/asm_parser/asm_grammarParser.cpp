@@ -55,7 +55,7 @@ void asm_grammarParserInitialize() {
     std::vector<std::string>{
       "", "','", "'ldc'", "'stop'", "'nop'", "'add'", "'sub'", "'mul'", 
       "'and'", "'or'", "'satp'", "'satn'", "'efi'", "'bset'", "'bclr'", 
-      "'itf'", "'fti'", "'not'", "'rec'", "'abs'", "'popcnt'", "'binv'", 
+      "'binv'", "'itf'", "'fti'", "'not'", "'rec'", "'abs'", "'popcnt'", 
       "'ldr'", "'ble'", "'bgt'", "'beq'", "'bne'", "'mov'", "'for('", "';'", 
       "')'", "'{'", "'}'", "'++'", "'--'", "'='", "'<'", "'>'", "'<='", 
       "'>='", "'#pragma '", "'let'", "'const'", "'input'", "'output'"
@@ -84,7 +84,7 @@ void asm_grammarParserInitialize() {
   	1,25,1,25,1,26,1,26,1,26,1,27,1,27,1,27,1,28,1,28,1,28,1,29,1,29,1,29,
   	1,30,1,30,1,30,1,30,0,0,31,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,
   	32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,0,7,1,0,3,4,1,0,45,46,1,
-  	0,46,49,1,0,5,14,1,0,15,21,1,0,23,26,1,0,36,39,176,0,62,1,0,0,0,2,68,
+  	0,46,49,1,0,5,15,1,0,16,21,1,0,23,26,1,0,36,39,176,0,62,1,0,0,0,2,68,
   	1,0,0,0,4,76,1,0,0,0,6,85,1,0,0,0,8,87,1,0,0,0,10,94,1,0,0,0,12,99,1,
   	0,0,0,14,104,1,0,0,0,16,111,1,0,0,0,18,116,1,0,0,0,20,118,1,0,0,0,22,
   	129,1,0,0,0,24,131,1,0,0,0,26,133,1,0,0,0,28,135,1,0,0,0,30,137,1,0,0,
@@ -604,7 +604,8 @@ asm_grammarParser::InstructionContext* asm_grammarParser::instruction() {
       case asm_grammarParser::T__10:
       case asm_grammarParser::T__11:
       case asm_grammarParser::T__12:
-      case asm_grammarParser::T__13: {
+      case asm_grammarParser::T__13:
+      case asm_grammarParser::T__14: {
         enterOuterAlt(_localctx, 1);
         setState(78);
         reg_instr();
@@ -643,7 +644,6 @@ asm_grammarParser::InstructionContext* asm_grammarParser::instruction() {
         break;
       }
 
-      case asm_grammarParser::T__14:
       case asm_grammarParser::T__15:
       case asm_grammarParser::T__16:
       case asm_grammarParser::T__17:
@@ -1568,7 +1568,8 @@ asm_grammarParser::Reg_opcodeContext* asm_grammarParser::reg_opcode() {
       | (1ULL << asm_grammarParser::T__10)
       | (1ULL << asm_grammarParser::T__11)
       | (1ULL << asm_grammarParser::T__12)
-      | (1ULL << asm_grammarParser::T__13))) != 0))) {
+      | (1ULL << asm_grammarParser::T__13)
+      | (1ULL << asm_grammarParser::T__14))) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -1634,8 +1635,7 @@ asm_grammarParser::Conv_opcodeContext* asm_grammarParser::conv_opcode() {
     setState(139);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << asm_grammarParser::T__14)
-      | (1ULL << asm_grammarParser::T__15)
+      ((1ULL << _la) & ((1ULL << asm_grammarParser::T__15)
       | (1ULL << asm_grammarParser::T__16)
       | (1ULL << asm_grammarParser::T__17)
       | (1ULL << asm_grammarParser::T__18)

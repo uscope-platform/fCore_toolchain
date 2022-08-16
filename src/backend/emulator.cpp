@@ -124,6 +124,12 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
         memory[dest] = execute_compare_le(memory[op_a], memory[op_b]);
     } else if (opcode == "efi"){
         execute_efi(op_a, op_b, dest);
+    } else if (opcode == "bset"){
+        memory[dest] = execute_bset(memory[op_a], memory[op_b]);
+    } else if (opcode == "bclr"){
+        memory[dest] = execute_bclr(memory[op_a], memory[op_b]);
+    } else if (opcode == "binv"){
+        memory[dest] = execute_binv(memory[op_a], memory[op_b]);
     } else {
         throw std::runtime_error("EMULATION ERROR: Encountered the following unimplemented operation: " + opcode);
     }
@@ -436,4 +442,16 @@ float emulator::uint32_to_float(uint32_t u) {
     float ret;
     memcpy(&ret, &u, sizeof(u));
     return ret;
+}
+
+uint32_t emulator::execute_bset(uint32_t a, uint32_t b) {
+    return  a | (1<<b);
+}
+
+uint32_t emulator::execute_bclr(uint32_t a, uint32_t b) {
+    return  a & ~(1<<b);
+}
+
+uint32_t emulator::execute_binv(uint32_t a, uint32_t b) {
+    return  a ^ (1<<b);
 }
