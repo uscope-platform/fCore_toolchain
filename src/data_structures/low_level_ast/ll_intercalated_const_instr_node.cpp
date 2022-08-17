@@ -16,13 +16,26 @@
 #include "data_structures/low_level_ast/ll_intercalated_const_instr_node.hpp"
 
 ll_intercalated_const_instr_node::ll_intercalated_const_instr_node(float constant) : ll_instruction_node(isa_intercalated_constant){
-    intercalated_constant = constant;
+    float_const = constant;
+    int_const = 0;
+    is_float = true;
 }
+
+
+ll_intercalated_const_instr_node::ll_intercalated_const_instr_node(uint32_t constant): ll_instruction_node(isa_intercalated_constant) {
+    int_const = constant;
+    float_const = 0;
+    is_float = false;
+}
+
 
 uint32_t ll_intercalated_const_instr_node::emit() {
     uint32_t  raw_instr = 0;
-    float constant = intercalated_constant;
-    memcpy(&raw_instr, &constant, sizeof(raw_instr));
+    if(is_float){
+        memcpy(&raw_instr, &float_const, sizeof(raw_instr));
+    } else {
+        raw_instr = int_const;
+    }
     return raw_instr;
 }
 
@@ -36,13 +49,13 @@ int ll_intercalated_const_instr_node::instruction_count() {
 bool operator==(const ll_intercalated_const_instr_node &lhs, const ll_intercalated_const_instr_node &rhs) {
     bool retval = true;
 
-    retval &= lhs.intercalated_constant == rhs.intercalated_constant;
+    retval &= lhs.float_const == rhs.float_const;
     retval &= rhs.opcode == lhs.opcode;
     return retval;
 }
 
 nlohmann::json ll_intercalated_const_instr_node::dump() {
     nlohmann::json retval = ll_instruction_node::dump();
-    retval["intercalated_constant"] = intercalated_constant;
+    retval["intercalated_constant"] = float_const;
     return retval;
 }

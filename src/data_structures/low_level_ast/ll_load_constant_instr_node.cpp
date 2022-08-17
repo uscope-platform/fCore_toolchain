@@ -74,3 +74,7 @@ nlohmann::json ll_load_constant_instr_node::dump() {
     retval["constant"] = constant->dump();
     return retval;
 }
+
+bool ll_load_constant_instr_node::is_float() {
+    return constant->is_float();
+}

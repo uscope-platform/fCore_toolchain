@@ -21,6 +21,7 @@
 class ll_intercalated_const_instr_node : public ll_instruction_node {
 public:
     explicit ll_intercalated_const_instr_node(float constant);
+    explicit ll_intercalated_const_instr_node(uint32_t constant);
     uint32_t emit() override;
     void print() override;
     int instruction_count() override;
@@ -30,7 +31,9 @@ public:
     nlohmann::json dump();
 
 private:
-    float intercalated_constant;
+    float float_const;
+    uint32_t int_const;
+    bool is_float;
 };
 
 

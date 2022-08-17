@@ -29,17 +29,21 @@ std::shared_ptr<ll_ast_node> load_intercalation_pass::process_leaf(std::shared_p
 
         if(node->get_opcode() == "ldc"){
             std::shared_ptr<ll_load_constant_instr_node> load_instr = std::static_pointer_cast<ll_load_constant_instr_node>(node);
-            float desired_constant = load_instr->get_constant_f();
-
+            std::shared_ptr<ll_intercalated_const_instr_node> constant;
             std::vector<std::shared_ptr<ll_ast_node>> block_content;
+            if(load_instr->is_float()){
+                float desired_constant = load_instr->get_constant_f();
+                constant = std::make_shared<ll_intercalated_const_instr_node>(desired_constant);
+            } else {
+                uint32_t desired_constant = load_instr->get_constant_i();
+                constant = std::make_shared<ll_intercalated_const_instr_node>(desired_constant);
+            }
 
-            //CREATE FRACT NUMERATOR MULTIPLICATION
-            std::shared_ptr<ll_intercalated_const_instr_node> constant = std::make_shared<ll_intercalated_const_instr_node>(desired_constant);
+
             block_content.push_back(node);
             block_content.push_back(constant);
-
-
             container->set_content(block_content);
+
             return container;
         }
 
