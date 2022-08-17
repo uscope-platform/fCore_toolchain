@@ -79,18 +79,22 @@ inline_constant_extraction::process_node(std::shared_ptr<hl_expression_node> &el
     if(element->node_type == hl_ast_node_type_expr){
         std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
         std::shared_ptr<hl_ast_operand> rhs = std::static_pointer_cast<hl_ast_operand>(node->get_rhs());
-        std::vector<std::shared_ptr<hl_ast_node>> rhs_result = process_expr_side(rhs);
-        node->set_rhs(rhs_result[0]);
-        if(rhs_result.size()==2)
-            retval.push_back(rhs_result[1]);
-        if(!node->is_unary()){
-            std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(node->get_lhs());
-            std::vector<std::shared_ptr<hl_ast_node>> lhs_result = process_expr_side(lhs);
-            node->set_lhs(lhs_result[0]);
-            if(lhs_result.size()==2)
-                retval.push_back(lhs_result[1]);
+        if(node->get_type()==expr_efi){
+            retval.push_back(element);
+        } else {
+            std::vector<std::shared_ptr<hl_ast_node>> rhs_result = process_expr_side(rhs);
+            node->set_rhs(rhs_result[0]);
+            if(rhs_result.size()==2)
+                retval.push_back(rhs_result[1]);
+            if(!node->is_unary()){
+                std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(node->get_lhs());
+                std::vector<std::shared_ptr<hl_ast_node>> lhs_result = process_expr_side(lhs);
+                node->set_lhs(lhs_result[0]);
+                if(lhs_result.size()==2)
+                    retval.push_back(lhs_result[1]);
+            }
+            retval.insert(retval.begin(), node);
         }
-        retval.insert(retval.begin(), node);
     } else{
         retval.push_back(element);
     }

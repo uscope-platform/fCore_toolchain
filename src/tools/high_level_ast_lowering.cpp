@@ -46,7 +46,8 @@ high_level_ast_lowering::high_level_ast_lowering() {
             {expr_efi, "efi"},
             {expr_bclr, "bclr"},
             {expr_bset, "bset"},
-            {expr_binv, "binv"}
+            {expr_binv, "binv"},
+            {expr_bsel, "bsel"}
     };
 }
 
@@ -86,7 +87,6 @@ std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::
                 } else{
                     throw std::runtime_error("ERROR: Invalid assignment expression detected at the lowering stage as the RHS is neither an expression nor an operand");
                 }
-
 
             }
             throw std::runtime_error("ERROR: expression nodes not encoding assignments should not reach the ast lowering stage");
@@ -154,7 +154,6 @@ high_level_ast_lowering::process_regular_expression(std::shared_ptr<hl_expressio
     if(!fcore_implemented_operations[op_type]) {
         throw std::runtime_error("ERROR: The required operation is not implementable on the fCore hardware");
     }
-
 
     std::shared_ptr<variable> op_a = std::static_pointer_cast<hl_ast_operand>(input->get_lhs())->get_variable();
     std::shared_ptr<variable> op_b = std::static_pointer_cast<hl_ast_operand>(input->get_rhs())->get_variable();

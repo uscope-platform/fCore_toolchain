@@ -59,7 +59,6 @@ void emulator::run_program_with_inputs(unsigned int rounds) {
 }
 
 void emulator::run_round() {
-    float *dbg = (float*)memory.data();
     for(auto &item:stream){
         run_instruction_by_type(item);
         if(stop_requested) {
@@ -130,6 +129,8 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
         memory[dest] = execute_bclr(memory[op_a], memory[op_b]);
     } else if (opcode == "binv"){
         memory[dest] = execute_binv(memory[op_a], memory[op_b]);
+    } else if (opcode == "bsel"){
+        memory[dest] = execute_bsel(memory[op_a], memory[op_b]);
     } else {
         throw std::runtime_error("EMULATION ERROR: Encountered the following unimplemented operation: " + opcode);
     }
@@ -406,14 +407,15 @@ void emulator::execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest) {
     for(int i = 0; i<op_b; i++){
         in.push_back(uint32_to_float(memory[op_a+i]));
     }
-    std::vector<uint32_t> out = efi_sort(in);
+
+    std::vector<uint32_t> out = efi_sort(in, memory[op_a]);
     for (int i = 0; i < out.size(); ++i) {
         memory[dest+i] = out[i];
     }
 }
 
-std::vector<uint32_t> emulator::efi_sort(std::vector<float> &in) {
-    bool descending_order  = in[0] == 1.0;
+std::vector<uint32_t> emulator::efi_sort(std::vector<float> &in, uint32_t dir) {
+    bool descending_order  = dir != 1;
     std::vector<cell> cells;
     std::vector<uint32_t> idx;
     idx.reserve(in.size());
@@ -427,7 +429,7 @@ std::vector<uint32_t> emulator::efi_sort(std::vector<float> &in) {
 
 
     for(auto &item:cells){
-        idx.push_back((uint32_t)(item.idx));
+        idx.push_back((uint32_t)(item.idx-1));
     }
     return idx;
 }
@@ -454,4 +456,8 @@ uint32_t emulator::execute_bclr(uint32_t a, uint32_t b) {
 
 uint32_t emulator::execute_binv(uint32_t a, uint32_t b) {
     return  a ^ (1<<b);
+}
+
+uint32_t emulator::execute_bsel(uint32_t a, uint32_t b) {
+    return (a & (1<<b))>>b;
 }

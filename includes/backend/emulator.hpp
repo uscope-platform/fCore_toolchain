@@ -38,7 +38,7 @@ public:
     static float uint32_to_float(uint32_t u);
 private:
 
-    std::vector<uint32_t> efi_sort(std::vector<float> &in);
+    std::vector<uint32_t> efi_sort(std::vector<float> &in, uint32_t dir);
 
     void run_instruction_by_type(const std::shared_ptr<ll_instruction_node>& node);
 
@@ -62,6 +62,7 @@ private:
     uint32_t execute_bset(uint32_t a, uint32_t b);
     uint32_t execute_bclr(uint32_t a, uint32_t b);
     uint32_t execute_binv(uint32_t a, uint32_t b);
+    uint32_t execute_bsel(uint32_t a, uint32_t b);
     static uint32_t execute_or(uint32_t a, uint32_t b);
     uint32_t execute_compare_gt(uint32_t a, uint32_t b);
     uint32_t execute_compare_le(uint32_t a, uint32_t b);

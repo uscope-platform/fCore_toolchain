@@ -23,8 +23,11 @@ intrinsics_implementation_pass::intrinsics_implementation_pass() : pass_base<hl_
         std::make_pair("satn", expr_satn),
         std::make_pair("abs", expr_abs),
         std::make_pair("popcnt", expr_popcnt),
-        std::make_pair("efi", expr_efi)
-
+        std::make_pair("efi", expr_efi),
+        std::make_pair("binv", expr_binv),
+        std::make_pair("bset", expr_bset),
+        std::make_pair("bsel", expr_bsel),
+        std::make_pair("bclr", expr_bclr)
     };
     n_arguments = {
         std::make_pair("itf", 1),
@@ -33,7 +36,11 @@ intrinsics_implementation_pass::intrinsics_implementation_pass() : pass_base<hl_
         std::make_pair("satn", 2),
         std::make_pair("abs", 1),
         std::make_pair("popcnt", 1),
-        std::make_pair("efi", 2)
+        std::make_pair("efi", 2),
+        std::make_pair("binv", 2),
+        std::make_pair("bset", 2),
+        std::make_pair("bsel", 2),
+        std::make_pair("bclr", 2)
     };
 }
 
