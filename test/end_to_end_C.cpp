@@ -344,3 +344,20 @@ TEST(HlPassesTest, functionInliningExpression) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+
+TEST(HlPassesTest, essential_variable_initialization) {
+
+    std::string input_file = "c_e2e/test_essential_variable_initialization.c.c";
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(input_file, includes, true, 0);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0xE6, 0x3F800000, 0xcc8e9, 0xec8e1, 0xa00e1};
+
+    ASSERT_EQ(gold_standard, result);
+
+}

@@ -98,6 +98,8 @@ configure_file(C_files/end_to_end/test_move.c  ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_complex_normalization.c  ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_register_allocation.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_function_inline_expression.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
+configure_file(C_files/end_to_end/test_essential_variable_initialization.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
+
 
 # DISASSEMBLER TESTING FILES
 set(DIS_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/dis)
@@ -128,3 +130,4 @@ configure_file(emulator_files/test_ble.mem ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_stop.mem ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_inputs.csv ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_inputs.mem ${EMU_TEST_FILES_DIR} COPYONLY)
+configure_file(emulator_files/test_spec.json ${EMU_TEST_FILES_DIR} COPYONLY)

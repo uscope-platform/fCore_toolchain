@@ -139,6 +139,7 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
 void emulator::run_independent_instruction(const std::shared_ptr<ll_independent_inst_node>& node) {
     std::string opcode = node->get_opcode();
     if(opcode == "nop"){
+        int a = 0;
     } else if (opcode == "stop"){
         stop_requested = true;
     } else {
