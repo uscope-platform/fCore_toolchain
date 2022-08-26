@@ -348,7 +348,7 @@ TEST(HlPassesTest, functionInliningExpression) {
 
 TEST(HlPassesTest, essential_variable_initialization) {
 
-    std::string input_file = "c_e2e/test_essential_variable_initialization.c.c";
+    std::string input_file = "c_e2e/test_essential_variable_initialization.c";
 
     std::vector<std::string> includes;
 
