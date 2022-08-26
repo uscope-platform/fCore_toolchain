@@ -107,7 +107,7 @@ TEST(EndToEndC, json_writing) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes,false, 0);
+    fcore_cc compiler(input_file, includes,true, 0);
     compiler.write_json(test_json);
 
     nlohmann::json out;
@@ -117,7 +117,7 @@ TEST(EndToEndC, json_writing) {
 
     std::vector<uint32_t> compile_result = out["compiled_program"];
 
-    std::vector<uint32_t> gold_standard = { 0x944,0x26,0x42C80000, 0x40950};
+    std::vector<uint32_t> gold_standard = { 0x944,0x26,0x42C80000, 0x40950, 0x0953};
 
     std::filesystem::remove(test_json);
 

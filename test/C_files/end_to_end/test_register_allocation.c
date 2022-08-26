@@ -20,5 +20,5 @@ int main(){
 
 
 #pragma output (test, r10);
-    int test = a*17;
+    int test = a*17.0;
 }

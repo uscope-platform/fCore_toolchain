@@ -388,14 +388,14 @@ TEST(HlPassesTest, function_elimination) {
     std::shared_ptr<hl_ast_node> raw_result =parser.AST;
 
     std::shared_ptr<variable> var = std::make_shared<variable>("intermediate_expression_0");
-    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expression_0", c_type_int, var);
+    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expression_0", c_type_float, var);
 
 
-    var = std::make_shared<variable>("constant", 4);
+    var = std::make_shared<variable>("constant", 4.0f);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
 
 
-    var = std::make_shared<variable>("constant", 5);
+    var = std::make_shared<variable>("constant", 5.0f);
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
 
     std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(expr_mult);
@@ -412,7 +412,7 @@ TEST(HlPassesTest, function_elimination) {
     var = std::make_shared<variable>("intermediate_expression_0");
     op_1 = std::make_shared<hl_ast_operand>(var);
 
-    var = std::make_shared<variable>("constant",6);
+    var = std::make_shared<variable>("constant",6.0f);
     op_2 = std::make_shared<hl_ast_operand>(var);
 
     ex_1= std::make_shared<hl_expression_node>(expr_add);
@@ -447,16 +447,16 @@ TEST(HlPassesTest, simple_normalization) {
     std::shared_ptr<hl_ast_node> raw_result = p.process_global(parser.AST);
 
     std::shared_ptr<variable> var = std::make_shared<variable>("intermediate_expression_0");
-    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expression_0", c_type_int, var);
+    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expression_0", c_type_float, var);
 
 
 
-    var = std::make_shared<variable>("constant", 4);
+    var = std::make_shared<variable>("constant", 4.0f);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
 
 
 
-    var = std::make_shared<variable>("constant", 5);
+    var = std::make_shared<variable>("constant", 5.0f);
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
 
     std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(expr_mult);
@@ -474,7 +474,7 @@ TEST(HlPassesTest, simple_normalization) {
     op_1 = std::make_shared<hl_ast_operand>(var);
 
 
-    var = std::make_shared<variable>("constant",6);
+    var = std::make_shared<variable>("constant",6.0f);
     op_2 = std::make_shared<hl_ast_operand>(var);
 
     ex_1= std::make_shared<hl_expression_node>(expr_add);

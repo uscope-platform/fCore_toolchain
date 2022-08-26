@@ -19,6 +19,6 @@ int main(){
 
     #pragma output (a, r10)
     float b = itf(a);
-    float c = satp(a, 100);
+    float c = satp(a, 100.0);
     float d = popcnt(a);
 }

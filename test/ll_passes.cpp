@@ -19,7 +19,6 @@
 #include "data_structures/low_level_ast/low_level_ast.hpp"
 #include "passes/ll_passes.hpp"
 #include "backend/binary_generator.hpp"
-#include "frontend/asm/asm_language_parser.hpp"
 #include "tools/instruction_stream_builder.hpp"
 #include "data_structures/instruction_stream.hpp"
 
@@ -71,7 +70,7 @@ TEST(llPassesTest, instruction_count_pass) {
     std::shared_ptr<ll_load_constant_instr_node> ldc_instr = std::make_shared<ll_load_constant_instr_node>("ldc", dest, fltc);// +2
     AST->add_content(ldc_instr);
 
-    std::shared_ptr<ll_intercalated_const_instr_node> load_instr = std::make_shared<ll_intercalated_const_instr_node>(1.456);// +0
+    std::shared_ptr<ll_intercalated_const_instr_node> load_instr = std::make_shared<ll_intercalated_const_instr_node>(1.456f);// +0
     AST->add_content(load_instr);
 
 

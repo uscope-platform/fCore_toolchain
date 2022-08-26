@@ -226,15 +226,16 @@ TEST(Emulator, emulator_outputs) {
     std::string input_file = "emu/test_inputs.csv";
     std::ifstream inputs_stream(input_file);
     emu_engine.set_inputs(inputs_stream);
-    nlohmann::json specs;
-    specs["outputs"] = {4};
+    std::ifstream ifs("emu/test_spec.json");
+    nlohmann::json specs = nlohmann::json::parse(ifs);
+
     emu_engine.set_specs(specs);
     emu_engine.emulate_program();
 
-    std::unordered_map<int, std::vector<float>> outputs = emu_engine.get_outputs();
+    std::unordered_map<int, std::vector<uint32_t>> outputs = emu_engine.get_outputs();
 
-    std::unordered_map<int, std::vector<float>> reference;
-    reference[4] = {58.62, 120.2200};
+    std::unordered_map<int, std::vector<uint32_t>> reference;
+    reference[4] = {0x426a7ae1, 0x42f070a4};
     ASSERT_EQ(outputs, reference);
 
 }
@@ -264,7 +265,7 @@ TEST(Emulator, emulator_error) {
     gold_standard_j["error_code"] = "ERROR: malformed inputs file header";
     gold_standard_j["registers"] = result["registers"];
     gold_standard_j["registers_f"] = result["registers_f"];
-    gold_standard_j["outputs"] = std::unordered_map<int,  std::vector<float>>();
+    gold_standard_j["outputs"] = nlohmann::json();
     ASSERT_EQ(result, gold_standard_j);
 }
 

@@ -18,8 +18,8 @@
 float integrate(float in, float Ts, float memory) {
     float out = memory+Ts*in;
 
-    out = satn(out, -150);
-    out = satp(out, 150);
+    out = satn(out, -150.0);
+    out = satp(out, 150.0);
     return out;
 }
 
@@ -30,7 +30,7 @@ int main(){
     #pragma input(test_in, r25)
     int test_in;
 
-    float in_1 = 5;
+    float in_1 = 5.0;
 
     #pragma memory(integ, r6)
     float integ;

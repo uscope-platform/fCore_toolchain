@@ -25,6 +25,6 @@ int main(int arg1, float arg2){
 
 #pragma output (test, r10);
     int test;
-    test += a*17*(b+5);
+    test += a*17.0*(b+5.0);
 
 }

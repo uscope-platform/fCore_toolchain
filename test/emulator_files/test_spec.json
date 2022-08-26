@@ -1,0 +1,9 @@
+{
+  "outputs": [
+    {
+      "reg_n":4,
+      "type":"f",
+      "name":"test_out"
+    }
+  ]
+}
