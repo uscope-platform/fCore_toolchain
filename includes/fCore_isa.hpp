@@ -170,7 +170,8 @@ static std::map <expression_type_t, bool> fcore_implemented_operations {
     std::make_pair(expr_bset, true),
     std::make_pair(expr_bclr, true),
     std::make_pair(expr_binv, true),
-    std::make_pair(expr_bsel, true)
+    std::make_pair(expr_bsel, true),
+    std::make_pair(expr_nop, true)
 };
 
 static std::map <std::string, std::string>  fcore_pseudo_op {

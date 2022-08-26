@@ -59,6 +59,9 @@ array_initialization_propagation_pass::process_node_by_type(const std::shared_pt
 
 std::shared_ptr<hl_expression_node>
 array_initialization_propagation_pass::process_expression(std::shared_ptr<hl_expression_node> node) {
+    if(node->is_immediate()){
+        return node;
+    }
     if(node->get_type()==expr_assign){
         std::shared_ptr<hl_ast_operand> target = std::static_pointer_cast<hl_ast_operand>(node->get_lhs());
         if(target->get_type() == var_type_array){

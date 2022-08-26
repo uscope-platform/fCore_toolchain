@@ -101,24 +101,26 @@ std::shared_ptr<hl_ast_node> code_block_inlining_pass::process_definition(std::s
 
 std::vector<std::shared_ptr<hl_ast_node>> code_block_inlining_pass::process_expression(const std::shared_ptr<hl_expression_node>& expr) {
     std::vector<std::shared_ptr<hl_ast_node>> ret_val;
-    std::vector<std::shared_ptr<hl_ast_node>> processed_rhs = process_element_by_type(expr->get_rhs());
+    if(!expr->is_immediate()){
+        std::vector<std::shared_ptr<hl_ast_node>> processed_rhs = process_element_by_type(expr->get_rhs());
 
-    unsigned int proc_size = processed_rhs.size();
-    if(proc_size>1){
-        for(int i = 0; i<proc_size-1; i++) ret_val.push_back(processed_rhs[i]);
-        expr->set_rhs(processed_rhs[proc_size-1]);
-    } else{
-        expr->set_rhs(processed_rhs[0]);
-    }
-
-    if(!expr->is_unary()){
-        std::vector<std::shared_ptr<hl_ast_node>> processed_lhs = process_element_by_type(expr->get_lhs());
-        proc_size = processed_lhs.size();
+        unsigned int proc_size = processed_rhs.size();
         if(proc_size>1){
-            for(int i = 0; i<proc_size-1; i++) ret_val.push_back(processed_lhs[i]);
-            expr->set_lhs(processed_lhs[proc_size-1]);
+            for(int i = 0; i<proc_size-1; i++) ret_val.push_back(processed_rhs[i]);
+            expr->set_rhs(processed_rhs[proc_size-1]);
         } else{
-            expr->set_lhs(processed_lhs[0]);
+            expr->set_rhs(processed_rhs[0]);
+        }
+
+        if(!expr->is_unary()){
+            std::vector<std::shared_ptr<hl_ast_node>> processed_lhs = process_element_by_type(expr->get_lhs());
+            proc_size = processed_lhs.size();
+            if(proc_size>1){
+                for(int i = 0; i<proc_size-1; i++) ret_val.push_back(processed_lhs[i]);
+                expr->set_lhs(processed_lhs[proc_size-1]);
+            } else{
+                expr->set_lhs(processed_lhs[0]);
+            }
         }
     }
 

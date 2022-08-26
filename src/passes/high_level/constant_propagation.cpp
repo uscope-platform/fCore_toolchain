@@ -60,7 +60,9 @@ std::shared_ptr<hl_ast_node> constant_propagation::substitute_constant(std::shar
             std::shared_ptr<hl_ast_node> new_lhs;
             std::shared_ptr<hl_ast_node> new_rhs;
 
-
+            if(node->is_immediate()){
+                return node;
+            }
             if(node->get_rhs()->node_type == hl_ast_node_type_operand) {
                 std::shared_ptr<hl_ast_operand> rhs = std::static_pointer_cast<hl_ast_operand>(node->get_rhs());
                 new_rhs = process_operand(rhs);

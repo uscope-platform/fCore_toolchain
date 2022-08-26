@@ -114,23 +114,25 @@ function_inlining_pass::process_conditional(std::shared_ptr<hl_ast_conditional_n
 std::vector<std::shared_ptr<hl_ast_node>>
 function_inlining_pass::process_expression(std::shared_ptr<hl_expression_node> element) {
     std::vector<std::shared_ptr<hl_ast_node>> ret_val;
-    if(!element->is_unary()){
-        std::vector<std::shared_ptr<hl_ast_node>> processed_elements = process_element(element->get_lhs());
-        if(processed_elements.size() == 1)
-            element->set_lhs(processed_elements[0]);
-        else{
-            element->set_lhs(processed_elements[1]);
-            ret_val.push_back(processed_elements[0]);
-        }
-    }
+   if(!element->is_immediate()){
+       if(!element->is_unary()){
+           std::vector<std::shared_ptr<hl_ast_node>> processed_elements = process_element(element->get_lhs());
+           if(processed_elements.size() == 1)
+               element->set_lhs(processed_elements[0]);
+           else{
+               element->set_lhs(processed_elements[1]);
+               ret_val.push_back(processed_elements[0]);
+           }
+       }
 
-    std::vector<std::shared_ptr<hl_ast_node>> processed_elements = process_element(element->get_rhs());
-    if(processed_elements.size() == 1)
-        element->set_rhs(processed_elements[0]);
-    else{
-        element->set_rhs(processed_elements[1]);
-        ret_val.push_back(processed_elements[0]);
-    }
+       std::vector<std::shared_ptr<hl_ast_node>> processed_elements = process_element(element->get_rhs());
+       if(processed_elements.size() == 1)
+           element->set_rhs(processed_elements[0]);
+       else{
+           element->set_rhs(processed_elements[1]);
+           ret_val.push_back(processed_elements[0]);
+       }
+   }
 
     ret_val.push_back(element);
     return ret_val;
@@ -302,6 +304,10 @@ function_inlining_pass::substitute_conditional_arguments(const std::shared_ptr<h
 std::shared_ptr<hl_ast_node>
 function_inlining_pass::substitute_expression_arguments(const std::shared_ptr<hl_expression_node> &statement,
                                                         std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
+    if(statement->is_immediate()){
+        return statement;
+    }
+
     if(!statement->is_unary()){
         std::shared_ptr<hl_ast_node> tmp_lhs = substitute_arguments(statement->get_lhs(), parameters);
         statement->set_lhs(tmp_lhs);

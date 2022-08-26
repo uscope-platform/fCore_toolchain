@@ -63,7 +63,8 @@ typedef enum {
     expr_bset = 35,
     expr_bclr = 36,
     expr_binv = 37,
-    expr_bsel = 38
+    expr_bsel = 38,
+    expr_nop = 39
 } expression_type_t;
 
 constexpr std::string_view expression_type_to_string(expression_type_t in){
@@ -107,6 +108,7 @@ constexpr std::string_view expression_type_to_string(expression_type_t in){
         case expr_bclr: return "bclr";
         case expr_binv: return "binv";
         case expr_bsel: return "bsel";
+        case expr_nop: return "nop";
         default: return "unknown expression type";
     }
 }
@@ -157,6 +159,7 @@ public:
     expression_type_t get_type();
     std::string pretty_print() override;
     bool is_unary();
+    bool is_immediate();
     static bool is_hardware_compatible(expression_type_t et);
     nlohmann::json dump() override;
 

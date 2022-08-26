@@ -168,14 +168,15 @@ hl_pass_manager::process_expression(const std::shared_ptr<hl_expression_node> &s
 
     std::shared_ptr<hl_expression_node> result = std::static_pointer_cast<hl_expression_node>(hl_ast_node::deep_copy(subtree));
 
-    std::shared_ptr<hl_ast_node> rhs = process_terminal_by_type(subtree->get_rhs(), pass);
-    result->set_rhs(rhs);
 
-    if(!subtree->is_unary()){
-        std::shared_ptr<hl_ast_node> lhs = process_terminal_by_type(subtree->get_lhs(), pass);
-        result->set_lhs(lhs);
+    if(!subtree->is_immediate()){
+        std::shared_ptr<hl_ast_node> rhs = process_terminal_by_type(subtree->get_rhs(), pass);
+        result->set_rhs(rhs);
+        if(!subtree->is_unary()){
+            std::shared_ptr<hl_ast_node> lhs = process_terminal_by_type(subtree->get_lhs(), pass);
+            result->set_lhs(lhs);
+        }
     }
-
 
     return pass->process_leaf(result);
 

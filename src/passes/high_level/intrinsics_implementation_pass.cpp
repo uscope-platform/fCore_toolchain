@@ -27,7 +27,8 @@ intrinsics_implementation_pass::intrinsics_implementation_pass() : pass_base<hl_
         std::make_pair("binv", expr_binv),
         std::make_pair("bset", expr_bset),
         std::make_pair("bsel", expr_bsel),
-        std::make_pair("bclr", expr_bclr)
+        std::make_pair("bclr", expr_bclr),
+        std::make_pair("nop", expr_nop)
     };
     n_arguments = {
         std::make_pair("itf", 1),
@@ -40,7 +41,8 @@ intrinsics_implementation_pass::intrinsics_implementation_pass() : pass_base<hl_
         std::make_pair("binv", 2),
         std::make_pair("bset", 2),
         std::make_pair("bsel", 2),
-        std::make_pair("bclr", 2)
+        std::make_pair("bclr", 2),
+        std::make_pair("nop", 0)
     };
 }
 
@@ -78,10 +80,10 @@ intrinsics_implementation_pass::process_function_call(const std::shared_ptr<hl_f
 
     std::shared_ptr<hl_expression_node> retval = std::make_shared<hl_expression_node>(substitutions[element->get_name()]);
 
-    if(n_arguments[element->get_name()]>1){
+    if(n_arguments[element->get_name()]==2){
         retval->set_lhs(element->get_arguments()[0]);
         retval->set_rhs(element->get_arguments()[1]);
-    } else {
+    }else if(n_arguments[element->get_name()]==1){
         retval->set_rhs(element->get_arguments()[0]);
     }
 

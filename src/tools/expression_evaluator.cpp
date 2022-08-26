@@ -19,6 +19,7 @@
 
 bool expression_evaluator::is_constant_expression(const std::shared_ptr<hl_expression_node>& expression) {
     bool retval = true;
+    if(expression->is_immediate()) return false;
     retval &= is_constant_subexpr(expression->get_rhs());
     if(!expression->is_unary()) retval &= is_constant_subexpr(expression->get_lhs());
     return retval;

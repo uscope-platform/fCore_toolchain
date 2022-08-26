@@ -54,6 +54,8 @@ void dead_load_elimination::search_constants(std::shared_ptr<hl_ast_node> elemen
     }
 }
 
+
+
 std::shared_ptr<hl_ast_node> dead_load_elimination::purge_dead_loads(std::shared_ptr<hl_ast_node> element) {
     if(element->node_type == hl_ast_node_type_definition) {
         std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(element);

@@ -186,3 +186,9 @@ nlohmann::json hl_expression_node::dump() {
 
     return retval;
 }
+
+bool hl_expression_node::is_immediate() {
+    bool res  = false;
+    res |= expr_type == expr_nop;
+    return res;
+}

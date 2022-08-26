@@ -59,6 +59,8 @@ inline_constant_extraction::process_global(std::shared_ptr<hl_ast_node> element)
                     }
                     new_content.push_back(item);
                 }
+            }else if(node->is_immediate()){
+                new_content.push_back(item);
             } else{
                 throw std::runtime_error("INTERNAL ERROR: non assignment top level expressions should not reach inline constant extraction pass");
             }

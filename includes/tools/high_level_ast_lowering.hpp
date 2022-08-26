@@ -38,6 +38,7 @@ private:
     std::shared_ptr<ll_ast_node> translate_node(const std::shared_ptr<hl_ast_operand>& input, std::shared_ptr<variable> dest);
     std::shared_ptr<ll_ast_node> translate_node(const std::shared_ptr<hl_definition_node>& input, const std::shared_ptr<variable>& dest);
     std::shared_ptr<ll_ast_node> process_unary_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest);
+    std::shared_ptr<ll_ast_node> process_immediate_expression(std::shared_ptr<hl_expression_node> input);
     std::shared_ptr<ll_ast_node> process_regular_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest);
     std::shared_ptr<hl_ast_node> input_ast;
     std::shared_ptr<ll_ast_node> output_ast;

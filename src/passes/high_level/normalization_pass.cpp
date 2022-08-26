@@ -40,10 +40,12 @@ bool normalization_pass::is_normal(const std::shared_ptr<hl_ast_node>& element) 
 
     if(element->node_type== hl_ast_node_type_expr){
         std::shared_ptr<hl_expression_node> expr = std::static_pointer_cast<hl_expression_node>(element);
-        if(!expr->is_unary()){
-            if(expr->get_lhs()->node_type != hl_ast_node_type_operand) return false;
+        if(!expr->is_immediate()){
+            if(!expr->is_unary()){
+                if(expr->get_lhs()->node_type != hl_ast_node_type_operand) return false;
+            }
+            if(expr->get_rhs()->node_type != hl_ast_node_type_operand) return false;
         }
-        if(expr->get_rhs()->node_type != hl_ast_node_type_operand) return false;
 
         return true;
     } else if(element->node_type == hl_ast_node_type_definition){

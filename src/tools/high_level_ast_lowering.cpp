@@ -47,7 +47,8 @@ high_level_ast_lowering::high_level_ast_lowering() {
             {expr_bclr, "bclr"},
             {expr_bset, "bset"},
             {expr_binv, "binv"},
-            {expr_bsel, "bsel"}
+            {expr_bsel, "bsel"},
+            {expr_nop, "nop"}
     };
 }
 
@@ -87,9 +88,11 @@ std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::
                 } else{
                     throw std::runtime_error("ERROR: Invalid assignment expression detected at the lowering stage as the RHS is neither an expression nor an operand");
                 }
-
+            } else if(node->is_immediate()){
+                return translate_node(node, nullptr);
+            } else{
+                throw std::runtime_error("ERROR: Invalid expression detected at the lowering stage");
             }
-            throw std::runtime_error("ERROR: expression nodes not encoding assignments should not reach the ast lowering stage");
         }
         case hl_ast_node_type_program_root:
             throw std::runtime_error("ERROR: program_root nodes should not reach the ast lowering stage");
@@ -108,7 +111,9 @@ std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::
 }
 
 std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::shared_ptr<hl_expression_node>& input, const std::shared_ptr<variable>& dest) {
-    if(input->is_unary()){
+    if(input->is_immediate()){
+        return process_immediate_expression(input);
+    }else if(input->is_unary()){
         return process_unary_expression(input,dest);
     } else{
         return process_regular_expression(input,dest);
@@ -206,5 +211,19 @@ high_level_ast_lowering::create_ast_node(isa_instruction_type t, std::vector<std
         case isa_pseudo_instruction:
             break;
     }
+    return retval;
+}
+
+std::shared_ptr<ll_ast_node>
+high_level_ast_lowering::process_immediate_expression(std::shared_ptr<hl_expression_node> input) {
+
+    std::shared_ptr<ll_ast_node> retval;
+    expression_type_t op_type = input->get_type();
+    std::string opcode = expr_instruction_mapping[op_type];
+    if(!fcore_implemented_operations[op_type]){
+        throw std::runtime_error("ERROR: The required operation is not implementable on the fCore hardware");
+    }
+
+    retval = create_ast_node(fcore_op_types[opcode], {}, opcode);
     return retval;
 }

@@ -54,6 +54,9 @@ std::shared_ptr<hl_ast_node> array_scalarization_pass::process_element(const std
 
 std::shared_ptr<hl_expression_node>
 array_scalarization_pass::process_expression(std::shared_ptr<hl_expression_node> node) {
+    if(node->is_immediate()){
+        return node;
+    }
     if(!node->is_unary()){
         node->set_lhs(process_element(node->get_lhs()));
     }
