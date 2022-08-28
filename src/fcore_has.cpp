@@ -16,7 +16,7 @@
 #include "fcore_has.hpp"
 
 
-void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size){
+void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size, bool print_debug){
     std::string ret_val;
     std::ifstream stream;
     stream.open(path);
@@ -25,7 +25,7 @@ void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size){
     std::vector<std::istream*> includes = {iss};
     // parse target file
 
-    fcore_has assembler(stream,includes, 0);
+    fcore_has assembler(stream,includes, 0, print_debug);
     std::vector<uint32_t> data = assembler.get_hexfile(false);
     unsigned int int_size = assembler.get_program_size();
     memcpy(hex_size, &int_size, sizeof(int));
@@ -36,19 +36,19 @@ void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size){
 }
 
 
-fcore_has::fcore_has(std::istream &input, std::vector<std::istream *> &includes, int dump_ast_level) : manager(dump_ast_level) {
-    construct_assembler(input, includes, dump_ast_level);
+fcore_has::fcore_has(std::istream &input, std::vector<std::istream *> &includes, int dump_ast_level,bool print_debug) : manager(dump_ast_level) {
+    construct_assembler(input, includes, dump_ast_level,print_debug);
 }
 
-fcore_has::fcore_has(std::istream &input, const std::vector<std::string>& include_files, const std::string& include_directory, int dump_ast_level): manager(dump_ast_level){
+fcore_has::fcore_has(std::istream &input, const std::vector<std::string>& include_files, const std::string& include_directory, int dump_ast_level,bool print_debug): manager(dump_ast_level){
 
     std::vector<std::istream*> includes = process_includes(include_files, include_directory);
 
-    construct_assembler(input, includes, dump_ast_level);
+    construct_assembler(input, includes, dump_ast_level,print_debug);
 }
 
 
-void fcore_has::construct_assembler(std::istream &input, std::vector<std::istream*> &includes, int dump_ast_level) {
+void fcore_has::construct_assembler(std::istream &input, std::vector<std::istream*> &includes, int dump_ast_level, bool print_debug) {
     variable_map tmp_map;
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>(tmp_map);
     // Parse includes files
@@ -85,7 +85,7 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
 
         if(dump_ast_level>0) dump["stream"] = sman.get_dump();
 
-        writer.process_stream(program_stream, false);
+        writer.process_stream(program_stream, print_debug);
 
     } catch(std::runtime_error &e){
         error_code = e.what();

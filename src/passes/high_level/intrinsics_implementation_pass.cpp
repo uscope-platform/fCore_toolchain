@@ -24,10 +24,8 @@ intrinsics_implementation_pass::intrinsics_implementation_pass() : pass_base<hl_
         std::make_pair("abs", expr_abs),
         std::make_pair("popcnt", expr_popcnt),
         std::make_pair("efi", expr_efi),
-        std::make_pair("binv", expr_binv),
         std::make_pair("bset", expr_bset),
         std::make_pair("bsel", expr_bsel),
-        std::make_pair("bclr", expr_bclr),
         std::make_pair("nop", expr_nop)
     };
     n_arguments = {
@@ -39,7 +37,7 @@ intrinsics_implementation_pass::intrinsics_implementation_pass() : pass_base<hl_
         std::make_pair("popcnt", 1),
         std::make_pair("efi", 2),
         std::make_pair("binv", 2),
-        std::make_pair("bset", 2),
+        std::make_pair("bset", 3),
         std::make_pair("bsel", 2),
         std::make_pair("bclr", 2),
         std::make_pair("nop", 0)
@@ -80,7 +78,14 @@ intrinsics_implementation_pass::process_function_call(const std::shared_ptr<hl_f
 
     std::shared_ptr<hl_expression_node> retval = std::make_shared<hl_expression_node>(substitutions[element->get_name()]);
 
-    if(n_arguments[element->get_name()]==2){
+    if(n_arguments[element->get_name()]== 3){
+        retval = std::make_shared<hl_expression_node>(expr_assign);
+        retval->set_lhs(element->get_arguments()[2]);
+        std::shared_ptr<hl_expression_node> rhs = std::make_shared<hl_expression_node>(substitutions[element->get_name()]);
+        rhs->set_lhs(element->get_arguments()[0]);
+        rhs->set_rhs(element->get_arguments()[1]);
+        retval->set_rhs(rhs);
+    } else if(n_arguments[element->get_name()]==2){
         retval->set_lhs(element->get_arguments()[0]);
         retval->set_rhs(element->get_arguments()[1]);
     }else if(n_arguments[element->get_name()]==1){

@@ -34,14 +34,14 @@
 
 extern "C"{
     std::tuple<std::vector<uint32_t>, int> fCore_has_embeddable_s(const std::string& content);
-    void fCore_has_embeddable_f(const char * filename, uint32_t *hex, int *hex_size);
+    void fCore_has_embeddable_f(const char * filename, uint32_t *hex, int *hex_size, bool print_debug);
 };
 
 class fcore_has {
 public:
-    fcore_has(std::istream &input,   std::vector<std::istream*> &includes, int dump_ast_level);
-    fcore_has(std::istream &input,   const std::vector<std::string>& include_files,  const std::string& include_directory, int dump_ast_level);
-    void construct_assembler(std::istream &input, std::vector<std::istream*> &includes, int dump_ast_level);
+    fcore_has(std::istream &input, std::vector<std::istream*> &includes, int dump_ast_level, bool print_debug);
+    fcore_has(std::istream &input, const std::vector<std::string>& include_files,  const std::string& include_directory, int dump_ast_level, bool print_debug);
+    void construct_assembler(std::istream &input, std::vector<std::istream*> &includes, int dump_ast_level, bool print_debug);
 
     static std::vector<std::istream*> process_includes(const std::vector<std::string>& include_files, const std::string& include_directory);
 

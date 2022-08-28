@@ -20,20 +20,21 @@ public:
     T__26 = 27, T__27 = 28, T__28 = 29, T__29 = 30, T__30 = 31, T__31 = 32, 
     T__32 = 33, T__33 = 34, T__34 = 35, T__35 = 36, T__36 = 37, T__37 = 38, 
     T__38 = 39, T__39 = 40, T__40 = 41, T__41 = 42, T__42 = 43, T__43 = 44, 
-    T__44 = 45, Register = 46, Identifier = 47, Hexnum = 48, Integer = 49, 
-    Octalnum = 50, FloatingPointLiteral = 51, String = 52, Label = 53, WS = 54, 
-    BlockComment = 55, LineComment = 56
+    Register = 45, Identifier = 46, Hexnum = 47, Integer = 48, Octalnum = 49, 
+    FloatingPointLiteral = 50, String = 51, Label = 52, WS = 53, BlockComment = 54, 
+    LineComment = 55
   };
 
   enum {
     RuleProgram = 0, RuleCode = 1, RuleDeclaration = 2, RuleInstruction = 3, 
     RuleReg_instr = 4, RuleImm_instr = 5, RuleLoad_instr = 6, RuleBranch_instr = 7, 
     RuleConv_instr = 8, RuleIndep_instr = 9, RulePseudo_instr = 10, RuleOperand = 11, 
-    RuleDestination = 12, RuleImmediate = 13, RuleFloat_const = 14, RuleReg_opcode = 15, 
-    RuleConv_opcode = 16, RuleImm_opcode = 17, RuleBranch_opcode = 18, RulePseudo_opcode = 19, 
-    RuleFor_block = 20, RuleFor_incr = 21, RuleFor_dec = 22, RuleFor_decl = 23, 
-    RuleFor_end = 24, RuleFor_end_comp_type = 25, RulePragma = 26, RuleVariable_decl = 27, 
-    RuleConstant_decl = 28, RuleInput_decl = 29, RuleOutput_decl = 30
+    RuleDestination = 12, RuleImmediate = 13, RuleFloat_const = 14, RuleInteger_const = 15, 
+    RuleReg_opcode = 16, RuleConv_opcode = 17, RuleImm_opcode = 18, RuleBranch_opcode = 19, 
+    RulePseudo_opcode = 20, RuleFor_block = 21, RuleFor_incr = 22, RuleFor_dec = 23, 
+    RuleFor_decl = 24, RuleFor_end = 25, RuleFor_end_comp_type = 26, RulePragma = 27, 
+    RuleVariable_decl = 28, RuleConstant_decl = 29, RuleInput_decl = 30, 
+    RuleOutput_decl = 31
   };
 
   explicit asm_grammarParser(antlr4::TokenStream *input);
@@ -68,6 +69,7 @@ public:
   class DestinationContext;
   class ImmediateContext;
   class Float_constContext;
+  class Integer_constContext;
   class Reg_opcodeContext;
   class Conv_opcodeContext;
   class Imm_opcodeContext;
@@ -202,6 +204,7 @@ public:
     virtual size_t getRuleIndex() const override;
     DestinationContext *destination();
     antlr4::tree::TerminalNode *FloatingPointLiteral();
+    Integer_constContext *integer_const();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -341,6 +344,23 @@ public:
   };
 
   Float_constContext* float_const();
+
+  class  Integer_constContext : public antlr4::ParserRuleContext {
+  public:
+    Integer_constContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *Integer();
+    antlr4::tree::TerminalNode *Hexnum();
+    antlr4::tree::TerminalNode *Octalnum();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Integer_constContext* integer_const();
 
   class  Reg_opcodeContext : public antlr4::ParserRuleContext {
   public:

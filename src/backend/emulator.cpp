@@ -109,6 +109,8 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
         memory[dest] = execute_and(memory[op_a], memory[op_b]);
     } else if (opcode == "or"){
         memory[dest] = execute_or(memory[op_a], memory[op_b]);
+    } else if (opcode == "xor"){
+        memory[dest] = execute_xor(memory[op_a], memory[op_b]);
     } else if (opcode == "satp"){
         memory[dest] = execute_satp(memory[op_a], memory[op_b]);
     } else if (opcode == "satn"){
@@ -124,11 +126,8 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
     } else if (opcode == "efi"){
         execute_efi(op_a, op_b, dest);
     } else if (opcode == "bset"){
-        memory[dest] = execute_bset(memory[op_a], memory[op_b]);
-    } else if (opcode == "bclr"){
-        memory[dest] = execute_bclr(memory[op_a], memory[op_b]);
-    } else if (opcode == "binv"){
-        memory[dest] = execute_binv(memory[op_a], memory[op_b]);
+        auto res = execute_bset(memory[op_a], memory[op_b], memory[dest]);
+        memory[op_a] = res;
     } else if (opcode == "bsel"){
         memory[dest] = execute_bsel(memory[op_a], memory[op_b]);
     } else {
@@ -186,6 +185,9 @@ void emulator::run_load_constant_instruction(const std::shared_ptr<ll_load_const
 }
 
 uint32_t emulator::execute_add(uint32_t a, uint32_t b) {
+    if(b==0){ // There is a bug in the library that gives the wrong result for x+0
+        return a;
+    }
     xip_fpo_set_flt(xil_a, uint32_to_float(a));
     xip_fpo_set_flt(xil_b, uint32_to_float(b));
 
@@ -447,18 +449,16 @@ float emulator::uint32_to_float(uint32_t u) {
     return ret;
 }
 
-uint32_t emulator::execute_bset(uint32_t a, uint32_t b) {
-    return  a | (1<<b);
-}
-
-uint32_t emulator::execute_bclr(uint32_t a, uint32_t b) {
-    return  a & ~(1<<b);
-}
-
-uint32_t emulator::execute_binv(uint32_t a, uint32_t b) {
-    return  a ^ (1<<b);
+uint32_t emulator::execute_bset(uint32_t a, uint32_t b, uint32_t c) {
+    std::bitset<32> bits(a);
+    bits[b] = c;
+    return bits.to_ulong();
 }
 
 uint32_t emulator::execute_bsel(uint32_t a, uint32_t b) {
     return (a & (1<<b))>>b;
+}
+
+uint32_t emulator::execute_xor(uint32_t a, uint32_t b) {
+    return a ^ b;
 }

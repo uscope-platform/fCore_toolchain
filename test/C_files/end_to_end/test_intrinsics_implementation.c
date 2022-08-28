@@ -21,4 +21,5 @@ int main(){
     float b = itf(a);
     float c = satp(a, 100.0);
     float d = popcnt(a);
+    bset(a, r31, r1);
 }

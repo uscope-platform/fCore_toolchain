@@ -218,6 +218,18 @@ TEST(Emulator, emulator_inputs) {
 
 }
 
+TEST(Emulator, emulator_bset) {
+
+    std::string input_file = "emu/test_bset.mem";
+    std::ifstream stream(input_file);
+    fcore_emu emu_engine(stream, bin_loader_mem_input);
+    emu_engine.emulate_program();
+    std::vector<uint32_t> memory = emu_engine.get_memory_snapshot();
+    ASSERT_EQ(memory[56], 0x41b00000);
+    ASSERT_EQ(memory[55], 0xC1b00000);
+}
+
+
 TEST(Emulator, emulator_outputs) {
 
     std::string input_program = "emu/test_inputs.mem";

@@ -63,6 +63,9 @@ public:
   virtual void enterFloat_const(asm_grammarParser::Float_constContext * /*ctx*/) override { }
   virtual void exitFloat_const(asm_grammarParser::Float_constContext * /*ctx*/) override { }
 
+  virtual void enterInteger_const(asm_grammarParser::Integer_constContext * /*ctx*/) override { }
+  virtual void exitInteger_const(asm_grammarParser::Integer_constContext * /*ctx*/) override { }
+
   virtual void enterReg_opcode(asm_grammarParser::Reg_opcodeContext * /*ctx*/) override { }
   virtual void exitReg_opcode(asm_grammarParser::Reg_opcodeContext * /*ctx*/) override { }
 

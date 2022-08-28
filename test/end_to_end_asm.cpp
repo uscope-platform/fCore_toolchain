@@ -33,7 +33,7 @@ TEST( EndToEndAsm, simple_file ) {
     std::string include_dir;
     std::vector<std::string> include_files = {};
     std::ifstream stream(input_file);
-    fcore_has uut(stream,include_files,include_dir, 0);
+    fcore_has uut(stream,include_files,include_dir, 0, false);
 
     std::vector<uint32_t> gold_standard = {0x86, 0x42c80000, 0xa6, 0x43480000, 0xc2b01, 0xc};
 
@@ -85,7 +85,7 @@ TEST( EndToEndAsm, for_file ) {
     std::vector<std::string> include_files = {};
 
     std::ifstream stream(input_file);
-    fcore_has uut(stream,include_files,include_dir, 0);
+    fcore_has uut(stream,include_files,include_dir, 0, false);
 
     std::vector<uint32_t> result = uut.get_hexfile(false);
 
@@ -100,7 +100,7 @@ TEST( EndToEndAsm, branch_file ) {
     std::vector<std::string> include_files = {};
 
     std::ifstream stream(input_file);
-    fcore_has uut(stream,include_files,include_dir, 0);
+    fcore_has uut(stream,include_files,include_dir, 0, false);
 
     std::vector<uint32_t> result = uut.get_hexfile(false);
 
@@ -115,7 +115,7 @@ TEST(EndToEndAsm, variables_file) {
     std::vector<std::string> include_files = {};
 
     std::ifstream stream(input_file);
-    fcore_has uut(stream,include_files,include_dir, 0);
+    fcore_has uut(stream,include_files,include_dir, 0, false);
 
     std::vector<uint32_t> result = uut.get_hexfile(false);
     std::vector<uint32_t> gold_standard = {0x26,0x42c80000, 0x46, 0x43480000, 0xA6, 0x43480000, 0xc2881, 0xe4821,0xe4841,0x26,0x42c80000,0xe4821, 0x50b2, 0xc};
@@ -129,7 +129,7 @@ TEST(EndToEndAsm, load_constant_file) {
     std::vector<std::string> include_files = {};
 
     std::ifstream stream(input_file);
-    fcore_has uut(stream,include_files,include_dir, 0);
+    fcore_has uut(stream,include_files,include_dir, 0, false);
 
     std::vector<uint32_t> result = uut.get_hexfile(false);
 
@@ -142,7 +142,7 @@ TEST(EndToEndAsm, embeddable_wrapper_pass) {
     int hex_size;
     auto *hex_result = (uint32_t*) malloc(4096*sizeof(uint32_t));
 
-    fCore_has_embeddable_f(input_file.c_str(),hex_result, &hex_size);
+    fCore_has_embeddable_f(input_file.c_str(),hex_result, &hex_size, false);
 
     std::vector<uint32_t> result;
     for(int i = 0; i<hex_size;i++){
@@ -150,6 +150,22 @@ TEST(EndToEndAsm, embeddable_wrapper_pass) {
     }
     free(hex_result);
     std::vector<uint32_t> gold_standard = {0x86, 0x42c80000, 0xa6, 0x43480000, 0x86, 0x4048f5c3, 0xc};
+    ASSERT_EQ( result, gold_standard);
+}
+
+
+TEST(EndToEndAsm, load_integer_constant) {
+    std::string input_file = "asm/test_ldc_int.s";
+
+    std::string include_dir;
+    std::vector<std::string> include_files = {};
+
+    std::ifstream stream(input_file);
+    fcore_has uut(stream,include_files,include_dir, 0, true);
+
+    std::vector<uint32_t> result = uut.get_hexfile(false);
+
+    std::vector<uint32_t> gold_standard = {0x86, 0x64, 0xc};
     ASSERT_EQ( result, gold_standard);
 }
 
@@ -162,7 +178,7 @@ TEST(EndToEndAsm, json_writing) {
     std::vector<std::string> include_files = {};
 
     std::ifstream stream(input_file);
-    fcore_has uut(stream,include_files,include_dir, 0);
+    fcore_has uut(stream,include_files,include_dir, 0, false);
 
     uut.write_json(test_json);
 

@@ -136,7 +136,13 @@ void AsmTree_visitor::exitLoad_instr(asm_parser::asm_grammarParser::Load_instrCo
         dest_str = ctx->destination()->Register()->getText();
 
     std::shared_ptr<variable> dest = std::make_shared<variable>(dest_str);
-    std::shared_ptr<variable> immediate = std::make_shared<variable>("constant", std::stof(ctx->FloatingPointLiteral()->getText()));
+    std::shared_ptr<variable> immediate;
+    if(ctx->FloatingPointLiteral() != nullptr){
+        immediate = std::make_shared<variable>("constant", std::stof(ctx->FloatingPointLiteral()->getText()));
+    } else if(ctx->integer_const() != nullptr){
+        immediate = std::make_shared<variable>("constant", std::stoi(ctx->integer_const()->getText(), nullptr, 0));
+    }
+
 
 
     std::shared_ptr<ll_load_constant_instr_node> node = std::make_shared<ll_load_constant_instr_node>("ldc", dest, immediate);

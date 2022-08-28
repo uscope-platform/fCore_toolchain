@@ -44,11 +44,10 @@ high_level_ast_lowering::high_level_ast_lowering() {
             {expr_popcnt, "popcnt"},
             {expr_abs, "abs"},
             {expr_efi, "efi"},
-            {expr_bclr, "bclr"},
-            {expr_bset, "bset"},
-            {expr_binv, "binv"},
             {expr_bsel, "bsel"},
-            {expr_nop, "nop"}
+            {expr_bset, "bset"},
+            {expr_nop, "nop"},
+            {expr_xor_b, "xor"}
     };
 }
 

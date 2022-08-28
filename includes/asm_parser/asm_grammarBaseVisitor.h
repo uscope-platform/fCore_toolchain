@@ -77,6 +77,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitInteger_const(asm_grammarParser::Integer_constContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitReg_opcode(asm_grammarParser::Reg_opcodeContext *ctx) override {
     return visitChildren(ctx);
   }

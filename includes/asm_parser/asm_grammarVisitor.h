@@ -50,6 +50,8 @@ public:
 
     virtual std::any visitFloat_const(asm_grammarParser::Float_constContext *context) = 0;
 
+    virtual std::any visitInteger_const(asm_grammarParser::Integer_constContext *context) = 0;
+
     virtual std::any visitReg_opcode(asm_grammarParser::Reg_opcodeContext *context) = 0;
 
     virtual std::any visitConv_opcode(asm_grammarParser::Conv_opcodeContext *context) = 0;

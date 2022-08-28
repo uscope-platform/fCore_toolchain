@@ -59,11 +59,10 @@ private:
     uint32_t execute_popcnt(uint32_t a);
     uint32_t execute_satp(uint32_t a, uint32_t b);
     uint32_t execute_satn(uint32_t a, uint32_t b);
-    uint32_t execute_bset(uint32_t a, uint32_t b);
-    uint32_t execute_bclr(uint32_t a, uint32_t b);
-    uint32_t execute_binv(uint32_t a, uint32_t b);
+    uint32_t execute_bset(uint32_t a, uint32_t b, uint32_t c);
     uint32_t execute_bsel(uint32_t a, uint32_t b);
     static uint32_t execute_or(uint32_t a, uint32_t b);
+    static uint32_t execute_xor(uint32_t a, uint32_t b);
     uint32_t execute_compare_gt(uint32_t a, uint32_t b);
     uint32_t execute_compare_le(uint32_t a, uint32_t b);
     uint32_t execute_compare_eq(uint32_t a, uint32_t b);

@@ -69,9 +69,9 @@ static std::map <std::string, uint32_t>  fcore_opcodes {
     std::make_pair ("abs", 20u),
     std::make_pair ("efi", 21u),
     std::make_pair("bset", 22u),
-    std::make_pair("bclr", 23u),
-    std::make_pair("binv", 24u),
-    std::make_pair("bsel", 25u)
+    std::make_pair("bsel", 25u),
+    std::make_pair("xor", 26u)
+
 };
 
 static std::map <uint32_t, std::string>  fcore_opcodes_reverse {
@@ -97,9 +97,8 @@ static std::map <uint32_t, std::string>  fcore_opcodes_reverse {
     std::make_pair (fcore_opcodes["efi"], "efi"),
     std::make_pair(fcore_opcodes["popcnt"], "popcnt"),
     std::make_pair(fcore_opcodes["bset"], "bset"),
-    std::make_pair(fcore_opcodes["bclr"], "bclr"),
-    std::make_pair(fcore_opcodes["binv"], "binv"),
     std::make_pair(fcore_opcodes["bsel"], "bsel"),
+    std::make_pair(fcore_opcodes["xor"], "xor")
 };
 
 static std::map <std::string, isa_instruction_type>  fcore_op_types {
@@ -117,6 +116,7 @@ static std::map <std::string, isa_instruction_type>  fcore_op_types {
     std::make_pair ("stop", isa_independent_instruction),
     std::make_pair ("and", isa_register_instruction),
     std::make_pair ("or", isa_register_instruction),
+    std::make_pair("xor", isa_register_instruction),
     std::make_pair ("not", isa_conversion_instruction),
     std::make_pair ("satp", isa_register_instruction),
     std::make_pair ("satn", isa_register_instruction),
@@ -125,8 +125,6 @@ static std::map <std::string, isa_instruction_type>  fcore_op_types {
     std::make_pair ("efi", isa_register_instruction),
     std::make_pair("popcnt", isa_conversion_instruction),
     std::make_pair("bset",isa_register_instruction),
-    std::make_pair("bclr",isa_register_instruction),
-    std::make_pair("binv",isa_register_instruction),
     std::make_pair("bsel",isa_register_instruction),
 };
 
@@ -147,7 +145,7 @@ static std::map <expression_type_t, bool> fcore_implemented_operations {
     std::make_pair(expr_or_b, true),
     std::make_pair(expr_not_l, false),
     std::make_pair(expr_not_b, true),
-    std::make_pair(expr_xor_b, false),
+    std::make_pair(expr_xor_b, true),
     std::make_pair(expr_lsh, false),
     std::make_pair(expr_rsh, false),
     std::make_pair(expr_eq, true),
@@ -168,8 +166,6 @@ static std::map <expression_type_t, bool> fcore_implemented_operations {
     std::make_pair(expr_efi, true),
     std::make_pair(expr_abs, true),
     std::make_pair(expr_bset, true),
-    std::make_pair(expr_bclr, true),
-    std::make_pair(expr_binv, true),
     std::make_pair(expr_bsel, true),
     std::make_pair(expr_nop, true)
 };

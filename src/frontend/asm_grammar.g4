@@ -24,7 +24,7 @@ instruction : reg_instr | imm_instr | indep_instr | pseudo_instr | branch_instr 
 
 reg_instr : reg_opcode  operand ',' operand ',' destination;
 imm_instr : imm_opcode destination ',' immediate;
-load_instr: 'ldc' destination ',' FloatingPointLiteral;
+load_instr: 'ldc' destination ',' (FloatingPointLiteral | integer_const);
 branch_instr : branch_opcode operand ',' operand ',' operand;
 conv_instr : conv_opcode operand ',' operand;
 indep_instr : 'stop' | 'nop';
@@ -38,8 +38,9 @@ destination: Register | Identifier;
 immediate : Integer | Hexnum | Octalnum | Identifier;
 
 float_const : FloatingPointLiteral;
+integer_const: Integer | Hexnum | Octalnum;
 
-reg_opcode : 'add' | 'sub' | 'mul' | 'and' | 'or' | 'satp' | 'satn' | 'efi' | 'bset' | 'bclr'| 'binv' | 'bsel';
+reg_opcode : 'add' | 'sub' | 'mul' | 'and' | 'or' | 'satp' | 'satn' | 'efi' | 'bset' | 'bsel' | 'xor';
 conv_opcode: 'itf' | 'fti' | 'not' | 'rec' | 'abs'| 'popcnt';
 imm_opcode : 'ldr';
 branch_opcode: 'ble' | 'bgt' | 'beq' | 'bne';

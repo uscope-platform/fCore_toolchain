@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
     std::ifstream stream;
     stream.open(input_file);
 
-    fcore_has has_engine(stream,include_files, include_dir, dump_ast_level);
+    fcore_has has_engine(stream,include_files, include_dir, dump_ast_level, false);
 
     if(output_hex){
         has_engine.write_hexfile(output_file);

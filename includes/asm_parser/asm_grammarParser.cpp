@@ -47,15 +47,15 @@ void asm_grammarParserInitialize() {
     std::vector<std::string>{
       "program", "code", "declaration", "instruction", "reg_instr", "imm_instr", 
       "load_instr", "branch_instr", "conv_instr", "indep_instr", "pseudo_instr", 
-      "operand", "destination", "immediate", "float_const", "reg_opcode", 
-      "conv_opcode", "imm_opcode", "branch_opcode", "pseudo_opcode", "for_block", 
-      "for_incr", "for_dec", "for_decl", "for_end", "for_end_comp_type", 
+      "operand", "destination", "immediate", "float_const", "integer_const", 
+      "reg_opcode", "conv_opcode", "imm_opcode", "branch_opcode", "pseudo_opcode", 
+      "for_block", "for_incr", "for_dec", "for_decl", "for_end", "for_end_comp_type", 
       "pragma", "variable_decl", "constant_decl", "input_decl", "output_decl"
     },
     std::vector<std::string>{
       "", "','", "'ldc'", "'stop'", "'nop'", "'add'", "'sub'", "'mul'", 
-      "'and'", "'or'", "'satp'", "'satn'", "'efi'", "'bset'", "'bclr'", 
-      "'binv'", "'bsel'", "'itf'", "'fti'", "'not'", "'rec'", "'abs'", "'popcnt'", 
+      "'and'", "'or'", "'satp'", "'satn'", "'efi'", "'bset'", "'bsel'", 
+      "'xor'", "'itf'", "'fti'", "'not'", "'rec'", "'abs'", "'popcnt'", 
       "'ldr'", "'ble'", "'bgt'", "'beq'", "'bne'", "'mov'", "'for('", "';'", 
       "')'", "'{'", "'}'", "'++'", "'--'", "'='", "'<'", "'>'", "'<='", 
       "'>='", "'#pragma '", "'let'", "'const'", "'input'", "'output'"
@@ -63,68 +63,70 @@ void asm_grammarParserInitialize() {
     std::vector<std::string>{
       "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
       "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
-      "", "", "", "", "", "", "", "", "", "", "", "", "Register", "Identifier", 
+      "", "", "", "", "", "", "", "", "", "", "", "Register", "Identifier", 
       "Hexnum", "Integer", "Octalnum", "FloatingPointLiteral", "String", 
       "Label", "WS", "BlockComment", "LineComment"
     }
   );
   static const int32_t serializedATNSegment[] = {
-  	4,1,56,193,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
+  	4,1,55,199,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,
   	7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,
   	14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,
   	21,2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,27,2,28,7,
-  	28,2,29,7,29,2,30,7,30,1,0,1,0,1,1,1,1,1,1,1,1,4,1,69,8,1,11,1,12,1,70,
-  	1,2,1,2,1,2,1,2,3,2,77,8,2,1,3,1,3,1,3,1,3,1,3,1,3,1,3,3,3,86,8,3,1,4,
-  	1,4,1,4,1,4,1,4,1,4,1,4,1,5,1,5,1,5,1,5,1,5,1,6,1,6,1,6,1,6,1,6,1,7,1,
-  	7,1,7,1,7,1,7,1,7,1,7,1,8,1,8,1,8,1,8,1,8,1,9,1,9,1,10,1,10,1,10,1,10,
-  	1,10,1,10,5,10,125,8,10,10,10,12,10,128,9,10,1,11,1,11,1,12,1,12,1,13,
-  	1,13,1,14,1,14,1,15,1,15,1,16,1,16,1,17,1,17,1,18,1,18,1,19,1,19,1,20,
-  	1,20,1,20,1,20,1,20,1,20,1,20,3,20,155,8,20,1,20,1,20,1,20,1,20,1,20,
-  	1,21,1,21,1,21,1,22,1,22,1,22,1,23,1,23,1,23,1,23,1,24,1,24,1,24,1,24,
-  	1,25,1,25,1,26,1,26,1,26,1,27,1,27,1,27,1,28,1,28,1,28,1,29,1,29,1,29,
-  	1,30,1,30,1,30,1,30,0,0,31,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,
-  	32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,0,7,1,0,3,4,1,0,46,47,1,
-  	0,47,50,1,0,5,16,1,0,17,22,1,0,24,27,1,0,37,40,176,0,62,1,0,0,0,2,68,
-  	1,0,0,0,4,76,1,0,0,0,6,85,1,0,0,0,8,87,1,0,0,0,10,94,1,0,0,0,12,99,1,
-  	0,0,0,14,104,1,0,0,0,16,111,1,0,0,0,18,116,1,0,0,0,20,118,1,0,0,0,22,
-  	129,1,0,0,0,24,131,1,0,0,0,26,133,1,0,0,0,28,135,1,0,0,0,30,137,1,0,0,
-  	0,32,139,1,0,0,0,34,141,1,0,0,0,36,143,1,0,0,0,38,145,1,0,0,0,40,147,
-  	1,0,0,0,42,161,1,0,0,0,44,164,1,0,0,0,46,167,1,0,0,0,48,171,1,0,0,0,50,
-  	175,1,0,0,0,52,177,1,0,0,0,54,180,1,0,0,0,56,183,1,0,0,0,58,186,1,0,0,
-  	0,60,189,1,0,0,0,62,63,3,2,1,0,63,1,1,0,0,0,64,69,3,6,3,0,65,69,3,40,
-  	20,0,66,69,3,52,26,0,67,69,3,4,2,0,68,64,1,0,0,0,68,65,1,0,0,0,68,66,
-  	1,0,0,0,68,67,1,0,0,0,69,70,1,0,0,0,70,68,1,0,0,0,70,71,1,0,0,0,71,3,
-  	1,0,0,0,72,77,3,58,29,0,73,77,3,54,27,0,74,77,3,56,28,0,75,77,3,60,30,
-  	0,76,72,1,0,0,0,76,73,1,0,0,0,76,74,1,0,0,0,76,75,1,0,0,0,77,5,1,0,0,
-  	0,78,86,3,8,4,0,79,86,3,10,5,0,80,86,3,18,9,0,81,86,3,20,10,0,82,86,3,
-  	14,7,0,83,86,3,16,8,0,84,86,3,12,6,0,85,78,1,0,0,0,85,79,1,0,0,0,85,80,
-  	1,0,0,0,85,81,1,0,0,0,85,82,1,0,0,0,85,83,1,0,0,0,85,84,1,0,0,0,86,7,
-  	1,0,0,0,87,88,3,30,15,0,88,89,3,22,11,0,89,90,5,1,0,0,90,91,3,22,11,0,
-  	91,92,5,1,0,0,92,93,3,24,12,0,93,9,1,0,0,0,94,95,3,34,17,0,95,96,3,24,
-  	12,0,96,97,5,1,0,0,97,98,3,26,13,0,98,11,1,0,0,0,99,100,5,2,0,0,100,101,
-  	3,24,12,0,101,102,5,1,0,0,102,103,5,51,0,0,103,13,1,0,0,0,104,105,3,36,
-  	18,0,105,106,3,22,11,0,106,107,5,1,0,0,107,108,3,22,11,0,108,109,5,1,
-  	0,0,109,110,3,22,11,0,110,15,1,0,0,0,111,112,3,32,16,0,112,113,3,22,11,
-  	0,113,114,5,1,0,0,114,115,3,22,11,0,115,17,1,0,0,0,116,117,7,0,0,0,117,
-  	19,1,0,0,0,118,119,3,38,19,0,119,120,3,22,11,0,120,121,5,1,0,0,121,126,
-  	3,22,11,0,122,123,5,1,0,0,123,125,3,22,11,0,124,122,1,0,0,0,125,128,1,
-  	0,0,0,126,124,1,0,0,0,126,127,1,0,0,0,127,21,1,0,0,0,128,126,1,0,0,0,
-  	129,130,7,1,0,0,130,23,1,0,0,0,131,132,7,1,0,0,132,25,1,0,0,0,133,134,
-  	7,2,0,0,134,27,1,0,0,0,135,136,5,51,0,0,136,29,1,0,0,0,137,138,7,3,0,
-  	0,138,31,1,0,0,0,139,140,7,4,0,0,140,33,1,0,0,0,141,142,5,23,0,0,142,
-  	35,1,0,0,0,143,144,7,5,0,0,144,37,1,0,0,0,145,146,5,28,0,0,146,39,1,0,
-  	0,0,147,148,5,29,0,0,148,149,3,46,23,0,149,150,5,30,0,0,150,151,3,48,
-  	24,0,151,154,5,30,0,0,152,155,3,42,21,0,153,155,3,44,22,0,154,152,1,0,
-  	0,0,154,153,1,0,0,0,155,156,1,0,0,0,156,157,5,31,0,0,157,158,5,32,0,0,
-  	158,159,3,2,1,0,159,160,5,33,0,0,160,41,1,0,0,0,161,162,5,47,0,0,162,
-  	163,5,34,0,0,163,43,1,0,0,0,164,165,5,47,0,0,165,166,5,35,0,0,166,45,
-  	1,0,0,0,167,168,5,47,0,0,168,169,5,36,0,0,169,170,5,49,0,0,170,47,1,0,
-  	0,0,171,172,5,47,0,0,172,173,3,50,25,0,173,174,5,49,0,0,174,49,1,0,0,
-  	0,175,176,7,6,0,0,176,51,1,0,0,0,177,178,5,41,0,0,178,179,5,47,0,0,179,
-  	53,1,0,0,0,180,181,5,42,0,0,181,182,7,1,0,0,182,55,1,0,0,0,183,184,5,
-  	43,0,0,184,185,7,1,0,0,185,57,1,0,0,0,186,187,5,44,0,0,187,188,7,1,0,
-  	0,188,59,1,0,0,0,189,190,5,45,0,0,190,191,7,1,0,0,191,61,1,0,0,0,6,68,
-  	70,76,85,126,154
+  	28,2,29,7,29,2,30,7,30,2,31,7,31,1,0,1,0,1,1,1,1,1,1,1,1,4,1,71,8,1,11,
+  	1,12,1,72,1,2,1,2,1,2,1,2,3,2,79,8,2,1,3,1,3,1,3,1,3,1,3,1,3,1,3,3,3,
+  	88,8,3,1,4,1,4,1,4,1,4,1,4,1,4,1,4,1,5,1,5,1,5,1,5,1,5,1,6,1,6,1,6,1,
+  	6,1,6,3,6,107,8,6,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,8,1,8,1,8,1,8,1,8,1,9,
+  	1,9,1,10,1,10,1,10,1,10,1,10,1,10,5,10,129,8,10,10,10,12,10,132,9,10,
+  	1,11,1,11,1,12,1,12,1,13,1,13,1,14,1,14,1,15,1,15,1,16,1,16,1,17,1,17,
+  	1,18,1,18,1,19,1,19,1,20,1,20,1,21,1,21,1,21,1,21,1,21,1,21,1,21,3,21,
+  	161,8,21,1,21,1,21,1,21,1,21,1,21,1,22,1,22,1,22,1,23,1,23,1,23,1,24,
+  	1,24,1,24,1,24,1,25,1,25,1,25,1,25,1,26,1,26,1,27,1,27,1,27,1,28,1,28,
+  	1,28,1,29,1,29,1,29,1,30,1,30,1,30,1,31,1,31,1,31,1,31,0,0,32,0,2,4,6,
+  	8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,
+  	56,58,60,62,0,8,1,0,3,4,1,0,45,46,1,0,46,49,1,0,47,49,1,0,5,15,1,0,16,
+  	21,1,0,23,26,1,0,36,39,182,0,64,1,0,0,0,2,70,1,0,0,0,4,78,1,0,0,0,6,87,
+  	1,0,0,0,8,89,1,0,0,0,10,96,1,0,0,0,12,101,1,0,0,0,14,108,1,0,0,0,16,115,
+  	1,0,0,0,18,120,1,0,0,0,20,122,1,0,0,0,22,133,1,0,0,0,24,135,1,0,0,0,26,
+  	137,1,0,0,0,28,139,1,0,0,0,30,141,1,0,0,0,32,143,1,0,0,0,34,145,1,0,0,
+  	0,36,147,1,0,0,0,38,149,1,0,0,0,40,151,1,0,0,0,42,153,1,0,0,0,44,167,
+  	1,0,0,0,46,170,1,0,0,0,48,173,1,0,0,0,50,177,1,0,0,0,52,181,1,0,0,0,54,
+  	183,1,0,0,0,56,186,1,0,0,0,58,189,1,0,0,0,60,192,1,0,0,0,62,195,1,0,0,
+  	0,64,65,3,2,1,0,65,1,1,0,0,0,66,71,3,6,3,0,67,71,3,42,21,0,68,71,3,54,
+  	27,0,69,71,3,4,2,0,70,66,1,0,0,0,70,67,1,0,0,0,70,68,1,0,0,0,70,69,1,
+  	0,0,0,71,72,1,0,0,0,72,70,1,0,0,0,72,73,1,0,0,0,73,3,1,0,0,0,74,79,3,
+  	60,30,0,75,79,3,56,28,0,76,79,3,58,29,0,77,79,3,62,31,0,78,74,1,0,0,0,
+  	78,75,1,0,0,0,78,76,1,0,0,0,78,77,1,0,0,0,79,5,1,0,0,0,80,88,3,8,4,0,
+  	81,88,3,10,5,0,82,88,3,18,9,0,83,88,3,20,10,0,84,88,3,14,7,0,85,88,3,
+  	16,8,0,86,88,3,12,6,0,87,80,1,0,0,0,87,81,1,0,0,0,87,82,1,0,0,0,87,83,
+  	1,0,0,0,87,84,1,0,0,0,87,85,1,0,0,0,87,86,1,0,0,0,88,7,1,0,0,0,89,90,
+  	3,32,16,0,90,91,3,22,11,0,91,92,5,1,0,0,92,93,3,22,11,0,93,94,5,1,0,0,
+  	94,95,3,24,12,0,95,9,1,0,0,0,96,97,3,36,18,0,97,98,3,24,12,0,98,99,5,
+  	1,0,0,99,100,3,26,13,0,100,11,1,0,0,0,101,102,5,2,0,0,102,103,3,24,12,
+  	0,103,106,5,1,0,0,104,107,5,50,0,0,105,107,3,30,15,0,106,104,1,0,0,0,
+  	106,105,1,0,0,0,107,13,1,0,0,0,108,109,3,38,19,0,109,110,3,22,11,0,110,
+  	111,5,1,0,0,111,112,3,22,11,0,112,113,5,1,0,0,113,114,3,22,11,0,114,15,
+  	1,0,0,0,115,116,3,34,17,0,116,117,3,22,11,0,117,118,5,1,0,0,118,119,3,
+  	22,11,0,119,17,1,0,0,0,120,121,7,0,0,0,121,19,1,0,0,0,122,123,3,40,20,
+  	0,123,124,3,22,11,0,124,125,5,1,0,0,125,130,3,22,11,0,126,127,5,1,0,0,
+  	127,129,3,22,11,0,128,126,1,0,0,0,129,132,1,0,0,0,130,128,1,0,0,0,130,
+  	131,1,0,0,0,131,21,1,0,0,0,132,130,1,0,0,0,133,134,7,1,0,0,134,23,1,0,
+  	0,0,135,136,7,1,0,0,136,25,1,0,0,0,137,138,7,2,0,0,138,27,1,0,0,0,139,
+  	140,5,50,0,0,140,29,1,0,0,0,141,142,7,3,0,0,142,31,1,0,0,0,143,144,7,
+  	4,0,0,144,33,1,0,0,0,145,146,7,5,0,0,146,35,1,0,0,0,147,148,5,22,0,0,
+  	148,37,1,0,0,0,149,150,7,6,0,0,150,39,1,0,0,0,151,152,5,27,0,0,152,41,
+  	1,0,0,0,153,154,5,28,0,0,154,155,3,48,24,0,155,156,5,29,0,0,156,157,3,
+  	50,25,0,157,160,5,29,0,0,158,161,3,44,22,0,159,161,3,46,23,0,160,158,
+  	1,0,0,0,160,159,1,0,0,0,161,162,1,0,0,0,162,163,5,30,0,0,163,164,5,31,
+  	0,0,164,165,3,2,1,0,165,166,5,32,0,0,166,43,1,0,0,0,167,168,5,46,0,0,
+  	168,169,5,33,0,0,169,45,1,0,0,0,170,171,5,46,0,0,171,172,5,34,0,0,172,
+  	47,1,0,0,0,173,174,5,46,0,0,174,175,5,35,0,0,175,176,5,48,0,0,176,49,
+  	1,0,0,0,177,178,5,46,0,0,178,179,3,52,26,0,179,180,5,48,0,0,180,51,1,
+  	0,0,0,181,182,7,7,0,0,182,53,1,0,0,0,183,184,5,40,0,0,184,185,5,46,0,
+  	0,185,55,1,0,0,0,186,187,5,41,0,0,187,188,7,1,0,0,188,57,1,0,0,0,189,
+  	190,5,42,0,0,190,191,7,1,0,0,191,59,1,0,0,0,192,193,5,43,0,0,193,194,
+  	7,1,0,0,194,61,1,0,0,0,195,196,5,44,0,0,196,197,7,1,0,0,197,63,1,0,0,
+  	0,7,70,72,78,87,106,130,160
   };
   staticData->serializedATN = antlr4::atn::SerializedATNView(serializedATNSegment, sizeof(serializedATNSegment) / sizeof(serializedATNSegment[0]));
 
@@ -221,7 +223,7 @@ asm_grammarParser::ProgramContext* asm_grammarParser::program() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(62);
+    setState(64);
     code();
    
   }
@@ -311,11 +313,11 @@ asm_grammarParser::CodeContext* asm_grammarParser::code() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(68); 
+    setState(70); 
     _errHandler->sync(this);
     _la = _input->LA(1);
     do {
-      setState(68);
+      setState(70);
       _errHandler->sync(this);
       switch (_input->LA(1)) {
         case asm_grammarParser::T__1:
@@ -343,30 +345,29 @@ asm_grammarParser::CodeContext* asm_grammarParser::code() {
         case asm_grammarParser::T__23:
         case asm_grammarParser::T__24:
         case asm_grammarParser::T__25:
-        case asm_grammarParser::T__26:
-        case asm_grammarParser::T__27: {
-          setState(64);
+        case asm_grammarParser::T__26: {
+          setState(66);
           instruction();
           break;
         }
 
-        case asm_grammarParser::T__28: {
-          setState(65);
+        case asm_grammarParser::T__27: {
+          setState(67);
           for_block();
           break;
         }
 
-        case asm_grammarParser::T__40: {
-          setState(66);
+        case asm_grammarParser::T__39: {
+          setState(68);
           pragma();
           break;
         }
 
+        case asm_grammarParser::T__40:
         case asm_grammarParser::T__41:
         case asm_grammarParser::T__42:
-        case asm_grammarParser::T__43:
-        case asm_grammarParser::T__44: {
-          setState(67);
+        case asm_grammarParser::T__43: {
+          setState(69);
           declaration();
           break;
         }
@@ -374,7 +375,7 @@ asm_grammarParser::CodeContext* asm_grammarParser::code() {
       default:
         throw NoViableAltException(this);
       }
-      setState(70); 
+      setState(72); 
       _errHandler->sync(this);
       _la = _input->LA(1);
     } while ((((_la & ~ 0x3fULL) == 0) &&
@@ -405,12 +406,11 @@ asm_grammarParser::CodeContext* asm_grammarParser::code() {
       | (1ULL << asm_grammarParser::T__25)
       | (1ULL << asm_grammarParser::T__26)
       | (1ULL << asm_grammarParser::T__27)
-      | (1ULL << asm_grammarParser::T__28)
+      | (1ULL << asm_grammarParser::T__39)
       | (1ULL << asm_grammarParser::T__40)
       | (1ULL << asm_grammarParser::T__41)
       | (1ULL << asm_grammarParser::T__42)
-      | (1ULL << asm_grammarParser::T__43)
-      | (1ULL << asm_grammarParser::T__44))) != 0));
+      | (1ULL << asm_grammarParser::T__43))) != 0));
    
   }
   catch (RecognitionException &e) {
@@ -482,29 +482,29 @@ asm_grammarParser::DeclarationContext* asm_grammarParser::declaration() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(76);
+    setState(78);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case asm_grammarParser::T__43: {
-        setState(72);
+      case asm_grammarParser::T__42: {
+        setState(74);
         input_decl();
         break;
       }
 
-      case asm_grammarParser::T__41: {
-        setState(73);
+      case asm_grammarParser::T__40: {
+        setState(75);
         variable_decl();
         break;
       }
 
-      case asm_grammarParser::T__42: {
-        setState(74);
+      case asm_grammarParser::T__41: {
+        setState(76);
         constant_decl();
         break;
       }
 
-      case asm_grammarParser::T__44: {
-        setState(75);
+      case asm_grammarParser::T__43: {
+        setState(77);
         output_decl();
         break;
       }
@@ -594,7 +594,7 @@ asm_grammarParser::InstructionContext* asm_grammarParser::instruction() {
     exitRule();
   });
   try {
-    setState(85);
+    setState(87);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
       case asm_grammarParser::T__4:
@@ -607,17 +607,16 @@ asm_grammarParser::InstructionContext* asm_grammarParser::instruction() {
       case asm_grammarParser::T__11:
       case asm_grammarParser::T__12:
       case asm_grammarParser::T__13:
-      case asm_grammarParser::T__14:
-      case asm_grammarParser::T__15: {
+      case asm_grammarParser::T__14: {
         enterOuterAlt(_localctx, 1);
-        setState(78);
+        setState(80);
         reg_instr();
         break;
       }
 
-      case asm_grammarParser::T__22: {
+      case asm_grammarParser::T__21: {
         enterOuterAlt(_localctx, 2);
-        setState(79);
+        setState(81);
         imm_instr();
         break;
       }
@@ -625,43 +624,43 @@ asm_grammarParser::InstructionContext* asm_grammarParser::instruction() {
       case asm_grammarParser::T__2:
       case asm_grammarParser::T__3: {
         enterOuterAlt(_localctx, 3);
-        setState(80);
+        setState(82);
         indep_instr();
         break;
       }
 
-      case asm_grammarParser::T__27: {
+      case asm_grammarParser::T__26: {
         enterOuterAlt(_localctx, 4);
-        setState(81);
+        setState(83);
         pseudo_instr();
         break;
       }
 
+      case asm_grammarParser::T__22:
       case asm_grammarParser::T__23:
       case asm_grammarParser::T__24:
-      case asm_grammarParser::T__25:
-      case asm_grammarParser::T__26: {
+      case asm_grammarParser::T__25: {
         enterOuterAlt(_localctx, 5);
-        setState(82);
+        setState(84);
         branch_instr();
         break;
       }
 
+      case asm_grammarParser::T__15:
       case asm_grammarParser::T__16:
       case asm_grammarParser::T__17:
       case asm_grammarParser::T__18:
       case asm_grammarParser::T__19:
-      case asm_grammarParser::T__20:
-      case asm_grammarParser::T__21: {
+      case asm_grammarParser::T__20: {
         enterOuterAlt(_localctx, 6);
-        setState(83);
+        setState(85);
         conv_instr();
         break;
       }
 
       case asm_grammarParser::T__1: {
         enterOuterAlt(_localctx, 7);
-        setState(84);
+        setState(86);
         load_instr();
         break;
       }
@@ -740,17 +739,17 @@ asm_grammarParser::Reg_instrContext* asm_grammarParser::reg_instr() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(87);
-    reg_opcode();
-    setState(88);
-    operand();
     setState(89);
-    match(asm_grammarParser::T__0);
+    reg_opcode();
     setState(90);
     operand();
     setState(91);
     match(asm_grammarParser::T__0);
     setState(92);
+    operand();
+    setState(93);
+    match(asm_grammarParser::T__0);
+    setState(94);
     destination();
    
   }
@@ -819,13 +818,13 @@ asm_grammarParser::Imm_instrContext* asm_grammarParser::imm_instr() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(94);
-    imm_opcode();
-    setState(95);
-    destination();
     setState(96);
-    match(asm_grammarParser::T__0);
+    imm_opcode();
     setState(97);
+    destination();
+    setState(98);
+    match(asm_grammarParser::T__0);
+    setState(99);
     immediate();
    
   }
@@ -852,6 +851,10 @@ tree::TerminalNode* asm_grammarParser::Load_instrContext::FloatingPointLiteral()
   return getToken(asm_grammarParser::FloatingPointLiteral, 0);
 }
 
+asm_grammarParser::Integer_constContext* asm_grammarParser::Load_instrContext::integer_const() {
+  return getRuleContext<asm_grammarParser::Integer_constContext>(0);
+}
+
 
 size_t asm_grammarParser::Load_instrContext::getRuleIndex() const {
   return asm_grammarParser::RuleLoad_instr;
@@ -866,6 +869,7 @@ void asm_grammarParser::Load_instrContext::enterRule(tree::ParseTreeListener *li
 void asm_grammarParser::Load_instrContext::exitRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<asm_grammarListener *>(listener);
   if (parserListener != nullptr)
+
     parserListener->exitLoad_instr(this);
 }
 
@@ -890,14 +894,32 @@ asm_grammarParser::Load_instrContext* asm_grammarParser::load_instr() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(99);
-    match(asm_grammarParser::T__1);
-    setState(100);
-    destination();
     setState(101);
-    match(asm_grammarParser::T__0);
+    match(asm_grammarParser::T__1);
     setState(102);
-    match(asm_grammarParser::FloatingPointLiteral);
+    destination();
+    setState(103);
+    match(asm_grammarParser::T__0);
+    setState(106);
+    _errHandler->sync(this);
+    switch (_input->LA(1)) {
+      case asm_grammarParser::FloatingPointLiteral: {
+        setState(104);
+        match(asm_grammarParser::FloatingPointLiteral);
+        break;
+      }
+
+      case asm_grammarParser::Hexnum:
+      case asm_grammarParser::Integer:
+      case asm_grammarParser::Octalnum: {
+        setState(105);
+        integer_const();
+        break;
+      }
+
+    default:
+      throw NoViableAltException(this);
+    }
    
   }
   catch (RecognitionException &e) {
@@ -965,17 +987,17 @@ asm_grammarParser::Branch_instrContext* asm_grammarParser::branch_instr() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(104);
-    branch_opcode();
-    setState(105);
-    operand();
-    setState(106);
-    match(asm_grammarParser::T__0);
-    setState(107);
-    operand();
     setState(108);
-    match(asm_grammarParser::T__0);
+    branch_opcode();
     setState(109);
+    operand();
+    setState(110);
+    match(asm_grammarParser::T__0);
+    setState(111);
+    operand();
+    setState(112);
+    match(asm_grammarParser::T__0);
+    setState(113);
     operand();
    
   }
@@ -1044,13 +1066,13 @@ asm_grammarParser::Conv_instrContext* asm_grammarParser::conv_instr() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(111);
+    setState(115);
     conv_opcode();
-    setState(112);
+    setState(116);
     operand();
-    setState(113);
+    setState(117);
     match(asm_grammarParser::T__0);
-    setState(114);
+    setState(118);
     operand();
    
   }
@@ -1108,7 +1130,7 @@ asm_grammarParser::Indep_instrContext* asm_grammarParser::indep_instr() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(116);
+    setState(120);
     _la = _input->LA(1);
     if (!(_la == asm_grammarParser::T__2
 
@@ -1187,23 +1209,23 @@ asm_grammarParser::Pseudo_instrContext* asm_grammarParser::pseudo_instr() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(118);
+    setState(122);
     pseudo_opcode();
-    setState(119);
+    setState(123);
     operand();
-    setState(120);
+    setState(124);
     match(asm_grammarParser::T__0);
-    setState(121);
+    setState(125);
     operand();
-    setState(126);
+    setState(130);
     _errHandler->sync(this);
     _la = _input->LA(1);
     while (_la == asm_grammarParser::T__0) {
-      setState(122);
+      setState(126);
       match(asm_grammarParser::T__0);
-      setState(123);
+      setState(127);
       operand();
-      setState(128);
+      setState(132);
       _errHandler->sync(this);
       _la = _input->LA(1);
     }
@@ -1271,7 +1293,7 @@ asm_grammarParser::OperandContext* asm_grammarParser::operand() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(129);
+    setState(133);
     _la = _input->LA(1);
     if (!(_la == asm_grammarParser::Register
 
@@ -1346,7 +1368,7 @@ asm_grammarParser::DestinationContext* asm_grammarParser::destination() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(131);
+    setState(135);
     _la = _input->LA(1);
     if (!(_la == asm_grammarParser::Register
 
@@ -1429,7 +1451,7 @@ asm_grammarParser::ImmediateContext* asm_grammarParser::immediate() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(133);
+    setState(137);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
       ((1ULL << _la) & ((1ULL << asm_grammarParser::Identifier)
@@ -1501,8 +1523,88 @@ asm_grammarParser::Float_constContext* asm_grammarParser::float_const() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(135);
+    setState(139);
     match(asm_grammarParser::FloatingPointLiteral);
+   
+  }
+  catch (RecognitionException &e) {
+    _errHandler->reportError(this, e);
+    _localctx->exception = std::current_exception();
+    _errHandler->recover(this, _localctx->exception);
+  }
+
+  return _localctx;
+}
+
+//----------------- Integer_constContext ------------------------------------------------------------------
+
+asm_grammarParser::Integer_constContext::Integer_constContext(ParserRuleContext *parent, size_t invokingState)
+  : ParserRuleContext(parent, invokingState) {
+}
+
+tree::TerminalNode* asm_grammarParser::Integer_constContext::Integer() {
+  return getToken(asm_grammarParser::Integer, 0);
+}
+
+tree::TerminalNode* asm_grammarParser::Integer_constContext::Hexnum() {
+  return getToken(asm_grammarParser::Hexnum, 0);
+}
+
+tree::TerminalNode* asm_grammarParser::Integer_constContext::Octalnum() {
+  return getToken(asm_grammarParser::Octalnum, 0);
+}
+
+
+size_t asm_grammarParser::Integer_constContext::getRuleIndex() const {
+  return asm_grammarParser::RuleInteger_const;
+}
+
+void asm_grammarParser::Integer_constContext::enterRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<asm_grammarListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->enterInteger_const(this);
+}
+
+void asm_grammarParser::Integer_constContext::exitRule(tree::ParseTreeListener *listener) {
+  auto parserListener = dynamic_cast<asm_grammarListener *>(listener);
+  if (parserListener != nullptr)
+    parserListener->exitInteger_const(this);
+}
+
+
+std::any asm_grammarParser::Integer_constContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<asm_grammarVisitor*>(visitor))
+    return parserVisitor->visitInteger_const(this);
+  else
+    return visitor->visitChildren(this);
+}
+
+asm_grammarParser::Integer_constContext* asm_grammarParser::integer_const() {
+  Integer_constContext *_localctx = _tracker.createInstance<Integer_constContext>(_ctx, getState());
+  enterRule(_localctx, 30, asm_grammarParser::RuleInteger_const);
+  size_t _la = 0;
+
+#if __cplusplus > 201703L
+  auto onExit = finally([=, this] {
+#else
+  auto onExit = finally([=] {
+#endif
+    exitRule();
+  });
+  try {
+    enterOuterAlt(_localctx, 1);
+    setState(141);
+    _la = _input->LA(1);
+    if (!((((_la & ~ 0x3fULL) == 0) &&
+      ((1ULL << _la) & ((1ULL << asm_grammarParser::Hexnum)
+      | (1ULL << asm_grammarParser::Integer)
+      | (1ULL << asm_grammarParser::Octalnum))) != 0))) {
+    _errHandler->recoverInline(this);
+    }
+    else {
+      _errHandler->reportMatch(this);
+      consume();
+    }
    
   }
   catch (RecognitionException &e) {
@@ -1547,7 +1649,7 @@ std::any asm_grammarParser::Reg_opcodeContext::accept(tree::ParseTreeVisitor *vi
 
 asm_grammarParser::Reg_opcodeContext* asm_grammarParser::reg_opcode() {
   Reg_opcodeContext *_localctx = _tracker.createInstance<Reg_opcodeContext>(_ctx, getState());
-  enterRule(_localctx, 30, asm_grammarParser::RuleReg_opcode);
+  enterRule(_localctx, 32, asm_grammarParser::RuleReg_opcode);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1559,7 +1661,7 @@ asm_grammarParser::Reg_opcodeContext* asm_grammarParser::reg_opcode() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(137);
+    setState(143);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
       ((1ULL << _la) & ((1ULL << asm_grammarParser::T__4)
@@ -1572,8 +1674,7 @@ asm_grammarParser::Reg_opcodeContext* asm_grammarParser::reg_opcode() {
       | (1ULL << asm_grammarParser::T__11)
       | (1ULL << asm_grammarParser::T__12)
       | (1ULL << asm_grammarParser::T__13)
-      | (1ULL << asm_grammarParser::T__14)
-      | (1ULL << asm_grammarParser::T__15))) != 0))) {
+      | (1ULL << asm_grammarParser::T__14))) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -1624,7 +1725,7 @@ std::any asm_grammarParser::Conv_opcodeContext::accept(tree::ParseTreeVisitor *v
 
 asm_grammarParser::Conv_opcodeContext* asm_grammarParser::conv_opcode() {
   Conv_opcodeContext *_localctx = _tracker.createInstance<Conv_opcodeContext>(_ctx, getState());
-  enterRule(_localctx, 32, asm_grammarParser::RuleConv_opcode);
+  enterRule(_localctx, 34, asm_grammarParser::RuleConv_opcode);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1636,15 +1737,15 @@ asm_grammarParser::Conv_opcodeContext* asm_grammarParser::conv_opcode() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(139);
+    setState(145);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << asm_grammarParser::T__16)
+      ((1ULL << _la) & ((1ULL << asm_grammarParser::T__15)
+      | (1ULL << asm_grammarParser::T__16)
       | (1ULL << asm_grammarParser::T__17)
       | (1ULL << asm_grammarParser::T__18)
       | (1ULL << asm_grammarParser::T__19)
-      | (1ULL << asm_grammarParser::T__20)
-      | (1ULL << asm_grammarParser::T__21))) != 0))) {
+      | (1ULL << asm_grammarParser::T__20))) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -1695,7 +1796,7 @@ std::any asm_grammarParser::Imm_opcodeContext::accept(tree::ParseTreeVisitor *vi
 
 asm_grammarParser::Imm_opcodeContext* asm_grammarParser::imm_opcode() {
   Imm_opcodeContext *_localctx = _tracker.createInstance<Imm_opcodeContext>(_ctx, getState());
-  enterRule(_localctx, 34, asm_grammarParser::RuleImm_opcode);
+  enterRule(_localctx, 36, asm_grammarParser::RuleImm_opcode);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1706,8 +1807,8 @@ asm_grammarParser::Imm_opcodeContext* asm_grammarParser::imm_opcode() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(141);
-    match(asm_grammarParser::T__22);
+    setState(147);
+    match(asm_grammarParser::T__21);
    
   }
   catch (RecognitionException &e) {
@@ -1752,7 +1853,7 @@ std::any asm_grammarParser::Branch_opcodeContext::accept(tree::ParseTreeVisitor 
 
 asm_grammarParser::Branch_opcodeContext* asm_grammarParser::branch_opcode() {
   Branch_opcodeContext *_localctx = _tracker.createInstance<Branch_opcodeContext>(_ctx, getState());
-  enterRule(_localctx, 36, asm_grammarParser::RuleBranch_opcode);
+  enterRule(_localctx, 38, asm_grammarParser::RuleBranch_opcode);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1764,13 +1865,13 @@ asm_grammarParser::Branch_opcodeContext* asm_grammarParser::branch_opcode() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(143);
+    setState(149);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << asm_grammarParser::T__23)
+      ((1ULL << _la) & ((1ULL << asm_grammarParser::T__22)
+      | (1ULL << asm_grammarParser::T__23)
       | (1ULL << asm_grammarParser::T__24)
-      | (1ULL << asm_grammarParser::T__25)
-      | (1ULL << asm_grammarParser::T__26))) != 0))) {
+      | (1ULL << asm_grammarParser::T__25))) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -1821,7 +1922,7 @@ std::any asm_grammarParser::Pseudo_opcodeContext::accept(tree::ParseTreeVisitor 
 
 asm_grammarParser::Pseudo_opcodeContext* asm_grammarParser::pseudo_opcode() {
   Pseudo_opcodeContext *_localctx = _tracker.createInstance<Pseudo_opcodeContext>(_ctx, getState());
-  enterRule(_localctx, 38, asm_grammarParser::RulePseudo_opcode);
+  enterRule(_localctx, 40, asm_grammarParser::RulePseudo_opcode);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1832,8 +1933,8 @@ asm_grammarParser::Pseudo_opcodeContext* asm_grammarParser::pseudo_opcode() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(145);
-    match(asm_grammarParser::T__27);
+    setState(151);
+    match(asm_grammarParser::T__26);
    
   }
   catch (RecognitionException &e) {
@@ -1898,7 +1999,7 @@ std::any asm_grammarParser::For_blockContext::accept(tree::ParseTreeVisitor *vis
 
 asm_grammarParser::For_blockContext* asm_grammarParser::for_block() {
   For_blockContext *_localctx = _tracker.createInstance<For_blockContext>(_ctx, getState());
-  enterRule(_localctx, 40, asm_grammarParser::RuleFor_block);
+  enterRule(_localctx, 42, asm_grammarParser::RuleFor_block);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1909,27 +2010,27 @@ asm_grammarParser::For_blockContext* asm_grammarParser::for_block() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(147);
-    match(asm_grammarParser::T__28);
-    setState(148);
-    for_decl();
-    setState(149);
-    match(asm_grammarParser::T__29);
-    setState(150);
-    for_end();
-    setState(151);
-    match(asm_grammarParser::T__29);
+    setState(153);
+    match(asm_grammarParser::T__27);
     setState(154);
+    for_decl();
+    setState(155);
+    match(asm_grammarParser::T__28);
+    setState(156);
+    for_end();
+    setState(157);
+    match(asm_grammarParser::T__28);
+    setState(160);
     _errHandler->sync(this);
-    switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 5, _ctx)) {
+    switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 6, _ctx)) {
     case 1: {
-      setState(152);
+      setState(158);
       for_incr();
       break;
     }
 
     case 2: {
-      setState(153);
+      setState(159);
       for_dec();
       break;
     }
@@ -1937,14 +2038,14 @@ asm_grammarParser::For_blockContext* asm_grammarParser::for_block() {
     default:
       break;
     }
-    setState(156);
+    setState(162);
+    match(asm_grammarParser::T__29);
+    setState(163);
     match(asm_grammarParser::T__30);
-    setState(157);
-    match(asm_grammarParser::T__31);
-    setState(158);
+    setState(164);
     code();
-    setState(159);
-    match(asm_grammarParser::T__32);
+    setState(165);
+    match(asm_grammarParser::T__31);
    
   }
   catch (RecognitionException &e) {
@@ -1993,7 +2094,7 @@ std::any asm_grammarParser::For_incrContext::accept(tree::ParseTreeVisitor *visi
 
 asm_grammarParser::For_incrContext* asm_grammarParser::for_incr() {
   For_incrContext *_localctx = _tracker.createInstance<For_incrContext>(_ctx, getState());
-  enterRule(_localctx, 42, asm_grammarParser::RuleFor_incr);
+  enterRule(_localctx, 44, asm_grammarParser::RuleFor_incr);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -2004,11 +2105,11 @@ asm_grammarParser::For_incrContext* asm_grammarParser::for_incr() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(161);
+    setState(167);
     match(asm_grammarParser::Identifier);
 
-    setState(162);
-    match(asm_grammarParser::T__33);
+    setState(168);
+    match(asm_grammarParser::T__32);
    
   }
   catch (RecognitionException &e) {
@@ -2057,7 +2158,7 @@ std::any asm_grammarParser::For_decContext::accept(tree::ParseTreeVisitor *visit
 
 asm_grammarParser::For_decContext* asm_grammarParser::for_dec() {
   For_decContext *_localctx = _tracker.createInstance<For_decContext>(_ctx, getState());
-  enterRule(_localctx, 44, asm_grammarParser::RuleFor_dec);
+  enterRule(_localctx, 46, asm_grammarParser::RuleFor_dec);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -2068,11 +2169,11 @@ asm_grammarParser::For_decContext* asm_grammarParser::for_dec() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(164);
+    setState(170);
     match(asm_grammarParser::Identifier);
 
-    setState(165);
-    match(asm_grammarParser::T__34);
+    setState(171);
+    match(asm_grammarParser::T__33);
    
   }
   catch (RecognitionException &e) {
@@ -2125,7 +2226,7 @@ std::any asm_grammarParser::For_declContext::accept(tree::ParseTreeVisitor *visi
 
 asm_grammarParser::For_declContext* asm_grammarParser::for_decl() {
   For_declContext *_localctx = _tracker.createInstance<For_declContext>(_ctx, getState());
-  enterRule(_localctx, 46, asm_grammarParser::RuleFor_decl);
+  enterRule(_localctx, 48, asm_grammarParser::RuleFor_decl);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -2136,11 +2237,11 @@ asm_grammarParser::For_declContext* asm_grammarParser::for_decl() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(167);
+    setState(173);
     match(asm_grammarParser::Identifier);
-    setState(168);
-    match(asm_grammarParser::T__35);
-    setState(169);
+    setState(174);
+    match(asm_grammarParser::T__34);
+    setState(175);
     match(asm_grammarParser::Integer);
    
   }
@@ -2198,7 +2299,7 @@ std::any asm_grammarParser::For_endContext::accept(tree::ParseTreeVisitor *visit
 
 asm_grammarParser::For_endContext* asm_grammarParser::for_end() {
   For_endContext *_localctx = _tracker.createInstance<For_endContext>(_ctx, getState());
-  enterRule(_localctx, 48, asm_grammarParser::RuleFor_end);
+  enterRule(_localctx, 50, asm_grammarParser::RuleFor_end);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -2209,11 +2310,11 @@ asm_grammarParser::For_endContext* asm_grammarParser::for_end() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(171);
+    setState(177);
     match(asm_grammarParser::Identifier);
-    setState(172);
+    setState(178);
     for_end_comp_type();
-    setState(173);
+    setState(179);
     match(asm_grammarParser::Integer);
    
   }
@@ -2259,7 +2360,7 @@ std::any asm_grammarParser::For_end_comp_typeContext::accept(tree::ParseTreeVisi
 
 asm_grammarParser::For_end_comp_typeContext* asm_grammarParser::for_end_comp_type() {
   For_end_comp_typeContext *_localctx = _tracker.createInstance<For_end_comp_typeContext>(_ctx, getState());
-  enterRule(_localctx, 50, asm_grammarParser::RuleFor_end_comp_type);
+  enterRule(_localctx, 52, asm_grammarParser::RuleFor_end_comp_type);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -2271,13 +2372,13 @@ asm_grammarParser::For_end_comp_typeContext* asm_grammarParser::for_end_comp_typ
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(175);
+    setState(181);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << asm_grammarParser::T__36)
+      ((1ULL << _la) & ((1ULL << asm_grammarParser::T__35)
+      | (1ULL << asm_grammarParser::T__36)
       | (1ULL << asm_grammarParser::T__37)
-      | (1ULL << asm_grammarParser::T__38)
-      | (1ULL << asm_grammarParser::T__39))) != 0))) {
+      | (1ULL << asm_grammarParser::T__38))) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -2332,7 +2433,7 @@ std::any asm_grammarParser::PragmaContext::accept(tree::ParseTreeVisitor *visito
 
 asm_grammarParser::PragmaContext* asm_grammarParser::pragma() {
   PragmaContext *_localctx = _tracker.createInstance<PragmaContext>(_ctx, getState());
-  enterRule(_localctx, 52, asm_grammarParser::RulePragma);
+  enterRule(_localctx, 54, asm_grammarParser::RulePragma);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -2343,9 +2444,9 @@ asm_grammarParser::PragmaContext* asm_grammarParser::pragma() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(177);
-    match(asm_grammarParser::T__40);
-    setState(178);
+    setState(183);
+    match(asm_grammarParser::T__39);
+    setState(184);
     match(asm_grammarParser::Identifier);
    
   }
@@ -2399,7 +2500,7 @@ std::any asm_grammarParser::Variable_declContext::accept(tree::ParseTreeVisitor 
 
 asm_grammarParser::Variable_declContext* asm_grammarParser::variable_decl() {
   Variable_declContext *_localctx = _tracker.createInstance<Variable_declContext>(_ctx, getState());
-  enterRule(_localctx, 54, asm_grammarParser::RuleVariable_decl);
+  enterRule(_localctx, 56, asm_grammarParser::RuleVariable_decl);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -2411,9 +2512,9 @@ asm_grammarParser::Variable_declContext* asm_grammarParser::variable_decl() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(180);
-    match(asm_grammarParser::T__41);
-    setState(181);
+    setState(186);
+    match(asm_grammarParser::T__40);
+    setState(187);
     _la = _input->LA(1);
     if (!(_la == asm_grammarParser::Register
 
@@ -2476,7 +2577,7 @@ std::any asm_grammarParser::Constant_declContext::accept(tree::ParseTreeVisitor 
 
 asm_grammarParser::Constant_declContext* asm_grammarParser::constant_decl() {
   Constant_declContext *_localctx = _tracker.createInstance<Constant_declContext>(_ctx, getState());
-  enterRule(_localctx, 56, asm_grammarParser::RuleConstant_decl);
+  enterRule(_localctx, 58, asm_grammarParser::RuleConstant_decl);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -2488,9 +2589,9 @@ asm_grammarParser::Constant_declContext* asm_grammarParser::constant_decl() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(183);
-    match(asm_grammarParser::T__42);
-    setState(184);
+    setState(189);
+    match(asm_grammarParser::T__41);
+    setState(190);
     _la = _input->LA(1);
     if (!(_la == asm_grammarParser::Register
 
@@ -2553,7 +2654,7 @@ std::any asm_grammarParser::Input_declContext::accept(tree::ParseTreeVisitor *vi
 
 asm_grammarParser::Input_declContext* asm_grammarParser::input_decl() {
   Input_declContext *_localctx = _tracker.createInstance<Input_declContext>(_ctx, getState());
-  enterRule(_localctx, 58, asm_grammarParser::RuleInput_decl);
+  enterRule(_localctx, 60, asm_grammarParser::RuleInput_decl);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -2565,9 +2666,9 @@ asm_grammarParser::Input_declContext* asm_grammarParser::input_decl() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(186);
-    match(asm_grammarParser::T__43);
-    setState(187);
+    setState(192);
+    match(asm_grammarParser::T__42);
+    setState(193);
     _la = _input->LA(1);
     if (!(_la == asm_grammarParser::Register
 
@@ -2630,7 +2731,7 @@ std::any asm_grammarParser::Output_declContext::accept(tree::ParseTreeVisitor *v
 
 asm_grammarParser::Output_declContext* asm_grammarParser::output_decl() {
   Output_declContext *_localctx = _tracker.createInstance<Output_declContext>(_ctx, getState());
-  enterRule(_localctx, 60, asm_grammarParser::RuleOutput_decl);
+  enterRule(_localctx, 62, asm_grammarParser::RuleOutput_decl);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -2642,9 +2743,9 @@ asm_grammarParser::Output_declContext* asm_grammarParser::output_decl() {
   });
   try {
     enterOuterAlt(_localctx, 1);
-    setState(189);
-    match(asm_grammarParser::T__44);
-    setState(190);
+    setState(195);
+    match(asm_grammarParser::T__43);
+    setState(196);
     _la = _input->LA(1);
     if (!(_la == asm_grammarParser::Register
 

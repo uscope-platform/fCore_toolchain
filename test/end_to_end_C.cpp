@@ -94,7 +94,7 @@ TEST(EndToEndC, end_to_end_intrinsics) {
     fcore_cc compiler(input_file, includes,true, 0);
     std::vector<uint32_t> result = compiler.get_hexfile(false);
 
-    std::vector<uint32_t> gold_standard = {0x944,0x26,0x42C80000, 0x40950, 0x0953};
+    std::vector<uint32_t> gold_standard = {0x944,0x26,0x42C80000, 0x40950, 0x0953, 0x2f959};
     ASSERT_EQ(result, gold_standard);
 }
 
@@ -117,7 +117,7 @@ TEST(EndToEndC, json_writing) {
 
     std::vector<uint32_t> compile_result = out["compiled_program"];
 
-    std::vector<uint32_t> gold_standard = { 0x944,0x26,0x42C80000, 0x40950, 0x0953};
+    std::vector<uint32_t> gold_standard = { 0x944,0x26,0x42C80000, 0x40950, 0x0953, 0x2f959};
 
     std::filesystem::remove(test_json);
 
