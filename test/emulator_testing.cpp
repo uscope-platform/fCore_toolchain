@@ -202,6 +202,26 @@ TEST(Emulator, emulator_stop) {
     ASSERT_EQ(memory[1], 0xc3fa8000);
 }
 
+
+
+TEST(Emulator, emulator_efi) {
+
+    nlohmann::json specs;
+    specs["efi_implementation"] = "efi_sort";
+
+    std::string input_file = "emu/test_efi.mem";
+    std::ifstream stream(input_file);
+    fcore_emu emu_engine(stream, bin_loader_mem_input);
+    emu_engine.set_specs(specs);
+    emu_engine.emulate_program();
+    std::vector<uint32_t> memory = emu_engine.get_memory_snapshot();
+    ASSERT_EQ(memory[7], 1);
+    ASSERT_EQ(memory[8], 0);
+    ASSERT_EQ(memory[9], 2);
+}
+
+
+
 TEST(Emulator, emulator_inputs) {
 
     std::string input_program = "emu/test_inputs.mem";

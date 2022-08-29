@@ -92,6 +92,9 @@ void fcore_emu::emulate_program() {
             }
             backend.set_outputs(outputs);
         }
+        if(run_specs.contains("efi_implementation")){
+            backend.set_efi_selector(run_specs["efi_implementation"]);
+        }
         backend.set_inputs(inputs);
         backend.run_program();
         std::shared_ptr<std::vector<uint32_t>> mem_ptr = backend.get_memory();

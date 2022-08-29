@@ -382,7 +382,7 @@ uint32_t emulator::execute_satn(uint32_t a, uint32_t b) {
 }
 
 void emulator::execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest) {
-    efi_implementation.emulate_efi("efi_sort", op_a, op_b, dest);
+    efi_implementation.emulate_efi(efi_selector, op_a, op_b, dest);
 }
 
 

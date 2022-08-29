@@ -19,14 +19,13 @@
 void efi_dispatcher::emulate_efi(const std::string& function, uint32_t op_a, uint32_t op_b, uint32_t dest) {
     if(function == "efi_sort"){
         efi_sort(op_a, op_b, dest);
+    } else {
+        throw std::runtime_error("ERROR: The emulator has encountered an EFI instruction, however no implementation was selected in the spec file");
     }
 }
 
 void efi_dispatcher::efi_sort(uint32_t op_a, uint32_t op_b, uint32_t dest) {
     std::vector<float> in;
-    for(int i = 0; i<op_b; i++){
-        in.push_back(uint32_to_float(memory->at(op_a+i)));
-    }
 
     bool descending_order  = memory->at(op_a) != 1;
     std::vector<cell> cells;
@@ -34,8 +33,8 @@ void efi_dispatcher::efi_sort(uint32_t op_a, uint32_t op_b, uint32_t dest) {
     idx.reserve(in.size());
     cells.reserve(in.size());
 
-    for (int i = 1; i < in.size(); i++) {
-        cells.emplace_back(in[i], i, descending_order);
+    for (int i = 1; i < op_b+1; i++) {
+        cells.emplace_back(uint32_to_float(memory->at(op_a+i)), i, descending_order);
     }
 
     std::sort(cells.begin(), cells.end());

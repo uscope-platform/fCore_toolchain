@@ -31,14 +31,13 @@ public:
     void run_program();
     void run_program_with_inputs(unsigned int rounds);
     void run_round();
+    void set_efi_selector(std::string sel){ efi_selector = std::move(sel);};
     std::shared_ptr<std::vector<uint32_t>> get_memory() { return memory;};
     std::unordered_map<int, std::vector<uint32_t>> get_outputs() { return outputs;};
 
     static uint32_t float_to_uint32(float f);
     static float uint32_to_float(uint32_t u);
 private:
-
-    std::vector<uint32_t> efi_sort(std::vector<float> &in, uint32_t dir);
 
     void run_instruction_by_type(const std::shared_ptr<ll_instruction_node>& node);
 
@@ -74,6 +73,7 @@ private:
 
     bool stop_requested;
 
+    std::string efi_selector;
     efi_dispatcher efi_implementation;
 
     std::shared_ptr<std::vector<uint32_t>> memory;
