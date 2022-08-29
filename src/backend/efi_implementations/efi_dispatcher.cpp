@@ -33,7 +33,7 @@ void efi_dispatcher::efi_sort(uint32_t op_a, uint32_t op_b, uint32_t dest) {
     idx.reserve(in.size());
     cells.reserve(in.size());
 
-    for (int i = 1; i < op_b+1; i++) {
+    for (int i = 1; i < op_b; i++) {
         cells.emplace_back(uint32_to_float(memory->at(op_a+i)), i, descending_order);
     }
 
