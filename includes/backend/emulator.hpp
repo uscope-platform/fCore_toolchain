@@ -17,7 +17,7 @@
 #define FCORE_TOOLCHAIN_EMULATOR_H
 
 #include <utility>
-
+#include "efi_implementations/efi_dispatcher.h"
 #include "data_structures/instruction_stream.hpp"
 #include "floating_point_v7_1_bitacc_cmodel.h"
 #include "fCore_isa.hpp"
@@ -31,7 +31,7 @@ public:
     void run_program();
     void run_program_with_inputs(unsigned int rounds);
     void run_round();
-    std::vector<uint32_t> get_memory() { return memory;};
+    std::shared_ptr<std::vector<uint32_t>> get_memory() { return memory;};
     std::unordered_map<int, std::vector<uint32_t>> get_outputs() { return outputs;};
 
     static uint32_t float_to_uint32(float f);
@@ -74,7 +74,9 @@ private:
 
     bool stop_requested;
 
-    std::vector<uint32_t> memory;
+    efi_dispatcher efi_implementation;
+
+    std::shared_ptr<std::vector<uint32_t>> memory;
     std::vector<int> output_idx;
     std::unordered_map<int, std::vector<uint32_t>> outputs{};
     std::vector<std::pair<unsigned int, std::vector<uint32_t>>> inputs;

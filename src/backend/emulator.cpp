@@ -17,9 +17,10 @@
 
 #include <utility>
 
-emulator::emulator(instruction_stream &s) :memory(2<< (fcore_register_address_width-1), 0) {
+emulator::emulator(instruction_stream &s) {
     stream = s;
-
+    memory = std::make_shared<std::vector<uint32_t>>(2<< (fcore_register_address_width-1), 0);
+    efi_implementation.set_memory(memory);
     xip_fpo_init2(xil_a, 8, 24);
     xip_fpo_init2(xil_b, 8, 24);
     xip_fpo_init2(xil_res, 8, 24);
@@ -49,11 +50,11 @@ void emulator::run_program() {
 void emulator::run_program_with_inputs(unsigned int rounds) {
     for(unsigned int i = 0; i<rounds; i++){
         for(auto item:inputs){
-            memory[item.first] = item.second[i];
+            memory->at(item.first) = item.second[i];
         }
         run_round();
         for (auto &item:output_idx) {
-            outputs[item].push_back(memory[item]);
+            outputs[item].push_back(memory->at(item));
         }
     }
 }
@@ -100,36 +101,36 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
     uint32_t op_b = std::stoul(raw_op_b.substr(1, raw_op_b.size()-1));
 
     if(opcode == "add"){
-        memory[dest] = execute_add(memory[op_a], memory[op_b]);
+        memory->at(dest) = execute_add(memory->at(op_a), memory->at(op_b));
     } else if (opcode == "sub"){
-        memory[dest] = execute_sub(memory[op_a], memory[op_b]);
+        memory->at(dest) = execute_sub(memory->at(op_a), memory->at(op_b));
     } else if (opcode == "mul"){
-        memory[dest] = execute_mul(memory[op_a], memory[op_b]);
+        memory->at(dest) = execute_mul(memory->at(op_a), memory->at(op_b));
     } else if (opcode == "and"){
-        memory[dest] = execute_and(memory[op_a], memory[op_b]);
+        memory->at(dest) = execute_and(memory->at(op_a), memory->at(op_b));
     } else if (opcode == "or"){
-        memory[dest] = execute_or(memory[op_a], memory[op_b]);
+        memory->at(dest) = execute_or(memory->at(op_a), memory->at(op_b));
     } else if (opcode == "xor"){
-        memory[dest] = execute_xor(memory[op_a], memory[op_b]);
+        memory->at(dest) = execute_xor(memory->at(op_a), memory->at(op_b));
     } else if (opcode == "satp"){
-        memory[dest] = execute_satp(memory[op_a], memory[op_b]);
+        memory->at(dest) = execute_satp(memory->at(op_a), memory->at(op_b));
     } else if (opcode == "satn"){
-        memory[dest] = execute_satn(memory[op_a], memory[op_b]);
+        memory->at(dest) = execute_satn(memory->at(op_a), memory->at(op_b));
     } else if (opcode == "beq"){
-        memory[dest] = execute_compare_eq(memory[op_a], memory[op_b]);
+        memory->at(dest) = execute_compare_eq(memory->at(op_a), memory->at(op_b));
     } else if (opcode == "bne"){
-        memory[dest] = execute_compare_ne(memory[op_a], memory[op_b]);
+        memory->at(dest) = execute_compare_ne(memory->at(op_a), memory->at(op_b));
     } else if (opcode == "bgt"){
-        memory[dest] = execute_compare_gt(memory[op_a], memory[op_b]);
+        memory->at(dest) = execute_compare_gt(memory->at(op_a), memory->at(op_b));
     } else if (opcode == "ble"){
-        memory[dest] = execute_compare_le(memory[op_a], memory[op_b]);
+        memory->at(dest) = execute_compare_le(memory->at(op_a), memory->at(op_b));
     } else if (opcode == "efi"){
         execute_efi(op_a, op_b, dest);
     } else if (opcode == "bset"){
-        auto res = execute_bset(memory[op_a], memory[op_b], memory[dest]);
-        memory[op_a] = res;
+        auto res = execute_bset(memory->at(op_a), memory->at(op_b), memory->at(dest));
+        memory->at(op_a) = res;
     } else if (opcode == "bsel"){
-        memory[dest] = execute_bsel(memory[op_a], memory[op_b]);
+        memory->at(dest) = execute_bsel(memory->at(op_a), memory->at(op_b));
     } else {
         throw std::runtime_error("EMULATION ERROR: Encountered the following unimplemented operation: " + opcode);
     }
@@ -155,17 +156,17 @@ void emulator::run_conversion_instruction(const std::shared_ptr<ll_conversion_in
     std::string raw_src = node->get_source()->get_name();
     uint32_t src = std::stoul(raw_src.substr(1, raw_src.size()-1));
     if(opcode == "rec"){
-        memory[dest] = execute_rec(memory[src]);
+        memory->at(dest) = execute_rec(memory->at(src));
     } else if(opcode == "fti"){
-        memory[dest] = execute_fti(memory[src]);
+        memory->at(dest) = execute_fti(memory->at(src));
     } else if(opcode == "itf"){
-        memory[dest] = execute_itf(memory[src]);
+        memory->at(dest) = execute_itf(memory->at(src));
     } else if (opcode == "not"){
-        memory[dest] = execute_not(memory[src]);
+        memory->at(dest) = execute_not(memory->at(src));
     } else if(opcode == "abs") {
-        memory[dest] = execute_abs(memory[src]);
+        memory->at(dest) = execute_abs(memory->at(src));
     } else if(opcode == "popcnt") {
-        memory[dest] = execute_popcnt(memory[src]);
+        memory->at(dest) = execute_popcnt(memory->at(src));
         int i = 0;
     } else {
             throw std::runtime_error("EMULATION ERROR: Encountered the following unimplemented operation: " + opcode);
@@ -181,7 +182,7 @@ void emulator::run_load_constant_instruction(const std::shared_ptr<ll_load_const
     std::string raw_dest = node->get_destination()->get_name();
     uint32_t dest = std::stoul(raw_dest.substr(1, raw_dest.size()-1));
 
-    memory[dest] = const_val;
+    memory->at(dest) = const_val;
 }
 
 uint32_t emulator::execute_add(uint32_t a, uint32_t b) {
@@ -380,62 +381,10 @@ uint32_t emulator::execute_satn(uint32_t a, uint32_t b) {
     return float_to_uint32(raw_res);
 }
 
-
-
-class cell {
-public:
-    cell(double v, int s, bool o);
-    bool operator <(const cell &b) const;
-    double voltage;
-    float idx;  // Does not participate in comparisons
-    bool order;
-};
-
-
-cell::cell(double v, int s, bool o) {
-    voltage = v;
-    idx = s;
-    order = o;
-}
-
-bool cell::operator<(const cell &b) const {
-    if(order)
-        return voltage > b.voltage;
-    else
-        return b.voltage > voltage;
-}
-
 void emulator::execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest) {
-    std::vector<float> in;
-    for(int i = 0; i<op_b; i++){
-        in.push_back(uint32_to_float(memory[op_a+i]));
-    }
-
-    std::vector<uint32_t> out = efi_sort(in, memory[op_a]);
-    for (int i = 0; i < out.size(); ++i) {
-        memory[dest+i] = out[i];
-    }
+    efi_implementation.emulate_efi("efi_sort", op_a, op_b, dest);
 }
 
-std::vector<uint32_t> emulator::efi_sort(std::vector<float> &in, uint32_t dir) {
-    bool descending_order  = dir != 1;
-    std::vector<cell> cells;
-    std::vector<uint32_t> idx;
-    idx.reserve(in.size());
-    cells.reserve(in.size());
-
-    for (int i = 1; i < in.size(); i++) {
-        cells.emplace_back(in[i], i, descending_order);
-    }
-
-    std::sort(cells.begin(), cells.end());
-
-
-    for(auto &item:cells){
-        idx.push_back((uint32_t)(item.idx-1));
-    }
-    return idx;
-}
 
 uint32_t emulator::float_to_uint32(float f) {
     uint32_t ret;

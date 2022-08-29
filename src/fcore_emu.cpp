@@ -94,7 +94,9 @@ void fcore_emu::emulate_program() {
         }
         backend.set_inputs(inputs);
         backend.run_program();
-        memory = backend.get_memory();
+        std::shared_ptr<std::vector<uint32_t>> mem_ptr = backend.get_memory();
+
+        memory = *backend.get_memory();
         outputs = backend.get_outputs();
     } catch(std::runtime_error &e){
         error_occurred = true;
