@@ -361,3 +361,22 @@ TEST(HlPassesTest, essential_variable_initialization) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+
+
+TEST(HlPassesTest, negative_leading_sum) {
+
+    std::string input_file = "c_e2e/test_negative_leading_sum.c";
+
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(input_file, includes, true, 0);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x21002, 0xe1823};
+
+    ASSERT_EQ(gold_standard, result);
+
+}

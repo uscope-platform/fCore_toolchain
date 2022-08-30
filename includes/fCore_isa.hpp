@@ -126,6 +126,8 @@ static std::map <std::string, isa_instruction_type>  fcore_op_types {
     std::make_pair("popcnt", isa_conversion_instruction),
     std::make_pair("bset",isa_register_instruction),
     std::make_pair("bsel",isa_register_instruction),
+    std::make_pair("mov", isa_pseudo_instruction),
+    std::make_pair("neg", isa_pseudo_instruction)
 };
 
 
@@ -171,7 +173,8 @@ static std::map <expression_type_t, bool> fcore_implemented_operations {
 };
 
 static std::map <std::string, std::string>  fcore_pseudo_op {
-        std::make_pair ("mov", "add")
+        std::make_pair("mov", "add"),
+        std::make_pair("neg", "sub")
 };
 
 

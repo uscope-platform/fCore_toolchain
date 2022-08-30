@@ -32,6 +32,10 @@ std::shared_ptr<ll_ast_node> pseudo_instructions_pass::process_leaf(std::shared_
                 arguments.push_back(arguments[1]);
                 variable zero("r0");
                 arguments[1] = std::make_shared<variable>(zero);
+            } else if(opcode == "neg"){
+                variable zero("r0");
+                arguments.insert(arguments.begin(), std::make_shared<variable>(zero));
+                arguments.push_back(arguments[1]);
 
             }
 

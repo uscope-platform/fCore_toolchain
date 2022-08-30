@@ -31,7 +31,7 @@ high_level_ast_lowering::high_level_ast_lowering() {
             {expr_xor_b, "xor"},
             {expr_eq, "beq"},
             {expr_neq, "bne"},
-            {expr_neg, "sub"},
+            {expr_neg, "neg"},
             {expr_lt, "bgt"},
             {expr_gt, "bgt"},
             {expr_lte, "ble"},
@@ -208,6 +208,7 @@ high_level_ast_lowering::create_ast_node(isa_instruction_type t, std::vector<std
             retval = std::make_shared<ll_independent_inst_node>(op);
             break;
         case isa_pseudo_instruction:
+            retval = std::make_shared<ll_pseudo_instr_node>(op, args);
             break;
     }
     return retval;
