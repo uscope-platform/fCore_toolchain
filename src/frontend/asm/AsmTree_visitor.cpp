@@ -140,7 +140,8 @@ void AsmTree_visitor::exitLoad_instr(asm_parser::asm_grammarParser::Load_instrCo
     if(ctx->FloatingPointLiteral() != nullptr){
         immediate = std::make_shared<variable>("constant", std::stof(ctx->FloatingPointLiteral()->getText()));
     } else if(ctx->integer_const() != nullptr){
-        immediate = std::make_shared<variable>("constant", std::stoi(ctx->integer_const()->getText(), nullptr, 0));
+        uint32_t const_val =  std::stoul(ctx->integer_const()->getText(), nullptr, 0);
+        immediate = std::make_shared<variable>("constant",*(int*)&const_val);
     }
 
 
