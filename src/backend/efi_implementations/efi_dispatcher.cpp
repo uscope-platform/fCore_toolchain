@@ -19,7 +19,9 @@
 void efi_dispatcher::emulate_efi(const std::string& function, uint32_t op_a, uint32_t op_b, uint32_t dest) {
     if(function == "efi_sort"){
         efi_sort(op_a, op_b, dest);
-    } else {
+    } else if(function =="efi_trig") {
+        efi_trig(op_a, op_b, dest);
+    } else{
         throw std::runtime_error("ERROR: The emulator has encountered an EFI instruction, however no implementation was selected in the spec file");
     }
 }
@@ -61,5 +63,24 @@ float efi_dispatcher::uint32_to_float(uint32_t u) {
 
 void efi_dispatcher::efi_trig(uint32_t op_a, uint32_t op_b, uint32_t dest) {
 
+    bool opcode  = memory->at(op_a);
+
+    uint32_t theta = memory->at(op_a+1);
+
+    double angle_deg = theta/65536.0*360.0;
+
+    double angle_rad = angle_deg*(M_PI/180);
+    double quant_angle = 1/512.0*(floor(angle_rad/(1/512.0))+0.5);
+    float raw_result;
+    if(opcode== 0){
+        raw_result = (float)sin(quant_angle);
+    } else{
+        raw_result = (float)cos(quant_angle);
+    }
+    float scaled_res = raw_result*32768;
+    int result = round(scaled_res);
+    memory->at(dest+1) = result;
 }
+
+
 

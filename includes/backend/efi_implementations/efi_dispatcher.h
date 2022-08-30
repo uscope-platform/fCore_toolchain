@@ -19,6 +19,7 @@
 
 #include <string>
 #include <memory>
+#include <cmath>
 #include <utility>
 #include <vector>
 #include <cstring>
