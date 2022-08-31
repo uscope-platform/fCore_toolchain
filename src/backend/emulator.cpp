@@ -100,37 +100,40 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
     std::string raw_op_b = node->get_operand_b()->get_name();
     uint32_t op_b = std::stoul(raw_op_b.substr(1, raw_op_b.size()-1));
 
+    auto a = memory->at(op_a);
+    auto b = memory->at(op_b);
+
     if(opcode == "add"){
-        memory->at(dest) = execute_add(memory->at(op_a), memory->at(op_b));
+        memory->at(dest) = execute_add(a, b);
     } else if (opcode == "sub"){
-        memory->at(dest) = execute_sub(memory->at(op_a), memory->at(op_b));
+        memory->at(dest) = execute_sub(a, b);
     } else if (opcode == "mul"){
-        memory->at(dest) = execute_mul(memory->at(op_a), memory->at(op_b));
+        memory->at(dest) = execute_mul(a, b);
     } else if (opcode == "and"){
-        memory->at(dest) = execute_and(memory->at(op_a), memory->at(op_b));
+        memory->at(dest) = execute_and(a, b);
     } else if (opcode == "or"){
-        memory->at(dest) = execute_or(memory->at(op_a), memory->at(op_b));
+        memory->at(dest) = execute_or(a, b);
     } else if (opcode == "xor"){
-        memory->at(dest) = execute_xor(memory->at(op_a), memory->at(op_b));
+        memory->at(dest) = execute_xor(a, b);
     } else if (opcode == "satp"){
-        memory->at(dest) = execute_satp(memory->at(op_a), memory->at(op_b));
+        memory->at(dest) = execute_satp(a, b);
     } else if (opcode == "satn"){
-        memory->at(dest) = execute_satn(memory->at(op_a), memory->at(op_b));
+        memory->at(dest) = execute_satn(a, b);
     } else if (opcode == "beq"){
-        memory->at(dest) = execute_compare_eq(memory->at(op_a), memory->at(op_b));
+        memory->at(dest) = execute_compare_eq(a, b);
     } else if (opcode == "bne"){
-        memory->at(dest) = execute_compare_ne(memory->at(op_a), memory->at(op_b));
+        memory->at(dest) = execute_compare_ne(a, b);
     } else if (opcode == "bgt"){
-        memory->at(dest) = execute_compare_gt(memory->at(op_a), memory->at(op_b));
+        memory->at(dest) = execute_compare_gt(a, b);
     } else if (opcode == "ble"){
-        memory->at(dest) = execute_compare_le(memory->at(op_a), memory->at(op_b));
+        memory->at(dest) = execute_compare_le(a, b);
     } else if (opcode == "efi"){
         execute_efi(op_a, op_b, dest);
     } else if (opcode == "bset"){
         auto res = execute_bset(memory->at(op_a), memory->at(op_b), memory->at(dest));
         memory->at(op_a) = res;
     } else if (opcode == "bsel"){
-        memory->at(dest) = execute_bsel(memory->at(op_a), memory->at(op_b));
+        memory->at(dest) = execute_bsel(a, b);
     } else {
         throw std::runtime_error("EMULATION ERROR: Encountered the following unimplemented operation: " + opcode);
     }
@@ -186,8 +189,10 @@ void emulator::run_load_constant_instruction(const std::shared_ptr<ll_load_const
 }
 
 uint32_t emulator::execute_add(uint32_t a, uint32_t b) {
-    if(b==0){ // There is a bug in the library that gives the wrong result for x+0
+    if(b==0){ // I must be doing something wrong... investigate why these are necessary
         return a;
+    } else if(a==0){
+        return b;
     }
     xip_fpo_set_flt(xil_a, uint32_to_float(a));
     xip_fpo_set_flt(xil_b, uint32_to_float(b));
@@ -197,7 +202,8 @@ uint32_t emulator::execute_add(uint32_t a, uint32_t b) {
         throw std::runtime_error("An exception occurred in the addition of"+ std::to_string(a) + " and " + std::to_string(b));
     }
 
-    return float_to_uint32(xip_fpo_get_flt(xil_res));
+    auto fv = xip_fpo_get_flt(xil_res);
+    return float_to_uint32(fv);
 }
 
 uint32_t emulator::execute_sub(uint32_t a, uint32_t b) {
@@ -245,19 +251,19 @@ uint32_t emulator::execute_fti(uint32_t a) {
     if ( exc != 0) {
         throw std::runtime_error("An exception occurred during the conversion of "+ std::to_string(a) + "to integer from float");
     }
-    return xip_fpo_fix_get_ui(xil_a_fixed_point);
+    return (uint32_t) xip_fpo_fix_get_si(xil_a_fixed_point);
 }
 
 
 uint32_t emulator::execute_itf(uint32_t a) {
-    xip_fpo_fix_set_ui(xil_a_fixed_point, a);
+    xip_fpo_fix_set_si(xil_a_fixed_point, (int32_t)a);
     xip_fpo_exc_t exc = xip_fpo_fixtoflt(xil_res, xil_a_fixed_point);
 
     if ( exc != 0) {
         throw std::runtime_error("An exception occurred during the conversion of "+ std::to_string(a) + "to float from integer");
     }
-
-    return float_to_uint32(xip_fpo_get_flt(xil_res));
+    auto fv = xip_fpo_get_flt(xil_res);
+    return float_to_uint32(fv);
 }
 
 uint32_t emulator::execute_compare_gt(uint32_t a, uint32_t b) {

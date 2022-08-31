@@ -61,9 +61,17 @@ float efi_dispatcher::uint32_to_float(uint32_t u) {
 }
 
 
+
+template <typename T, unsigned B>
+inline T signextend(const T x)
+{
+    struct {T x:B;} s;
+    return s.x = x;
+}
+
 void efi_dispatcher::efi_trig(uint32_t op_a, uint32_t op_b, uint32_t dest) {
 
-    bool opcode  = memory->at(op_a);
+    int opcode  = memory->at(op_a);
 
     uint32_t theta = memory->at(op_a+1);
 
@@ -79,7 +87,7 @@ void efi_dispatcher::efi_trig(uint32_t op_a, uint32_t op_b, uint32_t dest) {
     }
     float scaled_res = raw_result*32768;
     int result = round(scaled_res);
-    memory->at(dest+1) = result;
+    memory->at(dest) = result;
 }
 
 
