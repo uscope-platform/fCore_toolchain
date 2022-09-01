@@ -380,3 +380,21 @@ TEST(HlPassesTest, negative_leading_sum) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+
+TEST(HlPassesTest, function_vars_mangling) {
+
+    std::string input_file = "c_e2e/test_function_vars_mangling.c";
+
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(input_file, includes, true, 0);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x66, 4, 0x81843, 0x66, 2, 0xa1823, 0x62881, 0x140861};
+
+    ASSERT_EQ(gold_standard, result);
+
+}

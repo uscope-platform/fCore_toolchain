@@ -869,7 +869,6 @@ void asm_grammarParser::Load_instrContext::enterRule(tree::ParseTreeListener *li
 void asm_grammarParser::Load_instrContext::exitRule(tree::ParseTreeListener *listener) {
   auto parserListener = dynamic_cast<asm_grammarListener *>(listener);
   if (parserListener != nullptr)
-
     parserListener->exitLoad_instr(this);
 }
 

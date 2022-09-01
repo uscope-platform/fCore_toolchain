@@ -231,7 +231,7 @@ TEST(HlPassesTest, test_operating_assignments_implementation) {
     ASSERT_EQ(*result, *gold_standard);
 }
 
-TEST(HlPassesTest, functionInlining) {
+TEST(HlPassesTest, function_inlining) {
 
     std::shared_ptr<hl_ast_node> input_root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
     std::vector<std::shared_ptr<hl_ast_node>> function_body;
@@ -318,7 +318,7 @@ TEST(HlPassesTest, functionInlining) {
     input_root->add_content(function);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{4,5,6}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{4,5,6,7}, 0);
 
     manager.run_morphing_passes(input_root);
 
@@ -327,8 +327,8 @@ TEST(HlPassesTest, functionInlining) {
     std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
     // CALL BODY
-    var = std::make_shared<variable>("c");
-    def = std::make_shared<hl_definition_node>("c", c_type_int, var);
+    var = std::make_shared<variable>("_fcmglr_function_add_1_c");
+    def = std::make_shared<hl_definition_node>("_fcmglr_function_add_1_c", c_type_int, var);
     std::shared_ptr<hl_expression_node> exadd = std::make_shared<hl_expression_node>(expr_add);
 
     var = std::make_shared<variable>("constant",2);
@@ -349,7 +349,7 @@ TEST(HlPassesTest, functionInlining) {
 
     exadd = std::make_shared<hl_expression_node>(expr_add);
 
-    var = std::make_shared<variable>("c");
+    var = std::make_shared<variable>("_fcmglr_function_add_1_c");
     op_1 = std::make_shared<hl_ast_operand>(var);
 
     var = std::make_shared<variable>("t");
@@ -382,7 +382,7 @@ TEST(HlPassesTest, function_elimination) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,7,8,9,11}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,8,9,10,12}, 0);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> raw_result =parser.AST;
@@ -440,7 +440,7 @@ TEST(HlPassesTest, simple_normalization) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,7,8,9,11}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,8,9,10,12}, 0);
     manager.run_morphing_passes(parser.AST);
 
     normalization_pass p;
@@ -503,7 +503,7 @@ TEST(HlPassesTest, hl_ast_lowering) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,11}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,8,9,10,12}, 0);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -548,7 +548,7 @@ TEST(HlPassesTest, loop_unrolling_array) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,10}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,11}, 0);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -725,7 +725,7 @@ TEST(HlPassesTest, function_return_inlining) {
 
     std::shared_ptr<variable> var = std::make_shared<variable>("inlined_variable_0");
     std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("inlined_variable_0", c_type_float, var);
-    var = std::make_shared<variable>("c", 807.000977f);
+    var = std::make_shared<variable>("_fcmglr_function_inlining_target_c", 807.000977f);
     std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
     def->set_scalar_initializer(op);
     gold_standard->add_content(def);
@@ -789,7 +789,7 @@ TEST(HlPassesTest, complex_normalization) {
 
     input_root->add_content(expr_2);
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{11}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{12}, 0);
     manager.run_morphing_passes(input_root);
 
 
@@ -845,7 +845,7 @@ TEST(HlPassesTest, dead_load_elimination) {
     input_root->add_content(exp);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{14}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{15}, 0);
     manager.run_morphing_passes(input_root);
 
 
@@ -893,8 +893,8 @@ TEST(HlPassesTest, nested_function_inlining) {
     exp_add->set_lhs(in_1_op);
 
 
-    var = std::make_shared<variable>("out");
-    std::shared_ptr<hl_definition_node> def_0 = std::make_shared<hl_definition_node>("out", c_type_float, var);
+    var = std::make_shared<variable>("_fcmglr_function_level_2_out");
+    std::shared_ptr<hl_definition_node> def_0 = std::make_shared<hl_definition_node>("_fcmglr_function_level_2_out", c_type_float, var);
     def_0->set_scalar_initializer(exp_add);
     gold_standard->add_content(def_0);
 
@@ -905,7 +905,7 @@ TEST(HlPassesTest, nested_function_inlining) {
     var = std::make_shared<variable>("inlined_variable_0");
     std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("inlined_variable_0", c_type_int, var);
 
-    std::shared_ptr<variable> var_const = std::make_shared<variable>("constant", 120);
+    std::shared_ptr<variable> var_const = std::make_shared<variable>("_fcmglr_function_level_2_constant", 120);
     std::shared_ptr<hl_ast_operand> const_op = std::make_shared<hl_ast_operand>(var_const);
     def_1->set_scalar_initializer(const_op);
 
@@ -916,7 +916,7 @@ TEST(HlPassesTest, nested_function_inlining) {
     ///                             SATURATE                                ///
     ///////////////////////////////////////////////////////////////////////////
 
-    var = std::make_shared<variable>("out");
+    var = std::make_shared<variable>("_fcmglr_function_level_2_out");
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
     var = std::make_shared<variable>("inlined_variable_0");
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
