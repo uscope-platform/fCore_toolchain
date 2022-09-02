@@ -8,3 +8,5 @@ cmake-build-release/
 cmake-build-debug-coverage/
 
 dist/
+
+cmake-build-debug-coverage-1/
