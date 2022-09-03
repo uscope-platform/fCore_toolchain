@@ -26,6 +26,7 @@ fcore_emu::fcore_emu(std::istream &input, bin_loader_input_type_t in_type) {
 
         std::unordered_map<std::string, std::shared_ptr<variable>> iom;
         stream_pass_manager sman(iom,0);
+        sman.set_enabled_passes({false, true, true, true});
         program_stream = sman.process_stream(program_stream);
 
     } catch(std::runtime_error &e){

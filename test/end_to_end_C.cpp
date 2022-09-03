@@ -398,3 +398,21 @@ TEST(HlPassesTest, function_vars_mangling) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+
+TEST(HlPassesTest, constant_merging) {
+
+    std::string input_file = "c_e2e/test_constant_merging.c";
+
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(input_file, includes, true, 0);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x26, 0x42340000,  0x180943, 0x1a0963};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
