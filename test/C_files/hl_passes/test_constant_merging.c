@@ -24,4 +24,6 @@ int main(){
     for(int i =0; i<2; ++i){
         b[i] = a[i]*c;
     }
+
+
 }

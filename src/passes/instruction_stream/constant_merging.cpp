@@ -17,10 +17,11 @@
 
 constant_merging::constant_merging() : stream_pass_base("constant merging pass"){
     delete_intercalated_const = false;
+    idx = 0;
 }
 
 std::shared_ptr<ll_instruction_node> constant_merging::apply_pass(std::shared_ptr<ll_instruction_node> element) {
-
+    idx++;
     switch (element->get_type()) {
         case isa_register_instruction:
             return merge_register_inst(std::static_pointer_cast<ll_register_instr_node>(element));
@@ -42,13 +43,14 @@ std::shared_ptr<ll_instruction_node> constant_merging::apply_pass(std::shared_pt
 std::shared_ptr<ll_instruction_node> constant_merging::merge_register_inst(const std::shared_ptr<ll_register_instr_node> &instr) {
     std::vector<std::shared_ptr<variable>> new_args;
     auto op = instr->get_operand_a();
-    if(op->is_constant()){
+    if(op->is_constant() || processed_constants.contains(op->get_name())){
         new_args.push_back(get_merged_constant(op));
     } else{
         new_args.push_back(op);
     }
+
     op = instr->get_operand_b();
-    if(instr->get_operand_b()->is_constant()){
+    if(instr->get_operand_b()->is_constant() || processed_constants.contains(op->get_name())){
        new_args.push_back(get_merged_constant(op));
     } else{
        new_args.push_back(op);
@@ -61,7 +63,7 @@ std::shared_ptr<ll_instruction_node> constant_merging::merge_register_inst(const
 std::shared_ptr<ll_instruction_node> constant_merging::merge_conv_instr(const std::shared_ptr<ll_conversion_instr_node> &instr) {
     std::vector<std::shared_ptr<variable>> new_args;
     auto op = instr->get_source();
-    if(op->is_constant()){
+    if(op->is_constant() || processed_constants.contains(op->get_name())){
         new_args.push_back(get_merged_constant(op));
     } else{
         new_args.push_back(op);
@@ -79,21 +81,24 @@ std::shared_ptr<ll_instruction_node> constant_merging::merge_load_const_instr(co
         return instr;
     }
 
-
     if(instr->is_float()){
         if(float_const_map.contains(instr->get_constant_f())){
             ret = nullptr;
+            reassignments_map[instr->get_destination()->get_name()] = float_const_map[instr->get_constant_f()];
             delete_intercalated_const = true;
         } else {
-            float_const_map[instr->get_constant_f()] = instr->get_constant_variable();
+            float_const_map[instr->get_constant_f()] = instr->get_destination();
+            reassignments_map[instr->get_destination()->get_name()] = instr->get_destination();
             ret = instr;
         }
     } else{
         if(int_const_map.contains(instr->get_constant_i())){
             ret = nullptr;
+            reassignments_map[instr->get_destination()->get_name()] = int_const_map[instr->get_constant_i()];
             delete_intercalated_const = true;
         } else {
-            int_const_map[instr->get_constant_i()] = instr->get_constant_variable();
+            int_const_map[instr->get_constant_i()] = instr->get_destination();
+            reassignments_map[instr->get_destination()->get_name()] = instr->get_destination();
             ret = instr;
         }
     }
@@ -103,16 +108,23 @@ std::shared_ptr<ll_instruction_node> constant_merging::merge_load_const_instr(co
 
 std::shared_ptr<ll_instruction_node>
 constant_merging::merge_interc_const(const std::shared_ptr<ll_intercalated_const_instr_node> &instr) {
-    if(!delete_intercalated_const)
-       return instr;
-    else
+    if(!delete_intercalated_const){
+        return instr;
+    } else {
+        delete_intercalated_const = false;
         return nullptr;
+    }
+
 }
 
 std::shared_ptr<variable> constant_merging::get_merged_constant(std::shared_ptr<variable> v) {
     auto var_name = v->get_name();
-    if(~iom_constants.contains(var_name) & ~processed_constants.contains(var_name)){
+    if(!(iom_constants.contains(var_name) || processed_constants.contains(var_name))){
         return v;
+    }
+    if(reassignments_map.contains(var_name)){
+        auto reass = reassignments_map[var_name];
+        return reassignments_map[var_name];
     }
     if(v->is_float()) {
         return float_const_map[v->get_const_f()];
