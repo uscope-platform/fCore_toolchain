@@ -20,12 +20,12 @@ stream_pass_manager::stream_pass_manager(std::unordered_map<std::string, std::sh
     iom_map = iom;
     dump_ast_level = dal;
     std::shared_ptr<variable_map> var_map = std::make_shared<variable_map>();
-
     passes.push_back(std::make_shared<constant_merging>());
     passes.push_back(std::make_shared<variable_mapping>(var_map));
     passes.push_back(std::make_shared<variable_lifetime_mapping>(var_map));
     passes.push_back(std::make_shared<register_allocation>(var_map, iom_map));
-    enabled_passes = {true, true, true, true};
+    passes.push_back(std::make_shared<zero_assignment_removal_pass>());
+    enabled_passes = {true, true, true, true, true};
 
 }
 

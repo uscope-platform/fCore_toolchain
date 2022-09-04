@@ -40,7 +40,7 @@ for( auto&item:iom_map){
 
 //exclude form allocation pool the inputs and outputs
 for(auto &item: *var_map){
-    unsigned int bound_reg = item.second->get_bound_reg();
+    int bound_reg = item.second->get_bound_reg();
     if(bound_reg>0){
         used[bound_reg] = true;
     }
@@ -58,7 +58,7 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
         std::smatch m;
         std::string s = item->to_str();
         std::regex_match(s, m, re);
-        if(item->get_bound_reg() != 0){
+        if(item->get_bound_reg() != -1){
             register_mapping[item->to_str()] = var_map->at("r"+std::to_string(item->get_bound_reg()));
             item = register_mapping[item->to_str()];
         } else{

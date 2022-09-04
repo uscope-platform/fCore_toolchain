@@ -27,6 +27,7 @@
 #include "passes/instruction_stream/variable_mapping.hpp"
 #include "passes/instruction_stream/register_allocation.hpp"
 #include "passes/instruction_stream/constant_merging.hpp"
+#include "passes/instruction_stream/zero_assignment_removal_pass.hpp"
 
 class stream_pass_manager {
 public:

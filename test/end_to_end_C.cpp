@@ -416,3 +416,22 @@ TEST(HlPassesTest, constant_merging) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+
+
+TEST(HlPassesTest, zero_assignment_removal) {
+
+    std::string input_file = "c_e2e/test_zero_assignment_removal.c";
+
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(input_file, includes, true, 0);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x180141};
+
+    ASSERT_EQ(gold_standard, result);
+
+}

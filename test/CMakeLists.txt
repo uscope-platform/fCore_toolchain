@@ -102,7 +102,8 @@ configure_file(C_files/end_to_end/test_function_inline_expression.c ${C_E2E_TEST
 configure_file(C_files/end_to_end/test_essential_variable_initialization.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_negative_leading_sum.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_function_vars_mangling.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
-configure_file(C_files/hl_passes/test_constant_merging.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
+configure_file(C_files/instruction_passes/test_constant_merging.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
+configure_file(C_files/instruction_passes/test_zero_assignment_removal.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 
 
 # DISASSEMBLER TESTING FILES

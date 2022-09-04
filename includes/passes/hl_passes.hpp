@@ -38,6 +38,7 @@
 #include "passes/high_level/operating_assignment_implementation_pass.hpp"
 #include "passes/high_level/dead_load_elimination.hpp"
 #include "passes/high_level/fuction_mangling_pass.hpp"
+#include "passes/instruction_stream/zero_assignment_removal_pass.hpp"
 
 #include "tools/variable_map.hpp"
 #include "data_structures/high_level_ast/hl_ast_node.hpp"
