@@ -28,6 +28,7 @@ set(FCORE_COMMON_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/variable_lifetime_mapping.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/variable_mapping.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/register_allocation.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/constant_merging.cpp
         )
 
 

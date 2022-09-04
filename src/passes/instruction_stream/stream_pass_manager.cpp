@@ -21,22 +21,29 @@ stream_pass_manager::stream_pass_manager(std::unordered_map<std::string, std::sh
     dump_ast_level = dal;
     std::shared_ptr<variable_map> var_map = std::make_shared<variable_map>();
 
+    passes.push_back(std::make_shared<constant_merging>());
     passes.push_back(std::make_shared<variable_mapping>(var_map));
     passes.push_back(std::make_shared<variable_lifetime_mapping>(var_map));
     passes.push_back(std::make_shared<register_allocation>(var_map, iom_map));
+    enabled_passes = {true, true, true, true};
+
 }
 
 instruction_stream stream_pass_manager::process_stream(instruction_stream stream) {
+    int pass_n = 0;
     if(dump_ast_level>0) pre_opt_dump = stream.dump();
     instruction_stream ret_val = std::move(stream);
     for(auto &pass:passes){
-        ret_val = apply_pass(ret_val, pass);
-        if(dump_ast_level>1){
-            nlohmann::json ast_dump;
-            ast_dump["pass_name"] = pass->get_name();
-            ast_dump["ast"]= ret_val.dump();
-            in_opt_dump.push_back(ast_dump);
+        if(enabled_passes[pass_n]){
+            ret_val = apply_pass(ret_val, pass);
+            if(dump_ast_level>1){
+                nlohmann::json ast_dump;
+                ast_dump["pass_name"] = pass->get_name();
+                ast_dump["ast"]= ret_val.dump();
+                in_opt_dump.push_back(ast_dump);
+            }
         }
+        pass_n++;
     }
     if(dump_ast_level>0) post_opt_dump = ret_val.dump();
     return ret_val;
@@ -46,7 +53,9 @@ instruction_stream
 stream_pass_manager::apply_pass(const instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass) {
     instruction_stream retval;
     for(auto &instr:in_stream){
-        retval.push_back(pass->apply_pass(instr));
+        auto proc_val = pass->apply_pass(instr);
+        if(proc_val!= nullptr)
+            retval.push_back(proc_val);
     }
     return retval;
 }

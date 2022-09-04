@@ -26,6 +26,7 @@
 #include "passes/instruction_stream/variable_lifetime_mapping.hpp"
 #include "passes/instruction_stream/variable_mapping.hpp"
 #include "passes/instruction_stream/register_allocation.hpp"
+#include "passes/instruction_stream/constant_merging.hpp"
 
 class stream_pass_manager {
 public:
@@ -33,8 +34,10 @@ public:
     instruction_stream process_stream(instruction_stream stream);
     instruction_stream apply_pass(const instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass);
     nlohmann::json get_dump();
+    void set_enabled_passes(std::vector<bool> ep) {enabled_passes = ep;};
 private:
     std::vector<std::shared_ptr<stream_pass_base>> passes;
+    std::vector<bool> enabled_passes;
     std::unordered_map<std::string, std::shared_ptr<variable>> iom_map;
     int dump_ast_level;
     nlohmann::json pre_opt_dump;
