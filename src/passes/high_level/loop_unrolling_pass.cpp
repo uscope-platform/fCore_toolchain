@@ -202,6 +202,9 @@ std::shared_ptr<hl_expression_node>
 loop_unrolling_pass::substitute_index_in_expression(const std::shared_ptr<hl_expression_node>& node, const std::string& idx_name,
                                                     int value) {
     std::shared_ptr<hl_expression_node> retval = std::static_pointer_cast<hl_expression_node>(hl_ast_node::deep_copy(node));
+    if(node->is_immediate()){
+        return retval;
+    }
     if(!node->is_unary()){
         retval->set_lhs(substitute_index(node->get_lhs(), idx_name, value));
     }
@@ -213,7 +216,13 @@ std::shared_ptr<hl_ast_operand>
 loop_unrolling_pass::substitute_index_in_operand(const std::shared_ptr<hl_ast_operand>& node, const std::string& idx_name,
                                                  int value) {
     std::shared_ptr<hl_ast_operand> retval = std::static_pointer_cast<hl_ast_operand>(hl_ast_operand::deep_copy(node));
-    if(node->get_type() == var_type_scalar) return retval;
+    if(node->get_type() == var_type_scalar) {
+        if(node->get_name() == idx_name) {
+            std::shared_ptr<variable> const_var = std::make_shared<variable>(idx_name + "_" + std::to_string(current_loop_iteration-1),  (int) current_loop_iteration-1);
+            return std::make_shared<hl_ast_operand>(const_var);
+        }
+        return retval;
+    }
 
     std::vector<std::shared_ptr<hl_ast_node>> old_idx_array = retval->get_array_index();
     std::vector<std::shared_ptr<hl_ast_node>> new_idx_array = proces_array_of_indices(old_idx_array,idx_name, value);
