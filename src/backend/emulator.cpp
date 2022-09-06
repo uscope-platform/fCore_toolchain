@@ -417,3 +417,16 @@ uint32_t emulator::execute_bsel(uint32_t a, uint32_t b) {
 uint32_t emulator::execute_xor(uint32_t a, uint32_t b) {
     return a ^ b;
 }
+
+void emulator::init_memory(nlohmann::json &init) {
+    std::vector<int> idx = init["index"];
+    std::vector<std::string> type = init["type"];
+
+    for(int i = 0; i<idx.size(); i++){
+        if(type[i] == "f"){
+            memory->at(idx[i]) = float_to_uint32(init["values"][i]);
+        } else {
+            memory->at(idx[i]) = init["values"][i];
+        }
+    }
+}
