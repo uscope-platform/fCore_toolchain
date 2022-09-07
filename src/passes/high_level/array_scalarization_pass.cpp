@@ -77,16 +77,29 @@ std::shared_ptr<hl_ast_operand> array_scalarization_pass::process_operand(std::s
     std::shared_ptr<variable> var = std::make_shared<variable>(mangle_name(old_array_idx, var_name));
 
     if(old_array_idx.size() == 1){
+
         std::shared_ptr<hl_ast_operand> bound_reg_op = std::static_pointer_cast<hl_ast_operand>(old_array_idx[0]);
+        int idx;
+        if(bound_reg_op->get_variable()->is_constant()){
+            idx = bound_reg_op->get_int_value();
+        } else {
+            std::string idx_var_name = bound_reg_op->get_name();
+            auto idx_val_def= def_map_s[idx_var_name];
+            idx = evaluate_index_definition(idx_val_def);
+        }
+
+
         if(node->get_variable()->get_bound_reg_array().size()>1)
-            var->set_bound_reg(node->get_variable()->get_bound_reg(bound_reg_op->get_int_value()));
+            var->set_bound_reg(node->get_variable()->get_bound_reg(idx));
+
     } else{
+        //TODO: IMPLEMENT EXPRESSION HANDLING IN MULTIDIMENTIONAL ARRAY FLATTENING
         std::vector<int> idx;
         idx.reserve(old_array_idx.size());
         for(auto &item:old_array_idx){
             idx.push_back(std::static_pointer_cast<hl_ast_operand>(item)->get_int_value());
         }
-        unsigned int linearized_idx = linearize_array(def_map[node->get_name()]->get_array_shape(),idx);
+        unsigned int linearized_idx = linearize_array(def_map_vect[node->get_name()]->get_array_shape(), idx);
         if(node->get_variable()->get_bound_reg_array().size()!=1){
             var->set_bound_reg(node->get_variable()->get_bound_reg(linearized_idx));
         }
@@ -102,7 +115,9 @@ std::shared_ptr<hl_definition_node>
 array_scalarization_pass::process_definition(std::shared_ptr<hl_definition_node> node) {
 
     if(!node->is_scalar()) {
-        def_map[node->get_name()] = node;
+        def_map_vect[node->get_name()] = node;
+    } else{
+        def_map_s[node->get_name()] = node;
     }
 
     if(node->is_initialized()){
@@ -129,8 +144,17 @@ std::string array_scalarization_pass::mangle_name(std::vector<std::shared_ptr<hl
     std::vector<std::shared_ptr<hl_ast_node>> new_array_idx;
     std::string mangled_name = "_fcmglr_flattened_array_"+  var_name;
     for(auto &item:old_array_idx){
-        int idx = std::static_pointer_cast<hl_ast_operand>(item)->get_int_value();
-        mangled_name += "_" + std::to_string(idx);
+        auto  idx_var = std::static_pointer_cast<hl_ast_operand>(item);
+        if(idx_var->get_variable()->is_constant()){
+            int idx = idx_var->get_int_value();
+            mangled_name += "_" + std::to_string(idx);
+        } else {
+            std::string idx_var_name = idx_var->get_name();
+            auto idx_val_def= def_map_s[idx_var_name];
+            auto idx = evaluate_index_definition(idx_val_def);
+            mangled_name += "_" + std::to_string(idx);
+
+        }
     }
     return mangled_name;
 }
@@ -182,6 +206,27 @@ array_scalarization_pass::process_conditional(std::shared_ptr<hl_ast_conditional
     return node;
 }
 
+int array_scalarization_pass::evaluate_index_definition(std::shared_ptr<hl_definition_node> node) {
+    if(node->is_initialized()){
+        if(node->get_scalar_initializer()->node_type == hl_ast_node_type_expr){
+            expression_evaluator ev;
+            if(ev.is_constant_expression(std::static_pointer_cast<hl_expression_node>(node->get_scalar_initializer()))){
+                return ev.evaluate_expression(std::static_pointer_cast<hl_expression_node>(node->get_scalar_initializer()))->get_int_value();
+            } else {
+                throw std::runtime_error("ERROR: Encountered a non-constant array index expression");
+            }
+        } else if(node->get_scalar_initializer()->node_type == hl_ast_node_type_operand){
+            auto operand = std::static_pointer_cast<hl_ast_operand>(node->get_scalar_initializer());
+            if(operand->get_variable()->is_constant()){
+                return operand->get_int_value();
+            } else{
+                throw std::runtime_error("ERROR: Encountered a non-constant array index operand");
+            }
+        } else {
+            throw std::runtime_error("ERROR: Encountered a foreign node type while evaluating an array index");
+        }
+    } else {
+        throw std::runtime_error("ERROR: Encountered a non-initialized array index");
+    }
 
-
-
+}

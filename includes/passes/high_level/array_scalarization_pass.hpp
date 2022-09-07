@@ -19,6 +19,7 @@
 
 #include "passes/pass_base.hpp"
 #include "tools/array_linearizer.hpp"
+#include "tools/expression_evaluator.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
 class array_scalarization_pass : public pass_base<hl_ast_node> {
@@ -36,9 +37,11 @@ private:
     std::shared_ptr<hl_function_def_node> process_function_def(std::shared_ptr<hl_function_def_node> node);
     std::shared_ptr<hl_ast_conditional_node> process_conditional(std::shared_ptr<hl_ast_conditional_node> node);
 
-    std::string mangle_name(std::vector<std::shared_ptr<hl_ast_node>> old_array_idx, std::string var_name);
-    std::unordered_map<std::string, std::shared_ptr<hl_definition_node>> def_map;
+    int evaluate_index_definition(std::shared_ptr<hl_definition_node> node);
 
+    std::string mangle_name(std::vector<std::shared_ptr<hl_ast_node>> old_array_idx, std::string var_name);
+    std::unordered_map<std::string, std::shared_ptr<hl_definition_node>> def_map_vect;
+    std::unordered_map<std::string, std::shared_ptr<hl_definition_node>> def_map_s;
 };
 
 
