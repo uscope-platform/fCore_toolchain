@@ -93,12 +93,21 @@ std::shared_ptr<hl_ast_operand> array_scalarization_pass::process_operand(std::s
             var->set_bound_reg(node->get_variable()->get_bound_reg(idx));
 
     } else{
-        //TODO: IMPLEMENT EXPRESSION HANDLING IN MULTIDIMENTIONAL ARRAY FLATTENING
+
         std::vector<int> idx;
         idx.reserve(old_array_idx.size());
+
         for(auto &item:old_array_idx){
-            idx.push_back(std::static_pointer_cast<hl_ast_operand>(item)->get_int_value());
+            auto bound_reg_op = std::static_pointer_cast<hl_ast_operand>(item);
+            if(bound_reg_op->get_variable()->is_constant()){
+                idx.push_back(bound_reg_op->get_int_value());
+            } else {
+                std::string idx_var_name = bound_reg_op->get_name();
+                auto idx_val_def= def_map_s[idx_var_name];
+                idx.push_back(evaluate_index_definition(idx_val_def));
+            }
         }
+
         unsigned int linearized_idx = linearize_array(def_map_vect[node->get_name()]->get_array_shape(), idx);
         if(node->get_variable()->get_bound_reg_array().size()!=1){
             var->set_bound_reg(node->get_variable()->get_bound_reg(linearized_idx));

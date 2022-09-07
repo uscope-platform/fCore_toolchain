@@ -452,3 +452,21 @@ TEST(HlPassesTest, loop_index_expression) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+
+TEST(HlPassesTest, loop_index_expression_multidim) {
+
+    std::string input_file = "c_e2e/test_loop_index_expression_multidim.c";
+
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(input_file, includes, true, 0);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x7b8801, 0x7bafa1};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
