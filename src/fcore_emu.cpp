@@ -91,13 +91,13 @@ void fcore_emu::emulate_program() {
                 outputs.push_back(item["reg_n"]);
                 output_types[item["reg_n"]] = std::make_pair(item["name"], item["type"]);
             }
-            backend.set_outputs(outputs);
+            //backend.set_outputs(outputs);
         }
         if(run_specs.contains("efi_implementation")){
             backend.set_efi_selector(run_specs["efi_implementation"]);
         }
         if(run_specs.contains("memory_init")){
-            backend.init_memory(run_specs["memory_init"]);
+            //backend.init_memory(run_specs["memory_init"]);
         }
         backend.set_inputs(inputs);
         backend.run_program();

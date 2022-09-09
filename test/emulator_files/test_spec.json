@@ -1,9 +1,27 @@
 {
-  "outputs": [
+  "cores": [
     {
-      "reg_n":4,
-      "type":"f",
-      "name":"test_out"
+      "id": "test",
+      "inputs": {
+        "file":"emu/test_inputs.csv",
+        "types":{
+          "1":"f",
+          "2":"f"
+        }
+      },
+      "outputs": [
+        {
+          "reg_n":4,
+          "type":"i",
+          "name":"test_out"
+        }
+      ],
+      "program":{
+        "type":"mem",
+        "file":"emu/test_inputs.mem"
+      },
+      "efi_implementation":"",
+      "channels":1
     }
   ]
 }

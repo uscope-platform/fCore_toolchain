@@ -17,6 +17,7 @@
 #include <filesystem>
 #include <gtest/gtest.h>
 #include "fcore_emu.hpp"
+#include "frontend/emulator_manager.hpp"
 
 TEST(Emulator, emulator_load) {
 
@@ -252,23 +253,15 @@ TEST(Emulator, emulator_bset) {
 
 TEST(Emulator, emulator_outputs) {
 
-    std::string input_program = "emu/test_inputs.mem";
-    std::ifstream program_stream(input_program);
-    fcore_emu emu_engine(program_stream, bin_loader_mem_input);
-    std::string input_file = "emu/test_inputs.csv";
-    std::ifstream inputs_stream(input_file);
-    emu_engine.set_inputs(inputs_stream);
     std::ifstream ifs("emu/test_spec.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
+    emulator_manager manager(specs);
+    manager.run_emulation();
+    auto res = nlohmann::json::parse(manager.get_results())["test"];
 
-    emu_engine.set_specs(specs);
-    emu_engine.emulate_program();
-
-    std::unordered_map<int, std::vector<uint32_t>> outputs = emu_engine.get_outputs();
-
-    std::unordered_map<int, std::vector<uint32_t>> reference;
-    reference[4] = {0x426a7ae1, 0x42f070a4};
-    ASSERT_EQ(outputs, reference);
+    auto s = res.dump();
+    std::vector<uint32_t> reference = {0x426a7ae1, 0x42f070a4};
+    ASSERT_EQ(res["outputs"]["test_out"], reference);
 
 }
 

@@ -33,7 +33,7 @@ void emulator::set_inputs(std::vector<std::pair<unsigned int, std::vector<uint32
     inputs = in;
 }
 
-void emulator::set_outputs(std::vector<int> &out) {
+void emulator::set_outputs(std::vector<emulator_output_t> &out) {
     output_idx = out;
 }
 
@@ -54,7 +54,7 @@ void emulator::run_program_with_inputs(unsigned int rounds) {
         }
         run_round();
         for (auto &item:output_idx) {
-            outputs[item].push_back(memory->at(item));
+            outputs[item.reg_n].push_back(memory->at(item.reg_n));
         }
     }
 }
@@ -418,15 +418,8 @@ uint32_t emulator::execute_xor(uint32_t a, uint32_t b) {
     return a ^ b;
 }
 
-void emulator::init_memory(nlohmann::json &init) {
-    std::vector<int> idx = init["index"];
-    std::vector<std::string> type = init["type"];
-
-    for(int i = 0; i<idx.size(); i++){
-        if(type[i] == "f"){
-            memory->at(idx[i]) = float_to_uint32(init["values"][i]);
-        } else {
-            memory->at(idx[i]) = init["values"][i];
-        }
+void emulator::init_memory(std::unordered_map<unsigned int, uint32_t> &mem_init) {
+    for(auto &item: mem_init){
+        memory->at(item.first) = item.second;
     }
 }

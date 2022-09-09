@@ -52,7 +52,7 @@ set(FCORE_CC_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/constant_propagation.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/hl_pass_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/hl_variable_mapping.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/fuction_mangling_pass
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/fuction_mangling_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/operating_assignment_implementation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/inlined_function_elimination.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/inline_constant_extraction.cpp
@@ -88,6 +88,7 @@ set(FCORE_DIS_SRCS
 set(FCORE_EMU_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/efi_implementations/efi_dispatcher.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/emulator_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/fcore_emu.cpp
         )
 

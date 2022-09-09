@@ -21,6 +21,7 @@
 
 #include "../third_party/CLI11.hpp"
 #include "fcore_emu.hpp"
+#include "frontend/emulator_manager.hpp"
 
 int main(int argc, char **argv) {
     CLI::App app{"fCore Emulator"};
@@ -32,7 +33,7 @@ int main(int argc, char **argv) {
     std::string inputs_file;
     std::string output_file;
     std::string spec_file;
-    app.add_option("input_program", input_program, "Input program path")->required()->check(CLI::ExistingFile);
+    app.add_option("input_program", input_program, "Input program path");
     app.add_flag("--mem", input_mem, "the input is a verilog mem file");
     app.add_flag("--hex", input_hex, "the input is a binary file");
     app.add_flag("--f", output_force, "force the rewriting of an existing product file");
@@ -58,33 +59,21 @@ int main(int argc, char **argv) {
 
     std::ifstream stream;
 
-
-    bin_loader_input_type_t in_type;
-    if(input_mem) {
-        stream.open(input_program);
-        in_type = bin_loader_mem_input;
-    } else {
-        stream.open(input_program, std::ifstream::binary);
-        in_type = bin_loader_hex_input;
+    if(spec_file.empty()){
+        std::cout<< "ERROR: The provvided specifications file is empty"<<std::endl;
+        exit(-1);
     }
 
-    fcore_emu emu_engine(stream, in_type);
+    nlohmann::json specs;
+    std::ifstream spec_stream(spec_file);
+    spec_stream >> specs;
+    emulator_manager emu_manager(specs);
 
-    if(!inputs_file.empty()){
-        std::ifstream in_stream(inputs_file);
-        emu_engine.set_inputs(in_stream);
-    }
+    emu_manager.run_emulation();
 
-    if(!spec_file.empty()){
-        nlohmann::json specs;
-        std::ifstream spec_stream(spec_file);
-        spec_stream >> specs;
-        emu_engine.set_specs(specs);
-    }
-
-    emu_engine.emulate_program();
-
-    emu_engine.write_json(output_file);
+    std::ofstream ss(output_file);
+    ss<<emu_manager.get_results();
+    ss.close();
 
     return 0;
 }

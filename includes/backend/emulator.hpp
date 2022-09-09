@@ -23,14 +23,25 @@
 #include "floating_point_v7_1_bitacc_cmodel.h"
 #include "fCore_isa.hpp"
 
+typedef enum {
+    type_uint32 = 1,
+    type_float = 2,
+} emulator_types_t;
+
+typedef struct {
+    int reg_n;
+    emulator_types_t type;
+    std::string name;
+} emulator_output_t;
+
 class emulator {
 public:
     explicit
     emulator(instruction_stream &s);
 
     void set_inputs(std::vector<std::pair<unsigned int, std::vector<uint32_t>>> &in);
-    void set_outputs(std::vector<int> &out);
-    void init_memory(nlohmann::json &init);
+    void set_outputs(std::vector<emulator_output_t> &out);
+    void init_memory(std::unordered_map<unsigned int, uint32_t> &mem_init);
     void run_program();
     void run_program_with_inputs(unsigned int rounds);
     void run_round();
@@ -80,7 +91,7 @@ private:
     efi_dispatcher efi_implementation;
 
     std::shared_ptr<std::vector<uint32_t>> memory;
-    std::vector<int> output_idx;
+    std::vector<emulator_output_t> output_idx;
     std::unordered_map<int, std::vector<uint32_t>> outputs{};
     std::vector<std::pair<unsigned int, std::vector<uint32_t>>> inputs;
 };
