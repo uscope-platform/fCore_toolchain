@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
     spec_stream >> specs;
     emulator_manager emu_manager(specs);
 
-    emu_manager.run_emulation();
+    emu_manager.emulate();
 
     std::ofstream ss(output_file);
     ss<<emu_manager.get_results();

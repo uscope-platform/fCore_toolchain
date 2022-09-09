@@ -42,6 +42,8 @@ public:
     void set_inputs(std::vector<std::pair<unsigned int, std::vector<uint32_t>>> &in);
     void set_outputs(std::vector<emulator_output_t> &out);
     void init_memory(std::unordered_map<unsigned int, uint32_t> &mem_init);
+    void apply_inputs(uint32_t addr, uint32_t data);
+    uint32_t get_output(uint32_t addr);
     void run_program();
     void run_program_with_inputs(unsigned int rounds);
     void run_round();

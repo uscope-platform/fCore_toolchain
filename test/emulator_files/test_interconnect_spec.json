@@ -1,0 +1,53 @@
+{
+  "cores": [
+    {
+      "id": "test_producer",
+      "inputs": {
+        "file":"emu/test_inputs.csv",
+        "types":{
+          "1":"f",
+          "2":"f"
+        }
+      },
+      "outputs": [
+        {
+          "reg_n":4,
+          "type":"i",
+          "name":"test_out"
+        }
+      ],
+      "program":{
+        "type":"mem",
+        "file":"emu/test_inputs.mem"
+      },
+      "efi_implementation":"",
+      "channels":1
+    },
+    {
+      "id": "test_consumer",
+      "inputs": {},
+      "outputs": [
+        {
+          "reg_n":6,
+          "type":"i",
+          "name":"test_out"
+        }
+      ],
+      "program":{
+        "type":"mem",
+        "file":"emu/test_interconnect.mem"
+      },
+      "efi_implementation":"",
+      "channels":1
+    }
+  ],
+  "interconnect":[
+    {
+      "source":"test_producer",
+      "destination":"test_consumer",
+      "registers":{
+        "4":1
+      }
+    }
+  ]
+}

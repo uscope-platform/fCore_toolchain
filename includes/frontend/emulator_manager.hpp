@@ -26,6 +26,12 @@
 #include "tools/instruction_stream_builder.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 
+typedef struct{
+    std::string source;
+    std::string destination;
+    std::unordered_map<unsigned int, unsigned int> connections;
+}interconnect_t;
+
 typedef struct {
     std::vector<std::pair<unsigned int, std::vector<uint32_t>>> input;
     std::vector<emulator_output_t> output_specs;
@@ -41,7 +47,8 @@ typedef struct {
 class emulator_manager {
 public:
     emulator_manager(nlohmann::json &spec_file);
-    void run_emulation();
+    void emulate();
+
     std::string get_results();
 
 private:
@@ -49,8 +56,14 @@ private:
     std::vector<std::pair<unsigned int, std::vector<uint32_t>>> load_input(nlohmann::json &core);
     std::vector<emulator_output_t> load_output_specs(nlohmann::json &core);
     std::unordered_map<unsigned int, uint32_t> load_memory_init(nlohmann::json &mem_init);
+    std::vector<interconnect_t> load_interconnects(nlohmann::json &interconnects);
+
+    void run_cores();
+
     static std::vector<float> uint32_to_float(std::vector<uint32_t> &vect);
     std::unordered_map<std::string, emulator_metadata> emulators;
+    std::vector<interconnect_t> interconnects;
+    int emu_length;
     std::unordered_map<std::string, std::string> errors;
 };
 

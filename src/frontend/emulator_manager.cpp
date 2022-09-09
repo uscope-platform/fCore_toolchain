@@ -28,8 +28,8 @@ emulator_manager::emulator_manager(nlohmann::json &spec_file) {
         emulators[id].input = load_input(item);
         emulators[id].output_specs = load_output_specs(item);
         emulators[id].memory_init = load_memory_init(item["memory_init"]);
-
     }
+    interconnects = load_interconnects(spec_file["interconnect"]);
     // Setup emulators
     for(auto &item:emulators){
         auto emu = item.second.emu;
@@ -40,14 +40,40 @@ emulator_manager::emulator_manager(nlohmann::json &spec_file) {
     }
 }
 
-void emulator_manager::run_emulation() {
+void emulator_manager::emulate() {
+    if(emu_length==-1){
+        throw std::runtime_error("ERROR: Unspecified emulation length (at least one non empty input file should be present)");
+    }
+    run_cores();
     for(auto &item:emulators){
         try{
-            item.second.emu->run_program();
             item.second.memory = *item.second.emu->get_memory();
-            item.second.outputs = item.second.emu->get_outputs();
         } catch(std::runtime_error &e) {
             errors[item.first] = e.what();
+        }
+    }
+}
+
+void emulator_manager::run_cores() {
+    for(int i= 0; i<emu_length;i++){
+        for(auto &conn:interconnects){
+            auto src = emulators[conn.source].emu;
+            auto dst = emulators[conn.destination].emu;
+            for(auto &reg:conn.connections){
+                auto val = src->get_output(reg.first);
+                dst->apply_inputs(reg.second, val);
+            }
+        }
+        for(auto &item:emulators){
+            auto emu = item.second.emu;
+            for(auto &in:item.second.input){
+                emu->apply_inputs(in.first, in.second[i]);
+            }
+            emu->run_round();
+
+            for (auto &out:item.second.output_specs) {
+                item.second.outputs[out.reg_n].push_back(emu->get_output(out.reg_n));
+            }
         }
     }
 }
@@ -94,6 +120,9 @@ emulator_metadata emulator_manager::load_program(nlohmann::json &core) {
 
 std::vector<std::pair<unsigned int, std::vector<uint32_t>>> emulator_manager::load_input(nlohmann::json &core) {
     std::vector<std::pair<unsigned int, std::vector<uint32_t>>> inputs;
+    if(core["inputs"].empty()){
+        return inputs;
+    }
     try{
         std::ifstream stream;
         stream.open(core["inputs"]["file"]);
@@ -140,6 +169,16 @@ std::vector<std::pair<unsigned int, std::vector<uint32_t>>> emulator_manager::lo
         }
     } catch(std::runtime_error &e){
         errors[core["id"]] = e.what();
+    }
+    emu_length = -1;
+    for(auto &item:inputs){
+        if(emu_length<0){
+            emu_length = item.second.size();
+        } else{
+            if(emu_length != item.second.size()){
+                throw std::runtime_error("ERROR: All input files must have the same length");
+            }
+        }
     }
     return inputs;
 }
@@ -213,4 +252,19 @@ std::vector<float> emulator_manager::uint32_to_float(std::vector<uint32_t> &vect
     for(auto &item:vect)
         cast_vect.push_back(emulator::uint32_to_float(item));
     return cast_vect;
+}
+
+std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json &itc) {
+    std::vector<interconnect_t> res;
+    for(auto &item:itc){
+        interconnect_t i;
+        i.source = item["source"];
+        i.destination = item["destination"];
+        std::unordered_map<std::string, unsigned int> registers = item["registers"];
+        for(auto &regs: registers){
+            i.connections[std::stoul(regs.first)] = regs.second;
+        }
+        res.push_back(i);
+    }
+    return res;
 }

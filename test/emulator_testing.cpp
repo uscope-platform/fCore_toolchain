@@ -256,7 +256,7 @@ TEST(Emulator, emulator_outputs) {
     std::ifstream ifs("emu/test_spec.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
     emulator_manager manager(specs);
-    manager.run_emulation();
+    manager.emulate();
     auto res = nlohmann::json::parse(manager.get_results())["test"];
 
     auto s = res.dump();
@@ -292,5 +292,19 @@ TEST(Emulator, emulator_error) {
     gold_standard_j["registers_f"] = result["registers_f"];
     gold_standard_j["outputs"] = nlohmann::json();
     ASSERT_EQ(result, gold_standard_j);
+}
+
+TEST(Emulator, emulator_inteconnect) {
+
+    std::ifstream ifs("emu/test_interconnect_spec.json");
+    nlohmann::json specs = nlohmann::json::parse(ifs);
+    emulator_manager manager(specs);
+    manager.emulate();
+    auto res = nlohmann::json::parse(manager.get_results())["test_consumer"];
+
+    auto s = res.dump();
+    std::vector<uint32_t> reference = {0, 0x426a7ae1};
+    ASSERT_EQ(res["outputs"]["test_out"], reference);
+
 }
 

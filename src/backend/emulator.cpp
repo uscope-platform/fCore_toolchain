@@ -38,6 +38,10 @@ void emulator::set_outputs(std::vector<emulator_output_t> &out) {
 }
 
 
+void emulator::apply_inputs(uint32_t addr, uint32_t data) {
+    memory->at(addr) = data;
+}
+
 void emulator::run_program() {
     if(!inputs.empty()){
         unsigned int n_rounds = inputs[0].second.size();
@@ -422,4 +426,8 @@ void emulator::init_memory(std::unordered_map<unsigned int, uint32_t> &mem_init)
     for(auto &item: mem_init){
         memory->at(item.first) = item.second;
     }
+}
+
+uint32_t emulator::get_output(uint32_t addr) {
+    return memory->at(addr);
 }
