@@ -30,6 +30,8 @@ emulator_manager::emulator_manager(nlohmann::json &spec_file) {
         emulators[id].memory_init = load_memory_init(item["memory_init"]);
     }
     interconnects = load_interconnects(spec_file["interconnect"]);
+    if(spec_file.contains("run_length"))
+        emu_length = spec_file["run_length"];
     // Setup emulators
     for(auto &item:emulators){
         auto emu = item.second.emu;
@@ -267,4 +269,8 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
         res.push_back(i);
     }
     return res;
+}
+
+std::shared_ptr<std::vector<uint32_t>> emulator_manager::get_memory_snapshot(const std::string &core_id) {
+    return emulators[core_id].emu->get_memory();
 }

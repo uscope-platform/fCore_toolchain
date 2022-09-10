@@ -89,7 +89,6 @@ set(FCORE_EMU_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/efi_implementations/efi_dispatcher.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/emulator_manager.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/fcore_emu.cpp
         )
 
 set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_DIS_SRCS} ${FCORE_EMU_SRCS} PARENT_SCOPE)

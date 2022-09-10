@@ -48,7 +48,7 @@ class emulator_manager {
 public:
     emulator_manager(nlohmann::json &spec_file);
     void emulate();
-
+    std::shared_ptr<std::vector<uint32_t>> get_memory_snapshot(const std::string &core_id);
     std::string get_results();
 
 private:
