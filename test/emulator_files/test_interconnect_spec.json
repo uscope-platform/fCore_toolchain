@@ -45,9 +45,12 @@
     {
       "source":"test_producer",
       "destination":"test_consumer",
-      "registers":{
-        "4":1
-      }
+      "registers":[
+        {
+          "source":[0, 4],
+          "destination":[0, 1]
+        }
+      ]
     }
   ]
 }

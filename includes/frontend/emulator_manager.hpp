@@ -27,33 +27,44 @@
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 
 typedef struct{
+    unsigned int channel;
+    unsigned int address;
+} register_spec_t;
+
+typedef struct{
     std::string source;
     std::string destination;
-    std::unordered_map<unsigned int, unsigned int> connections;
+    std::vector<std::pair<register_spec_t, register_spec_t>> connections;
 }interconnect_t;
 
 typedef struct {
-    std::vector<std::pair<unsigned int, std::vector<uint32_t>>> input;
+    unsigned int reg_n;
+    std::vector<uint32_t> data;
+    unsigned int channel;
+}inputs_t;
+
+typedef struct {
+    std::vector<inputs_t> input;
     std::vector<emulator_output_t> output_specs;
     std::unordered_map<unsigned int, std::pair<std::string, std::string>> output_types;
     std::unordered_map<unsigned int, uint32_t> memory_init;
     std::shared_ptr<emulator> emu;
     int active_channels;
     std::string efi_implementation;
-    std::vector<uint32_t> memory;
-    std::unordered_map<int, std::vector<uint32_t>> outputs;
+    std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outputs;
 }emulator_metadata;
+
 
 class emulator_manager {
 public:
     emulator_manager(nlohmann::json &spec_file);
     void emulate();
-    std::shared_ptr<std::vector<uint32_t>> get_memory_snapshot(const std::string &core_id);
+    std::shared_ptr<std::vector<uint32_t>> get_memory_snapshot(const std::string &core_id, int channel);
     std::string get_results();
 
 private:
     emulator_metadata load_program(nlohmann::json &core);
-    std::vector<std::pair<unsigned int, std::vector<uint32_t>>> load_input(nlohmann::json &core);
+    std::vector<inputs_t> load_input(nlohmann::json &core);
     std::vector<emulator_output_t> load_output_specs(nlohmann::json &core);
     std::unordered_map<unsigned int, uint32_t> load_memory_init(nlohmann::json &mem_init);
     std::vector<interconnect_t> load_interconnects(nlohmann::json &interconnects);

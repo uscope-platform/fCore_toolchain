@@ -17,10 +17,13 @@
 
 #include <utility>
 
-emulator::emulator(instruction_stream &s) {
+emulator::emulator(instruction_stream &s, int n_channels) {
     stream = s;
-    memory = std::make_shared<std::vector<uint32_t>>(2<< (fcore_register_address_width-1), 0);
-    efi_implementation.set_memory(memory);
+    for(int i = 0; i<n_channels; i++){
+        memory_pool[i] = std::make_shared<std::vector<uint32_t>>(2 << (fcore_register_address_width - 1), 0);
+    }
+    working_memory = memory_pool[0];
+    efi_implementation.set_memory(working_memory);
     xip_fpo_init2(xil_a, 8, 24);
     xip_fpo_init2(xil_b, 8, 24);
     xip_fpo_init2(xil_res, 8, 24);
@@ -28,42 +31,14 @@ emulator::emulator(instruction_stream &s) {
     stop_requested = false;
 }
 
-
-void emulator::set_inputs(std::vector<std::pair<unsigned int, std::vector<uint32_t>>> &in) {
-    inputs = in;
+void emulator::apply_inputs(uint32_t addr, uint32_t data, int channel) {
+    auto selected_mem = memory_pool[channel];
+    selected_mem->at(addr) = data;
 }
 
-void emulator::set_outputs(std::vector<emulator_output_t> &out) {
-    output_idx = out;
-}
+void emulator::run_round(int channel) {
 
-
-void emulator::apply_inputs(uint32_t addr, uint32_t data) {
-    memory->at(addr) = data;
-}
-
-void emulator::run_program() {
-    if(!inputs.empty()){
-        unsigned int n_rounds = inputs[0].second.size();
-        run_program_with_inputs(n_rounds);
-    } else {
-        run_round();
-    }
-}
-
-void emulator::run_program_with_inputs(unsigned int rounds) {
-    for(unsigned int i = 0; i<rounds; i++){
-        for(auto item:inputs){
-            memory->at(item.first) = item.second[i];
-        }
-        run_round();
-        for (auto &item:output_idx) {
-            outputs[item.reg_n].push_back(memory->at(item.reg_n));
-        }
-    }
-}
-
-void emulator::run_round() {
+    working_memory = memory_pool[channel];
     for(auto &item:stream){
         run_instruction_by_type(item);
         if(stop_requested) {
@@ -104,40 +79,40 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
     std::string raw_op_b = node->get_operand_b()->get_name();
     uint32_t op_b = std::stoul(raw_op_b.substr(1, raw_op_b.size()-1));
 
-    auto a = memory->at(op_a);
-    auto b = memory->at(op_b);
+    auto a = working_memory->at(op_a);
+    auto b = working_memory->at(op_b);
 
     if(opcode == "add"){
-        memory->at(dest) = execute_add(a, b);
+        working_memory->at(dest) = execute_add(a, b);
     } else if (opcode == "sub"){
-        memory->at(dest) = execute_sub(a, b);
+        working_memory->at(dest) = execute_sub(a, b);
     } else if (opcode == "mul"){
-        memory->at(dest) = execute_mul(a, b);
+        working_memory->at(dest) = execute_mul(a, b);
     } else if (opcode == "and"){
-        memory->at(dest) = execute_and(a, b);
+        working_memory->at(dest) = execute_and(a, b);
     } else if (opcode == "or"){
-        memory->at(dest) = execute_or(a, b);
+        working_memory->at(dest) = execute_or(a, b);
     } else if (opcode == "xor"){
-        memory->at(dest) = execute_xor(a, b);
+        working_memory->at(dest) = execute_xor(a, b);
     } else if (opcode == "satp"){
-        memory->at(dest) = execute_satp(a, b);
+        working_memory->at(dest) = execute_satp(a, b);
     } else if (opcode == "satn"){
-        memory->at(dest) = execute_satn(a, b);
+        working_memory->at(dest) = execute_satn(a, b);
     } else if (opcode == "beq"){
-        memory->at(dest) = execute_compare_eq(a, b);
+        working_memory->at(dest) = execute_compare_eq(a, b);
     } else if (opcode == "bne"){
-        memory->at(dest) = execute_compare_ne(a, b);
+        working_memory->at(dest) = execute_compare_ne(a, b);
     } else if (opcode == "bgt"){
-        memory->at(dest) = execute_compare_gt(a, b);
+        working_memory->at(dest) = execute_compare_gt(a, b);
     } else if (opcode == "ble"){
-        memory->at(dest) = execute_compare_le(a, b);
+        working_memory->at(dest) = execute_compare_le(a, b);
     } else if (opcode == "efi"){
         execute_efi(op_a, op_b, dest);
     } else if (opcode == "bset"){
-        auto res = execute_bset(memory->at(op_a), memory->at(op_b), memory->at(dest));
-        memory->at(op_a) = res;
+        auto res = execute_bset(working_memory->at(op_a), working_memory->at(op_b), working_memory->at(dest));
+        working_memory->at(op_a) = res;
     } else if (opcode == "bsel"){
-        memory->at(dest) = execute_bsel(a, b);
+        working_memory->at(dest) = execute_bsel(a, b);
     } else {
         throw std::runtime_error("EMULATION ERROR: Encountered the following unimplemented operation: " + opcode);
     }
@@ -163,17 +138,17 @@ void emulator::run_conversion_instruction(const std::shared_ptr<ll_conversion_in
     std::string raw_src = node->get_source()->get_name();
     uint32_t src = std::stoul(raw_src.substr(1, raw_src.size()-1));
     if(opcode == "rec"){
-        memory->at(dest) = execute_rec(memory->at(src));
+        working_memory->at(dest) = execute_rec(working_memory->at(src));
     } else if(opcode == "fti"){
-        memory->at(dest) = execute_fti(memory->at(src));
+        working_memory->at(dest) = execute_fti(working_memory->at(src));
     } else if(opcode == "itf"){
-        memory->at(dest) = execute_itf(memory->at(src));
+        working_memory->at(dest) = execute_itf(working_memory->at(src));
     } else if (opcode == "not"){
-        memory->at(dest) = execute_not(memory->at(src));
+        working_memory->at(dest) = execute_not(working_memory->at(src));
     } else if(opcode == "abs") {
-        memory->at(dest) = execute_abs(memory->at(src));
+        working_memory->at(dest) = execute_abs(working_memory->at(src));
     } else if(opcode == "popcnt") {
-        memory->at(dest) = execute_popcnt(memory->at(src));
+        working_memory->at(dest) = execute_popcnt(working_memory->at(src));
         int i = 0;
     } else {
             throw std::runtime_error("EMULATION ERROR: Encountered the following unimplemented operation: " + opcode);
@@ -189,7 +164,7 @@ void emulator::run_load_constant_instruction(const std::shared_ptr<ll_load_const
     std::string raw_dest = node->get_destination()->get_name();
     uint32_t dest = std::stoul(raw_dest.substr(1, raw_dest.size()-1));
 
-    memory->at(dest) = const_val;
+    working_memory->at(dest) = const_val;
 }
 
 uint32_t emulator::execute_add(uint32_t a, uint32_t b) {
@@ -424,10 +399,11 @@ uint32_t emulator::execute_xor(uint32_t a, uint32_t b) {
 
 void emulator::init_memory(std::unordered_map<unsigned int, uint32_t> &mem_init) {
     for(auto &item: mem_init){
-        memory->at(item.first) = item.second;
+        working_memory->at(item.first) = item.second;
     }
 }
 
-uint32_t emulator::get_output(uint32_t addr) {
-    return memory->at(addr);
+uint32_t emulator::get_output(uint32_t addr, int channel) {
+    auto selected_memory = memory_pool[channel];
+    return selected_memory->at(addr);
 }

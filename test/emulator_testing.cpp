@@ -34,7 +34,7 @@ TEST(Emulator, emulator_load) {
     nlohmann::json spec = prepare_spec("emu/test_load.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(1), 0x3f47ae14);
     ASSERT_EQ(result->at(15), 0x4306b333);
 }
@@ -45,7 +45,7 @@ TEST(Emulator, emulator_add) {
     nlohmann::json spec = prepare_spec("emu/test_add.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(2), 0x43077ae1);
 }
 
@@ -54,7 +54,7 @@ TEST(Emulator, emulator_sub) {
     nlohmann::json spec = prepare_spec("emu/test_sub.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(2), 0xc305eb85);
 }
 
@@ -63,7 +63,7 @@ TEST(Emulator, emulator_mul) {
     nlohmann::json spec = prepare_spec("emu/test_mul.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(2), 0x42d221ca);
 }
 
@@ -72,7 +72,7 @@ TEST(Emulator, emulator_rec) {
     nlohmann::json spec = prepare_spec("emu/test_rec.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(1), 0x3fa41a42);
 }
 
@@ -81,7 +81,7 @@ TEST(Emulator, emulator_itf) {
     nlohmann::json spec = prepare_spec("emu/test_itf.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(1), 0x40400000);
 }
 
@@ -90,7 +90,7 @@ TEST(Emulator, emulator_fti) {
     nlohmann::json spec = prepare_spec("emu/test_fti.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(1), 15);
 }
 
@@ -99,7 +99,7 @@ TEST(Emulator, emulator_and) {
     nlohmann::json spec = prepare_spec("emu/test_and.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(3), 0x40000000);
 }
 
@@ -108,7 +108,7 @@ TEST(Emulator, emulator_or) {
     nlohmann::json spec = prepare_spec("emu/test_or.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(3), 0xC578D666);
 }
 
@@ -117,7 +117,7 @@ TEST(Emulator, emulator_nor) {
     nlohmann::json spec = prepare_spec("emu/test_not.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(1), 0x3BF72999);
 }
 
@@ -127,7 +127,7 @@ TEST(Emulator, emulator_satn) {
     nlohmann::json spec = prepare_spec("emu/test_satn.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(4), 0xc3fa0000);
     ASSERT_EQ(result->at(5), 0xc408d666);
 }
@@ -138,7 +138,7 @@ TEST(Emulator, emulator_satp) {
     nlohmann::json spec = prepare_spec("emu/test_satp.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(4), 0x43fa0000);
     ASSERT_EQ(result->at(5), 0x4408d666);
 }
@@ -148,7 +148,7 @@ TEST(Emulator, emulator_beq) {
     nlohmann::json spec = prepare_spec("emu/test_beq.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(4), 0xffffffff);
     ASSERT_EQ(result->at(5), 0x0);
 }
@@ -158,7 +158,7 @@ TEST(Emulator, emulator_bne) {
     nlohmann::json spec = prepare_spec("emu/test_bne.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(4), 0xffffffff);
     ASSERT_EQ(result->at(5), 0x0);
 }
@@ -168,7 +168,7 @@ TEST(Emulator, emulator_bgt) {
     nlohmann::json spec = prepare_spec("emu/test_bgt.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(4), 0xffffffff);
     ASSERT_EQ(result->at(5), 0x0);
 }
@@ -177,7 +177,7 @@ TEST(Emulator, emulator_ble) {
     nlohmann::json spec = prepare_spec("emu/test_ble.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(4), 0xffffffff);
     ASSERT_EQ(result->at(5), 0x0);
     ASSERT_EQ(result->at(6), 0xffffffff);
@@ -187,7 +187,7 @@ TEST(Emulator, emulator_stop) {
     nlohmann::json spec = prepare_spec("emu/test_stop.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(1), 0xc3fa8000);
 }
 
@@ -199,7 +199,7 @@ TEST(Emulator, emulator_efi) {
     spec["cores"][0]["efi_implementation"] = "efi_sort";
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(7), 1);
     ASSERT_EQ(result->at(8), 0);
     ASSERT_EQ(result->at(9), 2);
@@ -211,7 +211,7 @@ TEST(Emulator, emulator_bset) {
     nlohmann::json spec = prepare_spec("emu/test_bset.mem", 1);
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(56), 0x41b00000);
     ASSERT_EQ(result->at(55), 0xC1b00000);
 }
@@ -225,11 +225,12 @@ TEST(Emulator, emulator_inputs) {
     spec["cores"][0]["inputs"] = nlohmann::json();
     spec["cores"][0]["inputs"]["file"] = "emu/test_inputs.csv";
     spec["cores"][0]["inputs"]["types"] = std::unordered_map<std::string, std::string>({{"1", "f"}, {"2", "f"}});
+    spec["cores"][0]["inputs"]["channels"] = std::unordered_map<std::string, unsigned int>({{"1", 0}, {"2", 0}});
 
 
     emulator_manager manager(spec);
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test");
+    auto result = manager.get_memory_snapshot("test", 0);
 
     ASSERT_EQ(result->at(4), 0x42f070a4);
 
@@ -243,9 +244,8 @@ TEST(Emulator, emulator_outputs) {
     manager.emulate();
     auto res = nlohmann::json::parse(manager.get_results())["test"];
 
-    auto s = res.dump();
     std::vector<uint32_t> reference = {0x426a7ae1, 0x42f070a4};
-    ASSERT_EQ(res["outputs"]["test_out"], reference);
+    ASSERT_EQ(res["outputs"]["test_out"][0], reference);
 
 }
 
@@ -259,7 +259,7 @@ TEST(Emulator, emulator_inteconnect) {
 
     auto s = res.dump();
     std::vector<uint32_t> reference = {0, 0x426a7ae1};
-    ASSERT_EQ(res["outputs"]["test_out"], reference);
+    ASSERT_EQ(res["outputs"]["test_out"][0], reference);
 
 }
 

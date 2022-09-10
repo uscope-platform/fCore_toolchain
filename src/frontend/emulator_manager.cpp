@@ -35,10 +35,8 @@ emulator_manager::emulator_manager(nlohmann::json &spec_file) {
     // Setup emulators
     for(auto &item:emulators){
         auto emu = item.second.emu;
-        emu->set_outputs(item.second.output_specs);
         emu->set_efi_selector(item.second.efi_implementation);
         emu->init_memory(item.second.memory_init);
-        emu->set_inputs(item.second.input);
     }
 }
 
@@ -47,13 +45,6 @@ void emulator_manager::emulate() {
         throw std::runtime_error("ERROR: Unspecified emulation length (at least one non empty input file should be present)");
     }
     run_cores();
-    for(auto &item:emulators){
-        try{
-            item.second.memory = *item.second.emu->get_memory();
-        } catch(std::runtime_error &e) {
-            errors[item.first] = e.what();
-        }
-    }
 }
 
 void emulator_manager::run_cores() {
@@ -62,19 +53,22 @@ void emulator_manager::run_cores() {
             auto src = emulators[conn.source].emu;
             auto dst = emulators[conn.destination].emu;
             for(auto &reg:conn.connections){
-                auto val = src->get_output(reg.first);
-                dst->apply_inputs(reg.second, val);
+                auto val = src->get_output(reg.first.address, reg.first.channel);
+                dst->apply_inputs(reg.second.address, val, reg.second.channel);
             }
         }
         for(auto &item:emulators){
-            auto emu = item.second.emu;
-            for(auto &in:item.second.input){
-                emu->apply_inputs(in.first, in.second[i]);
-            }
-            emu->run_round();
+            for(int j = 0; j<item.second.active_channels; ++j){
 
-            for (auto &out:item.second.output_specs) {
-                item.second.outputs[out.reg_n].push_back(emu->get_output(out.reg_n));
+                auto emu = item.second.emu;
+                for(auto &in:item.second.input){
+                    emu->apply_inputs(in.reg_n, in.data[i], j);
+                }
+                emu->run_round(j);
+
+                for (auto &out:item.second.output_specs) {
+                    item.second.outputs[j][out.reg_n].push_back(emu->get_output(out.reg_n, j));
+                }
             }
         }
     }
@@ -104,10 +98,11 @@ emulator_metadata emulator_manager::load_program(nlohmann::json &core) {
         sman.set_enabled_passes({false, true, true, true,false});
         program_stream = sman.process_stream(program_stream);
 
-
-        metadata.emu = std::make_shared<emulator>(program_stream);
         auto ch = core["channels"];
         metadata.active_channels = ch;
+
+        metadata.emu = std::make_shared<emulator>(program_stream, 1);
+
         if(core.contains("efi_implementation")){
             metadata.efi_implementation = core["efi_implementation"];
         } else {
@@ -120,8 +115,8 @@ emulator_metadata emulator_manager::load_program(nlohmann::json &core) {
     return metadata;
 }
 
-std::vector<std::pair<unsigned int, std::vector<uint32_t>>> emulator_manager::load_input(nlohmann::json &core) {
-    std::vector<std::pair<unsigned int, std::vector<uint32_t>>> inputs;
+std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
+    std::vector<inputs_t> inputs;
     if(core["inputs"].empty()){
         return inputs;
     }
@@ -143,6 +138,19 @@ std::vector<std::pair<unsigned int, std::vector<uint32_t>>> emulator_manager::lo
             }
             addresses.push_back(std::stoul(str.substr(1, str.size()-1)));
         }
+        std::unordered_map<std::string, std::string> types = core["inputs"]["types"];
+        std::unordered_map<unsigned int, unsigned int> channels;
+        if(core["inputs"].contains("channels")){
+            std::unordered_map<std::string, unsigned int> raw_ch = core["inputs"]["channels"];
+            for(auto &ch: raw_ch){
+                channels[std::stoul(ch.first)] = ch.second;
+            }
+        } else {
+            for(unsigned int & addr : addresses){
+                channels[addr] = 0;
+            }
+        }
+
 
         std::vector<std::vector<uint32_t>> inputs_store(addresses.size(), std::vector<uint32_t>());
         // PARSE CONTENT
@@ -150,7 +158,7 @@ std::vector<std::pair<unsigned int, std::vector<uint32_t>>> emulator_manager::lo
             iss = std::istringstream{line};
             int idx = 0;
             while(iss>>str){
-                std::unordered_map<std::string, std::string> types = core["inputs"]["types"];
+
                 auto addr = std::to_string(addresses[idx]);
                  if(types.contains(addr)){
                     if(types[addr] =="i"){
@@ -167,7 +175,11 @@ std::vector<std::pair<unsigned int, std::vector<uint32_t>>> emulator_manager::lo
         }
 
         for(int i = 0; i<addresses.size(); i++){
-            inputs.emplace_back(addresses[i], inputs_store[i]);
+            inputs_t  in;
+            in.reg_n = addresses[i];
+            in.data = inputs_store[i];
+            in.channel = channels[addresses[i]];
+            inputs.emplace_back(in);
         }
     } catch(std::runtime_error &e){
         errors[core["id"]] = e.what();
@@ -175,9 +187,9 @@ std::vector<std::pair<unsigned int, std::vector<uint32_t>>> emulator_manager::lo
     emu_length = -1;
     for(auto &item:inputs){
         if(emu_length<0){
-            emu_length = item.second.size();
+            emu_length = item.data.size();
         } else{
-            if(emu_length != item.second.size()){
+            if(emu_length != item.data.size()){
                 throw std::runtime_error("ERROR: All input files must have the same length");
             }
         }
@@ -220,27 +232,25 @@ std::string emulator_manager::get_results() {
     nlohmann::json res;
     for(auto &item:emulators){
         nlohmann::json j;
-        std::vector<std::string> str_mem_f;
-        std::vector<std::string> str_mem;
-        for(int i = 0; i< item.second.memory.size(); ++i){
-            float val;
-            memcpy(&val, &item.second.memory[i], sizeof(float));
-            str_mem_f.push_back("r"+std::to_string(i)+ ": " + std::to_string(val));
-            str_mem.push_back("r"+std::to_string(i)+ ": " + std::to_string(item.second.memory[i]));
-        }
         nlohmann::json outputs_json;
 
         for(auto &out_spec: item.second.output_specs){
             if(out_spec.type == type_uint32){
-                outputs_json[out_spec.name] = item.second.outputs[out_spec.reg_n];
+                nlohmann::json out;
+                for(auto it:item.second.outputs){
+                    out[it.first] = it.second[out_spec.reg_n];
+                }
+                outputs_json[out_spec.name] = out;
             } else if(out_spec.type == type_float){
-                outputs_json[out_spec.name] = uint32_to_float(item.second.outputs[out_spec.reg_n]);
+                nlohmann::json out;
+                for(auto it:item.second.outputs){
+                    out[it.first] = uint32_to_float(it.second[out_spec.reg_n]);
+                }
+                outputs_json[out_spec.name] = out;
             }
         }
 
         j["outputs"] = outputs_json;
-        j["registers"] = str_mem;
-        j["registers_f"] = str_mem_f;
         j["error_code"] = errors[item.first];
         res[item.first] = j;
     }
@@ -262,15 +272,21 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
         interconnect_t i;
         i.source = item["source"];
         i.destination = item["destination"];
-        std::unordered_map<std::string, unsigned int> registers = item["registers"];
+        nlohmann::json registers = item["registers"];
         for(auto &regs: registers){
-            i.connections[std::stoul(regs.first)] = regs.second;
+            register_spec_t rs_s;
+            rs_s.channel = regs["source"][0];
+            rs_s.address = regs["source"][1];
+            register_spec_t rs_d;
+            rs_d.channel = regs["destination"][0];
+            rs_d.address = regs["destination"][1];
+            i.connections.emplace_back(rs_s,rs_d);
         }
         res.push_back(i);
     }
     return res;
 }
 
-std::shared_ptr<std::vector<uint32_t>> emulator_manager::get_memory_snapshot(const std::string &core_id) {
-    return emulators[core_id].emu->get_memory();
+std::shared_ptr<std::vector<uint32_t>> emulator_manager::get_memory_snapshot(const std::string &core_id, int channel) {
+    return emulators[core_id].emu->get_memory(channel);
 }

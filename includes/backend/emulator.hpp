@@ -36,20 +36,15 @@ typedef struct {
 
 class emulator {
 public:
-    explicit
-    emulator(instruction_stream &s);
+    emulator(instruction_stream &s, int n_channels);
 
-    void set_inputs(std::vector<std::pair<unsigned int, std::vector<uint32_t>>> &in);
-    void set_outputs(std::vector<emulator_output_t> &out);
     void init_memory(std::unordered_map<unsigned int, uint32_t> &mem_init);
-    void apply_inputs(uint32_t addr, uint32_t data);
-    uint32_t get_output(uint32_t addr);
-    void run_program();
-    void run_program_with_inputs(unsigned int rounds);
-    void run_round();
+    void apply_inputs(uint32_t addr, uint32_t data, int channel);
+    uint32_t get_output(uint32_t addr, int channel);
+    void run_round(int channel);
     void set_efi_selector(std::string sel){ efi_selector = std::move(sel);};
-    std::shared_ptr<std::vector<uint32_t>> get_memory() { return memory;};
-    std::unordered_map<int, std::vector<uint32_t>> get_outputs() { return outputs;};
+    std::shared_ptr<std::vector<uint32_t>> get_memory(int channel) { return memory_pool[channel];};
+    std::unordered_map<int, std::shared_ptr<std::vector<uint32_t>>> get_memory_pool() { return memory_pool;};
 
     static uint32_t float_to_uint32(float f);
     static float uint32_to_float(uint32_t u);
@@ -92,10 +87,8 @@ private:
     std::string efi_selector;
     efi_dispatcher efi_implementation;
 
-    std::shared_ptr<std::vector<uint32_t>> memory;
-    std::vector<emulator_output_t> output_idx;
-    std::unordered_map<int, std::vector<uint32_t>> outputs{};
-    std::vector<std::pair<unsigned int, std::vector<uint32_t>>> inputs;
+    std::shared_ptr<std::vector<uint32_t>> working_memory;
+    std::unordered_map<int, std::shared_ptr<std::vector<uint32_t>>> memory_pool;
 };
 
 
