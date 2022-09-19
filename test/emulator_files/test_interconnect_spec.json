@@ -5,8 +5,12 @@
       "inputs": {
         "file":"emu/test_inputs.csv",
         "types":{
-          "1":"f",
-          "2":"f"
+          "input_1":"f",
+          "input_2":"f"
+        },
+        "registers":{
+          "input_1":1,
+          "input_2":2
         }
       },
       "outputs": [

@@ -31,7 +31,7 @@ emulator::emulator(instruction_stream &s, int n_channels) {
     stop_requested = false;
 }
 
-void emulator::apply_inputs(uint32_t addr, uint32_t data, int channel) {
+void emulator::apply_inputs(uint32_t addr, uint32_t data, unsigned int channel) {
     auto selected_mem = memory_pool[channel];
     selected_mem->at(addr) = data;
 }
@@ -399,7 +399,10 @@ uint32_t emulator::execute_xor(uint32_t a, uint32_t b) {
 
 void emulator::init_memory(std::unordered_map<unsigned int, uint32_t> &mem_init) {
     for(auto &item: mem_init){
-        working_memory->at(item.first) = item.second;
+        for(auto reg_file:memory_pool){
+            reg_file.second->at(item.first) = item.second;
+        }
+
     }
 }
 

@@ -224,8 +224,9 @@ TEST(Emulator, emulator_inputs) {
     spec["cores"][0]["efi_implementation"] = "efi_sort";
     spec["cores"][0]["inputs"] = nlohmann::json();
     spec["cores"][0]["inputs"]["file"] = "emu/test_inputs.csv";
-    spec["cores"][0]["inputs"]["types"] = std::unordered_map<std::string, std::string>({{"1", "f"}, {"2", "f"}});
-    spec["cores"][0]["inputs"]["channels"] = std::unordered_map<std::string, unsigned int>({{"1", 0}, {"2", 0}});
+    spec["cores"][0]["inputs"]["registers"] = std::unordered_map<std::string, unsigned int>({{"input_1", 1}, {"input_2", 2}});
+    spec["cores"][0]["inputs"]["types"] = std::unordered_map<std::string, std::string>({{"input_1", "f"}, {"input_2", "f"}});
+    spec["cores"][0]["inputs"]["channels"] = std::unordered_map<std::string, unsigned int>({{"input_1", 0}, {"input_2", 0}});
 
 
     emulator_manager manager(spec);
@@ -238,7 +239,7 @@ TEST(Emulator, emulator_inputs) {
 
 TEST(Emulator, emulator_outputs) {
 
-    std::ifstream ifs("emu/test_spec.json");
+    std::ifstream ifs("emu/test_inputs_spec.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
     emulator_manager manager(specs);
     manager.emulate();

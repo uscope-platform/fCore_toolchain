@@ -22,6 +22,7 @@
 
 #include "frontend/binary_loader.hpp"
 #include "../third_party/json.hpp"
+#include "../third_party/csv.hpp"
 #include "backend/emulator.hpp"
 #include "tools/instruction_stream_builder.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
@@ -70,6 +71,8 @@ private:
     std::vector<interconnect_t> load_interconnects(nlohmann::json &interconnects);
 
     void run_cores();
+
+    nlohmann::json get_channel_outputs(std::vector<emulator_output_t> specs, int ch, std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outs);
 
     static std::vector<float> uint32_to_float(std::vector<uint32_t> &vect);
     std::unordered_map<std::string, emulator_metadata> emulators;

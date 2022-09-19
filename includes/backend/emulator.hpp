@@ -39,7 +39,7 @@ public:
     emulator(instruction_stream &s, int n_channels);
 
     void init_memory(std::unordered_map<unsigned int, uint32_t> &mem_init);
-    void apply_inputs(uint32_t addr, uint32_t data, int channel);
+    void apply_inputs(uint32_t addr, uint32_t data, unsigned int channel);
     uint32_t get_output(uint32_t addr, int channel);
     void run_round(int channel);
     void set_efi_selector(std::string sel){ efi_selector = std::move(sel);};

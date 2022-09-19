@@ -58,12 +58,11 @@ void emulator_manager::run_cores() {
             }
         }
         for(auto &item:emulators){
+            auto emu = item.second.emu;
+            for(auto &in:item.second.input){
+                emu->apply_inputs(in.reg_n, in.data[i], in.channel);
+            }
             for(int j = 0; j<item.second.active_channels; ++j){
-
-                auto emu = item.second.emu;
-                for(auto &in:item.second.input){
-                    emu->apply_inputs(in.reg_n, in.data[i], j);
-                }
                 emu->run_round(j);
 
                 for (auto &out:item.second.output_specs) {
@@ -101,7 +100,7 @@ emulator_metadata emulator_manager::load_program(nlohmann::json &core) {
         auto ch = core["channels"];
         metadata.active_channels = ch;
 
-        metadata.emu = std::make_shared<emulator>(program_stream, 1);
+        metadata.emu = std::make_shared<emulator>(program_stream, ch);
 
         if(core.contains("efi_implementation")){
             metadata.efi_implementation = core["efi_implementation"];
@@ -120,70 +119,47 @@ std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
     if(core["inputs"].empty()){
         return inputs;
     }
-    try{
-        std::ifstream stream;
-        stream.open(core["inputs"]["file"]);
-        std::string line;
-        std::vector<unsigned int> addresses;
-        // PARSE HEADER
-        std::getline(stream, line);
+    std::string file_path = core["inputs"]["file"];
+    csv::CSVReader reader(file_path);
+    auto column_names = reader.get_col_names();
 
-        std::istringstream iss = std::istringstream{line};
-        std::string str;
+    std::unordered_map<std::string, std::string> types = core["inputs"]["types"];
+    std::unordered_map<std::string, int> regs = core["inputs"]["registers"];
+    std::unordered_map<std::string, unsigned int> channels;
 
-        while (iss >> str) {
-            std::smatch s;
-            if(!std::regex_match(str, s, std::regex("r\\d+"))){
-                throw std::runtime_error("ERROR: malformed inputs file header");
-            }
-            addresses.push_back(std::stoul(str.substr(1, str.size()-1)));
+    if(core["inputs"].contains("channels")){
+        std::unordered_map<std::string, unsigned int> raw_ch = core["inputs"]["channels"];
+        channels = raw_ch;
+    } else {
+        for(auto &col :column_names){
+            channels[col] = 0;
         }
-        std::unordered_map<std::string, std::string> types = core["inputs"]["types"];
-        std::unordered_map<unsigned int, unsigned int> channels;
-        if(core["inputs"].contains("channels")){
-            std::unordered_map<std::string, unsigned int> raw_ch = core["inputs"]["channels"];
-            for(auto &ch: raw_ch){
-                channels[std::stoul(ch.first)] = ch.second;
-            }
-        } else {
-            for(unsigned int & addr : addresses){
-                channels[addr] = 0;
+    }
+
+    std::unordered_map<std::string, std::vector<uint32_t>> inputs_vect;
+
+    for (csv::CSVRow& row: reader) { // Input iterator
+        for(auto &col:column_names){
+            uint32_t val;
+            if(types[col] =="i"){
+                inputs_vect[col].push_back(row[col].get<uint32_t>());
+            } else if(types[col]=="f") {
+                inputs_vect[col].push_back(emulator::float_to_uint32(row[col].get<float>()));
             }
         }
-
-
-        std::vector<std::vector<uint32_t>> inputs_store(addresses.size(), std::vector<uint32_t>());
-        // PARSE CONTENT
-        while (std::getline(stream, line)) {
-            iss = std::istringstream{line};
-            int idx = 0;
-            while(iss>>str){
-
-                auto addr = std::to_string(addresses[idx]);
-                 if(types.contains(addr)){
-                    if(types[addr] =="i"){
-                        inputs_store[idx].push_back(std::stoul(str));
-                    } else if(types[addr]=="f"){
-                        inputs_store[idx].push_back(emulator::float_to_uint32(std::stof(str)));
-                    }
-                } else{
-                    inputs_store[idx].push_back(emulator::float_to_uint32(std::stof(str)));
-                }
-
-                ++idx;
-            }
-        }
-
-        for(int i = 0; i<addresses.size(); i++){
+    }
+    for(auto &col:column_names){
+        if(regs.contains(col)){
             inputs_t  in;
-            in.reg_n = addresses[i];
-            in.data = inputs_store[i];
-            in.channel = channels[addresses[i]];
+            in.reg_n = regs[col];
+            in.data = inputs_vect[col];
+            in.channel = channels[col];
             inputs.emplace_back(in);
         }
-    } catch(std::runtime_error &e){
-        errors[core["id"]] = e.what();
     }
+
+
+
     emu_length = -1;
     for(auto &item:inputs){
         if(emu_length<0){
@@ -233,24 +209,7 @@ std::string emulator_manager::get_results() {
     for(auto &item:emulators){
         nlohmann::json j;
         nlohmann::json outputs_json;
-
-        for(auto &out_spec: item.second.output_specs){
-            if(out_spec.type == type_uint32){
-                nlohmann::json out;
-                for(auto it:item.second.outputs){
-                    out[it.first] = it.second[out_spec.reg_n];
-                }
-                outputs_json[out_spec.name] = out;
-            } else if(out_spec.type == type_float){
-                nlohmann::json out;
-                for(auto it:item.second.outputs){
-                    out[it.first] = uint32_to_float(it.second[out_spec.reg_n]);
-                }
-                outputs_json[out_spec.name] = out;
-            }
-        }
-
-        j["outputs"] = outputs_json;
+        j["outputs"] = get_channel_outputs(item.second.output_specs, item.second.active_channels, item.second.outputs);
         j["error_code"] = errors[item.first];
         res[item.first] = j;
     }
@@ -258,6 +217,27 @@ std::string emulator_manager::get_results() {
 
     return res.dump(4);
 }
+
+nlohmann::json emulator_manager::get_channel_outputs(std::vector<emulator_output_t> specs, int ch, std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outs) {
+    nlohmann::json res;
+
+    for(auto &s: specs){
+        nlohmann::json output_obj;
+        if(s.type == type_uint32){
+            for(int i = 0; i<ch; ++i){
+                output_obj[i] = outs[i][s.reg_n];
+            }
+        } else if(s.type == type_float){
+            for(int i = 0; i<ch; ++i){
+                output_obj[i] = uint32_to_float(outs[i][s.reg_n]);
+            }
+        }
+        res[s.name] = output_obj;
+    }
+
+    return res;
+}
+
 
 std::vector<float> emulator_manager::uint32_to_float(std::vector<uint32_t> &vect) {
     std::vector<float> cast_vect;
@@ -290,3 +270,5 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
 std::shared_ptr<std::vector<uint32_t>> emulator_manager::get_memory_snapshot(const std::string &core_id, int channel) {
     return emulators[core_id].emu->get_memory(channel);
 }
+
+
