@@ -23,7 +23,6 @@ emulator::emulator(instruction_stream &s, int n_channels) {
         memory_pool[i] = std::make_shared<std::vector<uint32_t>>(2 << (fcore_register_address_width - 1), 0);
     }
     working_memory = memory_pool[0];
-    efi_implementation.set_memory(working_memory);
     xip_fpo_init2(xil_a, 8, 24);
     xip_fpo_init2(xil_b, 8, 24);
     xip_fpo_init2(xil_res, 8, 24);
@@ -367,7 +366,7 @@ uint32_t emulator::execute_satn(uint32_t a, uint32_t b) {
 }
 
 void emulator::execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest) {
-    efi_implementation.emulate_efi(efi_selector, op_a, op_b, dest);
+    efi_implementation.emulate_efi(efi_selector, op_a, op_b, dest, working_memory);
 }
 
 

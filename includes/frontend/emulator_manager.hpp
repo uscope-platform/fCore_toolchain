@@ -42,6 +42,7 @@ typedef struct {
     unsigned int reg_n;
     std::vector<uint32_t> data;
     unsigned int channel;
+    std::string name;
 }inputs_t;
 
 typedef struct {

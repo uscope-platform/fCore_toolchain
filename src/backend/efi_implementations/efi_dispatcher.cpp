@@ -16,33 +16,33 @@
 #include "backend/efi_implementations/efi_dispatcher.h"
 
 
-void efi_dispatcher::emulate_efi(const std::string& function, uint32_t op_a, uint32_t op_b, uint32_t dest) {
+void efi_dispatcher::emulate_efi(const std::string& function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
     if(function == "efi_sort"){
-        efi_sort(op_a, op_b, dest);
+        efi_sort(op_a, op_b, dest, m);
     } else if(function =="efi_trig") {
-        efi_trig(op_a, op_b, dest);
+        efi_trig(op_a, op_b, dest, m);
     } else{
         throw std::runtime_error("ERROR: The emulator has encountered an EFI instruction, however no implementation was selected in the spec file");
     }
 }
 
-void efi_dispatcher::efi_sort(uint32_t op_a, uint32_t op_b, uint32_t dest) {
-    std::vector<float> in;
+void efi_dispatcher::efi_sort(uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
 
-    bool descending_order  = memory->at(op_a) != 1;
+
+    bool descending_order  = m->at(op_a) != 1;
     std::vector<cell> cells;
     std::vector<uint32_t> idx;
-    idx.reserve(in.size());
-    cells.reserve(in.size());
+    idx.reserve(op_b-1);
+    cells.reserve(op_b-1);
 
     for (int i = 1; i < op_b; i++) {
-        cells.emplace_back(uint32_to_float(memory->at(op_a+i)), i, descending_order);
+        cells.emplace_back(uint32_to_float(m->at(op_a+i)), i, descending_order);
     }
 
     std::sort(cells.begin(), cells.end());
 
     for (int i = 0; i < cells.size(); ++i) {
-        memory->at(dest+i) = (uint32_t)cells[i].idx-1;
+        m->at(dest+i) = (uint32_t)cells[i].idx-1;
     }
 }
 
@@ -69,11 +69,11 @@ inline T signextend(const T x)
     return s.x = x;
 }
 
-void efi_dispatcher::efi_trig(uint32_t op_a, uint32_t op_b, uint32_t dest) {
+void efi_dispatcher::efi_trig(uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
 
-    int opcode  = memory->at(op_a);
+    int opcode  = m->at(op_a);
 
-    uint32_t theta = memory->at(op_a+1);
+    uint32_t theta = m->at(op_a+1);
 
     double angle_deg = theta/65536.0*360.0;
 
@@ -87,7 +87,7 @@ void efi_dispatcher::efi_trig(uint32_t op_a, uint32_t op_b, uint32_t dest) {
     }
     float scaled_res = raw_result*32768;
     int result = round(scaled_res);
-    memory->at(dest) = result;
+    m->at(dest) = result;
 }
 
 

@@ -145,6 +145,8 @@ std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
                 inputs_vect[col].push_back(row[col].get<uint32_t>());
             } else if(types[col]=="f") {
                 inputs_vect[col].push_back(emulator::float_to_uint32(row[col].get<float>()));
+            } else{
+                throw std::runtime_error("ERROR: unknown type: " + types[col] + " for input " + col);
             }
         }
     }
@@ -154,10 +156,10 @@ std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
             in.reg_n = regs[col];
             in.data = inputs_vect[col];
             in.channel = channels[col];
+            in.name = col;
             inputs.emplace_back(in);
         }
     }
-
 
 
     emu_length = -1;
