@@ -140,7 +140,7 @@ std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
 
     for (csv::CSVRow& row: reader) { // Input iterator
         for(auto &col:column_names){
-            if(!types.contains(col) && !regs.contains(col) && !channels.contains(col)){
+            if(!types.contains(col) && !regs.contains(col)){
                 continue; //In this case the column in the input file is spurious and can be ignored
             }
             if(types[col] =="i"){
