@@ -69,14 +69,9 @@ void emulator::run_instruction_by_type(const std::shared_ptr<ll_instruction_node
 void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_node>& node) {
     std::string opcode = node->get_opcode();
 
-    std::string raw_dest = node->get_destination()->get_name();
-    uint32_t dest = std::stoul(raw_dest.substr(1, raw_dest.size()-1));
-
-    std::string raw_op_a = node->get_operand_a()->get_name();
-    uint32_t op_a = std::stoul(raw_op_a.substr(1, raw_op_a.size()-1));
-
-    std::string raw_op_b = node->get_operand_b()->get_name();
-    uint32_t op_b = std::stoul(raw_op_b.substr(1, raw_op_b.size()-1));
+    uint32_t dest = node->get_destination()->get_bound_reg();
+    uint32_t op_a = node->get_operand_a()->get_bound_reg();
+    uint32_t op_b = node->get_operand_b()->get_bound_reg();
 
     auto a = working_memory->at(op_a);
     auto b = working_memory->at(op_b);
@@ -131,11 +126,9 @@ void emulator::run_independent_instruction(const std::shared_ptr<ll_independent_
 void emulator::run_conversion_instruction(const std::shared_ptr<ll_conversion_instr_node>& node) {
     std::string opcode = node->get_opcode();
 
-    std::string raw_dest = node->get_destination()->get_name();
-    uint32_t dest = std::stoul(raw_dest.substr(1, raw_dest.size()-1));
+    uint32_t src = node->get_source()->get_bound_reg();
+    uint32_t dest = node->get_destination()->get_bound_reg();
 
-    std::string raw_src = node->get_source()->get_name();
-    uint32_t src = std::stoul(raw_src.substr(1, raw_src.size()-1));
     if(opcode == "rec"){
         working_memory->at(dest) = execute_rec(working_memory->at(src));
     } else if(opcode == "fti"){
@@ -160,8 +153,7 @@ void emulator::run_load_constant_instruction(const std::shared_ptr<ll_load_const
 
     memcpy(&const_val, &raw_const, sizeof(uint32_t));
 
-    std::string raw_dest = node->get_destination()->get_name();
-    uint32_t dest = std::stoul(raw_dest.substr(1, raw_dest.size()-1));
+    uint32_t dest = node->get_destination()->get_bound_reg();
 
     working_memory->at(dest) = const_val;
 }

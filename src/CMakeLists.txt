@@ -30,6 +30,7 @@ set(FCORE_COMMON_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/register_allocation.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/constant_merging.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/zero_assignment_removal_pass.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/bound_register_mapping.cpp
         )
 
 
@@ -115,7 +116,7 @@ install(TARGETS fCore_dis DESTINATION /usr/bin)
 
 if(${INCLUDE_EMULATOR})
     add_executable(fCore_emu ${FCORE_EMU_SRCS} fcore_emu_main.cpp)
-    target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel common_srcs)
+    target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel common_srcs spdlog)
 
     install(TARGETS fCore_emu DESTINATION /usr/bin)
     install(FILES ../third_party/fp_ip_cmodel/lib/libIp_floating_point_v7_1_bitacc_cmodel.so

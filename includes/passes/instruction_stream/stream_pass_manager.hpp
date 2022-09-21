@@ -28,6 +28,7 @@
 #include "passes/instruction_stream/register_allocation.hpp"
 #include "passes/instruction_stream/constant_merging.hpp"
 #include "passes/instruction_stream/zero_assignment_removal_pass.hpp"
+#include "passes/instruction_stream/bound_register_mapping.hpp"
 
 class stream_pass_manager {
 public:

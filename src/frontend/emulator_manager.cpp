@@ -99,7 +99,7 @@ emulator_metadata emulator_manager::load_program(nlohmann::json &core) {
 
         std::unordered_map<std::string, std::shared_ptr<variable>> iom;
         stream_pass_manager sman(iom,0);
-        sman.set_enabled_passes({false, true, true, true,false});
+        sman.set_enabled_passes({false, true, true, true,false, true});
         program_stream = sman.process_stream(program_stream);
 
         auto ch = core["channels"];

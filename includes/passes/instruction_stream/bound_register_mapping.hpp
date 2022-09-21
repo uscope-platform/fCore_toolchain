@@ -14,19 +14,21 @@
 // limitations under the License.02/07/2021.
 //
 
-#ifndef FCORE_TOOLCHAIN_ZERO_ASSIGNMENT_REMOVAL_PASS_HPP
-#define FCORE_TOOLCHAIN_ZERO_ASSIGNMENT_REMOVAL_PASS_HPP
+#ifndef FCORE_TOOLCHAIN_BOUND_REGISTER_MAPPING_PASS_HPP
+#define FCORE_TOOLCHAIN_BOUND_REGISTER_MAPPING_PASS_HPP
 
 #include "passes/instruction_stream/stream_pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
-class zero_assignment_removal_pass : public stream_pass_base{
+class bound_register_mapping_pass : public stream_pass_base{
 public:
-    zero_assignment_removal_pass();
+    bound_register_mapping_pass();
     std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
 private:
-    bool delete_intercalated_const;
+    std::shared_ptr<ll_instruction_node> process_reg_instr(std::shared_ptr<ll_instruction_node> node);
+    std::shared_ptr<ll_instruction_node> process_conv_instr(std::shared_ptr<ll_instruction_node> node);
+    std::shared_ptr<ll_instruction_node> process_load_instr(std::shared_ptr<ll_instruction_node> node);
 };
 
 
-#endif //FCORE_TOOLCHAIN_ZERO_ASSIGNMENT_REMOVAL_PASS_HPP
+#endif //FCORE_TOOLCHAIN_BOUND_REGISTER_MAPPING_PASS_HPP
