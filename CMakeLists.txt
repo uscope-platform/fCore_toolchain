@@ -83,3 +83,10 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(antlr_jar)
+
+FetchContent_Declare(
+        spdlog
+        GIT_REPOSITORY https://github.com/gabime/spdlog.git
+        GIT_TAG        76fb40d95455f249bd70824ecfcae7a8f0930fa3 # v1.10.0
+)
+FetchContent_MakeAvailable(spdlog)

@@ -22,6 +22,8 @@
 #include "data_structures/instruction_stream.hpp"
 #include "floating_point_v7_1_bitacc_cmodel.h"
 #include "fCore_isa.hpp"
+#include <spdlog/spdlog.h>
+
 
 typedef enum {
     type_uint32 = 1,
@@ -49,7 +51,6 @@ public:
     static uint32_t float_to_uint32(float f);
     static float uint32_to_float(uint32_t u);
 private:
-
     void run_instruction_by_type(const std::shared_ptr<ll_instruction_node>& node);
 
     void run_register_instruction(const std::shared_ptr<ll_register_instr_node>& node);

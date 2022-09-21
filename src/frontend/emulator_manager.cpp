@@ -20,8 +20,10 @@
 emulator_manager::emulator_manager(nlohmann::json &spec_file) {
     ordering_style = no_ordering;
     implicit_order_idx = 0;
+
     if(!spec_file.contains("cores")){
-        throw std::runtime_error("ERROR: No cores section found in the emulator specification file");
+        spdlog::critical("No cores section found in the emulator specification file");
+        exit(-1);
     }
     // Parse specification file;
     for(auto &item:spec_file["cores"]){
@@ -40,11 +42,13 @@ emulator_manager::emulator_manager(nlohmann::json &spec_file) {
         emu->set_efi_selector(item.second.efi_implementation);
         emu->init_memory(item.second.memory_init);
     }
+
 }
 
 void emulator_manager::emulate() {
     if(emu_length==-1){
-        throw std::runtime_error("ERROR: Unspecified emulation length (at least one non empty input file should be present)");
+        spdlog::critical("Unspecified emulation length (at least one non empty input file should be present)");
+        exit(-1);
     }
     run_cores();
 }
@@ -68,8 +72,8 @@ void emulator_manager::run_cores() {
                 emu->apply_inputs(in.reg_n, in.data[i], in.channel);
             }
             for(int j = 0; j<emulators[core_id.second].active_channels; ++j){
+                spdlog::info("RUNNING ROUND " + std::to_string(i+1) + " of " + std::to_string(emu_length) + ": core ID = " + core_id.second + " (CH " + std::to_string(j) + ")");
                 emu->run_round(j);
-
                 for (auto &out:emulators[core_id.second].output_specs) {
                     emulators[core_id.second].outputs[j][out.reg_n].push_back(emu->get_output(out.reg_n, j));
                 }
@@ -114,13 +118,15 @@ emulator_metadata emulator_manager::load_program(nlohmann::json &core) {
         }
         if(core.contains("order")){
             if(ordering_style==implicit_ordering){
-                throw std::runtime_error("ERROR: Mixing of explicit and implicit cores ordering is not allowed");
+                spdlog::critical("Mixing of explicit and implicit cores ordering is not allowed");
+                exit(-1);
             }
                 cores_ordering[core["order"]] = core["id"];
                 ordering_style = explicit_ordering;
         } else {
             if(ordering_style==explicit_ordering){
-                throw std::runtime_error("ERROR: Mixing of explicit and implicit cores ordering is not allowed");
+                spdlog::critical("Mixing of explicit and implicit cores ordering is not allowed");
+                exit(-1);
             }
             ordering_style = implicit_ordering;
 
@@ -167,7 +173,8 @@ std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
             } else if(types[col]=="f") {
                 inputs_vect[col].push_back(emulator::float_to_uint32(row[col].get<float>()));
             } else{
-                throw std::runtime_error("ERROR: unknown type: " + types[col] + " for input " + col);
+                spdlog::critical("unknown type: " + types[col] + " for input " + col);
+                exit(-1);
             }
         }
     }
@@ -189,7 +196,8 @@ std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
             emu_length = item.data.size();
         } else{
             if(emu_length != item.data.size()){
-                throw std::runtime_error("ERROR: All input files must have the same length");
+                spdlog::critical("All input files must have the same length");
+                exit(-1);
             }
         }
     }

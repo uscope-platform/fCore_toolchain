@@ -26,6 +26,7 @@
 #include "backend/emulator.hpp"
 #include "tools/instruction_stream_builder.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
+#include "spdlog/spdlog.h"
 
 typedef struct{
     unsigned int channel;

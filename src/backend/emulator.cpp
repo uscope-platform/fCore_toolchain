@@ -15,7 +15,7 @@
 
 #include "backend/emulator.hpp"
 
-#include <utility>
+
 
 emulator::emulator(instruction_stream &s, int n_channels) {
     stream = s;
@@ -108,7 +108,8 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
     } else if (opcode == "bsel"){
         working_memory->at(dest) = execute_bsel(a, b);
     } else {
-        throw std::runtime_error("EMULATION ERROR: Encountered the following unimplemented operation: " + opcode);
+        spdlog::critical("Encountered the following unimplemented operation: " + opcode);
+        exit(-1);
     }
 }
 
@@ -119,7 +120,8 @@ void emulator::run_independent_instruction(const std::shared_ptr<ll_independent_
     } else if (opcode == "stop"){
         stop_requested = true;
     } else {
-        throw std::runtime_error("EMULATION ERROR: Encountered the following unimplemented operation: " + opcode);
+        spdlog::critical("Encountered the following unimplemented operation: " + opcode);
+        exit(-1);
     }
 }
 
@@ -143,7 +145,8 @@ void emulator::run_conversion_instruction(const std::shared_ptr<ll_conversion_in
         working_memory->at(dest) = execute_popcnt(working_memory->at(src));
         int i = 0;
     } else {
-            throw std::runtime_error("EMULATION ERROR: Encountered the following unimplemented operation: " + opcode);
+        spdlog::critical("Encountered the following unimplemented operation: " + opcode);
+        exit(-1);
     }
 }
 
@@ -169,7 +172,8 @@ uint32_t emulator::execute_add(uint32_t a, uint32_t b) {
 
     xip_fpo_exc_t exc = xip_fpo_add(xil_res, xil_a, xil_b);
     if ( exc != 0) {
-        throw std::runtime_error("An exception occurred in the addition of"+ std::to_string(a) + " and " + std::to_string(b));
+        spdlog::critical("An exception occurred in the addition of"+ std::to_string(a) + " and " + std::to_string(b));
+        exit(-1);
     }
 
     auto fv = xip_fpo_get_flt(xil_res);
@@ -183,7 +187,8 @@ uint32_t emulator::execute_sub(uint32_t a, uint32_t b) {
     xip_fpo_exc_t exc = xip_fpo_sub(xil_res, xil_a, xil_b);
 
     if ( exc != 0) {
-        throw std::runtime_error("An exception occurred in the subtraction of"+ std::to_string(a) + " and " + std::to_string(b));
+        spdlog::critical("An exception occurred in the subtraction of"+ std::to_string(a) + " and " + std::to_string(b));
+        exit(-1);
     }
 
     return float_to_uint32(xip_fpo_get_flt(xil_res));
@@ -195,7 +200,8 @@ uint32_t emulator::execute_mul(uint32_t a, uint32_t b) {
 
     xip_fpo_exc_t exc = xip_fpo_mul(xil_res, xil_a, xil_b);
     if ( exc != 0) {
-        throw std::runtime_error("An exception occurred in the multiplication of"+ std::to_string(a) + " and " + std::to_string(b));
+        spdlog::critical("An exception occurred in the multiplication of"+ std::to_string(a) + " and " + std::to_string(b));
+        exit(-1);
     }
 
     return float_to_uint32(xip_fpo_get_flt(xil_res));
@@ -207,7 +213,8 @@ uint32_t emulator::execute_rec(uint32_t a) {
     xip_fpo_exc_t exc = xip_fpo_rec(xil_res, xil_a);
 
     if ( exc != 0) {
-        throw std::runtime_error("An exception occurred during the calculation of the reciprocal of"+ std::to_string(a));
+        spdlog::critical("An exception occurred during the calculation of the reciprocal of"+ std::to_string(a));
+        exit(-1);
     }
 
     return float_to_uint32(xip_fpo_get_flt(xil_res));
@@ -219,7 +226,8 @@ uint32_t emulator::execute_fti(uint32_t a) {
     xip_fpo_exc_t exc = xip_fpo_flttofix(xil_a_fixed_point, xil_a);
 
     if ( exc != 0) {
-        throw std::runtime_error("An exception occurred during the conversion of "+ std::to_string(a) + "to integer from float");
+        spdlog::critical("An exception occurred during the conversion of "+ std::to_string(a) + "to float from integer");
+        exit(-1);
     }
     return (uint32_t) xip_fpo_fix_get_si(xil_a_fixed_point);
 }
@@ -230,7 +238,8 @@ uint32_t emulator::execute_itf(uint32_t a) {
     xip_fpo_exc_t exc = xip_fpo_fixtoflt(xil_res, xil_a_fixed_point);
 
     if ( exc != 0) {
-        throw std::runtime_error("An exception occurred during the conversion of "+ std::to_string(a) + "to float from integer");
+        spdlog::critical("An exception occurred during the conversion of "+ std::to_string(a) + "to integer from float");
+        exit(-1);
     }
     auto fv = xip_fpo_get_flt(xil_res);
     return float_to_uint32(fv);
@@ -244,7 +253,8 @@ uint32_t emulator::execute_compare_gt(uint32_t a, uint32_t b) {
     xip_fpo_exc_t exc = xip_fpo_greater(&res_int, xil_a, xil_b);
 
     if ( exc != 0) {
-        throw std::runtime_error("An exception occurred during the comparison of "+ std::to_string(a) + " and " + std::to_string(b) + " (greater than)");
+        spdlog::critical("An exception occurred during the comparison of "+ std::to_string(a) + " and " + std::to_string(b) + " (greater than)");
+        exit(-1);
     }
 
     if(res_int){
@@ -262,7 +272,8 @@ uint32_t emulator::execute_compare_le(uint32_t a, uint32_t b) {
     xip_fpo_exc_t exc = xip_fpo_lessequal(&res_int, xil_a, xil_b);
 
     if ( exc != 0) {
-        throw std::runtime_error("An exception occurred during the comparison of "+ std::to_string(a) + " and " + std::to_string(b) + " (less than or equal)");
+        spdlog::critical("An exception occurred during the comparison of "+ std::to_string(a) + " and " + std::to_string(b) + " (less than or equal)");
+        exit(-1);
     }
     if(res_int){
         return 0xffffffff;
@@ -279,7 +290,8 @@ uint32_t emulator::execute_compare_eq(uint32_t a, uint32_t b) {
     xip_fpo_exc_t exc = xip_fpo_equal(&res_int, xil_a, xil_b);
 
     if ( exc != 0) {
-        throw std::runtime_error("An exception occurred during the comparison of "+ std::to_string(a) + " and " + std::to_string(b) + " (equal)");
+        spdlog::critical("An exception occurred during the comparison of "+ std::to_string(a) + " and " + std::to_string(b) + " (equal)");
+        exit(-1);
     }
     if(res_int){
         return 0xffffffff;
@@ -296,7 +308,8 @@ uint32_t emulator::execute_compare_ne(uint32_t a, uint32_t b) {
     xip_fpo_exc_t exc = xip_fpo_notequal(&res_int, xil_a, xil_b);
 
     if ( exc != 0) {
-        throw std::runtime_error("An exception occurred during the comparison of "+ std::to_string(a) + " and " + std::to_string(b) + " (not equal)");
+        spdlog::critical("An exception occurred during the comparison of "+ std::to_string(a) + " and " + std::to_string(b) + " (not equal)");
+        exit(-1);
     }
 
     if(res_int){
