@@ -18,6 +18,8 @@
 
 
 emulator_manager::emulator_manager(nlohmann::json &spec_file) {
+    ordering_style = no_ordering;
+    implicit_order_idx = 0;
     if(!spec_file.contains("cores")){
         throw std::runtime_error("ERROR: No cores section found in the emulator specification file");
     }
@@ -49,24 +51,27 @@ void emulator_manager::emulate() {
 
 void emulator_manager::run_cores() {
     for(int i= 0; i<emu_length;i++){
-        for(auto &conn:interconnects){
-            auto src = emulators[conn.source].emu;
-            auto dst = emulators[conn.destination].emu;
-            for(auto &reg:conn.connections){
-                auto val = src->get_output(reg.first.address, reg.first.channel);
-                dst->apply_inputs(reg.second.address, val, reg.second.channel);
+        if(i>0){
+            for(auto &conn:interconnects){
+                auto src = emulators[conn.source].emu;
+                auto dst = emulators[conn.destination].emu;
+                for(auto &reg:conn.connections){
+                    auto val = src->get_output(reg.first.address, reg.first.channel);
+                    dst->apply_inputs(reg.second.address, val, reg.second.channel);
+                }
             }
         }
-        for(auto &item:emulators){
-            auto emu = item.second.emu;
-            for(auto &in:item.second.input){
+
+        for(auto &core_id:cores_ordering){
+            auto emu = emulators[core_id.second].emu;
+            for(auto &in:emulators[core_id.second].input){
                 emu->apply_inputs(in.reg_n, in.data[i], in.channel);
             }
-            for(int j = 0; j<item.second.active_channels; ++j){
+            for(int j = 0; j<emulators[core_id.second].active_channels; ++j){
                 emu->run_round(j);
 
-                for (auto &out:item.second.output_specs) {
-                    item.second.outputs[j][out.reg_n].push_back(emu->get_output(out.reg_n, j));
+                for (auto &out:emulators[core_id.second].output_specs) {
+                    emulators[core_id.second].outputs[j][out.reg_n].push_back(emu->get_output(out.reg_n, j));
                 }
             }
         }
@@ -107,7 +112,21 @@ emulator_metadata emulator_manager::load_program(nlohmann::json &core) {
         } else {
             metadata.efi_implementation = "";
         }
+        if(core.contains("order")){
+            if(ordering_style==implicit_ordering){
+                throw std::runtime_error("ERROR: Mixing of explicit and implicit cores ordering is not allowed");
+            }
+                cores_ordering[core["order"]] = core["id"];
+                ordering_style = explicit_ordering;
+        } else {
+            if(ordering_style==explicit_ordering){
+                throw std::runtime_error("ERROR: Mixing of explicit and implicit cores ordering is not allowed");
+            }
+            ordering_style = implicit_ordering;
 
+            cores_ordering[implicit_order_idx] =  core["id"];
+            implicit_order_idx++;
+        }
     } catch(std::runtime_error &e){
         errors[core["id"]] = e.what();
     }
@@ -178,7 +197,7 @@ std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
 }
 
 std::vector<emulator_output_t> emulator_manager:: load_output_specs(nlohmann::json &core) {
-    std::vector<emulator_output_t> outputs;
+    std::vector<emulator_output_t> out_specs;
     for(auto &item: core["outputs"]){
         emulator_output_t out;
         if(item["type"] =="f"){
@@ -188,9 +207,9 @@ std::vector<emulator_output_t> emulator_manager:: load_output_specs(nlohmann::js
         }
         out.reg_n = item["reg_n"];
         out.name = item["name"];
-        outputs.push_back(out);
+        out_specs.push_back(out);
     }
-    return outputs;
+    return out_specs;
 }
 
 std::unordered_map<unsigned int, uint32_t> emulator_manager::load_memory_init(nlohmann::json &mem_init) {

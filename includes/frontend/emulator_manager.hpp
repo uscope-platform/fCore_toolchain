@@ -56,6 +56,7 @@ typedef struct {
     std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outputs;
 }emulator_metadata;
 
+typedef  enum {explicit_ordering=1,implicit_ordering=2,no_ordering=0}cores_ordering_t;
 
 class emulator_manager {
 public:
@@ -76,9 +77,13 @@ private:
     nlohmann::json get_channel_outputs(std::vector<emulator_output_t> specs, int ch, std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outs);
 
     static std::vector<float> uint32_to_float(std::vector<uint32_t> &vect);
+    std::map<int, std::string> cores_ordering;
+
     std::unordered_map<std::string, emulator_metadata> emulators;
     std::vector<interconnect_t> interconnects;
     int emu_length;
+    cores_ordering_t ordering_style;
+    int implicit_order_idx;
     std::unordered_map<std::string, std::string> errors;
 };
 
