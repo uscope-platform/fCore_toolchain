@@ -75,7 +75,7 @@ void dead_load_elimination::search_usages(std::shared_ptr<hl_ast_node> element) 
         std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
         search_usages(node);
     } else{
-        throw std::runtime_error("ERROR: unexpected node type in dead load elimination pass");
+        throw std::runtime_error("unexpected node type in dead load elimination pass");
     }
 }
 
@@ -86,7 +86,7 @@ void dead_load_elimination::search_usages(std::shared_ptr<hl_definition_node> el
         } else if(element->get_scalar_initializer()->node_type == hl_ast_node_type_operand){
             search_usages(std::static_pointer_cast<hl_ast_operand>(element->get_scalar_initializer()));
         } else {
-            throw std::runtime_error("ERROR: unexpected definition initializer type in dead load elimination pass");
+            throw std::runtime_error("unexpected definition initializer type in dead load elimination pass");
         }
     }
 }

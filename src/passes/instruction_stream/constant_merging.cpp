@@ -34,7 +34,7 @@ std::shared_ptr<ll_instruction_node> constant_merging::apply_pass(std::shared_pt
         case isa_load_constant_instruction:
             return merge_load_const_instr(std::static_pointer_cast<ll_load_constant_instr_node>(element));
         default:
-            throw std::runtime_error("ERROR: Invalid instruction type reached variable mapping stage");
+            throw std::runtime_error("Invalid instruction type reached variable mapping stage");
     }
 
 

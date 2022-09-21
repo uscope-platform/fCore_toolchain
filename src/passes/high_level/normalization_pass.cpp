@@ -59,7 +59,7 @@ bool normalization_pass::is_normal(const std::shared_ptr<hl_ast_node>& element) 
     } else if(element->node_type == hl_ast_node_type_operand){
         return true;
     } else{
-        throw std::runtime_error("ERROR: unexpected block reached the normalization pass");
+        throw std::runtime_error("unexpected block reached the normalization pass");
     }
 }
 

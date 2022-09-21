@@ -17,6 +17,7 @@
 #include <string>
 #include <filesystem>
 
+#include "spdlog/spdlog.h"
 #include "../third_party/CLI11.hpp"
 #include "fcore_dis.hpp"
 
@@ -38,16 +39,16 @@ int main(int argc, char **argv) {
     CLI11_PARSE(app, argc, argv);
 
     if(!input_hex && !input_mem){
-        std::cout<< "ERROR: the input file type should be specified (use either the --mem or --hex flags)"<<std::endl;
+        spdlog::critical("The input file type should be specified (use either the --mem or --hex flags)");
         exit(-1);
     } else if (input_hex && input_mem){
-        std::cout<< "ERROR: Both input file type specifiers are present on the command line, only one should be used"<<std::endl;
+        spdlog::critical("Both input file type specifiers are present on the command line, only one should be used");
         exit(-1);
     }
 
     if(!output_file.empty() & !output_force){
         if(std::filesystem::exists(output_file)){
-            std::cout<< "ERROR: The Specified output file already exists, to force the file to be rewritten use the --f flag"<<std::endl;
+            spdlog::critical("The Specified output file already exists, to force the file to be rewritten use the --f flag");
             exit(-1);
         }
     }

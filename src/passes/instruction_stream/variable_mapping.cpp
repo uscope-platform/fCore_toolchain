@@ -36,7 +36,7 @@ std::shared_ptr<ll_instruction_node> variable_mapping::apply_pass(std::shared_pt
             map_load_const_instr(std::static_pointer_cast<ll_load_constant_instr_node>(element));
             break;
         default:
-            throw std::runtime_error("ERROR: Invalid instruction type reached variable mapping stage");
+            throw std::runtime_error("Invalid instruction type reached variable mapping stage");
     }
 
 

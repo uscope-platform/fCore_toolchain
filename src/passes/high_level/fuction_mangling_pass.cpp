@@ -75,13 +75,13 @@ std::shared_ptr<hl_ast_node> fuction_mangling_pass::mangle_node(const std::share
         case hl_ast_node_type_loop:
             return mangle_node(std::static_pointer_cast<hl_ast_loop_node>(node), function);
         case hl_ast_node_type_function_def:
-            throw std::runtime_error("ERROR: Nested function definitions are not supported");
+            throw std::runtime_error("Nested function definitions are not supported");
         case hl_ast_node_type_operand:
             return mangle_node(std::static_pointer_cast<hl_ast_operand>(node), function);
         case hl_ast_node_type_function_call:
             return mangle_node(std::static_pointer_cast<hl_function_call_node>(node), function);
         default:
-            throw std::runtime_error("ERROR: Encountered unexpected node type in function call mangling");
+            throw std::runtime_error("Encountered unexpected node type in function call mangling");
     }
 }
 

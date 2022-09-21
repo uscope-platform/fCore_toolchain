@@ -59,7 +59,7 @@ expression_evaluator::evaluate_unary_expression(std::shared_ptr<hl_expression_no
     } else if(expression->get_rhs()->node_type ==hl_ast_node_type_operand) {
         rhs = std::static_pointer_cast<hl_ast_operand>(expression->get_rhs());
     } else {
-        throw std::runtime_error("ERROR: node type not expected during expression evaluation");
+        throw std::runtime_error("node type not expected during expression evaluation");
     }
 
     c_types_t expr_type = c_type_int;
@@ -101,7 +101,7 @@ expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_
     } else if(expression->get_lhs()->node_type ==hl_ast_node_type_operand) {
         lhs = std::static_pointer_cast<hl_ast_operand>(expression->get_lhs());
     } else {
-        throw std::runtime_error("ERROR: node type not expected during expression evaluation");
+        throw std::runtime_error("node type not expected during expression evaluation");
     }
 
     std::shared_ptr<hl_ast_operand> rhs;
@@ -110,7 +110,7 @@ expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_
     } else if(expression->get_rhs()->node_type ==hl_ast_node_type_operand) {
         rhs = std::static_pointer_cast<hl_ast_operand>(expression->get_rhs());
     } else {
-        throw std::runtime_error("ERROR: node type not expected during expression evaluation");
+        throw std::runtime_error("node type not expected during expression evaluation");
     }
 
     c_types_t expr_type = c_type_int;
@@ -173,7 +173,7 @@ float expression_evaluator::evaluate_unary_expr_f(float operand, expression_type
         case expr_decr_pre:
             return operand-1;
         default:
-            throw std::runtime_error("Internal error: this condition should not have been possible");
+            throw std::runtime_error("Internal this condition should not have been possible");
 
     }
 }
@@ -193,7 +193,7 @@ int expression_evaluator::evaluate_unary_expr_i(int operand, expression_type_t o
         case expr_decr_pre:
             return operand-1;
         default:
-            throw std::runtime_error("Internal error: this condition should not have been possible");
+            throw std::runtime_error("Internal this condition should not have been possible");
 
     }
 }
@@ -226,7 +226,7 @@ float expression_evaluator::evaluate_regular_expr_f(float operand_a, float opera
         case expr_satn:
             return operand_a<operand_b?operand_b:operand_a;
         default:
-            throw std::runtime_error("Internal error: Unexpected constant expression");
+            throw std::runtime_error("Internal Unexpected constant expression");
     }
 }
 
@@ -273,6 +273,6 @@ int expression_evaluator::evaluate_regular_expr_i(int operand_a, int operand_b, 
         case expr_satn:
             return operand_a<operand_b?operand_b:operand_a;
         default:
-            throw std::runtime_error("Internal error: Unexpected constant expression");
+            throw std::runtime_error("Internal Unexpected constant expression");
     }
 }

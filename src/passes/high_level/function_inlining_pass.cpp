@@ -64,19 +64,19 @@ std::shared_ptr<hl_ast_loop_node> function_inlining_pass::process_loop(std::shar
 
     std::vector<std::shared_ptr<hl_ast_node>> processed_condition = process_expression(element->get_condition());
     if(processed_condition.size()>1){
-        throw std::runtime_error("ERROR: internal error #5923");
+        throw std::runtime_error("internal error #5923");
     }
     element->set_condition(std::static_pointer_cast<hl_expression_node>(processed_condition[0]));
 
     std::vector<std::shared_ptr<hl_ast_node>> processed_init = process_definition(element->get_init_statement());
     if(processed_init.size()>1){
-        throw std::runtime_error("ERROR: internal error #5924");
+        throw std::runtime_error("internal error #5924");
     }
     element->set_init_statement(std::static_pointer_cast<hl_definition_node>(processed_init[0]));
 
     std::vector<std::shared_ptr<hl_ast_node>> processed_iter_expr = process_expression(element->get_iteration_expr());
     if(processed_iter_expr.size()>1){
-        throw std::runtime_error("ERROR: internal error #5925");
+        throw std::runtime_error("internal error #5925");
     }
     element->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(processed_iter_expr[0]));
 
@@ -208,7 +208,7 @@ function_inlining_pass::process_function_call(std::shared_ptr<hl_function_call_n
 
 
     if(functions_map.count(f_call->get_name())==0){
-        throw std::runtime_error("ERROR: Function " + f_call->get_name() + " is not defined");
+        throw std::runtime_error("Function " + f_call->get_name() + " is not defined");
     }
 
     std::shared_ptr<hl_function_def_node> f_def = functions_map[f_call->get_name()];
@@ -326,7 +326,7 @@ function_inlining_pass::substitute_definition_arguments(const std::shared_ptr<hl
         if(substituted_node->node_type == hl_ast_node_type_expr || substituted_node->node_type == hl_ast_node_type_operand){
             statement->set_scalar_initializer(substituted_node);
         } else {
-            throw std::runtime_error("ERROR: unexpected node type detected");
+            throw std::runtime_error("unexpected node type detected");
         }
     }
 

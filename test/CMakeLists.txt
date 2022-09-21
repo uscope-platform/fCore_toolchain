@@ -19,7 +19,7 @@ add_executable(test_target ${FCORE_SRCS} ${TEST_SOURCES} ${C_PARSER_SRCS} ${ASM_
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
-target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES} pthread antlr4_static Ip_floating_point_v7_1_bitacc_cmodel)
+target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES} pthread antlr4_static Ip_floating_point_v7_1_bitacc_cmodel spdlog)
 
 # ASM TESTING FILES
 set(ASM_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/asm)
@@ -103,6 +103,7 @@ configure_file(C_files/end_to_end/test_essential_variable_initialization.c ${C_E
 configure_file(C_files/end_to_end/test_negative_leading_sum.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_function_vars_mangling.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_loop_index_expression.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
+configure_file(C_files/end_to_end/test_exception.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_loop_index_expression_multidim.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/instruction_passes/test_constant_merging.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/instruction_passes/test_zero_assignment_removal.c ${C_E2E_TEST_FILES_DIR} COPYONLY)

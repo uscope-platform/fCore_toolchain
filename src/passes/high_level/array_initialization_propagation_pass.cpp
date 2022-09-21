@@ -53,7 +53,7 @@ array_initialization_propagation_pass::process_node_by_type(const std::shared_pt
         case hl_ast_node_type_function_call:
             return {process_function_call(std::static_pointer_cast<hl_function_call_node>(node))};
         default:
-            throw std::runtime_error("INTERNAL ERROR: Unexpected node found in the AST during array initialization propagation");
+            throw std::runtime_error("Unexpected node found in the AST during array initialization propagation");
     }
 }
 
@@ -130,7 +130,7 @@ array_initialization_propagation_pass::process_definition(std::shared_ptr<hl_def
             if( node->get_variable()->get_variable_class() == variable_memory_type ||  node->get_variable()->get_variable_class() == variable_output_type) {
                 for(int i = 0; i<node->get_variable()->get_bound_reg_array().size(); ++i){
                     if(node->get_array_initializer()[i]->node_type != hl_ast_node_type_operand)
-                        throw std::runtime_error("ERROR: Non constant initialization of arrays is not allowed.");
+                        throw std::runtime_error("Non constant initialization of arrays is not allowed.");
 
                     std::string produced_var = "IOM_init_constant_"+std::to_string(n_init_iom);
                     std::shared_ptr<variable> definition_var = std::make_shared<variable>(produced_var);

@@ -71,12 +71,12 @@ std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::
             return translate_node(node, dest);
         }
         case hl_ast_node_type_operand:
-            throw std::runtime_error("ERROR: standalone operands nodes should not reach the ast lowering stage");
+            throw std::runtime_error("standalone operands nodes should not reach the ast lowering stage");
         case hl_ast_node_type_expr:{
             std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(input);
             if(node->get_type() == expr_assign){
                 if(node->get_lhs()->node_type != hl_ast_node_type_operand){
-                    throw std::runtime_error("ERROR: Invalid assignment expression detected  the lowering stage as the LHS is an expression and not a variable");
+                    throw std::runtime_error("Invalid assignment expression detected  the lowering stage as the LHS is an expression and not a variable");
                 }
                 if(node->get_rhs()->node_type == hl_ast_node_type_expr){
                     std::shared_ptr<variable> dest = std::static_pointer_cast<hl_ast_operand>(node->get_lhs())->get_variable();
@@ -85,26 +85,26 @@ std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::
                     std::shared_ptr<variable> dest = std::static_pointer_cast<hl_ast_operand>(node->get_lhs())->get_variable();
                     return translate_node(std::static_pointer_cast<hl_ast_operand>(node->get_rhs()), dest);
                 } else{
-                    throw std::runtime_error("ERROR: Invalid assignment expression detected at the lowering stage as the RHS is neither an expression nor an operand");
+                    throw std::runtime_error("Invalid assignment expression detected at the lowering stage as the RHS is neither an expression nor an operand");
                 }
             } else if(node->is_immediate()){
                 return translate_node(node, nullptr);
             } else{
-                throw std::runtime_error("ERROR: Invalid expression detected at the lowering stage");
+                throw std::runtime_error("Invalid expression detected at the lowering stage");
             }
         }
         case hl_ast_node_type_program_root:
-            throw std::runtime_error("ERROR: program_root nodes should not reach the ast lowering stage");
+            throw std::runtime_error("program_root nodes should not reach the ast lowering stage");
         case hl_ast_node_type_loop:
-            throw std::runtime_error("ERROR: loop nodes should not reach the ast lowering stage");
+            throw std::runtime_error("loop nodes should not reach the ast lowering stage");
         case hl_ast_node_type_conditional:
-            throw std::runtime_error("ERROR: conditional nodes should not reach the ast lowering stage");
+            throw std::runtime_error("conditional nodes should not reach the ast lowering stage");
         case hl_ast_node_type_function_call:
-            throw std::runtime_error("ERROR: function call nodes should not reach the ast lowering stage");
+            throw std::runtime_error("function call nodes should not reach the ast lowering stage");
         case hl_ast_node_type_function_def:
-            throw std::runtime_error("ERROR: function definition nodes should not reach the ast lowering stage");
+            throw std::runtime_error("function definition nodes should not reach the ast lowering stage");
         default:
-            throw std::runtime_error("ERROR: unknown type nodes should not reach the ast lowering stage");
+            throw std::runtime_error("unknown type nodes should not reach the ast lowering stage");
     }
 
 }
@@ -126,7 +126,7 @@ std::shared_ptr<ll_ast_node> high_level_ast_lowering::translate_node(const std::
         } else if(input->get_scalar_initializer()->node_type == hl_ast_node_type_operand){
             return translate_node(std::static_pointer_cast<hl_ast_operand>(input->get_scalar_initializer()), dest);
         } else{
-            throw std::runtime_error("ERROR: unexpected high level ast node encountered during the lowering phase");
+            throw std::runtime_error("unexpected high level ast node encountered during the lowering phase");
         }
     } else {
         return nullptr;
@@ -140,7 +140,7 @@ high_level_ast_lowering::process_unary_expression(std::shared_ptr<hl_expression_
     expression_type_t op_type = input->get_type();
     std::string opcode = expr_instruction_mapping[op_type];
     if(!fcore_implemented_operations[op_type]){
-        throw std::runtime_error("ERROR: The required operation is not implementable on the fCore hardware");
+        throw std::runtime_error("The required operation is not implementable on the fCore hardware");
     }
 
     std::shared_ptr<variable> op_b = std::static_pointer_cast<hl_ast_operand>(input->get_rhs())->get_variable();
@@ -156,7 +156,7 @@ high_level_ast_lowering::process_regular_expression(std::shared_ptr<hl_expressio
     expression_type_t op_type = input->get_type();
     std::string opcode = expr_instruction_mapping[op_type];
     if(!fcore_implemented_operations[op_type]) {
-        throw std::runtime_error("ERROR: The required operation is not implementable on the fCore hardware");
+        throw std::runtime_error("The required operation is not implementable on the fCore hardware");
     }
 
     std::shared_ptr<variable> op_a = std::static_pointer_cast<hl_ast_operand>(input->get_lhs())->get_variable();
@@ -226,7 +226,7 @@ high_level_ast_lowering::process_immediate_expression(std::shared_ptr<hl_express
     expression_type_t op_type = input->get_type();
     std::string opcode = expr_instruction_mapping[op_type];
     if(!fcore_implemented_operations[op_type]){
-        throw std::runtime_error("ERROR: The required operation is not implementable on the fCore hardware");
+        throw std::runtime_error("The required operation is not implementable on the fCore hardware");
     }
 
     retval = create_ast_node(fcore_op_types[opcode], {}, opcode);

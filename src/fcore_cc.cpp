@@ -54,7 +54,6 @@ fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool p
 
     } catch(std::runtime_error &e){
         error_code = e.what();
-        std::cerr << error_code << std::endl;
     }
 }
 

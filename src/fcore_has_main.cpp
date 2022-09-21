@@ -18,6 +18,7 @@
 #include <vector>
 #include <filesystem>
 
+#include "spdlog/spdlog.h"
 #include "../third_party/CLI11.hpp"
 #include "fcore_has.hpp"
 
@@ -44,7 +45,7 @@ int main(int argc, char **argv) {
 
     if(!output_file.empty() & !output_force){
         if(std::filesystem::exists(output_file)){
-            std::cout<< "ERROR: The Specified output file already exists, to force the file to be rewritten use the --f flag"<<std::endl;
+            spdlog::critical("The Specified output file already exists, to force the file to be rewritten use the --f flag");
             exit(-1);
         }
     }
@@ -74,6 +75,10 @@ int main(int argc, char **argv) {
         std::ofstream ss(output_file+"_dump.json");
         ss<<str;
         ss.close();
+    }
+
+    if(!has_engine.get_errors().empty()){
+        spdlog::critical(has_engine.get_errors());
     }
 
     return 0;

@@ -96,7 +96,7 @@ TEST( Disassembler, disassembler_error) {
 
     fcore_dis disassembler(ifs, bin_loader_mem_input);
     std::string exception = disassembler.get_errors();
-    std::string gold_standard = "ERROR: unknown opcode: 7";
+    std::string gold_standard = "unknown opcode: 7";
     ASSERT_EQ(exception, gold_standard);
 
 

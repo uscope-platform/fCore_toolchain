@@ -110,7 +110,7 @@ conditional_implementation_pass::find_variable_definition(const std::shared_ptr<
         std::shared_ptr<hl_ast_operand> variable = std::static_pointer_cast<hl_ast_operand>(subexpr);
         for(const auto& i: prog_content){
             if(i == item){
-                throw std::runtime_error("ERROR: The value of all variables in a conditional condition must be defined before the expression itself");
+                throw std::runtime_error("The value of all variables in a conditional condition must be defined before the expression itself");
             } else if (i->node_type == hl_ast_node_type_definition){
                 std::shared_ptr<hl_definition_node> def = std::static_pointer_cast<hl_definition_node>(i);
                 if(def->get_name() == variable->get_name()){

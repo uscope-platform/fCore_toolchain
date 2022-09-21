@@ -64,7 +64,7 @@ loop_unrolling_pass::process_function_def(const std::shared_ptr<hl_function_def_
 std::vector<std::shared_ptr<hl_ast_node>> loop_unrolling_pass::process_loop(const std::shared_ptr<hl_ast_loop_node>& element) {
     std::vector<std::shared_ptr<hl_ast_node>> retval;
     if(!element->get_init_statement()->is_initialized()){
-        throw std::runtime_error("Error: incomplete loop initialization statement");
+        throw std::runtime_error("Incomplete loop initialization statement");
     }
     std::vector<std::shared_ptr<hl_ast_node>> new_body;
 
@@ -114,19 +114,19 @@ unsigned int loop_unrolling_pass::process_loop_initializer(const std::shared_ptr
     if(raw_initializer->node_type == hl_ast_node_type_expr){
 
         if(!expression_evaluator::is_constant_expression(std::static_pointer_cast<hl_expression_node>(raw_initializer))){
-            throw std::runtime_error("Error: Loop initialization statement is not a compile time constant");
+            throw std::runtime_error("Loop initialization statement is not a compile time constant");
         }
         initializer = expression_evaluator::evaluate_expression(std::static_pointer_cast<hl_expression_node>(raw_initializer));
     } else if(raw_initializer->node_type == hl_ast_node_type_operand){
         initializer = std::static_pointer_cast<hl_ast_operand>(raw_initializer);
         if(initializer->get_type() == var_type_float_const){
-            throw std::runtime_error("Error:Floating point loop initializers are not supported");
+            throw std::runtime_error("Floating point loop initializers are not supported");
         }
         if(initializer->get_type() != var_type_int_const){
-            throw std::runtime_error("Error: Loop initialization statement is not a compile time constant");
+            throw std::runtime_error("Loop initialization statement is not a compile time constant");
         }
     } else{
-        throw std::runtime_error("Error: unsupported loop initialization statement type");
+        throw std::runtime_error("Unsupported loop initialization statement type");
     }
 
     ret_val = initializer->get_int_value();
@@ -139,7 +139,7 @@ bool loop_unrolling_pass::evaluate_loop(const std::shared_ptr<hl_expression_node
                                         std::shared_ptr<hl_ast_operand> &loop_var) {
 
     if(current_loop_iteration ==  max_loop_iterations){
-        throw std::runtime_error("ERROR: Loops with more than 65536 iterations are not supported");
+        throw std::runtime_error("Loops with more than 65536 iterations are not supported");
     }
 
     std::shared_ptr<hl_expression_node> loop_cond = update_loop_condition(condition, loop_var);
@@ -174,7 +174,7 @@ void loop_unrolling_pass::update_expression(std::shared_ptr<hl_expression_node> 
     } else if(expression->get_rhs()->node_type == hl_ast_node_type_expr) {
         update_expression(std::static_pointer_cast<hl_expression_node>(expression->get_rhs()), std::move(loop_var));
     } else {
-        throw std::runtime_error("ERROR: loop variable not found in loop condition");
+        throw std::runtime_error("loop variable not found in loop condition");
     }
 }
 
@@ -194,7 +194,7 @@ loop_unrolling_pass::substitute_index(std::shared_ptr<hl_ast_node> element, std:
         case hl_ast_node_type_definition:
             return substitute_index_in_definition(std::static_pointer_cast<hl_definition_node>(element), idx_name, value);
         default:
-            throw std::runtime_error("INTERNAL ERROR: An unexpected node type was present in the AST during loop unrolling.");
+            throw std::runtime_error("An unexpected node type was present in the AST during loop unrolling.");
     }
 }
 

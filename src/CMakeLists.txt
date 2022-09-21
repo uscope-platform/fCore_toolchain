@@ -98,13 +98,13 @@ add_library(common_srcs ${FCORE_COMMON_SRCS_I})
 
 
 add_executable(fCore_has ${FCORE_AS_SRCS} ${ASM_PARSER_SRCS} fcore_has_main.cpp)
-target_link_libraries(fCore_has PRIVATE common_srcs antlr4_static)
+target_link_libraries(fCore_has PRIVATE common_srcs antlr4_static spdlog)
 
 add_executable(fCore_cc ${FCORE_CC_SRCS} ${C_PARSER_SRCS} fcore_cc_main.cpp)
-target_link_libraries(fCore_cc PRIVATE common_srcs antlr4_static)
+target_link_libraries(fCore_cc PRIVATE common_srcs antlr4_static spdlog)
 
 add_executable(fCore_dis ${FCORE_DIS_SRCS} fcore_dis_main.cpp)
-target_link_libraries(fCore_dis PRIVATE common_srcs)
+target_link_libraries(fCore_dis PRIVATE common_srcs spdlog)
 
 add_custom_target(toolchain)
 add_dependencies(toolchain fCore_has fCore_cc fCore_dis)

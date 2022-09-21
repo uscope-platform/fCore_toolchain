@@ -360,6 +360,6 @@ nlohmann::json hl_ast_node::dump_by_type(const std::shared_ptr<hl_ast_node>& nod
         case hl_ast_node_type_code_block:
             return node->dump();
         default:
-            throw std::runtime_error("ERROR: Unknown node type has been dumped");
+            throw std::runtime_error("Unknown node type has been dumped");
     }
 }

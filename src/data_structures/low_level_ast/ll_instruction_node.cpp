@@ -86,7 +86,7 @@ nlohmann::json ll_instruction_node::dump_instruction_by_type(const std::shared_p
         case isa_load_constant_instruction: return std::static_pointer_cast<ll_load_constant_instr_node>(node)->dump();
         case isa_intercalated_constant: return std::static_pointer_cast<ll_intercalated_const_instr_node>(node)->dump();
         default:
-            throw std::runtime_error("ERROR: Unknown instruction node type has been dumped");
+            throw std::runtime_error("Unknown instruction node type has been dumped");
     }
 }
 

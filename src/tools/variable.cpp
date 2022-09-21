@@ -140,7 +140,7 @@ void variable::set_const_f(float f) {
     if(variable_type == var_type_float_const){
         const_f = f;
     } else {
-        throw std::runtime_error("INTERNAL ERROR: Setting the floating point value of a non floating point variable is not allowed");
+        throw std::runtime_error("Setting the floating point value of a non floating point variable is not allowed");
     }
 }
 
@@ -148,7 +148,7 @@ void variable::set_const_i(int i) {
     if(variable_type == var_type_int_const){
         const_i = i;
     } else {
-        throw std::runtime_error("INTERNAL ERROR: Setting the integer  value of a non integer point variable is not allowed");
+        throw std::runtime_error("Setting the integer  value of a non integer point variable is not allowed");
     }
 }
 

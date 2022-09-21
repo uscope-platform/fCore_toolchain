@@ -25,7 +25,7 @@ instruction_stream instruction_stream_builder::build_stream(const std::shared_pt
             instruction_stream substeam = build_stream(item);
             stream.push_back(substeam);
         } else{
-            throw std::runtime_error("ERROR: Forbidden ast node type reached the instruction stream builder");
+            throw std::runtime_error("Forbidden ast node type reached the instruction stream builder");
         }
     }
     return stream;

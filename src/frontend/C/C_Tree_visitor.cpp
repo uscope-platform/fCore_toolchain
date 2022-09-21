@@ -488,7 +488,7 @@ void C_Tree_visitor::exitStatement(C_parser::C_grammarParser::StatementContext *
             expressions_stack.pop();
         } else{
             std::string erorr_line = ctx->getText();
-            throw std::runtime_error("ERROR: internal error, this condition should never happen, contact development team");
+            throw std::runtime_error("internal error, this condition should never happen, contact development team");
         }
     } else if (ctx->iterationStatement() != nullptr) {
     } else if(ctx->selectionStatement() != nullptr){

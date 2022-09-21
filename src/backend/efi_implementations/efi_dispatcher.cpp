@@ -22,7 +22,7 @@ void efi_dispatcher::emulate_efi(const std::string& function, uint32_t op_a, uin
     } else if(function =="efi_trig") {
         efi_trig(op_a, op_b, dest, m);
     } else{
-        throw std::runtime_error("ERROR: The emulator has encountered an EFI instruction, however no implementation was selected in the spec file");
+        throw std::runtime_error("The emulator has encountered an EFI instruction, however no implementation was selected in the spec file");
     }
 }
 

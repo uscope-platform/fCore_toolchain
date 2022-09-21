@@ -47,7 +47,7 @@ std::shared_ptr<hl_ast_node> array_scalarization_pass::process_element(const std
         case hl_ast_node_type_loop:
         case hl_ast_node_type_program_root:
         case hl_ast_node_type_code_block:
-            throw std::runtime_error("INTERNAL ERROR: Unexpected node found in the AST during array scalarization");
+            throw std::runtime_error("Unexpected node found in the AST during array scalarization");
     }
     return nullptr;
 }
@@ -71,7 +71,7 @@ std::shared_ptr<hl_ast_operand> array_scalarization_pass::process_operand(std::s
     std::vector<std::shared_ptr<hl_ast_node>> old_array_idx = node->get_array_index();
     std::string var_name = node->get_variable()->get_name();
     if(old_array_idx.empty()){
-        throw std::runtime_error("ERROR: All array operations must be performed element wise and thus have a compile time known index");
+        throw std::runtime_error("All array operations must be performed element wise and thus have a compile time known index");
     }
 
     std::shared_ptr<variable> var = std::make_shared<variable>(mangle_name(old_array_idx, var_name));
@@ -222,20 +222,20 @@ int array_scalarization_pass::evaluate_index_definition(std::shared_ptr<hl_defin
             if(ev.is_constant_expression(std::static_pointer_cast<hl_expression_node>(node->get_scalar_initializer()))){
                 return ev.evaluate_expression(std::static_pointer_cast<hl_expression_node>(node->get_scalar_initializer()))->get_int_value();
             } else {
-                throw std::runtime_error("ERROR: Encountered a non-constant array index expression");
+                throw std::runtime_error("Encountered a non-constant array index expression");
             }
         } else if(node->get_scalar_initializer()->node_type == hl_ast_node_type_operand){
             auto operand = std::static_pointer_cast<hl_ast_operand>(node->get_scalar_initializer());
             if(operand->get_variable()->is_constant()){
                 return operand->get_int_value();
             } else{
-                throw std::runtime_error("ERROR: Encountered a non-constant array index operand");
+                throw std::runtime_error("Encountered a non-constant array index operand");
             }
         } else {
-            throw std::runtime_error("ERROR: Encountered a foreign node type while evaluating an array index");
+            throw std::runtime_error("Encountered a foreign node type while evaluating an array index");
         }
     } else {
-        throw std::runtime_error("ERROR: Encountered a non-initialized array index");
+        throw std::runtime_error("Encountered a non-initialized array index");
     }
 
 }

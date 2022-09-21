@@ -98,6 +98,17 @@ TEST(EndToEndC, end_to_end_intrinsics) {
     ASSERT_EQ(result, gold_standard);
 }
 
+TEST(EndToEndC, exceptionHandling) {
+    std::string input_file = "c_e2e/test_exception.c";
+
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(input_file, includes,true, 0);
+    std::string result = compiler.get_errors();
+
+    ASSERT_EQ(result, "Strings are not supported by the fCore toolchain");
+}
 
 
 TEST(EndToEndC, json_writing) {
