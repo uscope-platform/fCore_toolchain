@@ -55,17 +55,6 @@ void emulator_manager::emulate() {
 
 void emulator_manager::run_cores() {
     for(int i= 0; i<emu_length;i++){
-        if(i>0){
-            for(auto &conn:interconnects){
-                auto src = emulators[conn.source].emu;
-                auto dst = emulators[conn.destination].emu;
-                for(auto &reg:conn.connections){
-                    auto val = src->get_output(reg.first.address, reg.first.channel);
-                    dst->apply_inputs(reg.second.address, val, reg.second.channel);
-                }
-            }
-        }
-
         for(auto &core_id:cores_ordering){
             auto emu = emulators[core_id.second].emu;
             for(auto &in:emulators[core_id.second].input){
@@ -74,6 +63,21 @@ void emulator_manager::run_cores() {
             for(int j = 0; j<emulators[core_id.second].active_channels; ++j){
                 spdlog::info("RUNNING ROUND " + std::to_string(i+1) + " of " + std::to_string(emu_length) + ": core ID = " + core_id.second + " (CH " + std::to_string(j) + ")");
                 emu->run_round(j);
+            }
+
+            for(auto &conn:interconnects){
+                if(core_id.second == conn.source){
+                    auto src = emulators[conn.source].emu;
+                    auto dst = emulators[conn.destination].emu;
+                    for(auto &reg:conn.connections){
+                        auto val = src->get_output(reg.first.address, reg.first.channel);
+                        dst->apply_inputs(reg.second.address, val, reg.second.channel);
+                    }
+                }
+            }
+
+
+            for(int j = 0; j<emulators[core_id.second].active_channels; ++j){
                 for (auto &out:emulators[core_id.second].output_specs) {
                     emulators[core_id.second].outputs[j][out.reg_n].push_back(emu->get_output(out.reg_n, j));
                 }
