@@ -35,6 +35,7 @@ public:
     explicit ll_instruction_node(isa_instruction_type t);
     ll_instruction_node(const ll_instruction_node &old_obj);
 
+    bool is_stop();
 
 
     virtual uint32_t emit() { return 0;};

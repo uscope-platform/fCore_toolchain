@@ -90,3 +90,7 @@ nlohmann::json ll_instruction_node::dump_instruction_by_type(const std::shared_p
     }
 }
 
+bool ll_instruction_node::is_stop() {
+    return opcode == "stop";
+}
+
