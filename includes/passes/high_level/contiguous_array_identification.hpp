@@ -23,8 +23,17 @@
 class contiguous_array_identification : public pass_base<hl_ast_node>{
 public:
     contiguous_array_identification();
-    std::shared_ptr<hl_ast_node> process_leaf(std::shared_ptr<hl_ast_node> element) override;
-    int get_pass_type() override { return LEAF_PASS;};
+    std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
+    int get_pass_type() override { return GLOBAL_PASS;};
+private:
+    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_function_call_node> element);
+    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_expression_node> element);
+    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_definition_node> element);
+    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_loop_node> element);
+    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_conditional_node> element);
+    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_function_def_node> element);
+    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_operand> element);
+
 };
 
 

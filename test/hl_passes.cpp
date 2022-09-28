@@ -856,6 +856,7 @@ TEST(HlPassesTest, dead_load_elimination) {
 
 
 
+
 TEST(HlPassesTest, nested_function_inlining) {
     std::string input_file = "hl_opt/test_nested_function_inlining.c";
 
@@ -943,3 +944,20 @@ TEST(HlPassesTest, nested_function_inlining) {
 
 
 
+TEST(HlPassesTest, contiguous_array_identification) {
+    std::string input_file = "hl_opt/test_contiguous_array_detection.c";
+
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(input_file, result_def);
+    parser.pre_process({});
+    parser.parse();
+
+    std::string ep = "main";
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2}, 0);
+    manager.run_morphing_passes(parser.AST);
+
+    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
+
+    //ASSERT_EQ(*normalized_ast, *gold_standard);
+}

@@ -72,6 +72,8 @@ configure_file(C_files/tree_visitor/test_float_constant.c ${C_AST_TEST_FILES_DIR
 set(HL_OPT_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/hl_opt)
 make_directory(${HL_OPT_TEST_FILES_DIR})
 configure_file(C_files/hl_passes/test_normalization.c ${HL_OPT_TEST_FILES_DIR} COPYONLY)
+configure_file(C_files/hl_passes/test_contiguous_array_detection.c ${HL_OPT_TEST_FILES_DIR} COPYONLY)
+
 configure_file(C_files/hl_passes/test_loop_unrolling.c ${HL_OPT_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/hl_passes/test_array_scalarization.c ${HL_OPT_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/hl_passes/test_matrix_scalarization.c ${HL_OPT_TEST_FILES_DIR} COPYONLY)
