@@ -92,6 +92,9 @@ public:
     unsigned int get_array_length() const {return array_length;};
     void set_array_length(unsigned int al) {array_length = al;};
 
+    void set_array_contiguous(bool ac) { array_contiguous = ac;};
+    bool get_array_contiguous() {return array_contiguous;};
+
     nlohmann::json dump();
 
     static std::shared_ptr<variable> deep_copy(const std::shared_ptr<variable>& original);
@@ -105,6 +108,7 @@ private:
     unsigned int last_occurrence;
 
     unsigned int array_length;
+    bool array_contiguous;
     std::vector<int> bound_register;
 
     std::string name;

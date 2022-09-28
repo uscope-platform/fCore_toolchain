@@ -28,6 +28,8 @@ public:
     bool empty();
     unsigned long size();
 
+    std::shared_ptr<ll_instruction_node> last() {return stream_store.back();};
+
     nlohmann::json dump();
 
     auto begin() {return stream_store.begin();};
