@@ -20,5 +20,7 @@ int main(){
 
     float index[10];
     int a[10];
+    int b[10];
     a = efi(index, 11);
+    b = a;
 }

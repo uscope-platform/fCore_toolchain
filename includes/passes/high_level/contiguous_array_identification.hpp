@@ -16,6 +16,7 @@
 #ifndef FCORE_TOOLCHAIN_CONTIGUOUS_ARRAY_IDENTIFICATION_HPP
 #define FCORE_TOOLCHAIN_CONTIGUOUS_ARRAY_IDENTIFICATION_HPP
 
+#include <set>
 
 #include "passes/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
@@ -26,6 +27,7 @@ public:
     std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
     int get_pass_type() override { return GLOBAL_PASS;};
 private:
+    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_node> element);
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_function_call_node> element);
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_expression_node> element);
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_definition_node> element);
@@ -33,7 +35,9 @@ private:
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_conditional_node> element);
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_function_def_node> element);
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_operand> element);
+    bool in_efi_context;
 
+    std::set<std::string> contiguous_arrays;
 };
 
 

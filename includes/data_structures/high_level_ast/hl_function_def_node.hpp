@@ -36,6 +36,7 @@ public:
     void set_return(std::shared_ptr<hl_ast_node> r);
     std::string get_name();
     std::shared_ptr<hl_ast_node> get_return();
+    bool has_return(){ return return_expression != nullptr;};
     std::vector<std::shared_ptr<hl_ast_node>> get_body();
     std::string pretty_print() override;
     nlohmann::json dump() override;

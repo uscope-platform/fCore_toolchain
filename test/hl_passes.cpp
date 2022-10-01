@@ -957,7 +957,69 @@ TEST(HlPassesTest, contiguous_array_identification) {
     hl_pass_manager manager = create_hl_pass_manager(ep,{1,2}, 0);
     manager.run_morphing_passes(parser.AST);
 
-    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
+    std::shared_ptr<hl_function_def_node> result_fcn = std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0]);
 
-    //ASSERT_EQ(*normalized_ast, *gold_standard);
+    std::vector<std::shared_ptr<hl_ast_node>> result_body = result_fcn->get_body();
+    std::vector<std::shared_ptr<hl_ast_node>> reference_body;
+
+    std::shared_ptr<variable> const_var_10 = std::make_shared<variable>("constant", 10);
+    std::shared_ptr<hl_ast_operand> const_op = std::make_shared<hl_ast_operand>(const_var_10);
+
+    std::vector<int> arr_idx = {10};
+    std::shared_ptr<variable> idx_var = std::make_shared<variable>("index");
+    idx_var->set_type(var_type_array);
+    std::shared_ptr<hl_definition_node> idx_def = std::make_shared<hl_definition_node>("index", c_type_float,idx_var);
+    idx_def->set_array_shape(arr_idx);
+    idx_def->set_array_index({const_op});
+    reference_body.push_back(idx_def);
+
+    std::shared_ptr<variable> var = std::make_shared<variable>("a");
+    var->set_contiguity(true);
+    var->set_type(var_type_array);
+    idx_def = std::make_shared<hl_definition_node>("a", c_type_int, var);
+    idx_def->set_array_shape(arr_idx);
+    idx_def->set_array_index({const_op});
+    reference_body.push_back(idx_def);
+
+    var = std::make_shared<variable>("b");
+    var->set_type(var_type_array);
+    idx_def = std::make_shared<hl_definition_node>("b", c_type_int, var);
+    idx_def->set_array_shape(arr_idx);
+    idx_def->set_array_index({const_op});
+    reference_body.push_back(idx_def);
+
+    var = std::make_shared<variable>("a");
+    var->set_contiguity(true);
+    std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
+    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(expr_assign);
+    exp->set_lhs(op);
+
+    idx_var = std::make_shared<variable>("index");
+    op =std::make_shared<hl_ast_operand>(idx_var);
+    var=std::make_shared<variable>("constant", 11);
+    var->set_type(var_type_int_const);
+    std::shared_ptr<hl_ast_operand> op_c = std::make_shared<hl_ast_operand>(var);
+    std::vector<std::shared_ptr<hl_ast_node>> args = {op,op_c};
+    std::shared_ptr<hl_function_call_node> call = std::make_shared<hl_function_call_node>("efi",args);
+    exp->set_rhs(call);
+    reference_body.push_back(exp);
+
+    exp = std::make_shared<hl_expression_node>(expr_assign);
+
+    var = std::make_shared<variable>("b");
+    op = std::make_shared<hl_ast_operand>(var);
+    exp->set_lhs(op);
+
+    var = std::make_shared<variable>("a");
+    var->set_contiguity(true);
+    op = std::make_shared<hl_ast_operand>(var);
+    exp->set_rhs(op);
+    reference_body.push_back(exp);
+
+
+    ASSERT_EQ(result_body.size(), reference_body.size());
+    for(int i = 0; i<reference_body.size(); ++i){
+        ASSERT_TRUE(hl_ast_node::compare_content_by_type(result_body[i], reference_body[i]));
+    }
+
 }

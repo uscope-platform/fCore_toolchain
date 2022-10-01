@@ -107,6 +107,10 @@ bool operator==(const hl_expression_node &lhs, const hl_expression_node &rhs) {
             std::shared_ptr<hl_ast_operand> ex_1 = std::static_pointer_cast<hl_ast_operand>(lhs.rhs);
             std::shared_ptr<hl_ast_operand> ex_2 = std::static_pointer_cast<hl_ast_operand>(rhs.rhs);
             ret_val &= *ex_1 == *ex_2;
+        }else if((lhs.rhs->node_type == hl_ast_node_type_function_call) && (rhs.rhs->node_type ==  hl_ast_node_type_function_call)){
+            std::shared_ptr<hl_function_call_node> ex_1 = std::static_pointer_cast<hl_function_call_node>(lhs.rhs);
+            std::shared_ptr<hl_function_call_node> ex_2 = std::static_pointer_cast<hl_function_call_node>(rhs.rhs);
+            ret_val &= *ex_1 == *ex_2;
         } else {
             return false;
         }

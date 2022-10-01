@@ -92,8 +92,8 @@ public:
     unsigned int get_array_length() const {return array_length;};
     void set_array_length(unsigned int al) {array_length = al;};
 
-    void set_array_contiguous(bool ac) { array_contiguous = ac;};
-    bool get_array_contiguous() {return array_contiguous;};
+    void set_contiguity(bool ac) { contiguity = ac;};
+    bool get_contiguity() {return contiguity;};
 
     nlohmann::json dump();
 
@@ -108,7 +108,7 @@ private:
     unsigned int last_occurrence;
 
     unsigned int array_length;
-    bool array_contiguous;
+    bool contiguity;
     std::vector<int> bound_register;
 
     std::string name;

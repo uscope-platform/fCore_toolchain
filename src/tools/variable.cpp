@@ -25,6 +25,7 @@ variable::variable() {
     last_occurrence = 0;
     bound_register.push_back(-1);
     array_length = 0;
+    contiguity = false;
 }
 
 variable::variable(std::string n, float value) {
@@ -39,6 +40,7 @@ variable::variable(std::string n, float value) {
     bound_register.push_back(-1);
     array_length = 0;
     const_i = 0;
+    contiguity = false;
 }
 
 variable::variable(std::string n, int value) {
@@ -52,6 +54,7 @@ variable::variable(std::string n, int value) {
     bound_register.push_back(-1);
     array_length = 0;
     const_f = 0;
+    contiguity = false;
 }
 
 
@@ -66,6 +69,7 @@ variable::variable(std::string n) {
     bound_register.push_back(-1);
     array_length = 0;
     const_f = 0;
+    contiguity = false;
 }
 
 
@@ -103,7 +107,7 @@ bool operator==(const variable &lhs, const variable &rhs) {
     cond &= lhs.array_length == rhs.array_length;
     cond &= lhs.const_i == rhs.const_i;
     cond &= lhs.const_f == rhs.const_f;
-
+    cond &= lhs.contiguity == rhs.contiguity;
     return cond;
 }
 
@@ -165,7 +169,7 @@ std::shared_ptr<variable> variable::deep_copy(const std::shared_ptr <variable>& 
     copied_var->used = original->used;
     copied_var->const_i = original->const_i;
     copied_var->const_f = original->const_f;
-
+    copied_var->contiguity = original->contiguity;
     return copied_var;
 }
 

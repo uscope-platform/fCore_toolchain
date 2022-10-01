@@ -42,6 +42,10 @@ public:
     std::vector<std::shared_ptr<hl_ast_node>> get_array_index();
     void set_array_index(std::vector<std::shared_ptr<hl_ast_node>> idx);
 
+    // ARRAY CONTIGUITY
+        void set_contiguity(bool c){ inner_variable->set_contiguity(c);}
+        bool get_contiguity() {return inner_variable->get_contiguity();};
+
     //INNER VARIABLE
     void set_variable(std::shared_ptr<variable> v);
     std::shared_ptr<variable> get_variable();
