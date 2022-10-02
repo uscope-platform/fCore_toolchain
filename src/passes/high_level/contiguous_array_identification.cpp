@@ -16,7 +16,8 @@
 #include "passes/high_level/contiguous_array_identification.hpp"
 
 contiguous_array_identification::contiguous_array_identification() : pass_base<hl_ast_node>("contiguous_array_identification"){
-    in_efi_context = false;
+    process_efi_return = false;
+    process_efi_arguments = false;
 }
 
 std::shared_ptr<hl_ast_node> contiguous_array_identification::process_global(std::shared_ptr<hl_ast_node> element) {
@@ -76,9 +77,9 @@ contiguous_array_identification::process_element(std::shared_ptr<hl_expression_n
             auto lhs_op= std::static_pointer_cast<hl_ast_operand>(lhs);
 
             if(contiguous_arrays.contains(lhs_op->get_name())){
-                in_efi_context = false;
-            }else if(in_efi_context){
-                in_efi_context = false;
+                process_efi_return = false;
+            }else if(process_efi_return){
+                process_efi_return = false;
                 lhs_op->set_contiguity(true);
                 contiguous_arrays.insert(lhs_op->get_name());
             }
@@ -151,14 +152,29 @@ contiguous_array_identification::process_element(std::shared_ptr<hl_function_def
 std::shared_ptr<hl_ast_node> contiguous_array_identification::process_element(std::shared_ptr<hl_function_call_node> element) {
     auto name = element->get_name();
     if(name == "efi"){
-        in_efi_context = true;
+        process_efi_return = true;
+
+        process_efi_arguments = true;
+        std::vector<std::shared_ptr<hl_ast_node>> new_args;
+        for(auto &item:element->get_arguments()){
+            new_args.push_back(process_element(item));
+        }
+        element->set_arguments(new_args);
+
+        process_efi_arguments = false;
     }
+
+
     return element;
 }
 
 
 std::shared_ptr<hl_ast_node> contiguous_array_identification::process_element(std::shared_ptr<hl_ast_operand> element) {
     if(contiguous_arrays.contains(element->get_name())){
+        element->set_contiguity(true);
+    }
+    if(process_efi_arguments && (element->get_type()!=var_type_int_const && element->get_type()!=var_type_float_const)){
+        contiguous_arrays.insert(element->get_name());
         element->set_contiguity(true);
     }
     return element;

@@ -25,7 +25,7 @@
 #include <iomanip>
 
 #include "data_structures/low_level_ast/ll_ast_node.hpp"
-#include "tools/variable.hpp"
+#include "data_structures/common/variable.hpp"
 #include "fCore_isa.hpp"
 
 

@@ -75,15 +75,21 @@ std::shared_ptr<hl_ast_operand> array_scalarization_pass::process_operand(std::s
     }
 
     std::shared_ptr<variable> var = std::make_shared<variable>(mangle_name(old_array_idx, var_name));
+    std::vector<int> bound_regs = {-1};
+    if(def_map_vect[var_name] != nullptr){
+        bound_regs = def_map_vect[var_name]->get_variable()->get_bound_reg_array();
+    }
 
     if(old_array_idx.size() == 1){
-
-        std::shared_ptr<hl_ast_operand> bound_reg_op = std::static_pointer_cast<hl_ast_operand>(old_array_idx[0]);
+        if(bound_regs[0] != -1){
+            int i = 0;
+        }
+        std::shared_ptr<hl_ast_operand> index_operand = std::static_pointer_cast<hl_ast_operand>(old_array_idx[0]);
         int idx;
-        if(bound_reg_op->get_variable()->is_constant()){
-            idx = bound_reg_op->get_int_value();
+        if(index_operand->get_variable()->is_constant()){
+            idx = index_operand->get_int_value();
         } else {
-            std::string idx_var_name = bound_reg_op->get_name();
+            std::string idx_var_name = index_operand->get_name();
             auto idx_val_def= def_map_s[idx_var_name];
             idx = evaluate_index_definition(idx_val_def);
         }
@@ -98,11 +104,11 @@ std::shared_ptr<hl_ast_operand> array_scalarization_pass::process_operand(std::s
         idx.reserve(old_array_idx.size());
 
         for(auto &item:old_array_idx){
-            auto bound_reg_op = std::static_pointer_cast<hl_ast_operand>(item);
-            if(bound_reg_op->get_variable()->is_constant()){
-                idx.push_back(bound_reg_op->get_int_value());
+            auto index_operand = std::static_pointer_cast<hl_ast_operand>(item);
+            if(index_operand->get_variable()->is_constant()){
+                idx.push_back(index_operand->get_int_value());
             } else {
-                std::string idx_var_name = bound_reg_op->get_name();
+                std::string idx_var_name = index_operand->get_name();
                 auto idx_val_def= def_map_s[idx_var_name];
                 idx.push_back(evaluate_index_definition(idx_val_def));
             }

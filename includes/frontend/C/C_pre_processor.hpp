@@ -24,7 +24,7 @@
 #include <regex>
 #include <stdexcept>
 
-#include "tools/variable.hpp"
+#include "data_structures/common/variable.hpp"
 #include "tools/define.hpp"
 #include "tools/variable_map.hpp"
 #include "tools/define_map.hpp"
