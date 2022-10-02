@@ -17,7 +17,7 @@
 #define FCORE_TOOLCHAIN_VARIABLE_LIFETIME_MAPPING_HPP
 
 #include "stream_pass_base.hpp"
-#include "tools/variable.hpp"
+#include "data_structures/common/variable.hpp"
 #include "tools/variable_map.hpp"
 
 class variable_lifetime_mapping : public stream_pass_base{

@@ -13,34 +13,35 @@
 // limitations under the License.05/07/2021.
 //
 
-#ifndef FCORE_TOOLCHAIN_CONTIGUOUS_ARRAY_IDENTIFICATION_HPP
-#define FCORE_TOOLCHAIN_CONTIGUOUS_ARRAY_IDENTIFICATION_HPP
+#ifndef FCORE_TOOLCHAIN_EARLY_REGISTGER_ALLOCATION_PASS_HPP
+#define FCORE_TOOLCHAIN_EARLY_REGISTGER_ALLOCATION_PASS_HPP
 
-#include <set>
 
+#include <utility>
+
+#include "fCore_isa.hpp"
 #include "passes/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
+#include "data_structures/common/memory_tracker.hpp"
 
-class contiguous_array_identification : public pass_base<hl_ast_node>{
+class early_register_allocation_pass : public pass_base<hl_ast_node> {
 public:
-    contiguous_array_identification();
+    early_register_allocation_pass(std::unordered_map<std::string, std::shared_ptr<variable>> iom);
     std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
     int get_pass_type() override { return GLOBAL_PASS;};
 private:
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_node> element);
-    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_function_call_node> element);
-    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_expression_node> element);
-    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_definition_node> element);
-    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_loop_node> element);
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_conditional_node> element);
-    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_function_def_node> element);
+    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_definition_node> element);
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_operand> element);
-    bool process_efi_return;
-    bool process_efi_arguments;
+    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_expression_node> element);
 
+    std::shared_ptr<variable> allocate_contiguous_array(std::shared_ptr<variable> v, uint32_t size);
 
-    std::set<std::string> contiguous_arrays;
+    std::unordered_map<std::string, std::vector<int>> bindings_map;
+
+    memory_tracker mem_tracker;
 };
 
 
-#endif //FCORE_TOOLCHAIN_CONTIGUOUS_ARRAY_IDENTIFICATION_HPP
+#endif //FCORE_TOOLCHAIN_EARLY_REGISTGER_ALLOCATION_PASS_HPP
