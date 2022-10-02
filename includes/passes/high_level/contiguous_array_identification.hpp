@@ -35,9 +35,7 @@ private:
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_conditional_node> element);
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_function_def_node> element);
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_operand> element);
-    bool process_efi_return;
-    bool process_efi_arguments;
-
+    bool in_efi_context;
 
     std::set<std::string> contiguous_arrays;
 };

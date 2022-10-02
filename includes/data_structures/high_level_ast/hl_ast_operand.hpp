@@ -17,7 +17,7 @@
 #define FCORE_TOOLCHAIN_HL_AST_OPERAND_HPP
 
 #include "hl_ast_node.hpp"
-#include "data_structures/common/variable.hpp"
+#include "tools/variable.hpp"
 #include "../third_party/json.hpp"
 
 #include <string>
@@ -44,7 +44,7 @@ public:
 
     // ARRAY CONTIGUITY
         void set_contiguity(bool c){ inner_variable->set_contiguity(c);}
-        bool get_contiguity() {return inner_variable->is_contiguous();};
+        bool get_contiguity() {return inner_variable->get_contiguity();};
 
     //INNER VARIABLE
     void set_variable(std::shared_ptr<variable> v);

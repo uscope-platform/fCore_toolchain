@@ -324,7 +324,7 @@ TEST(EndToEndC, test_complex_normalization){
     ASSERT_EQ(gold_standard, result);
 }
 
-TEST(EndToEndC, register_allocation){
+TEST(InstructionStreamPasses, register_allocation){
     std::string input_file = "c_e2e/test_register_allocation.c";
 
     std::vector<std::string> includes;
@@ -340,7 +340,7 @@ TEST(EndToEndC, register_allocation){
 
 
 
-TEST(EndToEndC, functionInliningExpression) {
+TEST(HlPassesTest, functionInliningExpression) {
 
     std::string input_file = "c_e2e/test_function_inline_expression.c";
 
@@ -357,7 +357,7 @@ TEST(EndToEndC, functionInliningExpression) {
 }
 
 
-TEST(EndToEndC, essential_variable_initialization) {
+TEST(HlPassesTest, essential_variable_initialization) {
 
     std::string input_file = "c_e2e/test_essential_variable_initialization.c";
 
@@ -375,7 +375,7 @@ TEST(EndToEndC, essential_variable_initialization) {
 
 
 
-TEST(EndToEndC, negative_leading_sum) {
+TEST(HlPassesTest, negative_leading_sum) {
 
     std::string input_file = "c_e2e/test_negative_leading_sum.c";
 
@@ -393,7 +393,7 @@ TEST(EndToEndC, negative_leading_sum) {
 }
 
 
-TEST(EndToEndC, function_vars_mangling) {
+TEST(HlPassesTest, function_vars_mangling) {
 
     std::string input_file = "c_e2e/test_function_vars_mangling.c";
 
@@ -411,7 +411,7 @@ TEST(EndToEndC, function_vars_mangling) {
 }
 
 
-TEST(EndToEndC, constant_merging) {
+TEST(HlPassesTest, constant_merging) {
 
     std::string input_file = "c_e2e/test_constant_merging.c";
 
@@ -430,7 +430,7 @@ TEST(EndToEndC, constant_merging) {
 
 
 
-TEST(EndToEndC, zero_assignment_removal) {
+TEST(HlPassesTest, zero_assignment_removal) {
 
     std::string input_file = "c_e2e/test_zero_assignment_removal.c";
 
@@ -447,7 +447,7 @@ TEST(EndToEndC, zero_assignment_removal) {
 
 }
 
-TEST(EndToEndC, loop_index_expression) {
+TEST(HlPassesTest, loop_index_expression) {
 
     std::string input_file = "c_e2e/test_loop_index_expression.c";
 
@@ -465,7 +465,7 @@ TEST(EndToEndC, loop_index_expression) {
 }
 
 
-TEST(EndToEndC, loop_index_expression_multidim) {
+TEST(HlPassesTest, loop_index_expression_multidim) {
 
     std::string input_file = "c_e2e/test_loop_index_expression_multidim.c";
 
@@ -477,23 +477,6 @@ TEST(EndToEndC, loop_index_expression_multidim) {
 
 
     std::vector<uint32_t> gold_standard = {0x7b8801, 0x7bafa1, 0xc};
-
-    ASSERT_EQ(gold_standard, result);
-
-}
-
-TEST(EndToEndC, contiguos_array_allocation) {
-
-    std::string input_file = "c_e2e/test_contiguous_array_allocation.c";
-
-
-    std::vector<std::string> includes;
-
-    fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
-
-
-    std::vector<uint32_t> gold_standard = {0xe5875, 0x26, 0x4,0x408e1, 0x26,0x2,0xc0901,0xc};
 
     ASSERT_EQ(gold_standard, result);
 

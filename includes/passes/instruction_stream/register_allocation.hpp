@@ -20,7 +20,7 @@
 
 
 #include "passes/instruction_stream/stream_pass_base.hpp"
-#include "data_structures/common/variable.hpp"
+#include "tools/variable.hpp"
 #include "tools/variable_map.hpp"
 #include "tools/register_map.hpp"
 

@@ -23,7 +23,7 @@
 #include "passes/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "tools/expression_evaluator.hpp"
-#include "data_structures/common/variable.hpp"
+#include "tools/variable.hpp"
 
 class loop_unrolling_pass : public pass_base<hl_ast_node> {
 public:

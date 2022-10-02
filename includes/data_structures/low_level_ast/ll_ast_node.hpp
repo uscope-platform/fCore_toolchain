@@ -22,7 +22,7 @@
 #include <iostream>
 #include <utility>
 
-#include "data_structures/common/variable.hpp"
+#include "tools/variable.hpp"
 #include "data_structures/ast_node_base.hpp"
 
 
