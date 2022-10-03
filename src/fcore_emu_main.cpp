@@ -28,8 +28,6 @@
 int main(int argc, char **argv) {
     CLI::App app{"fCore Emulator"};
 
-    bool input_hex = false;
-    bool input_mem = false;
     bool output_force = false;
     bool verbose_logging = false;
     std::string input_program;
@@ -37,8 +35,6 @@ int main(int argc, char **argv) {
     std::string output_file;
     std::string spec_file;
     app.add_option("input_program", input_program, "Input program path");
-    app.add_flag("--mem", input_mem, "the input is a verilog mem file");
-    app.add_flag("--hex", input_hex, "the input is a binary file");
     app.add_flag("--log", verbose_logging, "Enable verbose logging.");
     app.add_flag("--f", output_force, "force the rewriting of an existing product file");
     app.add_option("--o", output_file, "Output file path");
@@ -48,13 +44,6 @@ int main(int argc, char **argv) {
 
     std::shared_ptr<spdlog::logger> logger = spdlog::stdout_color_mt("logger", spdlog::color_mode::automatic);
 
-    if(!input_hex && !input_mem){
-        spdlog::critical("the input file type should be specified (use either the --mem or --hex flags)");
-        exit(-1);
-    } else if (input_hex && input_mem){
-        spdlog::critical("Both input file type specifiers are present on the command line, only one should be used");
-        exit(-1);
-    }
 
     if(!output_file.empty() & !output_force){
         if(std::filesystem::exists(output_file)){
