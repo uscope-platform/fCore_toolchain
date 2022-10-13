@@ -80,6 +80,7 @@ configure_file(C_files/hl_passes/test_matrix_scalarization.c ${HL_OPT_TEST_FILES
 configure_file(C_files/hl_passes/test_function_inlining_array.c ${HL_OPT_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/hl_passes/test_return_inlining.c ${HL_OPT_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/hl_passes/test_nested_function_inlining.c ${HL_OPT_TEST_FILES_DIR} COPYONLY)
+configure_file(C_files/hl_passes/test_complex_division_implementation.c ${HL_OPT_TEST_FILES_DIR} COPYONLY)
 
 # FULL PROGRAMS
 set(C_E2E_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/c_e2e)
