@@ -96,9 +96,14 @@ void dead_load_elimination::search_usages(std::shared_ptr<hl_expression_node> el
         return;
     }
     if(!element->is_unary()){
-        search_usages(std::static_pointer_cast<hl_ast_operand>(element->get_lhs()));
+        if(element->get_lhs()->node_type == hl_ast_node_type_operand){
+            search_usages(std::static_pointer_cast<hl_ast_operand>(element->get_lhs()));
+        }
+
     }
-    search_usages(std::static_pointer_cast<hl_ast_operand>(element->get_rhs()));
+    if(element->get_rhs()->node_type == hl_ast_node_type_operand){
+        search_usages(std::static_pointer_cast<hl_ast_operand>(element->get_rhs()));
+    }
 }
 
 
