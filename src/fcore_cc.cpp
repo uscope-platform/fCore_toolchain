@@ -50,6 +50,9 @@ fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool p
 
         if(dump_ast_level>0) dump["stream"] = sman.get_dump();
 
+        if(program_stream.empty()){
+            program_stream.push_back(std::make_shared<ll_independent_inst_node>("stop"));
+        }
         if(!program_stream.last()->is_stop()){
             program_stream.push_back(std::make_shared<ll_independent_inst_node>("stop"));
         }

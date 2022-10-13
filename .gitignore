@@ -10,3 +10,5 @@ cmake-build-debug-coverage/
 dist/
 
 cmake-build-debug-coverage-1/
+
+cmake-build-target/
