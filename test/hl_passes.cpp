@@ -1023,3 +1023,69 @@ TEST(HlPassesTest, contiguous_array_identification) {
     }
 
 }
+
+
+TEST(HlPassesTest, complex_division_implementation) {
+    std::string input_file = "hl_opt/test_complex_division_implementation.c";
+
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(input_file, result_def);
+    parser.pre_process({});
+    parser.parse();
+
+    std::string ep = "main";
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1}, 0);
+    manager.run_morphing_passes(parser.AST);
+
+    auto result = parser.AST;
+
+    std::shared_ptr<hl_ast_node> gold_standard= std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+
+    std::shared_ptr<hl_function_def_node> main = std::make_shared<hl_function_def_node>();
+    main->set_name("main");
+    main->set_return_type(c_type_int);
+    gold_standard->add_content(main);
+
+    std::vector<std::shared_ptr<hl_ast_node>> main_body;
+
+    std::shared_ptr<variable> a = std::make_shared<variable>("a");
+    a->set_variable_class(variable_input_type);
+    a->set_bound_reg(5);
+    std::shared_ptr<hl_definition_node> a_def = std::make_shared<hl_definition_node>("a", c_type_float, a);
+    main_body.push_back(a_def);
+
+    std::shared_ptr<variable> b = std::make_shared<variable>("b");
+    std::shared_ptr<hl_definition_node> b_def = std::make_shared<hl_definition_node>("b", c_type_float, b);
+    std::shared_ptr<variable> b_const = std::make_shared<variable>("constant", 52.6f);
+    std::shared_ptr<hl_ast_operand> b_op = std::make_shared<hl_ast_operand>(b_const);
+    b_def->set_scalar_initializer(b_op);
+    main_body.push_back(b_def);
+
+    std::shared_ptr<variable> c = std::make_shared<variable>("c");
+    std::shared_ptr<hl_definition_node> c_def = std::make_shared<hl_definition_node>("c", c_type_int, c);
+
+    std::shared_ptr<hl_expression_node> mul_exp = std::make_shared<hl_expression_node>(expr_mult);
+    mul_exp->set_lhs(std::make_shared<hl_ast_operand>(a));
+
+
+    mul_exp->set_lhs(std::make_shared<hl_ast_operand>(a));
+
+    std::shared_ptr<hl_expression_node> rec_exp = std::make_shared<hl_expression_node>(expr_reciprocal);
+    rec_exp->set_rhs(std::make_shared<hl_ast_operand>(b));
+    mul_exp->set_rhs(rec_exp);
+
+    std::vector<std::shared_ptr<hl_ast_node>> args = {mul_exp};
+    std::shared_ptr<hl_function_call_node> fti_call = std::make_shared<hl_function_call_node>("fti", args);
+
+
+    c_def->set_scalar_initializer(fti_call);
+
+    main_body.push_back(c_def);
+
+    main->set_body(main_body);
+
+    ASSERT_EQ(*result, *gold_standard);
+
+}
+

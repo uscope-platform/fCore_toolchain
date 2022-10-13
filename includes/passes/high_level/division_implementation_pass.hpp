@@ -24,6 +24,9 @@ public:
     division_implementation_pass();
     std::shared_ptr<hl_ast_node> process_leaf(std::shared_ptr<hl_ast_node> element) override;
     int get_pass_type() override { return LEAF_PASS;};
+private:
+    std::shared_ptr<hl_ast_node> process_expression(std::shared_ptr<hl_expression_node> exp);
+    std::shared_ptr<hl_ast_node> process_f_call(std::shared_ptr<hl_function_call_node> f_call);
 };
 
 
