@@ -18,7 +18,7 @@
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "tools/variable_map.hpp"
 #include "tools/define_map.hpp"
-#include "tools/variable.hpp"
+#include "data_structures/common/variable.hpp"
 #include "frontend/C/C_language_parser.hpp"
 #include "passes/hl_passes.hpp"
 #include "passes/high_level/function_mapping.hpp"
@@ -382,7 +382,7 @@ TEST(HlPassesTest, function_elimination) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,9,10,11,13}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,9,10,12,14}, 0);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> raw_result =parser.AST;
@@ -503,7 +503,7 @@ TEST(HlPassesTest, hl_ast_lowering) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,9,10,11,13}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,9,10,12,14}, 0);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -548,7 +548,7 @@ TEST(HlPassesTest, loop_unrolling_array) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,9,12,13}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,9,13,14}, 0);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -605,7 +605,7 @@ TEST(HlPassesTest, test_matrix_scalarization) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,9,10,11}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,9,10,12}, 0);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -789,7 +789,7 @@ TEST(HlPassesTest, complex_normalization) {
 
     input_root->add_content(expr_2);
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{13}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{14}, 0);
     manager.run_morphing_passes(input_root);
 
 
@@ -845,7 +845,7 @@ TEST(HlPassesTest, dead_load_elimination) {
     input_root->add_content(exp);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{16}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{17}, 0);
     manager.run_morphing_passes(input_root);
 
 
@@ -968,6 +968,7 @@ TEST(HlPassesTest, contiguous_array_identification) {
     std::vector<int> arr_idx = {10};
     std::shared_ptr<variable> idx_var = std::make_shared<variable>("index");
     idx_var->set_type(var_type_array);
+    idx_var->set_contiguity(true);
     std::shared_ptr<hl_definition_node> idx_def = std::make_shared<hl_definition_node>("index", c_type_float,idx_var);
     idx_def->set_array_shape(arr_idx);
     idx_def->set_array_index({const_op});
@@ -995,6 +996,7 @@ TEST(HlPassesTest, contiguous_array_identification) {
     exp->set_lhs(op);
 
     idx_var = std::make_shared<variable>("index");
+    idx_var->set_contiguity(true);
     op =std::make_shared<hl_ast_operand>(idx_var);
     var=std::make_shared<variable>("constant", 11);
     var->set_type(var_type_int_const);

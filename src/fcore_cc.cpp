@@ -25,9 +25,10 @@ fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool p
         target_parser.pre_process({});
         target_parser.parse();
         hl_ast = target_parser.AST;
+        std::unordered_map<std::string, std::shared_ptr<variable>> iom = target_parser.get_iom_map();
 
         std::string ep = "main";
-        hl_manager = create_hl_pass_manager(ep,{}, dump_ast_level);
+        hl_manager = create_hl_pass_manager(ep,{}, dump_ast_level, iom);
         hl_manager.run_morphing_passes(hl_ast);
 
         if(dump_ast_level>0) dump["high_level"] = hl_manager.get_dump();
@@ -43,7 +44,6 @@ fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool p
         if(dump_ast_level>0) dump["low_level"] = ll_manager.get_dump();
 
         instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
-        std::unordered_map<std::string, std::shared_ptr<variable>> iom = target_parser.get_iom_map();
 
         stream_pass_manager sman(iom, dump_ast_level);
         program_stream = sman.process_stream(program_stream);

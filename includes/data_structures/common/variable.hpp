@@ -93,7 +93,7 @@ public:
     void set_array_length(unsigned int al) {array_length = al;};
 
     void set_contiguity(bool ac) { contiguity = ac;};
-    bool get_contiguity() {return contiguity;};
+    bool is_contiguous() {return contiguity;};
 
     nlohmann::json dump();
 

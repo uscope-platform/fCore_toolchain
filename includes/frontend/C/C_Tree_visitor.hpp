@@ -27,7 +27,7 @@
 
 #include "C_parser/C_grammarBaseListener.h"
 #include "C_parser/C_grammarParser.h"
-#include "tools/variable.hpp"
+#include "data_structures/common/variable.hpp"
 
 
 #include "data_structures/high_level_ast/hl_function_def_node.hpp"
