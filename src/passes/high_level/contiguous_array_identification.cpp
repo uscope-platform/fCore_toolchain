@@ -80,8 +80,10 @@ contiguous_array_identification::process_element(std::shared_ptr<hl_expression_n
                 process_efi_return = false;
             }else if(process_efi_return){
                 process_efi_return = false;
-                lhs_op->set_contiguity(true);
-                contiguous_arrays.insert(lhs_op->get_name());
+                if(lhs_op->get_variable()->get_bound_reg_array()[0] == -1){
+                    lhs_op->set_contiguity(true);
+                    contiguous_arrays.insert(lhs_op->get_name());
+                }
             }
         }
     }
@@ -157,7 +159,11 @@ std::shared_ptr<hl_ast_node> contiguous_array_identification::process_element(st
         process_efi_arguments = true;
         std::vector<std::shared_ptr<hl_ast_node>> new_args;
         for(auto &item:element->get_arguments()){
-            new_args.push_back(process_element(item));
+            if(std::static_pointer_cast<hl_ast_operand>(element->get_arguments()[0])->get_variable()->get_bound_reg_array()[0] == -1){
+                new_args.push_back(process_element(item));
+            } else{
+                new_args.push_back(item);
+            }
         }
         element->set_arguments(new_args);
 
