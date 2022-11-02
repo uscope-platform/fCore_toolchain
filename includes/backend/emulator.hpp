@@ -38,11 +38,13 @@ typedef struct {
 
 class emulator {
 public:
-    emulator(instruction_stream &s, int n_channels);
+    emulator(instruction_stream &s, int n_channels, const std::string &core);
 
     void init_memory(std::unordered_map<unsigned int, uint32_t> &mem_init);
     void apply_inputs(uint32_t addr, uint32_t data, unsigned int channel);
     uint32_t get_output(uint32_t addr, int channel);
+
+    void set_comparator_type(std::string &t){comparator_type = t;};
     void run_round(int channel);
     void set_efi_selector(std::string sel){ efi_selector = std::move(sel);};
     std::shared_ptr<std::vector<uint32_t>> get_memory(int channel) { return memory_pool[channel];};
@@ -87,6 +89,9 @@ private:
 
     std::string efi_selector;
     efi_dispatcher efi_implementation;
+    std::string comparator_type;
+
+    std::string core_name;
 
     std::shared_ptr<std::vector<uint32_t>> working_memory;
     std::unordered_map<int, std::shared_ptr<std::vector<uint32_t>>> memory_pool;

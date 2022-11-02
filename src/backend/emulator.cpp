@@ -17,11 +17,12 @@
 
 
 
-emulator::emulator(instruction_stream &s, int n_channels) {
+emulator::emulator(instruction_stream &s, int n_channels,const std::string &core) : efi_implementation(core){
     stream = s;
     for(int i = 0; i<n_channels; i++){
         memory_pool[i] = std::make_shared<std::vector<uint32_t>>(2 << (fcore_register_address_width - 1), 0);
     }
+    core_name = core;
     working_memory = memory_pool[0];
     xip_fpo_init2(xil_a, 8, 24);
     xip_fpo_init2(xil_b, 8, 24);
@@ -246,76 +247,77 @@ uint32_t emulator::execute_itf(uint32_t a) {
 }
 
 uint32_t emulator::execute_compare_gt(uint32_t a, uint32_t b) {
-    xip_fpo_set_flt(xil_a, uint32_to_float(a));
-    xip_fpo_set_flt(xil_b, uint32_to_float(b));
+    auto a_i = (int32_t)a;
+    auto b_i = (int32_t)b;
 
-    int res_int;
-    xip_fpo_exc_t exc = xip_fpo_greater(&res_int, xil_a, xil_b);
+    bool res = a_i>b_i;
 
-    if ( exc != 0) {
-        spdlog::critical("An exception occurred during the comparison of "+ std::to_string(a) + " and " + std::to_string(b) + " (greater than)");
-        exit(-1);
-    }
-
-    if(res_int){
-        return 0xffffffff;
-    } else {
-        return 0;
+    if(comparator_type== "full") {
+        if(res){
+            return 0xffffffff;
+        } else {
+            return 0;
+        }
+    } else if(comparator_type=="reducing"){
+        return res;
+    } else if(comparator_type == "none") {
+        throw std::runtime_error("The emulator has encountered a comparison instruction on core "+core_name+" which does not have comparators.");
+    } else{
+        throw std::runtime_error("The emulator has encountered a comparison instruction, however an unknown type was selected in the spec file");
     }
 }
 
 uint32_t emulator::execute_compare_le(uint32_t a, uint32_t b) {
-    xip_fpo_set_flt(xil_a, uint32_to_float(a));
-    xip_fpo_set_flt(xil_b, uint32_to_float(b));
+    auto a_i = (int32_t)a;
+    auto b_i = (int32_t)b;
 
-    int res_int;
-    xip_fpo_exc_t exc = xip_fpo_lessequal(&res_int, xil_a, xil_b);
-
-    if ( exc != 0) {
-        spdlog::critical("An exception occurred during the comparison of "+ std::to_string(a) + " and " + std::to_string(b) + " (less than or equal)");
-        exit(-1);
-    }
-    if(res_int){
-        return 0xffffffff;
-    } else {
-        return 0;
+    bool res = a_i<=b_i;
+    if(comparator_type== "full") {
+        if(res){
+            return 0xffffffff;
+        } else {
+            return 0;
+        }
+    } else if(comparator_type=="reducing"){
+        return res;
+    } else if(comparator_type == "none") {
+        throw std::runtime_error("The emulator has encountered a comparison instruction on core "+core_name+" which does not have comparators.");
+    } else{
+        throw std::runtime_error("The emulator has encountered a comparison instruction, however an unknown type was selected in the spec file");
     }
 }
 
 uint32_t emulator::execute_compare_eq(uint32_t a, uint32_t b) {
-    xip_fpo_set_flt(xil_a, uint32_to_float(a));
-    xip_fpo_set_flt(xil_b, uint32_to_float(b));
-
-    int res_int;
-    xip_fpo_exc_t exc = xip_fpo_equal(&res_int, xil_a, xil_b);
-
-    if ( exc != 0) {
-        spdlog::critical("An exception occurred during the comparison of "+ std::to_string(a) + " and " + std::to_string(b) + " (equal)");
-        exit(-1);
-    }
-    if(res_int){
-        return 0xffffffff;
-    } else {
-        return 0;
+    bool res = a==b;
+    if(comparator_type== "full") {
+        if(res){
+            return 0xffffffff;
+        } else {
+            return 0;
+        }
+    } else if(comparator_type=="reducing"){
+        return res;
+    } else if(comparator_type == "none") {
+        throw std::runtime_error("The emulator has encountered a comparison instruction on core "+core_name+" which does not have comparators.");
+    } else{
+        throw std::runtime_error("The emulator has encountered a comparison instruction, however an unknown type was selected in the spec file");
     }
 }
 
 uint32_t emulator::execute_compare_ne(uint32_t a, uint32_t b) {
-    xip_fpo_set_flt(xil_a, uint32_to_float(a));
-    xip_fpo_set_flt(xil_b, uint32_to_float(b));
-
-    int res_int;
-    xip_fpo_exc_t exc = xip_fpo_notequal(&res_int, xil_a, xil_b);
-
-    if ( exc != 0) {
-        spdlog::critical("An exception occurred during the comparison of "+ std::to_string(a) + " and " + std::to_string(b) + " (not equal)");
-        exit(-1);
-    }
-
-    if(res_int){
-        return 0xffffffff;
-    } else {
-        return 0;
+    bool res = a!=b;
+    if(comparator_type== "full") {
+        if(res){
+            return 0xffffffff;
+        } else {
+            return 0;
+        }
+    } else if(comparator_type=="reducing"){
+        return res;
+    } else if(comparator_type == "none") {
+        throw std::runtime_error("The emulator has encountered a comparison instruction on core "+core_name+" which does not have comparators.");
+    } else{
+        throw std::runtime_error("The emulator has encountered a comparison instruction, however an unknown type was selected in the spec file");
     }
 }
 
@@ -336,9 +338,7 @@ uint32_t emulator::execute_abs(uint32_t a) {
 }
 
 uint32_t emulator::execute_popcnt(uint32_t a) {
-    int count;
-    for (count = 0; a != 0; count++, a &= a-1);
-    return count;
+    return std::bitset<32>(a).count();
 }
 
 uint32_t emulator::execute_satp(uint32_t a, uint32_t b) {

@@ -113,12 +113,13 @@ emulator_metadata emulator_manager::load_program(nlohmann::json &core) {
         auto ch = core["channels"];
         metadata.active_channels = ch;
 
-        metadata.emu = std::make_shared<emulator>(program_stream, ch);
+        metadata.emu = std::make_shared<emulator>(program_stream, ch, core["id"]);
 
-        if(core.contains("efi_implementation")){
-            metadata.efi_implementation = core["efi_implementation"];
-        } else {
-            metadata.efi_implementation = "";
+        if(core.contains("options")){
+            auto opt = core["options"];
+            metadata.efi_implementation = opt["efi_implementation"];
+            metadata.comparator_type = opt["comparators"];
+            metadata.emu->set_comparator_type(metadata.comparator_type);
         }
         if(core.contains("order")){
             if(ordering_style==implicit_ordering){

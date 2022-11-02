@@ -54,6 +54,7 @@ typedef struct {
     std::shared_ptr<emulator> emu;
     int active_channels;
     std::string efi_implementation;
+    std::string comparator_type;
     std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outputs;
 }emulator_metadata;
 

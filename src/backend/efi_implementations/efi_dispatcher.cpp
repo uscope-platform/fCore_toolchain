@@ -15,14 +15,19 @@
 
 #include "backend/efi_implementations/efi_dispatcher.h"
 
+efi_dispatcher::efi_dispatcher(const std::string &core) {
+    core_name = core;
+}
 
 void efi_dispatcher::emulate_efi(const std::string& function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
     if(function == "efi_sort"){
         efi_sort(op_a, op_b, dest, m);
     } else if(function =="efi_trig") {
         efi_trig(op_a, op_b, dest, m);
+    } else if(function =="none") {
+        throw std::runtime_error("The emulator has encountered an EFI instruction on core "+core_name+" which does not have an EFI interface.");
     } else{
-        throw std::runtime_error("The emulator has encountered an EFI instruction, however no implementation was selected in the spec file");
+        throw std::runtime_error("The emulator has encountered an EFI instruction, however an unknown implementation was selected in the spec file");
     }
 }
 
@@ -89,6 +94,7 @@ void efi_dispatcher::efi_trig(uint32_t op_a, uint32_t op_b, uint32_t dest, std::
     int result = round(scaled_res);
     m->at(dest) = result;
 }
+
 
 
 

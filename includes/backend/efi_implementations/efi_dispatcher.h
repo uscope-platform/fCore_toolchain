@@ -46,13 +46,14 @@ public:
 class efi_dispatcher {
 
 public:
-    efi_dispatcher() = default;
+    explicit efi_dispatcher(const std::string &core);
     void emulate_efi(const std::string& function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m);
 private:
     void efi_sort(uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m);
     static uint32_t float_to_uint32(float f);
     static float uint32_to_float(uint32_t u);
     void efi_trig(uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m);
+    std::string core_name;
 };
 
 
