@@ -16,19 +16,38 @@
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 
 
+stream_pass_manager::stream_pass_manager(
+        std::unordered_map<std::string, std::shared_ptr<variable>> &iom,
+        int dal,
+        std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm
+        ) {
+    constructs_pass_manager(iom, dal, bm);
+}
+
 stream_pass_manager::stream_pass_manager(std::unordered_map<std::string, std::shared_ptr<variable>> &iom, int dal) {
+
+    auto bm = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
+    constructs_pass_manager(iom, dal, bm);
+}
+
+
+void
+stream_pass_manager::constructs_pass_manager(std::unordered_map<std::string, std::shared_ptr<variable>> &iom, int dal,
+                                             std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm) {
+
     iom_map = iom;
     dump_ast_level = dal;
     std::shared_ptr<variable_map> var_map = std::make_shared<variable_map>();
     passes.push_back(std::make_shared<constant_merging>());
     passes.push_back(std::make_shared<variable_mapping>(var_map));
     passes.push_back(std::make_shared<variable_lifetime_mapping>(var_map));
-    passes.push_back(std::make_shared<register_allocation>(var_map, iom_map));
+    passes.push_back(std::make_shared<register_allocation>(var_map, iom_map, bm));
     passes.push_back(std::make_shared<zero_assignment_removal_pass>());
     passes.push_back(std::make_shared<bound_register_mapping_pass>());
     enabled_passes = {true, true, true, true, true, false};
 
 }
+
 
 instruction_stream stream_pass_manager::process_stream(instruction_stream stream) {
     int pass_n = 0;
@@ -70,3 +89,4 @@ nlohmann::json stream_pass_manager::get_dump() {
 
     return retval;
 }
+

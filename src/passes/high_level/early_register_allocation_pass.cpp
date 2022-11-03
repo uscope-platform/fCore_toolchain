@@ -16,9 +16,15 @@
 
 #include "passes/high_level/early_register_allocation_pass.hpp"
 
+#include <utility>
 
-early_register_allocation_pass::early_register_allocation_pass(std::unordered_map<std::string, std::shared_ptr<variable>> iom) : pass_base<hl_ast_node>("Early register allocation"),
+
+early_register_allocation_pass::early_register_allocation_pass(
+        const std::unordered_map<std::string, std::shared_ptr<variable>>& iom,
+        std::shared_ptr<std::unordered_map<std::string, memory_range_t>> bm
+) : pass_base<hl_ast_node>("Early register allocation"),
                                                                                                                                  mem_tracker({1,pow(2, fcore_register_address_width)-1}){
+    bindings_map = std::move(bm);
     for( auto&item:iom){
         if(item.second->get_variable_class() == variable_memory_type || item.second->get_variable_class() == variable_output_type || item.second->get_variable_class() == variable_input_type){
             for(auto &idx:item.second->get_bound_reg_array()){
@@ -105,8 +111,12 @@ early_register_allocation_pass::process_element(std::shared_ptr<hl_ast_condition
 }
 
 std::shared_ptr<hl_ast_node> early_register_allocation_pass::process_element(std::shared_ptr<hl_ast_operand> element) {
-    if(bindings_map.contains(element->get_name())){
-        element->get_variable()->set_bound_reg_array(bindings_map[element->get_name()]);
+    if(bindings_map->contains(element->get_name())){
+        auto bound_reg = std::vector<int>();
+        for(int i=bindings_map->at(element->get_name()).first; i<bindings_map->at(element->get_name()).second; i++){
+            bound_reg.push_back(i);
+        }
+        element->get_variable()->set_bound_reg_array(bound_reg);
     }
     return element;
 }
@@ -129,7 +139,7 @@ std::shared_ptr<variable> early_register_allocation_pass::allocate_contiguous_ar
         bound_reg.push_back(i);
     }
     v->set_bound_reg_array(bound_reg);
-    bindings_map[v->get_name()] = bound_reg;
+    bindings_map->insert({v->get_name(), allocation});
     return v;
 }
 

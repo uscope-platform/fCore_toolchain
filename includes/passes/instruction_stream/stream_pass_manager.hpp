@@ -29,10 +29,24 @@
 #include "passes/instruction_stream/constant_merging.hpp"
 #include "passes/instruction_stream/zero_assignment_removal_pass.hpp"
 #include "passes/instruction_stream/bound_register_mapping.hpp"
+#include "data_structures/common/memory_tracker.hpp"
 
 class stream_pass_manager {
 public:
-    stream_pass_manager(std::unordered_map<std::string, std::shared_ptr<variable>> &iom, int dal);
+    stream_pass_manager(
+            std::unordered_map<std::string, std::shared_ptr<variable>> &iom,
+            int dal,
+            std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm
+            );
+    stream_pass_manager(
+            std::unordered_map<std::string, std::shared_ptr<variable>> &iom,
+            int dal
+    );
+    void constructs_pass_manager(
+            std::unordered_map<std::string, std::shared_ptr<variable>> &iom,
+            int dal,
+            std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm
+    );
     instruction_stream process_stream(instruction_stream stream);
     instruction_stream apply_pass(const instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass);
     nlohmann::json get_dump();

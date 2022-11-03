@@ -26,7 +26,8 @@
 
 class early_register_allocation_pass : public pass_base<hl_ast_node> {
 public:
-    early_register_allocation_pass(std::unordered_map<std::string, std::shared_ptr<variable>> iom);
+    early_register_allocation_pass(const std::unordered_map<std::string, std::shared_ptr<variable>>& iom,
+                                   std::shared_ptr<std::unordered_map<std::string, memory_range_t>> bm);
     std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
     int get_pass_type() override { return GLOBAL_PASS;};
 private:
@@ -38,7 +39,7 @@ private:
 
     std::shared_ptr<variable> allocate_contiguous_array(std::shared_ptr<variable> v, uint32_t size);
 
-    std::unordered_map<std::string, std::vector<int>> bindings_map;
+    std::shared_ptr<std::unordered_map<std::string, memory_range_t>> bindings_map;
 
     memory_tracker mem_tracker;
 };

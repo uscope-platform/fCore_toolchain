@@ -16,7 +16,13 @@
 #include "passes/instruction_stream/register_allocation.hpp"
 
 
-register_allocation::register_allocation(std::shared_ptr<variable_map> vmap, std::unordered_map<std::string, std::shared_ptr<variable>> &iom) : stream_pass_base("register allocation") {
+register_allocation::register_allocation(
+        std::shared_ptr<variable_map> vmap,
+        std::unordered_map<std::string, std::shared_ptr<variable>> &iom,
+        std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm
+        ) : stream_pass_base("register allocation") {
+
+    early_bindings_map = ebm;
     var_map = std::move(vmap);
     iom_map = iom;
     //pre_initialize the registers statuses;
@@ -46,6 +52,13 @@ register_allocation::register_allocation(std::shared_ptr<variable_map> vmap, std
         }
     }
 
+    for(auto &item :*early_bindings_map){
+        auto mem_range = item.second;
+        for(int i = 0; i<mem_range.second-mem_range.first; i++){
+            excluded[mem_range.first+i] = true;
+        }
+    }
+
     excluded[0] = true;
 }
 
@@ -58,7 +71,6 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
 
     auto arguments = element->get_arguments();
     for(auto &item:arguments){
-        if(item->is_contiguous() && item->get_bound_reg() != -1) excluded[item->get_bound_reg()] = true;
         std::regex re("r(\\d\\d?)");
         std::smatch m;
         std::string s = item->to_str();
