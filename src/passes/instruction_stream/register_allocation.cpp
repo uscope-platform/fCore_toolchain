@@ -17,43 +17,48 @@
 
 
 register_allocation::register_allocation(std::shared_ptr<variable_map> vmap, std::unordered_map<std::string, std::shared_ptr<variable>> &iom) : stream_pass_base("register allocation") {
-var_map = std::move(vmap);
-iom_map = iom;
-//pre_initialize the registers statuses;
-used.reserve(pow(2, fcore_register_address_width));
-for(int i = 0; i< pow(2, fcore_register_address_width); ++i) {
-    used.push_back(false);
-}
+    var_map = std::move(vmap);
+    iom_map = iom;
+    //pre_initialize the registers statuses;
+    excluded.reserve(pow(2, fcore_register_address_width));
+    for(int i = 0; i< pow(2, fcore_register_address_width); ++i) {
+        excluded.push_back(false);
+    }
 
-//exclude form allocation pool the register that are used explicitly by the user
-for(int i= 0; i<pow(2, fcore_register_address_width); i++){
-    used[i] = var_map->at("r"+std::to_string(i))->is_used();
-}
+    //exclude form allocation pool the register that are used explicitly by the user
+    for(int i= 0; i<pow(2, fcore_register_address_width); i++){
+        excluded[i] = var_map->at("r"+std::to_string(i))->is_used();
+    }
 
-for( auto&item:iom_map){
-    if(item.second->get_variable_class() == variable_memory_type || item.second->get_variable_class() == variable_output_type || item.second->get_variable_class() == variable_input_type){
-        for(auto &idx:item.second->get_bound_reg_array()){
-            used[idx] = true;
+    for( auto&item:iom_map){
+        if(item.second->get_variable_class() == variable_memory_type || item.second->get_variable_class() == variable_output_type || item.second->get_variable_class() == variable_input_type){
+            for(auto &idx:item.second->get_bound_reg_array()){
+                excluded[idx] = true;
+            }
         }
     }
-}
 
-//exclude form allocation pool the inputs and outputs
-for(auto &item: *var_map){
-    int bound_reg = item.second->get_bound_reg();
-    if(bound_reg>0){
-        used[bound_reg] = true;
+    //exclude form allocation pool the inputs and outputs
+    for(auto &item: *var_map){
+        int bound_reg = item.second->get_bound_reg();
+        if(bound_reg>0){
+            excluded[bound_reg] = true;
+        }
     }
+
+    excluded[0] = true;
 }
 
-used[0] = true;
-}
+
+
 
 std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared_ptr<ll_instruction_node> element) {
     std::shared_ptr<ll_instruction_node> ret_val = element;
 
+
     auto arguments = element->get_arguments();
     for(auto &item:arguments){
+        if(item->is_contiguous() && item->get_bound_reg() != -1) excluded[item->get_bound_reg()] = true;
         std::regex re("r(\\d\\d?)");
         std::smatch m;
         std::string s = item->to_str();
@@ -68,7 +73,7 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
                 bool found = false;
                 for(int i = 0; i<pow(2, fcore_register_address_width);i++){
 
-                    if(!reg_map.is_used(i, item->get_first_occurrence(), item->get_last_occurrence()) & !used[i]){
+                    if(!reg_map.is_used(i, item->get_first_occurrence(), item->get_last_occurrence()) & !excluded[i]){
                         found = true;
                         reg_map.insert(item->to_str(), i, item->get_first_occurrence(), item->get_last_occurrence());
                         register_mapping[item->to_str()] = var_map->at("r"+std::to_string(i));

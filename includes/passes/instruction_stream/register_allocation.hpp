@@ -34,7 +34,7 @@ private:
     std::unordered_map<std::string, std::shared_ptr<variable>> iom_map;
     std::unordered_map<std::string, std::shared_ptr<variable>> register_mapping;
     register_map reg_map;
-    std::vector<bool> used;
+    std::vector<bool> excluded;
 };
 
 

@@ -186,7 +186,7 @@ high_level_ast_lowering::translate_node(const std::shared_ptr<hl_ast_operand>& i
     }
     std::vector<std::shared_ptr<variable>> args = {std::move(dest), var};
     if(args[0]->get_variable_class()== variable_regular_type){
-        if(args[1]->get_const_f() == 0 && args[1]->get_const_i() == 0 && args[1]->is_constant()){
+        if(args[1]->get_const_f() == 0 && args[1]->get_const_i() == 0 && args[1]->is_constant() && !args[0]->is_contiguous()){
             args[0]->set_bound_reg(0);
         }
     }

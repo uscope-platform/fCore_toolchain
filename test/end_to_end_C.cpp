@@ -498,3 +498,20 @@ TEST(EndToEndC, contiguos_array_allocation) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+TEST(EndToEndC, efi_load_elimination) {
+
+    std::string input_file = "c_e2e/test_efi_load_elimination.c";
+
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(input_file, includes, true, 0);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x40021,  0x26, 0x0, 0x1e1035, 0x66,0x38000074,0x1e7863, 0x26, 0x1, 0x221035,0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}

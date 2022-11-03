@@ -25,7 +25,7 @@ install (FILES third_party/fp_ip_cmodel/lib/libmpfr.so.4 DESTINATION /usr/lib/x8
 set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-set(CMAKE_CXX_FLAGS_DEBUG "-g -fsanitize=undefined")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -fsanitize=undefined -fsanitize=address")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
 

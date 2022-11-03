@@ -156,7 +156,7 @@ std::shared_ptr<hl_ast_node> constant_propagation::map_constants(std::shared_ptr
         std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
         if(node->get_type() == expr_assign){
             std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(node->get_lhs());
-            if(lhs->get_variable()->get_variable_class()==variable_memory_type || lhs->get_variable()->get_variable_class()==variable_output_type){
+            if(lhs->get_variable()->get_variable_class()==variable_memory_type || lhs->get_variable()->get_variable_class()==variable_output_type|| lhs->get_contiguity()){
                 return element;
             } else {
                 if(node->get_rhs()->node_type == hl_ast_node_type_operand){

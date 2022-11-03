@@ -78,6 +78,7 @@ contiguous_array_identification::process_element(std::shared_ptr<hl_expression_n
 
             if(contiguous_arrays.contains(lhs_op->get_name())){
                 process_efi_return = false;
+                if(!lhs_op->get_contiguity()) lhs_op->set_contiguity(true);
             }else if(process_efi_return){
                 process_efi_return = false;
                 if(lhs_op->get_variable()->get_bound_reg_array()[0] == -1){

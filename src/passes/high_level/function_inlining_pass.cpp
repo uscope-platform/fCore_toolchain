@@ -369,13 +369,13 @@ function_inlining_pass::substitute_operand_arguments(const std::shared_ptr<hl_as
 
 
     std::string old_operand_name = old_operand->get_name();
-
+    std::shared_ptr<hl_ast_node> ret_val;
     std::shared_ptr<hl_ast_operand> new_operand;
-
-    std::shared_ptr<hl_ast_operand> p = std::static_pointer_cast<hl_ast_operand>(parameters[old_operand->get_name()]);
+    auto op_node = parameters[old_operand->get_name()];
     std::vector<std::shared_ptr<hl_ast_node>> tmp_vect;
-    if(p != nullptr){
-        if(p->node_type == hl_ast_node_type_operand){
+    if(op_node != nullptr){
+        if(op_node->node_type == hl_ast_node_type_operand){
+            std::shared_ptr<hl_ast_operand> p = std::static_pointer_cast<hl_ast_operand>(op_node);
             if(p->get_variable()->get_type() != var_type_array){
 
                 new_operand = std::static_pointer_cast<hl_ast_operand>(hl_ast_node::deep_copy(p));
@@ -405,13 +405,14 @@ function_inlining_pass::substitute_operand_arguments(const std::shared_ptr<hl_as
 
                 new_operand->set_array_index(tmp_vect);
             }
-        } else if(p->node_type == hl_ast_node_type_expr){
-            new_operand = std::static_pointer_cast<hl_ast_operand>(hl_ast_node::deep_copy(p));
+            ret_val = new_operand;
+        } else if(op_node->node_type == hl_ast_node_type_expr){
+            ret_val = hl_ast_node::deep_copy(op_node);
         }
 
     } else {
-        new_operand = std::static_pointer_cast<hl_ast_operand>(hl_ast_node::deep_copy(old_operand));
+        ret_val = std::static_pointer_cast<hl_ast_operand>(hl_ast_node::deep_copy(old_operand));
     }
 
-    return new_operand;
+    return ret_val;
 }

@@ -61,6 +61,7 @@ array_scalarization_pass::process_expression(std::shared_ptr<hl_expression_node>
         node->set_lhs(process_element(node->get_lhs()));
     }
     node->set_rhs(process_element(node->get_rhs()));
+
     return node;
 }
 
@@ -119,7 +120,7 @@ std::shared_ptr<hl_ast_operand> array_scalarization_pass::process_operand(std::s
             var->set_bound_reg(node->get_variable()->get_bound_reg(linearized_idx));
         }
     }
-
+    var->set_contiguity(node->get_variable()->is_contiguous());
     node->set_variable(var);
     node->set_array_index({});
 
@@ -146,7 +147,7 @@ array_scalarization_pass::process_definition(std::shared_ptr<hl_definition_node>
     std::string var_name = node->get_variable()->get_name();
 
     std::shared_ptr<variable> var = std::make_shared<variable>(mangle_name(old_array_idx, var_name));
-
+    var->set_contiguity(node->get_variable()->is_contiguous());
     node->set_variable(var);
     node->set_array_index({});
 
