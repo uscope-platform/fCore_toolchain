@@ -26,6 +26,9 @@ nlohmann::json prepare_spec(const std::string &file, int run_length){
     spec["cores"][0]["id"] = "test";
     spec["cores"][0]["program"] = std::unordered_map<std::string, std::string>({{"type", "mem"}, { "file", file}});
     spec["cores"][0]["channels"] = 1;
+    spec["cores"][0]["options"] = nlohmann::json();
+    spec["cores"][0]["options"]["comparators"] = "full";
+    spec["cores"][0]["options"]["efi_implementation"] = "none";
     return spec;
 }
 
@@ -146,6 +149,7 @@ TEST(Emulator, emulator_satp) {
 TEST(Emulator, emulator_beq) {
 
     nlohmann::json spec = prepare_spec("emu/test_beq.mem", 1);
+
     emulator_manager manager(spec);
     manager.emulate();
     auto result = manager.get_memory_snapshot("test", 0);
@@ -196,7 +200,7 @@ TEST(Emulator, emulator_stop) {
 TEST(Emulator, emulator_efi) {
 
     nlohmann::json spec = prepare_spec("emu/test_efi.mem", 1);
-    spec["cores"][0]["efi_implementation"] = "efi_sort";
+    spec["cores"][0]["options"]["efi_implementation"] = "efi_sort";
     emulator_manager manager(spec);
     manager.emulate();
     auto result = manager.get_memory_snapshot("test", 0);
