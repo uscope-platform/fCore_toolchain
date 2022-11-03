@@ -253,7 +253,11 @@ uint32_t emulator::execute_compare_gt(uint32_t a, uint32_t b) {
     bool res;
 
     if(sign_a & sign_b) {
-        res = a<b;
+        res = a < b;
+    }else if(sign_a & !sign_b){
+        res = false;
+    } else if(!sign_a & sign_b){
+        res = true;
     } else {
         res = a>b;
     }
@@ -274,15 +278,19 @@ uint32_t emulator::execute_compare_gt(uint32_t a, uint32_t b) {
 }
 
 uint32_t emulator::execute_compare_le(uint32_t a, uint32_t b) {
-
     bool sign_a = (1<<31) & a;
     bool sign_b = (1<<31) & b;
 
     bool res;
-
-    if(sign_a & sign_b) {
-        res = a>=b;
-    } else {
+    if(a == b){
+        res = true;
+    } else if(sign_a & sign_b) {
+        res = a>b;
+    }else if(sign_a & !sign_b){
+        res = true;
+    } else if(!sign_a & sign_b){
+        res = false;
+    }else {
         res = a<=b;
     }
 
