@@ -38,7 +38,7 @@ uint32_t memory_tracker::get_free_memory_cell(){
 
 void memory_tracker::reserve_register(uint32_t r) {
     for(int i = 0;i<free_memory.size();i++){
-        if(r>free_memory[i].first && r<free_memory[i].second){
+        if(r>=free_memory[i].first && r<free_memory[i].second){
 
             if(r==free_memory[i].first){
                 free_memory[i] = {free_memory[i].first+1, free_memory[i].second};
