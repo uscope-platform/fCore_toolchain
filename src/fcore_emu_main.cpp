@@ -19,7 +19,7 @@
 #include <string>
 #include <filesystem>
 
-#include "../third_party/CLI11.hpp"
+#include <CLI/CLI.hpp>
 #include "fcore_emu.hpp"
 #include "frontend/emulator_manager.hpp"
 #include "spdlog/spdlog.h"

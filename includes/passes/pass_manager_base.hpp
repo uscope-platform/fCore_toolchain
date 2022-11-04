@@ -24,7 +24,7 @@
 #include <unordered_map>
 #include "pass_base.hpp"
 
-#include "../third_party/json.hpp"
+#include <nlohmann/json.hpp>
 
 template<class E>
 class pass_manager_base {;

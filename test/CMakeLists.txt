@@ -19,7 +19,8 @@ add_executable(test_target ${FCORE_SRCS} ${TEST_SOURCES} ${C_PARSER_SRCS} ${ASM_
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
-target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES} pthread antlr4_static Ip_floating_point_v7_1_bitacc_cmodel spdlog)
+target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES}
+        pthread antlr4_static Ip_floating_point_v7_1_bitacc_cmodel spdlog nlohmann_json::nlohmann_json)
 
 # ASM TESTING FILES
 set(ASM_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/asm)

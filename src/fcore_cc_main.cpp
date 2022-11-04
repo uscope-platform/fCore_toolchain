@@ -13,13 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <iostream>
 #include <string>
 #include <vector>
 #include <filesystem>
-
+#include <CLI/CLI.hpp>
 #include "spdlog/spdlog.h"
-#include "../third_party/CLI11.hpp"
 #include "fcore_cc.hpp"
 
 int main(int argc, char **argv) {

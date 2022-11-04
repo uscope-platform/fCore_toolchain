@@ -22,7 +22,7 @@
 #include <regex>
 #include <iostream>
 
-#include "../third_party/json.hpp"
+#include <nlohmann/json.hpp>
 
 typedef enum {
     variable_input_type = 0,

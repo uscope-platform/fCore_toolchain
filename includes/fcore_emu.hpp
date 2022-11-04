@@ -20,8 +20,8 @@
 
 #include <istream>
 #include <fstream>
+#include <nlohmann/json.hpp>
 
-#include "../third_party/json.hpp"
 #include "data_structures/low_level_ast/low_level_ast.hpp"
 #include "frontend/binary_loader.hpp"
 #include "tools/instruction_stream_builder.hpp"

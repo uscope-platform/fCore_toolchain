@@ -18,7 +18,7 @@
 #include <filesystem>
 
 #include "spdlog/spdlog.h"
-#include "../third_party/CLI11.hpp"
+#include "CLI/CLI.hpp"
 #include "fcore_dis.hpp"
 
 int main(int argc, char **argv) {

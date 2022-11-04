@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <nlohmann/json.hpp>
 
 #include "tools/variable_map.hpp"
 #include "frontend/asm/asm_language_parser.hpp"
@@ -26,7 +27,6 @@
 #include "passes/ll_passes.hpp"
 #include "passes/low_level/ll_pass_manager.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
-#include "../third_party/json.hpp"
 #include "data_structures/instruction_stream.hpp"
 #include "tools/instruction_stream_builder.hpp"
 

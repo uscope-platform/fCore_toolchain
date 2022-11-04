@@ -33,7 +33,7 @@
 #include "data_structures/instruction_stream.hpp"
 #include "tools/instruction_stream_builder.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
-#include "../third_party/json.hpp"
+#include <nlohmann/json.hpp>
 
 class fcore_cc {
 public:

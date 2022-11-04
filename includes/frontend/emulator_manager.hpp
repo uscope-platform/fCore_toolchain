@@ -19,9 +19,9 @@
 #include <unordered_map>
 #include <string>
 #include <fstream>
+#include <nlohmann/json.hpp>
 
 #include "frontend/binary_loader.hpp"
-#include "../third_party/json.hpp"
 #include "../third_party/csv.hpp"
 #include "backend/emulator.hpp"
 #include "tools/instruction_stream_builder.hpp"

@@ -18,7 +18,7 @@
 
 #include "hl_ast_node.hpp"
 #include "data_structures/common/variable.hpp"
-#include "../third_party/json.hpp"
+#include <nlohmann/json.hpp>
 
 #include <string>
 

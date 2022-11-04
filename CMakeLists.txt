@@ -29,6 +29,29 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -fsanitize=undefined -fsanitize=address")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
 
+include(FetchContent)
+
+FetchContent_Declare(
+        json
+        GIT_REPOSITORY https://github.com/nlohmann/json
+        GIT_TAG        v3.11.2
+)
+FetchContent_MakeAvailable(json)
+
+FetchContent_Declare(
+        json_schema
+        GIT_REPOSITORY https://github.com/pboettch/json-schema-validator
+        GIT_TAG       2.1.0
+)
+FetchContent_MakeAvailable(json_schema)
+
+FetchContent_Declare(
+        cli11
+        GIT_REPOSITORY https://github.com/CLIUtils/CLI11
+        GIT_TAG        v2.3.0
+)
+FetchContent_MakeAvailable(cli11)
+
 if(${INCLUDE_COVERAGE})
     add_compile_options(-Wno-attributes -fprofile-arcs -ftest-coverage)
     add_link_options(-fprofile-arcs -ftest-coverage)
@@ -54,8 +77,6 @@ include(ExternalProject)
 
 add_custom_target(parsers)
 add_dependencies(parsers c_parser_gen asm_parser_gen)
-
-include(FetchContent)
 
 FetchContent_Declare(
         antlr_runtime_src
@@ -83,6 +104,7 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(antlr_jar)
+
 
 FetchContent_Declare(
         spdlog

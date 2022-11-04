@@ -17,9 +17,9 @@
 #include <string>
 #include <vector>
 #include <filesystem>
+#include <CLI/CLI.hpp>
 
 #include "spdlog/spdlog.h"
-#include "../third_party/CLI11.hpp"
 #include "fcore_has.hpp"
 
 int main(int argc, char **argv) {

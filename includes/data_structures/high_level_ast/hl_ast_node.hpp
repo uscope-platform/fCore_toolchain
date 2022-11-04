@@ -21,7 +21,7 @@
 #include <stdexcept>
 
 #include "data_structures/ast_node_base.hpp"
-#include "../third_party/json.hpp"
+#include <nlohmann/json.hpp>
 
 
 typedef enum {

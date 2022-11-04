@@ -18,6 +18,7 @@
 
 #include <string>
 #include <vector>
+#include <nlohmann/json.hpp>
 
 #include "data_structures/low_level_ast/ll_ast_node.hpp"
 #include "frontend/binary_loader.hpp"
@@ -26,7 +27,7 @@
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "backend/assembly_generator.hpp"
 
-#include "../third_party/json.hpp"
+
 
 class fcore_dis {
 public:

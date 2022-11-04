@@ -98,16 +98,16 @@ set(FCORE_EMU_SRCS
 set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_DIS_SRCS} ${FCORE_EMU_SRCS} PARENT_SCOPE)
 
 add_library(common_srcs ${FCORE_COMMON_SRCS_I})
-
+target_link_libraries(common_srcs PRIVATE nlohmann_json::nlohmann_json)
 
 add_executable(fCore_has ${FCORE_AS_SRCS} ${ASM_PARSER_SRCS} fcore_has_main.cpp)
-target_link_libraries(fCore_has PRIVATE common_srcs antlr4_static spdlog)
+target_link_libraries(fCore_has PRIVATE common_srcs  nlohmann_json::nlohmann_json CLI11::CLI11 antlr4_static spdlog)
 
 add_executable(fCore_cc ${FCORE_CC_SRCS} ${C_PARSER_SRCS} fcore_cc_main.cpp)
-target_link_libraries(fCore_cc PRIVATE common_srcs antlr4_static spdlog)
+target_link_libraries(fCore_cc PRIVATE common_srcs nlohmann_json::nlohmann_json CLI11::CLI11 antlr4_static spdlog)
 
 add_executable(fCore_dis ${FCORE_DIS_SRCS} fcore_dis_main.cpp)
-target_link_libraries(fCore_dis PRIVATE common_srcs spdlog)
+target_link_libraries(fCore_dis PRIVATE nlohmann_json::nlohmann_json CLI11::CLI11 common_srcs spdlog)
 
 add_custom_target(toolchain)
 add_dependencies(toolchain fCore_has fCore_cc fCore_dis)
@@ -119,7 +119,7 @@ install(TARGETS fCore_dis DESTINATION /usr/bin)
 
 if(${INCLUDE_EMULATOR})
     add_executable(fCore_emu ${FCORE_EMU_SRCS} fcore_emu_main.cpp)
-    target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel common_srcs spdlog)
+    target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel common_srcs spdlog nlohmann_json::nlohmann_json CLI11::CLI11 csv)
 
     install(TARGETS fCore_emu DESTINATION /usr/bin)
     install(FILES ../third_party/fp_ip_cmodel/lib/libIp_floating_point_v7_1_bitacc_cmodel.so
