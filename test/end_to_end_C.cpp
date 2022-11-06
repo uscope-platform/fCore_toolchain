@@ -61,7 +61,7 @@ TEST(EndToEndC, minimal_c_end_to_end) {
 
     writer.process_stream(program_stream, false);
 
-    std::vector<uint32_t> result = writer.get_raw_program();
+    std::vector<uint32_t> result = writer.get_code();
 
     std::vector<uint32_t> gold_standard = {0x146, 1104150528};
     ASSERT_EQ(result, gold_standard);
@@ -77,7 +77,7 @@ TEST(EndToEndC, fcore_cc) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, false, 0);
-    std::vector<uint32_t> result = compiler.get_hexfile(false);
+    std::vector<uint32_t> result = compiler.get_raw_code();
 
     std::vector<uint32_t> gold_standard = {0x146, 1104150528, 0xc};
     ASSERT_EQ(result, gold_standard);
@@ -92,7 +92,7 @@ TEST(EndToEndC, end_to_end_intrinsics) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes,true, 0);
-    std::vector<uint32_t> result = compiler.get_hexfile(false);
+    std::vector<uint32_t> result = compiler.get_raw_code();
 
     std::vector<uint32_t> gold_standard = {0x944,0x26,0x42C80000, 0x40950, 0x0953, 0x2f956, 0xc};
     ASSERT_EQ(result, gold_standard);
@@ -141,7 +141,7 @@ TEST(EndToEndC, pragma_io) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes,true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x81021, 0x66, 0x40A00000, 0xa1883, 0x66, 0x3e2aaaab, 0x1418a3, 0xc};
@@ -156,7 +156,7 @@ TEST(EndToEndC, conditional) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes,false, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0xE6, 0x40C00000, 0xc};
@@ -170,7 +170,7 @@ TEST(EndToEndC, array_scalarization) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes,true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x26, 0x40000000, 0x60843, 0x26, 0x40400000, 0x80863, 0x21083, 0x62023, 0x21063, 0xc};
@@ -185,7 +185,7 @@ TEST(EndToEndC, loop) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes,true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x1e2061, 0xa1881, 0x1e2061, 0xa1881, 0xc};
@@ -200,7 +200,7 @@ TEST(EndToEndC, nested_loop) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0xa2061, 0xc2061, 0xa3861, 0xc3861,0xa2061, 0xc2061, 0xa3861, 0xc3861, 0xc};
@@ -214,7 +214,7 @@ TEST(EndToEndC, array_initialization) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x26, 0x41300000, 0x43823, 0x23843, 0xc};
@@ -229,7 +229,7 @@ TEST(EndToEndC, array_initialization_through_function) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x246, 0x40400000, 0xc};
@@ -244,7 +244,7 @@ TEST(EndToEndC, constant_argument_inlining) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x246, 0x40400000, 0xc};
@@ -258,7 +258,7 @@ TEST(EndToEndC, array_io_definition) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x63881, 0x103881, 0x123882, 0x143883, 0x161883, 0xc};
@@ -273,7 +273,7 @@ TEST(EndToEndC, multidimensional_array_io_definition) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x23881, 0x103881, 0x143882, 0x123881, 0x163882, 0x183883, 0x200883, 0x1a3883, 0x240883, 0xc};
@@ -287,7 +287,7 @@ TEST(EndToEndC, iom_initialization){
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x106,0x3F800000,0x126, 0x40000000, 0x146, 0x40400000, 0x166, 0x40800000, 0x286, 0x40400000, 0xc};
@@ -302,7 +302,7 @@ TEST(EndToEndC, test_move){
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x140021, 0xc};
@@ -316,7 +316,7 @@ TEST(EndToEndC, test_complex_normalization){
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x66, 0x40A00000, 0x81841, 0x66, 0x41880000, 0xa1823, 0x620a3, 0x141941, 0xc};
@@ -330,7 +330,7 @@ TEST(EndToEndC, register_allocation){
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x46, 0x41880000, 0x141023, 0xc};
@@ -347,7 +347,7 @@ TEST(EndToEndC, functionInliningExpression) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x26, 0x40A00000, 0x40b23, 0x26, 0x3727C5AC, 0x61023, 0x218c1, 0x46, 0xC3160000, 0x21031, 0x46, 0x43160000, 0x21030, 0x40021, 0xc};
@@ -364,7 +364,7 @@ TEST(EndToEndC, essential_variable_initialization) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0xE6, 0x3F800000, 0xcc8e9, 0xec8e1, 0xa00e1, 0xc};
@@ -383,7 +383,7 @@ TEST(EndToEndC, negative_leading_sum) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x21002, 0xe1823, 0xc};
@@ -401,7 +401,7 @@ TEST(EndToEndC, function_vars_mangling) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x66, 4, 0x81843, 0x66, 2, 0xa1823, 0x62881, 0x140861, 0xc};
@@ -419,7 +419,7 @@ TEST(EndToEndC, constant_merging) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x26, 0x42340000,  0x180943, 0x1a0963, 0xc};
@@ -438,7 +438,7 @@ TEST(EndToEndC, zero_assignment_removal) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x180141, 0xc};
@@ -455,7 +455,7 @@ TEST(EndToEndC, loop_index_expression) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x7b9001, 0x7b9fa1, 0xc};
@@ -473,7 +473,7 @@ TEST(EndToEndC, loop_index_expression_multidim) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x7b8801, 0x7bafa1, 0xc};
@@ -490,7 +490,7 @@ TEST(EndToEndC, contiguos_array_allocation) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0xe5875, 0x26, 0x4,0x408e1, 0x26,0x2,0xc0901,0xc};
@@ -507,7 +507,7 @@ TEST(EndToEndC, efi_load_elimination) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x60021,  0x46, 0x0, 0x1e1055, 0x86,0x38000074,0x1e7883, 0x46, 0x1, 0x221055,0xc};

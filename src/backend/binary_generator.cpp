@@ -16,21 +16,36 @@
 #include "backend/binary_generator.hpp"
 
 
-void binary_generator::process_stream(const instruction_stream& stream, bool debug_print) {
+void binary_generator::process_stream(const instruction_stream& stream, const std::unordered_map<std::string, std::shared_ptr<variable>>& iom, bool debug_print) {
+    auto code_sect = std::vector<uint32_t>();
     for(const auto& item:stream){
-        raw_program.push_back(item->emit());
+        code_sect.push_back(item->emit());
         progress_counter++;
         if(debug_print) {
             std::cout << progress_counter << std::endl;
             item->print();
         }
     }
+    ex.add_code_section(code_sect);
 
+    auto io_mapping = std::vector<std::pair<uint16_t, uint16_t>>();
+    for(const auto& item:iom){
+        io_mapping.emplace_back(item.second->get_bound_reg(), item.second->get_bound_reg());
+    }
+    ex.add_io_mapping(io_mapping);
+    ex.generate_metadata();
 }
+
+void binary_generator::process_stream(const instruction_stream &stream, bool debug_print) {
+    auto iom = std::unordered_map<std::string, std::shared_ptr<variable>>();
+    process_stream(stream, iom, debug_print);
+}
+
 
 void binary_generator::write_hex_file(const std::string& filename) {
     std::ofstream output(filename, std::ios::binary | std::ios::out);
-    for(auto &it:raw_program){
+    auto executable_vect = ex.get_executable();
+    for(auto &it:executable_vect){
         uint32_t reverse = Reverse32(it);
         output.write(reinterpret_cast<const char *>(&reverse),4);
     }
@@ -38,7 +53,8 @@ void binary_generator::write_hex_file(const std::string& filename) {
 
 void binary_generator::write_mem_file(const std::string& filename) {
     std::ofstream output(filename);
-    for(auto &it:raw_program){
+    auto executable_vect = ex.get_executable();
+    for(auto &it:executable_vect){
         output<<std::hex<<it<<std::endl;
     }
 }
@@ -46,7 +62,8 @@ void binary_generator::write_mem_file(const std::string& filename) {
 
 std::vector<uint32_t> binary_generator::generate_hex(bool endian_swap) {
     std::vector<uint32_t> ret;
-    for(auto &it:raw_program){
+    auto executable_vect = ex.get_executable();
+    for(auto &it:executable_vect){
         if(endian_swap) ret.push_back(Reverse32(it));
         else ret.push_back(it);
     }
@@ -55,7 +72,8 @@ std::vector<uint32_t> binary_generator::generate_hex(bool endian_swap) {
 
 std::vector<std::string> binary_generator::generate_mem() {
     std::vector<std::string> ret;
-    for(auto &it:raw_program){
+    auto executable_vect = ex.get_executable();
+    for(auto &it:executable_vect){
         std::stringstream stream;
         stream << std::hex << it;
         ret.push_back(stream.str());
@@ -63,10 +81,16 @@ std::vector<std::string> binary_generator::generate_mem() {
     return ret;
 }
 
-std::vector<uint32_t> binary_generator::get_raw_program() {
-    return raw_program;
+std::vector<uint32_t> binary_generator::get_executable() {
+    return ex.get_executable();
 }
 
-int binary_generator::get_program_size() {
-    return raw_program.size();
+
+uint32_t binary_generator::get_program_size() {
+    return ex.get_executable().size();
 }
+
+std::vector<uint32_t> binary_generator::get_code() {
+    return ex.get_code();
+}
+

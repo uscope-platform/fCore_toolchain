@@ -42,7 +42,7 @@ TEST(llPassesTest, pseudo_inst_pass) {
     instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
     writer.process_stream(program_stream, false);
 
-    std::vector<uint32_t> result = writer.get_raw_program();
+    std::vector<uint32_t> result = writer.get_code();
     std::vector<uint32_t> gold_standard = {0x80061};
     ASSERT_EQ(result, gold_standard);
 }
@@ -109,7 +109,7 @@ TEST(llPassesTest, loop_less) {
     instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
     writer.process_stream(program_stream, false);
 
-    std::vector<uint32_t> result = writer.get_raw_program();
+    std::vector<uint32_t> result = writer.get_code();
     std::vector<uint32_t> gold_standard = {0, 0, 0};
     ASSERT_TRUE(result == gold_standard);
 }
@@ -141,7 +141,7 @@ TEST(llPassesTest, loop_less_equal) {
     instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
     writer.process_stream(program_stream, false);
 
-    std::vector<uint32_t> result = writer.get_raw_program();
+    std::vector<uint32_t> result = writer.get_code();
     std::vector<uint32_t> gold_standard = {0, 0};
     ASSERT_TRUE(result == gold_standard);
 }
@@ -174,7 +174,7 @@ TEST(llPassesTest, loop_more) {
     binary_generator writer;
     instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
     writer.process_stream(program_stream, false);
-    std::vector<uint32_t> result = writer.get_raw_program();
+    std::vector<uint32_t> result = writer.get_code();
     std::vector<uint32_t> gold_standard = {0, 0};
     ASSERT_TRUE(result == gold_standard);
 }
@@ -208,7 +208,7 @@ TEST(llPassesTest, loop_more_equal) {
     instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
     writer.process_stream(program_stream, false);
 
-    std::vector<uint32_t> result = writer.get_raw_program();
+    std::vector<uint32_t> result = writer.get_code();
     std::vector<uint32_t> gold_standard = {0,0,0};
     ASSERT_TRUE(result == gold_standard);
 }

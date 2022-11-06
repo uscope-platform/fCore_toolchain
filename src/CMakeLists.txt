@@ -1,6 +1,7 @@
 set(FCORE_COMMON_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/binary_loader.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/binary_generator.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/executable.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_instruction_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_register_instr_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_conversion_instr_node.cpp

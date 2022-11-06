@@ -20,6 +20,8 @@
 #include <vector>
 #include <fstream>
 #include <memory>
+
+#include "data_structures/executable.hpp"
 #include "data_structures/instruction_stream.hpp"
 #include "data_structures/low_level_ast/low_level_ast.hpp"
 
@@ -27,17 +29,19 @@ class binary_generator {
 
 public:
     binary_generator() = default;
+    void process_stream(const instruction_stream& stream, const std::unordered_map<std::string, std::shared_ptr<variable>>& iom, bool debug_print);
     void process_stream(const instruction_stream& stream, bool debug_print);
-    std::vector<uint32_t> get_raw_program();
-    int get_program_size();
+    std::vector<uint32_t> get_executable();
+    std::vector<uint32_t> get_code();
+    uint32_t get_program_size();
     void write_hex_file(const std::string& filename);
     void write_mem_file(const std::string& filename);
     std::vector<uint32_t> generate_hex(bool endian_swap);
     std::vector<std::string> generate_mem();
 private:
     std::shared_ptr<ll_ast_node> program;
-    std::vector<uint32_t> raw_program;
     int progress_counter = 0;
+    executable ex;
     static inline uint16_t Reverse16(uint16_t value)
     {
         return (((value & 0x00FFu) << 8u) |
@@ -51,6 +55,7 @@ private:
                 ((value & 0x00FF0000u) >>  8u) |
                 ((value & 0xFF000000u) >> 24u));
     }
+
 };
 
 
