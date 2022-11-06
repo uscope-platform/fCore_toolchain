@@ -39,6 +39,7 @@ class fcore_cc {
 public:
     fcore_cc(std::string &path, std::vector<std::string> &includes, bool print_debug, int dump_ast_level);
     std::vector<uint32_t> get_hexfile(bool endian_swap);
+    std::vector<uint32_t> get_raw_code();
     std::string get_errors();
     std::vector<std::string> get_verilog_memfile();
     void write_hexfile(const std::string& ouput_file);

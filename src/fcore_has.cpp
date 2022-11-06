@@ -133,6 +133,7 @@ void fcore_has::write_verilog_memfile(const std::string& ouput_file) {
     writer.write_mem_file(ouput_file);
 }
 
+
 uint32_t fcore_has::get_program_size() {
     return writer.get_program_size();
 }
@@ -153,4 +154,8 @@ void fcore_has::write_json(const std::string &output_file) {
     std::ofstream ss(output_file);
     ss<<str;
     ss.close();
+}
+
+std::vector<uint32_t> fcore_has::get_raw_code() {
+    return writer.get_code();
 }

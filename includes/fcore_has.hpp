@@ -46,6 +46,7 @@ public:
     static std::vector<std::istream*> process_includes(const std::vector<std::string>& include_files, const std::string& include_directory);
 
     std::vector<uint32_t> get_hexfile(bool endian_swap);
+    std::vector<uint32_t> get_raw_code();
     std::string get_errors();
     std::vector<std::string> get_verilog_memfile();
     void write_hexfile(const std::string& ouput_file);
