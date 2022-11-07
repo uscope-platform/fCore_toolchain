@@ -93,6 +93,7 @@ set(FCORE_EMU_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/efi_implementations/efi_dispatcher.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/emulator_manager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/emulator_schema_validator.cpp
         )
 
 set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_DIS_SRCS} ${FCORE_EMU_SRCS} PARENT_SCOPE)
@@ -113,13 +114,21 @@ add_custom_target(toolchain)
 add_dependencies(toolchain fCore_has fCore_cc fCore_dis)
 
 
+install(DIRECTORY ../schemas/ DESTINATION /usr/local/etc/fcore_toolchain)
+
 install(TARGETS fCore_has DESTINATION /usr/bin)
 install(TARGETS fCore_cc DESTINATION /usr/bin)
 install(TARGETS fCore_dis DESTINATION /usr/bin)
 
 if(${INCLUDE_EMULATOR})
     add_executable(fCore_emu ${FCORE_EMU_SRCS} fcore_emu_main.cpp)
-    target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel common_srcs spdlog nlohmann_json::nlohmann_json CLI11::CLI11 csv)
+    target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel
+            common_srcs
+            spdlog
+            nlohmann_json::nlohmann_json
+            CLI11::CLI11
+            nlohmann_json_schema_validator
+            )
 
     install(TARGETS fCore_emu DESTINATION /usr/bin)
     install(FILES ../third_party/fp_ip_cmodel/lib/libIp_floating_point_v7_1_bitacc_cmodel.so

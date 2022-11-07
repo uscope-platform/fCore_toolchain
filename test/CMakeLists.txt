@@ -10,7 +10,7 @@ set(TEST_SOURCES
         disassembler_testing.cpp
         deep_copy.cpp
         emulator_testing.cpp
-        )
+        emulator_schema_validation.cpp)
 
 
 add_executable(test_target ${FCORE_SRCS} ${TEST_SOURCES} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS})
@@ -20,7 +20,13 @@ find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
 target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES}
-        pthread antlr4_static Ip_floating_point_v7_1_bitacc_cmodel spdlog nlohmann_json::nlohmann_json)
+        pthread
+        antlr4_static
+        Ip_floating_point_v7_1_bitacc_cmodel
+        spdlog
+        nlohmann_json::nlohmann_json
+        nlohmann_json_schema_validator
+        )
 
 # ASM TESTING FILES
 set(ASM_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/asm)
@@ -147,3 +153,7 @@ configure_file(emulator_files/test_inputs.mem ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_interconnect.mem ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_inputs_spec.json ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_interconnect_spec.json ${EMU_TEST_FILES_DIR} COPYONLY)
+
+set(EMU_TEST_SCHEMAS_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/emu/schemas)
+make_directory(${EMU_TEST_SCHEMAS_FILES_DIR})
+configure_file(schemas/valid_schema.json ${EMU_TEST_SCHEMAS_FILES_DIR} COPYONLY)

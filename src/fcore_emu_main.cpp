@@ -18,12 +18,12 @@
 #include <iostream>
 #include <string>
 #include <filesystem>
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <CLI/CLI.hpp>
 #include "fcore_emu.hpp"
 #include "frontend/emulator_manager.hpp"
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
 
 int main(int argc, char **argv) {
     CLI::App app{"fCore Emulator"};
@@ -58,6 +58,7 @@ int main(int argc, char **argv) {
         spdlog::critical("The provvided specifications file is empty");
         exit(-1);
     }
+
 
     if(verbose_logging){
         spdlog::set_level(spdlog::level::info);

@@ -22,6 +22,7 @@
 #include <nlohmann/json.hpp>
 
 #include "frontend/binary_loader.hpp"
+#include "frontend/emulator_schema_validator.h"
 #include "../third_party/csv.hpp"
 #include "backend/emulator.hpp"
 #include "tools/instruction_stream_builder.hpp"
