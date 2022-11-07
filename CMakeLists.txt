@@ -29,6 +29,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -fsanitize=undefined -fsanitize=address")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_definitions(-DSCHEMAS_FOLDER="${CMAKE_SOURCE_DIR}/schemas")
+else()
+    add_definitions(-DSCHEMAS_FOLDER="/usr/local/etc/fcore_toolchain")
+endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
+
 
 include(FetchContent)
 
@@ -52,6 +58,24 @@ FetchContent_Declare(
         GIT_TAG        v2.3.0
 )
 FetchContent_MakeAvailable(cli11)
+
+FetchContent_Declare(
+        antlr_jar
+        URL https://github.com/antlr/website-antlr4/blob/gh-pages/download/${ANTLR_JAR}?raw=true
+        DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/antlr_jar
+        DOWNLOAD_NAME ${ANTLR_JAR}
+        DOWNLOAD_NO_EXTRACT ON
+)
+
+FetchContent_MakeAvailable(antlr_jar)
+
+
+FetchContent_Declare(
+        spdlog
+        GIT_REPOSITORY https://github.com/gabime/spdlog.git
+        GIT_TAG        76fb40d95455f249bd70824ecfcae7a8f0930fa3 # v1.10.0
+)
+FetchContent_MakeAvailable(spdlog)
 
 if(${INCLUDE_COVERAGE})
     add_compile_options(-Wno-attributes -fprofile-arcs -ftest-coverage)
@@ -103,22 +127,3 @@ if(NOT antlr_runtime_src_POPULATED)
     # Bring the populated content into the build
     add_subdirectory(${antlr_runtime_src_SOURCE_DIR}/runtime/Cpp ${antlr_runtime_src_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
-
-
-FetchContent_Declare(
-        antlr_jar
-        URL https://github.com/antlr/website-antlr4/blob/gh-pages/download/${ANTLR_JAR}?raw=true
-        DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/antlr_jar
-        DOWNLOAD_NAME ${ANTLR_JAR}
-        DOWNLOAD_NO_EXTRACT ON
-)
-
-FetchContent_MakeAvailable(antlr_jar)
-
-
-FetchContent_Declare(
-        spdlog
-        GIT_REPOSITORY https://github.com/gabime/spdlog.git
-        GIT_TAG        76fb40d95455f249bd70824ecfcae7a8f0930fa3 # v1.10.0
-)
-FetchContent_MakeAvailable(spdlog)

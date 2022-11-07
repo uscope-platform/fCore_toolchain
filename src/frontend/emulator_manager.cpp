@@ -20,6 +20,12 @@
 emulator_manager::emulator_manager(nlohmann::json &spec_file) {
     ordering_style = no_ordering;
     implicit_order_idx = 0;
+    try{
+        emulator_schema_validator validator;
+        validator.validate(spec_file);
+    } catch(std::invalid_argument &ex){
+        exit(-1);
+    }
 
     if(!spec_file.contains("cores")){
         spdlog::critical("No cores section found in the emulator specification file");
