@@ -19,6 +19,5 @@ int main(){
 
     int test_matrix[2][2];
 
-    #pragma output(b,r4)
     int b = array_test[0] + test_matrix[1];
 }

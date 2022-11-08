@@ -21,13 +21,9 @@ int add (int a, int b){
 
 
 int main(){
-#pragma input(h, r1);
+
     int h[6];
-
-#pragma input(a, r2)
     int a[4];
-
-#pragma output(j, r15);
     int j;
 
     for(int i = 5; i<7; ++i)

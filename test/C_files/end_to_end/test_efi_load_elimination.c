@@ -16,14 +16,10 @@
 
 int main(){
     float theta;
-    #pragma input(theta, r1)
-
 
     float s_th;
-    #pragma output (s_th, r15);
-
     float c_th;
-    #pragma output (c_th, r17);
+
 
     float trig_in[2];
 

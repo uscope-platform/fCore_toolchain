@@ -17,34 +17,25 @@
 
 #include <string>
 #include <fstream>
+
 #include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
 #include <nlohmann/json-schema.hpp>
 
+#include "schema_validator_base.h"
 
-class emulator_error_handler : public nlohmann::json_schema::basic_error_handler {
-    void error(const nlohmann::json::json_pointer &ptr, const nlohmann::json &instance, const std::string &message) override {
-        nlohmann::json_schema::basic_error_handler::error(ptr, instance, message);
-        error_ptr = ptr;
-        error_instance = instance;
-        error_message = message;
-    }
-public:
-    nlohmann::json::json_pointer error_ptr;
-    nlohmann::json error_instance;
-    std::string error_message;
-};
-
-
-class emulator_schema_validator {
+class emulator_schema_validator : public schema_validator_base {
     public:
         emulator_schema_validator();
-        void validate(nlohmann::json &spec_file);
-    private:
-        nlohmann::json schema;
-        emulator_error_handler err;
-        std::string error;
 };
 
+class compiler_schema_validator : public schema_validator_base {
+public:
+    compiler_schema_validator();
+};
 
+class assembler_schema_validator : public schema_validator_base {
+public:
+    assembler_schema_validator();
+};
 #endif //FCORE_TOOLCHAIN_EMULATOR_SCHEMA_VALIDATOR_H

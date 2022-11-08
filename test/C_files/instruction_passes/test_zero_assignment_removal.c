@@ -17,9 +17,7 @@
 int main(){
 
     float a;
-    #pragma input(a, r10)
     float b;
-    #pragma output(b, r12)
     float c = 0;
     b= a+c;
 

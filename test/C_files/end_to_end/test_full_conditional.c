@@ -17,11 +17,11 @@
 int main(){
     int i = 3.0;
 
+
     if( i == 0){
         int a = 2.0;
     } else
         int a = 3.0;
 
-    #pragma output(test, r7);
     int test  = i + a;
 }

@@ -35,7 +35,6 @@ public:
     std::string get_preprocessed_file();
     void set_absolute_includes(std::vector<std::string> list);
     void process_file();
-    std::unordered_map<std::string, std::shared_ptr<variable>> get_iom_map() { return iom_map;};
     void substitute_defines();
     static std::string substitute_defines_in_line(std::string &line, const std::pair<std::string, std::shared_ptr<define>>& item);
 private:
@@ -50,7 +49,6 @@ private:
     std::vector<std::string> allowed_absolute_includes = {};
     std::string working_content;
     std::shared_ptr<define_map> dmap;
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom_map;
 };
 
 

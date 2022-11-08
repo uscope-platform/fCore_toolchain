@@ -26,11 +26,7 @@ float level_1(float a, float b){
 int main(){
 
     float input_1;
-    #pragma input(input_1, r5)
-
     float memory_2;
-    #pragma memory(memory_2, r12)
-
 
     memory_2 = level_1(input_1, memory_2);
 

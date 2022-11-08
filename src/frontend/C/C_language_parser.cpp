@@ -37,10 +37,9 @@ void C_language_parser::pre_process(const std::vector<std::string> &abs_includes
     preproc->process_file();
     preproc->substitute_defines();
     preprocessed_content = preproc->get_preprocessed_file();
-    visitor.set_iom_map( preproc->get_iom_map());
 }
 
-void C_language_parser::parse() {
+void C_language_parser::parse(std::unordered_map<std::string, std::shared_ptr<variable>> &iom) {
 
     std::istringstream ss(preprocessed_content);
     ANTLRInputStream input(ss);
@@ -53,6 +52,8 @@ void C_language_parser::parse() {
     C_ErrorHandling handler;
     parser.addErrorListener(&handler);
     tree::ParseTree *Tree = parser.compilationUnit();
+    visitor.set_iom_map(iom);
+
     tree::ParseTreeWalker::DEFAULT.walk(&visitor, Tree);
     AST = visitor.get_ast();
 }

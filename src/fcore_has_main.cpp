@@ -18,8 +18,8 @@
 #include <vector>
 #include <filesystem>
 #include <CLI/CLI.hpp>
+#include <spdlog/spdlog.h>
 
-#include "spdlog/spdlog.h"
 #include "fcore_has.hpp"
 
 int main(int argc, char **argv) {

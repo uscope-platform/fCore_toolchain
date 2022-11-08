@@ -8,6 +8,10 @@
           "input_1":"f",
           "input_2":"f"
         },
+        "channels":{
+          "input_1":0,
+          "input_2":0
+        },
         "registers":{
           "input_1":1,
           "input_2":2
@@ -24,7 +28,11 @@
         "type":"mem",
         "file":"emu/test_inputs.mem"
       },
-      "efi_implementation":"",
+      "order": 0,
+      "options":{
+        "comparators":"reducing",
+        "efi_implementation":"efi_sort"
+      },
       "channels":1
     }
   ]

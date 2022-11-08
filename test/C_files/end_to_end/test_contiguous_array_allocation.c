@@ -16,10 +16,7 @@
 
 int main(){
     float out_1;
-    #pragma output(out_1, r2)
     float out_2;
-    #pragma output(out_2, r6)
-
 
     float index[2];
 

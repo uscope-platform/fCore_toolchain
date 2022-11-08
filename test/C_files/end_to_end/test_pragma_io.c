@@ -16,17 +16,11 @@
 
 int main(int arg1, float arg2){
 
-    #pragma input(a, r1)
     int a;
-
-    #pragma input(b, r2)
     int b;
-
-    #pragma memory(c, r4)
     int c;
 
     c = a + b;
 
-    #pragma output (test, r10);
     int test = c*5.0/6.0;
 }

@@ -40,37 +40,21 @@ TEST( cFrontend, preprocessor_decomment) {
     ASSERT_EQ(def_3, res_3);
 }
 
-TEST( cFrontend, preprocessor_pragma) {
-    std::string input_file = "c_prep/test_pragmas.c";
-
-    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-
-    C_language_parser parser(input_file, result_def);
-    parser.pre_process({});
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom_map = parser.preproc->get_iom_map();
-
-    std::shared_ptr<variable_map> gold_standard = std::make_shared<variable_map>();
-
-    std::shared_ptr<variable> v = std::make_shared<variable>( "test");
-
-    v->set_variable_class(variable_output_type);
-    v->set_bound_reg(10);
-
-    ASSERT_EQ(*iom_map["test"], *v);
-    v = std::make_shared<variable>( "test_array");
-    v->set_variable_class(variable_output_type);
-    v->set_bound_reg_array({10, 15, 27});
-    ASSERT_EQ(*iom_map["test_array"], *v);
-}
 
 TEST( cFrontend, preprocessor_define) {
     std::string input_file = "c_prep/test_define.c";
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
+    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
+    std::shared_ptr<variable> var_a = std::make_shared<variable>("a");
+    var_a->set_bound_reg(19);
+    var_a->set_variable_class(variable_input_type);
+    iom["a"] = var_a;
+
     C_language_parser parser(input_file,result_def);
     parser.pre_process({});
-    parser.parse();
+    parser.parse(iom);
 
     std::shared_ptr<hl_definition_node> result = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
 
@@ -90,10 +74,15 @@ TEST( cFrontend, preprocessor_include) {
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
+    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
+    std::shared_ptr<variable> var_a = std::make_shared<variable>("a");
+    var_a->set_bound_reg(19);
+    var_a->set_variable_class(variable_input_type);
+    iom["a"] = var_a;
 
     C_language_parser parser(input_file,result_def);
     parser.pre_process({});
-    parser.parse();
+    parser.parse(iom);
 
     std::shared_ptr<hl_definition_node> result = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
 

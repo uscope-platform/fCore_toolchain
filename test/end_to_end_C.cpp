@@ -24,59 +24,21 @@
 #include "data_structures/instruction_stream.hpp"
 
 
-TEST(EndToEndC, minimal_c_end_to_end) {
-
-
-    std::string input_file = "c_e2e/test_normalization.c";
-
-    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-
-    C_language_parser parser(input_file, result_def);
-    parser.pre_process({});
-    parser.parse();
-
-    std::string ep = "main";
-    hl_pass_manager hl_manager = create_hl_pass_manager(ep,{},0);
-    hl_manager.run_morphing_passes(parser.AST);
-
-    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
-
-    high_level_ast_lowering translator;
-
-    translator.set_input_ast(normalized_ast);
-    translator.translate();
-    std::shared_ptr<ll_ast_node> ll_ast = translator.get_output_ast();
-
-    ll_pass_manager ll_manager = create_ll_pass_manager(0);
-    ll_manager.run_morphing_passes(ll_ast);
-
-    binary_generator writer;
-
-    instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
-
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom = parser.get_iom_map();
-
-    stream_pass_manager sman(iom,0);
-    program_stream = sman.process_stream(program_stream);
-
-    writer.process_stream(program_stream, false);
-
-    std::vector<uint32_t> result = writer.get_code();
-
-    std::vector<uint32_t> gold_standard = {0x146, 1104150528};
-    ASSERT_EQ(result, gold_standard);
-}
-
-
-
 TEST(EndToEndC, fcore_cc) {
-
 
     std::string input_file = "c_e2e/test_normalization.c";
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes, false, 0);
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"type": "output","address":10}
+                }})"
+    );
+
+    fcore_cc compiler(input_file, includes,true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result = compiler.get_raw_code();
 
     std::vector<uint32_t> gold_standard = {0x146, 1104150528, 0xc};
@@ -91,7 +53,15 @@ TEST(EndToEndC, end_to_end_intrinsics) {
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"type": "output","address":10}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes,true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result = compiler.get_raw_code();
 
     std::vector<uint32_t> gold_standard = {0x944,0x26,0x42C80000, 0x40950, 0x0953, 0x2f956, 0xc};
@@ -101,10 +71,18 @@ TEST(EndToEndC, end_to_end_intrinsics) {
 TEST(EndToEndC, exceptionHandling) {
     std::string input_file = "c_e2e/test_exception.c";
 
-
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "v_cells":{"type": "input","address":59},
+                    "v_arms":{"type": "output","address":[60,61]}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes,true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::string result = compiler.get_errors();
 
     ASSERT_EQ(result, "Strings are not supported by the fCore toolchain");
@@ -118,7 +96,15 @@ TEST(EndToEndC, json_writing) {
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"type": "output","address":10}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes,true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     compiler.write_json(test_json);
 
     nlohmann::json out;
@@ -140,7 +126,18 @@ TEST(EndToEndC, pragma_io) {
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"type": "input","address":1},
+                    "b":{"type": "input","address":2},
+                    "c":{"type": "memory","address":4},
+                    "test":{"type": "output","address":10}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes,true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -152,10 +149,17 @@ TEST(EndToEndC, pragma_io) {
 TEST(EndToEndC, conditional) {
     std::string input_file = "c_e2e/test_full_conditional.c";
 
-
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes,false, 0);
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "test":{"type": "output","address":7}
+                }})"
+    );
+
+    fcore_cc compiler(input_file, includes,true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -170,6 +174,7 @@ TEST(EndToEndC, array_scalarization) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes,true, 0);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -184,7 +189,16 @@ TEST(EndToEndC, loop) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes,true, 0);
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "h":{"type": "input","address":1},
+                    "a":{"type": "input","address":2},
+                    "j":{"type": "output","address":15}
+                }})"
+    );
+    fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -199,7 +213,16 @@ TEST(EndToEndC, nested_loop) {
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "h":{"type": "input","address":1},
+                    "a":{"type": "input","address":2},
+                    "j":{"type": "output","address":15}
+                }})"
+    );
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -213,7 +236,14 @@ TEST(EndToEndC, array_initialization) {
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "c":{"type": "output","address":7}
+                }})"
+    );
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -228,7 +258,15 @@ TEST(EndToEndC, array_initialization_through_function) {
 
     std::vector<std::string> includes;
 
+
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "c":{"type": "output","address":18}
+                }})"
+    );
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -243,7 +281,14 @@ TEST(EndToEndC, constant_argument_inlining) {
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "c":{"type": "output","address":18}
+                }})"
+    );
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -257,7 +302,17 @@ TEST(EndToEndC, array_io_definition) {
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"type": "input","address":[4,7]},
+                    "b":{"type": "output","address":3},
+                    "c":{"type": "output","address":[8,9]},
+                    "d":{"type": "memory","address":[10,11]}
+                }})"
+    );
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -272,7 +327,17 @@ TEST(EndToEndC, multidimensional_array_io_definition) {
 
     std::vector<std::string> includes;
 
+
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"type": "input","address":[4,7]},
+                    "c":{"type": "output","address":[8,9,10,11]},
+                    "d":{"type": "memory","address":[12,13,16,18]}
+                }})"
+    );
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -286,7 +351,15 @@ TEST(EndToEndC, iom_initialization){
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "c":{"type": "output","address":[8,9,10,11]},
+                    "b":{"type": "output","address":20}
+                }})"
+    );
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -301,7 +374,16 @@ TEST(EndToEndC, test_move){
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"type": "input","address":1},
+                    "test":{"type": "output","address":10}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -315,7 +397,17 @@ TEST(EndToEndC, test_complex_normalization){
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"type": "input","address":1},
+                    "b":{"type": "input","address":2},
+                    "test":{"type": "memory","address":10}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -329,7 +421,16 @@ TEST(EndToEndC, register_allocation){
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"type": "input","address":1},
+                    "test":{"type": "memory","address":10}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -346,7 +447,16 @@ TEST(EndToEndC, functionInliningExpression) {
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "test_in":{"type": "input","address":25},
+                    "integ":{"type": "memory","address":6}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -363,7 +473,18 @@ TEST(EndToEndC, essential_variable_initialization) {
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "test_in":{"type": "input","address":25},
+                    "test_out":{"type": "output","address":5},
+                    "test_var":{"type": "output","address":7},
+                    "factor_1":{"type": "output","address":6}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -379,17 +500,24 @@ TEST(EndToEndC, negative_leading_sum) {
 
     std::string input_file = "c_e2e/test_negative_leading_sum.c";
 
-
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"type": "input","address":2},
+                    "b":{"type": "input","address":3},
+                    "c":{"type": "output","address":7}
+                }})"
+            );
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x21002, 0xe1823, 0xc};
 
     ASSERT_EQ(gold_standard, result);
-
 }
 
 
@@ -400,7 +528,17 @@ TEST(EndToEndC, function_vars_mangling) {
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "b":{"type": "input","address":2},
+                    "a":{"type": "input","address":1},
+                    "c":{"type": "output","address":10}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -418,7 +556,16 @@ TEST(EndToEndC, constant_merging) {
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"type": "input","address":[10,11]},
+                    "b":{"type": "output","address":[12,13]}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -437,7 +584,16 @@ TEST(EndToEndC, zero_assignment_removal) {
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"type": "input","address":10},
+                    "b":{"type": "output","address":12}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -454,7 +610,16 @@ TEST(EndToEndC, loop_index_expression) {
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "v_cells":{"type": "input","address":[40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59]},
+                    "v_arms":{"type": "output","address":[60,61]}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -472,7 +637,16 @@ TEST(EndToEndC, loop_index_expression_multidim) {
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "v_cells":{"type": "input","address":[40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59]},
+                    "v_arms":{"type": "output","address":[60,61]}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -489,7 +663,16 @@ TEST(EndToEndC, contiguos_array_allocation) {
 
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "out_1":{"type": "output","address":2},
+                    "out_2":{"type": "output","address":6}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
@@ -499,14 +682,24 @@ TEST(EndToEndC, contiguos_array_allocation) {
 
 }
 
+
 TEST(EndToEndC, efi_load_elimination) {
 
     std::string input_file = "c_e2e/test_efi_load_elimination.c";
 
-
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "theta":{"type": "input","address":1},
+                    "s_th":{"type": "output","address":15},
+                    "c_th":{"type": "output","address":17}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
     std::vector<uint32_t> result =  compiler.get_raw_code();
 
 

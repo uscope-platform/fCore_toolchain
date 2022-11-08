@@ -27,12 +27,10 @@ float integrate(float in, float Ts, float memory) {
 int main(){
 
 
-    #pragma input(test_in, r25)
     int test_in;
 
     float in_1 = 5.0;
 
-    #pragma memory(integ, r6)
     float integ;
 
     float test_out = integrate(test_in*in_1, 1e-5, integ);

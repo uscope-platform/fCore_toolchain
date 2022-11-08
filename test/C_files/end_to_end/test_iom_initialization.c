@@ -17,7 +17,6 @@
 
 int main(){
     float c[2][2] = {{1.0,2.0},{3.0,4.0}};
-    #pragma output(c, {r8, r9,r10, r11})
-    #pragma output(b, r20)
+
     float b = c[0] + c[1];
 }

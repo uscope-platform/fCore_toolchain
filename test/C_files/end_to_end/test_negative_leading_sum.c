@@ -17,11 +17,8 @@
 
 int main(){
     float a;
-    #pragma input(a, r2)
     float b;
-    #pragma input(b, r3)
     float c;
-    #pragma output(c, r7)
 
     c = -a*b;
 }

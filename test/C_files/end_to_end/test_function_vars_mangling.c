@@ -22,13 +22,8 @@ int add(int in_1, int in_2){
 }
 
 int main(){
-    #pragma input(b, r2)
     int a;
-
-    #pragma input(a, r1)
     int b;
-
-    #pragma output(c, r10)
     int c = add(b,a);
 
 }

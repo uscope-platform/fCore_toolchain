@@ -16,10 +16,7 @@
 int main(){
 
     float v_cells[20];
-    #pragma input(v_cells, {r40, r41, r42, r43, r44, r45, r46, r47, r48, r49, r50, r51, r52, r53, r54, r55, r56, r57,r58, r59})
-
     float v_arms[2] = {0.0, 0.0};
-    #pragma output(v_arms, {r60, r61})
 
 
     v_arms[1] = 0.0; // THESE ARE NOT WORKING WHEN THE LOOP IS USED

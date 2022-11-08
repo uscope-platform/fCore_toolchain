@@ -74,6 +74,7 @@ set(FCORE_CC_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/fcore_cc.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/high_level_ast_lowering.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/expression_evaluator.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/schema_validators/schema_validator_base.cpp
         )
 
 
@@ -94,7 +95,7 @@ set(FCORE_EMU_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/efi_implementations/efi_dispatcher.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/emulator_manager.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/emulator_schema_validator.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/schema_validators/schema_validators.cpp
         )
 
 set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_DIS_SRCS} ${FCORE_EMU_SRCS} PARENT_SCOPE)

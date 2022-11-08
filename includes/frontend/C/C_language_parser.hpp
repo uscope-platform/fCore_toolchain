@@ -39,13 +39,8 @@ class C_language_parser{
     C_language_parser(std::string &path, std::shared_ptr<define_map> &new_defmap);
 
     void pre_process(const std::vector<std::string> &abs_includes);
-    std::unordered_map<std::string, std::shared_ptr<variable>> get_iom_map() { return preproc->get_iom_map();};
 
-    void parse();
-
-    unsigned int n_inputs() const {return n_inputs_;};
-    unsigned int n_outputs() const {return n_outputs_;};
-    unsigned int n_variables() const {return n_variables_;};
+    void parse(std::unordered_map<std::string, std::shared_ptr<variable>> &iom);
 
     std::shared_ptr<hl_ast_node> AST;
     std::string error;
@@ -77,9 +72,6 @@ class C_language_parser{
     FRIEND_TEST(cTreeVisitor, function_call);
     FRIEND_TEST(cTreeVisitor, returnTest);
 
-    unsigned int n_inputs_ = 0;
-    unsigned int n_outputs_ = 0;
-    unsigned int n_variables_ = 0;
     std::string preprocessed_content;
 };
 
