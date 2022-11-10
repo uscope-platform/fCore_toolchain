@@ -15,10 +15,7 @@
 //
 
 int main(){
-
     int a;
-
-
 
     int test = a*17.0;
 }

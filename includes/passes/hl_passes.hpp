@@ -48,9 +48,8 @@
 
 static hl_pass_manager create_hl_pass_manager(
         std::string& entry_point,
-        std::vector<int> order,
+        const std::vector<int>& order,
         int dump_ast_level,
-        std::unordered_map<std::string, std::shared_ptr<variable>> io_map,
         std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bindings_map
 ){
     hl_pass_manager manager(dump_ast_level);
@@ -70,7 +69,7 @@ static hl_pass_manager create_hl_pass_manager(
     manager.add_morphing_pass(std::make_shared<loop_unrolling_pass>()); // pass #9
 
     manager.add_morphing_pass(std::make_shared<array_initialization_propagation_pass>()); // pass #10
-    manager.add_morphing_pass(std::make_shared<early_register_allocation_pass>(io_map, bindings_map)); // pass #11
+    manager.add_morphing_pass(std::make_shared<early_register_allocation_pass>(bindings_map)); // pass #11
     manager.add_morphing_pass(std::make_shared<array_scalarization_pass>());  // pass #12
 
     manager.add_morphing_pass(std::make_shared<conditional_implementation_pass>()); // pass #13
@@ -102,9 +101,8 @@ static hl_pass_manager create_hl_pass_manager(
     auto bm = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
     return create_hl_pass_manager(
             entry_point,
-            std::move(order),
+            order,
             dump_ast_level,
-            std::unordered_map<std::string, std::shared_ptr<variable>>(),
             bm
 );
 }

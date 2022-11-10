@@ -20,18 +20,10 @@
 
 
 early_register_allocation_pass::early_register_allocation_pass(
-        const std::unordered_map<std::string, std::shared_ptr<variable>>& iom,
         std::shared_ptr<std::unordered_map<std::string, memory_range_t>> bm
 ) : pass_base<hl_ast_node>("Early register allocation"),
                                                                                                                                  mem_tracker({1,pow(2, fcore_register_address_width)-1}){
     bindings_map = std::move(bm);
-    for( auto&item:iom){
-        if(item.second->get_variable_class() == variable_memory_type || item.second->get_variable_class() == variable_output_type || item.second->get_variable_class() == variable_input_type){
-            for(auto &idx:item.second->get_bound_reg_array()){
-                mem_tracker.reserve_register(idx);
-            }
-        }
-    }
 
 }
 

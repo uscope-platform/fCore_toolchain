@@ -81,11 +81,10 @@ void C_Tree_visitor::exitParameterDeclaration(C_parser::C_grammarParser::Paramet
 
     std::string type = ctx->typeSpecifier()->getText();
 
-    std::shared_ptr<variable> var;
-    if(iom_map.count(id_name)>0){
-        var = iom_map[id_name];
-    } else {
-        var = std::make_shared<variable>(id_name);
+    std::shared_ptr<variable> var = std::make_shared<variable>(id_name);
+
+    if(dma_specs.contains(id_name)){
+        var->set_variable_class(dma_specs[id_name]);
     }
 
     std::shared_ptr<hl_definition_node> identifier = std::make_shared<hl_definition_node>(id_name, hl_ast_node::string_to_type(type), var);
@@ -121,12 +120,11 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
     std::string raw_name = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->getText();
     std::string name = raw_name.substr(0, raw_name.find('['));
 
-    std::shared_ptr<variable> var;
-    if(iom_map.count(name)>0){
-        var = iom_map[name];
-    } else {
-        var = std::make_shared<variable>( name);
+    std::shared_ptr<variable> var = std::make_shared<variable>(name);
+    if(dma_specs.contains(name)){
+        var->set_variable_class(dma_specs[name]);
     }
+
     if(in_array_declaration)
         var->set_type(var_type_array);
     std::shared_ptr<hl_definition_node> node = std::make_shared<hl_definition_node>(name, hl_ast_node::string_to_type(type_name), var);
@@ -244,12 +242,12 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
     } else if(ctx->Identifier() != nullptr){
         std::string var_name = ctx->Identifier()->getText();
 
-        if(iom_map.count(var_name)>0){
-            operand = std::make_shared<hl_ast_operand>(iom_map[var_name]);
-        } else {
-            std::shared_ptr<variable> var = std::make_shared<variable>(var_name);
-            operand = std::make_shared<hl_ast_operand>(var);
+        std::shared_ptr<variable> var = std::make_shared<variable>(var_name);
+        if(dma_specs.contains(var_name)){
+            var->set_variable_class(dma_specs[var_name]);
         }
+
+        operand = std::make_shared<hl_ast_operand>(var);
 
 
     } else if(ctx->constant() != nullptr){
@@ -683,9 +681,5 @@ void C_Tree_visitor::enterForContent(C_parser::C_grammarParser::ForContentContex
 
 void C_Tree_visitor::exitForContent(C_parser::C_grammarParser::ForContentContext *ctx) {
     in_foor_loop_block = false;
-}
-
-void C_Tree_visitor::set_iom_map(std::unordered_map<std::string, std::shared_ptr<variable>> iom) {
-    iom_map = std::move(iom);
 }
 

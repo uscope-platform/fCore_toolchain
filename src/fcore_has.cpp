@@ -79,8 +79,8 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
 
         instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
 
-        std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-        stream_pass_manager sman(iom, dump_ast_level);
+        std::vector<int> io_res;
+        stream_pass_manager sman(io_res, dump_ast_level);
         sman.set_enabled_passes({false, true, true, true, false}); // do not mess with constants in assembly
         program_stream = sman.process_stream(program_stream);
 
@@ -111,10 +111,6 @@ fcore_has::process_includes(const std::vector<std::string> &include_files, const
 
 std::vector<uint32_t> fcore_has::get_hexfile(bool endian_swap) {
     return writer.generate_hex(endian_swap);
-}
-
-std::vector<std::string> fcore_has::get_verilog_memfile() {
-    return writer.generate_mem();
 }
 
 uint32_t fcore_has::get_inst_count() {
@@ -158,4 +154,8 @@ void fcore_has::write_json(const std::string &output_file) {
 
 std::vector<uint32_t> fcore_has::get_raw_code() {
     return writer.get_code();
+}
+
+std::vector<uint32_t> fcore_has::get_executable() {
+    return writer.get_executable();
 }

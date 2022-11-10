@@ -34,18 +34,18 @@
 class stream_pass_manager {
 public:
     stream_pass_manager(
-            std::unordered_map<std::string, std::shared_ptr<variable>> &iom,
             int dal,
-            std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm
+            std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
+            const std::shared_ptr<std::unordered_map<std::string, int>>& all_map
             );
     stream_pass_manager(
-            std::unordered_map<std::string, std::shared_ptr<variable>> &iom,
+            std::vector<int> &io_res,
             int dal
     );
     void constructs_pass_manager(
-            std::unordered_map<std::string, std::shared_ptr<variable>> &iom,
             int dal,
-            std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm
+            std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
+            const std::shared_ptr<std::unordered_map<std::string, int>>& all_map
     );
     instruction_stream process_stream(instruction_stream stream);
     instruction_stream apply_pass(const instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass);
@@ -54,7 +54,6 @@ public:
 private:
     std::vector<std::shared_ptr<stream_pass_base>> passes;
     std::vector<bool> enabled_passes;
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom_map;
     int dump_ast_level;
     nlohmann::json pre_opt_dump;
     std::vector<nlohmann::json> in_opt_dump;

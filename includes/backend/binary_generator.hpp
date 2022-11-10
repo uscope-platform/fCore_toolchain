@@ -29,7 +29,11 @@ class binary_generator {
 
 public:
     binary_generator() = default;
-    void process_stream(const instruction_stream& stream, const std::unordered_map<std::string, std::shared_ptr<variable>>& iom, bool debug_print);
+    void process_stream(
+            const instruction_stream& stream,
+            const std::unordered_map<std::string, std::vector<int>>& dma_map,
+            const std::shared_ptr<std::unordered_map<std::string, int>>& allocation_map,
+            bool debug_print);
     void process_stream(const instruction_stream& stream, bool debug_print);
     std::vector<uint32_t> get_executable();
     std::vector<uint32_t> get_code();

@@ -376,16 +376,11 @@ TEST(HlPassesTest, function_elimination) {
     std::string input_file = "hl_opt/test_normalization.c";
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    std::shared_ptr<variable> v = std::make_shared<variable>("a");
-    v->set_bound_reg(10);
-    v->set_variable_class(variable_output_type);
-    iom["a"] = v;
-
+    
     C_language_parser parser(input_file, result_def);
+    std::unordered_map<std::string, variable_class_t> io_spec;
     parser.pre_process({});
-    parser.parse(iom);
+    parser.parse(io_spec);
 
     std::string ep = "main";
     hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,9,10,12,14}, 0);
@@ -441,15 +436,12 @@ TEST(HlPassesTest, simple_normalization) {
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    std::shared_ptr<variable> v = std::make_shared<variable>("a");
-    v->set_bound_reg(10);
-    v->set_variable_class(variable_output_type);
-    iom["a"] = v;
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    io_spec["a"] = variable_output_type;
 
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
-    parser.parse(iom);
+    parser.parse(io_spec);
 
     std::string ep = "main";
     hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,9,10,11,12,14}, 0);
@@ -512,8 +504,9 @@ TEST(HlPassesTest, hl_ast_lowering) {
 
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::string ep = "main";
     hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,9,10,12,14}, 0);
@@ -527,7 +520,6 @@ TEST(HlPassesTest, hl_ast_lowering) {
     tranlator.translate();
     std::shared_ptr<ll_ast_node> result = tranlator.get_output_ast();
 
-    int i = 0;
 
     std::shared_ptr<variable> op_a = std::make_shared<variable>("constant", 4);
     std::shared_ptr<variable> op_b = std::make_shared<variable>("constant", 5);
@@ -558,8 +550,8 @@ TEST(HlPassesTest, loop_unrolling_array) {
 
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::string ep = "main";
     hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,9,13,14}, 0);
@@ -616,8 +608,8 @@ TEST(HlPassesTest, test_matrix_scalarization) {
 
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::string ep = "main";
     hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,9,10,12}, 0);
@@ -693,8 +685,8 @@ TEST(HlPassesTest, function_inlining_array) {
 
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::string ep = "main";
     hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,9,10}, 0);
@@ -727,19 +719,13 @@ TEST(HlPassesTest, function_return_inlining) {
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    std::shared_ptr<variable> v = std::make_shared<variable>("test_in");
-    v->set_bound_reg(25);
-    v->set_variable_class(variable_input_type);
-    iom["test_in"] = v;
-    v = std::make_shared<variable>("ret");
-    v->set_bound_reg(12);
-    v->set_variable_class(variable_output_type);
-    iom["ret"] = v;
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    io_spec["ret"] = variable_output_type;
+    io_spec["test_in"] = variable_input_type;
 
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
-    parser.parse(iom);
+    parser.parse(io_spec);
 
     std::string ep = "main";
     hl_pass_manager manager = create_hl_pass_manager(ep,{}, 0);
@@ -888,20 +874,13 @@ TEST(HlPassesTest, nested_function_inlining) {
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    std::shared_ptr<variable> v = std::make_shared<variable>("input_1");
-    v->set_bound_reg(5);
-    v->set_variable_class(variable_input_type);
-    iom["input_1"] = v;
-    v = std::make_shared<variable>("memory_2");
-    v->set_variable_class(variable_memory_type);
-    v->set_bound_reg(12);
-    iom["memory_2"] = v;
-
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    io_spec["input_1"] = variable_input_type;
+    io_spec["memory_2"] = variable_input_type;
 
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
-    parser.parse(iom);
+    parser.parse(io_spec);
 
     std::string ep = "main";
     hl_pass_manager manager = create_hl_pass_manager(ep,{}, 0);
@@ -988,8 +967,8 @@ TEST(HlPassesTest, contiguous_array_identification) {
 
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::string ep = "main";
     hl_pass_manager manager = create_hl_pass_manager(ep,{1,2}, 0);
@@ -1070,15 +1049,12 @@ TEST(HlPassesTest, complex_division_implementation) {
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    std::shared_ptr<variable> v = std::make_shared<variable>("a");
-    v->set_bound_reg(5);
-    v->set_variable_class(variable_input_type);
-    iom["a"] = v;
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    io_spec["a"] = variable_input_type;
 
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
-    parser.parse(iom);
+    parser.parse(io_spec);
 
     std::string ep = "main";
     hl_pass_manager manager = create_hl_pass_manager(ep,{1}, 0);
