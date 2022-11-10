@@ -395,7 +395,7 @@ TEST(EndToEndC, test_complex_normalization){
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x20003,0x90003,0x3f000a,0x20002,0x30003,0x66, 0x40A00000, 0x81841, 0x66, 0x41880000, 0xa1823, 0x620a3, 0x141941, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x90003,0x3f000a,0x20002,0x40001,0x26, 0x40A00000, 0x60841, 0x26, 0x41880000, 0x40883, 0x21843, 0x7e0fe1, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 }
@@ -515,7 +515,7 @@ TEST(EndToEndC, negative_leading_sum) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x21002, 0xe1823, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x30003,0x10007,0x30003,0x10002,0x40802, 0x21843, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 }
@@ -542,7 +542,7 @@ TEST(EndToEndC, function_vars_mangling) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x66, 4, 0x81843, 0x66, 2, 0xa1823, 0x62881, 0x140861, 0xc};
+    std::vector<uint32_t> gold_standard = { 0x20003,0x90003,0x2000A,0x20002,0x40001, 0x26, 4, 0x60843, 0x26, 2, 0x40883, 0x21061, 0x42021, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
