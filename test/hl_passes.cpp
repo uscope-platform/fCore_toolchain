@@ -101,7 +101,6 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
     var = std::make_shared<variable>("a");
     var->set_variable_class(variable_output_type);
-    var->set_bound_reg(10);
     std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
 
     std::vector<std::shared_ptr<hl_ast_node>> args = {op};
@@ -132,7 +131,6 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
     var = std::make_shared<variable>("a");
     var->set_variable_class(variable_output_type);
-    var->set_bound_reg(10);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
 
     std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(expr_itf);
@@ -145,7 +143,6 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
     var = std::make_shared<variable>("a");
     var->set_variable_class(variable_output_type);
-    var->set_bound_reg(10);
     op_1 = std::make_shared<hl_ast_operand>(var);
 
 
@@ -405,8 +402,6 @@ TEST(HlPassesTest, function_elimination) {
     def_1->set_scalar_initializer(ex_1);
 
     var = std::make_shared<variable>("a");
-    var->set_variable_class(variable_output_type);
-    var->set_bound_reg(10);
     std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int, var);
 
 
@@ -470,7 +465,6 @@ TEST(HlPassesTest, simple_normalization) {
 
     var = std::make_shared<variable>("a");
     var->set_variable_class(variable_output_type);
-    var->set_bound_reg(10);
     std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int, var);
 
 
@@ -743,7 +737,6 @@ TEST(HlPassesTest, function_return_inlining) {
     gold_standard->add_content(def);
 
     var = std::make_shared<variable>("ret");
-    var->set_bound_reg(12);
     var->set_variable_class(variable_output_type);
     def = std::make_shared<hl_definition_node>("ret", c_type_float, var);
     std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(expr_add);
@@ -753,7 +746,6 @@ TEST(HlPassesTest, function_return_inlining) {
     exp->set_lhs(op);
 
     var = std::make_shared<variable>("test_in");
-    var->set_bound_reg(25);
     var->set_variable_class(variable_input_type);
     op = std::make_shared<hl_ast_operand>(var);
     exp->set_rhs(op);
@@ -876,7 +868,7 @@ TEST(HlPassesTest, nested_function_inlining) {
 
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["input_1"] = variable_input_type;
-    io_spec["memory_2"] = variable_input_type;
+    io_spec["memory_2"] = variable_memory_type;
 
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
@@ -895,11 +887,9 @@ TEST(HlPassesTest, nested_function_inlining) {
     ///////////////////////////////////////////////////////////////////////////
 
     std::shared_ptr<variable> var = std::make_shared<variable>("input_1");
-    var->set_bound_reg(5);
     var->set_variable_class(variable_input_type);
     std::shared_ptr<hl_ast_operand> in_1_op = std::make_shared<hl_ast_operand>(var);
     var = std::make_shared<variable>("memory_2");
-    var->set_bound_reg(12);
     var->set_variable_class(variable_memory_type);
     std::shared_ptr<hl_ast_operand> mem_2_op = std::make_shared<hl_ast_operand>(var);
 
@@ -945,7 +935,6 @@ TEST(HlPassesTest, nested_function_inlining) {
 
 
     var = std::make_shared<variable>("memory_2");
-    var->set_bound_reg(12);
     var->set_variable_class(variable_memory_type);
     std::shared_ptr<hl_ast_operand> op_dest = std::make_shared<hl_ast_operand>(var);
 
@@ -1073,7 +1062,6 @@ TEST(HlPassesTest, complex_division_implementation) {
 
     std::shared_ptr<variable> a = std::make_shared<variable>("a");
     a->set_variable_class(variable_input_type);
-    a->set_bound_reg(5);
     std::shared_ptr<hl_definition_node> a_def = std::make_shared<hl_definition_node>("a", c_type_float, a);
     main_body.push_back(a_def);
 
