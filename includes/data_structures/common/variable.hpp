@@ -95,6 +95,10 @@ public:
     void set_contiguity(bool ac) { contiguity = ac;};
     bool is_contiguous() {return contiguity;};
 
+    std::vector<int> get_array_shape() const {return array_shape;};
+    void set_array_shape(std::vector<int> as) {array_shape = std::move(as);};
+
+
     nlohmann::json dump();
 
     static std::shared_ptr<variable> deep_copy(const std::shared_ptr<variable>& original);
@@ -116,6 +120,8 @@ private:
 
     int const_i;
     float const_f;
+
+    std::vector<int> array_shape;
 
 };
 

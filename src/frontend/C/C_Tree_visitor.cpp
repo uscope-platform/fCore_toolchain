@@ -144,6 +144,7 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
         }
 
         node->set_array_shape(shape);
+        array_shapes_map[name] = shape;
         node->set_array_index(idx_array);
         node->set_array_initializer(array_initializer_data);
         array_initializer_data.clear();
@@ -246,6 +247,7 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
         if(dma_specs.contains(var_name)){
             var->set_variable_class(dma_specs[var_name]);
         }
+        operand->get_variable()->set_array_shape(array_shapes_map[var_name]);
 
         operand = std::make_shared<hl_ast_operand>(var);
 

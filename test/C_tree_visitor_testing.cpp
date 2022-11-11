@@ -999,8 +999,6 @@ TEST( cTreeVisitor, nestedLoopTest) {
 
 TEST( cTreeVisitor, array_test){
     std::string input_file = "c_ast/test_array.c";
-    
-
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
@@ -1041,6 +1039,7 @@ TEST( cTreeVisitor, array_test){
 
     var = std::make_shared<variable>( "array_test");
     var->set_type(var_type_array);
+    var->set_array_shape({5});
     op_1 = std::make_shared<hl_ast_operand>(var);
 
     //lhs
@@ -1053,6 +1052,7 @@ TEST( cTreeVisitor, array_test){
 
     var = std::make_shared<variable>( "test_matrix");
     var->set_type(var_type_array);
+    var->set_array_shape({2,2});
     op_1 = std::make_shared<hl_ast_operand>(var);
 
 

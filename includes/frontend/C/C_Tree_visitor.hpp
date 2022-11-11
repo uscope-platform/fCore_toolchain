@@ -142,6 +142,8 @@ private:
     std::vector<std::shared_ptr<hl_ast_node>> argument_vector;
     std::vector<std::shared_ptr<hl_ast_node>> array_dimentions;
 
+    std::unordered_map<std::string, std::vector<int>> array_shapes_map;
+
     std::shared_ptr<hl_function_def_node> current_function;
 
     std::shared_ptr<hl_ast_node> current_initializer;
