@@ -75,7 +75,12 @@ std::shared_ptr<hl_ast_operand> array_scalarization_pass::process_operand(std::s
         throw std::runtime_error("All array operations must be performed element wise and thus have a compile time known index");
     }
 
-    std::shared_ptr<variable> var = std::make_shared<variable>(mangle_name(old_array_idx, var_name));
+    auto array_size = 1;
+    for(auto &item: node->get_variable()->get_array_shape()){
+        array_size *= item;
+    }
+
+    std::shared_ptr<variable> var = std::make_shared<variable>(mangle_name(old_array_idx, var_name, array_size));
     std::vector<int> bound_regs = {-1};
     if(def_map_vect[var_name] != nullptr){
         bound_regs = def_map_vect[var_name]->get_variable()->get_bound_reg_array();
@@ -122,6 +127,7 @@ std::shared_ptr<hl_ast_operand> array_scalarization_pass::process_operand(std::s
     }
     var->set_array_shape(node->get_variable()->get_array_shape());
     var->set_contiguity(node->get_variable()->is_contiguous());
+    var->set_variable_class(node->get_variable()->get_variable_class());
     node->set_variable(var);
     node->set_array_index({});
 
@@ -147,15 +153,21 @@ array_scalarization_pass::process_definition(std::shared_ptr<hl_definition_node>
     std::vector<std::shared_ptr<hl_ast_node>> old_array_idx = node->get_array_index();
     std::string var_name = node->get_variable()->get_name();
 
-    std::shared_ptr<variable> var = std::make_shared<variable>(mangle_name(old_array_idx, var_name));
+    auto array_size = 1;
+    for(auto &item: node->get_array_shape()){
+        array_size *= item;
+    }
+
+    std::shared_ptr<variable> var = std::make_shared<variable>(mangle_name(old_array_idx, var_name,array_size+1));
     var->set_contiguity(node->get_variable()->is_contiguous());
+    var->set_variable_class(node->get_variable()->get_variable_class());
     node->set_variable(var);
     node->set_array_index({});
 
     return node;
 }
 
-std::string array_scalarization_pass::mangle_name(std::vector<std::shared_ptr<hl_ast_node>> old_array_idx, std::string var_name) {
+std::string array_scalarization_pass::mangle_name(std::vector<std::shared_ptr<hl_ast_node>> old_array_idx, std::string var_name, int array_size) {
 
 
     std::vector<std::shared_ptr<hl_ast_node>> new_array_idx;
@@ -164,6 +176,9 @@ std::string array_scalarization_pass::mangle_name(std::vector<std::shared_ptr<hl
         auto  idx_var = std::static_pointer_cast<hl_ast_operand>(item);
         if(idx_var->get_variable()->is_constant()){
             int idx = idx_var->get_int_value();
+            if(idx>=array_size){
+                throw std::runtime_error("Error, out of bounds index ("+std::to_string(idx)+" access detected for array "+var_name);
+            }
             mangled_name += "_" + std::to_string(idx);
         } else {
             std::string idx_var_name = idx_var->get_name();

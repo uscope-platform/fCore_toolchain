@@ -19,7 +19,7 @@
 register_allocation::register_allocation(
         std::shared_ptr<variable_map> vmap,
         std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm,
-        const std::shared_ptr<std::unordered_map<std::string, int>>& all_map
+        const std::shared_ptr<std::unordered_map<std::string, std::vector<std::pair<int,int>>>>& all_map
         ) : stream_pass_base("register allocation") {
 
     early_bindings_map = ebm;
@@ -104,8 +104,31 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
 void register_allocation::allocate_register(std::shared_ptr<variable> &var, int reg_addr) {
     reg_map.insert(var->to_str(), reg_addr, var->get_first_occurrence(), var->get_last_occurrence());
     register_mapping[var->to_str()] = var_map->at("r"+std::to_string(reg_addr));
-    allocation_map->insert({var->to_str(), reg_addr});
+    int array_index = -1;
+    auto var_name = demangle_array(var->to_str(), array_index);
+    if(allocation_map->contains(var_name)){
+        allocation_map->at(var_name).push_back({reg_addr, array_index});
+    } else {
+        auto item = std::vector<std::pair<int, int>>();
+        item.emplace_back(reg_addr, array_index);
+        allocation_map->emplace(var_name, item);
+    }
     if(var->get_variable_class() == variable_output_type){
         excluded[reg_addr] = true;
     }
 }
+
+std::string register_allocation::demangle_array(const std::string &s, int &index) {
+    std::string array_prefix = "_fcmglr_flattened_array_";
+    std::string arr_name;
+    if(s.starts_with(array_prefix)){
+        arr_name = s.substr(array_prefix.size());
+        auto suffix_start = arr_name.find_last_of('_');
+        index = std::stoi(arr_name.substr(suffix_start+1));
+        return arr_name.substr(0, suffix_start);
+    }else{
+        return s;
+    }
+
+}
+

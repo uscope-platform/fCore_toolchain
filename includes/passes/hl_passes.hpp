@@ -69,7 +69,7 @@ static hl_pass_manager create_hl_pass_manager(
     manager.add_morphing_pass(std::make_shared<loop_unrolling_pass>()); // pass #9
 
     manager.add_morphing_pass(std::make_shared<array_initialization_propagation_pass>()); // pass #10
-    manager.add_morphing_pass(std::make_shared<early_register_allocation_pass>(io_map, bindings_map)); // pass #11
+    manager.add_morphing_pass(std::make_shared<early_register_allocation_pass>(bindings_map)); // pass #11
     manager.add_morphing_pass(std::make_shared<conditional_implementation_pass>()); // pass #12
     manager.add_morphing_pass(std::make_shared<normalization_pass>()); // pass #13
 

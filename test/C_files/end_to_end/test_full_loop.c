@@ -22,15 +22,14 @@ int add (int a, int b){
 
 int main(){
 
-    int h[6];
+    int h[4];
 
     int k[4];
-
+    int b[4];
     int j;
 
-    for(int i = 0+5; i+1<8; ++i){
+    for(int i = 0+2; i+1<5; ++i){
         if(3<5){
-            j = k[i] + h[i];
             b[i] = add(h[i], k[i]);
         }
     }

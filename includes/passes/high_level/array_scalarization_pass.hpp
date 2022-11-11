@@ -39,7 +39,7 @@ private:
 
     int evaluate_index_definition(std::shared_ptr<hl_definition_node> node);
 
-    std::string mangle_name(std::vector<std::shared_ptr<hl_ast_node>> old_array_idx, std::string var_name);
+    std::string mangle_name(std::vector<std::shared_ptr<hl_ast_node>> old_array_idx, std::string var_name, int array_size);
     std::unordered_map<std::string, std::shared_ptr<hl_definition_node>> def_map_vect;
     std::unordered_map<std::string, std::shared_ptr<hl_definition_node>> def_map_s;
 };

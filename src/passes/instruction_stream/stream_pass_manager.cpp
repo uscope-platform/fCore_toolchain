@@ -18,7 +18,7 @@
 
 stream_pass_manager::stream_pass_manager(int dal,
         std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
-        const std::shared_ptr<std::unordered_map<std::string, int>>& all_map
+        const std::shared_ptr<std::unordered_map<std::string, std::vector<std::pair<int,int>>>>& all_map
         ) {
     constructs_pass_manager(dal, bm, all_map);
 }
@@ -26,7 +26,7 @@ stream_pass_manager::stream_pass_manager(int dal,
 stream_pass_manager::stream_pass_manager(std::vector<int> &io_res, int dal) {
 
     auto bm = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
-    auto am = std::make_shared<std::unordered_map<std::string, int>>();
+    auto am = std::make_shared<std::unordered_map<std::string, std::vector<std::pair<int,int>>>>();
     constructs_pass_manager( dal, bm, am);
 }
 
@@ -34,7 +34,7 @@ stream_pass_manager::stream_pass_manager(std::vector<int> &io_res, int dal) {
 void
 stream_pass_manager::constructs_pass_manager(int dal,
                                              std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
-                                             const std::shared_ptr<std::unordered_map<std::string, int>>& all_map
+                                             const std::shared_ptr<std::unordered_map<std::string, std::vector<std::pair<int,int>>>>& all_map
                                              ) {
 
     dump_ast_level = dal;
