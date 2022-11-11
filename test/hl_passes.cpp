@@ -605,7 +605,7 @@ TEST(HlPassesTest, test_matrix_scalarization) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,9,10,14}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,9,10,15}, 0);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -638,11 +638,13 @@ TEST(HlPassesTest, test_matrix_scalarization) {
     std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(expr_assign);
     // FIRST EXPRESSION LHS
     var = std::make_shared<variable>("_fcmglr_flattened_array_a_0_1");
+    var->set_array_shape({10,2});
     std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
     ex->set_lhs(op);
     // FIRST EXPRESSION RHS
     std::shared_ptr<hl_expression_node> ex_inner = std::make_shared<hl_expression_node>(expr_mult);
     var = std::make_shared<variable>("_fcmglr_flattened_array_b_0");
+    var->set_array_shape({3});
     op = std::make_shared<hl_ast_operand>(var);
     ex_inner->set_lhs(op);
     var = std::make_shared<variable>("constant", 2);
@@ -654,11 +656,13 @@ TEST(HlPassesTest, test_matrix_scalarization) {
     ex = std::make_shared<hl_expression_node>(expr_assign);
     // SECOND EXPRESSION LHS
     var = std::make_shared<variable>("_fcmglr_flattened_array_b_2");
-     op = std::make_shared<hl_ast_operand>(var);
+    var->set_array_shape({3});
+    op = std::make_shared<hl_ast_operand>(var);
     ex->set_lhs(op);
     // SECOND EXPRESSION RHS
     ex_inner = std::make_shared<hl_expression_node>(expr_mult);
     var = std::make_shared<variable>("_fcmglr_flattened_array_a_1_1");
+    var->set_array_shape({10,2});
     op = std::make_shared<hl_ast_operand>(var);
     ex_inner->set_lhs(op);
     var = std::make_shared<variable>("constant", 2);
@@ -990,12 +994,14 @@ TEST(HlPassesTest, contiguous_array_identification) {
     reference_body.push_back(idx_def);
 
     var = std::make_shared<variable>("a");
+    var->set_array_shape(arr_idx);
     var->set_contiguity(true);
     std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
     std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(expr_assign);
     exp->set_lhs(op);
 
     idx_var = std::make_shared<variable>("index");
+    idx_var->set_array_shape(arr_idx);
     idx_var->set_contiguity(true);
     op =std::make_shared<hl_ast_operand>(idx_var);
     var=std::make_shared<variable>("constant", 11);
@@ -1009,10 +1015,12 @@ TEST(HlPassesTest, contiguous_array_identification) {
     exp = std::make_shared<hl_expression_node>(expr_assign);
 
     var = std::make_shared<variable>("b");
+    var->set_array_shape(arr_idx);
     op = std::make_shared<hl_ast_operand>(var);
     exp->set_lhs(op);
 
     var = std::make_shared<variable>("a");
+    var->set_array_shape(arr_idx);
     var->set_contiguity(true);
     op = std::make_shared<hl_ast_operand>(var);
     exp->set_rhs(op);

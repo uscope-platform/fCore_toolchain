@@ -115,11 +115,12 @@ std::shared_ptr<hl_ast_operand> array_scalarization_pass::process_operand(std::s
             }
         }
 
-        unsigned int linearized_idx = linearize_array(def_map_vect[node->get_name()]->get_array_shape(), idx);
+        unsigned int linearized_idx = linearize_array(node->get_variable()->get_array_shape(), idx);
         if(node->get_variable()->get_bound_reg_array().size()!=1){
             var->set_bound_reg(node->get_variable()->get_bound_reg(linearized_idx));
         }
     }
+    var->set_array_shape(node->get_variable()->get_array_shape());
     var->set_contiguity(node->get_variable()->is_contiguous());
     node->set_variable(var);
     node->set_array_index({});

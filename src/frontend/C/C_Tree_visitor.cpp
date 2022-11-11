@@ -146,6 +146,7 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
         }
 
         node->set_array_shape(shape);
+        array_shapes_map[name] = shape;
         node->set_array_index(idx_array);
         node->set_array_initializer(array_initializer_data);
         array_initializer_data.clear();
@@ -250,7 +251,7 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
             std::shared_ptr<variable> var = std::make_shared<variable>(var_name);
             operand = std::make_shared<hl_ast_operand>(var);
         }
-
+        operand->get_variable()->set_array_shape(array_shapes_map[var_name]);
 
     } else if(ctx->constant() != nullptr){
         if(ctx->constant()->FloatingConstant() != nullptr){
