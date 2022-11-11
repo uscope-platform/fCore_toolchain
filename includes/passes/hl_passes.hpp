@@ -71,10 +71,10 @@ static hl_pass_manager create_hl_pass_manager(
 
     manager.add_morphing_pass(std::make_shared<array_initialization_propagation_pass>()); // pass #10
     manager.add_morphing_pass(std::make_shared<early_register_allocation_pass>(io_map, bindings_map)); // pass #11
-    manager.add_morphing_pass(std::make_shared<array_scalarization_pass>());  // pass #12
+    manager.add_morphing_pass(std::make_shared<conditional_implementation_pass>()); // pass #12
+    manager.add_morphing_pass(std::make_shared<normalization_pass>()); // pass #13
+    manager.add_morphing_pass(std::make_shared<array_scalarization_pass>());  // pass #14
 
-    manager.add_morphing_pass(std::make_shared<conditional_implementation_pass>()); // pass #13
-    manager.add_morphing_pass(std::make_shared<normalization_pass>()); // pass #14
     manager.add_morphing_pass(std::make_shared<dead_variable_elimination>());  // pass #15
 
     std::shared_ptr<constant_folding_pass> const_fold = std::make_shared<constant_folding_pass>();
