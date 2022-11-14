@@ -27,11 +27,18 @@ class constant_propagation :public pass_base<hl_ast_node> {
 public:
     explicit constant_propagation();
     std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
-    std::shared_ptr<hl_ast_node> substitute_constant(std::shared_ptr<hl_ast_node> element);
-    std::shared_ptr<hl_ast_operand> process_operand(std::shared_ptr<hl_ast_operand> element);
+
     int get_pass_type() override { return GLOBAL_PASS;};
 private:
-    std::shared_ptr<hl_ast_node> map_constants(std::shared_ptr<hl_ast_node> element);
+    std::shared_ptr<hl_ast_node> substitute_constant(std::shared_ptr<hl_ast_node> element);
+    std::shared_ptr<hl_ast_node> substitute_constant(std::shared_ptr<hl_expression_node> element);
+    std::shared_ptr<hl_ast_node> substitute_constant(std::shared_ptr<hl_definition_node> element);
+    std::shared_ptr<hl_ast_operand> substitute_constant(std::shared_ptr<hl_ast_operand> element);
+
+    bool map_constants(std::shared_ptr<hl_ast_node> element);
+    bool map_constants(std::shared_ptr<hl_expression_node> element);
+    bool map_constants(std::shared_ptr<hl_definition_node> element);
+
     void map_assignments(std::shared_ptr<hl_ast_node> element);
     std::unordered_map<std::string, std::shared_ptr<hl_ast_operand>> constants_map;
     std::vector<std::string> excluded_constants;

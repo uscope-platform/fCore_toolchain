@@ -22,20 +22,14 @@ constant_propagation::constant_propagation() : pass_base<hl_ast_node>("Constant 
 std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_ptr<hl_ast_node> element) {
 
     constants_map.clear();
-    std::vector<std::shared_ptr<hl_ast_node>> new_content;
-    std::vector<std::shared_ptr<hl_ast_node>> content = element->get_content();
-    for(auto & i : content){
-        auto mapped_instr = map_constants(i);
-        if(mapped_instr != nullptr) new_content.push_back(mapped_instr);
-    }
+    std::vector<std::shared_ptr<hl_ast_node>> content;
 
-    content.clear();
-    content.reserve(new_content.size());
-
-    for(auto & i : new_content){
+    for(auto & i : element->get_content()){
         auto new_item = substitute_constant(i);
-        map_assignments(i);
-        content.push_back(new_item);
+        if(new_item != nullptr){
+            map_assignments(i);
+            content.push_back(new_item);
+        }
     }
 
     element->set_content(content);
@@ -45,64 +39,64 @@ std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_pt
 }
 
 std::shared_ptr<hl_ast_node> constant_propagation::substitute_constant(std::shared_ptr<hl_ast_node> element) {
+    if(map_constants(element)) return nullptr;
+
     if(element->node_type == hl_ast_node_type_expr){
-        std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
-        if(node->is_unary() || node->get_type() == expr_assign){
-            std::shared_ptr<hl_ast_node> new_rhs;
-            if(node->get_rhs()->node_type == hl_ast_node_type_operand) {
-                new_rhs = process_operand(std::static_pointer_cast<hl_ast_operand>(node->get_rhs()));
-            } else {
-                new_rhs = substitute_constant(node->get_rhs());
-            }
-            node->set_rhs(new_rhs);
-            return node;
-        } else{
-            std::shared_ptr<hl_ast_node> new_lhs;
-            std::shared_ptr<hl_ast_node> new_rhs;
-
-            if(node->is_immediate()){
-                return node;
-            }
-            if(node->get_rhs()->node_type == hl_ast_node_type_operand) {
-                std::shared_ptr<hl_ast_operand> rhs = std::static_pointer_cast<hl_ast_operand>(node->get_rhs());
-                new_rhs = process_operand(rhs);
-            } else {
-                new_rhs = substitute_constant(node->get_rhs());
-            }
-
-            if(node->get_lhs()->node_type == hl_ast_node_type_operand) {
-                std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(node->get_lhs());
-                new_lhs = process_operand(lhs);
-            } else {
-                new_rhs = substitute_constant(node->get_rhs());
-            }
-
-            node->set_rhs(new_rhs);
-            node->set_lhs(new_lhs);
-
-            return node;
-        }
+        return substitute_constant(std::static_pointer_cast<hl_expression_node>(element));
     } else if(element->node_type == hl_ast_node_type_definition){
-        std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(element);
-        if(node->is_initialized()){
-            std::shared_ptr<hl_ast_node> initializer = node->get_scalar_initializer();
-            if(initializer->node_type == hl_ast_node_type_operand){
-                std::string constant_name = std::static_pointer_cast<hl_ast_operand>(initializer)->get_name();
-                if(std::find(excluded_constants.begin(), excluded_constants.end(), constant_name) != excluded_constants.end()){
-                    node->set_scalar_initializer(constants_map[constant_name]);
-                }
-            } else {
-                std::shared_ptr<hl_ast_node> new_init = substitute_constant(initializer);
-                node->set_scalar_initializer(new_init);
-            }
-        }
-        return node;
+        return substitute_constant(std::static_pointer_cast<hl_definition_node>(element));
     } else{
         return element;
     }
 }
 
-std::shared_ptr<hl_ast_operand> constant_propagation::process_operand(std::shared_ptr<hl_ast_operand> element) {
+std::shared_ptr<hl_ast_node> constant_propagation::substitute_constant(std::shared_ptr<hl_expression_node> element) {
+    if(element->is_immediate()){
+        return element;
+    }
+
+    std::shared_ptr<hl_ast_node> new_rhs;
+
+    if(element->get_rhs()->node_type == hl_ast_node_type_operand) {
+        new_rhs = substitute_constant(std::static_pointer_cast<hl_ast_operand>(element->get_rhs()));
+    } else {
+        new_rhs = substitute_constant(element->get_rhs());
+    }
+    element->set_rhs(new_rhs);
+
+    if(!element->is_unary() && element->get_type() != expr_assign){
+        std::shared_ptr<hl_ast_node> new_lhs;
+        if(element->get_lhs()->node_type == hl_ast_node_type_operand) {
+            std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
+            new_lhs = substitute_constant(lhs);
+        } else {
+            new_lhs = substitute_constant(element->get_rhs());
+        }
+        element->set_lhs(new_lhs);
+
+    }
+    return element;
+}
+
+std::shared_ptr<hl_ast_node> constant_propagation::substitute_constant(std::shared_ptr<hl_definition_node> element) {
+    if(element->is_initialized()){
+        std::shared_ptr<hl_ast_node> initializer = element->get_scalar_initializer();
+        if(initializer->node_type == hl_ast_node_type_operand){
+            std::string constant_name = std::static_pointer_cast<hl_ast_operand>(initializer)->get_name();
+            if(std::find(excluded_constants.begin(), excluded_constants.end(), constant_name) != excluded_constants.end()){
+                element->set_scalar_initializer(constants_map[constant_name]);
+            }
+        } else {
+            std::shared_ptr<hl_ast_node> new_init = substitute_constant(initializer);
+            element->set_scalar_initializer(new_init);
+        }
+    }
+    return element;
+}
+
+
+
+std::shared_ptr<hl_ast_operand> constant_propagation::substitute_constant(std::shared_ptr<hl_ast_operand> element) {
     if(std::find(excluded_constants.begin(), excluded_constants.end(), element->get_name()) != excluded_constants.end()){
         return element;
     }
@@ -137,38 +131,50 @@ void constant_propagation::map_assignments(std::shared_ptr<hl_ast_node> element)
     }
 }
 
-std::shared_ptr<hl_ast_node> constant_propagation::map_constants(std::shared_ptr<hl_ast_node> element) {
+bool constant_propagation::map_constants(std::shared_ptr<hl_ast_node> element) {
+
     if(element->node_type == hl_ast_node_type_definition) {
-        std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(element);
-        if (node->get_name().rfind("IOM_init_constant_", 0) == 0) {
-            return element;
-        } else if (node->get_variable()->get_variable_class() != variable_regular_type || !node->is_initialized()) {
-            return element;
-        } else if (node->get_scalar_initializer()->node_type == hl_ast_node_type_operand) {
-            std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(
-                    node->get_scalar_initializer());
-            if (op->get_type() == var_type_float_const || op->get_type() == var_type_int_const)
-                constants_map.insert(std::make_pair(node->get_name(), op));
-            else return element;
-        } else return element;
-
+        return map_constants(std::static_pointer_cast<hl_definition_node>(element));
     } else if(element->node_type == hl_ast_node_type_expr){
-        std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
-        if(node->get_type() == expr_assign){
-            std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(node->get_lhs());
-            if(lhs->get_variable()->get_variable_class()==variable_memory_type || lhs->get_variable()->get_variable_class()==variable_output_type|| lhs->get_contiguity()){
-                return element;
-            } else {
-                if(node->get_rhs()->node_type == hl_ast_node_type_operand){
-                    std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(node->get_rhs());
-                    if(op->get_type() == var_type_float_const || op->get_type() == var_type_int_const){
-                        std::shared_ptr<hl_ast_operand> target = std::static_pointer_cast<hl_ast_operand>(node->get_lhs());
-                        constants_map.insert(std::make_pair(target->get_name(), op));
-                    } else return element;
-                } else return element;
-            }
-        } else return element;
-    } else return element;
+        return map_constants(std::static_pointer_cast<hl_expression_node>(element));
+    } else
+        return false;
 
-    return nullptr;
+}
+
+bool constant_propagation::map_constants(std::shared_ptr<hl_definition_node> element) {
+
+    if (element->get_name().rfind("IOM_init_constant_", 0) == 0) {
+        return false;
+    } else if (element->get_variable()->get_variable_class() != variable_regular_type || !element->is_initialized()) {
+        return false;
+    } else if (element->get_scalar_initializer()->node_type == hl_ast_node_type_operand) {
+        std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(
+                element->get_scalar_initializer());
+        if (op->get_type() == var_type_float_const || op->get_type() == var_type_int_const)
+            constants_map.insert(std::make_pair(element->get_name(), op));
+        else return false;
+    } else return false;
+
+    return true;
+}
+
+bool constant_propagation::map_constants(std::shared_ptr<hl_expression_node> element) {
+
+    if(element->get_type() == expr_assign){
+        std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
+        if(lhs->get_variable()->get_variable_class()==variable_memory_type ||
+        lhs->get_variable()->get_variable_class()==variable_output_type|| lhs->get_contiguity()){
+            return false;
+        } else {
+            if(element->get_rhs()->node_type == hl_ast_node_type_operand){
+                std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(element->get_rhs());
+                if(op->get_type() == var_type_float_const || op->get_type() == var_type_int_const){
+                    std::shared_ptr<hl_ast_operand> target = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
+                    constants_map.insert(std::make_pair(target->get_name(), op));
+                } else return false;
+            } else return false;
+        }
+    } else return false;
+    return true;
 }
