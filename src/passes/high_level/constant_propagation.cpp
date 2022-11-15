@@ -173,37 +173,41 @@ bool constant_propagation::map_constants(const std::shared_ptr<hl_ast_node>& ele
 
 bool constant_propagation::map_constants(const std::shared_ptr<hl_definition_node>& element, int instr_idx) {
 
-    if (element->get_name().rfind("IOM_init_constant_", 0) == 0) {
-        return false;
-    } else if (element->get_variable()->get_variable_class() == variable_input_type || !element->is_initialized()) {
-        return false;
-    } else if (element->get_scalar_initializer()->node_type == hl_ast_node_type_operand) {
-        std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(
-                element->get_scalar_initializer());
-        if (op->get_type() == var_type_float_const || op->get_type() == var_type_int_const)
+    if (
+        element->get_name().rfind("IOM_init_constant_", 0) != 0 &&
+        element->get_variable()->get_variable_class() != variable_input_type &&
+        element->is_initialized() &&
+        element->get_scalar_initializer()->node_type == hl_ast_node_type_operand
+    ) {
+        std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(element->get_scalar_initializer());
+        if (op->get_type() == var_type_float_const || op->get_type() == var_type_int_const){
             tracker.add_constant(element->get_name(), op, instr_idx);
-        else return false;
-    } else return false;
+            return true;
+        }
+    }
 
-    return true;
+    return false;
 }
 
 bool constant_propagation::map_constants(const std::shared_ptr<hl_expression_node> &element, int instr_idx) {
 
+
     if(element->get_type() == expr_assign){
         std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
-        if(lhs->get_variable()->get_variable_class()==variable_memory_type ||
-        lhs->get_variable()->get_variable_class()==variable_output_type|| lhs->get_contiguity()){
-            return false;
-        } else {
+        if(
+            lhs->get_variable()->get_variable_class() != variable_memory_type &&
+            lhs->get_variable()->get_variable_class() != variable_output_type &&
+            !lhs->get_contiguity()
+        ){
             if(element->get_rhs()->node_type == hl_ast_node_type_operand){
                 std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(element->get_rhs());
                 if(op->get_type() == var_type_float_const || op->get_type() == var_type_int_const){
                     std::shared_ptr<hl_ast_operand> target = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
                     tracker.add_constant(target->get_name(), op, instr_idx);
-                } else return false;
-            } else return false;
+                    return true;
+                }
+            }
         }
-    } else return false;
-    return true;
+    }
+    return false;
 }
