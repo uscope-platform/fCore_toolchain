@@ -20,6 +20,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "data_structures/constants_tracker.h"
 #include "passes/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "tools/variable_map.hpp"
@@ -31,36 +32,19 @@ public:
 
     int get_pass_type() override { return GLOBAL_PASS;};
 private:
-    std::shared_ptr<hl_ast_node> substitute_constant(std::shared_ptr<hl_ast_node> element);
-    std::shared_ptr<hl_ast_node> substitute_constant(std::shared_ptr<hl_expression_node> element);
-    std::shared_ptr<hl_ast_node> substitute_constant(std::shared_ptr<hl_definition_node> element);
-    std::shared_ptr<hl_ast_operand> substitute_constant(std::shared_ptr<hl_ast_operand> element);
+    std::shared_ptr<hl_ast_node> substitute_constant(std::shared_ptr<hl_ast_node> element, int instr_idx);
+    std::shared_ptr<hl_ast_node> substitute_constant(std::shared_ptr<hl_expression_node> element, int instr_idx);
+    std::shared_ptr<hl_ast_node> substitute_constant(std::shared_ptr<hl_definition_node> element, int instr_idx);
+    std::shared_ptr<hl_ast_operand> substitute_constant(std::shared_ptr<hl_ast_operand> element, int instr_idx);
 
-    bool map_constants(std::shared_ptr<hl_ast_node> element);
-    bool map_constants(std::shared_ptr<hl_expression_node> element);
-    bool map_constants(std::shared_ptr<hl_definition_node> element);
+    bool map_constants(const std::shared_ptr<hl_ast_node>& element, int instr_idx);
+    bool map_constants(const std::shared_ptr<hl_expression_node>& element, int instr_idx);
+    bool map_constants(const std::shared_ptr<hl_definition_node>& element, int instr_idx);
 
-    void map_assignments(std::shared_ptr<hl_ast_node> element);
+    void map_assignments(const std::shared_ptr<hl_ast_node>& element);
 
 
-    class constant_tracker{
-    public:
-        void add_constant(const std::string& s, std::shared_ptr<hl_ast_operand> op) {constants_map[s] = std::move(op);};
-        void add_exclusion(const std::string& s) {excluded_constants.insert(s);};
-        bool is_constant(const std::string& s){return constants_map.contains(s);};
-        bool is_excluded(const std::string& s){return excluded_constants.contains(s);};
-        std::shared_ptr<hl_ast_operand> get_constant(const std::string& s){return constants_map[s];};
-        void clear(){
-            constants_map.clear();
-            excluded_constants.clear();
-        };
-
-    private:
-        std::unordered_map<std::string, std::shared_ptr<hl_ast_operand>> constants_map;
-        std::unordered_set<std::string> excluded_constants;
-    };
-
-    constant_tracker tracker;
+    constants_tracker tracker;
 
 };
 
