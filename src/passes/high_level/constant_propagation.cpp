@@ -55,6 +55,8 @@ std::shared_ptr<hl_ast_node> constant_propagation::substitute_constant(std::shar
         return substitute_constant(std::static_pointer_cast<hl_expression_node>(element), instr_idx);
     } else if(element->node_type == hl_ast_node_type_definition){
         return substitute_constant(std::static_pointer_cast<hl_definition_node>(element), instr_idx);
+    } else if(element->node_type == hl_ast_node_type_operand){
+        return substitute_constant(std::static_pointer_cast<hl_ast_operand>(element), instr_idx);
     } else{
         return element;
     }
@@ -110,7 +112,15 @@ std::shared_ptr<hl_ast_operand> constant_propagation::substitute_constant(std::s
     if(tracker.is_excluded(element->get_name())){
         return element;
     }
-    if(element->get_type() == var_type_scalar || element->get_type() == var_type_array){
+
+    if(element->get_type() != var_type_int_const && element->get_type() != var_type_float_const){
+        if(element->get_type()==var_type_array){
+            std::vector<std::shared_ptr<hl_ast_node>> new_idx;
+            for (auto &item: element->get_array_index()) {
+                new_idx.push_back(substitute_constant(item, instr_idx));
+            }
+            element->set_array_index(new_idx);
+        }
         if(tracker.is_constant(element->get_name())){
             std::shared_ptr<hl_ast_operand> new_const = tracker.get_constant(element->get_name(), instr_idx);
             new_const->set_name(element->get_name());
