@@ -27,10 +27,19 @@ std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_pt
     std::vector<std::shared_ptr<hl_ast_node>> content = element->get_content();
     int instr_idx = 0;
     for(auto & i : content){
-        if(!map_constants(i, instr_idx)) {
+        bool const_found = map_constants(i, instr_idx);
+        if(!const_found) {
             new_content.push_back(i);
             instr_idx++;
-       }
+       } else {
+            if(i->node_type == hl_ast_node_type_definition){
+                auto def_class = std::static_pointer_cast<hl_definition_node>(i)->get_variable()->get_variable_class();
+                if( def_class == variable_memory_type || def_class == variable_output_type){
+                    new_content.push_back(i);
+                    instr_idx++;
+                }
+            }
+        }
     }
 
     content.clear();
@@ -166,7 +175,7 @@ bool constant_propagation::map_constants(const std::shared_ptr<hl_definition_nod
 
     if (element->get_name().rfind("IOM_init_constant_", 0) == 0) {
         return false;
-    } else if (element->get_variable()->get_variable_class() != variable_regular_type || !element->is_initialized()) {
+    } else if (element->get_variable()->get_variable_class() == variable_input_type || !element->is_initialized()) {
         return false;
     } else if (element->get_scalar_initializer()->node_type == hl_ast_node_type_operand) {
         std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(
