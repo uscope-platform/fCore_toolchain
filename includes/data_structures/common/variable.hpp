@@ -122,6 +122,7 @@ private:
     float const_f;
 
     std::vector<int> array_shape;
+    std::vector<int> array_index;
 
 };
 

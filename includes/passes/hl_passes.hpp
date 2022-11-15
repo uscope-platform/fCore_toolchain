@@ -75,17 +75,18 @@ static hl_pass_manager create_hl_pass_manager(
     manager.add_morphing_pass(std::make_shared<normalization_pass>()); // pass #13
 
 
-    manager.add_morphing_pass(std::make_shared<dead_variable_elimination>());  // pass #15
-    manager.add_morphing_pass(std::make_shared<array_scalarization_pass>());  // pass #14
+    manager.add_morphing_pass(std::make_shared<dead_variable_elimination>());  // pass #14
+    manager.add_morphing_pass(std::make_shared<array_scalarization_pass>());  // pass #15
     std::shared_ptr<constant_folding_pass> const_fold = std::make_shared<constant_folding_pass>();
     std::shared_ptr<constant_propagation> const_prop = std::make_shared<constant_propagation>();
 
     manager.add_morphing_pass_group({const_fold, const_prop}); // group #-1
     manager.add_morphing_pass(std::make_shared<inline_constant_extraction>()); // pass #16
-    manager.add_morphing_pass(std::make_shared<dead_load_elimination>()); // pass #17
+    manager.add_morphing_pass(std::make_shared<inline_constant_extraction>()); // pass #17
+    manager.add_morphing_pass(std::make_shared<dead_load_elimination>()); // pass #18
 
     if(order.empty()){
-        manager.set_pass_order({1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,-1,16,17});
+        manager.set_pass_order({1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,-1,16,17,18});
     } else {
         manager.set_pass_order(order);
     }

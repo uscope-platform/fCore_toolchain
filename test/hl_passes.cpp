@@ -849,7 +849,7 @@ TEST(HlPassesTest, dead_load_elimination) {
     input_root->add_content(exp);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{17}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{18}, 0);
     manager.run_morphing_passes(input_root);
 
 
