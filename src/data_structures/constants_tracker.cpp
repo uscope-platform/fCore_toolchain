@@ -59,8 +59,7 @@ std::shared_ptr<hl_ast_operand> constants_tracker::get_constant(const std::strin
 
 std::shared_ptr<hl_ast_operand> constants_tracker::get_constant(const std::string &s, int instr_idx, int array_idx) {
     for(auto &item:constants_map[s][array_idx]){
-        if(item.validity_range.second==-1) return item.value;
-        if(instr_idx>item.validity_range.first&&instr_idx<item.validity_range.second) return item.value;
+        if(instr_idx>=item.validity_range.first && (instr_idx<item.validity_range.second || item.validity_range.second == -1)) return item.value;
     }
     throw std::runtime_error("Error: tracked constant not found");
 }
