@@ -37,6 +37,7 @@
 #include "passes/high_level/array_initialization_propagation_pass.h"
 #include "passes/high_level/operating_assignment_implementation_pass.hpp"
 #include "passes/high_level/dead_load_elimination.hpp"
+#include "passes/high_level/array_index_lowering.hpp"
 #include "passes/high_level/fuction_mangling_pass.hpp"
 #include "passes/instruction_stream/zero_assignment_removal_pass.hpp"
 #include "passes/high_level/contiguous_array_identification.hpp"
@@ -48,9 +49,9 @@
 
 static hl_pass_manager create_hl_pass_manager(
         std::string& entry_point,
-        std::vector<int> order,
+        const std::vector<int>& order,
         int dump_ast_level,
-        std::unordered_map<std::string, std::shared_ptr<variable>> io_map,
+        const std::unordered_map<std::string, std::shared_ptr<variable>>& io_map,
         std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bindings_map
 ){
     hl_pass_manager manager(dump_ast_level);
@@ -82,11 +83,11 @@ static hl_pass_manager create_hl_pass_manager(
 
     manager.add_morphing_pass_group({const_fold, const_prop}); // group #-1
     manager.add_morphing_pass(std::make_shared<inline_constant_extraction>()); // pass #16
-    manager.add_morphing_pass(std::make_shared<inline_constant_extraction>()); // pass #17
+    manager.add_morphing_pass(std::make_shared<array_index_lowering>()); // pass #17
     manager.add_morphing_pass(std::make_shared<dead_load_elimination>()); // pass #18
 
     if(order.empty()){
-        manager.set_pass_order({1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,-1,16,17,18});
+        manager.set_pass_order({1,2,3,4,5,6,7,8,9,10,11,12,13,14,-1,15,16,18});
     } else {
         manager.set_pass_order(order);
     }
@@ -97,13 +98,13 @@ static hl_pass_manager create_hl_pass_manager(
 
 static hl_pass_manager create_hl_pass_manager(
         std::string& entry_point,
-        std::vector<int> order,
+        const std::vector<int>& order,
         int dump_ast_level
 ){
     auto bm = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
     return create_hl_pass_manager(
             entry_point,
-            std::move(order),
+            order,
             dump_ast_level,
             std::unordered_map<std::string, std::shared_ptr<variable>>(),
             bm

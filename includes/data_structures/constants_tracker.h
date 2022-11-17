@@ -36,8 +36,11 @@ class constants_tracker {
 public:
     void add_constant(const std::string& s, std::shared_ptr<hl_ast_operand> op, int instr_idx);
     void add_constant(const std::string& s, std::shared_ptr<hl_ast_operand> op, int instr_idx, int array_idx);
-    bool is_constant(const std::string& s);
-    bool is_constant(const std::string& s, int array_idx);
+    void terminate_constant_range(const std::string &s, int instr_idx);
+    void terminate_constant_range(const std::string &s, int instr_idx, int array_idx);
+    void terminate_all_constant_ranges(const std::string &s, int instr_idx);
+    bool is_constant(const std::string& s, int instr_idx);
+    bool is_constant(const std::string& s, int instr_idx, int array_idx);
     std::shared_ptr<hl_ast_operand> get_constant(const std::string& s, int instr_idx);
     std::shared_ptr<hl_ast_operand> get_constant(const std::string& s, int instr_idx, int array_idx);
     void add_exclusion(const std::string& s);

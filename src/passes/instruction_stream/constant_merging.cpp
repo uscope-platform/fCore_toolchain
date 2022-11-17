@@ -22,6 +22,7 @@ constant_merging::constant_merging() : stream_pass_base("constant merging pass")
 
 std::shared_ptr<ll_instruction_node> constant_merging::apply_pass(std::shared_ptr<ll_instruction_node> element) {
     idx++;
+    map_exclusions(element);
     switch (element->get_type()) {
         case isa_register_instruction:
             return merge_register_inst(std::static_pointer_cast<ll_register_instr_node>(element));
@@ -37,6 +38,29 @@ std::shared_ptr<ll_instruction_node> constant_merging::apply_pass(std::shared_pt
             throw std::runtime_error("Invalid instruction type reached variable mapping stage");
     }
 
+
+}
+
+void constant_merging::map_exclusions(std::shared_ptr<ll_instruction_node> element) {
+    std::shared_ptr<variable> dest;
+    switch (element->get_type()) {
+        case isa_register_instruction:
+            dest = std::static_pointer_cast<ll_register_instr_node>(element)->get_destination();
+            break;
+        case isa_conversion_instruction:
+            dest = std::static_pointer_cast<ll_conversion_instr_node>(element)->get_destination();
+            break;
+        case isa_load_constant_instruction:
+            dest = std::static_pointer_cast<ll_load_constant_instr_node>(element)->get_destination();
+            break;
+        case isa_intercalated_constant:
+        case isa_independent_instruction:
+        case isa_pseudo_instruction:
+            return;
+    }
+    if(processed_constants.contains(dest->get_name())){
+        processed_constants.erase(dest->get_name());
+    }
 
 }
 

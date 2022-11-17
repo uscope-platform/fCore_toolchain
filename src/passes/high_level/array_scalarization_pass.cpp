@@ -26,6 +26,7 @@ std::shared_ptr<hl_ast_node> array_scalarization_pass::process_global(std::share
     for(auto &item:element->get_content()){
         new_content.push_back(process_element(item));
     }
+
     ret_val->set_content(new_content);
     return ret_val;
 }
