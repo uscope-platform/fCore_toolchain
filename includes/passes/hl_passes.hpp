@@ -42,6 +42,7 @@
 #include "passes/instruction_stream/zero_assignment_removal_pass.hpp"
 #include "passes/high_level/contiguous_array_identification.hpp"
 #include "passes/high_level/early_register_allocation_pass.hpp"
+#include "passes/high_level/array_index_lowering.hpp"
 
 #include "tools/variable_map.hpp"
 #include "data_structures/high_level_ast/hl_ast_node.hpp"
