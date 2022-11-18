@@ -93,13 +93,15 @@ std::vector<std::shared_ptr<hl_ast_node>> retval;
     if(node->get_type()==expr_efi){
         retval.push_back(element);
     } else {
-        std::vector<std::shared_ptr<hl_ast_node>> rhs_result = process_expr_side(std::static_pointer_cast<hl_ast_operand>(node->get_rhs()));
+        std::vector<std::shared_ptr<hl_ast_node>> rhs_result = process_operand(std::static_pointer_cast<hl_ast_operand>(node->get_rhs()));
         node->set_rhs(rhs_result[0]);
-        if(rhs_result.size()==2)
+        if(rhs_result.size()==2){
             retval.push_back(rhs_result[1]);
+        }
+
         if(!node->is_unary()){
             std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(node->get_lhs());
-            std::vector<std::shared_ptr<hl_ast_node>> lhs_result = process_expr_side(lhs);
+            std::vector<std::shared_ptr<hl_ast_node>> lhs_result = process_operand(lhs);
             node->set_lhs(lhs_result[0]);
             if(lhs_result.size()==2)
                 retval.push_back(lhs_result[1]);
@@ -112,37 +114,24 @@ std::vector<std::shared_ptr<hl_ast_node>> retval;
 
 
 std::vector<std::shared_ptr<hl_ast_node>>
-inline_constant_extraction::process_expr_side(const std::shared_ptr<hl_ast_operand>& element) {
+inline_constant_extraction::process_operand(const std::shared_ptr<hl_ast_operand>& element) {
 
     std::vector<std::shared_ptr<hl_ast_node>> retval;
 
-    if(element->get_type() == var_type_float_const) {
-        std::string var_name = "inlined_variable_"+std::to_string(n_var);
-        std::shared_ptr<variable> var = std::make_shared<variable>( var_name);
-        std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>(var_name, c_type_float, var);
-        n_var++;
-        def->set_scalar_initializer(element);
-
-
-        var = std::make_shared<variable>(var_name);
-        std::shared_ptr<hl_ast_operand> var_op = std::make_shared<hl_ast_operand>(var);
-
-        retval.insert(retval.end(), {var_op, def});
-    } else if(element->get_type() == var_type_int_const){
-        std::string var_name = "inlined_variable_"+std::to_string(n_var);
-        std::shared_ptr<variable> var = std::make_shared<variable>( var_name);
-        std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>(var_name, c_type_int, var);
-        n_var++;
-        def->set_scalar_initializer(element);
-
-        var = std::make_shared<variable>( var_name);
-        std::shared_ptr<hl_ast_operand> var_op = std::make_shared<hl_ast_operand>(var);
-
-        retval.insert(retval.end(), {var_op, def});
-    } else{
+    if(element->get_type() != var_type_float_const && element->get_type() != var_type_int_const ){
         retval.push_back(element);
+        return retval;
     }
 
+    c_types_t selected_type = element->get_type() == var_type_float_const ?  c_type_float: c_type_int;
+
+    std::string var_name = "inlined_variable_"+std::to_string(n_var);
+    std::shared_ptr<variable> var = std::make_shared<variable>( var_name);
+    std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>(var_name, selected_type, var);
+    def->set_scalar_initializer(element);
+    std::shared_ptr<hl_ast_operand> var_op = std::make_shared<hl_ast_operand>(std::make_shared<variable>(var_name));
+    retval.insert(retval.end(), {var_op, def});
+    n_var++;
     return retval;
 }
 
