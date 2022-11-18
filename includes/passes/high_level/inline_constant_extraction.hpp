@@ -22,11 +22,11 @@ class inline_constant_extraction : public pass_base<hl_ast_node> {
 public:
     inline_constant_extraction();
     std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
-    std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_expression_node> &element);
-    std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_definition_node> &element);
+    std::vector<std::shared_ptr<hl_ast_node>> process_node(const std::shared_ptr<hl_expression_node> &element);
+    std::vector<std::shared_ptr<hl_ast_node>> process_node(const std::shared_ptr<hl_definition_node> &element);
 
     std::vector<std::shared_ptr<hl_ast_node>> process_expression(std::shared_ptr<hl_expression_node>& element);
-    std::vector<std::shared_ptr<hl_ast_node>> process_expr_side(std::shared_ptr<hl_ast_operand>& element);
+    std::vector<std::shared_ptr<hl_ast_node>> process_expr_side(const std::shared_ptr<hl_ast_operand>& element);
     int get_pass_type() override { return GLOBAL_PASS;};
 private:
     int n_var;
