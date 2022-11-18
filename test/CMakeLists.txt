@@ -109,9 +109,10 @@ configure_file(C_files/end_to_end/test_loop_index_expression.c ${C_E2E_TEST_FILE
 configure_file(C_files/end_to_end/test_exception.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_loop_index_expression_multidim.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_contiguous_array_allocation.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
+configure_file(C_files/end_to_end/test_constant_propagation.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
+configure_file(C_files/end_to_end/test_efi_load_elimination.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/instruction_passes/test_constant_merging.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/instruction_passes/test_zero_assignment_removal.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
-configure_file(C_files/end_to_end/test_efi_load_elimination.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 
 # DISASSEMBLER TESTING FILES
 set(DIS_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/dis)

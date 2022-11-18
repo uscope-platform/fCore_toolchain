@@ -41,11 +41,8 @@ private:
     bool map_constants(const std::shared_ptr<hl_expression_node>& element, int instr_idx);
     bool map_constants(const std::shared_ptr<hl_definition_node>& element, int instr_idx);
 
-    bool verify_expression(const std::shared_ptr<hl_expression_node>& element, int instr_idx);
-    void map_assignments(const std::shared_ptr<hl_ast_node>& element, int instr_idx);
-
-
-
+    void analyze_assignment(const std::shared_ptr<hl_expression_node> &element, int instr_idx);
+    bool needs_termination(const std::shared_ptr<hl_expression_node> &element, int instr_idx);
     constants_tracker tracker;
 
 };

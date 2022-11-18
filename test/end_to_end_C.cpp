@@ -374,6 +374,22 @@ TEST(EndToEndC, essential_variable_initialization) {
 }
 
 
+TEST(EndToEndC, test_constant_propagation) {
+
+    std::string input_file = "c_e2e/test_constant_propagation.c";
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(input_file, includes, true, 0);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x226, 0x3F800000,0x246, 0x3F800000, 0x222a21, 0x242a41, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
+
 
 TEST(EndToEndC, negative_leading_sum) {
 
@@ -454,7 +470,7 @@ TEST(EndToEndC, loop_index_expression) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(input_file, includes, true, 2);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
