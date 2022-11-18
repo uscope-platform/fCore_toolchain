@@ -32,35 +32,34 @@ inline_constant_extraction::process_global(std::shared_ptr<hl_ast_node> element)
                 if(node->get_scalar_initializer()->node_type == hl_ast_node_type_expr){
                     std::shared_ptr<hl_expression_node> expr = std::static_pointer_cast<hl_expression_node>(
                             node->get_scalar_initializer());
-                    std::vector<std::shared_ptr<hl_ast_node>> res = process_node(expr);
+                    std::vector<std::shared_ptr<hl_ast_node>> res = process_expression(expr);
                     node->set_scalar_initializer(res[0]);
                     if(res.size()>1)
                         new_content.insert(new_content.end(), res.begin()+1, res.end());
                     new_content.push_back(node);
                 } else {
-                    new_content.push_back(item);
+                    new_content.push_back(node);
                 }
             } else{
-                new_content.push_back(item);
+                new_content.push_back(node);
             }
         } else if(item->node_type == hl_ast_node_type_expr){
             std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(item);
             if(node->get_type()==expr_assign){
                 std::shared_ptr<hl_ast_node> rhs = node->get_rhs();
                 if(rhs->node_type == hl_ast_node_type_operand){
-                    new_content.push_back(item);
+                    new_content.push_back(node);
                 } else{
                     std::shared_ptr<hl_expression_node> n = std::static_pointer_cast<hl_expression_node>(rhs);
-                    std::vector<std::shared_ptr<hl_ast_node>> res = process_node(n);
+                    std::vector<std::shared_ptr<hl_ast_node>> res = process_expression(n);
                     if(res.size()>1){
-                        new_content.push_back(res[1]);
                         node->set_rhs(res[0]);
-
+                        new_content.push_back(res[1]);
                     }
-                    new_content.push_back(item);
+                    new_content.push_back(node);
                 }
             }else if(node->is_immediate()){
-                new_content.push_back(item);
+                new_content.push_back(node);
             } else{
                 throw std::runtime_error("Non assignment top level expressions should not reach inline constant extraction pass");
             }
@@ -74,9 +73,30 @@ inline_constant_extraction::process_global(std::shared_ptr<hl_ast_node> element)
 
 
 
+std::shared_ptr<hl_ast_node> inline_constant_extraction::process_node(const std::shared_ptr<hl_expression_node> &element) {
+    if(element->get_type()==expr_assign){
+        std::shared_ptr<hl_ast_node> rhs = element->get_rhs();
+        if(rhs->node_type == hl_ast_node_type_operand){
+            return element;
+        } else{
+            std::shared_ptr<hl_expression_node> n = std::static_pointer_cast<hl_expression_node>(rhs);
+            std::vector<std::shared_ptr<hl_ast_node>> res = process_expression(n);
+            if(res.size()>1){
+                element->set_rhs(res[0]);
+                return res[1];
+            }
+            return element;
+        }
+    }else if(element->is_immediate()){
+        return element;
+    } else{
+        throw std::runtime_error("Non assignment top level expressions should not reach inline constant extraction pass");
+    }
+}
+
 
 std::vector<std::shared_ptr<hl_ast_node>>
-inline_constant_extraction::process_node(std::shared_ptr<hl_expression_node> &element) {
+inline_constant_extraction::process_expression(std::shared_ptr<hl_expression_node> &element) {
     std::vector<std::shared_ptr<hl_ast_node>> retval;
     if(element->node_type == hl_ast_node_type_expr){
         std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
