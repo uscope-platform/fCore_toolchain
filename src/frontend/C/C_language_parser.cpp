@@ -25,7 +25,7 @@ C_language_parser::C_language_parser(){
     dmap = std::make_shared<define_map>();
 }
 
-C_language_parser::C_language_parser(std::string &path, std::shared_ptr<define_map> &existing_defmap) {
+C_language_parser::C_language_parser(const std::string &path, std::shared_ptr<define_map> &existing_defmap) {
     dmap = existing_defmap;
     preproc = std::make_unique<C_pre_processor>(path,dmap);
 

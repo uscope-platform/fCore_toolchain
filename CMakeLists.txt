@@ -6,6 +6,7 @@ include(GNUInstallDirs)
 option(BUILD_TESTS "Build test programs" OFF)
 option(INCLUDE_EMULATOR "Include the emulator in the build" OFF)
 option(INCLUDE_COVERAGE "Build with support for code coverage" OFF)
+option(INCLUDE_DEVTOOLS "Include compiler development tools in the build" OFF)
 
 set(ANTLR_VERSION 4.10.1)
 SET(ANTLR_JAR antlr-${ANTLR_VERSION}-complete.jar)
@@ -64,6 +65,15 @@ add_subdirectory(includes/asm_parser)
 add_subdirectory(includes/C_parser)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/_deps/antlr_runtime_src-src/runtime/Cpp/runtime/src)
+
+
+if(${INCLUDE_DEVTOOLS})
+    find_package(cpprestsdk REQUIRED)
+
+endif(${INCLUDE_DEVTOOLS})
+
+
+
 
 add_subdirectory(src)
 

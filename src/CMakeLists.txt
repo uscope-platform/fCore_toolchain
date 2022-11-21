@@ -97,6 +97,10 @@ set(FCORE_EMU_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/emulator_manager.cpp
         )
 
+set(FCORE_DEVTOOLS_SRCS
+        ${CMAKE_CURRENT_SOURCE_DIR}/dev_server/rest_handler.cpp
+        )
+
 set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_DIS_SRCS} ${FCORE_EMU_SRCS} PARENT_SCOPE)
 
 add_library(common_srcs ${FCORE_COMMON_SRCS_I})
@@ -127,3 +131,19 @@ if(${INCLUDE_EMULATOR})
     install(FILES ../third_party/fp_ip_cmodel/lib/libIp_floating_point_v7_1_bitacc_cmodel.so
             DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif(${INCLUDE_EMULATOR})
+
+
+if(${INCLUDE_DEVTOOLS})
+    add_executable(fCore_dev_server ${FCORE_CC_SRCS} ${FCORE_DEVTOOLS_SRCS} ${C_PARSER_SRCS} fCore_dev_server.cpp)
+    target_link_libraries(fCore_dev_server PRIVATE
+            cpprestsdk::cpprest
+            spdlog
+            nlohmann_json::nlohmann_json
+            CLI11::CLI11
+            crypto
+            antlr4_static
+            common_srcs
+            )
+
+endif(${INCLUDE_DEVTOOLS})
+

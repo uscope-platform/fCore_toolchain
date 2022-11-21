@@ -16,7 +16,7 @@
 #include "fcore_cc.hpp"
 
 
-fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &includes, bool print_debug, int dump_ast_level) : hl_manager(dump_ast_level),
+fcore_cc::fcore_cc(const std::string &path, std::vector<std::string> &includes, bool print_debug, int dump_ast_level) : hl_manager(dump_ast_level),
                                                                                                                   ll_manager(dump_ast_level) {
     std::shared_ptr<define_map> defines_map = std::make_shared<define_map>();
     error_code = "";
