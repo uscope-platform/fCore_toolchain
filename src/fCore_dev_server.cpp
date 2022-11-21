@@ -14,13 +14,10 @@
 
 #include <string>
 #include <vector>
-#include <CLI/CLI.hpp>
 #include <cpprest/http_listener.h>
 #include <cpprest/json.h>
 
-#include "fcore_cc.hpp"
 #include "dev_server/rest_handler.hpp"
-
 
 
 
@@ -31,13 +28,13 @@ int main(int argc, char **argv) {
     auto bound_get = [&](auto m){handler.handle_get(m);};
     auto bound_post = [&](auto m){handler.handle_post(m);};
 
-    web::http::experimental::listener::http_listener listener(U("http://localhost:8080/cpprest/svrRest"));
+    web::http::experimental::listener::http_listener listener(U("http://localhost:8080"));
     listener.support(web::http::methods::GET,bound_get);
     listener.support(web::http::methods::POST,bound_post);
 
     try{
         listener.open()
-                .then([&listener](){printf("\nStarting server at: http://localhost:8080/cpprest/svrRest\n");})
+                .then([&listener](){printf("\nStarting server at: http://localhost:8080\n");})
                 .wait();
 
         while(true){

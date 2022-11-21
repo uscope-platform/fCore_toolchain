@@ -16,24 +16,46 @@
 
 void rest_handler::handle_get(const web::http::http_request& message) {
 
-    auto ep = message.relative_uri().to_string();
+    auto ep = message.relative_uri().path();
+    auto body = get_request_body(message);
 
-    message.reply(web::http::status_codes::OK);
+    if(ep == "/dump"){
+        message.reply(web::http::status_codes::OK, to_string(dump));
+    } else {
+        message.reply(web::http::status_codes::InternalError, "Endpoint not found");
+    }
 
 }
 
 void rest_handler::handle_post(const web::http::http_request& message) {
 
-    auto ep = message.relative_uri().to_string();
-
+    auto ep = message.relative_uri().path();
     auto body = get_request_body(message);
 
-    message.reply(web::http::status_codes::OK);
+    std::string error = "Endpoint not found";
+    web::http::status_code ret_code = web::http::status_codes::InternalError;
+    if(ep == "/compile"){
+        ret_code = handle_compile_request(body, error);
+    }
+
+    message.reply(ret_code, error);
 }
 
-void rest_handler::handle_compile_request(std::string file_path) {
+web::http::status_code rest_handler::handle_compile_request(const web::json::value &prog, std::string &error) {
+
+    auto working_file = "/tmp/fcore_dev_server_wf";
+    std::ofstream ofs(working_file);
+    ofs << prog.at("content").as_string();
+    ofs.flush();
     std::vector<std::string> include_files = {""};
-    fcore_cc cc_engine(file_path, include_files, false, 2);
+    fcore_cc cc_engine(working_file, include_files, false, 2);
+    error = cc_engine.get_errors();
+    dump = cc_engine.get_dump();
+    if(error.empty()){
+        return web::http::status_codes::OK;
+    }else{
+        return web::http::status_codes::InternalError;
+    }
 
 }
 
@@ -41,7 +63,7 @@ web::json::value rest_handler::get_request_body(const web::http::http_request& m
     web::json::value jsonObject;
     try{
         message.extract_json()
-                .then([&jsonObject](web::json::value jo){
+                .then([&jsonObject](const web::json::value& jo){
                     std::cout<<"Val:"<<jo.serialize() << std::endl;
                     jsonObject = jo;
                 })

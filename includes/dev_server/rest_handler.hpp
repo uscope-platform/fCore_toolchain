@@ -15,7 +15,8 @@
 #ifndef FCORE_TOOLCHAIN_REST_HANDLER_HPP
 #define FCORE_TOOLCHAIN_REST_HANDLER_HPP
 
-#include "cpprest/http_listener.h"
+#include <cpprest/http_listener.h>
+#include <nlohmann/json.hpp>
 #include "fcore_cc.hpp"
 
 
@@ -26,7 +27,9 @@ public:
     bool exit_requested = false;
 private:
     web::json::value get_request_body(const web::http::http_request& message);
-    void handle_compile_request(std::string file_path);
+    web::http::status_code handle_compile_request(const web::json::value &prog, std::string &error);
+    nlohmann::json dump;
+
 };
 
 
