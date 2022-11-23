@@ -16,33 +16,36 @@
 #include <vector>
 #include <cpprest/http_listener.h>
 #include <cpprest/json.h>
+#include <chrono>
+#include <thread>
 
 #include "dev_server/rest_handler.hpp"
-
 
 
 int main(int argc, char **argv) {
 
     rest_handler handler;
 
+
     auto bound_get = [&](auto m){handler.handle_get(m);};
     auto bound_post = [&](auto m){handler.handle_post(m);};
+    auto bound_opt = [&](auto m){handler.handle_option(m);};
 
     web::http::experimental::listener::http_listener listener(U("http://localhost:8080"));
     listener.support(web::http::methods::GET,bound_get);
     listener.support(web::http::methods::POST,bound_post);
+    listener.support(web::http::methods::OPTIONS,bound_opt);
 
     try{
         listener.open()
                 .then([&listener](){printf("\nStarting server at: http://localhost:8080\n");})
                 .wait();
 
-        while(true){
-            if(handler.exit_requested){
-                listener.close().wait();
-                break;
-            }
+
+        while(!handler.exit_requested){
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
         };
+        listener.close().wait();
 
     }
     catch (const std::exception & e) {

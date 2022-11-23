@@ -20,9 +20,9 @@ void rest_handler::handle_get(const web::http::http_request& message) {
     auto body = get_request_body(message);
 
     if(ep == "/dump"){
-        message.reply(web::http::status_codes::OK, to_string(dump));
+        message.reply(construct_response(web::http::status_codes::OK,to_string(dump)));
     } else {
-        message.reply(web::http::status_codes::InternalError, "Endpoint not found");
+        message.reply(construct_response(web::http::status_codes::InternalError,"Endpoint not found"));
     }
 
 }
@@ -38,7 +38,7 @@ void rest_handler::handle_post(const web::http::http_request& message) {
         ret_code = handle_compile_request(body, error);
     }
 
-    message.reply(ret_code, error);
+    message.reply(construct_response(ret_code,error));
 }
 
 web::http::status_code rest_handler::handle_compile_request(const web::json::value &prog, std::string &error) {
@@ -73,4 +73,20 @@ web::json::value rest_handler::get_request_body(const web::http::http_request& m
         printf("Error exception:%s\n", e.what());
     }
     return jsonObject;
+}
+
+web::http::http_response rest_handler::construct_response(const web::http::status_code &sc, const std::string &resp) {
+    web::http::http_response response(sc);
+    response.headers().add(U("Access-Control-Allow-Origin"), U("*"));
+    response.set_body(resp);
+    return response;
+}
+
+void rest_handler::handle_option(const web::http::http_request &message) {
+    web::http::http_response sp(web::http::status_codes::OK);
+    sp.headers().add("Access-Control-Allow-Origin","*");
+    sp.headers().add("Access-Control-Allow-Methods","*");
+    sp.headers().add("Access-Control-Allow-Headers","*");
+    sp.headers().add("Access-Control-Max-Age","6400");
+    message.reply(sp);
 }

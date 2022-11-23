@@ -24,7 +24,9 @@ class rest_handler {
 public:
     void handle_get(const web::http::http_request& message);
     void handle_post(const web::http::http_request& message);
+    void handle_option(const web::http::http_request& message);
     bool exit_requested = false;
+    web::http::http_response construct_response(const web::http::status_code &sc, const std::string &resp );
 private:
     web::json::value get_request_body(const web::http::http_request& message);
     web::http::status_code handle_compile_request(const web::json::value &prog, std::string &error);
