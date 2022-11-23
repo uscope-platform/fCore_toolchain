@@ -130,6 +130,12 @@ inline_constant_extraction::process_operand(const std::shared_ptr<hl_ast_operand
     std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>(var_name, selected_type, var);
     def->set_scalar_initializer(element);
     std::shared_ptr<hl_ast_operand> var_op = std::make_shared<hl_ast_operand>(std::make_shared<variable>(var_name));
+
+    auto bound_reg = element->get_variable()->get_bound_reg();
+   if(bound_reg != -1){
+       def->get_variable()->set_bound_reg(bound_reg);
+   }
+
     retval.insert(retval.end(), {var_op, def});
     n_var++;
     return retval;

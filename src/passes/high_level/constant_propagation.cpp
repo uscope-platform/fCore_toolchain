@@ -50,13 +50,29 @@ std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_pt
         auto new_item = propagate_constant(new_content[i],i);
         content.push_back(new_item);
     }
+    new_content.clear();
+    new_content.reserve(content.size());
 
+    for(auto &item:content){
+        new_content.push_back(purge_definition(item));
+    }
 
-    element->set_content(content);
+    element->set_content(new_content);
 
     return element;
 
 }
+
+std::shared_ptr<hl_ast_node> constant_propagation::purge_definition(std::shared_ptr<hl_ast_node> element) {
+    if(element->node_type==hl_ast_node_type_definition){
+        auto def = std::static_pointer_cast<hl_definition_node>(element);
+        if(init_to_purge.contains(def->get_name())){
+            def->set_array_initializer({});
+        }
+    }
+    return element;
+}
+
 
 std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::shared_ptr<hl_ast_node> element, int instr_idx) {
 
@@ -105,6 +121,9 @@ std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::share
         if(initializer->node_type == hl_ast_node_type_operand){
             std::string constant_name = std::static_pointer_cast<hl_ast_operand>(initializer)->get_name();
             if(tracker.is_excluded(constant_name)){
+                if(purge_candidates.contains(constant_name)){
+                    init_to_purge.insert(constant_name);
+                }
                 element->set_scalar_initializer(tracker.get_constant(constant_name, instr_idx));
             }
         } else {
@@ -135,6 +154,9 @@ std::shared_ptr<hl_ast_operand> constant_propagation::propagate_constant(std::sh
                 auto idx = std::static_pointer_cast<hl_ast_operand>(element->get_array_index()[0]);
                 if(idx->get_variable()->is_constant()){
                     if(tracker.is_constant(element->get_name(), instr_idx,idx->get_int_value())){
+                        if(purge_candidates.contains(element->get_name())){
+                            init_to_purge.insert(element->get_name());
+                        }
                         std::shared_ptr<hl_ast_operand> new_const = tracker.get_constant(element->get_name(), instr_idx,idx->get_int_value());
                         new_const->set_name(element->get_name());
                         ret_operand =  new_const;
@@ -144,6 +166,9 @@ std::shared_ptr<hl_ast_operand> constant_propagation::propagate_constant(std::sh
 
         } else{
             if(tracker.is_constant(element->get_name(), instr_idx)){
+                if(purge_candidates.contains(element->get_name())){
+                    init_to_purge.insert(element->get_name());
+                }
                 std::shared_ptr<hl_ast_operand> new_const = tracker.get_constant(element->get_name(), instr_idx);
                 new_const->set_name(element->get_name());
                 ret_operand =  new_const;
@@ -184,6 +209,7 @@ bool constant_propagation::map_constants(const std::shared_ptr<hl_definition_nod
             std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(element->get_scalar_initializer());
             if (op->get_type() == var_type_float_const || op->get_type() == var_type_int_const){
                 tracker.add_constant(element->get_name(), op, instr_idx);
+                purge_candidates.insert(element->get_name());
                 return true;
             }
         } else {
@@ -193,6 +219,7 @@ bool constant_propagation::map_constants(const std::shared_ptr<hl_definition_nod
                 if (op->get_type() == var_type_float_const || op->get_type() == var_type_int_const){
                     tracker.add_constant(element->get_name(), op, instr_idx, i);
                 }
+                //TODO:IMPLEMENT INITIALIZER PURGING FOR IO AS WELL
             }
             return true;
         }
@@ -209,7 +236,7 @@ bool constant_propagation::map_constants(const std::shared_ptr<hl_expression_nod
         std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
         analyze_assignment(element, instr_idx);
         if(
-            lhs->get_variable()->get_variable_class() != variable_memory_type &&
+            lhs->get_variable()->get_variable_class() != variable_memory_type && //TODO: WHY THE DIFFERENT BEHAVIOUR WITH RESPECT TO DEF MAPPING
             lhs->get_variable()->get_variable_class() != variable_output_type &&
             !lhs->get_contiguity()
         ){
@@ -272,4 +299,5 @@ bool constant_propagation::needs_termination(const std::shared_ptr<hl_expression
     }
     return needs_termination;
 }
+
 

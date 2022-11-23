@@ -45,6 +45,11 @@ private:
     bool needs_termination(const std::shared_ptr<hl_expression_node> &element, int instr_idx);
     constants_tracker tracker;
 
+    std::unordered_set<std::string> purge_candidates;
+    std::unordered_set<std::string> init_to_purge;
+
+    std::shared_ptr<hl_ast_node> purge_definition(std::shared_ptr<hl_ast_node> element);
+
 };
 
 
