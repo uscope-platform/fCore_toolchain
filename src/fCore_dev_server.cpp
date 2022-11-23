@@ -16,10 +16,20 @@
 #include <vector>
 #include <cpprest/http_listener.h>
 #include <cpprest/json.h>
-#include <chrono>
 #include <thread>
+#include <semaphore>
 
 #include "dev_server/rest_handler.hpp"
+
+std::binary_semaphore exit_requested{0};
+
+
+void wait_for_input(){
+    std::cout<< "Press ENTER to exit."<< std::endl;
+    std::getchar();
+    exit_requested.release();
+
+}
 
 
 int main(int argc, char **argv) {
@@ -41,11 +51,12 @@ int main(int argc, char **argv) {
                 .then([&listener](){printf("\nStarting server at: http://localhost:8080\n");})
                 .wait();
 
+        std::thread exit_thread(wait_for_input);
 
-        while(!handler.exit_requested){
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        };
+        exit_requested.acquire();
+
         listener.close().wait();
+        exit_thread.join();
 
     }
     catch (const std::exception & e) {

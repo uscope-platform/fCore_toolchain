@@ -64,7 +64,6 @@ web::json::value rest_handler::get_request_body(const web::http::http_request& m
     try{
         message.extract_json()
                 .then([&jsonObject](const web::json::value& jo){
-                    std::cout<<"Val:"<<jo.serialize() << std::endl;
                     jsonObject = jo;
                 })
                 .wait();
