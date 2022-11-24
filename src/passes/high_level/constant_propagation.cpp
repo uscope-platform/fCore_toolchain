@@ -69,15 +69,14 @@ std::shared_ptr<hl_ast_node> constant_propagation::purge_definition(std::shared_
     if(element->node_type==hl_ast_node_type_definition){
         auto def = std::static_pointer_cast<hl_definition_node>(element);
         if(def->is_scalar()){
-            if(tracker.needs_purging(def->get_name())){
+            if(tracker.needs_purging(def->get_name(), {0})){
                 def->set_array_initializer({});
             }
         }else {
             bool array_needs_purging = true;
             auto init_list = def->get_array_initializer();
             for(int i = 0; i<init_list.size(); ++i){
-                array_needs_purging &= tracker.needs_purging(def->get_name(), i);
-                //def->set_scalar_initializer(nullptr, i);
+                array_needs_purging &= tracker.needs_purging(def->get_name(), {i});
             }
             if(array_needs_purging){
                 def->set_array_initializer({});
@@ -136,7 +135,7 @@ std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::share
         if(initializer->node_type == hl_ast_node_type_operand){
             std::string constant_name = std::static_pointer_cast<hl_ast_operand>(initializer)->get_name();
             if(tracker.is_excluded(constant_name)){
-                element->set_scalar_initializer(tracker.get_constant(constant_name, instr_idx));
+                element->set_scalar_initializer(tracker.get_constant(constant_name, instr_idx, {0}));
             }
         } else {
             std::shared_ptr<hl_ast_node> new_init = propagate_constant(initializer, instr_idx);
@@ -162,20 +161,21 @@ std::shared_ptr<hl_ast_operand> constant_propagation::propagate_constant(std::sh
             }
             element->set_array_index(new_idx);
             ret_operand = element;
-            if(element->get_array_index().size() == 1){
-                auto idx = std::static_pointer_cast<hl_ast_operand>(element->get_array_index()[0]);
-                if(idx->get_variable()->is_constant()){
-                    if(tracker.is_constant(element->get_name(), instr_idx,idx->get_int_value())){
-                        std::shared_ptr<hl_ast_operand> new_const = tracker.get_constant(element->get_name(), instr_idx,idx->get_int_value());
-                        new_const->set_name(element->get_name());
-                        ret_operand =  new_const;
-                    }
+            std::vector<int> indices = get_index_array(element);
+            if(!indices.empty()){
+                if(tracker.is_constant(element->get_name(), instr_idx, indices)){
+
+                    std::shared_ptr<hl_ast_operand> new_const = tracker.get_constant(element->get_name(), instr_idx,
+                                                                                     indices);
+                    new_const->set_name(element->get_name());
+                    ret_operand =  new_const;
                 }
             }
 
+
         } else{
-            if(tracker.is_constant(element->get_name(), instr_idx)){
-                std::shared_ptr<hl_ast_operand> new_const = tracker.get_constant(element->get_name(), instr_idx);
+            if(tracker.is_constant(element->get_name(), instr_idx , {0})){
+                std::shared_ptr<hl_ast_operand> new_const = tracker.get_constant(element->get_name(), instr_idx, {0});
                 new_const->set_name(element->get_name());
                 ret_operand =  new_const;
             } else{
@@ -213,7 +213,7 @@ bool constant_propagation::map_constants(const std::shared_ptr<hl_definition_nod
         if(element->is_scalar()){
             std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(element->get_scalar_initializer());
             if (op->get_type() == var_type_float_const || op->get_type() == var_type_int_const){
-                tracker.add_constant(element->get_name(), op, instr_idx);
+                tracker.add_constant(element->get_name(), op, instr_idx, {0});
                 return true;
             }
         } else {
@@ -221,7 +221,7 @@ bool constant_propagation::map_constants(const std::shared_ptr<hl_definition_nod
             for(int i = 0; i<array_init.size(); i++){
                 std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(array_init[i]);
                 if (op->get_type() == var_type_float_const || op->get_type() == var_type_int_const){
-                    tracker.add_constant(element->get_name(), op, instr_idx, i);
+                    tracker.add_constant(element->get_name(), op, instr_idx, {i});
                 }
             }
             return true;
@@ -243,32 +243,52 @@ bool constant_propagation::map_constants(const std::shared_ptr<hl_expression_nod
         ){
             if(element->get_rhs()->node_type == hl_ast_node_type_operand){
                 std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(element->get_rhs());
-                if(op->get_type() == var_type_float_const || op->get_type() == var_type_int_const){
-                    std::shared_ptr<hl_ast_operand> target = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
-                    if(!target->is_scalar()){
-                        auto arr_idx = target->get_array_index();
-                        if(arr_idx[0]->node_type == hl_ast_node_type_operand){
-                            auto idx_op = std::static_pointer_cast<hl_ast_operand>(arr_idx[0]);
-                            if(idx_op->get_variable()->is_constant()){
-                                tracker.add_constant(target->get_name(), op, instr_idx, idx_op->get_int_value());
-                            }
-                        }
-
-                    } else {
-                        tracker.add_constant(target->get_name(), op, instr_idx);
-                    }
-                    auto var_class = lhs->get_variable()->get_variable_class();
-                    if( var_class!= variable_memory_type && var_class != variable_output_type){
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
+                std::shared_ptr<hl_ast_operand> target = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
+                return map_constants(op, target, instr_idx);
             }
         }
     }
     return false;
 }
+
+
+bool constant_propagation::map_constants(const std::shared_ptr<hl_ast_operand> &op, const std::shared_ptr<hl_ast_operand> &target, int instr_idx) {
+    if(op->get_type() == var_type_float_const || op->get_type() == var_type_int_const){
+        if(target->is_scalar()){
+            tracker.add_constant(target->get_name(), op, instr_idx, {0});
+        } else {
+            std::vector<int> indices = get_index_array(target);
+            if(!indices.empty()){
+                tracker.add_constant(target->get_name(), op, instr_idx, indices);
+            }
+        }
+        auto var_class = target->get_variable()->get_variable_class();
+        if( var_class!= variable_memory_type && var_class != variable_output_type){
+            return true;
+        } else {
+            return false;
+        }
+    }
+    return false;
+}
+
+std::vector<int> constant_propagation::get_index_array(const std::shared_ptr<hl_ast_operand> &target) {
+    std::vector<int> indices = {};
+    for(auto &item: target->get_array_index()){
+        if(item->node_type == hl_ast_node_type_operand){
+            if(std::static_pointer_cast<hl_ast_operand>(item)->get_variable()->is_constant()){
+                indices.push_back(std::static_pointer_cast<hl_ast_operand>(item)->get_int_value());
+            }
+        }
+    }
+    if(indices.size() == target->get_array_index().size()){
+        return indices;
+    } else {
+        return {};
+    }
+}
+
+
 
 void constant_propagation::analyze_assignment(const std::shared_ptr<hl_expression_node> &element, int instr_idx) {
     std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
@@ -280,11 +300,12 @@ void constant_propagation::analyze_assignment(const std::shared_ptr<hl_expressio
             } else{
                 auto op = std::static_pointer_cast<hl_ast_operand>(lhs->get_array_index()[0]);
                 if(op->get_variable()->is_constant()){
-                    tracker.terminate_constant_range(lhs->get_name(), instr_idx+1, op->get_int_value());
+                    //TODO: HANDLE MULTIDIMENTIONAL INDICES
+                    tracker.terminate_constant_range(lhs->get_name(), instr_idx+1, {op->get_int_value()});
                 }
             }
         } else {
-            tracker.terminate_constant_range(lhs->get_name(), instr_idx+1);
+            tracker.terminate_constant_range(lhs->get_name(), instr_idx+1, {0});
         }
     }
 }
@@ -297,9 +318,10 @@ bool constant_propagation::needs_termination(const std::shared_ptr<hl_expression
 
     if(dest->get_variable()->get_type() == var_type_array){
         int array_idx = std::static_pointer_cast<hl_ast_operand>(dest->get_array_index()[0])->get_int_value();
-        analyze_rhs = tracker.is_constant(dest->get_name(), instr_idx, array_idx);
+        //TODO: HANDLE MULTIDIMENTIONAL INDICES
+        analyze_rhs = tracker.is_constant(dest->get_name(), instr_idx, {array_idx});
     } else {
-        analyze_rhs = tracker.is_constant(dest->get_name(), instr_idx);
+        analyze_rhs = tracker.is_constant(dest->get_name(), instr_idx, {0});
     }
 
     if(analyze_rhs){
@@ -355,7 +377,7 @@ constant_propagation::purge_bound_registers(std::shared_ptr<hl_definition_node> 
 std::shared_ptr<hl_ast_node>
 constant_propagation::purge_bound_registers(std::shared_ptr<hl_ast_operand> element) {
     if(element->get_variable()->is_constant()){
-        if(tracker.needs_purging(element->get_name())){
+        if(tracker.needs_purging(element->get_name(), {0})){
             element->get_variable()->set_bound_reg_array({-1});
         }
     }
