@@ -44,6 +44,7 @@ array_initialization_substitution::process_node_by_type(const std::shared_ptr<hl
                     auto init_expr = build_initialization_expr(def, i);
 
                     auto lhs = std::static_pointer_cast<hl_ast_operand>(init_expr->get_lhs());
+                    lhs->get_variable()->set_array_shape(def->get_variable()->get_array_shape());
                     lhs->get_variable()->set_bound_reg_array(def->get_variable()->get_bound_reg_array());
                     lhs->get_variable()->set_variable_class(def->get_variable()->get_variable_class());
                     lhs->get_variable()->set_type(def->get_variable()->get_type());

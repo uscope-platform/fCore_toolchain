@@ -21,9 +21,10 @@
 #include <unordered_set>
 
 #include "data_structures/constants_tracker.h"
-#include "passes/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
+#include "passes/pass_base.hpp"
 #include "tools/variable_map.hpp"
+#include "tools/array_linearizer.hpp"
 
 class constant_propagation :public pass_base<hl_ast_node> {
 public:

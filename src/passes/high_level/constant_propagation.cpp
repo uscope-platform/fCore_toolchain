@@ -188,7 +188,16 @@ std::shared_ptr<hl_ast_operand> constant_propagation::propagate_constant(std::sh
     }
 
     if(element->get_variable()->get_bound_reg() != -1){
-        ret_operand->get_variable()->set_bound_reg(element->get_variable()->get_bound_reg());
+        if(element->is_scalar()){
+            ret_operand->get_variable()->set_bound_reg(element->get_variable()->get_bound_reg());
+        } else {
+            std::vector<int> indices = get_index_array(element);
+            if(!indices.empty()){
+                int flat_idx = linearize_array(element->get_variable()->get_array_shape(), indices);
+                ret_operand->get_variable()->set_bound_reg(element->get_variable()->get_bound_reg(flat_idx));
+            }
+        }
+
     }
     return ret_operand;
 }

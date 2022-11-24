@@ -21,16 +21,21 @@ int add (int a, int b){
 
 
 int main(){
-#pragma input(h, r1);
-    int h[6];
 
-#pragma input(k, r2)
+    int h[4];
+    #pragma input(h, {r1, r2, r3, r4});
+
     int k[4];
+    #pragma input(k, {r5, r6, r7, r8});
 
-#pragma output(j, r15);
+    int b[4];
+    #pragma output(b, {r9, r10, r11, r12});
+
+
     int j;
+    #pragma output(j, r15);
 
-    for(int i = 0+5; i+1<8; ++i){
+    for(int i = 0+2; i+1<5; ++i){
         if(3<5){
             j = k[i] + h[i];
             b[i] = add(h[i], k[i]);
