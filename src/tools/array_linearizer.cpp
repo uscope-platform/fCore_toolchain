@@ -28,3 +28,22 @@ unsigned int linearize_array(std::vector<int> shape, std::vector<int> indices){
     }
     return linearized_idx;
 }
+
+
+
+std::vector<int> array_delinearize(const std::vector<int>& shape, int index){
+    std::vector<int> multidim_index;
+
+    std::vector<int>strides;
+    for(int i = 1; i<shape.size(); ++i){
+        strides.push_back(std::accumulate(shape.begin()+i, shape.end(), 1,  std::multiplies<>()));
+    }
+
+    multidim_index.push_back(index/strides[0]);
+    for(int i = 1; i<strides.size(); ++i){
+        multidim_index.push_back(index/strides[i]%shape[i]);
+    }
+    multidim_index.push_back(index%shape.back());
+
+    return multidim_index;
+}

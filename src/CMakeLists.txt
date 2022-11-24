@@ -54,6 +54,7 @@ set(FCORE_CC_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/dead_load_elimination.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/constant_folding_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/constant_propagation.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/array_initialization_substitution.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/hl_pass_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/hl_variable_mapping.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/fuction_mangling_pass.cpp

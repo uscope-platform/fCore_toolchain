@@ -367,7 +367,7 @@ TEST(EndToEndC, essential_variable_initialization) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0xE6, 0x3F800000, 0xcc8e9, 0xec8e1, 0xa00e1, 0xc};
+    std::vector<uint32_t> gold_standard = {0x26, 0x3F800000, 0xcc829, 0xec821, 0xa00e1, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
@@ -384,7 +384,7 @@ TEST(EndToEndC, test_constant_propagation) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x226, 0x3F800000,0x246, 0x3F800000, 0x222a21, 0x242a41, 0xc};
+    std::vector<uint32_t> gold_standard = {0x26,0x3F800000, 0x222821, 0x242821, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 

@@ -43,6 +43,7 @@
 #include "passes/high_level/contiguous_array_identification.hpp"
 #include "passes/high_level/early_register_allocation_pass.hpp"
 #include "passes/high_level/array_index_lowering.hpp"
+#include "passes/high_level/array_initialization_substitution.h"
 
 #include "tools/variable_map.hpp"
 #include "data_structures/high_level_ast/hl_ast_node.hpp"
@@ -86,9 +87,10 @@ static hl_pass_manager create_hl_pass_manager(
     manager.add_morphing_pass(std::make_shared<inline_constant_extraction>()); // pass #16
     manager.add_morphing_pass(std::make_shared<array_index_lowering>()); // pass #17
     manager.add_morphing_pass(std::make_shared<dead_load_elimination>()); // pass #18
+    manager.add_morphing_pass(std::make_shared<array_initialization_substitution>()); // pass #19
 
     if(order.empty()){
-        manager.set_pass_order({1,2,3,4,5,6,7,8,9,10,11,12,13,14,-1,15,16,18});
+        manager.set_pass_order({1,2,3,4,5,6,7,8,9,19,10,11,12,13,14,-1,15,16,18});
     } else {
         manager.set_pass_order(order);
     }

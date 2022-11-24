@@ -32,6 +32,17 @@ public:
 };
 
 
+class multidimentional_constants_map{
+public:
+    void add(const int& i, std::vector<constant> c);
+    void push_back(const int& i, const constant& c);
+    std::vector<constant> get(const int& i);
+    bool contains(const int& i);
+private:
+    std::string stringify_index(const int& v);
+    std::unordered_map<std::string, std::vector<constant>> inner_map;
+};
+
 class constants_tracker {
 public:
     void add_constant(const std::string& s, std::shared_ptr<hl_ast_operand> op, int instr_idx);
@@ -43,16 +54,22 @@ public:
     bool is_constant(const std::string& s, int instr_idx, int array_idx);
     std::shared_ptr<hl_ast_operand> get_constant(const std::string& s, int instr_idx);
     std::shared_ptr<hl_ast_operand> get_constant(const std::string& s, int instr_idx, int array_idx);
-    void add_exclusion(const std::string& s);
+    bool needs_purging(const std::string& s);
+    bool needs_purging(const std::string& s, int array_idx);
     bool is_excluded(const std::string& s);
     void clear();
 
 private:
 
-
     std::unordered_map<std::string, std::unordered_map<int, std::vector<constant>>> constants_map;
+    std::unordered_map<std::string, std::unordered_map<int, bool>> purge_map;
     std::unordered_set<std::string> excluded_constants;
 };
+
+
+
+
+
 
 
 #endif //FCORE_TOOLCHAIN_CONSTANTS_TRACKER_H
