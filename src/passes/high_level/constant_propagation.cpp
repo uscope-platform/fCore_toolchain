@@ -298,10 +298,9 @@ void constant_propagation::analyze_assignment(const std::shared_ptr<hl_expressio
             if(lhs->get_array_index()[0]->node_type != hl_ast_node_type_operand){
                 tracker.terminate_all_constant_ranges(lhs->get_name(), instr_idx+1);
             } else{
-                auto op = std::static_pointer_cast<hl_ast_operand>(lhs->get_array_index()[0]);
-                if(op->get_variable()->is_constant()){
-                    //TODO: HANDLE MULTIDIMENTIONAL INDICES
-                    tracker.terminate_constant_range(lhs->get_name(), instr_idx+1, {op->get_int_value()});
+                std::vector<int> indices = get_index_array(lhs);
+                if(!indices.empty()){
+                    tracker.terminate_constant_range(lhs->get_name(), instr_idx+1, indices);
                 }
             }
         } else {
@@ -317,9 +316,13 @@ bool constant_propagation::needs_termination(const std::shared_ptr<hl_expression
     auto dest = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
 
     if(dest->get_variable()->get_type() == var_type_array){
-        int array_idx = std::static_pointer_cast<hl_ast_operand>(dest->get_array_index()[0])->get_int_value();
-        //TODO: HANDLE MULTIDIMENTIONAL INDICES
-        analyze_rhs = tracker.is_constant(dest->get_name(), instr_idx, {array_idx});
+        std::vector<int> indices = get_index_array(dest);
+        if(!indices.empty()){
+            analyze_rhs = tracker.is_constant(dest->get_name(), instr_idx, {indices});
+        } else {
+            analyze_rhs = false;
+        }
+
     } else {
         analyze_rhs = tracker.is_constant(dest->get_name(), instr_idx, {0});
     }
