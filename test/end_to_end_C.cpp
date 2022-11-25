@@ -384,7 +384,7 @@ TEST(EndToEndC, test_constant_propagation) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x26,0x3F800000, 0x222821, 0x242821, 0xc};
+    std::vector<uint32_t> gold_standard = {0x226,0x3F800000, 0x222a21, 0x242a41, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
@@ -474,7 +474,7 @@ TEST(EndToEndC, loop_index_expression) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x7b9001, 0x7b9fa1, 0xc};
+    std::vector<uint32_t> gold_standard = {0x7a6, 0x0, 0x7b97a1, 0x7b9fa1, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
@@ -492,7 +492,7 @@ TEST(EndToEndC, loop_index_expression_multidim) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x7b8801, 0x7bafa1, 0xc};
+    std::vector<uint32_t> gold_standard = {0x7a6, 0x0, 0x7b8fa1, 0x7bafa1, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 

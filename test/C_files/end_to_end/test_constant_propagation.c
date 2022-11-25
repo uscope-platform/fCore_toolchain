@@ -13,6 +13,7 @@
 // limitations under the License.05/07/2021.
 
 
+
 int main(){
     int a;
     #pragma input(a, r5)

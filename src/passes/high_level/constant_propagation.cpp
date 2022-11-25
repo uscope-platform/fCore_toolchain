@@ -167,7 +167,12 @@ std::shared_ptr<hl_ast_operand> constant_propagation::propagate_constant(std::sh
 
                     std::shared_ptr<hl_ast_operand> new_const = tracker.get_constant(element->get_name(), instr_idx,
                                                                                      indices);
-                    new_const->set_name(element->get_name());
+                    new_const->get_variable()->set_variable_class(element->get_variable()->get_variable_class());
+                    std::string var_name = element->get_name();
+                    for(auto &item:indices){
+                        var_name += "_" + std::to_string(item);
+                    }
+                    new_const->set_name(var_name);
                     ret_operand =  new_const;
                 }
             }
@@ -177,6 +182,7 @@ std::shared_ptr<hl_ast_operand> constant_propagation::propagate_constant(std::sh
             if(tracker.is_constant(element->get_name(), instr_idx , {0})){
                 std::shared_ptr<hl_ast_operand> new_const = tracker.get_constant(element->get_name(), instr_idx, {0});
                 new_const->set_name(element->get_name());
+                new_const->get_variable()->set_variable_class(element->get_variable()->get_variable_class());
                 ret_operand =  new_const;
             } else{
                 ret_operand =  element;
