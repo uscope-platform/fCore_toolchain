@@ -43,14 +43,15 @@ void rest_handler::handle_post(const web::http::http_request& message) {
 
 web::http::status_code rest_handler::handle_compile_request(const web::json::value &prog, std::string &error) {
 
-    auto working_file = "/tmp/fcore_dev_server_wf";
-    std::ofstream ofs(working_file);
-    ofs << prog.at("content").as_string();
-    ofs.flush();
+
+    std::string working_file = prog.at("path").as_string();
+    std::string current_path = std::filesystem::current_path();
+    chdir(std::filesystem::path(working_file).parent_path().c_str());
     std::vector<std::string> include_files = {""};
     fcore_cc cc_engine(working_file, include_files, false, 2);
     error = cc_engine.get_errors();
     dump = cc_engine.get_dump();
+    chdir(current_path.c_str());
     if(error.empty()){
         return web::http::status_codes::OK;
     }else{
