@@ -34,7 +34,6 @@
 #include "passes/high_level/loop_unrolling_pass.hpp"
 #include "passes/high_level/array_scalarization_pass.hpp"
 #include "passes/high_level/code_block_inlining_pass.hpp"
-#include "passes/high_level/array_initialization_propagation_pass.h"
 #include "passes/high_level/operating_assignment_implementation_pass.hpp"
 #include "passes/high_level/dead_load_elimination.hpp"
 #include "passes/high_level/array_index_lowering.hpp"
@@ -71,8 +70,7 @@ static hl_pass_manager create_hl_pass_manager(
     manager.add_morphing_pass(std::make_shared<code_block_inlining_pass>()); // pass #8
 
     manager.add_morphing_pass(std::make_shared<loop_unrolling_pass>()); // pass #9
-
-    manager.add_morphing_pass(std::make_shared<array_initialization_propagation_pass>()); // pass #10
+    manager.add_morphing_pass(std::make_shared<array_initialization_substitution>()); // pass #10
     manager.add_morphing_pass(std::make_shared<early_register_allocation_pass>(io_map, bindings_map)); // pass #11
     manager.add_morphing_pass(std::make_shared<conditional_implementation_pass>()); // pass #12
     manager.add_morphing_pass(std::make_shared<normalization_pass>()); // pass #13
@@ -87,10 +85,10 @@ static hl_pass_manager create_hl_pass_manager(
     manager.add_morphing_pass(std::make_shared<inline_constant_extraction>()); // pass #16
     manager.add_morphing_pass(std::make_shared<array_index_lowering>()); // pass #17
     manager.add_morphing_pass(std::make_shared<dead_load_elimination>()); // pass #18
-    manager.add_morphing_pass(std::make_shared<array_initialization_substitution>()); // pass #19
+
 
     if(order.empty()){
-        manager.set_pass_order({1,2,3,4,5,6,7,8,9,19,10,11,12,13,14,-1,15,16,18});
+        manager.set_pass_order({1,2,3,4,5,6,7,8,9,10,11,12,13,14,-1,16,18,15});
     } else {
         manager.set_pass_order(order);
     }

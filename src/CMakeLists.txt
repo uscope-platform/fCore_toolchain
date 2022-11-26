@@ -62,7 +62,6 @@ set(FCORE_CC_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/inlined_function_elimination.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/inline_constant_extraction.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/intrinsics_implementation_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/array_initialization_propagation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/function_inlining_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/division_implementation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/code_block_inlining_pass.cpp
