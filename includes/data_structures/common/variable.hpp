@@ -98,6 +98,8 @@ public:
     std::vector<int> get_array_shape() const {return array_shape;};
     void set_array_shape(std::vector<int> as) {array_shape = std::move(as);};
 
+    std::vector<int> get_array_index() const {return array_index;};
+    void set_array_index(std::vector<int> ai) {array_index = std::move(ai);};
 
     nlohmann::json dump();
 
