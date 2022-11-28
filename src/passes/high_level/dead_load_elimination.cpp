@@ -93,12 +93,12 @@ void dead_load_elimination::search_usages(std::shared_ptr<hl_expression_node> el
     if(element->is_immediate()){
         return;
     }
-    if(!element->is_unary()){
+    if(!element->is_unary() && element->get_type() != expr_assign){
         if(element->get_lhs()->node_type == hl_ast_node_type_operand){
             search_usages(std::static_pointer_cast<hl_ast_operand>(element->get_lhs()));
         }
-
     }
+
     if(element->get_rhs()->node_type == hl_ast_node_type_operand){
         search_usages(std::static_pointer_cast<hl_ast_operand>(element->get_rhs()));
     }
@@ -106,7 +106,7 @@ void dead_load_elimination::search_usages(std::shared_ptr<hl_expression_node> el
 
 
 void dead_load_elimination::search_usages(std::shared_ptr<hl_ast_operand> element) {
-    if(last_loads_map.contains(element->get_identifier())){
+    if(last_loads_map.contains(element->get_identifier()) && !element->get_variable()->is_constant()){
         if(last_loads_map[element->get_identifier()].first_usage == -1){
             last_loads_map[element->get_identifier()].first_usage = idx;
         }
@@ -137,7 +137,7 @@ std::shared_ptr<hl_ast_node> dead_load_elimination::purge_dead_loads(std::shared
             std::string name = std::static_pointer_cast<hl_ast_operand>(node->get_lhs())->get_identifier();
 
             auto l = last_loads_map[name];
-            if(l.last_assignment==idx || (l.first_usage != -1 && (l.first_usage<l.last_assignment))){
+            if(l.last_assignment == idx || (l.first_usage != -1 && (l.first_usage < l.last_assignment))){
                 return element;
             }
         } else {
