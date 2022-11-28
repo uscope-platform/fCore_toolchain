@@ -81,7 +81,7 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
 
         std::unordered_map<std::string, std::shared_ptr<variable>> iom;
         stream_pass_manager sman(iom, dump_ast_level);
-        sman.set_enabled_passes({false, true, true, true, false}); // do not mess with constants in assembly
+        sman.set_enabled_passes({false, false, true, true, true, false}); // do not mess with constants in assembly
         program_stream = sman.process_stream(program_stream);
 
         if(dump_ast_level>0) dump["stream"] = sman.get_dump();

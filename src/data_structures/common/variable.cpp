@@ -193,3 +193,15 @@ nlohmann::json variable::dump() {
     ret_val["array_index"] = array_index;
     return ret_val;
 }
+
+std::string variable::get_identifier() {
+    std::string ret = name;
+    for(auto &idx:array_index){
+        ret += "_" + std::to_string(idx);
+    }
+    return ret;
+}
+
+int variable::get_linear_index() {
+    return linearize_array(array_shape, array_index);
+}

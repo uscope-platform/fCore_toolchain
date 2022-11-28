@@ -23,8 +23,9 @@ set(FCORE_COMMON_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/ll_pass_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/loop_implementation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/pseudo_instructions_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/instruction_counting_pass.cpp#
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/instruction_counting_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/load_intercalation_pass.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/io_constant_tracking.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/stream_pass_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/variable_lifetime_mapping.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/variable_mapping.cpp

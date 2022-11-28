@@ -24,6 +24,7 @@
 #include "tools/variable_map.hpp"
 #include "tools/register_map.hpp"
 #include "data_structures/common/memory_tracker.hpp"
+#include "tools/array_linearizer.hpp"
 
 class register_allocation : public stream_pass_base{
 public:

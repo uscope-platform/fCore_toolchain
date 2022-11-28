@@ -29,6 +29,7 @@ public:
     // VARIABLE NAME
     void set_name(const std::string &name);
     std::string get_name() { return inner_variable->get_name();};
+    std::string get_identifier() { return inner_variable->get_identifier();};
     // INTEGER IMMEDIATE VALUE
     void set_immediate(const int &v);
     [[nodiscard]] int get_int_value() const;

@@ -43,8 +43,6 @@ std::shared_ptr<hl_ast_node> dead_load_elimination::process_global(std::shared_p
 }
 
 
-// ORA COME ORA TENGO SEMPLICEMENTE L'ULTIMO ASSEGNAMENTO, GLI ALTRI VENGONO TOLTI, TUTTAVIA BISOGNA ANCHE GUARDARE SE
-// TRA IL PRIMO E L'ULTIMO ASSEGNAMENTO IL REGISTRO E' STATO USATO O NO
 void dead_load_elimination::search_constants(std::shared_ptr<hl_ast_node> element) {
     if(element->node_type == hl_ast_node_type_definition) {
         std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(element);
@@ -58,10 +56,10 @@ void dead_load_elimination::search_constants(std::shared_ptr<hl_ast_node> elemen
         std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
         if(node->get_type() == expr_assign){
             std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(node->get_lhs());
-            if(last_loads_map.contains(op->get_name())){
-                last_loads_map[op->get_name()].last_assignment = idx;
+            if(last_loads_map.contains(op->get_identifier())){
+                last_loads_map[op->get_identifier()].last_assignment = idx;
             } else{
-                last_loads_map[op->get_name()] = load_t({idx, -1});
+                last_loads_map[op->get_identifier()] = load_t({idx, -1});
             }
         }
     }
@@ -108,9 +106,9 @@ void dead_load_elimination::search_usages(std::shared_ptr<hl_expression_node> el
 
 
 void dead_load_elimination::search_usages(std::shared_ptr<hl_ast_operand> element) {
-    if(last_loads_map.contains(element->get_name())){
-        if(last_loads_map[element->get_name()].first_usage == -1){
-            last_loads_map[element->get_name()].first_usage = idx;
+    if(last_loads_map.contains(element->get_identifier())){
+        if(last_loads_map[element->get_identifier()].first_usage == -1){
+            last_loads_map[element->get_identifier()].first_usage = idx;
         }
     }
 }
@@ -136,10 +134,10 @@ std::shared_ptr<hl_ast_node> dead_load_elimination::purge_dead_loads(std::shared
             if(node->get_rhs()->node_type != hl_ast_node_type_operand){
                 return element;
             }
-            std::string name = std::static_pointer_cast<hl_ast_operand>(node->get_lhs())->get_name();
+            std::string name = std::static_pointer_cast<hl_ast_operand>(node->get_lhs())->get_identifier();
 
             auto l = last_loads_map[name];
-            if(l.last_assignment==idx || l.first_usage != -1 && (l.first_usage<l.last_assignment)){
+            if(l.last_assignment==idx || (l.first_usage != -1 && (l.first_usage<l.last_assignment))){
                 return element;
             }
         } else {

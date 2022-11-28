@@ -38,13 +38,15 @@ stream_pass_manager::constructs_pass_manager(std::unordered_map<std::string, std
     iom_map = iom;
     dump_ast_level = dal;
     std::shared_ptr<variable_map> var_map = std::make_shared<variable_map>();
-    passes.push_back(std::make_shared<constant_merging>());
+    auto  io_assignment_map = std::make_shared<std::unordered_map<std::string, std::pair<int, int>>>();
+    passes.push_back(std::make_shared<io_constant_tracking>(io_assignment_map));
+    passes.push_back(std::make_shared<constant_merging>(io_assignment_map));
     passes.push_back(std::make_shared<variable_mapping>(var_map));
     passes.push_back(std::make_shared<variable_lifetime_mapping>(var_map));
     passes.push_back(std::make_shared<register_allocation>(var_map, iom_map, bm));
     passes.push_back(std::make_shared<zero_assignment_removal_pass>());
     passes.push_back(std::make_shared<bound_register_mapping_pass>());
-    enabled_passes = {true, true, true, true, true, false};
+    enabled_passes = {true, true, true, true, true, true, false};
 
 }
 

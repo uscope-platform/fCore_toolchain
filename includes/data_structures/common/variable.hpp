@@ -23,6 +23,7 @@
 #include <iostream>
 
 #include <nlohmann/json.hpp>
+#include "tools/array_linearizer.hpp"
 
 typedef enum {
     variable_input_type = 0,
@@ -46,6 +47,9 @@ public:
     variable(std::string n, float value);
     variable(std::string n, int value);
 
+    std::string get_identifier();
+
+    int get_linear_index();
     float get_const_f();
     int get_const_i();
 

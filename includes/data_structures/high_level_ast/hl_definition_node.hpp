@@ -29,6 +29,7 @@ public:
     void set_name(std::string name);
     std::string get_name(){ return name;};
     c_types_t get_type(){ return type;};
+
     bool is_initialized();
     bool is_scalar();
     void set_constant(bool c);

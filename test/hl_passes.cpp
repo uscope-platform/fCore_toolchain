@@ -605,7 +605,7 @@ TEST(HlPassesTest, test_matrix_scalarization) {
     parser.parse();
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,9,18}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,9,16}, 0);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -637,14 +637,18 @@ TEST(HlPassesTest, test_matrix_scalarization) {
 
     std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(expr_assign);
     // FIRST EXPRESSION LHS
-    var = std::make_shared<variable>("_fcmglr_flattened_array_a_0_1");
+    var = std::make_shared<variable>("a");
+    var->set_type(var_type_array);
     var->set_array_shape({10,2});
+    var->set_array_index({0,1});
     std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
     ex->set_lhs(op);
     // FIRST EXPRESSION RHS
     std::shared_ptr<hl_expression_node> ex_inner = std::make_shared<hl_expression_node>(expr_mult);
-    var = std::make_shared<variable>("_fcmglr_flattened_array_b_0");
+    var = std::make_shared<variable>("b");
+    var->set_type(var_type_array);
     var->set_array_shape({3});
+    var->set_array_index({0});
     op = std::make_shared<hl_ast_operand>(var);
     ex_inner->set_lhs(op);
     var = std::make_shared<variable>("constant", 2);
@@ -655,14 +659,18 @@ TEST(HlPassesTest, test_matrix_scalarization) {
 
     ex = std::make_shared<hl_expression_node>(expr_assign);
     // SECOND EXPRESSION LHS
-    var = std::make_shared<variable>("_fcmglr_flattened_array_b_2");
+    var = std::make_shared<variable>("b");
+    var->set_type(var_type_array);
     var->set_array_shape({3});
+    var->set_array_index({2});
     op = std::make_shared<hl_ast_operand>(var);
     ex->set_lhs(op);
     // SECOND EXPRESSION RHS
     ex_inner = std::make_shared<hl_expression_node>(expr_mult);
-    var = std::make_shared<variable>("_fcmglr_flattened_array_a_1_1");
+    var = std::make_shared<variable>("a");
+    var->set_type(var_type_array);
     var->set_array_shape({10,2});
+    var->set_array_index({1,1});
     op = std::make_shared<hl_ast_operand>(var);
     ex_inner->set_lhs(op);
     var = std::make_shared<variable>("constant", 2);
@@ -849,7 +857,7 @@ TEST(HlPassesTest, dead_load_elimination) {
     input_root->add_content(exp);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{16}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{17}, 0);
     manager.run_morphing_passes(input_root);
 
 

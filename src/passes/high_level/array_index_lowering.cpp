@@ -29,6 +29,7 @@ std::shared_ptr<hl_ast_node> array_index_lowering::process_leaf(std::shared_ptr<
                 array_idx.push_back(idx_op->get_int_value());
             }
             op->get_variable()->set_array_index(array_idx);
+            op->set_array_index({});
         }
     }
     return op;
