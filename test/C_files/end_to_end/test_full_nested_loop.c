@@ -23,12 +23,12 @@ int add (int a, int b){
 int main(){
     int h[4];
 
-#pragma input(a, r2)
+    int h[4];
     int a[4];
-    int b[4];
+    int c[4];
 
     for(int i = 2; i<4; ++i)
         for(int x = 0; x<2; ++x){
-            b[i] = h[i] + a[x];
+            c[i] = h[i] + a[x];
         }
 }

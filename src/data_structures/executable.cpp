@@ -26,7 +26,7 @@ void executable::add_code_section(std::vector<uint32_t> code) {
     sections["code"] = std::move(code);
 }
 
-void executable::add_io_mapping(std::vector<std::pair<uint16_t, uint16_t>> mapping) {
+void executable::add_io_mapping(std::set<std::pair<uint16_t, uint16_t>> mapping) {
     for(auto pair:mapping){
         io_mapping_present = true;
         uint32_t raw_mapping = pair.first + (pair.second<<16);

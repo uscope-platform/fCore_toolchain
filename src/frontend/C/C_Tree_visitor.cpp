@@ -247,8 +247,10 @@ void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExp
         if(dma_specs.contains(var_name)){
             var->set_variable_class(dma_specs[var_name]);
         }
+
         operand = std::make_shared<hl_ast_operand>(var);
         operand->get_variable()->set_array_shape(array_shapes_map[var_name]);
+
 
 
     } else if(ctx->constant() != nullptr){

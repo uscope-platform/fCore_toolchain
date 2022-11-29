@@ -17,6 +17,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <set>
 #include <unordered_map>
 #include <string>
 #include <utility>
@@ -25,7 +26,7 @@ class executable {
 public:
     executable();
     void add_code_section(std::vector<uint32_t> code);
-    void add_io_mapping(std::vector<std::pair<uint16_t, uint16_t>>);
+    void add_io_mapping(std::set<std::pair<uint16_t, uint16_t>>);
     std::vector<uint32_t> get_executable();
     std::vector<uint32_t> get_code();
     void generate_metadata();
