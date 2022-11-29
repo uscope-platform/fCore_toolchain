@@ -16,10 +16,9 @@
 int main(){
 
     float v_cells;
-    #pragma input(v_cells, r59)
 
     float v_arms = 0;
-    #pragma output(v_arms, {r60, r61})
+
 
 
     for(int i = 0; i<2; ++i){

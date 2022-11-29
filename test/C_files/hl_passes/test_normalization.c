@@ -17,7 +17,6 @@
 
 int main(){
 
-    #pragma output (a, r10)
     int a = 4.0*5.0+6.0;
     // b = 1.0*2.0+7.0;
 }

@@ -17,12 +17,12 @@
 #define FCORE_TOOLCHAIN_EMULATOR_H
 
 #include <utility>
+#include <spdlog/spdlog.h>
 
 #include "efi_implementations/efi_dispatcher.h"
 #include "data_structures/instruction_stream.hpp"
 #include "floating_point_v7_1_bitacc_cmodel.h"
 #include "fCore_isa.hpp"
-#include "spdlog/spdlog.h"
 
 
 typedef enum {

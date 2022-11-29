@@ -16,9 +16,6 @@
 
 int main(int arg1, float arg2){
 
-#pragma input(a, r1)
     int a;
-
-#pragma output (test, r10);
     int test = a;
 }

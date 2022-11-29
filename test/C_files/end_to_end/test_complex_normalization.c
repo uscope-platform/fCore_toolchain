@@ -16,15 +16,10 @@
 
 int main(int arg1, float arg2){
 
-#pragma input(a, r1)
     int a;
-
-#pragma input(b, r2)
     int b;
-
-
-#pragma output (test, r10);
     int test;
+
     test += a*17.0*(b+5.0);
 
 }

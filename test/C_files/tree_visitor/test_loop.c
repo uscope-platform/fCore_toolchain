@@ -15,13 +15,9 @@
 //
 
 int main(){
-    #pragma input(h, r1);
+
     int h;
-
-    #pragma input(a, r2)
     int a;
-
-    #pragma output(j, r15);
     int j;
 
     for(int i = 0; i<4; ++i){

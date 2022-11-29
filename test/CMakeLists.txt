@@ -155,4 +155,5 @@ configure_file(emulator_files/test_interconnect_spec.json ${EMU_TEST_FILES_DIR} 
 
 set(EMU_TEST_SCHEMAS_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/emu/schemas)
 make_directory(${EMU_TEST_SCHEMAS_FILES_DIR})
-configure_file(schemas/valid_schema.json ${EMU_TEST_SCHEMAS_FILES_DIR} COPYONLY)
+configure_file(schemas/valid_emulator_schema.json ${EMU_TEST_SCHEMAS_FILES_DIR} COPYONLY)
+configure_file(schemas/valid_compiler_schema.json ${EMU_TEST_SCHEMAS_FILES_DIR} COPYONLY)

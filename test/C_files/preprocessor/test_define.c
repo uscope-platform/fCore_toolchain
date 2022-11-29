@@ -18,6 +18,5 @@
 
 
 int main(){
-    #pragma input(a, r19);
     int a = TEST;
 }

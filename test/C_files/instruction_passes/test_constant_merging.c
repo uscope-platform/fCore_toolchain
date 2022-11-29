@@ -17,9 +17,9 @@
 int main(){
 
     float a[2];
-    #pragma input(a, {r10, r11})
+
     float b[2];
-    #pragma output(b, {r12, r13})
+
     float c = 45.0;
     for(int i =0; i<2; ++i){
         b[i] = a[i]*c;

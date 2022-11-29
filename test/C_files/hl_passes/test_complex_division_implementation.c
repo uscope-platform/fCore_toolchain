@@ -19,7 +19,6 @@ int main(){
 
 
     float a;
-    #pragma input(a, r5)
 
     float b = 52.6;
     int c = fti(a/b);

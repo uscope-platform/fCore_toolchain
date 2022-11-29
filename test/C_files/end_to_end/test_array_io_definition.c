@@ -17,10 +17,7 @@
 
 
 int main(){
-    #pragma input(a, {r4,r7});
-    #pragma output(b, r3);
-    #pragma output(c, {r8,r9});
-    #pragma memory(d, {r10,r11});
+
     float a[2];
     float b = a[0] + a[1];
     float c[2];

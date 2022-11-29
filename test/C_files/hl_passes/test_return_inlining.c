@@ -25,8 +25,6 @@ float inlining_target(float num_1, float num_2){
 int main(){
 
     float test_in;
-    #pragma input(test_in, r25)
     float ret = inlining_target(7.0, test_in);
-    #pragma output(ret, r12)
     return 0;
 }

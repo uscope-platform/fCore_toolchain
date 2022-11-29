@@ -23,15 +23,10 @@ int add (int a, int b){
 int main(){
 
     int h[4];
-    #pragma input(h, {r1, r2, r3, r4});
-
     int k[4];
     #pragma input(k, {r5, r6, r7, r8});
 
     int b[4];
-    #pragma output(b, {r9, r10, r11, r12});
-
-
     int j;
     #pragma output(j, r15);
 

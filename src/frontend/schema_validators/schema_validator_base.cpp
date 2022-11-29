@@ -13,17 +13,19 @@
 // limitations under the License.05/07/2021.
 
 
-#include "frontend/emulator_schema_validator.h"
+#include "frontend/schema_validators/schema_validator_base.h"
 
-emulator_schema_validator::emulator_schema_validator() {
+schema_validator_base::schema_validator_base(const std::string& schema_file, std::string validator_name) {
     std::string schemas_path = SCHEMAS_FOLDER;
-    std::string schema_file = schemas_path  + "/emulator_spec_schema.json";
-    std::ifstream ifs(schema_file);
+    std::string full_schema_path = schemas_path  + "/" + schema_file;
+    std::ifstream ifs(full_schema_path);
     schema = nlohmann::json::parse(ifs);
+    schema_name = std::move(validator_name);
+
 }
 
 
-void emulator_schema_validator::validate(nlohmann::json &spec_file) {
+void schema_validator_base::validate(nlohmann::json &spec_file) {
 
     nlohmann::json_schema::json_validator validator;
     validator.set_root_schema(schema);
@@ -34,7 +36,7 @@ void emulator_schema_validator::validate(nlohmann::json &spec_file) {
             err_loc = err.error_ptr.to_string();
         }
 
-        std::string err_msg = "emulator specification file error:\n\tError location: " + err_loc + "\n\t" +"Error message: "+err.error_message;
+        std::string err_msg = schema_name + " specification file error:\n\tError location: " + err_loc + "\n\t" +"Error message: "+err.error_message;
         spdlog::critical(err_msg);
         throw std::invalid_argument(err_msg);
     }

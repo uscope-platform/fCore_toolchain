@@ -15,29 +15,36 @@
 
 #include <string>
 #include <vector>
-#include <filesystem>
+#include "frontend/schema_validators/schema_validators.h"
 #include <CLI/CLI.hpp>
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
 #include "fcore_cc.hpp"
 
 int main(int argc, char **argv) {
     CLI::App app{"fCore C compiler"};
 
-    bool output_hex = false;
-    bool output_mem = false;
-    bool output_json = false;
-    bool output_force = false;
     std::string input_file;
-    std::string output_file;
-    int dump_ast_level = 0;
-    app.add_option("input_file", input_file, "Input file path")->required()->check(CLI::ExistingFile);
-    app.add_flag("--mem", output_mem, "produce binary output file");
-    app.add_flag("--hex", output_hex, "produce verilog memory initialization output file");
-    app.add_flag("--json", output_json, "produce a json file for output");
-    app.add_option("--dump-ast", dump_ast_level, "Dump the AST at various points in the compilation process as json");
-    app.add_flag("--f", output_force, "force the rewriting of an existing product file");
-    app.add_option("--o", output_file, "Output file path");
+    app.add_option("input_file", input_file, "Input spec file")->required()->check(CLI::ExistingFile);
+
     CLI11_PARSE(app, argc, argv);
+
+    std::ifstream ifs(input_file);
+    nlohmann::json spec = nlohmann::json::parse(ifs);
+    try{
+        compiler_schema_validator validator;
+        validator.validate(spec);
+    } catch(std::invalid_argument &ex){
+        exit(-1);
+    }
+
+
+    bool output_hex = spec["output"]["format"] == "hex";
+    bool output_mem = spec["output"]["format"] == "mem";
+    bool output_json = spec["output"]["format"] == "json";
+    bool output_force = spec["force"] == "json";
+
+    std::string output_file = spec["output"]["file"];
+    int dump_ast_level = spec["dump_ast"];
 
     if(!output_file.empty() & !output_force){
         if(std::filesystem::exists(output_file)){
@@ -48,6 +55,10 @@ int main(int argc, char **argv) {
 
     std::vector<std::string> include_files = {""};
     fcore_cc cc_engine(input_file, include_files, false, dump_ast_level);
+    if(spec.contains("dma_io")){
+        cc_engine.set_dma_map(spec["dma_io"]);
+    }
+    cc_engine.compile();
 
     if(output_hex){
         cc_engine.write_hexfile(output_file);

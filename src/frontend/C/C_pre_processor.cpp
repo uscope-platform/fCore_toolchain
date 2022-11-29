@@ -59,7 +59,6 @@ void C_pre_processor::process_file() {
         }else if(ignore_cond_2 | ignore_cond_1 | in_muliline_comment){
             continue;
         }
-        process_pragmas(decommented_line);
         skip_line |= process_define(decommented_line);
 
         std::string rel_include_text = process_rel_includes(decommented_line);
@@ -77,50 +76,6 @@ void C_pre_processor::process_file() {
 
     }
     working_content = processed_file_ss.str();
-}
-
-void C_pre_processor::process_pragmas(const std::string& line) {
-    std::regex scalar_io_pragma_regex(R"(#pragma\s+(input|memory|output)\s*\(\s?(.*?),\s*\{*(.*?)\}?\))");
-    std::smatch match;
-
-    if(std::regex_search(line, match, scalar_io_pragma_regex)){
-        if(match.size() != 4){
-            std::cout << "ERROR: Malformed pragma expression:" << std::endl << line << std::endl;
-            exit(1);
-        }
-        std::string type_str = match.str(1);
-        std::string var_name = match.str(2);
-        std::string reg = match.str(3);
-        size_t n = std::count(reg.begin(), reg.end(), ',');
-        variable_class_t type;
-        if(type_str == "output")
-            type = variable_output_type;
-        else if(type_str == "input")
-            type = variable_input_type;
-        else if(type_str == "memory")
-            type = variable_memory_type;
-        else
-            type = variable_regular_type;
-
-        std::shared_ptr<variable> v = std::make_shared<variable>( var_name);
-        v->set_variable_class(type);
-
-        if(n==0){
-            reg = reg.substr(1, reg.size()-1);
-            v->set_bound_reg(std::stoul(reg));
-        } else {
-            std::smatch regs_match;
-            std::vector<int> array_bound_reg;
-            while(std::regex_search(reg, regs_match, std::regex(R"((r(\d+))*\s?\,?\s?)"))){
-                std::string reg_number = regs_match[2].str();
-                if(reg_number.empty()) break;
-                array_bound_reg.push_back(std::stoul(reg_number));
-                reg = regs_match.suffix().str();
-            }
-            v->set_bound_reg_array(array_bound_reg);
-        }
-        iom_map[var_name] = v;
-    }
 }
 
 bool C_pre_processor::process_define(const std::string& line) {
@@ -145,7 +100,6 @@ std::string C_pre_processor::process_rel_includes(const std::string& line) {
         if(!target.empty()){
             std::string target_path = std::filesystem::canonical("./" + target);
             C_pre_processor include_preproc(target_path, dmap);
-            iom_map.insert(include_preproc.get_iom_map().begin(), iom_map.end());
             include_preproc.set_absolute_includes(allowed_absolute_includes);
             include_preproc.process_file();
             return include_preproc.get_preprocessed_file();

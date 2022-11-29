@@ -35,20 +35,30 @@
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include <nlohmann/json.hpp>
 
+
+
+
 class fcore_cc {
 public:
-    fcore_cc(const std::string &path, std::vector<std::string> &includes, bool print_debug, int dump_ast_level);
-    std::vector<uint32_t> get_hexfile(bool endian_swap);
+    fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl);
+    void parse(std::unordered_map<std::string, std::shared_ptr<variable>> &iom);
+    void optimize(std::unordered_map<std::string, std::shared_ptr<variable>> &iom);
+    std::unordered_map<std::string, std::shared_ptr<variable>> construct_io_map();
+    void compile();
+
     std::vector<uint32_t> get_raw_code();
     std::string get_errors();
-    std::vector<std::string> get_verilog_memfile();
     void write_hexfile(const std::string& ouput_file);
     void write_verilog_memfile(const std::string& ouput_file);
     void write_json(const std::string& output_file);
-    uint32_t get_program_size();
-    uint32_t get_inst_count();
     nlohmann::json get_dump() {return dump;};
+    void set_dma_map(nlohmann::json &map){dma_io_map = map;};
 private:
+    std::string input_file;
+    std::vector<std::string> includes;
+    bool logging;
+    int dump_ast_level;
+    nlohmann::json dma_io_map;
     std::shared_ptr<hl_ast_node> hl_ast;
     std::shared_ptr<ll_ast_node> ll_ast;
     binary_generator writer;

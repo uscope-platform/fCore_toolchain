@@ -16,61 +16,25 @@
 #include "fcore_cc.hpp"
 
 
-fcore_cc::fcore_cc(const std::string &path, std::vector<std::string> &includes, bool print_debug, int dump_ast_level) : hl_manager(dump_ast_level),
-                                                                                                                  ll_manager(dump_ast_level) {
-    std::shared_ptr<define_map> defines_map = std::make_shared<define_map>();
-    error_code = "";
+fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl) : hl_manager(dump_lvl),
+                                                                                                                  ll_manager(dump_lvl) {
+    input_file =  path;
+    includes = inc;
+    logging = print_debug;
+    dump_ast_level = dump_lvl;
+}
+
+void fcore_cc::compile() {
     try{
-        C_language_parser target_parser(path, defines_map);
-        target_parser.pre_process({});
-        target_parser.parse();
-        hl_ast = target_parser.AST;
-        std::unordered_map<std::string, std::shared_ptr<variable>> iom = target_parser.get_iom_map();
-
-        std::string ep = "main";
-        auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
-        hl_manager = create_hl_pass_manager(ep,{}, dump_ast_level, iom, bindings_map);
-        hl_manager.run_morphing_passes(hl_ast);
-
-        if(dump_ast_level>0) dump["high_level"] = hl_manager.get_dump();
-
-        high_level_ast_lowering translator;
-        translator.set_input_ast(hl_ast);
-        translator.translate();
-        ll_ast = translator.get_output_ast();
-
-        ll_manager = create_ll_pass_manager(dump_ast_level);
-        ll_manager.run_morphing_passes(ll_ast);
-
-        if(dump_ast_level>0) dump["low_level"] = ll_manager.get_dump();
-
-        instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
-
-        stream_pass_manager sman(iom, dump_ast_level, bindings_map);
-        program_stream = sman.process_stream(program_stream);
-
-        if(dump_ast_level>0) dump["stream"] = sman.get_dump();
-
-        if(program_stream.empty()){
-            program_stream.push_back(std::make_shared<ll_independent_inst_node>("stop"));
-        }
-        if(!program_stream.last()->is_stop()){
-            program_stream.push_back(std::make_shared<ll_independent_inst_node>("stop"));
-        }
-
-        writer.process_stream(program_stream, iom, print_debug);
+        std::unordered_map<std::string, std::shared_ptr<variable>> iom = construct_io_map();
+        parse(iom);
+        optimize(iom);
 
     } catch(std::runtime_error &e){
         error_code = e.what();
     }
 }
 
-
-
-
-std::vector<uint32_t> fcore_cc::get_hexfile(bool endian_swap) {
-    return writer.generate_hex(endian_swap);
-}
 
 std::string fcore_cc::get_errors() {
     return error_code;
@@ -80,9 +44,6 @@ std::vector<uint32_t> fcore_cc::get_raw_code() {
     return writer.get_code();
 }
 
-std::vector<std::string> fcore_cc::get_verilog_memfile() {
-    return writer.generate_mem();
-}
 
 void fcore_cc::write_hexfile(const std::string &ouput_file) {
     writer.write_hex_file(ouput_file);
@@ -90,18 +51,6 @@ void fcore_cc::write_hexfile(const std::string &ouput_file) {
 
 void fcore_cc::write_verilog_memfile(const std::string &ouput_file) {
     writer.write_mem_file(ouput_file);
-}
-
-uint32_t fcore_cc::get_program_size() {
-    return writer.get_program_size();
-}
-
-uint32_t fcore_cc::get_inst_count() {
-    int program_lenght = ll_manager.analysis_passes["instruction_counting"]->get_analysis_result()[0];
-    float program_runtime = (float) program_lenght*0.01f;
-    std::cout << "The compiled program is " << program_lenght << "instructions long"<< std::endl;
-    std::cout << "Runtime at the standard frequency of 100 MHz will be of " << program_runtime << " µS"<< std::endl;
-    return 0;
 }
 
 void fcore_cc::write_json(const std::string &output_file) {
@@ -118,3 +67,73 @@ void fcore_cc::write_json(const std::string &output_file) {
     ss.close();
 }
 
+void fcore_cc::parse(std::unordered_map<std::string, std::shared_ptr<variable>> &iom) {
+    std::shared_ptr<define_map> defines_map = std::make_shared<define_map>();
+    error_code = "";
+    C_language_parser target_parser(input_file, defines_map);
+    target_parser.pre_process({});
+    target_parser.parse(iom);
+    hl_ast = target_parser.AST;
+}
+
+void fcore_cc::optimize(std::unordered_map<std::string, std::shared_ptr<variable>> &iom) {
+    std::string ep = "main";
+    auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
+    hl_manager = create_hl_pass_manager(ep,{}, dump_ast_level, iom, bindings_map);
+    hl_manager.run_morphing_passes(hl_ast);
+
+    if(dump_ast_level>0) dump["high_level"] = hl_manager.get_dump();
+
+    high_level_ast_lowering translator;
+    translator.set_input_ast(hl_ast);
+    translator.translate();
+    ll_ast = translator.get_output_ast();
+
+    ll_manager = create_ll_pass_manager(dump_ast_level);
+    ll_manager.run_morphing_passes(ll_ast);
+
+    if(dump_ast_level>0) dump["low_level"] = ll_manager.get_dump();
+
+    instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
+
+    stream_pass_manager sman(iom, dump_ast_level, bindings_map);
+    program_stream = sman.process_stream(program_stream);
+
+    if(dump_ast_level>0) dump["stream"] = sman.get_dump();
+
+    if(program_stream.empty()){
+        program_stream.push_back(std::make_shared<ll_independent_inst_node>("stop"));
+    }
+    if(!program_stream.last()->is_stop()){
+        program_stream.push_back(std::make_shared<ll_independent_inst_node>("stop"));
+    }
+
+    writer.process_stream(program_stream, iom, logging);
+}
+
+std::unordered_map<std::string, std::shared_ptr<variable>> fcore_cc::construct_io_map() {
+    std::unordered_map<std::string, std::shared_ptr<variable>> io_map;
+    for(auto &item:dma_io_map.items()){
+        std::shared_ptr<variable> v = std::make_shared<variable>(item.key());
+        if(item.value()["type"] =="input"){
+            v->set_variable_class(variable_input_type);
+        } else if(item.value()["type"]=="output"){
+            v->set_variable_class(variable_output_type);
+        } else if(item.value()["type"]=="memory"){
+            v->set_variable_class(variable_memory_type);
+        } else{
+            const std::string& var_name = item.key();
+            throw std::runtime_error("Unrecognized DMA IO variable: "+ var_name);
+        }
+        if(item.value()["address"].is_array()){
+            std::vector<int> bound_reg = item.value()["address"];
+            v->set_bound_reg_array(bound_reg);
+        } else {
+            int bound_reg = item.value()["address"];
+            v->set_bound_reg(bound_reg);
+        }
+        io_map[item.key()] = v;
+    }
+
+    return io_map;
+}

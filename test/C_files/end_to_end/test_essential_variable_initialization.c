@@ -17,16 +17,13 @@
 int main(){
 
     int test_in;
-    #pragma input(test_in, r25)
 
     float test_out;
-    #pragma output(test_out, r5)
+
 
     float test_var = 1.0;
-    #pragma output(test_var, r7)
-
     int factor_1 = test_var <= test_in;
-    #pragma output(factor_1, r6)
+
     test_var=test_var+test_in;
 
     test_out = test_var;

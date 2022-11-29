@@ -30,6 +30,6 @@ int main(){
     };
     int b[7] = {2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0};
 
-    #pragma output(c, r18)
+
     float c = add_first(a, b, 1);
 }

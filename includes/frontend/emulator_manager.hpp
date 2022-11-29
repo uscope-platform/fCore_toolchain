@@ -20,14 +20,14 @@
 #include <string>
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include <spdlog/spdlog.h>
 
 #include "frontend/binary_loader.hpp"
-#include "frontend/emulator_schema_validator.h"
+#include "frontend/schema_validators/schema_validators.h"
 #include "../third_party/csv.hpp"
 #include "backend/emulator.hpp"
 #include "tools/instruction_stream_builder.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
-#include "spdlog/spdlog.h"
 
 typedef struct{
     unsigned int channel;

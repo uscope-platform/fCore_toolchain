@@ -15,10 +15,10 @@
 //
 
 int main(){
-#pragma input(a, r1)
+
     int a;
 
 
-#pragma output (test, r10);
+
     int test = a*17.0;
 }
