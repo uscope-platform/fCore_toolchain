@@ -39,7 +39,7 @@ TEST( EndToEndAsm, simple_file ) {
 
     // file parsing and processing
 
-    std::vector<uint32_t> result = uut.get_hexfile(false);
+    std::vector<uint32_t> result = uut.get_raw_code();
     ASSERT_EQ(result, gold_standard);
 
     //verilog memfile generation
@@ -87,7 +87,7 @@ TEST( EndToEndAsm, for_file ) {
     std::ifstream stream(input_file);
     fcore_has uut(stream,include_files,include_dir, 0, false);
 
-    std::vector<uint32_t> result = uut.get_hexfile(false);
+    std::vector<uint32_t> result = uut.get_raw_code();
 
     std::vector<uint32_t> gold_standard = {0x86, 0x42c80000, 0xa6, 0x43480000, 0xc2881, 0x86, 0x42c80000, 0xc2881, 0x0000, 0x0000, 0x86, 0x42c80000, 0xc2881, 0x0000, 0x0000, 0xc};
     ASSERT_EQ( result, gold_standard);
@@ -102,7 +102,7 @@ TEST( EndToEndAsm, branch_file ) {
     std::ifstream stream(input_file);
     fcore_has uut(stream,include_files,include_dir, 0, false);
 
-    std::vector<uint32_t> result = uut.get_hexfile(false);
+    std::vector<uint32_t> result = uut.get_raw_code();
 
     std::vector<uint32_t> gold_standard = {0x86, 0x42c80000, 0xc2881, 0x80061, 0x21848, 0x21849, 0x2184a, 0x2184b, 0xC};
     ASSERT_EQ( result, gold_standard);
@@ -117,7 +117,7 @@ TEST(EndToEndAsm, variables_file) {
     std::ifstream stream(input_file);
     fcore_has uut(stream,include_files,include_dir, 0, false);
 
-    std::vector<uint32_t> result = uut.get_hexfile(false);
+    std::vector<uint32_t> result = uut.get_raw_code();
     std::vector<uint32_t> gold_standard = {0x26,0x42c80000, 0x46, 0x43480000, 0xA6, 0x43480000, 0xc2881, 0xe4821,0xe4841,0x26,0x42c80000,0xe4821, 0x50b2, 0xc};
     ASSERT_EQ( result, gold_standard);
 }
@@ -131,7 +131,7 @@ TEST(EndToEndAsm, load_constant_file) {
     std::ifstream stream(input_file);
     fcore_has uut(stream,include_files,include_dir, 0, false);
 
-    std::vector<uint32_t> result = uut.get_hexfile(false);
+    std::vector<uint32_t> result = uut.get_raw_code();
 
     std::vector<uint32_t> gold_standard = {0x86, 0x42c80000, 0xa6, 0x43480000, 0x86, 0x4048f5c3, 0xc};
     ASSERT_EQ( result, gold_standard);
@@ -163,7 +163,7 @@ TEST(EndToEndAsm, load_integer_constant) {
     std::ifstream stream(input_file);
     fcore_has uut(stream,include_files,include_dir, 0, true);
 
-    std::vector<uint32_t> result = uut.get_hexfile(false);
+    std::vector<uint32_t> result = uut.get_raw_code();
 
     std::vector<uint32_t> gold_standard = {0x86, 0x64, 0xc};
     ASSERT_EQ( result, gold_standard);

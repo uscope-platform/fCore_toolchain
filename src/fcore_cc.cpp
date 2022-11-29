@@ -58,12 +58,14 @@ fcore_cc::fcore_cc(const std::string &path, std::vector<std::string> &includes, 
             program_stream.push_back(std::make_shared<ll_independent_inst_node>("stop"));
         }
 
-        writer.process_stream(program_stream, print_debug);
+        writer.process_stream(program_stream, iom, print_debug);
 
     } catch(std::runtime_error &e){
         error_code = e.what();
     }
 }
+
+
 
 
 std::vector<uint32_t> fcore_cc::get_hexfile(bool endian_swap) {
@@ -72,6 +74,10 @@ std::vector<uint32_t> fcore_cc::get_hexfile(bool endian_swap) {
 
 std::string fcore_cc::get_errors() {
     return error_code;
+}
+
+std::vector<uint32_t> fcore_cc::get_raw_code() {
+    return writer.get_code();
 }
 
 std::vector<std::string> fcore_cc::get_verilog_memfile() {
