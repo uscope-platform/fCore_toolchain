@@ -810,7 +810,6 @@ TEST( cTreeVisitor, loopTest) {
     std::shared_ptr<hl_expression_node> loop_body = std::make_shared<hl_expression_node>(expr_assign);
 
     std::shared_ptr<variable> var = std::make_shared<variable>("j");
-    var->set_bound_reg(15);
     var->set_variable_class(variable_output_type);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
 
@@ -818,13 +817,11 @@ TEST( cTreeVisitor, loopTest) {
     std::shared_ptr<hl_expression_node> body_add_expr = std::make_shared<hl_expression_node>(expr_add);
 
     var = std::make_shared<variable>( "a");
-    var->set_bound_reg(2);
     var->set_variable_class(variable_input_type);
     op_1 = std::make_shared<hl_ast_operand>(var);
 
 
     var = std::make_shared<variable>("h");
-    var->set_bound_reg(1);
     var->set_variable_class(variable_input_type);
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
 
@@ -893,7 +890,6 @@ TEST( cTreeVisitor, nestedLoopTest) {
     std::shared_ptr<hl_expression_node> content_expr = std::make_shared<hl_expression_node>(expr_assign);
 
     std::shared_ptr<variable> var = std::make_shared<variable>("j");
-    var->set_bound_reg(15);
     var->set_variable_class(variable_output_type);
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
 
@@ -901,13 +897,11 @@ TEST( cTreeVisitor, nestedLoopTest) {
     std::shared_ptr<hl_expression_node> body_add_expr = std::make_shared<hl_expression_node>(expr_add);
 
     var = std::make_shared<variable>( "a");
-    var->set_bound_reg(2);
     var->set_variable_class(variable_input_type);
     op_1 = std::make_shared<hl_ast_operand>(var);
 
 
     var = std::make_shared<variable>("h");
-    var->set_bound_reg(1);
     var->set_variable_class(variable_input_type);
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
 
@@ -1039,7 +1033,6 @@ TEST( cTreeVisitor, array_test){
     def_2->set_array_shape(shape);
     var = std::make_shared<variable>( "b");
     var->set_variable_class(variable_output_type);
-    var->set_bound_reg(4);
     std::shared_ptr<hl_definition_node> def_3 = std::make_shared<hl_definition_node>("b", c_type_int, var);
 
     std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(expr_add);

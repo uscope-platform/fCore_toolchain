@@ -231,7 +231,7 @@ TEST(EndToEndC, array_initialization) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x86, 0x40000000,0x26, 0x41300000, 0x43823, 0xa3843, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x50001,0x20007,0x26, 0x41300000, 0x61023, 0x21063, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 }
@@ -254,7 +254,7 @@ TEST(EndToEndC, array_initialization_through_function) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x246, 0x40400000, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x30001,0x10012,0x26, 0x40400000, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 }
@@ -276,7 +276,7 @@ TEST(EndToEndC, constant_argument_inlining) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x246, 0x40400000, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x30001,0x10012,0x26, 0x40400000, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 }
@@ -371,7 +371,7 @@ TEST(EndToEndC, test_move){
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x140021, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x20002,0x2000a,0x10001, 0x40021, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 }
@@ -395,7 +395,7 @@ TEST(EndToEndC, test_complex_normalization){
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x66, 0x40A00000, 0x81841, 0x66, 0x41880000, 0xa1823, 0x620a3, 0x141941, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x90003,0x3f000a,0x20002,0x30003,0x66, 0x40A00000, 0x81841, 0x66, 0x41880000, 0xa1823, 0x620a3, 0x141941, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 }
@@ -418,7 +418,7 @@ TEST(EndToEndC, register_allocation){
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x46, 0x41880000, 0x141023, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x40002,0x3f000a,0x20001,0x26, 0x41880000, 0x7e0843, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 }
@@ -444,7 +444,7 @@ TEST(EndToEndC, functionInliningExpression) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x26, 0x40A00000, 0x40b23, 0x26, 0x3727C5AC, 0x61023, 0x218c1, 0x46, 0xC3160000, 0x21031, 0x46, 0x43160000, 0x21030, 0x40021, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0xF0002, 0x20019, 0x3f0006,0x26, 0x40A00000, 0x60843, 0x26, 0x3727C5AC, 0x41823, 0x217e1, 0x46, 0xC3160000, 0x21031, 0x46, 0x43160000, 0x21030, 0x40021, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
@@ -472,7 +472,7 @@ TEST(EndToEndC, essential_variable_initialization) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x26, 0x3F800000, 0xcc829, 0xec821, 0xa00e1, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x60004,0x10007,0x20005,0x20019,0x30006,0x26, 0x3F800000, 0x61029, 0x21021, 0x40021, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
@@ -597,7 +597,7 @@ TEST(EndToEndC, zero_assignment_removal) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x180141, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x20002,0x2000c,0x1000a,0x40021, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
