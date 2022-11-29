@@ -161,7 +161,7 @@ TEST(EndToEndC, conditional) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0xE6, 0x40C00000, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x30001,0x10007, 0x26, 0x40C00000, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 }
@@ -185,7 +185,8 @@ TEST(EndToEndC, loop) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x1e18e1, 0x163861, 0x1e2101, 0x184081, 0xc};
+    //std::vector<uint32_t> gold_standard = {0x1e18e1, 0x163861, 0x1e2101, 0x184081, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x30003,0x50007,0x1e2061, 0xa1881, 0x1e2061, 0xa1881, 0xc};
 
    ASSERT_EQ(gold_standard, result);
 }
