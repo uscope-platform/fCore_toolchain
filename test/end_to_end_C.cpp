@@ -45,7 +45,6 @@ TEST(EndToEndC, fcore_cc) {
     ASSERT_EQ(result, gold_standard);
 }
 
-
 TEST(EndToEndC, end_to_end_intrinsics) {
 
 
@@ -64,7 +63,7 @@ TEST(EndToEndC, end_to_end_intrinsics) {
     compiler.compile();
     std::vector<uint32_t> result = compiler.get_executable();
 
-    std::vector<uint32_t> gold_standard = {0x20003,0x70001,0x944,0x26,0x42C80000, 0x40950, 0x0953, 0x2f956, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x70001,0x1000A,0x1024,0x46,0x42C80000, 0x61030, 0x1033, 0x2f836, 0xc};
     ASSERT_EQ(result, gold_standard);
 }
 
@@ -87,7 +86,6 @@ TEST(EndToEndC, exceptionHandling) {
 
     ASSERT_EQ(result, "Strings are not supported by the fCore toolchain");
 }
-
 
 TEST(EndToEndC, json_writing) {
     std::string input_file = "c_e2e/test_intrinsics_implementation.c";
@@ -114,21 +112,21 @@ TEST(EndToEndC, json_writing) {
 
     std::vector<uint32_t> compile_result = out["compiled_program"];
 
-    std::vector<uint32_t> gold_standard = { 0x944,0x26,0x42C80000, 0x40950, 0x0953, 0x2f956, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x70001,0x1000A,0x1024,0x46,0x42C80000, 0x61030, 0x1033, 0x2f836, 0xc};
 
     std::filesystem::remove(test_json);
 
     ASSERT_EQ(gold_standard, compile_result);
 }
 
-TEST(EndToEndC, pragma_io) {
+TEST(EndToEndC, iom) {
     std::string input_file = "c_e2e/test_pragma_io.c";
 
     std::vector<std::string> includes;
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
-                    "a":{"type": "input","address":1},
+                    "a":{"type": "memory","address":1},
                     "b":{"type": "input","address":2},
                     "c":{"type": "memory","address":4},
                     "test":{"type": "output","address":10}
@@ -141,7 +139,7 @@ TEST(EndToEndC, pragma_io) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x81021, 0x66, 0x40A00000, 0xa1883, 0x66, 0x3e2aaaab, 0x1418a3, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x80004, 0x3000A, 0x3f0004, 0x10002, 0x3e0001, 0x7e0fc1, 0x26, 0x40A00000, 0x40fe3, 0x26, 0x3e2aaaab, 0x60843, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 }

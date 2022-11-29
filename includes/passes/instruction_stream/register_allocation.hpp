@@ -17,7 +17,7 @@
 #define FCORE_TOOLCHAIN_REGISTER_ALLOCATION_HPP
 
 #include <utility>
-
+#include <unordered_map>
 
 #include "passes/instruction_stream/stream_pass_base.hpp"
 #include "data_structures/common/variable.hpp"
@@ -33,8 +33,10 @@ public:
             std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm,
             const std::shared_ptr<std::unordered_map<std::string, int>>& all_map
             );
+    void setup() override;
     std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
 private:
+    void allocate_register(std::shared_ptr<variable> &var, int reg_addr);
     std::shared_ptr<variable_map> var_map;
     std::unordered_map<std::string, int> io_reservations;
     std::unordered_map<std::string, std::shared_ptr<variable>> register_mapping;
@@ -42,6 +44,7 @@ private:
     std::shared_ptr<std::unordered_map<std::string, memory_range_t>> early_bindings_map;
     std::vector<bool> excluded;
     std::shared_ptr<std::unordered_map<std::string, int>> allocation_map;
+    std::unordered_map<std::string, int> memory_vars;
 };
 
 

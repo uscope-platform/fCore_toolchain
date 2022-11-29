@@ -22,7 +22,6 @@ variable_lifetime_mapping::variable_lifetime_mapping(std::shared_ptr<variable_ma
 
 std::shared_ptr<ll_instruction_node>
 variable_lifetime_mapping::apply_pass(std::shared_ptr<ll_instruction_node> element) {
-    int i = 0;
     switch (element->get_type()) {
         case isa_register_instruction:
             map_register_inst(std::static_pointer_cast<ll_register_instr_node>(element));
@@ -73,7 +72,7 @@ void variable_lifetime_mapping::map_load_const_instr(const std::shared_ptr<ll_lo
 
 std::shared_ptr<variable> variable_lifetime_mapping::update_variable_lifetime(const std::shared_ptr<variable>& var) const {
    std::shared_ptr<variable> retval = var;
-    if(!var->is_constant() && var->get_variable_class() == variable_regular_type){
+    if(!var->is_constant()){
         if(instr_cntr <= retval->get_first_occurrence())
             retval->set_first_occurrence(instr_cntr);
         if(instr_cntr >= retval->get_last_occurrence())

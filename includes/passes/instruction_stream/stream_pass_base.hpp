@@ -22,6 +22,7 @@ class stream_pass_base {
 public:
     explicit stream_pass_base(std::string n) {name = std::move(n);};
 
+    virtual void setup() {};
     virtual std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) {
         return element;
     };

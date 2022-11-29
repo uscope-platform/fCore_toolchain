@@ -25,15 +25,12 @@ register_allocation::register_allocation(
     early_bindings_map = ebm;
     allocation_map = all_map;
     var_map = std::move(vmap);
-    //pre_initialize the registers statuses;
-    excluded.reserve(pow(2, fcore_register_address_width));
-    for(int i = 0; i< pow(2, fcore_register_address_width); ++i) {
-        excluded.push_back(false);
-    }
 
-    //exclude form allocation pool the register that are used explicitly by the user
-    for(int i= 0; i<pow(2, fcore_register_address_width); i++){
-        excluded[i] = var_map->at("r"+std::to_string(i))->is_used();
+    int n_regs = 2<<(fcore_register_address_width-1);
+    //pre_initialize the registers statuses, excluding form allocation pool the registers explicitly by the user
+    excluded.reserve(n_regs);
+    for(int i = 0; i< n_regs; ++i) {
+        excluded.push_back(var_map->at("r"+std::to_string(i))->is_used());
     }
 
     for(auto &item :*early_bindings_map){
@@ -46,6 +43,20 @@ register_allocation::register_allocation(
     excluded[0] = true;
 }
 
+void register_allocation::setup() {
+    int memory_idx = 0;
+    int n_regs = 2<<(fcore_register_address_width-1);
+
+    for(auto &item:*var_map){
+        if(item.second->get_variable_class() == variable_memory_type){
+            if(!excluded[n_regs-1-memory_idx])
+                memory_vars[item.first] = n_regs-memory_idx-1;
+            memory_idx++;
+        }
+    }
+}
+
+
 
 std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared_ptr<ll_instruction_node> element) {
     std::shared_ptr<ll_instruction_node> ret_val = element;
@@ -56,15 +67,12 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
         std::smatch m;
         std::string s = item->to_str();
         std::regex_match(s, m, re);
-
+        s = item->get_identifier();
         if(item->get_bound_reg() != -1){
-            if(item->get_type() == var_type_array){
-                auto arr_idx = item->get_bound_reg_array()[item->get_linear_index()];
-                register_mapping[s] = var_map->at("r"+std::to_string(arr_idx));
-            } else {
-                register_mapping[s] = var_map->at("r"+std::to_string(item->get_bound_reg()));
-            }
-
+            register_mapping[s] = var_map->at("r"+std::to_string(item->get_bound_reg()));
+            item = register_mapping[s];
+        } else if (memory_vars.contains(item->get_name())) {
+            allocate_register(item, memory_vars[item->get_name()]);
             item = register_mapping[s];
         } else{
             if(register_mapping.count(s)){
@@ -75,10 +83,8 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
 
                     if(!reg_map.is_used(i, item->get_first_occurrence(), item->get_last_occurrence()) & !excluded[i]){
                         found = true;
-                        reg_map.insert(item->to_str(), i, item->get_first_occurrence(), item->get_last_occurrence());
-                        register_mapping[item->to_str()] = var_map->at("r"+std::to_string(i));
-                        allocation_map->insert({item->to_str(), i});
-                        item = register_mapping[item->to_str()];
+                        allocate_register(item, i);
+                        item = register_mapping[s];
                         break;
                     }
                 }
@@ -93,4 +99,13 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
     ret_val = element;
 
     return ret_val;
+}
+
+void register_allocation::allocate_register(std::shared_ptr<variable> &var, int reg_addr) {
+    reg_map.insert(var->get_identifier(), reg_addr, var->get_first_occurrence(), var->get_last_occurrence());
+    register_mapping[var->get_identifier()] = var_map->at("r"+std::to_string(reg_addr));
+    allocation_map->insert({var->get_identifier(), reg_addr});
+    if(var->get_variable_class() == variable_output_type){
+        excluded[reg_addr] = true;
+    }
 }

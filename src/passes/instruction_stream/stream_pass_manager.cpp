@@ -75,6 +75,7 @@ instruction_stream stream_pass_manager::process_stream(instruction_stream stream
 instruction_stream
 stream_pass_manager::apply_pass(const instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass) {
     instruction_stream retval;
+    pass->setup();
     for(auto &instr:in_stream){
         auto proc_val = pass->apply_pass(instr);
         if(proc_val!= nullptr)
