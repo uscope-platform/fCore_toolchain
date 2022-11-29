@@ -49,6 +49,7 @@ web::http::status_code rest_handler::handle_compile_request(const web::json::val
     chdir(std::filesystem::path(working_file).parent_path().c_str());
     std::vector<std::string> include_files = {""};
     fcore_cc cc_engine(working_file, include_files, false, 2);
+    cc_engine.compile();
     error = cc_engine.get_errors();
     dump = cc_engine.get_dump();
     chdir(current_path.c_str());

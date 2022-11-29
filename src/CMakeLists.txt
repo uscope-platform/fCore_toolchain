@@ -153,6 +153,7 @@ if(${INCLUDE_DEVTOOLS})
             CLI11::CLI11
             crypto
             antlr4_static
+            nlohmann_json_schema_validator
             common_srcs
             )
 
