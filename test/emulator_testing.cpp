@@ -23,6 +23,7 @@ nlohmann::json prepare_spec(const std::string &file, int run_length){
     nlohmann::json spec;
     spec["cores"] = std::vector<nlohmann::json>();
     spec["run_length"] = run_length;
+    spec["cores"][0]["order"] = 0;
     spec["cores"][0]["id"] = "test";
     spec["cores"][0]["program"] = std::unordered_map<std::string, std::string>({{"type", "mem"}, { "file", file}});
     spec["cores"][0]["channels"] = 1;

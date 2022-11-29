@@ -8,11 +8,16 @@
           "input_1":"f",
           "input_2":"f"
         },
+        "channels":{
+          "input_1":0,
+          "input_2":0
+        },
         "registers":{
           "input_1":1,
           "input_2":2
         }
       },
+      "order": 0,
       "outputs": [
         {
           "reg_n":4,
@@ -24,12 +29,14 @@
         "type":"mem",
         "file":"emu/test_inputs.mem"
       },
-      "efi_implementation":"",
+      "options":{
+        "comparators":"reducing",
+        "efi_implementation":"efi_sort"
+      },
       "channels":1
     },
     {
       "id": "test_consumer",
-      "inputs": {},
       "outputs": [
         {
           "reg_n":6,
@@ -37,11 +44,15 @@
           "name":"test_out"
         }
       ],
+      "order": 1,
       "program":{
         "type":"mem",
         "file":"emu/test_interconnect.mem"
       },
-      "efi_implementation":"",
+      "options":{
+        "comparators":"reducing",
+        "efi_implementation":"efi_sort"
+      },
       "channels":1
     }
   ],
@@ -51,6 +62,7 @@
       "destination":"test_consumer",
       "registers":[
         {
+          "name": "interconnect_name",
           "source":[0, 4],
           "destination":[0, 1]
         }

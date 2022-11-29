@@ -42,8 +42,8 @@ TEST( EndToEndAsm, simple_file ) {
     std::vector<uint32_t> result = uut.get_raw_code();
     ASSERT_EQ(result, gold_standard);
 
-    //verilog memfile generation
-
+    //verilog memfile generationc
+    gold_standard.insert(gold_standard.begin(), {0x20003, 0x60000});
     uut.write_verilog_memfile(input_file+".mem");
 
     std::ifstream infile(input_file+".mem");
@@ -149,7 +149,7 @@ TEST(EndToEndAsm, embeddable_wrapper_pass) {
         result.push_back(hex_result[i]);
     }
     free(hex_result);
-    std::vector<uint32_t> gold_standard = {0x86, 0x42c80000, 0xa6, 0x43480000, 0x86, 0x4048f5c3, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003, 0x70000, 0x86, 0x42c80000, 0xa6, 0x43480000, 0x86, 0x4048f5c3, 0xc};
     ASSERT_EQ( result, gold_standard);
 }
 
@@ -189,7 +189,7 @@ TEST(EndToEndAsm, json_writing) {
 
     std::vector<uint32_t> compile_result = out["compiled_program"];
 
-    std::vector<uint32_t> gold_standard = {0x86, 0x42c80000, 0xa6, 0x43480000, 0x86, 0x4048f5c3, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003, 0x70000, 0x86, 0x42c80000, 0xa6, 0x43480000, 0x86, 0x4048f5c3, 0xc};
 
     std::filesystem::remove(test_json);
 

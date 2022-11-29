@@ -4,6 +4,10 @@
       "id": "test",
       "inputs": {
         "file":"emu/test_inputs.csv",
+        "channels":{
+          "input_1":0,
+          "input_2":0
+        },
         "types":{
           "input_1":"f",
           "input_2":"f"
@@ -24,7 +28,11 @@
         "type":"mem",
         "file":"emu/test_inputs.mem"
       },
-      "efi_implementation":"",
+      "order": 0,
+      "options":{
+        "comparators":"reducing",
+        "efi_implementation":"efi_sort"
+      },
       "channels":1
     }
   ]

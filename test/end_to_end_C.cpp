@@ -457,7 +457,7 @@ TEST(EndToEndC, loop_index_expression) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 2);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+    std::vector<uint32_t> result =  compiler.get_raw_code();
 
 
     std::vector<uint32_t> gold_standard = {0x786, 0, 0x7a6, 0x0, 0x7b97a1, 0x7b9fa1, 0xc};
@@ -505,7 +505,6 @@ TEST(EndToEndC, efi_load_elimination) {
 
     std::string input_file = "c_e2e/test_efi_load_elimination.c";
 
-    // TODO: DEAD LOAD ELIMINATION SHOULD BE DISABLED FOR ARRAYS USED IN EFI
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);
