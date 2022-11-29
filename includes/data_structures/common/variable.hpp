@@ -72,11 +72,8 @@ public:
     [[nodiscard]] bool is_constant() const { return (variable_type ==var_type_float_const || variable_type == var_type_int_const);};
     [[nodiscard]] bool is_float() const {return variable_type == var_type_float_const;};
 
-    [[nodiscard]]  int get_bound_reg() const { return bound_register[0];};
+    [[nodiscard]]  int get_bound_reg();
     void set_bound_reg(int reg) { bound_register[0] = reg;};
-
-    [[nodiscard]]  int get_bound_reg(unsigned int idx) const { return bound_register[idx];};
-    void set_bound_reg(int idx, unsigned int val) { bound_register[idx] = val;};
 
     [[nodiscard]]  std::vector<int> get_bound_reg_array() const { return bound_register;};
     void set_bound_reg_array(std::vector<int> reg) { bound_register = std::move(reg);};

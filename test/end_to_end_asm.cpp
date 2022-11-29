@@ -43,7 +43,6 @@ TEST( EndToEndAsm, simple_file ) {
     ASSERT_EQ(result, gold_standard);
 
     //verilog memfile generationc
-    gold_standard.insert(gold_standard.begin(), {0x20003, 0x60000});
     uut.write_verilog_memfile(input_file+".mem");
 
     std::ifstream infile(input_file+".mem");

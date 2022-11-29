@@ -205,3 +205,10 @@ std::string variable::get_identifier() {
 int variable::get_linear_index() {
     return linearize_array(array_shape, array_index);
 }
+
+int variable::get_bound_reg() {
+    if(!array_index.empty() && bound_register.size()!=1){
+        return bound_register[get_linear_index()];
+    }
+    return bound_register[0];
+}

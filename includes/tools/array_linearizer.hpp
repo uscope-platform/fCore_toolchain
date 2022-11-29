@@ -23,7 +23,7 @@
 #include <ranges>
 
 
-unsigned int linearize_array(std::vector<int> shape, std::vector<int> indices);
+int linearize_array(std::vector<int> shape, std::vector<int> indices);
 std::vector<int> array_delinearize(const std::vector<int>& shape, int index);
 
 #endif //FCORE_TOOLCHAIN_ARRAY_LINEARIZER_HPP

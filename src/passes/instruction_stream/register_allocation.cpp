@@ -68,8 +68,10 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
         std::string s = item->to_str();
         std::regex_match(s, m, re);
         s = item->get_identifier();
-        if(item->get_bound_reg() != -1){
-            register_mapping[s] = var_map->at("r"+std::to_string(item->get_bound_reg()));
+
+        auto bound_reg = item->get_bound_reg();
+        if(bound_reg != -1){
+            register_mapping[s] = var_map->at("r"+std::to_string(bound_reg));
             item = register_mapping[s];
         } else if (memory_vars.contains(item->get_name())) {
             allocate_register(item, memory_vars[item->get_name()]);
