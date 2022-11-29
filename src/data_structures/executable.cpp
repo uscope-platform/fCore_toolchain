@@ -28,6 +28,7 @@ void executable::add_code_section(std::vector<uint32_t> code) {
 
 void executable::add_io_mapping(std::vector<std::pair<uint16_t, uint16_t>> mapping) {
     for(auto pair:mapping){
+        io_mapping_present = true;
         uint32_t raw_mapping = pair.first + (pair.second<<16);
         sections["io_remapping"].push_back(raw_mapping);
     }
@@ -35,9 +36,16 @@ void executable::add_io_mapping(std::vector<std::pair<uint16_t, uint16_t>> mappi
 }
 
 void executable::generate_metadata() {
-    sections["metadata"].push_back(3);
-    sections["metadata"].push_back(sections["io_remapping"].size() + (sections["code"].size()<<16));
-    sections["metadata"][0] += sections["metadata"].size()<<16;
+    if(io_mapping_present){
+        sections["metadata"].push_back(3);
+        sections["metadata"].push_back(sections["io_remapping"].size() + (sections["code"].size()<<16));
+        sections["metadata"][0] += sections["metadata"].size()<<16;
+    } else {
+        sections["metadata"].push_back(2);
+        sections["metadata"].push_back((sections["code"].size()));
+        sections["metadata"][0] += sections["metadata"].size()<<16;
+    }
+
 }
 
 

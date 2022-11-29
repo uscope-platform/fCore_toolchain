@@ -26,8 +26,8 @@ TEST( cTreeVisitor, unaryExpressions) {
 
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+
+    parser.parse(std::unordered_map<std::string, variable_class_t>());
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
     std::shared_ptr<hl_expression_node> res_1 = std::static_pointer_cast<hl_expression_node>(
@@ -94,8 +94,8 @@ TEST( cTreeVisitor, multiplicativeExpressions) {
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
@@ -148,8 +148,8 @@ TEST( cTreeVisitor, additiveExpressions) {
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
@@ -193,8 +193,8 @@ TEST( cTreeVisitor, shiftExpressions) {
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
@@ -239,8 +239,8 @@ TEST( cTreeVisitor, relationalExpressions) {
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
@@ -296,8 +296,8 @@ TEST( cTreeVisitor, equalityExpressions) {
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
@@ -343,8 +343,8 @@ TEST( cTreeVisitor, andBinExpressions) {
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
@@ -378,8 +378,8 @@ TEST( cTreeVisitor, exOrBinExpressions) {
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
@@ -418,9 +418,9 @@ TEST( cTreeVisitor, orLogExpressions) {
 
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
-
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
@@ -456,8 +456,8 @@ TEST( cTreeVisitor, andLogExpressions) {
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
 
@@ -495,8 +495,8 @@ TEST( cTreeVisitor, assignmentExpressions) {
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     //std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.block_content;
 
@@ -558,8 +558,8 @@ TEST( cTreeVisitor, function_def) {
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::shared_ptr<hl_function_def_node> results = std::static_pointer_cast<hl_function_def_node>(parser.visitor.functions[0]);
 
@@ -613,8 +613,8 @@ TEST( cTreeVisitor, function_call) {
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::shared_ptr<hl_function_def_node> result = std::static_pointer_cast<hl_function_def_node>(parser.visitor.functions[0]);
 
@@ -656,8 +656,8 @@ TEST( cTreeVisitor, definition) {
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
 
 
@@ -697,8 +697,8 @@ TEST( cTreeVisitor, returnTest) {
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
 
     std::shared_ptr<hl_function_def_node> func_def = std::static_pointer_cast<hl_function_def_node>(parser.visitor.functions[0]);
@@ -743,8 +743,8 @@ TEST( cTreeVisitor, ConditionalTest) {
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::shared_ptr<hl_ast_conditional_node> result = std::static_pointer_cast<hl_ast_conditional_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
 
@@ -792,23 +792,14 @@ TEST( cTreeVisitor, loopTest) {
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    std::shared_ptr<variable> v = std::make_shared<variable>("a");
-    v->set_bound_reg(2);
-    v->set_variable_class(variable_input_type);
-    iom["a"] = v;
-    v = std::make_shared<variable>("h");
-    v->set_bound_reg(1);
-    v->set_variable_class(variable_input_type);
-    iom["h"] = v;
-    v = std::make_shared<variable>("j");
-    v->set_bound_reg(15);
-    v->set_variable_class(variable_output_type);
-    iom["j"] = v;
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    io_spec["a"] = variable_input_type;
+    io_spec["h"] = variable_input_type;
+    io_spec["j"] = variable_output_type;
 
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
-    parser.parse(iom);
+    parser.parse(io_spec);
 
     std::shared_ptr<hl_ast_loop_node> result = std::static_pointer_cast<hl_ast_loop_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[3]);
 
@@ -886,24 +877,14 @@ TEST( cTreeVisitor, nestedLoopTest) {
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    std::shared_ptr<variable> v = std::make_shared<variable>("a");
-    v->set_bound_reg(2);
-    v->set_variable_class(variable_input_type);
-    iom["a"] = v;
-    v = std::make_shared<variable>("h");
-    v->set_bound_reg(1);
-    v->set_variable_class(variable_input_type);
-    iom["h"] = v;
-    v = std::make_shared<variable>("j");
-    v->set_bound_reg(15);
-    v->set_variable_class(variable_output_type);
-    iom["j"] = v;
-
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    io_spec["a"] = variable_input_type;
+    io_spec["h"] = variable_input_type;
+    io_spec["j"] = variable_output_type;
 
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
-    parser.parse(iom);
+    parser.parse(io_spec);
     std::shared_ptr<hl_ast_loop_node> result = std::static_pointer_cast<hl_ast_loop_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[3]);
 
 
@@ -1027,15 +1008,12 @@ TEST( cTreeVisitor, array_test){
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    std::shared_ptr<variable> v = std::make_shared<variable>("b");
-    v->set_bound_reg(4);
-    v->set_variable_class(variable_output_type);
-    iom["b"] = v;
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    io_spec["b"] = variable_output_type;
 
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
-    parser.parse(iom);
+    parser.parse(io_spec);
     std::vector<std::shared_ptr<hl_ast_node>> result = std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body();
 
     std::vector<std::shared_ptr<hl_ast_node>> gold_standard;
@@ -1111,8 +1089,8 @@ TEST( cTreeVisitor, array_init){
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::vector<std::shared_ptr<hl_ast_node>> result = std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body();
 
@@ -1177,8 +1155,8 @@ TEST( cTreeVisitor, float_const){
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    parser.parse(iom);
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
 
     std::shared_ptr<hl_definition_node> def = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
     std::shared_ptr<hl_ast_operand> result = std::static_pointer_cast<hl_ast_operand>(def->get_scalar_initializer());

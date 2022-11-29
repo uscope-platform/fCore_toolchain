@@ -31,7 +31,7 @@ public:
     void generate_metadata();
 private:
     std::unordered_map<std::string, std::vector<uint32_t>> sections;
-
+    bool io_mapping_present = false;
 };
 
 

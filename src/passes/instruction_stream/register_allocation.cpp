@@ -18,13 +18,13 @@
 
 register_allocation::register_allocation(
         std::shared_ptr<variable_map> vmap,
-        std::unordered_map<std::string, std::shared_ptr<variable>> &iom,
-        std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm
+        std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm,
+        const std::shared_ptr<std::unordered_map<std::string, int>>& all_map
         ) : stream_pass_base("register allocation") {
 
     early_bindings_map = ebm;
+    allocation_map = all_map;
     var_map = std::move(vmap);
-    iom_map = iom;
     //pre_initialize the registers statuses;
     excluded.reserve(pow(2, fcore_register_address_width));
     for(int i = 0; i< pow(2, fcore_register_address_width); ++i) {
@@ -34,22 +34,6 @@ register_allocation::register_allocation(
     //exclude form allocation pool the register that are used explicitly by the user
     for(int i= 0; i<pow(2, fcore_register_address_width); i++){
         excluded[i] = var_map->at("r"+std::to_string(i))->is_used();
-    }
-
-    for( auto&item:iom_map){
-        if(item.second->get_variable_class() == variable_memory_type || item.second->get_variable_class() == variable_output_type || item.second->get_variable_class() == variable_input_type){
-            for(auto &idx:item.second->get_bound_reg_array()){
-                excluded[idx] = true;
-            }
-        }
-    }
-
-    //exclude form allocation pool the inputs and outputs
-    for(auto &item: *var_map){
-        int bound_reg = item.second->get_bound_reg();
-        if(bound_reg>0){
-            excluded[bound_reg] = true;
-        }
     }
 
     for(auto &item :*early_bindings_map){
@@ -63,11 +47,8 @@ register_allocation::register_allocation(
 }
 
 
-
-
 std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared_ptr<ll_instruction_node> element) {
     std::shared_ptr<ll_instruction_node> ret_val = element;
-
 
     auto arguments = element->get_arguments();
     for(auto &item:arguments){
@@ -75,7 +56,7 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
         std::smatch m;
         std::string s = item->to_str();
         std::regex_match(s, m, re);
-        s = item->get_identifier();
+
         if(item->get_bound_reg() != -1){
             if(item->get_type() == var_type_array){
                 auto arr_idx = item->get_bound_reg_array()[item->get_linear_index()];
@@ -94,9 +75,10 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
 
                     if(!reg_map.is_used(i, item->get_first_occurrence(), item->get_last_occurrence()) & !excluded[i]){
                         found = true;
-                        reg_map.insert(s, i, item->get_first_occurrence(), item->get_last_occurrence());
-                        register_mapping[s] = var_map->at("r"+std::to_string(i));
-                        item = register_mapping[s];
+                        reg_map.insert(item->to_str(), i, item->get_first_occurrence(), item->get_last_occurrence());
+                        register_mapping[item->to_str()] = var_map->at("r"+std::to_string(i));
+                        allocation_map->insert({item->to_str(), i});
+                        item = register_mapping[item->to_str()];
                         break;
                     }
                 }
@@ -106,11 +88,9 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
                 }
             }
         }
-
     }
     ret_val->set_arguments(arguments);
     ret_val = element;
 
     return ret_val;
 }
-

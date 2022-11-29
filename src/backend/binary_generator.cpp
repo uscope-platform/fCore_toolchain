@@ -15,8 +15,12 @@
 
 #include "backend/binary_generator.hpp"
 
-
-void binary_generator::process_stream(const instruction_stream& stream, const std::unordered_map<std::string, std::shared_ptr<variable>>& iom, bool debug_print) {
+void binary_generator::process_stream(
+        const instruction_stream& stream,
+        const std::unordered_map<std::string, std::vector<int>>& dma_map,
+        const std::shared_ptr<std::unordered_map<std::string, int>>& allocation_map,
+        bool debug_print
+) {
     auto code_sect = std::vector<uint32_t>();
     for(const auto& item:stream){
         code_sect.push_back(item->emit());
@@ -29,16 +33,20 @@ void binary_generator::process_stream(const instruction_stream& stream, const st
     ex.add_code_section(code_sect);
 
     auto io_mapping = std::vector<std::pair<uint16_t, uint16_t>>();
-    for(const auto& item:iom){
-        io_mapping.emplace_back(item.second->get_bound_reg(), item.second->get_bound_reg());
+    for(const auto& item:dma_map){
+        uint16_t core_reg = allocation_map->at(item.first);
+        //TODO: DEAL WITH ARRAYS;
+        uint16_t dma_reg = item.second[0];
+        io_mapping.emplace_back(dma_reg,core_reg);
     }
     ex.add_io_mapping(io_mapping);
     ex.generate_metadata();
 }
 
 void binary_generator::process_stream(const instruction_stream &stream, bool debug_print) {
-    auto iom = std::unordered_map<std::string, std::shared_ptr<variable>>();
-    process_stream(stream, iom, debug_print);
+    auto dma_map = std::unordered_map<std::string, std::vector<int>>();
+    auto am = std::make_shared<std::unordered_map<std::string, int>>();
+    process_stream(stream, dma_map, am, debug_print);
 }
 
 

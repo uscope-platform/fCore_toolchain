@@ -18,6 +18,7 @@
 
 #include <string>
 #include <sstream>
+#include <utility>
 #include <vector>
 #include <utility>
 #include <regex>
@@ -39,15 +40,14 @@ class C_language_parser{
     C_language_parser(const std::string &path, std::shared_ptr<define_map> &new_defmap);
 
     void pre_process(const std::vector<std::string> &abs_includes);
-
-    void parse(std::unordered_map<std::string, std::shared_ptr<variable>> &iom);
-
+    void parse(std::unordered_map<std::string, variable_class_t> dma_specs);
     std::shared_ptr<hl_ast_node> AST;
     std::string error;
 
     private:
 
     C_Tree_visitor visitor;
+
 
     std::unique_ptr<C_pre_processor> preproc;
     std::shared_ptr<define_map> dmap;

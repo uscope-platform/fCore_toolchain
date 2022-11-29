@@ -41,12 +41,17 @@
 
 #include <gtest/gtest_prod.h>
 
+typedef enum {
+    dma_type_in=0,
+    dma_type_out=1,
+    dma_type_mem=2,
+} dma_type;
+
 typedef std::unordered_map<std::string, std::shared_ptr<variable>>  varmap_t;
 
 class C_Tree_visitor : public  C_parser::C_grammarBaseListener{
 public:
     explicit C_Tree_visitor();
-    void set_iom_map(std::unordered_map<std::string, std::shared_ptr<variable>> iom);
     void enterFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) override;
     void exitFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) override;
     void exitBlockItem(C_parser::C_grammarParser::BlockItemContext *ctx) override;
@@ -100,6 +105,7 @@ public:
     void exitForContent(C_parser::C_grammarParser::ForContentContext *ctx) override;
     void exitCompilationUnit(C_parser::C_grammarParser::CompilationUnitContext *ctx) override;
 
+    void set_dma_specs(std::unordered_map<std::string, variable_class_t> ds) {dma_specs = std::move(ds);};
     std::shared_ptr<hl_ast_node> get_ast(){
         return root;
     };
@@ -151,7 +157,6 @@ private:
     std::vector<std::shared_ptr<hl_ast_node>> loop_body;
 
     std::shared_ptr<hl_ast_node> root;
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom_map;
 
     std::stack<std::shared_ptr<hl_ast_node>> outer_block_nodes;
     std::stack<std::vector<std::shared_ptr<hl_ast_node>>> outer_block_contents;
@@ -159,6 +164,7 @@ private:
     std::stack<std::shared_ptr<hl_ast_node>> outer_block_current_item;
 
     std::stack<std::string> outer_block_types;
+    std::unordered_map<std::string, variable_class_t> dma_specs;
 
     bool in_function_declaration;
     bool in_function_body;

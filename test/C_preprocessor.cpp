@@ -46,15 +46,14 @@ TEST( cFrontend, preprocessor_define) {
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    std::shared_ptr<variable> var_a = std::make_shared<variable>("a");
-    var_a->set_bound_reg(19);
-    var_a->set_variable_class(variable_input_type);
-    iom["a"] = var_a;
+
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    io_spec["a"] = variable_input_type;
 
     C_language_parser parser(input_file,result_def);
     parser.pre_process({});
-    parser.parse(iom);
+
+    parser.parse(io_spec);
 
     std::shared_ptr<hl_definition_node> result = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
 
@@ -74,15 +73,12 @@ TEST( cFrontend, preprocessor_include) {
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom;
-    std::shared_ptr<variable> var_a = std::make_shared<variable>("a");
-    var_a->set_bound_reg(19);
-    var_a->set_variable_class(variable_input_type);
-    iom["a"] = var_a;
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    io_spec["a"] = variable_input_type;
 
     C_language_parser parser(input_file,result_def);
     parser.pre_process({});
-    parser.parse(iom);
+    parser.parse(io_spec);
 
     std::shared_ptr<hl_definition_node> result = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
 

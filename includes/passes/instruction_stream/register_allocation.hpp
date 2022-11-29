@@ -30,17 +30,18 @@ class register_allocation : public stream_pass_base{
 public:
     register_allocation(
             std::shared_ptr<variable_map> vmap,
-            std::unordered_map<std::string, std::shared_ptr<variable>> &iom,
-            std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm
+            std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm,
+            const std::shared_ptr<std::unordered_map<std::string, int>>& all_map
             );
     std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
 private:
     std::shared_ptr<variable_map> var_map;
-    std::unordered_map<std::string, std::shared_ptr<variable>> iom_map;
+    std::unordered_map<std::string, int> io_reservations;
     std::unordered_map<std::string, std::shared_ptr<variable>> register_mapping;
     register_map reg_map;
     std::shared_ptr<std::unordered_map<std::string, memory_range_t>> early_bindings_map;
     std::vector<bool> excluded;
+    std::shared_ptr<std::unordered_map<std::string, int>> allocation_map;
 };
 
 
