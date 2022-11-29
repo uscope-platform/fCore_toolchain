@@ -20,8 +20,8 @@ array_index_lowering::array_index_lowering() : pass_base<hl_ast_node>("array ind
 }
 
 std::shared_ptr<hl_ast_node> array_index_lowering::process_leaf(std::shared_ptr<hl_ast_node> element) {
-    std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(element);
     if(element->node_type==hl_ast_node_type_operand){
+        std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(element);
         if(op->get_type()==var_type_array){
             std::vector<int> array_idx;
             for(auto&item:op->get_array_index()){
@@ -31,6 +31,7 @@ std::shared_ptr<hl_ast_node> array_index_lowering::process_leaf(std::shared_ptr<
             op->get_variable()->set_array_index(array_idx);
             op->set_array_index({});
         }
+        return op;
     }
-    return op;
+    return element;
 }
