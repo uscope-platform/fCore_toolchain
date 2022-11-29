@@ -17,7 +17,7 @@
 #include "passes/high_level/dead_load_elimination.hpp"
 
 dead_load_elimination::dead_load_elimination() : pass_base<hl_ast_node>("dead_load_elimination") {
-
+    efi_mode = false;
 }
 
 std::shared_ptr<hl_ast_node> dead_load_elimination::process_global(std::shared_ptr<hl_ast_node> element) {
@@ -101,16 +101,34 @@ void dead_load_elimination::search_usages(std::shared_ptr<hl_expression_node> el
 
     if(element->get_rhs()->node_type == hl_ast_node_type_operand){
         search_usages(std::static_pointer_cast<hl_ast_operand>(element->get_rhs()));
+    } else if(element->get_rhs()->node_type == hl_ast_node_type_expr){
+        auto rhs_expr = std::static_pointer_cast<hl_expression_node>(element->get_rhs());
+        if(rhs_expr->get_type() == expr_efi){
+            efi_mode = true;
+            search_usages(rhs_expr);
+            efi_mode = false;
+        }
     }
 }
 
 
 void dead_load_elimination::search_usages(std::shared_ptr<hl_ast_operand> element) {
-    if(last_loads_map.contains(element->get_identifier()) && !element->get_variable()->is_constant()){
-        if(last_loads_map[element->get_identifier()].first_usage == -1){
-            last_loads_map[element->get_identifier()].first_usage = idx;
+    if(efi_mode){
+        for(auto &item:last_loads_map){
+            if(item.first.starts_with(element->get_identifier()+"_")){
+                if(item.second.first_usage == -1){
+                    item.second.first_usage = idx;
+                }
+            }
+        }
+    } else {
+        if(last_loads_map.contains(element->get_identifier()) && !element->get_variable()->is_constant()){
+            if(last_loads_map[element->get_identifier()].first_usage == -1){
+                last_loads_map[element->get_identifier()].first_usage = idx;
+            }
         }
     }
+
 }
 
 std::shared_ptr<hl_ast_node> dead_load_elimination::purge_dead_loads(std::shared_ptr<hl_ast_node> element) {
