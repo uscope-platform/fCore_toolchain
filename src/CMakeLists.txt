@@ -23,8 +23,9 @@ set(FCORE_COMMON_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/ll_pass_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/loop_implementation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/pseudo_instructions_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/instruction_counting_pass.cpp#
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/instruction_counting_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/load_intercalation_pass.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/io_constant_tracking.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/stream_pass_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/variable_lifetime_mapping.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/variable_mapping.cpp
@@ -49,9 +50,12 @@ set(FCORE_CC_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_expression_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_function_call_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_ast_operand.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/constants_tracker.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/array_index_lowering.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/dead_load_elimination.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/constant_folding_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/constant_propagation.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/array_initialization_substitution.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/hl_pass_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/hl_variable_mapping.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/fuction_mangling_pass.cpp
@@ -59,12 +63,10 @@ set(FCORE_CC_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/inlined_function_elimination.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/inline_constant_extraction.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/intrinsics_implementation_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/array_initialization_propagation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/function_inlining_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/division_implementation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/code_block_inlining_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/dead_variable_elimination.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/array_scalarization_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/conditional_implementation_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/loop_unrolling_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/normalization_pass.cpp
@@ -94,6 +96,10 @@ set(FCORE_EMU_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/efi_implementations/efi_dispatcher.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/emulator_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/emulator_schema_validator.cpp
+        )
+
+set(FCORE_DEVTOOLS_SRCS
+        ${CMAKE_CURRENT_SOURCE_DIR}/dev_server/rest_handler.cpp
         )
 
 set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_DIS_SRCS} ${FCORE_EMU_SRCS} PARENT_SCOPE)
@@ -134,3 +140,19 @@ if(${INCLUDE_EMULATOR})
     install(FILES ../third_party/fp_ip_cmodel/lib/libIp_floating_point_v7_1_bitacc_cmodel.so
             DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif(${INCLUDE_EMULATOR})
+
+
+if(${INCLUDE_DEVTOOLS})
+    add_executable(fCore_dev_server ${FCORE_CC_SRCS} ${FCORE_DEVTOOLS_SRCS} ${C_PARSER_SRCS} fCore_dev_server.cpp)
+    target_link_libraries(fCore_dev_server PRIVATE
+            cpprestsdk::cpprest
+            spdlog
+            nlohmann_json::nlohmann_json
+            CLI11::CLI11
+            crypto
+            antlr4_static
+            common_srcs
+            )
+
+endif(${INCLUDE_DEVTOOLS})
+

@@ -23,6 +23,7 @@
 #include <iostream>
 
 #include <nlohmann/json.hpp>
+#include "tools/array_linearizer.hpp"
 
 typedef enum {
     variable_input_type = 0,
@@ -46,6 +47,9 @@ public:
     variable(std::string n, float value);
     variable(std::string n, int value);
 
+    std::string get_identifier();
+
+    int get_linear_index();
     float get_const_f();
     int get_const_i();
 
@@ -95,6 +99,12 @@ public:
     void set_contiguity(bool ac) { contiguity = ac;};
     bool is_contiguous() {return contiguity;};
 
+    std::vector<int> get_array_shape() const {return array_shape;};
+    void set_array_shape(std::vector<int> as) {array_shape = std::move(as);};
+
+    std::vector<int> get_array_index() const {return array_index;};
+    void set_array_index(std::vector<int> ai) {array_index = std::move(ai);};
+
     nlohmann::json dump();
 
     static std::shared_ptr<variable> deep_copy(const std::shared_ptr<variable>& original);
@@ -116,6 +126,9 @@ private:
 
     int const_i;
     float const_f;
+
+    std::vector<int> array_shape;
+    std::vector<int> array_index;
 
 };
 

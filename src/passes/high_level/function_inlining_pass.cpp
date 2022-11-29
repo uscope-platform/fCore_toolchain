@@ -274,9 +274,14 @@ function_inlining_pass::substitute_loop_arguments(const std::shared_ptr<hl_ast_l
     }
     statement->set_loop_content(tmp_vect);
 
-    statement->set_init_statement(std::static_pointer_cast<hl_definition_node>(substitute_arguments(statement->get_init_statement(), parameters)));
-    statement->set_condition(std::static_pointer_cast<hl_expression_node>(substitute_arguments(statement->get_condition(), parameters)));
-    statement->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(substitute_arguments(statement->get_init_statement(), parameters)));
+    auto new_init = substitute_arguments(statement->get_init_statement(), parameters);
+    statement->set_init_statement(std::static_pointer_cast<hl_definition_node>(new_init));
+
+    auto new_cond = substitute_arguments(statement->get_condition(), parameters);
+    statement->set_condition(std::static_pointer_cast<hl_expression_node>(new_cond));
+
+    auto new_iter = substitute_arguments(statement->get_iteration_expr(), parameters);
+    statement->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(new_iter));
 
     return statement;
 }

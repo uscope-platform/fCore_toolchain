@@ -75,21 +75,28 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
         std::smatch m;
         std::string s = item->to_str();
         std::regex_match(s, m, re);
+        s = item->get_identifier();
         if(item->get_bound_reg() != -1){
-            register_mapping[item->to_str()] = var_map->at("r"+std::to_string(item->get_bound_reg()));
-            item = register_mapping[item->to_str()];
+            if(item->get_type() == var_type_array){
+                auto arr_idx = item->get_bound_reg_array()[item->get_linear_index()];
+                register_mapping[s] = var_map->at("r"+std::to_string(arr_idx));
+            } else {
+                register_mapping[s] = var_map->at("r"+std::to_string(item->get_bound_reg()));
+            }
+
+            item = register_mapping[s];
         } else{
-            if(register_mapping.count(item->to_str())){
-                item = register_mapping[item->to_str()];
+            if(register_mapping.count(s)){
+                item = register_mapping[s];
             }else if(m.empty() && !item->is_constant()){
                 bool found = false;
                 for(int i = 0; i<pow(2, fcore_register_address_width);i++){
 
                     if(!reg_map.is_used(i, item->get_first_occurrence(), item->get_last_occurrence()) & !excluded[i]){
                         found = true;
-                        reg_map.insert(item->to_str(), i, item->get_first_occurrence(), item->get_last_occurrence());
-                        register_mapping[item->to_str()] = var_map->at("r"+std::to_string(i));
-                        item = register_mapping[item->to_str()];
+                        reg_map.insert(s, i, item->get_first_occurrence(), item->get_last_occurrence());
+                        register_mapping[s] = var_map->at("r"+std::to_string(i));
+                        item = register_mapping[s];
                         break;
                     }
                 }

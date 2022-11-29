@@ -107,6 +107,8 @@ bool operator==(const variable &lhs, const variable &rhs) {
     cond &= lhs.const_i == rhs.const_i;
     cond &= lhs.const_f == rhs.const_f;
     cond &= lhs.contiguity == rhs.contiguity;
+    cond &= lhs.array_index == rhs.array_index;
+    cond &= lhs.array_shape == rhs.array_shape;
     return cond;
 }
 
@@ -169,6 +171,8 @@ std::shared_ptr<variable> variable::deep_copy(const std::shared_ptr <variable>& 
     copied_var->const_i = original->const_i;
     copied_var->const_f = original->const_f;
     copied_var->contiguity = original->contiguity;
+    copied_var->array_shape = original->array_shape;
+    copied_var->array_index = original->array_index;
     return copied_var;
 }
 
@@ -185,6 +189,19 @@ nlohmann::json variable::dump() {
     ret_val["used"] = used;
     ret_val["const_i"] = const_i;
     ret_val["const_f"] = const_f;
-
+    ret_val["array_shape"] = array_shape;
+    ret_val["array_index"] = array_index;
     return ret_val;
+}
+
+std::string variable::get_identifier() {
+    std::string ret = name;
+    for(auto &idx:array_index){
+        ret += "_" + std::to_string(idx);
+    }
+    return ret;
+}
+
+int variable::get_linear_index() {
+    return linearize_array(array_shape, array_index);
 }

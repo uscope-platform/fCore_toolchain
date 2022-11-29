@@ -22,7 +22,7 @@
 
 class constant_merging : public stream_pass_base {
 public:
-    constant_merging();
+    constant_merging(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam);
     std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
 
 private:
@@ -31,13 +31,16 @@ private:
     std::unordered_map<float, std::shared_ptr<variable>> float_const_map;
     std::unordered_map<uint32_t, std::shared_ptr<variable>> int_const_map;
     std::unordered_map<std::string, std::shared_ptr<variable>> reassignments_map;
+    void map_exclusions(std::shared_ptr<ll_instruction_node> element);
     std::shared_ptr<ll_instruction_node> merge_register_inst(const std::shared_ptr<ll_register_instr_node>& instr);
     std::shared_ptr<ll_instruction_node> merge_conv_instr(const std::shared_ptr<ll_conversion_instr_node>& instr);
     std::shared_ptr<ll_instruction_node> merge_load_const_instr(const std::shared_ptr<ll_load_constant_instr_node>& instr);
     std::shared_ptr<ll_instruction_node> merge_interc_const(const std::shared_ptr<ll_intercalated_const_instr_node>& instr);
     std::shared_ptr<variable> get_merged_constant(std::shared_ptr<variable> v);
+    bool is_last_io_assignment(const std::shared_ptr<variable> &dest);
     bool delete_intercalated_const;
     int idx;
+    std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> assignments_map;
 };
 
 

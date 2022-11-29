@@ -31,7 +31,7 @@
 
 class C_pre_processor {
 public:
-    explicit C_pre_processor(std::string &path,  std::shared_ptr<define_map> &defmap);
+    explicit C_pre_processor(const std::string &path,  std::shared_ptr<define_map> &defmap);
     std::string get_preprocessed_file();
     void set_absolute_includes(std::vector<std::string> list);
     void process_file();

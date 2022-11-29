@@ -164,20 +164,6 @@ TEST(EndToEndC, conditional) {
     ASSERT_EQ(gold_standard, result);
 }
 
-TEST(EndToEndC, array_scalarization) {
-    std::string input_file = "c_e2e/test_array_scalarization.c";
-
-    std::vector<std::string> includes;
-
-    fcore_cc compiler(input_file, includes,true, 0);
-    std::vector<uint32_t> result =  compiler.get_hexfile(false);
-
-
-    std::vector<uint32_t> gold_standard = {0x26, 0x40000000, 0x60843, 0x26, 0x40400000, 0x80863, 0x21083, 0x62023, 0x21063, 0xc};
-
-    ASSERT_EQ(gold_standard, result);
-}
-
 
 TEST(EndToEndC, loop) {
     std::string input_file = "c_e2e/test_full_loop.c";
@@ -188,7 +174,7 @@ TEST(EndToEndC, loop) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x1e2061, 0xa1881, 0x1e2061, 0xa1881, 0xc};
+    std::vector<uint32_t> gold_standard = {0x1e18e1, 0x163861, 0x1e2101, 0x184081, 0xc};
 
    ASSERT_EQ(gold_standard, result);
 }
@@ -203,7 +189,7 @@ TEST(EndToEndC, nested_loop) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0xa2061, 0xc2061, 0xa3861, 0xc3861,0xa2061, 0xc2061, 0xa3861, 0xc3861, 0xc};
+    std::vector<uint32_t> gold_standard = {0x162861, 0x163061,0x182881,  0x183081, 0xc};
 
      ASSERT_EQ(gold_standard, result);
 }
@@ -217,7 +203,7 @@ TEST(EndToEndC, array_initialization) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x26, 0x41300000, 0x43823, 0x23843, 0xc};
+    std::vector<uint32_t> gold_standard = {0x86, 0x40000000,0x26, 0x41300000, 0x43823, 0xa3843, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 }
@@ -290,7 +276,7 @@ TEST(EndToEndC, iom_initialization){
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x106,0x3F800000,0x126, 0x40000000, 0x146, 0x40400000, 0x166, 0x40800000, 0x286, 0x40400000, 0xc};
+    std::vector<uint32_t> gold_standard = {0x106,0x3F800000,0x126, 0x40000000, 0x146, 0x40400000, 0x166, 0x40800000, 0x286, 0x40800000, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 }
@@ -367,12 +353,28 @@ TEST(EndToEndC, essential_variable_initialization) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0xE6, 0x3F800000, 0xcc8e9, 0xec8e1, 0xa00e1, 0xc};
+    std::vector<uint32_t> gold_standard = {0x26, 0x3F800000, 0xcc829, 0xec821, 0xa00e1, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
 }
 
+
+TEST(EndToEndC, test_constant_propagation) {
+
+    std::string input_file = "c_e2e/test_constant_propagation.c";
+
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(input_file, includes, true, 0);
+    std::vector<uint32_t> result =  compiler.get_hexfile(false);
+
+
+    std::vector<uint32_t> gold_standard = {0x226,0x3F800000, 0x222a21, 0x242a41, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
 
 
 TEST(EndToEndC, negative_leading_sum) {
@@ -454,11 +456,11 @@ TEST(EndToEndC, loop_index_expression) {
 
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(input_file, includes, true, 2);
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x7b9001, 0x7b9fa1, 0xc};
+    std::vector<uint32_t> gold_standard = {0x786, 0, 0x7a6, 0x0, 0x7b97a1, 0x7b9fa1, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
@@ -476,7 +478,7 @@ TEST(EndToEndC, loop_index_expression_multidim) {
     std::vector<uint32_t> result =  compiler.get_hexfile(false);
 
 
-    std::vector<uint32_t> gold_standard = {0x7b8801, 0x7bafa1, 0xc};
+    std::vector<uint32_t> gold_standard = {0x786, 0, 0x7a6, 0x0, 0x7b8fa1, 0x7bafa1, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
@@ -503,7 +505,7 @@ TEST(EndToEndC, efi_load_elimination) {
 
     std::string input_file = "c_e2e/test_efi_load_elimination.c";
 
-
+    // TODO: DEAD LOAD ELIMINATION SHOULD BE DISABLED FOR ARRAYS USED IN EFI
     std::vector<std::string> includes;
 
     fcore_cc compiler(input_file, includes, true, 0);

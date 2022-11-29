@@ -29,6 +29,7 @@
 #include "passes/instruction_stream/constant_merging.hpp"
 #include "passes/instruction_stream/zero_assignment_removal_pass.hpp"
 #include "passes/instruction_stream/bound_register_mapping.hpp"
+#include "passes/instruction_stream/io_constant_tracking.hpp"
 #include "data_structures/common/memory_tracker.hpp"
 
 class stream_pass_manager {

@@ -29,6 +29,7 @@ public:
     void set_name(std::string name);
     std::string get_name(){ return name;};
     c_types_t get_type(){ return type;};
+
     bool is_initialized();
     bool is_scalar();
     void set_constant(bool c);
@@ -39,6 +40,7 @@ public:
 
     std::shared_ptr<hl_ast_node> get_scalar_initializer();
     void set_scalar_initializer(const std::shared_ptr<hl_ast_node>& init);
+    void set_scalar_initializer(const std::shared_ptr<hl_ast_node>& init, int idx);
 
     std::vector<std::shared_ptr<hl_ast_node>> get_array_initializer() {return initializer;};
     void set_array_initializer(const std::vector<std::shared_ptr<hl_ast_node>> &init) {initializer = init;};
@@ -49,8 +51,6 @@ public:
     void set_array_shape(std::vector<int> &shape){array_shape = shape;};
     std::vector<int> get_array_shape(){return array_shape;};
 
-    unsigned int get_array_size();
-    unsigned int get_flattened_idx(std::vector<int> md_idx);
     nlohmann::json dump() override;
 
     std::string pretty_print() override;

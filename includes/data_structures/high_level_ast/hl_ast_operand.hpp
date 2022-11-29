@@ -29,6 +29,7 @@ public:
     // VARIABLE NAME
     void set_name(const std::string &name);
     std::string get_name() { return inner_variable->get_name();};
+    std::string get_identifier() { return inner_variable->get_identifier();};
     // INTEGER IMMEDIATE VALUE
     void set_immediate(const int &v);
     [[nodiscard]] int get_int_value() const;
@@ -53,6 +54,7 @@ public:
     nlohmann::json dump() override;
 
     bool is_terminal() override {return true;}
+    bool is_scalar() {return  inner_variable->get_type()!=var_type_array;};
     std::string pretty_print() override;
     operator std::string();
     friend bool operator==(const hl_ast_operand& lhs, const hl_ast_operand& rhs);

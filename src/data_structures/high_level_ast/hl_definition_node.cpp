@@ -46,6 +46,11 @@ std::shared_ptr<hl_ast_node> hl_definition_node::get_scalar_initializer() {
     return initializer[0];
 }
 
+void hl_definition_node::set_scalar_initializer(const std::shared_ptr<hl_ast_node> &init, int idx) {
+    if(initializer.size()<idx) throw std::runtime_error("Error: Attempt to set undefined initializer");
+    initializer[idx] = init;
+}
+
 std::string hl_definition_node::pretty_print() {
 
 
@@ -96,13 +101,6 @@ bool hl_definition_node::is_scalar() {
     return inner_variable->get_type() != var_type_array;
 }
 
-unsigned int hl_definition_node::get_array_size() {
-    unsigned  int retval = array_shape[0];
-    for(int i = 1; i<array_shape.size(); i++) {
-        retval *= array_shape[i];
-    }
-    return retval;
-}
 
 nlohmann::json hl_definition_node::dump() {
     nlohmann::json retval = hl_ast_node::dump();

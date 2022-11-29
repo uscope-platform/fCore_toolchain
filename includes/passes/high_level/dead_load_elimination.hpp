@@ -39,6 +39,7 @@ private:
     void search_constants(std::shared_ptr<hl_ast_node> element);
     std::shared_ptr<hl_ast_node> purge_dead_loads(std::shared_ptr<hl_ast_node> element);
     std::unordered_map<std::string, load_t> last_loads_map;
+    bool efi_mode;
 };
 
 

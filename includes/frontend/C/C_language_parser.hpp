@@ -36,7 +36,7 @@
 class C_language_parser{
     public:
     explicit C_language_parser();
-    C_language_parser(std::string &path, std::shared_ptr<define_map> &new_defmap);
+    C_language_parser(const std::string &path, std::shared_ptr<define_map> &new_defmap);
 
     void pre_process(const std::vector<std::string> &abs_includes);
     std::unordered_map<std::string, std::shared_ptr<variable>> get_iom_map() { return preproc->get_iom_map();};
