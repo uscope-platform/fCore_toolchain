@@ -203,6 +203,9 @@ std::string variable::get_identifier() {
 }
 
 int variable::get_linear_index() {
+    if(variable_type == var_type_scalar || variable_type == var_type_float_const || variable_type == var_type_int_const){
+        return -1;
+    }
     return linearize_array(array_shape, array_index);
 }
 

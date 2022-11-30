@@ -22,8 +22,6 @@ int add (int a, int b){
 
 int main(){
     int h[4];
-
-    int h[4];
     int a[4];
     int c[4];
 

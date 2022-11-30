@@ -18,6 +18,7 @@
 
 int main(){
 
+
     float a[2];
     float b = a[0] + a[1];
     float c[2];

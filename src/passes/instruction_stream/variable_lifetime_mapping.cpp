@@ -45,29 +45,29 @@ variable_lifetime_mapping::apply_pass(std::shared_ptr<ll_instruction_node> eleme
 }
 
 void variable_lifetime_mapping::map_register_inst(const std::shared_ptr<ll_register_instr_node> &instr) {
-    std::shared_ptr<variable> op_a = vmap->at(instr->get_operand_a()->to_str());
-    vmap->insert(op_a->to_str(), update_variable_lifetime(op_a));
+    std::shared_ptr<variable> op_a = vmap->at(instr->get_operand_a()->get_identifier());
+    vmap->insert(op_a->get_identifier(), update_variable_lifetime(op_a));
 
-    std::shared_ptr<variable> op_b = vmap->at(instr->get_operand_b()->to_str());
-    vmap->insert(op_b->to_str(), update_variable_lifetime(op_b));
+    std::shared_ptr<variable> op_b = vmap->at(instr->get_operand_b()->get_identifier());
+    vmap->insert(op_b->get_identifier(), update_variable_lifetime(op_b));
 
-    std::shared_ptr<variable> dest = vmap->at(instr->get_destination()->to_str());
-    vmap->insert(dest->to_str(), update_variable_lifetime(dest));
+    std::shared_ptr<variable> dest = vmap->at(instr->get_destination()->get_identifier());
+    vmap->insert(dest->get_identifier(), update_variable_lifetime(dest));
 
 }
 
 void variable_lifetime_mapping::map_conv_instr(const std::shared_ptr<ll_conversion_instr_node> &instr) {
-    std::shared_ptr<variable> src = vmap->at(instr->get_source()->to_str());
-    vmap->insert(src->to_str(), update_variable_lifetime(src));
+    std::shared_ptr<variable> src = vmap->at(instr->get_source()->get_identifier());
+    vmap->insert(src->get_identifier(), update_variable_lifetime(src));
 
-    std::shared_ptr<variable> dest = vmap->at(instr->get_destination()->to_str());
-    vmap->insert(dest->to_str(), update_variable_lifetime(dest));
+    std::shared_ptr<variable> dest = vmap->at(instr->get_destination()->get_identifier());
+    vmap->insert(dest->get_identifier(), update_variable_lifetime(dest));
 
 }
 
 void variable_lifetime_mapping::map_load_const_instr(const std::shared_ptr<ll_load_constant_instr_node> &instr) {
-    std::shared_ptr<variable> dest = vmap->at(instr->get_destination()->to_str());
-    vmap->insert(dest->to_str(), update_variable_lifetime(dest));
+    std::shared_ptr<variable> dest = vmap->at(instr->get_destination()->get_identifier());
+    vmap->insert(dest->get_identifier(), update_variable_lifetime(dest));
 }
 
 std::shared_ptr<variable> variable_lifetime_mapping::update_variable_lifetime(const std::shared_ptr<variable>& var) const {

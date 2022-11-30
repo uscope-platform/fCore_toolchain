@@ -18,7 +18,7 @@
 
 int linearize_array(std::vector<int> shape, std::vector<int> indices){
 
-    unsigned int linearized_idx = indices.back();
+    int linearized_idx = indices.back();
     for(int i = indices.size()-2; i>=0; --i){
         int interm_factor = 1;
         for(int j = shape.size()-1; j>i; --j){

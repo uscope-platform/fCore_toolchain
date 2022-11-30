@@ -77,6 +77,7 @@ set(FCORE_CC_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/high_level_ast_lowering.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/expression_evaluator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/schema_validators/schema_validator_base.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/schema_validators/schema_validators.cpp
         )
 
 
@@ -145,7 +146,7 @@ endif(${INCLUDE_EMULATOR})
 
 
 if(${INCLUDE_DEVTOOLS})
-    add_executable(fCore_dev_server ${FCORE_CC_SRCS} ${FCORE_DEVTOOLS_SRCS} ${C_PARSER_SRCS} fCore_dev_server.cpp)
+    add_executable(fCore_dev_server  ${FCORE_CC_SRCS} ${FCORE_DEVTOOLS_SRCS} ${C_PARSER_SRCS} fCore_dev_server.cpp)
     target_link_libraries(fCore_dev_server PRIVATE
             cpprestsdk::cpprest
             spdlog

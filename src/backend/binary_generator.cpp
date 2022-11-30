@@ -34,20 +34,34 @@ void binary_generator::process_stream(
 
     auto io_mapping = std::set<std::pair<uint16_t, uint16_t>>();
     for(const auto& item:dma_map){
-        if(allocation_map->contains(item.first)){
-            for(auto &allocated_item:allocation_map->at(item.first)){
-                if(allocated_item.second != -1){
-                    uint16_t core_reg = allocated_item.first;
-                    uint16_t dma_reg = item.second[allocated_item.second];
-                    io_mapping.emplace(dma_reg,core_reg);
-                } else {
-                    uint16_t core_reg = allocated_item.first;
-                    uint16_t dma_reg = item.second[0];
-                    io_mapping.emplace(dma_reg,core_reg);
+        if(item.second.size() == 1){
+            if(allocation_map->contains(item.first)){
+                for(auto &allocated_item:allocation_map->at(item.first)){
+                    if(allocated_item.second != -1){
+                        uint16_t core_reg = allocated_item.first;
+                        uint16_t dma_reg = item.second[allocated_item.second];
+                        io_mapping.emplace(dma_reg,core_reg);
+                    } else {
+                        uint16_t core_reg = allocated_item.first;
+                        uint16_t dma_reg = item.second[0];
+                        io_mapping.emplace(dma_reg,core_reg);
+                    }
+                }
+
+            }
+        } else{
+            for(int i = 0; i< item.second.size(); i++){
+                auto identifier = item.first+"_"+std::to_string(i);
+                if(allocation_map->contains(identifier)){
+                    for(auto &allocated_item:allocation_map->at(identifier)){
+                        uint16_t core_reg = allocated_item.first;
+                        uint16_t dma_reg = item.second[i];
+                        io_mapping.emplace(dma_reg,core_reg);
+                    }
                 }
             }
-
         }
+
     }
     ex.add_io_mapping(io_mapping);
     ex.generate_metadata();

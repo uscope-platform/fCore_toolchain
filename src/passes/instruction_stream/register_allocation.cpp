@@ -45,13 +45,21 @@ register_allocation::register_allocation(
 
 void register_allocation::setup() {
     int memory_idx = 0;
-    int n_regs = 2<<(fcore_register_address_width-1);
+    int inputs_idx = 1;
 
-    for(auto &item:*var_map){
-        if(item.second->get_variable_class() == variable_memory_type){
-            if(!excluded[n_regs-1-memory_idx])
-                memory_vars[item.first] = n_regs-memory_idx-1;
+    int n_regs = 2 << (fcore_register_address_width - 1);
+
+    for(auto &item: *var_map) {
+        auto vc = item.second->get_variable_class();
+        if (vc == variable_memory_type) {
+            if (!excluded[n_regs - 1 - memory_idx]) {
+                memory_vars[item.first] = n_regs - memory_idx - 1;
+                excluded[n_regs - memory_idx - 1] = true;
+            }
             memory_idx++;
+        } else if (vc == variable_input_type) {
+            allocate_register(item.second, inputs_idx);
+            inputs_idx++;
         }
     }
 }
@@ -70,12 +78,14 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
         s = item->get_identifier();
 
         auto bound_reg = item->get_bound_reg();
+
         if(bound_reg != -1){
             register_mapping[s] = var_map->at("r"+std::to_string(bound_reg));
             item = register_mapping[s];
         } else if (memory_vars.contains(item->get_name())) {
             allocate_register(item, memory_vars[item->get_name()]);
             item = register_mapping[s];
+
         } else{
             if(register_mapping.count(s)){
                 item = register_mapping[s];
@@ -106,31 +116,14 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
 void register_allocation::allocate_register(std::shared_ptr<variable> &var, int reg_addr) {
     reg_map.insert(var->get_identifier(), reg_addr, var->get_first_occurrence(), var->get_last_occurrence());
     register_mapping[var->get_identifier()] = var_map->at("r"+std::to_string(reg_addr));
-    int array_index = -1;
-    auto var_name = demangle_array(var->get_identifier(), array_index);
-    if(allocation_map->contains(var_name)){
-        allocation_map->at(var_name).push_back({reg_addr, array_index});
+    if(allocation_map->contains(var->get_identifier())){
+        allocation_map->at(var->get_identifier()).push_back({reg_addr, var->get_linear_index()});
     } else {
         auto item = std::vector<std::pair<int, int>>();
-        item.emplace_back(reg_addr, array_index);
-        allocation_map->emplace(var_name, item);
+        item.emplace_back(reg_addr, var->get_linear_index());
+        allocation_map->emplace(var->get_identifier(), item);
     }
     if(var->get_variable_class() == variable_output_type){
         excluded[reg_addr] = true;
     }
 }
-
-std::string register_allocation::demangle_array(const std::string &s, int &index) {
-    std::string array_prefix = "_fcmglr_flattened_array_";
-    std::string arr_name;
-    if(s.starts_with(array_prefix)){
-        arr_name = s.substr(array_prefix.size());
-        auto suffix_start = arr_name.find_last_of('_');
-        index = std::stoi(arr_name.substr(suffix_start+1));
-        return arr_name.substr(0, suffix_start);
-    }else{
-        return s;
-    }
-
-}
-

@@ -55,6 +55,7 @@ int main(int argc, char **argv) {
 
     std::vector<std::string> include_files = {""};
     fcore_cc cc_engine(input_file, include_files, false, dump_ast_level);
+
     if(spec.contains("dma_io")){
         cc_engine.set_dma_map(spec["dma_io"]);
     }
