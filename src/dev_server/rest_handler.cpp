@@ -14,6 +14,7 @@
 
 #include "dev_server/rest_handler.hpp"
 
+
 void rest_handler::handle_get(const web::http::http_request& message) {
 
     auto ep = message.relative_uri().path();
@@ -44,11 +45,26 @@ void rest_handler::handle_post(const web::http::http_request& message) {
 web::http::status_code rest_handler::handle_compile_request(const web::json::value &prog, std::string &error) {
 
 
-    std::string working_file = prog.at("path").as_string();
+    std::string working_source = prog.at("path").as_string();
     std::string current_path = std::filesystem::current_path();
-    chdir(std::filesystem::path(working_file).parent_path().c_str());
+    chdir(std::filesystem::path(working_source).parent_path().c_str());
     std::vector<std::string> include_files = {""};
-    fcore_cc cc_engine(working_file, include_files, false, 2);
+
+    std::string working_spec = prog.at("spec").as_string();
+    nlohmann::json spec;
+    if(!working_spec.empty()) {
+        try {
+            spec = get_specs(working_spec);
+        } catch (std::exception &e) {
+            return web::http::status_codes::InternalError;
+        }
+    }
+
+
+    fcore_cc cc_engine(working_source, include_files, false, 2);
+    if(spec.contains("dma_io")){
+        cc_engine.set_dma_map(spec["dma_io"]);
+    }
     cc_engine.compile();
     error = cc_engine.get_errors();
     dump = cc_engine.get_dump();
@@ -91,3 +107,16 @@ void rest_handler::handle_option(const web::http::http_request &message) {
     sp.headers().add("Access-Control-Max-Age","6400");
     message.reply(sp);
 }
+
+nlohmann::json rest_handler::get_specs(const std::string &path) {
+    std::ifstream ifs(path);
+    nlohmann::json spec = nlohmann::json::parse(ifs);
+    try{
+        compiler_schema_validator validator;
+        validator.validate(spec);
+    } catch(std::invalid_argument &ex){
+        throw std::runtime_error("");
+    }
+    return spec;
+}
+
