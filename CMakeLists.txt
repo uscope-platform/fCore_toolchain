@@ -96,9 +96,6 @@ if(${INCLUDE_DEVTOOLS})
 
 endif(${INCLUDE_DEVTOOLS})
 
-
-
-
 add_subdirectory(src)
 
 if(${BUILD_TESTS})

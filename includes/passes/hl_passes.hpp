@@ -70,10 +70,9 @@ static hl_pass_manager create_hl_pass_manager(
 
     manager.add_morphing_pass(std::make_shared<loop_unrolling_pass>()); // pass #9
     manager.add_morphing_pass(std::make_shared<array_initialization_substitution>()); // pass #10
-    manager.add_morphing_pass(std::make_shared<early_register_allocation_pass>(bindings_map)); // pass #11
-    manager.add_morphing_pass(std::make_shared<conditional_implementation_pass>()); // pass #12
-    manager.add_morphing_pass(std::make_shared<normalization_pass>()); // pass #13
-
+    manager.add_morphing_pass(std::make_shared<conditional_implementation_pass>()); // pass #11
+    manager.add_morphing_pass(std::make_shared<normalization_pass>()); // pass #12
+    manager.add_morphing_pass(std::make_shared<early_register_allocation_pass>(bindings_map)); // pass #13
 
     manager.add_morphing_pass(std::make_shared<dead_variable_elimination>());  // pass #14
     std::shared_ptr<constant_folding_pass> const_fold = std::make_shared<constant_folding_pass>();
@@ -81,8 +80,8 @@ static hl_pass_manager create_hl_pass_manager(
 
     manager.add_morphing_pass_group({const_fold, const_prop}); // group #-1
     manager.add_morphing_pass(std::make_shared<inline_constant_extraction>()); // pass #15
-    manager.add_morphing_pass(std::make_shared<array_index_lowering>()); // pass #17
-    manager.add_morphing_pass(std::make_shared<dead_load_elimination>()); // pass #16
+    manager.add_morphing_pass(std::make_shared<array_index_lowering>()); // pass #16
+    manager.add_morphing_pass(std::make_shared<dead_load_elimination>()); // pass #17
 
     if(order.empty()){
         manager.set_pass_order({1,2,3,4,5,6,7,8,9,10,11,12,13,14,-1,15,16,17});

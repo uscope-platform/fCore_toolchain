@@ -805,7 +805,7 @@ TEST(HlPassesTest, complex_normalization) {
 
     input_root->add_content(expr_2);
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{13}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{12}, 0);
     manager.run_morphing_passes(input_root);
 
 
