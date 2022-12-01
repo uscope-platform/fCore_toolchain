@@ -44,9 +44,9 @@ std::shared_ptr<ll_instruction_node> variable_mapping::apply_pass(std::shared_pt
 }
 
 void variable_mapping::map_register_inst(const std::shared_ptr<ll_register_instr_node>& instr) {
-    std::string op_a = instr->get_operand_a()->get_identifier();
-    std::string op_b = instr->get_operand_b()->get_identifier();
-    std::string dst = instr->get_destination()->get_identifier();
+    std::string op_a = instr->get_operand_a()->get_linear_identifier();
+    std::string op_b = instr->get_operand_b()->get_linear_identifier();
+    std::string dst = instr->get_destination()->get_linear_identifier();
 
     vmap->insert(op_a, instr->get_operand_a());
     vmap->insert(op_b, instr->get_operand_b());
@@ -54,8 +54,8 @@ void variable_mapping::map_register_inst(const std::shared_ptr<ll_register_instr
 }
 
 void variable_mapping::map_conv_instr(const std::shared_ptr<ll_conversion_instr_node>& instr) {
-    std::string src = instr->get_source()->get_identifier();
-    std::string dst = instr->get_destination()->get_identifier();
+    std::string src = instr->get_source()->get_linear_identifier();
+    std::string dst = instr->get_destination()->get_linear_identifier();
 
     vmap->insert(src, instr->get_source());
     vmap->insert(dst, instr->get_destination());
@@ -63,7 +63,7 @@ void variable_mapping::map_conv_instr(const std::shared_ptr<ll_conversion_instr_
 
 
 void variable_mapping::map_load_const_instr(const std::shared_ptr<ll_load_constant_instr_node>& instr) {
-    std::string dst = instr->get_destination()->get_identifier();
+    std::string dst = instr->get_destination()->get_linear_identifier();
     vmap->insert(dst, instr->get_destination());
 
 }

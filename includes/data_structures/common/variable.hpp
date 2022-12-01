@@ -48,6 +48,7 @@ public:
     variable(std::string n, int value);
 
     std::string get_identifier();
+    std::string get_linear_identifier();
 
     int get_linear_index();
     float get_const_f();

@@ -202,6 +202,15 @@ std::string variable::get_identifier() {
     return ret;
 }
 
+std::string variable::get_linear_identifier() {
+    if(array_shape.empty()){
+        return name;
+    }
+    std::string ret = name + "_" + std::to_string(get_linear_index());
+    return ret;
+}
+
+
 int variable::get_linear_index() {
     if(variable_type == var_type_scalar || variable_type == var_type_float_const || variable_type == var_type_int_const){
         return -1;
@@ -215,3 +224,4 @@ int variable::get_bound_reg() {
     }
     return bound_register[0];
 }
+

@@ -82,8 +82,8 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
         if(bound_reg != -1){
             register_mapping[s] = var_map->at("r"+std::to_string(bound_reg));
             item = register_mapping[s];
-        } else if (memory_vars.contains(item->get_name())) {
-            allocate_register(item, memory_vars[item->get_name()]);
+        } else if (memory_vars.contains(item->get_linear_identifier())) {
+            allocate_register(item, memory_vars[item->get_linear_identifier()]);
             item = register_mapping[s];
 
         } else{
@@ -116,12 +116,13 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
 void register_allocation::allocate_register(std::shared_ptr<variable> &var, int reg_addr) {
     reg_map.insert(var->get_identifier(), reg_addr, var->get_first_occurrence(), var->get_last_occurrence());
     register_mapping[var->get_identifier()] = var_map->at("r"+std::to_string(reg_addr));
-    if(allocation_map->contains(var->get_identifier())){
-        allocation_map->at(var->get_identifier()).push_back({reg_addr, var->get_linear_index()});
+    auto lin_identifier = var->get_linear_identifier();
+    if(allocation_map->contains(lin_identifier)){
+        allocation_map->at(lin_identifier).emplace_back(reg_addr, var->get_linear_index());
     } else {
         auto item = std::vector<std::pair<int, int>>();
         item.emplace_back(reg_addr, var->get_linear_index());
-        allocation_map->emplace(var->get_identifier(), item);
+        allocation_map->emplace(lin_identifier, item);
     }
     if(var->get_variable_class() == variable_output_type){
         excluded[reg_addr] = true;

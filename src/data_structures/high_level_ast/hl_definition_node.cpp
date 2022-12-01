@@ -81,7 +81,6 @@ bool operator==(const hl_definition_node &lhs, const hl_definition_node &rhs) {
     ret_val &= lhs.type == rhs.type;
     ret_val &= lhs.name == rhs.name;
 
-    ret_val &= lhs.array_shape == rhs.array_shape;
 
     ret_val &= hl_ast_node::compare_vectors(lhs.array_index, rhs.array_index);
     ret_val &= hl_ast_node::compare_vectors(lhs.initializer, rhs.initializer);
@@ -107,7 +106,6 @@ nlohmann::json hl_definition_node::dump() {
 
     retval["array_index"] = hl_ast_node::dump_array(array_index);
     retval["initializer"] = hl_ast_node::dump_array(initializer);
-    retval["array_shape"] = array_shape;
     retval["inner_variable"] = inner_variable->dump();
     retval["name"] = name;
     retval["constant"] = constant;
