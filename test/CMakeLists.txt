@@ -13,12 +13,10 @@ set(TEST_SOURCES
         emulator_schema_validation.cpp)
 
 
+
+
+
 add_executable(test_target ${FCORE_SRCS} ${TEST_SOURCES} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS})
-
-# Locate GTest
-find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIRS})
-
 target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES}
         pthread
         antlr4_static
@@ -26,11 +24,15 @@ target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES}
         spdlog
         nlohmann_json::nlohmann_json
         nlohmann_json_schema_validator
+        GTest::gtest_main
         )
+
+include(GoogleTest)
+gtest_discover_tests(test_target)
 
 # ASM TESTING FILES
 set(ASM_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/asm)
-make_directory(${ASM_TEST_FILES_DIR})
+file(MAKE_DIRECTORY ${ASM_TEST_FILES_DIR})
 configure_file(asm_files/test_add.s ${ASM_TEST_FILES_DIR} COPYONLY)
 configure_file(asm_files/test_for.s ${ASM_TEST_FILES_DIR} COPYONLY)
 configure_file(asm_files/test_global.s ${ASM_TEST_FILES_DIR} COPYONLY)
@@ -41,7 +43,7 @@ configure_file(asm_files/test_ldc_int.s ${ASM_TEST_FILES_DIR} COPYONLY)
 
 # Preprocessor
 set(C_PREP_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/c_prep)
-make_directory(${C_PREP_TEST_FILES_DIR})
+file(MAKE_DIRECTORY ${C_PREP_TEST_FILES_DIR})
 configure_file(C_files/preprocessor/test_comments.c ${C_PREP_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/preprocessor/test_pragmas.c ${C_PREP_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/preprocessor/test_define.c ${C_PREP_TEST_FILES_DIR} COPYONLY)
@@ -51,7 +53,7 @@ configure_file(C_files/preprocessor/include_test.h ${C_PREP_TEST_FILES_DIR} COPY
 
 # Tree visitor (ANTLR <-> AST)
 set(C_AST_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/c_ast)
-make_directory(${C_AST_TEST_FILES_DIR})
+file(MAKE_DIRECTORY ${C_AST_TEST_FILES_DIR})
 configure_file(C_files/tree_visitor/test_unary_expressions.c ${C_AST_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/tree_visitor/test_multiplicative_expressions.c ${C_AST_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/tree_visitor/test_array.c ${C_AST_TEST_FILES_DIR} COPYONLY)
@@ -77,7 +79,7 @@ configure_file(C_files/tree_visitor/test_float_constant.c ${C_AST_TEST_FILES_DIR
 
 #OPTIMIZATION PASSES
 set(HL_OPT_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/hl_opt)
-make_directory(${HL_OPT_TEST_FILES_DIR})
+file(MAKE_DIRECTORY ${HL_OPT_TEST_FILES_DIR})
 configure_file(C_files/hl_passes/test_normalization.c ${HL_OPT_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/hl_passes/test_contiguous_array_detection.c ${HL_OPT_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/hl_passes/test_loop_unrolling.c ${HL_OPT_TEST_FILES_DIR} COPYONLY)
@@ -89,7 +91,7 @@ configure_file(C_files/hl_passes/test_complex_division_implementation.c ${HL_OPT
 
 # FULL PROGRAMS
 set(C_E2E_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/c_e2e)
-make_directory(${C_E2E_TEST_FILES_DIR})
+file(MAKE_DIRECTORY ${C_E2E_TEST_FILES_DIR})
 configure_file(C_files/hl_passes/test_normalization.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_intrinsics_implementation.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_full_conditional.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
@@ -120,14 +122,14 @@ configure_file(C_files/instruction_passes/test_zero_assignment_removal.c ${C_E2E
 
 # DISASSEMBLER TESTING FILES
 set(DIS_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/dis)
-make_directory(${DIS_TEST_FILES_DIR})
+file(MAKE_DIRECTORY ${DIS_TEST_FILES_DIR})
 configure_file(disassembler_files/test_add.hex ${DIS_TEST_FILES_DIR} COPYONLY)
 configure_file(disassembler_files/test_add.mem ${DIS_TEST_FILES_DIR} COPYONLY)
 configure_file(disassembler_files/test_error.mem ${DIS_TEST_FILES_DIR} COPYONLY)
 
 # EMULATOR TESTING FILES
 set(EMU_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/emu)
-make_directory(${EMU_TEST_FILES_DIR})
+file(MAKE_DIRECTORY ${EMU_TEST_FILES_DIR})
 configure_file(emulator_files/backend/test_add.mem ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/backend/test_load.mem ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/backend/test_sub.mem ${EMU_TEST_FILES_DIR} COPYONLY)
@@ -154,6 +156,6 @@ configure_file(emulator_files/test_inputs_spec.json ${EMU_TEST_FILES_DIR} COPYON
 configure_file(emulator_files/test_interconnect_spec.json ${EMU_TEST_FILES_DIR} COPYONLY)
 
 set(EMU_TEST_SCHEMAS_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/emu/schemas)
-make_directory(${EMU_TEST_SCHEMAS_FILES_DIR})
+file(MAKE_DIRECTORY ${EMU_TEST_SCHEMAS_FILES_DIR})
 configure_file(schemas/valid_emulator_schema.json ${EMU_TEST_SCHEMAS_FILES_DIR} COPYONLY)
 configure_file(schemas/valid_compiler_schema.json ${EMU_TEST_SCHEMAS_FILES_DIR} COPYONLY)
