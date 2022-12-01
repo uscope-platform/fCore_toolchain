@@ -474,7 +474,8 @@ TEST(EndToEndC, essential_variable_initialization) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
     //TODO:test var viene caricato due volte
-    std::vector<uint32_t> gold_standard = {0x20003,0x60004,0x20005,0x30006, 0x10007,0x20019,0x26, 0x3F800000, 0x61029, 0x21021, 0x40021, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x80004,0x10005,0x30006,0x50007,0x10019,0x46, 0x3F800000,
+                                           0x60849,0x86, 0x3F800000, 0xa0881, 0x200a1, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
@@ -484,14 +485,23 @@ TEST(EndToEndC, essential_variable_initialization) {
 TEST(EndToEndC, test_constant_propagation) {
 
     std::string input_file = "c_e2e/test_constant_propagation.c";
-
     std::vector<std::string> includes;
 
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"type": "input","address":5},
+                    "switching_cell":{"type": "memory","address":[17,18]}
+                }})"
+    );
+
     fcore_cc compiler(input_file, includes, true, 0);
-    std::vector<uint32_t> result =  compiler.get_raw_code();
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x226,0x3F800000, 0x222a21, 0x242a41, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x50003, 0x10005, 0x3e0011,0x3f0012,
+                                           0x7a6,0x3F800000, 0x7c0fa1, 0x7e0fa1, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 

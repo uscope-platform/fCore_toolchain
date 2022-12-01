@@ -16,10 +16,8 @@
 
 int main(){
     int a;
-    #pragma input(a, r5)
-
     float switching_cell[2] = {1.0, 1.0};
-    #pragma memory(switching_cell, {r17, r18})
+
 
     switching_cell[0]=switching_cell[0]+a;
 
