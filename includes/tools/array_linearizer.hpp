@@ -20,7 +20,6 @@
 #include <vector>
 #include <cstdint>
 #include <numeric>
-#include <ranges>
 
 
 int linearize_array(std::vector<int> shape, std::vector<int> indices);
