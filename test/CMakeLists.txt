@@ -10,6 +10,7 @@ set(TEST_SOURCES
         disassembler_testing.cpp
         deep_copy.cpp
         emulator_testing.cpp
+        emulator_execution.cpp
         emulator_schema_validation.cpp)
 
 

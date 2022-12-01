@@ -2,10 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/testing/_deps/antlr_runtime_src-src" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/testing/_deps/cli11-src" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/testing/_deps/json-src" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/testing/_deps/json_schema-src" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/testing/_deps/spdlog-src" vcs="Git" />
   </component>
 </project>
