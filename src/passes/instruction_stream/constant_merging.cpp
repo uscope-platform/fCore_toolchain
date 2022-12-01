@@ -159,7 +159,7 @@ constant_merging::merge_interc_const(const std::shared_ptr<ll_intercalated_const
 
 std::shared_ptr<variable> constant_merging::get_merged_constant(std::shared_ptr<variable> v) {
     auto var_name = v->get_identifier();
-    if(!(iom_constants.contains(var_name) || processed_constants.contains(var_name))){
+    if(!processed_constants.contains(var_name)){
         return v;
     }
     if(reassignments_map.contains(var_name)){

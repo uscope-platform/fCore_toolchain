@@ -26,7 +26,6 @@ public:
     std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
 
 private:
-    std::set<std::string> iom_constants;
     std::set<std::string> processed_constants;
     std::unordered_map<float, std::shared_ptr<variable>> float_const_map;
     std::unordered_map<uint32_t, std::shared_ptr<variable>> int_const_map;

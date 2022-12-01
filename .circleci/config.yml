@@ -16,7 +16,7 @@ jobs:
           command: 'sudo cp third_party/fp_ip_cmodel/lib/* /usr/lib'
       - run:
           name: Creating Build Files
-          command: 'cmake -H. -Bbuild -DBUILD_TESTS=True'
+          command: 'cmake -H. -Bbuild -DBUILD_TESTS=True -DINCLUDE_EMULATOR=ON '
       - run:
           name: Build antlr runtime
           command: 'cmake --build build --target parsers'
