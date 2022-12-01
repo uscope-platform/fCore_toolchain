@@ -19,6 +19,7 @@
 #include <istream>
 
 #include "data_structures/low_level_ast/low_level_ast.hpp"
+#include "data_structures/executable.hpp"
 #include "fCore_isa.hpp"
 
 typedef enum {
@@ -30,7 +31,7 @@ class binary_loader {
 public:
     binary_loader(std::istream &stream, bin_loader_input_type_t in_type);
     std::shared_ptr<ll_ast_node> get_ast() {return ast_root;};
-    void construct_ast(std::vector<uint32_t> &program);
+    void construct_ast(const std::vector<uint32_t> &program);
     static std::shared_ptr<ll_ast_node> process_register_instr(uint32_t instruction);
     static std::shared_ptr<ll_ast_node> process_independent_instruction(uint32_t instruction);
     static std::shared_ptr<ll_ast_node> process_load_constant(uint32_t instruction, uint32_t raw_constant);
@@ -38,6 +39,7 @@ public:
     static uint32_t to_littleEndiann(uint32_t in_num);
 private:
     std::shared_ptr<ll_ast_node> ast_root;
+    std::set<std::pair<uint16_t , uint16_t>> io_mapping;
 };
 
 

@@ -103,6 +103,9 @@ emulator_metadata emulator_manager::load_program(nlohmann::json &core) {
     } else if(program["type"] == "hex") {
         stream.open(program["file"], std::ifstream::binary);
         in_type = bin_loader_hex_input;
+    } else{
+        spdlog::critical("Unknown program type for core: " + nlohmann::to_string(core["id"]));
+        exit(2);
     }
 
     try{

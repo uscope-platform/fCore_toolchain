@@ -41,10 +41,16 @@ int main(int argc, char **argv) {
     bool output_hex = spec["output"]["format"] == "hex";
     bool output_mem = spec["output"]["format"] == "mem";
     bool output_json = spec["output"]["format"] == "json";
-    bool output_force = spec["force"] == "json";
+    bool output_force = spec["force"];
 
     std::string output_file = spec["output"]["file"];
-    int dump_ast_level = spec["dump_ast"];
+    int dump_ast_level = 0;
+
+    if(spec.contains("dump_ast")){
+        dump_ast_level = spec["dump_ast"];
+    }
+
+    input_file = spec["input_file"];
 
     if(!output_file.empty() & !output_force){
         if(std::filesystem::exists(output_file)){

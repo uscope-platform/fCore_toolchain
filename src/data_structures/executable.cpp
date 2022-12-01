@@ -22,6 +22,33 @@ executable::executable() {
     sections["code"] = std::vector<uint32_t>();
 }
 
+executable::executable(std::vector<uint32_t> exec) {
+    std::vector<uint32_t> executable = std::move(exec);
+    uint16_t metadata[2][2];
+
+    split_word(executable[0], metadata[0]);
+
+    for(int i = 0; i< metadata[0][1]; i++){
+        sections["metadata"].push_back(executable[i]);
+    }
+    split_word(executable[1], metadata[1]);
+
+    executable.erase(executable.begin(), executable.begin()+2);
+
+    if(metadata[0][0] == 3){
+        for(int i = 0; i< metadata[1][0]; i++){
+            sections["io_remapping"].push_back(executable[i]);
+        }
+        executable.erase(executable.begin(), executable.begin()+metadata[1][0]);
+    } else if(metadata[0][0] == 2){
+        //No IO Mapping needed
+    }
+
+
+    sections["code"].insert(sections["code"].end(),executable.begin(), executable.end());
+}
+
+
 void executable::add_code_section(std::vector<uint32_t> code) {
     sections["code"] = std::move(code);
 }
@@ -42,7 +69,7 @@ void executable::generate_metadata() {
         sections["metadata"][0] += sections["metadata"].size()<<16;
     } else {
         sections["metadata"].push_back(2);
-        sections["metadata"].push_back((sections["code"].size()));
+        sections["metadata"].push_back((sections["code"].size()<<16));
         sections["metadata"][0] += sections["metadata"].size()<<16;
     }
 
@@ -63,4 +90,15 @@ std::vector<uint32_t> executable::get_executable() {
 std::vector<uint32_t> executable::get_code() {
     return sections["code"];
 }
+
+std::set<std::pair<uint16_t, uint16_t>> executable::get_io_mapping() {
+    std::set<std::pair<uint16_t, uint16_t>> ret_val;
+    for(auto &item:sections["io_remapping"]){
+        uint16_t pair[2];
+        split_word(item, pair);
+        ret_val.insert({pair[0], pair[1]});
+    }
+    return ret_val;
+}
+
 

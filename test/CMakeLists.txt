@@ -155,6 +155,8 @@ configure_file(emulator_files/test_inputs.mem ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_interconnect.mem ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_inputs_spec.json ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_interconnect_spec.json ${EMU_TEST_FILES_DIR} COPYONLY)
+configure_file(emulator_files/exec_format/test_exec_format.json ${EMU_TEST_FILES_DIR} COPYONLY)
+configure_file(emulator_files/exec_format/test_exec_format.mem ${EMU_TEST_FILES_DIR} COPYONLY)
 
 set(EMU_TEST_SCHEMAS_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/emu/schemas)
 file(MAKE_DIRECTORY ${EMU_TEST_SCHEMAS_FILES_DIR})

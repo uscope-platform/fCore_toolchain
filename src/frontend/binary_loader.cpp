@@ -17,23 +17,28 @@
 
 binary_loader::binary_loader(std::istream &stream, bin_loader_input_type_t in_type) {
     std::string line;
-    std::vector<uint32_t> raw_program;
+    std::vector<uint32_t> file_content;
 
     if(in_type == bin_loader_hex_input){
         uint32_t instr = 0;
         while(stream.read(reinterpret_cast<char*>(&instr), sizeof(uint32_t))){
-            raw_program.push_back(to_littleEndiann(instr));
+            file_content.push_back(to_littleEndiann(instr));
         }
     } else if(in_type == bin_loader_mem_input){
         while (std::getline(stream, line)) {
             uint32_t instr = std::stoul(line, nullptr, 16);
-            raw_program.push_back(instr);
+            file_content.push_back(instr);
         }
     }
-    construct_ast(raw_program);
+
+    executable exec(file_content);
+    construct_ast(exec.get_code());
+    io_mapping = exec.get_io_mapping();
+    int i =0;
 }
 
-void binary_loader::construct_ast(std::vector<uint32_t> &program) {
+
+void binary_loader::construct_ast(const std::vector<uint32_t> &program) {
     ast_root = std::make_shared<ll_ast_node>(ll_type_program_head);
 
     for(auto it = std::begin(program); it != std::end(program); it++){

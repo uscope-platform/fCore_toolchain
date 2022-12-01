@@ -22,13 +22,21 @@
 #include <string>
 #include <utility>
 
+
+
 class executable {
 public:
     executable();
+    static void split_word(uint32_t w, uint16_t fields[2]){
+        fields[0] = w&0xFFFF;
+        fields[1] = (w&0xFFFF0000)>>16;
+    }
+    explicit executable(std::vector<uint32_t> executable);
     void add_code_section(std::vector<uint32_t> code);
     void add_io_mapping(std::set<std::pair<uint16_t, uint16_t>>);
     std::vector<uint32_t> get_executable();
     std::vector<uint32_t> get_code();
+    std::set<std::pair<uint16_t, uint16_t>> get_io_mapping();
     void generate_metadata();
 private:
     std::unordered_map<std::string, std::vector<uint32_t>> sections;
