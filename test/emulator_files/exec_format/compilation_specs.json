@@ -6,8 +6,8 @@
   },
   "force": true,
   "dma_io": {
-    "a":{"type": "memory", "address":15},
+    "a":{"type": "input", "address":15},
     "b":{"type": "input", "address":38},
-    "c":{"type": "input", "address":42}
+    "c":{"type": "output", "address":42}
   }
 }

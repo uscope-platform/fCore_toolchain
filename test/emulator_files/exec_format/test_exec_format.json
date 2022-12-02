@@ -13,14 +13,14 @@
           "input_2":"f"
         },
         "registers":{
-          "input_1":1,
-          "input_2":2
+          "input_1":15,
+          "input_2":38
         }
       },
       "outputs": [
         {
-          "reg_n":4,
-          "type":"i",
+          "reg_n":42,
+          "type":"f",
           "name":"test_out"
         }
       ],

@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
     bool output_force = false;
     std::string input_file;
     std::string output_file;
-    int dump_ast_level;
+    int dump_ast_level = 0;
     app.add_option("input_file", input_file, "Input file path")->required()->check(CLI::ExistingFile);
     app.add_option("--dump-ast", dump_ast_level, "Dump the AST at various points in the compilation process as json");
     app.add_flag("--mem", output_mem, "produce binary output file");

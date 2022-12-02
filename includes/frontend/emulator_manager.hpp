@@ -56,6 +56,8 @@ typedef struct {
     int active_channels;
     std::string efi_implementation;
     std::string comparator_type;
+    bool io_remapping_active;
+    std::unordered_map<uint16_t, uint16_t> io_map;
     std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outputs;
 }emulator_metadata;
 
@@ -88,6 +90,7 @@ private:
     cores_ordering_t ordering_style;
     int implicit_order_idx;
     std::unordered_map<std::string, std::string> errors;
+
 };
 
 

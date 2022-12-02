@@ -39,9 +39,10 @@ executable::executable(std::vector<uint32_t> exec) {
         for(int i = 0; i< metadata[1][0]; i++){
             sections["io_remapping"].push_back(executable[i]);
         }
+        io_mapping_present = true;
         executable.erase(executable.begin(), executable.begin()+metadata[1][0]);
     } else if(metadata[0][0] == 2){
-        //No IO Mapping needed
+        io_mapping_present = false;
     }
 
 

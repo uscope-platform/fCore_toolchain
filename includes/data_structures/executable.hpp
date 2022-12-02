@@ -38,6 +38,7 @@ public:
     std::vector<uint32_t> get_code();
     std::set<std::pair<uint16_t, uint16_t>> get_io_mapping();
     void generate_metadata();
+    bool is_io_mapped() {return io_mapping_present;};
 private:
     std::unordered_map<std::string, std::vector<uint32_t>> sections;
     bool io_mapping_present = false;

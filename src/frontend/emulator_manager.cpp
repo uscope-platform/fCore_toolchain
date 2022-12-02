@@ -64,7 +64,13 @@ void emulator_manager::run_cores() {
         for(auto &core_id:cores_ordering){
             auto emu = emulators[core_id.second].emu;
             for(auto &in:emulators[core_id.second].input){
-                emu->apply_inputs(in.reg_n, in.data[i], in.channel);
+                uint32_t core_reg;
+                if(emulators[core_id.second].io_remapping_active){
+                    core_reg = emulators[core_id.second].io_map[in.reg_n];
+                } else {
+                    core_reg = in.reg_n;
+                }
+                emu->apply_inputs(core_reg, in.data[i], in.channel);
             }
             for(int j = 0; j<emulators[core_id.second].active_channels; ++j){
                 spdlog::info("RUNNING ROUND " + std::to_string(i+1) + " of " + std::to_string(emu_length) + ": core ID = " + core_id.second + " (CH " + std::to_string(j) + ")");
@@ -73,11 +79,21 @@ void emulator_manager::run_cores() {
 
             for(auto &conn:interconnects){
                 if(core_id.second == conn.source){
+
                     auto src = emulators[conn.source].emu;
                     auto dst = emulators[conn.destination].emu;
                     for(auto &reg:conn.connections){
-                        auto val = src->get_output(reg.first.address, reg.first.channel);
-                        dst->apply_inputs(reg.second.address, val, reg.second.channel);
+                        uint32_t first_address, second_address;
+                        if(emulators[core_id.second].io_remapping_active){
+                            first_address = emulators[core_id.second].io_map[reg.first.address];
+                            second_address = emulators[core_id.second].io_map[reg.second.address];
+                        } else {
+                            first_address = reg.first.address;
+                            second_address = reg.second.address;
+                        }
+
+                        auto val = src->get_output(first_address, reg.first.channel);
+                        dst->apply_inputs(second_address, val, reg.second.channel);
                     }
                 }
             }
@@ -85,7 +101,13 @@ void emulator_manager::run_cores() {
 
             for(int j = 0; j<emulators[core_id.second].active_channels; ++j){
                 for (auto &out:emulators[core_id.second].output_specs) {
-                    emulators[core_id.second].outputs[j][out.reg_n].push_back(emu->get_output(out.reg_n, j));
+                    uint32_t address;
+                    if(emulators[core_id.second].io_remapping_active){
+                        address = emulators[core_id.second].io_map[out.reg_n];
+                    } else {
+                        address = out.reg_n;
+                    }
+                    emulators[core_id.second].outputs[j][out.reg_n].push_back(emu->get_output(address, j));
                 }
             }
         }
@@ -110,6 +132,8 @@ emulator_metadata emulator_manager::load_program(nlohmann::json &core) {
 
     try{
         binary_loader dis(stream, in_type);
+        metadata.io_map = dis.get_io_mapping();
+        metadata.io_remapping_active = dis.is_io_mapped();
         std::shared_ptr<ll_ast_node> ast = dis.get_ast();
 
         instruction_stream program_stream = instruction_stream_builder::build_stream(ast);

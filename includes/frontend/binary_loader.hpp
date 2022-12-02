@@ -37,9 +37,12 @@ public:
     static std::shared_ptr<ll_ast_node> process_load_constant(uint32_t instruction, uint32_t raw_constant);
     static std::shared_ptr<ll_ast_node> process_conversion_instr(uint32_t instruction);
     static uint32_t to_littleEndiann(uint32_t in_num);
+    std::unordered_map<uint16_t, uint16_t> get_io_mapping();
+    bool is_io_mapped() {return has_io_mapping;};
 private:
     std::shared_ptr<ll_ast_node> ast_root;
     std::set<std::pair<uint16_t , uint16_t>> io_mapping;
+    bool has_io_mapping;
 };
 
 

@@ -34,7 +34,7 @@ binary_loader::binary_loader(std::istream &stream, bin_loader_input_type_t in_ty
     executable exec(file_content);
     construct_ast(exec.get_code());
     io_mapping = exec.get_io_mapping();
-    int i =0;
+    has_io_mapping = exec.is_io_mapped();
 }
 
 
@@ -126,4 +126,12 @@ uint32_t binary_loader::to_littleEndiann(uint32_t in_num) {
     in_bytes[2] = (in_num & 0x00ff0000) >> 16;
     in_bytes[3] = (in_num & 0xff000000) >> 24;
     return (in_bytes[3]<<0) | (in_bytes[2]<<8) | (in_bytes[1]<<16) | (in_bytes[0]<<24);
+}
+
+std::unordered_map <uint16_t, uint16_t> binary_loader::get_io_mapping() {
+    std::unordered_map<uint16_t, uint16_t> ret_val;
+    for(auto &item:io_mapping){
+        ret_val[item.first] = item.second;
+    }
+    return ret_val;
 }

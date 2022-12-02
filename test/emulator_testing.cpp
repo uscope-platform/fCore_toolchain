@@ -24,10 +24,14 @@ std::ifstream ifs("emu/test_exec_format.json");
 nlohmann::json specs = nlohmann::json::parse(ifs);
 emulator_manager manager(specs);
 manager.emulate();
-auto res = nlohmann::json::parse(manager.get_results())["test_consumer"];
+auto res_obj = nlohmann::json::parse(manager.get_results());
 
-auto s = res.dump();
-std::vector<uint32_t> reference = {0x426a7ae1, 0x42f070a4};
-ASSERT_EQ(res["outputs"]["test_out"][0], reference);
+auto s = res_obj.dump();
+
+std::vector<float>  result = std::vector<float>(res_obj["test"]["outputs"]["test_out"][0]);
+std::vector<float> reference = {58.62, 61.6};
+for(int i = 0; i<result.size(); ++i){
+    ASSERT_FLOAT_EQ(result[i], reference[i]);
+}
 
 }
