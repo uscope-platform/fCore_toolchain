@@ -115,15 +115,25 @@ std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::share
     }
     element->set_rhs(new_rhs);
 
-    if(!element->is_unary() && element->get_type() != expr_assign){
-        std::shared_ptr<hl_ast_node> new_lhs;
-        if(element->get_lhs()->node_type == hl_ast_node_type_operand) {
-            std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
-            new_lhs = propagate_constant(lhs, instr_idx);
-        } else {
-            new_lhs = propagate_constant(element->get_lhs(), instr_idx);
+    if(!element->is_unary()){
+        if(element->get_type() != expr_assign){
+            std::shared_ptr<hl_ast_node> new_lhs;
+            if(element->get_lhs()->node_type == hl_ast_node_type_operand) {
+                std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
+                new_lhs = propagate_constant(lhs, instr_idx);
+            } else {
+                new_lhs = propagate_constant(element->get_lhs(), instr_idx);
+            }
+            element->set_lhs(new_lhs);
+        } else{
+            auto lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
+            std::vector<std::shared_ptr<hl_ast_node>> new_idx;
+            for (auto &item: lhs->get_array_index()) {
+                new_idx.push_back(propagate_constant(item, instr_idx));
+            }
+            lhs->set_array_index(new_idx);
         }
-        element->set_lhs(new_lhs);
+
 
     }
     return element;
