@@ -48,6 +48,7 @@ public:
     variable(std::string n, int value);
 
     std::string get_identifier();
+    std::string get_identifier(const std::vector<int>& idx);
     std::string get_linear_identifier();
 
     int get_linear_index();
@@ -85,14 +86,13 @@ public:
     variable_class_t get_variable_class() {return variable_class;};
     void set_variable_class(variable_class_t vc) {variable_class = vc;};
 
+    unsigned  int get_size();
+
     unsigned int get_last_occurrence() const {return last_occurrence;};
     void set_last_occurrence(unsigned int lo) {last_occurrence = lo;};
 
     unsigned int get_first_occurrence() const {return first_occurrence;};
     void set_first_occurrence(unsigned int fo) {first_occurrence = fo;};
-
-    unsigned int get_array_length() const {return array_length;};
-    void set_array_length(unsigned int al) {array_length = al;};
 
     void set_contiguity(bool ac) { contiguity = ac;};
     bool is_contiguous() {return contiguity;};
@@ -115,7 +115,6 @@ private:
     unsigned int first_occurrence;
     unsigned int last_occurrence;
 
-    unsigned int array_length;
     bool contiguity;
     std::vector<int> bound_register;
 

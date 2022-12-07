@@ -34,9 +34,14 @@ class register_map {
 public:
     register_map();
     bool is_used(int reg, int from_inst, int to_inst);
-    void insert(const std::string& identifier,int reg, int from_inst, int to_inst);
+    bool is_used(std::pair<int,int> array, int from_inst, int to_inst);
+    void insert(std::shared_ptr<variable> var, int reg, int from_inst, int to_inst);
+    void insert(std::shared_ptr<variable> var, std::pair<int,int> reg, int from_inst, int to_inst);
+    std::shared_ptr<variable> get_identifier(const std::string& identifier) {return identifiers_map[identifier];};
+    void add_bound_identifier(const std::string& identifier, int reg);
+    bool is_allocated(const std::string &id) {return identifiers_map.contains(id);};
 private:
-
+    std::unordered_map<std::string, std::shared_ptr<variable>> identifiers_map;
     std::vector<std::vector<range_t>> reg_map;
 };
 

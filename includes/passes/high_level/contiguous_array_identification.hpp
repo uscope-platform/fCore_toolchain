@@ -28,15 +28,10 @@ public:
     int get_pass_type() override { return GLOBAL_PASS;};
 private:
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_node> element);
-    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_function_call_node> element);
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_expression_node> element);
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_definition_node> element);
-    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_loop_node> element);
-    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_conditional_node> element);
-    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_function_def_node> element);
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_operand> element);
-    bool process_efi_return;
-    bool process_efi_arguments;
+
 
 
     std::set<std::string> contiguous_arrays;

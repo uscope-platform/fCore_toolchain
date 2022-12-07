@@ -677,7 +677,8 @@ TEST(EndToEndC, contiguos_array_allocation) {
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
-                    "out_1":{"type": "output","address":2},
+                    "c":{"type": "input","address":2},
+                    "out_1":{"type": "output","address":7},
                     "out_2":{"type": "output","address":6}
                 }})"
     );
@@ -688,7 +689,7 @@ TEST(EndToEndC, contiguos_array_allocation) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x20003,0x80002, 0x60002, 0x70006, 0x65835, 0xa6, 0x4,0xc2861, 0xa6,0x2,0xe2881,0xc};
+    std::vector<uint32_t> gold_standard = {0x20003,0x60003, 0x10002, 0x40006, 0x30007, 0x65855,0x60841, 0x26,0x2,0x80841,0xc};
 
     ASSERT_EQ(gold_standard, result);
 

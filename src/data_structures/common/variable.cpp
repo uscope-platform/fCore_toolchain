@@ -23,7 +23,6 @@ variable::variable() {
     first_occurrence = 32768;
     last_occurrence = 0;
     bound_register.push_back(-1);
-    array_length = 0;
     contiguity = false;
 }
 
@@ -37,7 +36,6 @@ variable::variable(std::string n, float value) {
     first_occurrence = 32768;
     last_occurrence = 0;
     bound_register.push_back(-1);
-    array_length = 0;
     const_i = 0;
     contiguity = false;
 }
@@ -51,7 +49,6 @@ variable::variable(std::string n, int value) {
     first_occurrence = 32768;
     last_occurrence = 0;
     bound_register.push_back(-1);
-    array_length = 0;
     const_f = 0;
     contiguity = false;
 }
@@ -66,7 +63,6 @@ variable::variable(std::string n) {
     first_occurrence = 32768;
     last_occurrence = 0;
     bound_register.push_back(-1);
-    array_length = 0;
     const_f = 0;
     contiguity = false;
 }
@@ -103,7 +99,6 @@ bool operator==(const variable &lhs, const variable &rhs) {
     cond &= lhs.bound_register == rhs.bound_register;
     cond &= lhs.used == rhs.used;
     cond &= lhs.variable_type == rhs.variable_type;
-    cond &= lhs.array_length == rhs.array_length;
     cond &= lhs.const_i == rhs.const_i;
     cond &= lhs.const_f == rhs.const_f;
     cond &= lhs.contiguity == rhs.contiguity;
@@ -165,7 +160,6 @@ std::shared_ptr<variable> variable::deep_copy(const std::shared_ptr <variable>& 
     copied_var->variable_class = original->variable_class;
     copied_var->first_occurrence = original->first_occurrence;
     copied_var->last_occurrence = original->last_occurrence;
-    copied_var->array_length = original->array_length;
     copied_var->bound_register = original->bound_register;
     copied_var->used = original->used;
     copied_var->const_i = original->const_i;
@@ -184,7 +178,6 @@ nlohmann::json variable::dump() {
     ret_val["class"] = variable_class;
     ret_val["first_occurrence"] = first_occurrence;
     ret_val["last_occurrence"] = last_occurrence;
-    ret_val["array_length"] = array_length;
     ret_val["bound_register"] = bound_register;
     ret_val["used"] = used;
     ret_val["const_i"] = const_i;
@@ -195,9 +188,13 @@ nlohmann::json variable::dump() {
 }
 
 std::string variable::get_identifier() {
+    return get_identifier(array_index);
+}
+
+std::string variable::get_identifier(const std::vector<int>& idx) {
     std::string ret = name;
-    for(auto &idx:array_index){
-        ret += "_" + std::to_string(idx);
+    for(auto &elem:idx){
+        ret += "_" + std::to_string(elem);
     }
     return ret;
 }
@@ -209,7 +206,6 @@ std::string variable::get_linear_identifier() {
     std::string ret = name + "_" + std::to_string(get_linear_index());
     return ret;
 }
-
 
 int variable::get_linear_index() {
     if(variable_type == var_type_scalar || variable_type == var_type_float_const || variable_type == var_type_int_const){
@@ -224,4 +220,15 @@ int variable::get_bound_reg() {
     }
     return bound_register[0];
 }
+
+unsigned int variable::get_size() {
+
+    unsigned int shape = 1;
+    for(auto &dim:array_shape){
+        shape *= dim;
+    }
+    return shape;
+}
+
+
 

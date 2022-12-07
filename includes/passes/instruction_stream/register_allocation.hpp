@@ -37,12 +37,13 @@ public:
     std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
 private:
     void allocate_register(std::shared_ptr<variable> &var, int reg_addr);
+    void allocate_array(std::shared_ptr<variable> &var, int reg_addr);
+    register_map reg_map;
     std::shared_ptr<variable_map> var_map;
     std::unordered_map<std::string, int> io_reservations;
-    std::unordered_map<std::string, std::shared_ptr<variable>> register_mapping;
-    register_map reg_map;
-    std::shared_ptr<std::unordered_map<std::string, memory_range_t>> early_bindings_map;
     std::vector<bool> excluded;
+
+    std::unordered_map<std::string, std::pair<int, int>> allocated_contiguous_arrays;
     std::shared_ptr<std::unordered_map<std::string, std::vector<std::pair<int,int>>>> allocation_map;
     std::unordered_map<std::string, int> input_allocations;
     std::unordered_map<std::string, int> memory_vars;

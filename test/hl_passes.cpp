@@ -121,7 +121,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
     input_root->add_content(main_fcn);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{2}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{3}, 0);
     manager.run_morphing_passes(input_root);
 
     std::shared_ptr<hl_ast_node> result = input_root;
@@ -315,7 +315,7 @@ TEST(HlPassesTest, function_inlining) {
     input_root->add_content(function);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{5,6,7,8}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{4,5,6,7}, 0);
 
     manager.run_morphing_passes(input_root);
 
@@ -380,7 +380,7 @@ TEST(HlPassesTest, function_elimination) {
     parser.parse(io_spec);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,9,10,12,13}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,11,12,13}, 0);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> raw_result =parser.AST;
@@ -439,7 +439,7 @@ TEST(HlPassesTest, simple_normalization) {
     parser.parse(io_spec);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,9,10,11,12,14}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,8,9,10,11,12,14}, 0);
     manager.run_morphing_passes(parser.AST);
 
     normalization_pass p;
@@ -503,7 +503,7 @@ TEST(HlPassesTest, hl_ast_lowering) {
     parser.parse(io_spec);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,9,10,12,13}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,8,9,11,12,13}, 0);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -548,7 +548,7 @@ TEST(HlPassesTest, loop_unrolling_array) {
     parser.parse(io_spec);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,9,12,13}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,11,12,13}, 0);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -606,7 +606,7 @@ TEST(HlPassesTest, test_matrix_scalarization) {
     parser.parse(io_spec);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,9,16}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,16}, 0);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -695,7 +695,7 @@ TEST(HlPassesTest, function_inlining_array) {
     parser.parse(io_spec);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,9}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8}, 0);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST->get_content()[5];
@@ -805,7 +805,7 @@ TEST(HlPassesTest, complex_normalization) {
 
     input_root->add_content(expr_2);
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{12}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{11}, 0);
     manager.run_morphing_passes(input_root);
 
 
@@ -959,94 +959,6 @@ TEST(HlPassesTest, nested_function_inlining) {
     ASSERT_EQ(*normalized_ast, *gold_standard);
 }
 
-
-
-TEST(HlPassesTest, contiguous_array_identification) {
-    std::string input_file = "hl_opt/test_contiguous_array_detection.c";
-
-    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-
-    C_language_parser parser(input_file, result_def);
-    parser.pre_process({});
-    std::unordered_map<std::string, variable_class_t> io_spec;
-    parser.parse(io_spec);
-
-    std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2}, 0);
-    manager.run_morphing_passes(parser.AST);
-
-    std::shared_ptr<hl_function_def_node> result_fcn = std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0]);
-
-    std::vector<std::shared_ptr<hl_ast_node>> result_body = result_fcn->get_body();
-    std::vector<std::shared_ptr<hl_ast_node>> reference_body;
-
-    std::shared_ptr<variable> const_var_10 = std::make_shared<variable>("constant", 10);
-    std::shared_ptr<hl_ast_operand> const_op = std::make_shared<hl_ast_operand>(const_var_10);
-
-    std::vector<int> arr_idx = {10};
-    std::shared_ptr<variable> idx_var = std::make_shared<variable>("index");
-    idx_var->set_type(var_type_array);
-    idx_var->set_contiguity(true);
-    std::shared_ptr<hl_definition_node> idx_def = std::make_shared<hl_definition_node>("index", c_type_float,idx_var);
-    idx_def->set_array_shape(arr_idx);
-    idx_def->set_array_index({const_op});
-    reference_body.push_back(idx_def);
-
-    std::shared_ptr<variable> var = std::make_shared<variable>("a");
-    var->set_contiguity(true);
-    var->set_type(var_type_array);
-    idx_def = std::make_shared<hl_definition_node>("a", c_type_int, var);
-    idx_def->set_array_shape(arr_idx);
-    idx_def->set_array_index({const_op});
-    reference_body.push_back(idx_def);
-
-    var = std::make_shared<variable>("b");
-    var->set_type(var_type_array);
-    idx_def = std::make_shared<hl_definition_node>("b", c_type_int, var);
-    idx_def->set_array_shape(arr_idx);
-    idx_def->set_array_index({const_op});
-    reference_body.push_back(idx_def);
-
-    var = std::make_shared<variable>("a");
-    var->set_array_shape(arr_idx);
-    var->set_contiguity(true);
-    std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
-    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(expr_assign);
-    exp->set_lhs(op);
-
-    idx_var = std::make_shared<variable>("index");
-    idx_var->set_array_shape(arr_idx);
-    idx_var->set_contiguity(true);
-    op =std::make_shared<hl_ast_operand>(idx_var);
-    var=std::make_shared<variable>("constant", 11);
-    var->set_type(var_type_int_const);
-    std::shared_ptr<hl_ast_operand> op_c = std::make_shared<hl_ast_operand>(var);
-    std::vector<std::shared_ptr<hl_ast_node>> args = {op,op_c};
-    std::shared_ptr<hl_function_call_node> call = std::make_shared<hl_function_call_node>("efi",args);
-    exp->set_rhs(call);
-    reference_body.push_back(exp);
-
-    exp = std::make_shared<hl_expression_node>(expr_assign);
-
-    var = std::make_shared<variable>("b");
-    var->set_array_shape(arr_idx);
-    op = std::make_shared<hl_ast_operand>(var);
-    exp->set_lhs(op);
-
-    var = std::make_shared<variable>("a");
-    var->set_array_shape(arr_idx);
-    var->set_contiguity(true);
-    op = std::make_shared<hl_ast_operand>(var);
-    exp->set_rhs(op);
-    reference_body.push_back(exp);
-
-
-    ASSERT_EQ(result_body.size(), reference_body.size());
-    for(int i = 0; i<reference_body.size(); ++i){
-        ASSERT_TRUE(hl_ast_node::compare_content_by_type(result_body[i], reference_body[i]));
-    }
-
-}
 
 
 TEST(HlPassesTest, complex_division_implementation) {

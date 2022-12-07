@@ -16,8 +16,6 @@
 #include "passes/high_level/contiguous_array_identification.hpp"
 
 contiguous_array_identification::contiguous_array_identification() : pass_base<hl_ast_node>("contiguous_array_identification"){
-    process_efi_return = false;
-    process_efi_arguments = false;
 }
 
 std::shared_ptr<hl_ast_node> contiguous_array_identification::process_global(std::shared_ptr<hl_ast_node> element) {
@@ -40,18 +38,10 @@ std::shared_ptr<hl_ast_node> contiguous_array_identification::process_global(std
 
 std::shared_ptr<hl_ast_node> contiguous_array_identification::process_element(std::shared_ptr<hl_ast_node> element) {
         switch (element->node_type) {
-            case hl_ast_node_type_function_call:
-                return process_element(std::static_pointer_cast<hl_function_call_node>(element));
             case hl_ast_node_type_expr:
                 return process_element(std::static_pointer_cast<hl_expression_node>(element));
             case hl_ast_node_type_definition:
                 return process_element(std::static_pointer_cast<hl_definition_node>(element));
-            case hl_ast_node_type_conditional:
-                return process_element(std::static_pointer_cast<hl_ast_conditional_node>(element));
-            case hl_ast_node_type_loop:
-                return process_element(std::static_pointer_cast<hl_ast_loop_node>(element));
-            case hl_ast_node_type_function_def:
-                return process_element(std::static_pointer_cast<hl_function_def_node>(element));
             case hl_ast_node_type_operand:
                 return process_element(std::static_pointer_cast<hl_ast_operand>(element));
             case hl_ast_node_type_code_block:
@@ -68,26 +58,47 @@ std::shared_ptr<hl_ast_node> contiguous_array_identification::process_element(st
 std::shared_ptr<hl_ast_node>
 contiguous_array_identification::process_element(std::shared_ptr<hl_expression_node> element) {
     if(element->is_immediate()) return element;
-    element->set_rhs(process_element(element->get_rhs()));
-    if(!element->is_unary()){
-        auto lhs = element->get_lhs();
-        if(element->get_type()!=expr_assign){
-            element->set_lhs(process_element(lhs));
-        } else{
-            auto lhs_op= std::static_pointer_cast<hl_ast_operand>(lhs);
 
-            if(contiguous_arrays.contains(lhs_op->get_name())){
-                process_efi_return = false;
-                if(!lhs_op->get_contiguity()) lhs_op->set_contiguity(true);
-            }else if(process_efi_return){
-                process_efi_return = false;
-                if(lhs_op->get_variable()->get_bound_reg_array()[0] == -1){
-                    lhs_op->set_contiguity(true);
-                    contiguous_arrays.insert(lhs_op->get_name());
+    if(element->get_type() == expr_assign){
+        if(element->get_rhs()->node_type == hl_ast_node_type_expr){
+            auto rhs = std::static_pointer_cast<hl_expression_node>(element->get_rhs());
+            if(rhs->get_type()==expr_efi){
+
+                auto efi_arg = std::static_pointer_cast<hl_ast_operand>(rhs->get_lhs());
+                efi_arg->set_contiguity(true);
+                if(!contiguous_arrays.contains(efi_arg->get_name())){
+                    contiguous_arrays.insert(efi_arg->get_name());
                 }
+                if(!efi_arg->get_variable()->get_array_shape().empty()){
+                    std::shared_ptr<variable> var = std::make_shared<variable>("constant", 0);
+                    std::shared_ptr<hl_ast_operand> idx = std::make_shared<hl_ast_operand>(var);
+                    std::vector<std::shared_ptr<hl_ast_node>> new_idx;
+                    for(auto &item:efi_arg->get_variable()->get_array_shape()){
+                        new_idx.push_back(idx);
+                    }
+                    efi_arg->set_array_index(new_idx);
+                    efi_arg->get_variable()->set_type(var_type_array);
+                }
+                rhs->set_lhs(efi_arg);
+                auto efi_return = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
+                efi_return->set_contiguity(true);
+                if(!contiguous_arrays.contains(efi_return->get_name())){
+                    contiguous_arrays.insert(efi_return->get_name());
+                }
+
+
+                element->set_lhs(efi_return);
+                return element;
             }
         }
     }
+
+    element->set_rhs(process_element(element->get_rhs()));
+    if(!element->is_unary()){
+        auto lhs = element->get_lhs();
+        element->set_lhs(process_element(lhs));
+    }
+
     return element;
 }
 
@@ -111,77 +122,9 @@ contiguous_array_identification::process_element(std::shared_ptr<hl_definition_n
     return element;
 }
 
-std::shared_ptr<hl_ast_node>
-contiguous_array_identification::process_element(std::shared_ptr<hl_ast_loop_node> element) {
-    std::vector<std::shared_ptr<hl_ast_node>> new_loop_content;
-    for(auto &item:element->get_loop_content()){
-        new_loop_content.push_back(process_element(item));
-    }
-    element->set_loop_content(new_loop_content);
-    return element;
-}
-
-std::shared_ptr<hl_ast_node>
-contiguous_array_identification::process_element(std::shared_ptr<hl_ast_conditional_node> element) {
-    std::vector<std::shared_ptr<hl_ast_node>> new_loop_content;
-    for(auto &item:element->get_if_block()){
-        new_loop_content.push_back(process_element(item));
-    }
-    element->set_if_block(new_loop_content);
-
-    new_loop_content.clear();
-    for(auto &item:element->get_else_block()){
-        new_loop_content.push_back(process_element(item));
-    }
-    element->set_else_block(new_loop_content);
-    return element;
-}
-
-std::shared_ptr<hl_ast_node>
-contiguous_array_identification::process_element(std::shared_ptr<hl_function_def_node> element) {
-    std::vector<std::shared_ptr<hl_ast_node>> new_body;
-    for(auto &item:element->get_body()){
-        new_body.push_back(process_element(item));
-    }
-    element->set_body(new_body);
-
-    if(element->has_return()){
-        element->set_return(process_element(element->get_return()));
-    }
-    return element;
-}
-
-
-std::shared_ptr<hl_ast_node> contiguous_array_identification::process_element(std::shared_ptr<hl_function_call_node> element) {
-    auto name = element->get_name();
-    if(name == "efi"){
-        process_efi_return = true;
-
-        process_efi_arguments = true;
-        std::vector<std::shared_ptr<hl_ast_node>> new_args;
-        for(auto &item:element->get_arguments()){
-            if(std::static_pointer_cast<hl_ast_operand>(element->get_arguments()[0])->get_variable()->get_bound_reg_array()[0] == -1){
-                new_args.push_back(process_element(item));
-            } else{
-                new_args.push_back(item);
-            }
-        }
-        element->set_arguments(new_args);
-
-        process_efi_arguments = false;
-    }
-
-
-    return element;
-}
-
 
 std::shared_ptr<hl_ast_node> contiguous_array_identification::process_element(std::shared_ptr<hl_ast_operand> element) {
     if(contiguous_arrays.contains(element->get_name())){
-        element->set_contiguity(true);
-    }
-    if(process_efi_arguments && (element->get_type()!=var_type_int_const && element->get_type()!=var_type_float_const)){
-        contiguous_arrays.insert(element->get_name());
         element->set_contiguity(true);
     }
     return element;

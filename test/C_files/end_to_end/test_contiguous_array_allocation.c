@@ -20,9 +20,10 @@ int main(){
 
     float index[2];
 
+    int c;
     int a[2];
     a = efi(index, 11);
-    out_1 = a[0] + 4;
+    out_1 = a[0] + c;
     out_2 = a[1] + 2;
 }
 

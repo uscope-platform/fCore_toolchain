@@ -38,7 +38,37 @@ bool register_map::is_used(int reg, int from_inst, int to_inst) {
     return false;
 }
 
-void register_map::insert(const std::string &identifier,int reg, int from_inst, int to_inst) {
+bool register_map::is_used(std::pair<int,int> array, int from_inst, int to_inst) {
+    bool retval = false;
+    if(array.first==0)
+        retval = true;
+    for(int i =array.first; i<array.first+array.second; i++){
+        retval |= is_used(i, from_inst, to_inst);
+    }
+    return retval;
+}
+
+void register_map::insert(std::shared_ptr<variable> var,int reg, int from_inst, int to_inst) {
     range_t req_range = {from_inst, to_inst};
     reg_map[reg].push_back(req_range);
+    identifiers_map[var->get_identifier()] = std::make_shared<variable>("r"+std::to_string(reg));
 }
+
+
+
+void register_map::insert(std::shared_ptr<variable> var, std::pair<int, int> reg, int from_inst, int to_inst) {
+    range_t req_range = {from_inst, to_inst};
+
+    for(int i=0; i<reg.second; i++){
+        reg_map[reg.first+i].push_back(req_range);
+        auto idx = array_delinearize(var->get_array_shape(), i);
+        identifiers_map[var->get_identifier(idx)] = std::make_shared<variable>("r"+std::to_string(i));
+    }
+    int i = 0;
+}
+
+void register_map::add_bound_identifier(const std::string &identifier, int reg) {
+    identifiers_map[identifier] = std::make_shared<variable>("r"+std::to_string(reg));
+}
+
+

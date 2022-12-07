@@ -57,21 +57,22 @@ static hl_pass_manager create_hl_pass_manager(
     hl_pass_manager manager(dump_ast_level);
 
     manager.add_morphing_pass(std::make_shared<division_implementation_pass>()); // pass #1
-    manager.add_morphing_pass(std::make_shared<contiguous_array_identification>()); // pass #2
-    manager.add_morphing_pass(std::make_shared<intrinsics_implementation_pass>()); // pass #3
+    manager.add_morphing_pass(std::make_shared<intrinsics_implementation_pass>()); // pass #2
 
-    manager.add_morphing_pass(std::make_shared<operating_assignment_implementation_pass>()); // pass #4
-    manager.add_morphing_pass(std::make_shared<fuction_mangling_pass>()); // pass #5
-    manager.add_morphing_pass(std::make_shared<function_inlining_pass>());  // pass #6
+    manager.add_morphing_pass(std::make_shared<operating_assignment_implementation_pass>()); // pass #3
+    manager.add_morphing_pass(std::make_shared<fuction_mangling_pass>()); // pass #4
+    manager.add_morphing_pass(std::make_shared<function_inlining_pass>());  // pass #5
 
-    manager.add_morphing_pass(std::make_shared<inlined_function_elimination>(entry_point)); // pass #7
+    manager.add_morphing_pass(std::make_shared<inlined_function_elimination>(entry_point)); // pass #6
 
-    manager.add_morphing_pass(std::make_shared<code_block_inlining_pass>()); // pass #8
+    manager.add_morphing_pass(std::make_shared<code_block_inlining_pass>()); // pass #7
 
-    manager.add_morphing_pass(std::make_shared<loop_unrolling_pass>()); // pass #9
-    manager.add_morphing_pass(std::make_shared<array_initialization_substitution>()); // pass #10
-    manager.add_morphing_pass(std::make_shared<conditional_implementation_pass>()); // pass #11
-    manager.add_morphing_pass(std::make_shared<normalization_pass>()); // pass #12
+    manager.add_morphing_pass(std::make_shared<loop_unrolling_pass>()); // pass #8
+    manager.add_morphing_pass(std::make_shared<array_initialization_substitution>()); // pass #9
+    manager.add_morphing_pass(std::make_shared<conditional_implementation_pass>()); // pass #10
+    manager.add_morphing_pass(std::make_shared<normalization_pass>()); // pass #11
+
+    manager.add_morphing_pass(std::make_shared<contiguous_array_identification>()); // pass #12
     manager.add_morphing_pass(std::make_shared<early_register_allocation_pass>(bindings_map)); // pass #13
 
     manager.add_morphing_pass(std::make_shared<dead_variable_elimination>());  // pass #14
@@ -84,7 +85,7 @@ static hl_pass_manager create_hl_pass_manager(
     manager.add_morphing_pass(std::make_shared<dead_load_elimination>()); // pass #17
 
     if(order.empty()){
-        manager.set_pass_order({1,2,3,4,5,6,7,8,9,10,11,12,13,14,-1,15,16,17});
+        manager.set_pass_order({1,2,3,4,5,6,7,8,9,10,11,12,14,-1,15,16,17});
     } else {
         manager.set_pass_order(order);
     }
