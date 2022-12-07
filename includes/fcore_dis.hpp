@@ -38,6 +38,7 @@ public:
     void write_disassembled_program(const std::string& output_file);
 private:
     std::shared_ptr<ll_ast_node> ll_ast;
+    std::unordered_map<uint16_t, uint16_t> io_map;
     std::unique_ptr<assembly_generator> gen;
     std::string error_code;
 };

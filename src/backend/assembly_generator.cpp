@@ -26,6 +26,18 @@ assembly_generator::assembly_generator(const instruction_stream &stream) {
 
 void assembly_generator::write_program(const std::string &filename) {
     std::ofstream output(filename);
+
+    if(!io_map.empty()){
+        output<<"///////////////////////////////////////////"<<std::endl;
+        output<<"//               IO MAPPING              //"<<std::endl;
+        output<<"//    io address <---> core address      //"<<std::endl;
+        output<<"///////////////////////////////////////////"<<std::endl;
+        for(auto &pair:io_map){
+            output<<"//    " << pair.first <<"  <--->  "<< pair.second<<"      //"<<std::endl;
+        }
+        output<<"///////////////////////////////////////////"<<std::endl;
+    }
+
     for(auto &instr:program){
         output << instr;
     }
