@@ -37,7 +37,12 @@ emulator_manager::emulator_manager(nlohmann::json &spec_file) {
         emulators[id] = load_program(item);
         emulators[id].input = load_input(item);
         emulators[id].output_specs = load_output_specs(item);
-        emulators[id].memory_init = load_memory_init(item["memory_init"]);
+        if(emulators[id].io_remapping_active){
+            emulators[id].memory_init = load_memory_init(item["memory_init"], emulators[id].io_map);
+        } else{
+            emulators[id].memory_init = load_memory_init(item["memory_init"]);
+        }
+
     }
     interconnects = load_interconnects(spec_file["interconnect"]);
     if(spec_file.contains("run_length"))
@@ -273,6 +278,23 @@ std::unordered_map<unsigned int, uint32_t> emulator_manager::load_memory_init(nl
     return init_map;
 }
 
+
+std::unordered_map<unsigned int, uint32_t>
+emulator_manager::load_memory_init(nlohmann::json &mem_init, std::unordered_map<uint16_t, uint16_t> io_map) {
+
+    std::unordered_map<unsigned int, uint32_t> init_map;
+
+    for(int i = 0; i<mem_init["index"].size(); i++){
+        auto idx =  io_map[mem_init["index"][i]];
+        if(mem_init["type"][i] == "f"){
+            init_map[idx] = emulator::float_to_uint32(mem_init["values"][i]);
+        } else {
+            init_map[idx] = mem_init["values"][i];
+        }
+    }
+    return init_map;
+}
+
 std::string emulator_manager::get_results() {
     nlohmann::json res;
     for(auto &item:emulators){
@@ -339,5 +361,6 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
 std::shared_ptr<std::vector<uint32_t>> emulator_manager::get_memory_snapshot(const std::string &core_id, int channel) {
     return emulators[core_id].emu->get_memory(channel);
 }
+
 
 
