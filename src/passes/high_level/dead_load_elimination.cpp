@@ -115,7 +115,7 @@ void dead_load_elimination::search_usages(std::shared_ptr<hl_expression_node> el
 void dead_load_elimination::search_usages(std::shared_ptr<hl_ast_operand> element) {
     if(efi_mode){
         for(auto &item:last_loads_map){
-            if(item.first.starts_with(element->get_identifier()+"_")){
+            if(item.first.starts_with(element->get_name()+"_")){
                 if(item.second.first_usage == -1){
                     item.second.first_usage = idx;
                 }
