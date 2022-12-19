@@ -439,7 +439,7 @@ TEST(HlPassesTest, simple_normalization) {
     parser.parse(io_spec);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,8,9,10,11,12,14}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,8,9,10,11,12,13}, 0);
     manager.run_morphing_passes(parser.AST);
 
     normalization_pass p;
@@ -606,7 +606,7 @@ TEST(HlPassesTest, test_matrix_scalarization) {
     parser.parse(io_spec);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,16}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{1,2,3,4,5,6,7,8,15}, 0);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -861,7 +861,7 @@ TEST(HlPassesTest, dead_load_elimination) {
     input_root->add_content(exp);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep,{17}, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep,{16}, 0);
     manager.run_morphing_passes(input_root);
 
 

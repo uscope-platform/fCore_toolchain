@@ -80,8 +80,8 @@ void fcore_cc::parse(std::unordered_map<std::string, variable_class_t> dma_specs
 
 void fcore_cc::optimize(std::unordered_map<std::string, std::vector<int>> &dma_map) {
     std::string ep = "main";
-    auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
-    hl_manager = create_hl_pass_manager(ep,{}, dump_ast_level, bindings_map);
+
+    hl_manager = create_hl_pass_manager(ep,{}, dump_ast_level);
     hl_manager.run_morphing_passes(hl_ast);
 
     if(dump_ast_level>0) dump["high_level"] = hl_manager.get_dump();
@@ -99,6 +99,8 @@ void fcore_cc::optimize(std::unordered_map<std::string, std::vector<int>> &dma_m
     instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
 
     auto allocation_map = std::make_shared<std::unordered_map<std::string, std::vector<std::pair<int,int>>>>();
+
+    auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
     stream_pass_manager sman(dump_ast_level, bindings_map, allocation_map);
     program_stream = sman.process_stream(program_stream);
 
