@@ -20,6 +20,7 @@
 bool expression_evaluator::is_constant_expression(const std::shared_ptr<hl_expression_node>& expression) {
     bool retval = true;
     if(expression->is_immediate()) return false;
+    if(expression->get_type() == expr_efi) return false;
     retval &= is_constant_subexpr(expression->get_rhs());
     if(!expression->is_unary()) retval &= is_constant_subexpr(expression->get_lhs());
     return retval;
@@ -118,6 +119,7 @@ expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_
     if(rhs->get_type() == var_type_float_const || lhs->get_type() == var_type_float_const){
         expr_type = c_type_float;
     }
+
 
     if(expr_type == c_type_int) {
         int op_a = lhs->get_int_value();
