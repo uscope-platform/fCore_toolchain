@@ -64,7 +64,7 @@ contiguous_array_identification::process_element(std::shared_ptr<hl_expression_n
             auto rhs = std::static_pointer_cast<hl_expression_node>(element->get_rhs());
             if(rhs->get_type()==expr_efi){
 
-                process_efi_arguments(element);
+                process_efi_arguments(rhs);
 
                 auto efi_return = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
                 efi_return->set_contiguity(true);
