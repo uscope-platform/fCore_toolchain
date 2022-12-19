@@ -721,3 +721,30 @@ TEST(EndToEndC, efi_load_elimination) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+
+TEST(EndToEndC, efi_load_elimination_in_func) {
+
+    std::string input_file = "c_e2e/test_efi_load_elimination_in_func.c";
+
+    std::vector<std::string> includes;
+
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "theta":{"type": "input","address":1},
+                    "s_th":{"type": "output","address":15},
+                    "c_th":{"type": "output","address":17}
+                }})"
+    );
+
+    fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+
+    std::vector<uint32_t> gold_standard = {0x20003,0xb0003, 0x10001, 0x2000f, 0x30011, 0x40021,  0x26, 0x0, 0x41035, 0x66,0x38000074,0x41063, 0x26, 0x1, 0x61035,0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}

@@ -47,10 +47,6 @@ bool constants_tracker::is_constant(const std::string &s, int instr_idx, std::ve
 }
 
 
-bool constants_tracker::is_excluded(const std::string &s) {
-    return excluded_constants.contains(s);
-}
-
 std::shared_ptr<hl_ast_operand> constants_tracker::get_constant(const std::string &s, int instr_idx, std::vector<int> array_idx) {
     auto idx = stringify_index(array_idx);
     for(auto &item:constants_map[s][idx]){
@@ -64,7 +60,6 @@ std::shared_ptr<hl_ast_operand> constants_tracker::get_constant(const std::strin
 
 void constants_tracker::clear() {
     constants_map.clear();
-    excluded_constants.clear();
 }
 
 void constants_tracker::terminate_constant_range(const std::string &s, int instr_idx, std::vector<int> array_idx) {

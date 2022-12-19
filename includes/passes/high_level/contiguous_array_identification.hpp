@@ -32,7 +32,7 @@ private:
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_definition_node> element);
     std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_operand> element);
 
-
+    void process_efi_arguments(std::shared_ptr<hl_expression_node> element);
 
     std::set<std::string> contiguous_arrays;
 };

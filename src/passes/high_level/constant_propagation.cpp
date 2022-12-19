@@ -142,12 +142,8 @@ std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::share
 std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::shared_ptr<hl_definition_node> element, int instr_idx) {
     if(element->is_initialized()){
         std::shared_ptr<hl_ast_node> initializer = element->get_scalar_initializer();
-        if(initializer->node_type == hl_ast_node_type_operand){
-            std::string constant_name = std::static_pointer_cast<hl_ast_operand>(initializer)->get_name();
-            if(tracker.is_excluded(constant_name)){
-                element->set_scalar_initializer(tracker.get_constant(constant_name, instr_idx, {0}));
-            }
-        } else {
+        //TODO: CHECK if this if is actually needed, as it smells of bug
+        if(initializer->node_type != hl_ast_node_type_operand){
             std::shared_ptr<hl_ast_node> new_init = propagate_constant(initializer, instr_idx);
             element->set_scalar_initializer(new_init);
         }
@@ -158,9 +154,7 @@ std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::share
 
 
 std::shared_ptr<hl_ast_operand> constant_propagation::propagate_constant(std::shared_ptr<hl_ast_operand> element, int instr_idx) {
-    if(tracker.is_excluded(element->get_name())){
-        return element;
-    }
+
     std::shared_ptr<hl_ast_operand> ret_operand;
 
     if(element->get_type() != var_type_int_const && element->get_type() != var_type_float_const){

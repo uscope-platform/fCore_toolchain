@@ -64,22 +64,8 @@ contiguous_array_identification::process_element(std::shared_ptr<hl_expression_n
             auto rhs = std::static_pointer_cast<hl_expression_node>(element->get_rhs());
             if(rhs->get_type()==expr_efi){
 
-                auto efi_arg = std::static_pointer_cast<hl_ast_operand>(rhs->get_lhs());
-                efi_arg->set_contiguity(true);
-                if(!contiguous_arrays.contains(efi_arg->get_name())){
-                    contiguous_arrays.insert(efi_arg->get_name());
-                }
-                if(!efi_arg->get_variable()->get_array_shape().empty()){
-                    std::shared_ptr<variable> var = std::make_shared<variable>("constant", 0);
-                    std::shared_ptr<hl_ast_operand> idx = std::make_shared<hl_ast_operand>(var);
-                    std::vector<std::shared_ptr<hl_ast_node>> new_idx;
-                    for(auto &item:efi_arg->get_variable()->get_array_shape()){
-                        new_idx.push_back(idx);
-                    }
-                    efi_arg->set_array_index(new_idx);
-                    efi_arg->get_variable()->set_type(var_type_array);
-                }
-                rhs->set_lhs(efi_arg);
+                process_efi_arguments(element);
+
                 auto efi_return = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
                 efi_return->set_contiguity(true);
                 if(!contiguous_arrays.contains(efi_return->get_name())){
@@ -91,6 +77,8 @@ contiguous_array_identification::process_element(std::shared_ptr<hl_expression_n
                 return element;
             }
         }
+    } else if(element->get_type()==expr_efi){
+        process_efi_arguments(element);
     }
 
     element->set_rhs(process_element(element->get_rhs()));
@@ -102,19 +90,46 @@ contiguous_array_identification::process_element(std::shared_ptr<hl_expression_n
     return element;
 }
 
+
+void
+contiguous_array_identification::process_efi_arguments(std::shared_ptr<hl_expression_node> element) {
+    auto efi_arg = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
+    efi_arg->set_contiguity(true);
+    if(!contiguous_arrays.contains(efi_arg->get_name())){
+        contiguous_arrays.insert(efi_arg->get_name());
+    }
+    if(!efi_arg->get_variable()->get_array_shape().empty()){
+        std::shared_ptr<variable> var = std::make_shared<variable>("constant", 0);
+        std::shared_ptr<hl_ast_operand> idx = std::make_shared<hl_ast_operand>(var);
+        std::vector<std::shared_ptr<hl_ast_node>> new_idx;
+        for(auto &item:efi_arg->get_variable()->get_array_shape()){
+            new_idx.push_back(idx);
+        }
+        efi_arg->set_array_index(new_idx);
+        efi_arg->get_variable()->set_type(var_type_array);
+    }
+    element->set_lhs(efi_arg);
+}
+
+
 std::shared_ptr<hl_ast_node>
 contiguous_array_identification::process_element(std::shared_ptr<hl_definition_node> element) {
     std::vector<std::shared_ptr<hl_ast_node>> new_initializer;
     for(auto &item:element->get_array_initializer()){
-        new_initializer.push_back(process_element(item));
+        auto processed_item = process_element(item);
+        if(processed_item->node_type == hl_ast_node_type_expr){
+            auto expr = std::static_pointer_cast<hl_expression_node>(processed_item);
+            if(expr->get_type() == expr_efi){
+                if(!element->is_scalar()){ // SCALARS ARE CONTIGUOUS BY DEFINITION, THUS THEY SHOULD BE TREATED NORMALLY
+                    element->get_variable()->set_contiguity(true);
+                    contiguous_arrays.insert(element->get_name());
+                }
+            }
+        }
+        new_initializer.push_back(processed_item);
     }
     element->set_array_initializer(new_initializer);
 
-    std::vector<std::shared_ptr<hl_ast_node>> new_index;
-    for(auto &item:element->get_array_index()){
-        new_index.push_back(process_element(item));
-    }
-    element->set_array_index(new_index);
 
     if(contiguous_arrays.contains(element->get_variable()->get_name())){
         element->get_variable()->set_contiguity(true);

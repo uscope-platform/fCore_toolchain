@@ -41,14 +41,12 @@ public:
     bool is_constant(const std::string& s, int instr_idx, std::vector<int> array_idx);
     std::shared_ptr<hl_ast_operand> get_constant(const std::string& s, int instr_idx, std::vector<int> array_idx);
     bool needs_purging(const std::string& s, std::vector<int> array_idx);
-    bool is_excluded(const std::string& s);
     void clear();
 
 private:
 
     std::unordered_map<std::string, std::unordered_map<std::string , std::vector<constant>>> constants_map;
     std::unordered_map<std::string, std::unordered_map<std::string, bool>> purge_map;
-    std::unordered_set<std::string> excluded_constants;
 };
 
 
