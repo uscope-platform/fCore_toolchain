@@ -208,11 +208,34 @@ std::string variable::get_linear_identifier() {
     return ret;
 }
 
+std::string variable::get_linear_identifier(const std::vector<int> &idx) {
+    if(array_shape.empty()){
+        return name;
+    }
+    std::string ret = name + "_" + std::to_string(get_linear_index(idx));
+    return ret;
+}
+
+std::string variable::get_linear_identifier(const int &idx) {
+    if(array_shape.empty()){
+        return name;
+    }
+    std::string ret = name + "_" + std::to_string(idx);
+    return ret;
+}
+
+
+
+
 int variable::get_linear_index() {
+    return get_linear_index(array_index);
+}
+
+int variable::get_linear_index(const std::vector<int> &idx) {
     if(variable_type == var_type_scalar || variable_type == var_type_float_const || variable_type == var_type_int_const){
         return -1;
     }
-    return linearize_array(array_shape, array_index);
+    return linearize_array(array_shape, idx);
 }
 
 int variable::get_bound_reg() {
@@ -230,6 +253,4 @@ unsigned int variable::get_size() {
     }
     return shape;
 }
-
-
 

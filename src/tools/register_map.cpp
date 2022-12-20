@@ -62,13 +62,18 @@ void register_map::insert(std::shared_ptr<variable> var, std::pair<int, int> reg
     for(int i=0; i<reg.second; i++){
         reg_map[reg.first+i].push_back(req_range);
         auto idx = array_delinearize(var->get_array_shape(), i);
-        identifiers_map[var->get_identifier(idx)] = std::make_shared<variable>("r"+std::to_string(i));
+        identifiers_map[var->get_identifier(idx)] = std::make_shared<variable>("r"+std::to_string(reg.first+i));
     }
-    int i = 0;
+
 }
 
-void register_map::add_bound_identifier(const std::string &identifier, int reg) {
-    identifiers_map[identifier] = std::make_shared<variable>("r"+std::to_string(reg));
+void register_map::add_bound_identifier(const std::shared_ptr<variable> & var, int reg) {
+    identifiers_map[var->get_identifier()] = std::make_shared<variable>("r"+std::to_string(reg));
+}
+
+std::shared_ptr<variable> register_map::get_identifier(const std::shared_ptr<variable> &var) {
+    auto id = var->get_identifier();
+    return identifiers_map[id];
 }
 
 

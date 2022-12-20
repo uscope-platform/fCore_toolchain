@@ -50,8 +50,11 @@ public:
     std::string get_identifier();
     std::string get_identifier(const std::vector<int>& idx);
     std::string get_linear_identifier();
+    std::string get_linear_identifier(const int& idx);
+    std::string get_linear_identifier(const std::vector<int>& idx);
 
     int get_linear_index();
+    int get_linear_index(const std::vector<int>& idx);
     float get_const_f();
     int get_const_i();
 

@@ -34,6 +34,8 @@ int linearize_array(std::vector<int> shape, std::vector<int> indices){
 std::vector<int> array_delinearize(const std::vector<int>& shape, int index){
     std::vector<int> multidim_index;
 
+    if(shape.size()==1) return {index};
+
     std::vector<int>strides;
     for(int i = 1; i<shape.size(); ++i){
         strides.push_back(std::accumulate(shape.begin()+i, shape.end(), 1,  std::multiplies<>()));

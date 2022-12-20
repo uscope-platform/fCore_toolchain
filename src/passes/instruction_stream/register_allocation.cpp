@@ -66,37 +66,35 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
     for(auto &item:arguments){
         std::regex re("r(\\d\\d?)");
         std::smatch m;
-        std::string s = item->to_str();
-        std::regex_match(s, m, re);
-        s = item->get_identifier();
+        std::string var_name = item->to_str();
+        std::regex_match(var_name, m, re);
 
         auto bound_reg = item->get_bound_reg();
 
         if(bound_reg != -1){
-            reg_map.add_bound_identifier(s, bound_reg);
-            item = reg_map.get_identifier(s);
+            reg_map.add_bound_identifier(item, bound_reg);
+            item = reg_map.get_identifier(item);
         } else if (memory_vars.contains(item->get_linear_identifier())) {
             allocate_register(item, memory_vars[item->get_linear_identifier()]);
-            item = reg_map.get_identifier(s);
-
+            item = reg_map.get_identifier(item);
         } else{
-            if(reg_map.is_allocated(s)){
-                item = reg_map.get_identifier(s);
+            if(reg_map.is_allocated(item)){
+                item = reg_map.get_identifier(item);
             }else if(m.empty() && !item->is_constant()){
                 bool found = false;
                 for(int i = 0; i<pow(2, fcore_register_address_width);i++){
                     if(!item->get_array_shape().empty() && item->is_contiguous()){
-                        if(!reg_map.is_used({i,item->get_size()}, item->get_first_occurrence(), item->get_last_occurrence())){
+                        if(!reg_map.is_used({i,item->get_size()}, item->get_first_occurrence(), item->get_last_occurrence()) & !excluded[i]){
                             found = true;
                             allocate_array(item, i);
-                            item = reg_map.get_identifier(s);
+                            item = reg_map.get_identifier(item);
                             break;
                         }
                     } else{
                         if(!reg_map.is_used(i, item->get_first_occurrence(), item->get_last_occurrence()) & !excluded[i]){
                             found = true;
                             allocate_register(item, i);
-                            item = reg_map.get_identifier(s);
+                            item = reg_map.get_identifier(item);
                             break;
                         }
                     }
@@ -131,8 +129,28 @@ void register_allocation::allocate_register(std::shared_ptr<variable> &var, int 
 
 void register_allocation::allocate_array(std::shared_ptr<variable> &var, int reg_addr) {
 
-    reg_map.insert(var, reg_addr, var->get_first_occurrence(), var->get_last_occurrence());
+    std::pair<int, int> reg_pair = {reg_addr, var->get_size()};
+    reg_map.insert(var, reg_pair, var->get_first_occurrence(), var->get_last_occurrence());
     allocated_contiguous_arrays[var->get_name()] = {reg_addr, reg_addr+var->get_size()-1};
+
+    for(int i=0; i<var->get_size(); i++){
+
+        auto lin_identifier = var->get_linear_identifier(i);
+
+        if(allocation_map->contains(lin_identifier)){
+            allocation_map->at(lin_identifier).emplace_back(reg_addr+i, i);
+        } else {
+            auto item = std::vector<std::pair<int, int>>();
+            item.emplace_back(reg_addr+i, i);
+            allocation_map->emplace(lin_identifier, item);
+        }
+
+    }
+    for(int i=0; i<var->get_size(); i++){
+        if(var->get_variable_class() == variable_output_type){
+            excluded[reg_addr+i] = true;
+        }
+    }
 
 }
 

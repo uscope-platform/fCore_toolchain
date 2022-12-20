@@ -67,6 +67,16 @@ contiguous_array_identification::process_element(std::shared_ptr<hl_expression_n
                 process_efi_arguments(rhs);
 
                 auto efi_return = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
+                if(!efi_return->get_variable()->get_array_shape().empty()){
+                    std::shared_ptr<variable> var = std::make_shared<variable>("constant", 0);
+                    std::shared_ptr<hl_ast_operand> idx = std::make_shared<hl_ast_operand>(var);
+                    std::vector<std::shared_ptr<hl_ast_node>> new_idx;
+                    for(auto &item:efi_return->get_variable()->get_array_shape()){
+                        new_idx.push_back(idx);
+                    }
+                    efi_return->set_array_index(new_idx);
+                    efi_return->get_variable()->set_type(var_type_array);
+                }
                 efi_return->set_contiguity(true);
                 if(!contiguous_arrays.contains(efi_return->get_name())){
                     contiguous_arrays.insert(efi_return->get_name());
