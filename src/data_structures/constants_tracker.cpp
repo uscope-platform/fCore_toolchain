@@ -25,7 +25,9 @@ void constants_tracker::add_constant(const std::string &s, std::shared_ptr<hl_as
     auto idx = stringify_index(array_idx);
     if(constants_map.contains(s)){
         if(constants_map[s].contains(idx)){
-            constants_map[s][idx].back().validity_range.second = instr_idx;
+            if(constants_map[s][idx].back().validity_range.second ==-1){
+                constants_map[s][idx].back().validity_range.second = instr_idx;
+            }
         }
     }
     constant c;

@@ -16,11 +16,7 @@
 #include <fstream>
 
 #include <gtest/gtest.h>
-#include "passes/low_level/ll_pass_manager.hpp"
-#include "passes/ll_passes.hpp"
-#include "tools/high_level_ast_lowering.hpp"
 #include "fcore_cc.hpp"
-#include "tools/instruction_stream_builder.hpp"
 #include "data_structures/instruction_stream.hpp"
 
 
@@ -749,3 +745,32 @@ TEST(EndToEndC, efi_load_elimination_in_func) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+
+/*
+TEST(EndToEndC, post_assignment_propagation) {
+
+    std::string input_file = "c_e2e/test_post_assignment_propagation.c";
+
+    std::vector<std::string> includes;
+
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "test_in":{"type": "input","address":1},
+                    "test_out":{"type": "output","address":2}
+                }})"
+    );
+
+    fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+
+    std::vector<uint32_t> gold_standard = {0x20003,0xF0003, 0x10001, 0x2000f, 0x30011, 0x46, 0x0, 0x60021, 0x81055,
+                                           0x2084, 0x46,0x38000074, 0x82043, 0x40081, 0x66,1,0x80021,0x21075, 0x60021, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
+*/

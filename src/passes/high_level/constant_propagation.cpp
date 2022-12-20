@@ -54,9 +54,7 @@ std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_pt
     new_content.reserve(content.size());
 
     for(auto &item:content){
-        auto purged = purge_definition(item);
-        new_content.push_back(purge_bound_registers(purged));
-
+        new_content.push_back(purge_definition(item));
     }
 
     element->set_content(new_content);
@@ -150,8 +148,6 @@ std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::share
     }
     return element;
 }
-
-
 
 std::shared_ptr<hl_ast_operand> constant_propagation::propagate_constant(std::shared_ptr<hl_ast_operand> element, int instr_idx) {
 
@@ -350,52 +346,4 @@ bool constant_propagation::needs_termination(const std::shared_ptr<hl_expression
     }
     return needs_termination;
 }
-
-std::shared_ptr<hl_ast_node>
-constant_propagation::purge_bound_registers(std::shared_ptr<hl_ast_node> element) {
-
-    if(element->node_type == hl_ast_node_type_expr){
-        return purge_bound_registers(std::static_pointer_cast<hl_expression_node>(element));
-    } else if(element->node_type == hl_ast_node_type_definition){
-        return purge_bound_registers(std::static_pointer_cast<hl_definition_node>(element));
-    } else if(element->node_type == hl_ast_node_type_operand){
-        return purge_bound_registers(std::static_pointer_cast<hl_ast_operand>(element));
-    } else{
-        return element;
-    }
-}
-
-std::shared_ptr<hl_ast_node>
-constant_propagation::purge_bound_registers(std::shared_ptr<hl_expression_node> element) {
-    if(element->is_immediate()) return element;
-    if(!element->is_unary()) element->set_lhs(purge_bound_registers(element->get_lhs()));
-    element->set_rhs(purge_bound_registers(element->get_rhs()));
-    return element;
-}
-
-std::shared_ptr<hl_ast_node>
-constant_propagation::purge_bound_registers(std::shared_ptr<hl_definition_node> element) {
-    if(element->is_initialized()){
-        auto init_vect = element->get_array_initializer();
-        std::vector<std::shared_ptr<hl_ast_node>> new_init_vect;
-        for(auto &item:init_vect){
-            new_init_vect.push_back(purge_bound_registers(item));
-        }
-        element->set_array_initializer(new_init_vect);
-    }
-
-    return element;
-}
-
-std::shared_ptr<hl_ast_node>
-constant_propagation::purge_bound_registers(std::shared_ptr<hl_ast_operand> element) {
-    if(element->get_variable()->is_constant()){
-        if(tracker.needs_purging(element->get_name(), {0})){
-            element->get_variable()->set_bound_reg_array({-1});
-        }
-    }
-
-    return element;
-}
-
 

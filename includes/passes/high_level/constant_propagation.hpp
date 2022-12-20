@@ -49,14 +49,6 @@ private:
     bool needs_termination(const std::shared_ptr<hl_expression_node> &element, int instr_idx);
     constants_tracker tracker;
 
-    // Bound registers need to be purged separately after the propagation step, because they are needed for variables that are only assigned once
-    std::shared_ptr<hl_ast_node> purge_bound_registers(std::shared_ptr<hl_ast_node> element);
-    std::shared_ptr<hl_ast_node> purge_bound_registers(std::shared_ptr<hl_expression_node> element);
-    std::shared_ptr<hl_ast_node> purge_bound_registers(std::shared_ptr<hl_definition_node> element);
-    std::shared_ptr<hl_ast_node> purge_bound_registers(std::shared_ptr<hl_ast_operand> element);
-
-
-
     std::shared_ptr<hl_ast_node> purge_definition(std::shared_ptr<hl_ast_node> element);
 
 };
