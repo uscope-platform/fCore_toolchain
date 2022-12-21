@@ -51,8 +51,15 @@ void register_allocation::setup() {
             }
             memory_idx++;
         } else if (vc == variable_input_type) {
-            allocate_register(item.second, inputs_idx);
-            inputs_idx++;
+            if(!allocation_map->contains(item.first)){
+                if(item.second->get_type() == var_type_array){
+                    allocate_array(item.second, inputs_idx);
+                    inputs_idx += item.second->get_size();
+                } else {
+                    allocate_register(item.second, inputs_idx);
+                    inputs_idx++;
+                }
+            }
         }
     }
 }
