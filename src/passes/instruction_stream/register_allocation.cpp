@@ -52,7 +52,8 @@ void register_allocation::setup() {
             memory_idx++;
         } else if (vc == variable_input_type) {
             if(!allocation_map->contains(item.first)){
-                if(item.second->get_type() == var_type_array){
+                if((item.second->get_type() == var_type_array) && item.second->is_contiguous()){
+
                     allocate_array(item.second, inputs_idx);
                     inputs_idx += item.second->get_size();
                 } else {
