@@ -90,8 +90,8 @@ void emulator_manager::run_cores() {
                     for(auto &reg:conn.connections){
                         uint32_t first_address, second_address;
                         if(emulators[core_id.second].io_remapping_active){
-                            first_address = emulators[core_id.second].io_map[reg.first.address];
-                            second_address = emulators[core_id.second].io_map[reg.second.address];
+                            first_address = emulators[src->get_name()].io_map[reg.first.address];
+                            second_address = emulators[dst->get_name()].io_map[reg.second.address];
                         } else {
                             first_address = reg.first.address;
                             second_address = reg.second.address;

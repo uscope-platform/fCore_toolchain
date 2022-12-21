@@ -50,6 +50,8 @@ public:
     std::shared_ptr<std::vector<uint32_t>> get_memory(int channel) { return memory_pool[channel];};
     std::unordered_map<int, std::shared_ptr<std::vector<uint32_t>>> get_memory_pool() { return memory_pool;};
 
+    std::string get_name() {return core_name;};
+
     static uint32_t float_to_uint32(float f);
     static float uint32_to_float(uint32_t u);
 private:
