@@ -1,0 +1,3 @@
+[submodule "json-schema-validator"]
+	path = json-schema-validator
+	url = https://github.com/pboettch/json-schema-validator.git

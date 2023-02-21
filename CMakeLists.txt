@@ -35,8 +35,6 @@ else()
     add_definitions(-DSCHEMAS_FOLDER="/usr/local/etc/fcore_toolchain")
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
-set(JSON_VALIDATOR_BUILD_EXAMPLES OFF)
-set(JSON_VALIDATOR_BUILD_TESTS OFF)
 
 include(FetchContent)
 
@@ -76,9 +74,6 @@ FetchContent_Declare(
         DOWNLOAD_EXTRACT_TIMESTAMP ON
 )
 FetchContent_MakeAvailable(googletest)
-
-
-
 
 
 FetchContent_Declare(
