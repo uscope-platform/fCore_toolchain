@@ -46,13 +46,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(json)
 
 FetchContent_Declare(
-        json_schema
-        GIT_REPOSITORY https://github.com/pboettch/json-schema-validator
-        GIT_TAG       2.1.0
-)
-FetchContent_MakeAvailable(json_schema)
-
-FetchContent_Declare(
         cli11
         GIT_REPOSITORY https://github.com/CLIUtils/CLI11
         GIT_TAG        v2.3.0
