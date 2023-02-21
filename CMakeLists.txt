@@ -33,10 +33,10 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DSCHEMAS_FOLDER="${CMAKE_SOURCE_DIR}/schemas")
 else()
     add_definitions(-DSCHEMAS_FOLDER="/usr/local/etc/fcore_toolchain")
-    set(BUILD_EXAMPLES OFF)
-    set(BUILD_TESTS OFF)
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
+set(JSON_VALIDATOR_BUILD_EXAMPLES OFF)
+set(JSON_VALIDATOR_BUILD_TESTS OFF)
 
 include(FetchContent)
 
