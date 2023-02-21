@@ -35,15 +35,9 @@ else()
     add_definitions(-DSCHEMAS_FOLDER="/usr/local/etc/fcore_toolchain")
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
-
+find_package(nlohmann_json_schema_validator REQUIRED)
+find_package(nlohmann_json REQUIRED)
 include(FetchContent)
-
-FetchContent_Declare(
-        json
-        GIT_REPOSITORY https://github.com/nlohmann/json
-        GIT_TAG        v3.11.2
-)
-FetchContent_MakeAvailable(json)
 
 FetchContent_Declare(
         cli11
