@@ -116,7 +116,7 @@ target_link_libraries(fCore_has PRIVATE
         nlohmann_json::nlohmann_json
         CLI11::CLI11
         antlr4_static
-        spdlog
+        spdlog::spdlog
         nlohmann_json_schema_validator
         )
 
@@ -125,8 +125,10 @@ target_link_libraries(fCore_cc PRIVATE common_srcs
         nlohmann_json::nlohmann_json
         nlohmann_json_schema_validator
         CLI11::CLI11
+        GTest::GTest
         antlr4_static
-        spdlog)
+        spdlog::spdlog
+        )
 
 add_executable(fCore_dis ${FCORE_DIS_SRCS} fcore_dis_main.cpp)
 target_link_libraries(fCore_dis PRIVATE
@@ -134,7 +136,8 @@ target_link_libraries(fCore_dis PRIVATE
         nlohmann_json_schema_validator
         CLI11::CLI11
         common_srcs
-        spdlog)
+        spdlog::spdlog
+        )
 
 add_custom_target(toolchain)
 add_dependencies(toolchain fCore_has fCore_cc fCore_dis)
@@ -150,7 +153,7 @@ if(${INCLUDE_EMULATOR})
     add_executable(fCore_emu ${FCORE_EMU_SRCS} fcore_emu_main.cpp)
     target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel
             common_srcs
-            spdlog
+            spdlog::spdlog
             nlohmann_json::nlohmann_json
             CLI11::CLI11
             nlohmann_json_schema_validator
@@ -166,7 +169,7 @@ if(${INCLUDE_DEVTOOLS})
     add_executable(fCore_dev_server  ${FCORE_CC_SRCS} ${FCORE_DEVTOOLS_SRCS} ${C_PARSER_SRCS} fCore_dev_server.cpp)
     target_link_libraries(fCore_dev_server PRIVATE
             cpprestsdk::cpprest
-            spdlog
+            spdlog::spdlog
             nlohmann_json::nlohmann_json
             CLI11::CLI11
             crypto

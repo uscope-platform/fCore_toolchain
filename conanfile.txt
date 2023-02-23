@@ -1,0 +1,10 @@
+[requires]
+antlr4-cppruntime/4.11.1
+json-schema-validator/2.2.0
+spdlog/1.11.0
+cli11/2.3.2
+gtest/1.13.0
+
+[generators]
+CMakeDeps
+CMakeToolchain
