@@ -143,11 +143,11 @@ add_custom_target(toolchain)
 add_dependencies(toolchain fCore_has fCore_cc fCore_dis)
 
 
-install(DIRECTORY ../schemas/ DESTINATION /usr/local/etc/fcore_toolchain)
+install(DIRECTORY ../schemas/ DESTINATION etc/fcore_toolchain)
 
-install(TARGETS fCore_has DESTINATION /usr/bin)
-install(TARGETS fCore_cc DESTINATION /usr/bin)
-install(TARGETS fCore_dis DESTINATION /usr/bin)
+install(TARGETS fCore_has DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS fCore_cc DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS fCore_dis DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 if(${INCLUDE_EMULATOR})
     add_executable(fCore_emu ${FCORE_EMU_SRCS} fcore_emu_main.cpp)
@@ -159,7 +159,7 @@ if(${INCLUDE_EMULATOR})
             nlohmann_json_schema_validator
             )
 
-    install(TARGETS fCore_emu DESTINATION /usr/bin)
+    install(TARGETS fCore_emu DESTINATION ${CMAKE_INSTALL_BINDIR})
     install(FILES ../third_party/fp_ip_cmodel/lib/libIp_floating_point_v7_1_bitacc_cmodel.so
             DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif(${INCLUDE_EMULATOR})

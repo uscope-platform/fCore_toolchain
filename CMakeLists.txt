@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
+
 project(fCore_toolchain)
 
 include(GNUInstallDirs)
@@ -16,12 +17,14 @@ set(ANTLR_OPTIONS -Dlanguage=Cpp -visitor -listener  -encoding iso-8859-1)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/antlr_runtime/dist/usr/local/include/antlr4-runtime)
 include_directories(includes)
 
-# setup xilinx fp model c library
-include_directories(third_party/fp_ip_cmodel/includes)
-link_directories(third_party/fp_ip_cmodel/lib)
+if(${INCLUDE_EMULATOR})
+    # setup xilinx fp model c library
+    include_directories(third_party/fp_ip_cmodel/includes)
+    link_directories(third_party/fp_ip_cmodel/lib)
 
-install (FILES third_party/fp_ip_cmodel/lib/libgmp.so.11 DESTINATION /usr/lib/x86_64-linux-gnu)
-install (FILES third_party/fp_ip_cmodel/lib/libmpfr.so.4 DESTINATION /usr/lib/x86_64-linux-gnu)
+    install(FILES third_party/fp_ip_cmodel/lib/libgmp.so.11 DESTINATION lib/x86_64-linux-gnu)
+    install(FILES third_party/fp_ip_cmodel/lib/libmpfr.so.4 DESTINATION lib/x86_64-linux-gnu)
+endif(${INCLUDE_EMULATOR})
 
 set(CMAKE_CXX_STANDARD 20)
 
