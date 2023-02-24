@@ -87,6 +87,8 @@ Then build using the standard conan build process.
     conan install . --output-folder=build --build=missing -pr:b=default -pr=conan_cross_profile
     cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
     cmake --build . --parallel $N_CORES --target toolchain
-
+    cmake --install . --prefix tools_root
 ```
+
+Given the old version of GLIBC used in the petalinux installation the resulting binaries only work in a container.
 
