@@ -76,3 +76,17 @@ To build the software from sources run the following steps:
 The following libraries are required to build and run the software:
 
 - antlr-cpp-runtime 4.9
+
+
+## CROSS COMPILATION
+
+To cross compile use conan_cross_profile as host profile and default as build one:
+Then build using the standard conan build process.
+
+```bash
+    conan install . --output-folder=build --build=missing -pr:b=default -pr=conan_cross_profile
+    cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
+    cmake --build . --parallel $N_CORES --target toolchain
+
+```
+
