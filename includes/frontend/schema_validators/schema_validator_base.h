@@ -18,6 +18,7 @@
 #include <string>
 #include <fstream>
 #include <utility>
+#include <filesystem>
 
 #include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>

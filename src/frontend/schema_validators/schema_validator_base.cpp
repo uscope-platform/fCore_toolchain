@@ -18,6 +18,11 @@
 schema_validator_base::schema_validator_base(const std::string& schema_file, std::string validator_name) {
     std::string schemas_path = SCHEMAS_FOLDER;
     std::string full_schema_path = schemas_path  + "/" + schema_file;
+    if(!std::filesystem::exists(full_schema_path)){
+        std::string err_msg = "JSON schema file not found: " + full_schema_path;
+        spdlog::critical(err_msg);
+        throw std::invalid_argument(err_msg);
+    }
     std::ifstream ifs(full_schema_path);
     schema = nlohmann::json::parse(ifs);
     schema_name = std::move(validator_name);
