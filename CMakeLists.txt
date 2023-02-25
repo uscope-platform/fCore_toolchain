@@ -59,6 +59,9 @@ find_package(antlr4-runtime REQUIRED)
 find_package(GTest REQUIRED)
 find_package(nlohmann_json_schema_validator REQUIRED)
 
+install(FILES schemas/compiler_spec_schema.json DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/fcore_toolchain)
+install(FILES schemas/compiler_spec_schema.json DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/fcore_toolchain)
+
 
 if(${INCLUDE_DEVTOOLS})
     find_package(cpprestsdk REQUIRED)

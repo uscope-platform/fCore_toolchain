@@ -143,8 +143,6 @@ add_custom_target(toolchain)
 add_dependencies(toolchain fCore_has fCore_cc fCore_dis)
 
 
-install(DIRECTORY ../schemas/ DESTINATION etc/fcore_toolchain)
-
 install(TARGETS fCore_has DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(TARGETS fCore_cc DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(TARGETS fCore_dis DESTINATION ${CMAKE_INSTALL_BINDIR})
@@ -163,7 +161,6 @@ if(${INCLUDE_EMULATOR})
     install(FILES ../third_party/fp_ip_cmodel/lib/libIp_floating_point_v7_1_bitacc_cmodel.so
             DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif(${INCLUDE_EMULATOR})
-
 
 if(${INCLUDE_DEVTOOLS})
     add_executable(fCore_dev_server  ${FCORE_CC_SRCS} ${FCORE_DEVTOOLS_SRCS} ${C_PARSER_SRCS} fCore_dev_server.cpp)
