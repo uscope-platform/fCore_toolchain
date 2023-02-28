@@ -24,27 +24,17 @@ executable::executable() {
 
 executable::executable(std::vector<uint32_t> exec) {
     std::vector<uint32_t> executable = std::move(exec);
-    uint16_t metadata[2][2];
+    sections["metadata"].push_back(executable[0]);
 
-    split_word(executable[0], metadata[0]);
-
-    for(int i = 0; i< metadata[0][1]; i++){
-        sections["metadata"].push_back(executable[i]);
-    }
-    split_word(executable[1], metadata[1]);
+    uint16_t metadata[2];
+    split_word(executable[0], metadata);
 
     executable.erase(executable.begin(), executable.begin()+2);
-
-    if(metadata[0][0] == 3){
-        for(int i = 0; i< metadata[1][0]; i++){
-            sections["io_remapping"].push_back(executable[i]);
-        }
-        io_mapping_present = true;
-        executable.erase(executable.begin(), executable.begin()+metadata[1][0]);
-    } else if(metadata[0][0] == 2){
-        io_mapping_present = false;
+    io_mapping_present = metadata[0]>1;
+    for(int i = 0; i< metadata[0]-1; i++){
+        sections["io_remapping"].push_back(executable[i]);
     }
-
+    executable.erase(executable.begin(), executable.begin()+metadata[0]);
 
     sections["code"].insert(sections["code"].end(),executable.begin(), executable.end());
 }
@@ -60,20 +50,12 @@ void executable::add_io_mapping(std::set<std::pair<uint16_t, uint16_t>> mapping)
         uint32_t raw_mapping = pair.first + (pair.second<<16);
         sections["io_remapping"].push_back(raw_mapping);
     }
-
+    sections["io_remapping"].push_back(0xC);
 }
 
 void executable::generate_metadata() {
-    if(io_mapping_present){
-        sections["metadata"].push_back(3);
-        sections["metadata"].push_back(sections["io_remapping"].size() + (sections["code"].size()<<16));
-        sections["metadata"][0] += sections["metadata"].size()<<16;
-    } else {
-        sections["metadata"].push_back(2);
-        sections["metadata"].push_back((sections["code"].size()<<16));
-        sections["metadata"][0] += sections["metadata"].size()<<16;
-    }
-
+    sections["metadata"].push_back(sections["io_remapping"].size() + (sections["code"].size()<<16));
+    sections["metadata"].push_back(0xC);
 }
 
 

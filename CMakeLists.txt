@@ -8,6 +8,7 @@ option(BUILD_TESTS "Build test programs" OFF)
 option(INCLUDE_EMULATOR "Include the emulator in the build" OFF)
 option(INCLUDE_COVERAGE "Build with support for code coverage" OFF)
 option(INCLUDE_DEVTOOLS "Include compiler development tools in the build" OFF)
+option(USE_CONAN "Use the conan package manager for dependency management" OFF)
 
 set(ANTLR_VERSION 4.10.1)
 SET(ANTLR_JAR antlr-${ANTLR_VERSION}-complete.jar)
@@ -52,20 +53,69 @@ add_subdirectory(includes/C_parser)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/_deps/antlr_runtime_src-src/runtime/Cpp/runtime/src)
 
-find_package(nlohmann_json REQUIRED)
-find_package(CLI11 CONFIG REQUIRED)
-find_package(spdlog CONFIG REQUIRED)
-find_package(antlr4-runtime REQUIRED)
-find_package(GTest REQUIRED)
-find_package(nlohmann_json_schema_validator REQUIRED)
+install(FILES schemas/compiler_spec_schema.json DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/fcore_toolchain)
+install(FILES schemas/compiler_spec_schema.json DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/fcore_toolchain)
 
-install(FILES schemas/compiler_spec_schema.json DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/fcore_toolchain)
-install(FILES schemas/compiler_spec_schema.json DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/fcore_toolchain)
+
+if(${USE_CONAN})
+    find_package(nlohmann_json REQUIRED)
+    find_package(CLI11 CONFIG REQUIRED)
+    find_package(spdlog CONFIG REQUIRED)
+    find_package(antlr4-runtime REQUIRED)
+    find_package(GTest REQUIRED)
+    find_package(nlohmann_json_schema_validator REQUIRED)
+else()
+    find_package(GTest REQUIRED)
+    find_package(nlohmann_json_schema_validator REQUIRED)
+    find_package(nlohmann_json REQUIRED)
+    include(FetchContent)
+
+    FetchContent_Declare(
+            cli11
+            GIT_REPOSITORY https://github.com/CLIUtils/CLI11
+            GIT_TAG        v2.3.0
+    )
+    FetchContent_MakeAvailable(cli11)
+
+    FetchContent_Declare(
+            antlr_jar
+            URL https://github.com/antlr/website-antlr4/blob/gh-pages/download/${ANTLR_JAR}?raw=true
+            DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/antlr_jar
+            DOWNLOAD_NAME ${ANTLR_JAR}
+            DOWNLOAD_NO_EXTRACT ON
+    )
+    FetchContent_MakeAvailable(antlr_jar)
+
+
+    FetchContent_Declare(
+            spdlog
+            GIT_REPOSITORY https://github.com/gabime/spdlog.git
+            GIT_TAG        76fb40d95455f249bd70824ecfcae7a8f0930fa3 # v1.10.0
+    )
+    FetchContent_MakeAvailable(spdlog)
+
+    FetchContent_Declare(
+            antlr_runtime_src
+            GIT_REPOSITORY https://github.com/antlr/antlr4.git
+            SOURCE_SUBDIR runtime/Cpp
+            GIT_TAG ${ANTLR_VERSION}
+    )
+    # Check if population has already been performed
+    FetchContent_GetProperties(antlr_runtime_src)
+    if(NOT antlr_runtime_src_POPULATED)
+        # Fetch the content using previously declared details
+        FetchContent_Populate(antlr_runtime_src)
+
+        # Bring the populated content into the build
+        add_subdirectory(${antlr_runtime_src_SOURCE_DIR}/runtime/Cpp ${antlr_runtime_src_BINARY_DIR} EXCLUDE_FROM_ALL)
+    endif()
+
+endif(${USE_CONAN})
+
 
 
 if(${INCLUDE_DEVTOOLS})
     find_package(cpprestsdk REQUIRED)
-
 endif(${INCLUDE_DEVTOOLS})
 
 add_subdirectory(src)
@@ -81,3 +131,5 @@ include(ExternalProject)
 
 add_custom_target(parsers)
 add_dependencies(parsers c_parser_gen asm_parser_gen)
+
+
