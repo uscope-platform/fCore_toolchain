@@ -55,8 +55,6 @@ find_package(spdlog CONFIG REQUIRED)
 find_package(nlohmann_json_schema_validator REQUIRED)
 find_package(antlr4-runtime CONFIG REQUIRED)
 
-include_directories(${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include/antlr4-runtime)
-
 
 add_subdirectory(includes/asm_parser)
 add_subdirectory(includes/C_parser)

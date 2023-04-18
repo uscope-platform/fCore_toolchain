@@ -12,3 +12,5 @@ dist/
 cmake-build-debug-coverage-1/
 
 cmake-build-target/
+
+CMakeUserPresets.json
