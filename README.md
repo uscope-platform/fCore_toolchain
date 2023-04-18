@@ -84,8 +84,8 @@ To cross compile use conan_cross_profile as host profile and default as build on
 Then build using the standard conan build process.
 
 ```bash
-    conan install . --output-folder=build --build=missing -pr:b=default -pr=conan_cross_profile
-    cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
+    onan install . -pr:b=default -pr:h=conan_cross_profile --output-folder=build-arm --build=missing
+    cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release  -DCMAKE_CXX_COMPILER=arm-linux-gnueabihf-g++ -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc
     cmake --build . --parallel $N_CORES --target toolchain
     cmake --install . --prefix tools_root
 ```
