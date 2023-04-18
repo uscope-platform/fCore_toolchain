@@ -22,10 +22,10 @@ target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES}
         pthread
         antlr4_static
         Ip_floating_point_v7_1_bitacc_cmodel
-        spdlog
+        spdlog::spdlog
         nlohmann_json::nlohmann_json
         nlohmann_json_schema_validator
-        GTest::gtest_main
+        GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main
         )
 
 include(GoogleTest)

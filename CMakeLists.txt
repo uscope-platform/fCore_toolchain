@@ -15,7 +15,6 @@ SET(ANTLR_JAR antlr-${ANTLR_VERSION}-complete.jar)
 set(ANTLR_CLASSPATH ${CMAKE_CURRENT_BINARY_DIR}/antlr_jar/${ANTLR_JAR})
 set(ANTLR_OPTIONS -Dlanguage=Cpp -visitor -listener  -encoding iso-8859-1)
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/antlr_runtime/dist/usr/local/include/antlr4-runtime)
 include_directories(includes)
 
 if(${INCLUDE_EMULATOR})
@@ -47,72 +46,23 @@ endif(${INCLUDE_COVERAGE})
 
 message(STATUS "C compiler: ${CMAKE_C_COMPILER}")
 message(STATUS "C++ compiler: ${CMAKE_CXX_COMPILER}")
+message(STATUS "include dir = ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/includes")
+
+find_package(GTest CONFIG REQUIRED)
+find_package(nlohmann_json REQUIRED)
+find_package(CLI11 CONFIG REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
+find_package(nlohmann_json_schema_validator REQUIRED)
+find_package(antlr4-runtime CONFIG REQUIRED)
+
+include_directories(${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/include/antlr4-runtime)
+
 
 add_subdirectory(includes/asm_parser)
 add_subdirectory(includes/C_parser)
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/_deps/antlr_runtime_src-src/runtime/Cpp/runtime/src)
-
 install(FILES schemas/compiler_spec_schema.json DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/fcore_toolchain)
 install(FILES schemas/compiler_spec_schema.json DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/fcore_toolchain)
-
-
-if(${USE_CONAN})
-    find_package(nlohmann_json REQUIRED)
-    find_package(CLI11 CONFIG REQUIRED)
-    find_package(spdlog CONFIG REQUIRED)
-    find_package(antlr4-runtime REQUIRED)
-    find_package(GTest REQUIRED)
-    find_package(nlohmann_json_schema_validator REQUIRED)
-else()
-    find_package(GTest REQUIRED)
-    find_package(nlohmann_json_schema_validator REQUIRED)
-    find_package(nlohmann_json REQUIRED)
-    include(FetchContent)
-
-    FetchContent_Declare(
-            cli11
-            GIT_REPOSITORY https://github.com/CLIUtils/CLI11
-            GIT_TAG        v2.3.0
-    )
-    FetchContent_MakeAvailable(cli11)
-
-    FetchContent_Declare(
-            antlr_jar
-            URL https://github.com/antlr/website-antlr4/blob/gh-pages/download/${ANTLR_JAR}?raw=true
-            DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/antlr_jar
-            DOWNLOAD_NAME ${ANTLR_JAR}
-            DOWNLOAD_NO_EXTRACT ON
-    )
-    FetchContent_MakeAvailable(antlr_jar)
-
-
-    FetchContent_Declare(
-            spdlog
-            GIT_REPOSITORY https://github.com/gabime/spdlog.git
-            GIT_TAG        76fb40d95455f249bd70824ecfcae7a8f0930fa3 # v1.10.0
-    )
-    FetchContent_MakeAvailable(spdlog)
-
-    FetchContent_Declare(
-            antlr_runtime_src
-            GIT_REPOSITORY https://github.com/antlr/antlr4.git
-            SOURCE_SUBDIR runtime/Cpp
-            GIT_TAG ${ANTLR_VERSION}
-    )
-    # Check if population has already been performed
-    FetchContent_GetProperties(antlr_runtime_src)
-    if(NOT antlr_runtime_src_POPULATED)
-        # Fetch the content using previously declared details
-        FetchContent_Populate(antlr_runtime_src)
-
-        # Bring the populated content into the build
-        add_subdirectory(${antlr_runtime_src_SOURCE_DIR}/runtime/Cpp ${antlr_runtime_src_BINARY_DIR} EXCLUDE_FROM_ALL)
-    endif()
-
-endif(${USE_CONAN})
-
-
 
 if(${INCLUDE_DEVTOOLS})
     find_package(cpprestsdk REQUIRED)

@@ -126,7 +126,7 @@ target_link_libraries(fCore_cc PRIVATE common_srcs
         nlohmann_json::nlohmann_json
         nlohmann_json_schema_validator
         CLI11::CLI11
-        GTest::GTest
+        GTest::gtest
         antlr4_static
         spdlog::spdlog
         )

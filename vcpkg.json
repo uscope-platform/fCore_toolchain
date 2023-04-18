@@ -1,0 +1,34 @@
+{
+  "name" : "fcore-toolchain",
+  "version-string" : "1.0.0",
+  "builtin-baseline" : "b08025687f75908191b1e6c67925d46ea0f398dd",
+  "dependencies" : [ {
+    "name" : "antlr4",
+    "version>=" : "4.11.1#1"
+  }, {
+    "name" : "cli11",
+    "version>=" : "2.3.1"
+  }, {
+    "name" : "fmt",
+    "version>=" : "9.1.0#1"
+  }, {
+    "name" : "json-schema-validator",
+    "version>=" : "2.2.0"
+  }, {
+    "name" : "libuuid",
+    "version>=" : "1.0.3#12"
+  }, {
+    "name" : "nlohmann-json",
+    "version>=" : "3.11.2"
+  }, {
+    "name" : "spdlog",
+    "version>=" : "1.11.0",
+    "$comment" : "    # this is heuristically generated, and may not be correct\n\n    find_package(spdlog CONFIG REQUIRED)\n\n    target_link_libraries(main PRIVATE spdlog::spdlog spdlog::spdlog_header_only)\n"
+  }, {
+    "name" : "vcpkg-cmake-config",
+    "version>=" : "2022-02-06#1"
+  }, {
+    "name" : "vcpkg-cmake",
+    "version>=" : "2022-12-22"
+  } ]
+}
