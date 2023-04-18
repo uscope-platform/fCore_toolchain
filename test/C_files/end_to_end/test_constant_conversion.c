@@ -1,4 +1,4 @@
-//  Copyright 2023 Filippo Savi <filssavi@gmail.com>
+//  Copyright 2022 Filippo Savi <filssavi@gmail.com>
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -10,20 +10,14 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License.
-
-
+// limitations under the License.05/07/2021.
 
 int main(){
-    int a;
-    float switching_cell[2] = {1.0, 1.0};
 
+    float v_ref=15;
+    float v_ref2=14.0;
 
-    switching_cell[0]=switching_cell[0]+a;
-
-    switching_cell[0] = 1.0;
-    switching_cell[1] = 1.0;
-
-    switching_cell[1]=switching_cell[1]+a;
-
+    float v_err = itf(v_ref);
+    float v_err2=fti(v_ref2);
+    return 0;
 }

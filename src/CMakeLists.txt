@@ -108,7 +108,8 @@ set(FCORE_DEVTOOLS_SRCS
 set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_DIS_SRCS} ${FCORE_EMU_SRCS} PARENT_SCOPE)
 
 add_library(common_srcs ${FCORE_COMMON_SRCS_I})
-target_link_libraries(common_srcs PRIVATE nlohmann_json::nlohmann_json)
+
+target_link_libraries(common_srcs PRIVATE nlohmann_json::nlohmann_json nlohmann_json_schema_validator)
 
 add_executable(fCore_has ${FCORE_AS_SRCS} ${ASM_PARSER_SRCS} fcore_has_main.cpp)
 target_link_libraries(fCore_has PRIVATE

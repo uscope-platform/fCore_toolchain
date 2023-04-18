@@ -23,6 +23,7 @@
 #include <utility>
 #include <vector>
 #include <cstring>
+#include <algorithm>
 
 
 class cell {

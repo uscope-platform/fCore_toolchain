@@ -21,6 +21,7 @@
 #include <utility>
 #include <regex>
 #include <iostream>
+#include <cmath>
 
 #include <nlohmann/json.hpp>
 #include "tools/array_linearizer.hpp"

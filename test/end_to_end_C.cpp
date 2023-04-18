@@ -747,17 +747,16 @@ TEST(EndToEndC, efi_load_elimination_in_func) {
 }
 
 
-/*
-TEST(EndToEndC, post_assignment_propagation) {
+TEST(EndToEndC, constant_conversion) {
 
-    std::string input_file = "c_e2e/test_post_assignment_propagation.c";
+    std::string input_file = "c_e2e/test_constant_conversion.c";
 
     std::vector<std::string> includes;
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
-                    "test_in":{"type": "input","address":1},
-                    "test_out":{"type": "output","address":2}
+                    "v_err":{"type": "output","address":2},
+                    "v_err2":{"type": "output","address":3}
                 }})"
     );
 
@@ -767,10 +766,8 @@ TEST(EndToEndC, post_assignment_propagation) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0xF0003, 0x10001, 0x2000f, 0x30011, 0x46, 0x0, 0x60021, 0x81055,
-                                           0x2084, 0x46,0x38000074, 0x82043, 0x40081, 0x66,1,0x80021,0x21075, 0x60021, 0xc};
+    std::vector<uint32_t> gold_standard = {0x50003, 0xC,0x10002, 0x20003, 0xC, 0x26, 0x41700000, 0x46, 0xE, 0xC};
 
     ASSERT_EQ(gold_standard, result);
 
 }
-*/

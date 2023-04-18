@@ -70,7 +70,7 @@ expression_evaluator::evaluate_unary_expression(std::shared_ptr<hl_expression_no
         expr_type = c_type_float;
     }
 
-    if(expression->get_type() != expr_fti || expression->get_type() != expr_itf  ){
+    if(expression->get_type() != expr_fti && expression->get_type() != expr_itf  ){
         if(expr_type == c_type_float){
             float operand = rhs->get_float_val();
 
@@ -85,6 +85,22 @@ expression_evaluator::evaluate_unary_expression(std::shared_ptr<hl_expression_no
             retval = std::make_shared<hl_ast_operand>(var);
 
             retval->set_immediate(evaluate_unary_expr_i(operand, expression->get_type()));
+        }
+    } else {
+        if(expr_type == c_type_float){
+            float operand = rhs->get_float_val();
+            int result_val = std::round(operand);
+            std::shared_ptr<variable> var = std::make_shared<variable>("constant", result_val);
+            retval = std::make_shared<hl_ast_operand>(var);
+
+            retval->set_immediate(result_val);
+        } else {
+            int operand = rhs->get_int_value();
+            auto result_val = (float)operand;
+            std::shared_ptr<variable> var = std::make_shared<variable>("constant", result_val);
+            retval = std::make_shared<hl_ast_operand>(var);
+
+            retval->set_immediate(result_val);
         }
     }
 
@@ -174,8 +190,10 @@ float expression_evaluator::evaluate_unary_expr_f(float operand, expression_type
         case expr_decr_post:
         case expr_decr_pre:
             return operand-1;
+        case expr_fti:
+            return operand;
         default:
-            throw std::runtime_error("Internal this condition should not have been possible");
+            throw std::runtime_error("Internal error: this condition should not have been possible");
 
     }
 }
@@ -194,8 +212,10 @@ int expression_evaluator::evaluate_unary_expr_i(int operand, expression_type_t o
         case expr_decr_post:
         case expr_decr_pre:
             return operand-1;
+        case expr_itf:
+            return operand;
         default:
-            throw std::runtime_error("Internal this condition should not have been possible");
+            throw std::runtime_error("Internal error: this condition should not have been possible");
 
     }
 }
