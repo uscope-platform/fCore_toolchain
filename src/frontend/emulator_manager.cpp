@@ -127,12 +127,19 @@ emulator_metadata emulator_manager::load_program(nlohmann::json &core) {
     auto program = core["program"];
     emulator_metadata metadata;
     std::ifstream stream;
+
     bin_loader_input_type_t in_type;
+    std::string file_path = program["file"];
+    if(!std::filesystem::is_regular_file(file_path)){
+        std::string core_id = core["id"];
+        spdlog::critical("Invalid program file for core: " + core_id);
+        exit(-1);
+    }
     if(program["type"] == "mem") {
-        stream.open(program["file"]);
+        stream.open(file_path);
         in_type = bin_loader_mem_input;
     } else if(program["type"] == "hex") {
-        stream.open(program["file"], std::ifstream::binary);
+        stream.open(file_path, std::ifstream::binary);
         in_type = bin_loader_hex_input;
     } else{
         spdlog::critical("Unknown program type for core: " + nlohmann::to_string(core["id"]));
@@ -163,6 +170,7 @@ emulator_metadata emulator_manager::load_program(nlohmann::json &core) {
             metadata.comparator_type = opt["comparators"];
             metadata.emu->set_comparator_type(metadata.comparator_type);
         }
+
         if(core.contains("order")){
             if(ordering_style==implicit_ordering){
                 spdlog::critical("Mixing of explicit and implicit cores ordering is not allowed");
@@ -191,22 +199,26 @@ std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
     if(core["inputs"].empty()){
         return inputs;
     }
-    std::string file_path = core["inputs"]["file"];
+    std::string file_path = core["input_file"];
     csv::CSVReader reader(file_path);
     auto column_names = reader.get_col_names();
 
-    std::unordered_map<std::string, std::string> types = core["inputs"]["types"];
-    std::unordered_map<std::string, int> regs = core["inputs"]["registers"];
+    std::unordered_map<std::string, std::string> types;
+    std::unordered_map<std::string, int> regs;
     std::unordered_map<std::string, unsigned int> channels;
 
-    if(core["inputs"].contains("channels")){
-        std::unordered_map<std::string, unsigned int> raw_ch = core["inputs"]["channels"];
-        channels = raw_ch;
-    } else {
-        for(auto &col :column_names){
-            channels[col] = 0;
-        }
+    for (auto &input_spec: core["inputs"]) {
+        std::string name = input_spec["name"];
+
+        std::string type = input_spec["type"];
+        types[name] = type[0];
+
+        regs[name] = input_spec["reg_n"];
+
+        uint32_t c =  input_spec["channel"];
+        channels[name] = c;
     }
+
 
     std::unordered_map<std::string, std::vector<uint32_t>> inputs_vect;
 
@@ -288,14 +300,14 @@ emulator_manager::load_memory_init(nlohmann::json &mem_init, std::unordered_map<
 
     std::unordered_map<unsigned int, uint32_t> init_map;
 
-    for(int i = 0; i<mem_init["index"].size(); i++){
-        auto idx =  io_map[mem_init["index"][i]];
-        if(mem_init["type"][i] == "f"){
-            init_map[idx] = emulator::float_to_uint32(mem_init["values"][i]);
+    for(auto &mem:mem_init){
+        if(mem["type"] == "float") {
+            init_map[mem["reg_n"]] = emulator::float_to_uint32(mem["value"]);
         } else {
-            init_map[idx] = mem_init["values"][i];
+            init_map[mem["reg_n"]] = mem["value"];
         }
     }
+
     return init_map;
 }
 

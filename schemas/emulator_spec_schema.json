@@ -24,43 +24,43 @@
             "type": "string",
             "title": "Identification string of the core"
           },
+          "input_file": {
+            "type": "string",
+            "title": "path of the data input file"
+          },
           "order": {
             "type": "integer",
             "title": "Field indicating the order in which cores must be run in a multicore emulation session"
           },
           "inputs": {
-            "type": "object",
-            "title": "Object describing the inputs to the core",
-            "required": [
-              "file",
-              "types",
-              "registers",
-              "channels"
-            ],
-            "properties": {
-              "file": {
-                "type": "string",
-                "title": "Path of the csv file from which the inputs are taken"
-              },
-              "types": {
-                "type": "object",
-                "title": "Object indicating the type for each input",
-                "additionalProperties": {
-                  "type": "string"
-                }
-              },
-              "registers": {
-                "type": "object",
-                "title": "Object associating inputs to the target core register",
-                "additionalProperties": {
-                  "type": "number"
-                }
-              },
-              "channels": {
-                "type": "object",
-                "title": "Object associating each input to the relative channel on the core",
-                "additionalProperties": {
-                  "type": "number"
+            "type": "array",
+            "default": [],
+            "title": "Array of objects that specify the external inputs to the core",
+            "items": {
+              "type": "object",
+              "title": "Object describing a single external input",
+              "required": [
+                "reg_n",
+                "channel",
+                "type",
+                "name"
+              ],
+              "properties": {
+                "channel": {
+                  "type": "integer",
+                  "title": "Channel to push the input to"
+                },
+                "reg_n": {
+                  "type": "integer",
+                  "title": "IO address (or register address if remapping is not active) to push the input to"
+                },
+                "type": {
+                  "type": "string",
+                  "title": "Type for the input"
+                },
+                "name": {
+                  "type": "string",
+                  "title": "Name of this input (tied to the CSV column title)"
                 }
               }
             }
@@ -103,7 +103,7 @@
             "properties": {
               "type": {
                 "type": "string",
-                "title": "type of the program input file"
+                "title": "type of the program code file"
               },
               "file": {
                 "type": "string",
@@ -112,35 +112,34 @@
             }
           },
           "memory_init": {
-            "type": "object",
-            "default": {},
-            "title": "Object describing the initial memory values",
-            "required": [
-              "index",
-              "type",
-              "values"
-            ],
-            "properties": {
-              "index": {
-                "type": "array",
-                "default": [],
-                "title": "Index of the register to initialize",
-                "items": {
-                  "type": "integer"
-                }
-              },
-              "type": {
-                "type": "array",
-                "title": "type of value to use for the initialization",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "values": {
-                "type": "array",
-                "title": "Value to use for the initialization",
-                "items": {
-                  "type": "integer"
+            "type": "array",
+            "default": [],
+            "title": "Array of objects that specify the initial values for state variables",
+            "items": {
+              "type": "object",
+              "title": "Object describing the initial value for a single state variable",
+              "required": [
+                "reg_n",
+                "value",
+                "type",
+                "name"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "title": "Value to use for initialization of the state variable"
+                },
+                "reg_n": {
+                  "type": "integer",
+                  "title": "IO address (or register address if remapping is not active) of the state variable to initialize"
+                },
+                "type": {
+                  "type": "string",
+                  "title": "Type of the value to use for initialization"
+                },
+                "name": {
+                  "type": "string",
+                  "title": "Name of the state variable (For documentation purposes only, not used internally)"
                 }
               }
             }
