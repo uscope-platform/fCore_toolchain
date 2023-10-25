@@ -178,7 +178,7 @@
         "required": [
           "source",
           "destination",
-          "registers"
+          "channels"
         ],
         "properties": {
           "source": {
@@ -189,12 +189,12 @@
             "type": "string",
             "title": "Destination core id"
           },
-          "registers": {
+          "channels": {
             "type": "array",
-            "title": "The registers Schema",
+            "title": "Array specifying the data for each dma channel",
             "items": {
               "type": "object",
-              "title": "A Schema",
+              "title": "Object that specifies the data for a single dma channel",
               "required": [
                 "name",
                 "source",
@@ -206,18 +206,49 @@
                   "title": "Name of the connection"
                 },
                 "source": {
-                  "type": "array",
+                  "type": "object",
                   "default": [],
-                  "title": "array that specifies the channel and address of the source register",
+                  "title": "array that specifies the channel and address of the source data",
                   "items": {
-                    "type": "integer"
+                    "type": "object",
+                    "title": "Object describing the source",
+                    "required": [
+                      "register",
+                      "channel"
+                    ],
+                    "properties": {
+                      "channel": {
+                        "type": "integer",
+                        "title": "Number of the source channel"
+                      },
+                      "register": {
+                        "type": "integer",
+                        "title": "Address of the source register"
+                      }
+                    }
                   }
                 },
                 "destination": {
-                  "type": "array",
-                  "title": "array that specifies the channel and address of the target register",
+                  "type": "object",
+                  "default": [],
+                  "title": "array that specifies the channel and address of the destination data",
                   "items": {
-                    "type": "integer"
+                    "type": "object",
+                    "title": "Object describing the destination",
+                    "required": [
+                      "register",
+                      "channel"
+                    ],
+                    "properties": {
+                      "channel": {
+                        "type": "integer",
+                        "title": "Number of the destination channel"
+                      },
+                      "register": {
+                        "type": "integer",
+                        "title": "Address of the destination register"
+                      }
+                    }
                   }
                 }
               }

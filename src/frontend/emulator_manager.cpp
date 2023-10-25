@@ -359,14 +359,14 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
         interconnect_t i;
         i.source = item["source"];
         i.destination = item["destination"];
-        nlohmann::json registers = item["registers"];
-        for(auto &regs: registers){
+        nlohmann::json channels = item["channels"];
+        for(auto &ch: channels){
             register_spec_t rs_s;
-            rs_s.channel = regs["source"][0];
-            rs_s.address = regs["source"][1];
+            rs_s.channel = ch["source"]["channel"];
+            rs_s.address = ch["source"]["register"];
             register_spec_t rs_d;
-            rs_d.channel = regs["destination"][0];
-            rs_d.address = regs["destination"][1];
+            rs_d.channel = ch["destination"]["channel"];
+            rs_d.address = ch["destination"]["register"];
             i.connections.emplace_back(rs_s,rs_d);
         }
         res.push_back(i);
