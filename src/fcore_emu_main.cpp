@@ -30,16 +30,13 @@ int main(int argc, char **argv) {
 
     bool output_force = false;
     bool verbose_logging = false;
-    std::string input_program;
     std::string inputs_file;
     std::string output_file;
     std::string spec_file;
-    app.add_option("input_program", input_program, "Input program path");
+    app.add_option("spec", spec_file , "JSON specification file path")->check(CLI::ExistingFile);
     app.add_flag("--log", verbose_logging, "Enable verbose logging.");
     app.add_flag("--f", output_force, "force the rewriting of an existing product file");
     app.add_option("--o", output_file, "Output file path");
-    app.add_option("--spec", spec_file , "JSON specification file path")->check(CLI::ExistingFile);
-    app.add_option("--inputs_csv", inputs_file, "Path of a csv file containing input vectors for the emulated core")->check(CLI::ExistingFile);
     CLI11_PARSE(app, argc, argv);
 
     std::shared_ptr<spdlog::logger> logger = spdlog::stdout_color_mt("logger", spdlog::color_mode::automatic);
@@ -75,7 +72,7 @@ int main(int argc, char **argv) {
     emulator_manager emu_manager(specs);
     emu_manager.emulate();
     results = emu_manager.get_results();
-
+    
     std::ofstream ss(output_file);
     ss<< results;
     ss.close();
