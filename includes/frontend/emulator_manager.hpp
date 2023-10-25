@@ -77,6 +77,8 @@ private:
     std::unordered_map<unsigned int, uint32_t> load_memory_init(nlohmann::json &mem_init);
     std::unordered_map<unsigned int, uint32_t> load_memory_init(nlohmann::json &mem_init, std::unordered_map<uint16_t, uint16_t> io_map);
     std::vector<interconnect_t> load_interconnects(nlohmann::json &interconnects);
+    std::unordered_map<unsigned int, uint32_t> io_remap_memory_init(std::unordered_map<unsigned int, uint32_t> &map,
+                                                                    std::unordered_map<uint16_t, uint16_t> &io_map);
 
     void run_cores();
 

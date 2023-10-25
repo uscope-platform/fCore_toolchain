@@ -423,9 +423,9 @@ uint32_t emulator::execute_xor(uint32_t a, uint32_t b) {
     return a ^ b;
 }
 
-void emulator::init_memory(std::unordered_map<unsigned int, uint32_t> &mem_init) {
+void emulator::init_memory(const std::unordered_map<unsigned int, uint32_t> &mem_init) {
     for(auto &item: mem_init){
-        for(auto reg_file:memory_pool){
+        for(const auto& reg_file:memory_pool){
             reg_file.second->at(item.first) = item.second;
         }
 

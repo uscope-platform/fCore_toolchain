@@ -51,7 +51,11 @@ emulator_manager::emulator_manager(nlohmann::json &spec_file) {
     for(auto &item:emulators){
         auto emu = item.second.emu;
         emu->set_efi_selector(item.second.efi_implementation);
-        emu->init_memory(item.second.memory_init);
+        if(item.second.io_remapping_active){
+            emu->init_memory(io_remap_memory_init(item.second.memory_init, item.second.io_map));
+        } else{
+            emu->init_memory(item.second.memory_init);
+        }
     }
 
 }
@@ -360,6 +364,20 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
 
 std::shared_ptr<std::vector<uint32_t>> emulator_manager::get_memory_snapshot(const std::string &core_id, int channel) {
     return emulators[core_id].emu->get_memory(channel);
+}
+
+std::unordered_map<unsigned int, uint32_t>
+emulator_manager::io_remap_memory_init(std::unordered_map<unsigned int, uint32_t> &map,
+                                       std::unordered_map<uint16_t, uint16_t> &io_map) {
+    std::unordered_map<unsigned int, uint32_t> ret;
+
+    for(auto &item:map){
+        uint32_t io_address = item.first;
+        uint32_t core_address  = io_map[io_address];
+        ret[core_address] = item.second;
+    }
+
+    return ret;
 }
 
 
