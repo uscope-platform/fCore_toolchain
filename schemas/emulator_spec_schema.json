@@ -201,6 +201,18 @@
                 "destination"
               ],
               "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["scatter_transfer", "vector_transfer", "gather_transfer", "2d_vector_transfer"]
+                },
+                "length": {
+                  "type": "integer",
+                  "title": "Size of the vector transfer"
+                },
+                "2d_transfer_stride": {
+                  "type": "integer",
+                  "title": "Second dimension for the 2d vector transfer"
+                },
                 "name": {
                   "type": "string",
                   "title": "Name of the connection"

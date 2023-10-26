@@ -362,12 +362,66 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
         nlohmann::json channels = item["channels"];
         for(auto &ch: channels){
             register_spec_t rs_s;
-            rs_s.channel = ch["source"]["channel"];
-            rs_s.address = ch["source"]["register"];
             register_spec_t rs_d;
-            rs_d.channel = ch["destination"]["channel"];
-            rs_d.address = ch["destination"]["register"];
-            i.connections.emplace_back(rs_s,rs_d);
+            std::string transfer_type;
+            uint32_t transfer_length;
+            if(!ch.contains("type")){
+                transfer_type = "regular_transfer";
+            } else {
+                transfer_type = ch["type"];
+                transfer_length = ch["length"];
+            }
+
+
+            uint32_t source_ch = ch["source"]["channel"];
+            uint32_t source_addr= ch["source"]["register"];
+            uint32_t dest_ch = ch["destination"]["channel"];
+            uint32_t dest_addr = ch["destination"]["register"];
+
+            if(transfer_type == "scatter_transfer"){
+                for(int j = 0; j<transfer_length; j++){
+                    rs_s.channel = source_ch+j;
+                    rs_s.address = source_addr;
+                    rs_d.channel = dest_ch;
+                    rs_d.address = dest_addr+j;
+                    i.connections.emplace_back(rs_s,rs_d);
+                }
+            } else if(transfer_type == "vector_transfer"){
+                for(int j = 0; j<transfer_length; j++){
+                    rs_s.channel = source_ch+j;
+                    rs_s.address = source_addr;
+                    rs_d.channel = dest_ch+j;
+                    rs_d.address = dest_addr;
+                    i.connections.emplace_back(rs_s,rs_d);
+                }
+            } else if(transfer_type == "gather_transfer"){
+                for(int j = 0; j<transfer_length; j++){
+                    rs_s.channel = source_ch;
+                    rs_s.address = source_addr+j;
+                    rs_d.channel = dest_ch+j;
+                    rs_d.address = dest_addr;
+                    i.connections.emplace_back(rs_s,rs_d);
+                }
+            } else if(transfer_type == "regular_transfer"){
+                rs_s.channel = source_ch;
+                rs_s.address = source_addr;
+                rs_d.channel = dest_ch;
+                rs_d.address = dest_addr;
+                i.connections.emplace_back(rs_s,rs_d);
+            } else if(transfer_type == "2d_vector_transfer"){
+
+                uint32_t transfer_stride = ch["2d_transfer_stride"];
+                for (int k = 0; k < transfer_stride; k++) {
+                    for(int j = 0; j<transfer_length; j++) {
+                        rs_s.channel = source_ch + j;
+                        rs_s.address = source_addr + k;
+                        rs_d.channel = dest_ch + j;
+                        rs_d.address = dest_addr + k;
+                        i.connections.emplace_back(rs_s, rs_d);
+                    }
+                }
+            }
+
         }
         res.push_back(i);
     }
