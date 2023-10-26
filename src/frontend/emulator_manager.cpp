@@ -410,7 +410,7 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
                 i.connections.emplace_back(rs_s,rs_d);
             } else if(transfer_type == "2d_vector_transfer"){
 
-                uint32_t transfer_stride = ch["2d_transfer_stride"];
+                uint32_t transfer_stride = ch["stride"];
                 for (int k = 0; k < transfer_stride; k++) {
                     for(int j = 0; j<transfer_length; j++) {
                         rs_s.channel = source_ch + j;

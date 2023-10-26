@@ -209,7 +209,7 @@
                   "type": "integer",
                   "title": "Size of the vector transfer"
                 },
-                "2d_transfer_stride": {
+                "stride": {
                   "type": "integer",
                   "title": "Second dimension for the 2d vector transfer"
                 },
