@@ -98,14 +98,14 @@
             "title": "Description of the program to run on this core",
             "required": [
               "type",
-              "file"
+              "filename"
             ],
             "properties": {
               "type": {
                 "type": "string",
                 "title": "type of the program code file"
               },
-              "file": {
+              "filename": {
                 "type": "string",
                 "title": "path of the program input file"
               }

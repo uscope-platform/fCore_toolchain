@@ -129,7 +129,7 @@ emulator_metadata emulator_manager::load_program(nlohmann::json &core) {
     std::ifstream stream;
 
     bin_loader_input_type_t in_type;
-    std::string file_path = program["file"];
+    std::string file_path = program["filename"];
     if(!std::filesystem::is_regular_file(file_path)){
         std::string core_id = core["id"];
         spdlog::critical("Invalid program file for core: " + core_id);
@@ -267,9 +267,9 @@ std::vector<emulator_output_t> emulator_manager:: load_output_specs(nlohmann::js
     std::vector<emulator_output_t> out_specs;
     for(auto &item: core["outputs"]){
         emulator_output_t out;
-        if(item["type"] =="f"){
+        if(item["type"] =="float"){
             out.type = type_float;
-        } else if(item["type"] =="i"){
+        } else if(item["type"] =="integer"){
             out.type = type_uint32;
         }
         out.reg_n = item["reg_n"];
