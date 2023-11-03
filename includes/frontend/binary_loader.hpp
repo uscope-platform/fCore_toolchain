@@ -30,6 +30,8 @@ typedef enum {
 class binary_loader {
 public:
     binary_loader(std::istream &stream, bin_loader_input_type_t in_type);
+    explicit binary_loader(const std::vector<uint32_t> &file_content);
+    void load_program(const std::vector<uint32_t> &file_content);
     std::shared_ptr<ll_ast_node> get_ast() {return ast_root;};
     void construct_ast(const std::vector<uint32_t> &program);
     static std::shared_ptr<ll_ast_node> process_register_instr(uint32_t instruction);

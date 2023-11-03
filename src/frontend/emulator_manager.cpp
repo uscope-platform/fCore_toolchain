@@ -34,7 +34,18 @@ emulator_manager::emulator_manager(nlohmann::json &spec_file) {
     // Parse specification file;
     for(auto &item:spec_file["cores"]){
         auto id = item["id"];
-        emulators[id] = load_program(item);
+        if(item["program"].contains("filename")){
+            emulators[id] = load_program(item);
+        } else {
+            emulator_builder e_b;
+            nlohmann::json src;
+            nlohmann::json dst;
+            for(auto &ic:spec_file["interconnect"]){
+                if(id == ic["source"]) src = ic;
+                if(id == ic["destination"]) dst = ic;
+            }
+            emulators[id] = e_b.load_program(item, dst, src);
+        }
         emulators[id].input = load_input(item);
         emulators[id].output_specs = load_output_specs(item);
         if(emulators[id].io_remapping_active){
@@ -267,10 +278,14 @@ std::vector<emulator_output_t> emulator_manager:: load_output_specs(nlohmann::js
     std::vector<emulator_output_t> out_specs;
     for(auto &item: core["outputs"]){
         emulator_output_t out;
-        if(item["type"] =="float"){
+        std::string type = item["type"];
+        if(type =="float"){
             out.type = type_float;
-        } else if(item["type"] =="integer"){
+        } else if(type=="integer"){
             out.type = type_uint32;
+        } else {
+            spdlog::critical("Unknown output type.");
+            exit(-1);
         }
         out.reg_n = item["reg_n"];
         out.name = item["name"];
@@ -445,6 +460,4 @@ emulator_manager::io_remap_memory_init(std::unordered_map<unsigned int, uint32_t
 
     return ret;
 }
-
-
 

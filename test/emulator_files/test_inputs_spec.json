@@ -2,35 +2,31 @@
   "cores": [
     {
       "id": "test",
-      "inputs": {
-        "file":"emu/test_inputs.csv",
-        "channels":{
-          "input_1":0,
-          "input_2":0
+      "input_file": "emu/test_inputs.csv",
+      "inputs": [
+        {
+          "name": "input_1",
+          "type": "float",
+          "reg_n": 1,
+          "channel": 0
         },
-        "types":{
-          "input_1":"f",
-          "input_2":"f"
-        },
-        "channels":{
-          "input_1":0,
-          "input_2":0
-        },
-        "registers":{
-          "input_1":1,
-          "input_2":2
+        {
+          "name": "input_2",
+          "type": "float",
+          "reg_n": 2,
+          "channel": 0
         }
-      },
+      ],
       "outputs": [
         {
           "reg_n":4,
-          "type":"i",
+          "type":"integer",
           "name":"test_out"
         }
       ],
       "program":{
         "type":"mem",
-        "file":"emu/test_inputs.mem"
+        "filename":"emu/test_inputs.mem"
       },
       "order": 0,
       "options":{

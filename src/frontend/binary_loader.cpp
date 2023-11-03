@@ -31,6 +31,15 @@ binary_loader::binary_loader(std::istream &stream, bin_loader_input_type_t in_ty
         }
     }
 
+    load_program(file_content);
+}
+
+binary_loader::binary_loader(const std::vector<uint32_t> &file_content) {
+    load_program(file_content);
+}
+
+void binary_loader::load_program(const std::vector<uint32_t> &file_content) {
+
     executable exec(file_content);
     construct_ast(exec.get_code());
     io_mapping = exec.get_io_mapping();

@@ -95,6 +95,7 @@ set(FCORE_DIS_SRCS
 
 set(FCORE_EMU_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator_builder.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/efi_implementations/efi_dispatcher.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/emulator_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/schema_validators/schema_validators.cpp
@@ -149,7 +150,7 @@ install(TARGETS fCore_cc DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(TARGETS fCore_dis DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 if(${INCLUDE_EMULATOR})
-    add_executable(fCore_emu ${FCORE_EMU_SRCS} fcore_emu_main.cpp)
+    add_executable(fCore_emu ${FCORE_EMU_SRCS} ${C_PARSER_SRCS} ${FCORE_CC_SRCS} fcore_emu_main.cpp)
     target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel
             common_srcs
             spdlog::spdlog

@@ -24,7 +24,7 @@ nlohmann::json prepare_spec(const std::string &file, int run_length){
     spec["run_length"] = run_length;
     spec["cores"][0]["order"] = 0;
     spec["cores"][0]["id"] = "test";
-    spec["cores"][0]["program"] = std::unordered_map<std::string, std::string>({{"type", "mem"}, { "file", file}});
+    spec["cores"][0]["program"] = std::unordered_map<std::string, std::string>({{"type", "mem"}, { "filename", file}});
     spec["cores"][0]["channels"] = 1;
     spec["cores"][0]["options"] = nlohmann::json();
     spec["cores"][0]["options"]["comparators"] = "full";
@@ -226,12 +226,18 @@ TEST(Emulator_execution, emulator_inputs) {
 
     nlohmann::json spec = prepare_spec("emu/test_inputs.mem", 2);
     spec["cores"][0]["efi_implementation"] = "efi_sort";
-    spec["cores"][0]["inputs"] = nlohmann::json();
-    spec["cores"][0]["inputs"]["file"] = "emu/test_inputs.csv";
-    spec["cores"][0]["inputs"]["registers"] = std::unordered_map<std::string, unsigned int>({{"input_1", 1}, {"input_2", 2}});
-    spec["cores"][0]["inputs"]["types"] = std::unordered_map<std::string, std::string>({{"input_1", "f"}, {"input_2", "f"}});
-    spec["cores"][0]["inputs"]["channels"] = std::unordered_map<std::string, unsigned int>({{"input_1", 0}, {"input_2", 0}});
+    spec["cores"][0]["input_file"] = "emu/test_inputs.csv";
+    spec["cores"][0]["inputs"] = std::vector<nlohmann::json>();
+    auto in = nlohmann::json();
+    in["name"] = "input_1";
+    in["type"] = "float";
+    in["reg_n"] = 1;
+    in["channel"] = 0;
 
+    spec["cores"][0]["inputs"].push_back(in);
+    in["name"] = "input_2";
+    in["reg_n"] = 2;
+    spec["cores"][0]["inputs"].push_back(in);
 
     emulator_manager manager(spec);
     manager.emulate();

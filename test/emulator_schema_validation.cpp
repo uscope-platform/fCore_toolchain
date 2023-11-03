@@ -28,13 +28,12 @@ TEST(emulator_schema, validation_fail_no_cores) {
     nlohmann::json spec = nlohmann::json::parse(ifs);
     emulator_schema_validator validator;
     spec.erase("cores");
-    testing::internal::CaptureStdout();
+    testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(spec), std::invalid_argument);
 
-    auto raw_message = testing::internal::GetCapturedStdout();
-    std::string error = raw_message.substr(raw_message.find("[critical]"));
-    std::string correct_message = "[critical] Emulator specification file error:\n\tError location: /\n\tError message: required property 'cores' not found in object\n";
-    EXPECT_EQ(error, correct_message);
+    auto message = testing::internal::GetCapturedStderr();
+    std::string correct_message = "Error #1\n  context: <root>\n  desc:    Missing required property 'cores'.\n";
+    EXPECT_EQ(message, correct_message);
 }
 
 TEST(emulator_schema, validation_fail_no_program) {
@@ -42,14 +41,12 @@ TEST(emulator_schema, validation_fail_no_program) {
     nlohmann::json spec = nlohmann::json::parse(ifs);
     emulator_schema_validator validator;
     spec["cores"][0].erase("program");
-    testing::internal::CaptureStdout();
+    testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(spec), std::invalid_argument);
 
-    auto raw_message = testing::internal::GetCapturedStdout();
-    std::string error = raw_message.substr(raw_message.find("[critical]"), raw_message.length()-1);
-
-    std::string correct_message = "[critical] Emulator specification file error:\n\tError location: /cores/0\n\tError message: required property 'program' not found in object\n";
-    EXPECT_EQ(error, correct_message);
+    auto message = testing::internal::GetCapturedStderr();
+    std::string correct_message = "Error #1\n  context: <root>[cores][0]\n  desc:    Missing required property 'program'.\nError #2\n  context: <root>[cores]\n  desc:    Failed to validate item #0 in array.\nError #3\n  context: <root>\n  desc:    Failed to validate against schema associated with property name 'cores'.\n";
+    EXPECT_EQ(message, correct_message);
 }
 
 
@@ -67,11 +64,10 @@ TEST(compiler_schema, validation_fail_no_input) {
     nlohmann::json spec = nlohmann::json::parse(ifs);
     compiler_schema_validator validator;
     spec.erase("input_file");
-    testing::internal::CaptureStdout();
+    testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(spec), std::invalid_argument);
 
-    auto raw_message = testing::internal::GetCapturedStdout();
-    std::string error = raw_message.substr(raw_message.find("[critical]"));
-    std::string correct_message = "[critical] Compiler specification file error:\n\tError location: /\n\tError message: required property 'input_file' not found in object\n";
-    EXPECT_EQ(error, correct_message);
+    auto message = testing::internal::GetCapturedStderr();
+    std::string correct_message = "Error #1\n  context: <root>\n  desc:    Missing required property 'input_file'.\n";
+    EXPECT_EQ(message, correct_message);
 }

@@ -96,10 +96,6 @@
           "program": {
             "type": "object",
             "title": "Description of the program to run on this core",
-            "required": [
-              "type",
-              "filename"
-            ],
             "properties": {
               "type": {
                 "type": "string",
@@ -108,8 +104,56 @@
               "filename": {
                 "type": "string",
                 "title": "path of the program input file"
+              },
+              "content": {
+                "type": "string",
+                "title": "source code of the selected program"
+              },
+              "io": {
+                "type": "object",
+                "title": "Object listing input, output and memories for the program",
+                "properties": {
+                  "inputs": {
+                    "type": "array",
+                    "default": [],
+                    "title": "List of program inputs",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "outputs": {
+                    "type": "array",
+                    "default": [],
+                    "title": "List of program Outputs",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "memories": {
+                    "type": "array",
+                    "default": [],
+                    "title": "List of program memories",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
               }
-            }
+            },
+            "oneOf": [
+              {
+                "required": [
+                  "type",
+                  "filename"
+                ]
+              },
+              {
+                "required": [
+                  "content",
+                  "build_settings"
+                ]
+              }
+            ]
           },
           "memory_init": {
             "type": "array",

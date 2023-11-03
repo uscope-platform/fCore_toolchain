@@ -23,18 +23,8 @@
 #include "data_structures/instruction_stream.hpp"
 #include "floating_point_v7_1_bitacc_cmodel.h"
 #include "fCore_isa.hpp"
+#include "frontend/emulator_metadata.hpp"
 
-
-typedef enum {
-    type_uint32 = 1,
-    type_float = 2,
-} emulator_types_t;
-
-typedef struct {
-    int reg_n;
-    emulator_types_t type;
-    std::string name;
-} emulator_output_t;
 
 class emulator {
 public:
