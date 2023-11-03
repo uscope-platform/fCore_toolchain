@@ -1,5 +1,19 @@
 
-// Generated from /home/fils/git/fCore_toolchain/src/frontend/asm_grammar.g4 by ANTLR 4.10.1
+//  Copyright 2022 Filippo Savi <filssavi@gmail.com>
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.05/07/2021.
+
+// Generated from ../../src/frontend/asm_grammar.g4 by ANTLR 4.13.1
 
 
 #include "asm_grammarListener.h"
@@ -38,11 +52,20 @@ struct Asm_grammarParserStaticData final {
   std::unique_ptr<antlr4::atn::ATN> atn;
 };
 
-std::once_flag asm_grammarParserOnceFlag;
+::antlr4::internal::OnceFlag asm_grammarParserOnceFlag;
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+static thread_local
+#endif
 Asm_grammarParserStaticData *asm_grammarParserStaticData = nullptr;
 
 void asm_grammarParserInitialize() {
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+  if (asm_grammarParserStaticData != nullptr) {
+    return;
+  }
+#else
   assert(asm_grammarParserStaticData == nullptr);
+#endif
   auto staticData = std::make_unique<Asm_grammarParserStaticData>(
     std::vector<std::string>{
       "program", "code", "declaration", "instruction", "reg_instr", "imm_instr", 
@@ -379,38 +402,7 @@ asm_grammarParser::CodeContext* asm_grammarParser::code() {
       _errHandler->sync(this);
       _la = _input->LA(1);
     } while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << asm_grammarParser::T__1)
-      | (1ULL << asm_grammarParser::T__2)
-      | (1ULL << asm_grammarParser::T__3)
-      | (1ULL << asm_grammarParser::T__4)
-      | (1ULL << asm_grammarParser::T__5)
-      | (1ULL << asm_grammarParser::T__6)
-      | (1ULL << asm_grammarParser::T__7)
-      | (1ULL << asm_grammarParser::T__8)
-      | (1ULL << asm_grammarParser::T__9)
-      | (1ULL << asm_grammarParser::T__10)
-      | (1ULL << asm_grammarParser::T__11)
-      | (1ULL << asm_grammarParser::T__12)
-      | (1ULL << asm_grammarParser::T__13)
-      | (1ULL << asm_grammarParser::T__14)
-      | (1ULL << asm_grammarParser::T__15)
-      | (1ULL << asm_grammarParser::T__16)
-      | (1ULL << asm_grammarParser::T__17)
-      | (1ULL << asm_grammarParser::T__18)
-      | (1ULL << asm_grammarParser::T__19)
-      | (1ULL << asm_grammarParser::T__20)
-      | (1ULL << asm_grammarParser::T__21)
-      | (1ULL << asm_grammarParser::T__22)
-      | (1ULL << asm_grammarParser::T__23)
-      | (1ULL << asm_grammarParser::T__24)
-      | (1ULL << asm_grammarParser::T__25)
-      | (1ULL << asm_grammarParser::T__26)
-      | (1ULL << asm_grammarParser::T__27)
-      | (1ULL << asm_grammarParser::T__39)
-      | (1ULL << asm_grammarParser::T__40)
-      | (1ULL << asm_grammarParser::T__41)
-      | (1ULL << asm_grammarParser::T__42)
-      | (1ULL << asm_grammarParser::T__43))) != 0));
+      ((1ULL << _la) & 34085397331964) != 0));
    
   }
   catch (RecognitionException &e) {
@@ -1453,10 +1445,7 @@ asm_grammarParser::ImmediateContext* asm_grammarParser::immediate() {
     setState(137);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << asm_grammarParser::Identifier)
-      | (1ULL << asm_grammarParser::Hexnum)
-      | (1ULL << asm_grammarParser::Integer)
-      | (1ULL << asm_grammarParser::Octalnum))) != 0))) {
+      ((1ULL << _la) & 1055531162664960) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -1595,9 +1584,7 @@ asm_grammarParser::Integer_constContext* asm_grammarParser::integer_const() {
     setState(141);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << asm_grammarParser::Hexnum)
-      | (1ULL << asm_grammarParser::Integer)
-      | (1ULL << asm_grammarParser::Octalnum))) != 0))) {
+      ((1ULL << _la) & 985162418487296) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -1663,17 +1650,7 @@ asm_grammarParser::Reg_opcodeContext* asm_grammarParser::reg_opcode() {
     setState(143);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << asm_grammarParser::T__4)
-      | (1ULL << asm_grammarParser::T__5)
-      | (1ULL << asm_grammarParser::T__6)
-      | (1ULL << asm_grammarParser::T__7)
-      | (1ULL << asm_grammarParser::T__8)
-      | (1ULL << asm_grammarParser::T__9)
-      | (1ULL << asm_grammarParser::T__10)
-      | (1ULL << asm_grammarParser::T__11)
-      | (1ULL << asm_grammarParser::T__12)
-      | (1ULL << asm_grammarParser::T__13)
-      | (1ULL << asm_grammarParser::T__14))) != 0))) {
+      ((1ULL << _la) & 65504) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -1739,12 +1716,7 @@ asm_grammarParser::Conv_opcodeContext* asm_grammarParser::conv_opcode() {
     setState(145);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << asm_grammarParser::T__15)
-      | (1ULL << asm_grammarParser::T__16)
-      | (1ULL << asm_grammarParser::T__17)
-      | (1ULL << asm_grammarParser::T__18)
-      | (1ULL << asm_grammarParser::T__19)
-      | (1ULL << asm_grammarParser::T__20))) != 0))) {
+      ((1ULL << _la) & 4128768) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -1867,10 +1839,7 @@ asm_grammarParser::Branch_opcodeContext* asm_grammarParser::branch_opcode() {
     setState(149);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << asm_grammarParser::T__22)
-      | (1ULL << asm_grammarParser::T__23)
-      | (1ULL << asm_grammarParser::T__24)
-      | (1ULL << asm_grammarParser::T__25))) != 0))) {
+      ((1ULL << _la) & 125829120) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -2374,10 +2343,7 @@ asm_grammarParser::For_end_comp_typeContext* asm_grammarParser::for_end_comp_typ
     setState(181);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << asm_grammarParser::T__35)
-      | (1ULL << asm_grammarParser::T__36)
-      | (1ULL << asm_grammarParser::T__37)
-      | (1ULL << asm_grammarParser::T__38))) != 0))) {
+      ((1ULL << _la) & 1030792151040) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -2767,5 +2733,9 @@ asm_grammarParser::Output_declContext* asm_grammarParser::output_decl() {
 }
 
 void asm_grammarParser::initialize() {
-  std::call_once(asm_grammarParserOnceFlag, asm_grammarParserInitialize);
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+  asm_grammarParserInitialize();
+#else
+  ::antlr4::internal::call_once(asm_grammarParserOnceFlag, asm_grammarParserInitialize);
+#endif
 }

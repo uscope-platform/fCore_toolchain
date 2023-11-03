@@ -1,5 +1,5 @@
 
-// Generated from /home/fils/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.10.1
+// Generated from ../../src/frontend/C_grammar.g4 by ANTLR 4.13.1
 
 
 #include "C_grammarListener.h"
@@ -38,11 +38,20 @@ struct C_grammarParserStaticData final {
   std::unique_ptr<antlr4::atn::ATN> atn;
 };
 
-std::once_flag c_grammarParserOnceFlag;
+::antlr4::internal::OnceFlag c_grammarParserOnceFlag;
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+static thread_local
+#endif
 C_grammarParserStaticData *c_grammarParserStaticData = nullptr;
 
 void c_grammarParserInitialize() {
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+  if (c_grammarParserStaticData != nullptr) {
+    return;
+  }
+#else
   assert(c_grammarParserStaticData == nullptr);
+#endif
   auto staticData = std::make_unique<C_grammarParserStaticData>(
     std::vector<std::string>{
       "compilationUnit", "primaryExpression", "unaryExpression", "arrayAccessExpression", 
@@ -421,18 +430,7 @@ C_grammarParser::CompilationUnitContext* C_grammarParser::compilationUnit() {
 
     _la = _input->LA(1);
     if (((((_la - 2) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 2)) & ((1ULL << (C_grammarParser::Char - 2))
-      | (1ULL << (C_grammarParser::Const - 2))
-      | (1ULL << (C_grammarParser::Float - 2))
-      | (1ULL << (C_grammarParser::Int - 2))
-      | (1ULL << (C_grammarParser::Long - 2))
-      | (1ULL << (C_grammarParser::Short - 2))
-      | (1ULL << (C_grammarParser::Signed - 2))
-      | (1ULL << (C_grammarParser::Unsigned - 2))
-      | (1ULL << (C_grammarParser::Void - 2))
-      | (1ULL << (C_grammarParser::LeftParen - 2))
-      | (1ULL << (C_grammarParser::Semi - 2))
-      | (1ULL << (C_grammarParser::Identifier - 2)))) != 0)) {
+      ((1ULL << (_la - 2)) & 4611703610613511883) != 0)) {
       setState(138);
       translationUnit();
     }
@@ -893,9 +891,7 @@ C_grammarParser::UnaryOperatorContext* C_grammarParser::unaryOperator() {
     setState(181);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << C_grammarParser::Minus)
-      | (1ULL << C_grammarParser::Not)
-      | (1ULL << C_grammarParser::Tilde))) != 0))) {
+      ((1ULL << _la) & 13198434500608) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -973,9 +969,7 @@ C_grammarParser::MultiplicativeOperatorContext* C_grammarParser::multiplicativeO
     setState(183);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << C_grammarParser::Star)
-      | (1ULL << C_grammarParser::Div)
-      | (1ULL << C_grammarParser::Mod))) != 0))) {
+      ((1ULL << _la) & 120259084288) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -1060,9 +1054,7 @@ C_grammarParser::MultiplicativeExpressionContext* C_grammarParser::multiplicativ
     _errHandler->sync(this);
     _la = _input->LA(1);
     while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << C_grammarParser::Star)
-      | (1ULL << C_grammarParser::Div)
-      | (1ULL << C_grammarParser::Mod))) != 0)) {
+      ((1ULL << _la) & 120259084288) != 0)) {
       setState(186);
       multiplicativeOperator();
       setState(187);
@@ -1472,10 +1464,7 @@ C_grammarParser::RelationalOperatorContext* C_grammarParser::relationalOperator(
     setState(216);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << C_grammarParser::Less)
-      | (1ULL << C_grammarParser::LessEqual)
-      | (1ULL << C_grammarParser::Greater)
-      | (1ULL << C_grammarParser::GreaterEqual))) != 0))) {
+      ((1ULL << _la) & 251658240) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -1560,10 +1549,7 @@ C_grammarParser::RelationalExpressionContext* C_grammarParser::relationalExpress
     _errHandler->sync(this);
     _la = _input->LA(1);
     while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << C_grammarParser::Less)
-      | (1ULL << C_grammarParser::LessEqual)
-      | (1ULL << C_grammarParser::Greater)
-      | (1ULL << C_grammarParser::GreaterEqual))) != 0)) {
+      ((1ULL << _la) & 251658240) != 0)) {
       setState(219);
       relationalOperator();
       setState(220);
@@ -2465,17 +2451,7 @@ C_grammarParser::AssignmentOperatorContext* C_grammarParser::assignmentOperator(
     setState(294);
     _la = _input->LA(1);
     if (!((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << C_grammarParser::Assign)
-      | (1ULL << C_grammarParser::StarAssign)
-      | (1ULL << C_grammarParser::DivAssign)
-      | (1ULL << C_grammarParser::ModAssign)
-      | (1ULL << C_grammarParser::PlusAssign)
-      | (1ULL << C_grammarParser::MinusAssign)
-      | (1ULL << C_grammarParser::LeftShiftAssign)
-      | (1ULL << C_grammarParser::RightShiftAssign)
-      | (1ULL << C_grammarParser::AndAssign)
-      | (1ULL << C_grammarParser::XorAssign)
-      | (1ULL << C_grammarParser::OrAssign))) != 0))) {
+      ((1ULL << _la) & 576179277326712832) != 0))) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -2989,14 +2965,7 @@ C_grammarParser::TypeSpecifierContext* C_grammarParser::typeSpecifier() {
         setState(326);
         _la = _input->LA(1);
         if (!((((_la & ~ 0x3fULL) == 0) &&
-          ((1ULL << _la) & ((1ULL << C_grammarParser::Char)
-          | (1ULL << C_grammarParser::Float)
-          | (1ULL << C_grammarParser::Int)
-          | (1ULL << C_grammarParser::Long)
-          | (1ULL << C_grammarParser::Short)
-          | (1ULL << C_grammarParser::Signed)
-          | (1ULL << C_grammarParser::Unsigned)
-          | (1ULL << C_grammarParser::Void))) != 0))) {
+          ((1ULL << _la) & 56100) != 0))) {
         _errHandler->recoverInline(this);
         }
         else {
@@ -3115,16 +3084,7 @@ C_grammarParser::SpecifierQualifierListContext* C_grammarParser::specifierQualif
 
     _la = _input->LA(1);
     if (((((_la - 2) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 2)) & ((1ULL << (C_grammarParser::Char - 2))
-      | (1ULL << (C_grammarParser::Const - 2))
-      | (1ULL << (C_grammarParser::Float - 2))
-      | (1ULL << (C_grammarParser::Int - 2))
-      | (1ULL << (C_grammarParser::Long - 2))
-      | (1ULL << (C_grammarParser::Short - 2))
-      | (1ULL << (C_grammarParser::Signed - 2))
-      | (1ULL << (C_grammarParser::Unsigned - 2))
-      | (1ULL << (C_grammarParser::Void - 2))
-      | (1ULL << (C_grammarParser::Identifier - 2)))) != 0)) {
+      ((1ULL << (_la - 2)) & 4611686018427401931) != 0)) {
       setState(334);
       specifierQualifierList();
     }
@@ -3501,18 +3461,7 @@ C_grammarParser::ArrayDeclaratorContext* C_grammarParser::arrayDeclarator() {
 
     _la = _input->LA(1);
     if (((((_la - 18) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 18)) & ((1ULL << (C_grammarParser::LeftParen - 18))
-      | (1ULL << (C_grammarParser::PlusPlus - 18))
-      | (1ULL << (C_grammarParser::Minus - 18))
-      | (1ULL << (C_grammarParser::MinusMinus - 18))
-      | (1ULL << (C_grammarParser::Not - 18))
-      | (1ULL << (C_grammarParser::Tilde - 18))
-      | (1ULL << (C_grammarParser::Identifier - 18))
-      | (1ULL << (C_grammarParser::IntegerConstant - 18))
-      | (1ULL << (C_grammarParser::FloatingConstant - 18))
-      | (1ULL << (C_grammarParser::DigitSequence - 18))
-      | (1ULL << (C_grammarParser::CharacterConstant - 18))
-      | (1ULL << (C_grammarParser::StringLiteral - 18)))) != 0)) {
+      ((1ULL << (_la - 18)) & 4433230933581825) != 0)) {
       setState(376);
       assignmentExpression();
     }
@@ -3602,84 +3551,8 @@ C_grammarParser::NestedParenthesesBlockContext* C_grammarParser::nestedParenthes
     _errHandler->sync(this);
     _la = _input->LA(1);
     while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << C_grammarParser::Case)
-      | (1ULL << C_grammarParser::Char)
-      | (1ULL << C_grammarParser::Const)
-      | (1ULL << C_grammarParser::Else)
-      | (1ULL << C_grammarParser::Float)
-      | (1ULL << C_grammarParser::For)
-      | (1ULL << C_grammarParser::If)
-      | (1ULL << C_grammarParser::Int)
-      | (1ULL << C_grammarParser::Long)
-      | (1ULL << C_grammarParser::Return)
-      | (1ULL << C_grammarParser::Short)
-      | (1ULL << C_grammarParser::Signed)
-      | (1ULL << C_grammarParser::Typedef)
-      | (1ULL << C_grammarParser::Unsigned)
-      | (1ULL << C_grammarParser::Void)
-      | (1ULL << C_grammarParser::Volatile)
-      | (1ULL << C_grammarParser::While)
-      | (1ULL << C_grammarParser::LeftParen)
-      | (1ULL << C_grammarParser::LeftBracket)
-      | (1ULL << C_grammarParser::RightBracket)
-      | (1ULL << C_grammarParser::LeftBrace)
-      | (1ULL << C_grammarParser::RightBrace)
-      | (1ULL << C_grammarParser::Less)
-      | (1ULL << C_grammarParser::LessEqual)
-      | (1ULL << C_grammarParser::Greater)
-      | (1ULL << C_grammarParser::GreaterEqual)
-      | (1ULL << C_grammarParser::LeftShift)
-      | (1ULL << C_grammarParser::RightShift)
-      | (1ULL << C_grammarParser::Plus)
-      | (1ULL << C_grammarParser::PlusPlus)
-      | (1ULL << C_grammarParser::Minus)
-      | (1ULL << C_grammarParser::MinusMinus)
-      | (1ULL << C_grammarParser::Star)
-      | (1ULL << C_grammarParser::Div)
-      | (1ULL << C_grammarParser::Mod)
-      | (1ULL << C_grammarParser::And)
-      | (1ULL << C_grammarParser::Or)
-      | (1ULL << C_grammarParser::AndAnd)
-      | (1ULL << C_grammarParser::OrOr)
-      | (1ULL << C_grammarParser::Caret)
-      | (1ULL << C_grammarParser::Not)
-      | (1ULL << C_grammarParser::Tilde)
-      | (1ULL << C_grammarParser::Question)
-      | (1ULL << C_grammarParser::Colon)
-      | (1ULL << C_grammarParser::Semi)
-      | (1ULL << C_grammarParser::Comma)
-      | (1ULL << C_grammarParser::Assign)
-      | (1ULL << C_grammarParser::StarAssign)
-      | (1ULL << C_grammarParser::DivAssign)
-      | (1ULL << C_grammarParser::ModAssign)
-      | (1ULL << C_grammarParser::PlusAssign)
-      | (1ULL << C_grammarParser::MinusAssign)
-      | (1ULL << C_grammarParser::LeftShiftAssign)
-      | (1ULL << C_grammarParser::RightShiftAssign)
-      | (1ULL << C_grammarParser::AndAssign)
-      | (1ULL << C_grammarParser::XorAssign)
-      | (1ULL << C_grammarParser::OrAssign)
-      | (1ULL << C_grammarParser::Equal)
-      | (1ULL << C_grammarParser::NotEqual)
-      | (1ULL << C_grammarParser::Arrow)
-      | (1ULL << C_grammarParser::Dot)
-      | (1ULL << C_grammarParser::Ellipsis))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 64)) & ((1ULL << (C_grammarParser::Identifier - 64))
-      | (1ULL << (C_grammarParser::IntegerConstant - 64))
-      | (1ULL << (C_grammarParser::FloatingConstant - 64))
-      | (1ULL << (C_grammarParser::DigitSequence - 64))
-      | (1ULL << (C_grammarParser::CharacterConstant - 64))
-      | (1ULL << (C_grammarParser::StringLiteral - 64))
-      | (1ULL << (C_grammarParser::ComplexDefine - 64))
-      | (1ULL << (C_grammarParser::IncludeDirective - 64))
-      | (1ULL << (C_grammarParser::AsmBlock - 64))
-      | (1ULL << (C_grammarParser::LineAfterPreprocessing - 64))
-      | (1ULL << (C_grammarParser::LineDirective - 64))
-      | (1ULL << (C_grammarParser::PragmaDirective - 64))
-      | (1ULL << (C_grammarParser::Whitespace - 64))
-      | (1ULL << (C_grammarParser::Newline - 64))
-      | (1ULL << (C_grammarParser::BlockComment - 64))
-      | (1ULL << (C_grammarParser::LineComment - 64)))) != 0)) {
+      ((1ULL << _la) & -524290) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 64)) & 65535) != 0)) {
       setState(386);
       _errHandler->sync(this);
       switch (_input->LA(1)) {
@@ -4190,16 +4063,7 @@ C_grammarParser::TypeNameContext* C_grammarParser::typeName() {
 
     _la = _input->LA(1);
     if (((((_la - 2) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 2)) & ((1ULL << (C_grammarParser::Char - 2))
-      | (1ULL << (C_grammarParser::Const - 2))
-      | (1ULL << (C_grammarParser::Float - 2))
-      | (1ULL << (C_grammarParser::Int - 2))
-      | (1ULL << (C_grammarParser::Long - 2))
-      | (1ULL << (C_grammarParser::Short - 2))
-      | (1ULL << (C_grammarParser::Signed - 2))
-      | (1ULL << (C_grammarParser::Unsigned - 2))
-      | (1ULL << (C_grammarParser::Void - 2))
-      | (1ULL << (C_grammarParser::Identifier - 2)))) != 0)) {
+      ((1ULL << (_la - 2)) & 4611686018427401931) != 0)) {
       setState(418);
       specifierQualifierList();
     }
@@ -4463,18 +4327,7 @@ C_grammarParser::FunctionCallExpressionContext* C_grammarParser::functionCallExp
 
     _la = _input->LA(1);
     if (((((_la - 18) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 18)) & ((1ULL << (C_grammarParser::LeftParen - 18))
-      | (1ULL << (C_grammarParser::PlusPlus - 18))
-      | (1ULL << (C_grammarParser::Minus - 18))
-      | (1ULL << (C_grammarParser::MinusMinus - 18))
-      | (1ULL << (C_grammarParser::Not - 18))
-      | (1ULL << (C_grammarParser::Tilde - 18))
-      | (1ULL << (C_grammarParser::Identifier - 18))
-      | (1ULL << (C_grammarParser::IntegerConstant - 18))
-      | (1ULL << (C_grammarParser::FloatingConstant - 18))
-      | (1ULL << (C_grammarParser::DigitSequence - 18))
-      | (1ULL << (C_grammarParser::CharacterConstant - 18))
-      | (1ULL << (C_grammarParser::StringLiteral - 18)))) != 0)) {
+      ((1ULL << (_la - 18)) & 4433230933581825) != 0)) {
       setState(435);
       argumentExpressionList();
     }
@@ -5136,17 +4989,7 @@ C_grammarParser::StatementContext* C_grammarParser::statement() {
 
       _la = _input->LA(1);
       if (((((_la - 18) & ~ 0x3fULL) == 0) &&
-        ((1ULL << (_la - 18)) & ((1ULL << (C_grammarParser::LeftParen - 18))
-        | (1ULL << (C_grammarParser::PlusPlus - 18))
-        | (1ULL << (C_grammarParser::Minus - 18))
-        | (1ULL << (C_grammarParser::MinusMinus - 18))
-        | (1ULL << (C_grammarParser::Not - 18))
-        | (1ULL << (C_grammarParser::Tilde - 18))
-        | (1ULL << (C_grammarParser::Identifier - 18))
-        | (1ULL << (C_grammarParser::IntegerConstant - 18))
-        | (1ULL << (C_grammarParser::FloatingConstant - 18))
-        | (1ULL << (C_grammarParser::CharacterConstant - 18))
-        | (1ULL << (C_grammarParser::StringLiteral - 18)))) != 0)) {
+        ((1ULL << (_la - 18)) & 3870280980160513) != 0)) {
         setState(487);
         logicalOrExpression();
         setState(492);
@@ -5173,17 +5016,7 @@ C_grammarParser::StatementContext* C_grammarParser::statement() {
 
         _la = _input->LA(1);
         if (((((_la - 18) & ~ 0x3fULL) == 0) &&
-          ((1ULL << (_la - 18)) & ((1ULL << (C_grammarParser::LeftParen - 18))
-          | (1ULL << (C_grammarParser::PlusPlus - 18))
-          | (1ULL << (C_grammarParser::Minus - 18))
-          | (1ULL << (C_grammarParser::MinusMinus - 18))
-          | (1ULL << (C_grammarParser::Not - 18))
-          | (1ULL << (C_grammarParser::Tilde - 18))
-          | (1ULL << (C_grammarParser::Identifier - 18))
-          | (1ULL << (C_grammarParser::IntegerConstant - 18))
-          | (1ULL << (C_grammarParser::FloatingConstant - 18))
-          | (1ULL << (C_grammarParser::CharacterConstant - 18))
-          | (1ULL << (C_grammarParser::StringLiteral - 18)))) != 0)) {
+          ((1ULL << (_la - 18)) & 3870280980160513) != 0)) {
           setState(498);
           logicalOrExpression();
           setState(503);
@@ -5291,31 +5124,8 @@ C_grammarParser::CompoundStatementContext* C_grammarParser::compoundStatement() 
     _errHandler->sync(this);
     _la = _input->LA(1);
     while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << C_grammarParser::Char)
-      | (1ULL << C_grammarParser::Const)
-      | (1ULL << C_grammarParser::Float)
-      | (1ULL << C_grammarParser::For)
-      | (1ULL << C_grammarParser::If)
-      | (1ULL << C_grammarParser::Int)
-      | (1ULL << C_grammarParser::Long)
-      | (1ULL << C_grammarParser::Return)
-      | (1ULL << C_grammarParser::Short)
-      | (1ULL << C_grammarParser::Signed)
-      | (1ULL << C_grammarParser::Unsigned)
-      | (1ULL << C_grammarParser::Void)
-      | (1ULL << C_grammarParser::LeftParen)
-      | (1ULL << C_grammarParser::PlusPlus)
-      | (1ULL << C_grammarParser::Minus)
-      | (1ULL << C_grammarParser::MinusMinus)
-      | (1ULL << C_grammarParser::Not)
-      | (1ULL << C_grammarParser::Tilde)
-      | (1ULL << C_grammarParser::Semi))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 64)) & ((1ULL << (C_grammarParser::Identifier - 64))
-      | (1ULL << (C_grammarParser::IntegerConstant - 64))
-      | (1ULL << (C_grammarParser::FloatingConstant - 64))
-      | (1ULL << (C_grammarParser::DigitSequence - 64))
-      | (1ULL << (C_grammarParser::CharacterConstant - 64))
-      | (1ULL << (C_grammarParser::StringLiteral - 64)))) != 0)) {
+      ((1ULL << _la) & 83577916415980) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
+      ((1ULL << (_la - 64)) & 63) != 0)) {
       setState(518);
       blockItem();
       setState(523);
@@ -5477,18 +5287,7 @@ C_grammarParser::ExpressionStatementContext* C_grammarParser::expressionStatemen
 
     _la = _input->LA(1);
     if (((((_la - 18) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 18)) & ((1ULL << (C_grammarParser::LeftParen - 18))
-      | (1ULL << (C_grammarParser::PlusPlus - 18))
-      | (1ULL << (C_grammarParser::Minus - 18))
-      | (1ULL << (C_grammarParser::MinusMinus - 18))
-      | (1ULL << (C_grammarParser::Not - 18))
-      | (1ULL << (C_grammarParser::Tilde - 18))
-      | (1ULL << (C_grammarParser::Identifier - 18))
-      | (1ULL << (C_grammarParser::IntegerConstant - 18))
-      | (1ULL << (C_grammarParser::FloatingConstant - 18))
-      | (1ULL << (C_grammarParser::DigitSequence - 18))
-      | (1ULL << (C_grammarParser::CharacterConstant - 18))
-      | (1ULL << (C_grammarParser::StringLiteral - 18)))) != 0)) {
+      ((1ULL << (_la - 18)) & 4433230933581825) != 0)) {
       setState(532);
       expression();
     }
@@ -5574,31 +5373,8 @@ C_grammarParser::IfContentContext* C_grammarParser::ifContent() {
         _errHandler->sync(this);
         _la = _input->LA(1);
         while ((((_la & ~ 0x3fULL) == 0) &&
-          ((1ULL << _la) & ((1ULL << C_grammarParser::Char)
-          | (1ULL << C_grammarParser::Const)
-          | (1ULL << C_grammarParser::Float)
-          | (1ULL << C_grammarParser::For)
-          | (1ULL << C_grammarParser::If)
-          | (1ULL << C_grammarParser::Int)
-          | (1ULL << C_grammarParser::Long)
-          | (1ULL << C_grammarParser::Return)
-          | (1ULL << C_grammarParser::Short)
-          | (1ULL << C_grammarParser::Signed)
-          | (1ULL << C_grammarParser::Unsigned)
-          | (1ULL << C_grammarParser::Void)
-          | (1ULL << C_grammarParser::LeftParen)
-          | (1ULL << C_grammarParser::PlusPlus)
-          | (1ULL << C_grammarParser::Minus)
-          | (1ULL << C_grammarParser::MinusMinus)
-          | (1ULL << C_grammarParser::Not)
-          | (1ULL << C_grammarParser::Tilde)
-          | (1ULL << C_grammarParser::Semi))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-          ((1ULL << (_la - 64)) & ((1ULL << (C_grammarParser::Identifier - 64))
-          | (1ULL << (C_grammarParser::IntegerConstant - 64))
-          | (1ULL << (C_grammarParser::FloatingConstant - 64))
-          | (1ULL << (C_grammarParser::DigitSequence - 64))
-          | (1ULL << (C_grammarParser::CharacterConstant - 64))
-          | (1ULL << (C_grammarParser::StringLiteral - 64)))) != 0)) {
+          ((1ULL << _la) & 83577916415980) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
+          ((1ULL << (_la - 64)) & 63) != 0)) {
           setState(536);
           conditionalBlockItem();
           setState(541);
@@ -5725,31 +5501,8 @@ C_grammarParser::ElseContentContext* C_grammarParser::elseContent() {
         _errHandler->sync(this);
         _la = _input->LA(1);
         while ((((_la & ~ 0x3fULL) == 0) &&
-          ((1ULL << _la) & ((1ULL << C_grammarParser::Char)
-          | (1ULL << C_grammarParser::Const)
-          | (1ULL << C_grammarParser::Float)
-          | (1ULL << C_grammarParser::For)
-          | (1ULL << C_grammarParser::If)
-          | (1ULL << C_grammarParser::Int)
-          | (1ULL << C_grammarParser::Long)
-          | (1ULL << C_grammarParser::Return)
-          | (1ULL << C_grammarParser::Short)
-          | (1ULL << C_grammarParser::Signed)
-          | (1ULL << C_grammarParser::Unsigned)
-          | (1ULL << C_grammarParser::Void)
-          | (1ULL << C_grammarParser::LeftParen)
-          | (1ULL << C_grammarParser::PlusPlus)
-          | (1ULL << C_grammarParser::Minus)
-          | (1ULL << C_grammarParser::MinusMinus)
-          | (1ULL << C_grammarParser::Not)
-          | (1ULL << C_grammarParser::Tilde)
-          | (1ULL << C_grammarParser::Semi))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-          ((1ULL << (_la - 64)) & ((1ULL << (C_grammarParser::Identifier - 64))
-          | (1ULL << (C_grammarParser::IntegerConstant - 64))
-          | (1ULL << (C_grammarParser::FloatingConstant - 64))
-          | (1ULL << (C_grammarParser::DigitSequence - 64))
-          | (1ULL << (C_grammarParser::CharacterConstant - 64))
-          | (1ULL << (C_grammarParser::StringLiteral - 64)))) != 0)) {
+          ((1ULL << _la) & 83577916415980) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
+          ((1ULL << (_la - 64)) & 63) != 0)) {
           setState(547);
           conditionalBlockItem();
           setState(552);
@@ -6242,31 +5995,8 @@ C_grammarParser::ForContentContext* C_grammarParser::forContent() {
         _errHandler->sync(this);
         _la = _input->LA(1);
         while ((((_la & ~ 0x3fULL) == 0) &&
-          ((1ULL << _la) & ((1ULL << C_grammarParser::Char)
-          | (1ULL << C_grammarParser::Const)
-          | (1ULL << C_grammarParser::Float)
-          | (1ULL << C_grammarParser::For)
-          | (1ULL << C_grammarParser::If)
-          | (1ULL << C_grammarParser::Int)
-          | (1ULL << C_grammarParser::Long)
-          | (1ULL << C_grammarParser::Return)
-          | (1ULL << C_grammarParser::Short)
-          | (1ULL << C_grammarParser::Signed)
-          | (1ULL << C_grammarParser::Unsigned)
-          | (1ULL << C_grammarParser::Void)
-          | (1ULL << C_grammarParser::LeftParen)
-          | (1ULL << C_grammarParser::PlusPlus)
-          | (1ULL << C_grammarParser::Minus)
-          | (1ULL << C_grammarParser::MinusMinus)
-          | (1ULL << C_grammarParser::Not)
-          | (1ULL << C_grammarParser::Tilde)
-          | (1ULL << C_grammarParser::Semi))) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
-          ((1ULL << (_la - 64)) & ((1ULL << (C_grammarParser::Identifier - 64))
-          | (1ULL << (C_grammarParser::IntegerConstant - 64))
-          | (1ULL << (C_grammarParser::FloatingConstant - 64))
-          | (1ULL << (C_grammarParser::DigitSequence - 64))
-          | (1ULL << (C_grammarParser::CharacterConstant - 64))
-          | (1ULL << (C_grammarParser::StringLiteral - 64)))) != 0)) {
+          ((1ULL << _la) & 83577916415980) != 0) || ((((_la - 64) & ~ 0x3fULL) == 0) &&
+          ((1ULL << (_la - 64)) & 63) != 0)) {
           setState(585);
           forBlockItem();
           setState(590);
@@ -6682,18 +6412,7 @@ C_grammarParser::ReturnStatementContext* C_grammarParser::returnStatement() {
 
     _la = _input->LA(1);
     if (((((_la - 18) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 18)) & ((1ULL << (C_grammarParser::LeftParen - 18))
-      | (1ULL << (C_grammarParser::PlusPlus - 18))
-      | (1ULL << (C_grammarParser::Minus - 18))
-      | (1ULL << (C_grammarParser::MinusMinus - 18))
-      | (1ULL << (C_grammarParser::Not - 18))
-      | (1ULL << (C_grammarParser::Tilde - 18))
-      | (1ULL << (C_grammarParser::Identifier - 18))
-      | (1ULL << (C_grammarParser::IntegerConstant - 18))
-      | (1ULL << (C_grammarParser::FloatingConstant - 18))
-      | (1ULL << (C_grammarParser::DigitSequence - 18))
-      | (1ULL << (C_grammarParser::CharacterConstant - 18))
-      | (1ULL << (C_grammarParser::StringLiteral - 18)))) != 0)) {
+      ((1ULL << (_la - 18)) & 4433230933581825) != 0)) {
       setState(614);
       expression();
     }
@@ -6773,18 +6492,7 @@ C_grammarParser::TranslationUnitContext* C_grammarParser::translationUnit() {
       _errHandler->sync(this);
       _la = _input->LA(1);
     } while (((((_la - 2) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 2)) & ((1ULL << (C_grammarParser::Char - 2))
-      | (1ULL << (C_grammarParser::Const - 2))
-      | (1ULL << (C_grammarParser::Float - 2))
-      | (1ULL << (C_grammarParser::Int - 2))
-      | (1ULL << (C_grammarParser::Long - 2))
-      | (1ULL << (C_grammarParser::Short - 2))
-      | (1ULL << (C_grammarParser::Signed - 2))
-      | (1ULL << (C_grammarParser::Unsigned - 2))
-      | (1ULL << (C_grammarParser::Void - 2))
-      | (1ULL << (C_grammarParser::LeftParen - 2))
-      | (1ULL << (C_grammarParser::Semi - 2))
-      | (1ULL << (C_grammarParser::Identifier - 2)))) != 0));
+      ((1ULL << (_la - 2)) & 4611703610613511883) != 0));
    
   }
   catch (RecognitionException &e) {
@@ -6984,16 +6692,7 @@ C_grammarParser::FunctionDefinitionContext* C_grammarParser::functionDefinition(
 
     _la = _input->LA(1);
     if (((((_la - 2) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 2)) & ((1ULL << (C_grammarParser::Char - 2))
-      | (1ULL << (C_grammarParser::Const - 2))
-      | (1ULL << (C_grammarParser::Float - 2))
-      | (1ULL << (C_grammarParser::Int - 2))
-      | (1ULL << (C_grammarParser::Long - 2))
-      | (1ULL << (C_grammarParser::Short - 2))
-      | (1ULL << (C_grammarParser::Signed - 2))
-      | (1ULL << (C_grammarParser::Unsigned - 2))
-      | (1ULL << (C_grammarParser::Void - 2))
-      | (1ULL << (C_grammarParser::Identifier - 2)))) != 0)) {
+      ((1ULL << (_la - 2)) & 4611686018427401931) != 0)) {
       setState(638);
       declarationList();
     }
@@ -7083,16 +6782,7 @@ C_grammarParser::DeclarationListContext* C_grammarParser::declarationList() {
       _errHandler->sync(this);
       _la = _input->LA(1);
     } while (((((_la - 2) & ~ 0x3fULL) == 0) &&
-      ((1ULL << (_la - 2)) & ((1ULL << (C_grammarParser::Char - 2))
-      | (1ULL << (C_grammarParser::Const - 2))
-      | (1ULL << (C_grammarParser::Float - 2))
-      | (1ULL << (C_grammarParser::Int - 2))
-      | (1ULL << (C_grammarParser::Long - 2))
-      | (1ULL << (C_grammarParser::Short - 2))
-      | (1ULL << (C_grammarParser::Signed - 2))
-      | (1ULL << (C_grammarParser::Unsigned - 2))
-      | (1ULL << (C_grammarParser::Void - 2))
-      | (1ULL << (C_grammarParser::Identifier - 2)))) != 0));
+      ((1ULL << (_la - 2)) & 4611686018427401931) != 0));
    
   }
   catch (RecognitionException &e) {
@@ -7241,5 +6931,9 @@ bool C_grammarParser::directDeclaratorSempred(DirectDeclaratorContext *_localctx
 }
 
 void C_grammarParser::initialize() {
-  std::call_once(c_grammarParserOnceFlag, c_grammarParserInitialize);
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+  c_grammarParserInitialize();
+#else
+  ::antlr4::internal::call_once(c_grammarParserOnceFlag, c_grammarParserInitialize);
+#endif
 }

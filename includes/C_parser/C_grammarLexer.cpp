@@ -1,5 +1,19 @@
 
-// Generated from /home/fils/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.10.1
+//  Copyright 2022 Filippo Savi <filssavi@gmail.com>
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.05/07/2021.
+
+// Generated from ../../src/frontend/C_grammar.g4 by ANTLR 4.13.1
 
 
 #include "C_grammarLexer.h"
@@ -42,11 +56,20 @@ struct C_grammarLexerStaticData final {
   std::unique_ptr<antlr4::atn::ATN> atn;
 };
 
-std::once_flag c_grammarlexerLexerOnceFlag;
+::antlr4::internal::OnceFlag c_grammarlexerLexerOnceFlag;
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+static thread_local
+#endif
 C_grammarLexerStaticData *c_grammarlexerLexerStaticData = nullptr;
 
 void c_grammarlexerLexerInitialize() {
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+  if (c_grammarlexerLexerStaticData != nullptr) {
+    return;
+  }
+#else
   assert(c_grammarlexerLexerStaticData == nullptr);
+#endif
   auto staticData = std::make_unique<C_grammarLexerStaticData>(
     std::vector<std::string>{
       "Case", "Char", "Const", "Else", "Float", "For", "If", "Int", "Long", 
@@ -475,5 +498,9 @@ const atn::ATN& C_grammarLexer::getATN() const {
 
 
 void C_grammarLexer::initialize() {
-  std::call_once(c_grammarlexerLexerOnceFlag, c_grammarlexerLexerInitialize);
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+  c_grammarlexerLexerInitialize();
+#else
+  ::antlr4::internal::call_once(c_grammarlexerLexerOnceFlag, c_grammarlexerLexerInitialize);
+#endif
 }

@@ -1,5 +1,19 @@
 
-// Generated from /home/fils/git/fCore_toolchain/src/frontend/asm_grammar.g4 by ANTLR 4.10.1
+//  Copyright 2022 Filippo Savi <filssavi@gmail.com>
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.05/07/2021.
+
+// Generated from ../../src/frontend/asm_grammar.g4 by ANTLR 4.13.1
 
 
 #include "asm_grammarLexer.h"
@@ -42,11 +56,20 @@ struct Asm_grammarLexerStaticData final {
   std::unique_ptr<antlr4::atn::ATN> atn;
 };
 
-std::once_flag asm_grammarlexerLexerOnceFlag;
+::antlr4::internal::OnceFlag asm_grammarlexerLexerOnceFlag;
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+static thread_local
+#endif
 Asm_grammarLexerStaticData *asm_grammarlexerLexerStaticData = nullptr;
 
 void asm_grammarlexerLexerInitialize() {
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+  if (asm_grammarlexerLexerStaticData != nullptr) {
+    return;
+  }
+#else
   assert(asm_grammarlexerLexerStaticData == nullptr);
+#endif
   auto staticData = std::make_unique<Asm_grammarLexerStaticData>(
     std::vector<std::string>{
       "T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", "T__7", "T__8", 
@@ -280,5 +303,9 @@ const atn::ATN& asm_grammarLexer::getATN() const {
 
 
 void asm_grammarLexer::initialize() {
-  std::call_once(asm_grammarlexerLexerOnceFlag, asm_grammarlexerLexerInitialize);
+#if ANTLR4_USE_THREAD_LOCAL_CACHE
+  asm_grammarlexerLexerInitialize();
+#else
+  ::antlr4::internal::call_once(asm_grammarlexerLexerOnceFlag, asm_grammarlexerLexerInitialize);
+#endif
 }

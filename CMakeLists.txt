@@ -10,7 +10,7 @@ option(INCLUDE_COVERAGE "Build with support for code coverage" OFF)
 option(INCLUDE_DEVTOOLS "Include compiler development tools in the build" OFF)
 option(USE_CONAN "Use the conan package manager for dependency management" OFF)
 
-set(ANTLR_VERSION 4.10.1)
+set(ANTLR_VERSION 4.13.1)
 SET(ANTLR_JAR antlr-${ANTLR_VERSION}-complete.jar)
 set(ANTLR_CLASSPATH ${CMAKE_CURRENT_BINARY_DIR}/antlr_jar/${ANTLR_JAR})
 set(ANTLR_OPTIONS -Dlanguage=Cpp -visitor -listener  -encoding iso-8859-1)
