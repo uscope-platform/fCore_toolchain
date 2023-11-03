@@ -48,11 +48,11 @@ message(STATUS "C compiler: ${CMAKE_C_COMPILER}")
 message(STATUS "C++ compiler: ${CMAKE_CXX_COMPILER}")
 message(STATUS "include dir = ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/includes")
 
-find_package(GTest CONFIG REQUIRED)
+find_package(GTest REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(CLI11 CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
-find_package(nlohmann_json_schema_validator REQUIRED)
+find_package(valijson REQUIRED)
 find_package(antlr4-runtime CONFIG REQUIRED)
 
 

@@ -14,3 +14,7 @@ cmake-build-debug-coverage-1/
 cmake-build-target/
 
 CMakeUserPresets.json
+
+cmake-build-relwithdebinfo/
+
+conan_provider.cmake

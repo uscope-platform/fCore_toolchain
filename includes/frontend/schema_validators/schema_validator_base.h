@@ -22,30 +22,20 @@
 
 #include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
-#include <nlohmann/json-schema.hpp>
 
-
-class emulator_error_handler : public nlohmann::json_schema::basic_error_handler {
-    void error(const nlohmann::json::json_pointer &ptr, const nlohmann::json &instance, const std::string &message) override {
-        nlohmann::json_schema::basic_error_handler::error(ptr, instance, message);
-        error_ptr = ptr;
-        error_instance = instance;
-        error_message = message;
-    }
-public:
-    nlohmann::json::json_pointer error_ptr;
-    nlohmann::json error_instance;
-    std::string error_message;
-};
+#include <valijson/adapters/nlohmann_json_adapter.hpp>
+#include <valijson/utils/nlohmann_json_utils.hpp>
+#include <valijson/schema.hpp>
+#include <valijson/schema_parser.hpp>
+#include <valijson/validator.hpp>
 
 
 class schema_validator_base {
     public:
-        schema_validator_base(const std::string& schema_file, std::string validator_name);
+        schema_validator_base(const std::string& schema_file);
         void validate(nlohmann::json &spec_file);
     private:
-        nlohmann::json schema;
-        emulator_error_handler err;
+        valijson::Schema schema;
         std::string error;
         std::string schema_name;
 };

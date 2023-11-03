@@ -109,7 +109,7 @@ set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_
 
 add_library(common_srcs ${FCORE_COMMON_SRCS_I})
 
-target_link_libraries(common_srcs PRIVATE nlohmann_json::nlohmann_json nlohmann_json_schema_validator)
+target_link_libraries(common_srcs PRIVATE nlohmann_json::nlohmann_json ValiJSON::valijson)
 
 add_executable(fCore_has ${FCORE_AS_SRCS} ${ASM_PARSER_SRCS} fcore_has_main.cpp)
 target_link_libraries(fCore_has PRIVATE
@@ -118,13 +118,13 @@ target_link_libraries(fCore_has PRIVATE
         CLI11::CLI11
         antlr4_static
         spdlog::spdlog
-        nlohmann_json_schema_validator
+        ValiJSON::valijson
         )
 
 add_executable(fCore_cc ${FCORE_CC_SRCS} ${C_PARSER_SRCS} fcore_cc_main.cpp)
 target_link_libraries(fCore_cc PRIVATE common_srcs
         nlohmann_json::nlohmann_json
-        nlohmann_json_schema_validator
+        ValiJSON::valijson
         CLI11::CLI11
         GTest::gtest
         antlr4_static
@@ -134,7 +134,7 @@ target_link_libraries(fCore_cc PRIVATE common_srcs
 add_executable(fCore_dis ${FCORE_DIS_SRCS} fcore_dis_main.cpp)
 target_link_libraries(fCore_dis PRIVATE
         nlohmann_json::nlohmann_json
-        nlohmann_json_schema_validator
+        ValiJSON::valijson
         CLI11::CLI11
         common_srcs
         spdlog::spdlog
@@ -153,9 +153,11 @@ if(${INCLUDE_EMULATOR})
     target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel
             common_srcs
             spdlog::spdlog
+            antlr4_static
+            GTest::gtest
             nlohmann_json::nlohmann_json
             CLI11::CLI11
-            nlohmann_json_schema_validator
+            ValiJSON::valijson
             )
 
     install(TARGETS fCore_emu DESTINATION ${CMAKE_INSTALL_BINDIR})
@@ -172,7 +174,7 @@ if(${INCLUDE_DEVTOOLS})
             CLI11::CLI11
             crypto
             antlr4_static
-            nlohmann_json_schema_validator
+            ValiJSON::valijson
             common_srcs
             )
 

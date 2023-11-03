@@ -20,7 +20,6 @@
 
 #include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
-#include <nlohmann/json-schema.hpp>
 
 #include "schema_validator_base.h"
 

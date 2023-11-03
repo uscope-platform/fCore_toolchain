@@ -15,8 +15,8 @@
 
 #include "frontend/schema_validators/schema_validators.h"
 
-emulator_schema_validator::emulator_schema_validator() : schema_validator_base("emulator_spec_schema.json","Emulator"){
+emulator_schema_validator::emulator_schema_validator() : schema_validator_base("emulator_spec_schema.json"){
 }
 
-compiler_schema_validator::compiler_schema_validator() : schema_validator_base("compiler_spec_schema.json","Compiler"){
+compiler_schema_validator::compiler_schema_validator() : schema_validator_base("compiler_spec_schema.json"){
 }

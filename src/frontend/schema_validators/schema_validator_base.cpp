@@ -15,7 +15,7 @@
 
 #include "frontend/schema_validators/schema_validator_base.h"
 
-schema_validator_base::schema_validator_base(const std::string& schema_file, std::string validator_name) {
+schema_validator_base::schema_validator_base(const std::string& schema_file) {
     std::string schemas_path = SCHEMAS_FOLDER;
     std::string full_schema_path = schemas_path  + "/" + schema_file;
     if(!std::filesystem::exists(full_schema_path)){
@@ -23,26 +23,41 @@ schema_validator_base::schema_validator_base(const std::string& schema_file, std
         spdlog::critical(err_msg);
         throw std::invalid_argument(err_msg);
     }
-    std::ifstream ifs(full_schema_path);
-    schema = nlohmann::json::parse(ifs);
-    schema_name = std::move(validator_name);
+
+    nlohmann::json chosen_schema_doc;
+    if (!valijson::utils::loadDocument(full_schema_path, chosen_schema_doc)) {
+        throw std::runtime_error("Failed to load schema document");
+    }
+
+     schema;
+    valijson::SchemaParser parser;
+    valijson::adapters::NlohmannJsonAdapter schema_adapter(chosen_schema_doc);
+    parser.populateSchema(schema_adapter, schema);
+
 
 }
 
 
 void schema_validator_base::validate(nlohmann::json &spec_file) {
+    valijson::Validator validator;
+    valijson::ValidationResults results;
+    valijson::adapters::NlohmannJsonAdapter myTargetAdapter(spec_file);
+    if (!validator.validate(schema, myTargetAdapter, &results)) {
+        valijson::ValidationResults::Error err;
+        unsigned int errorNum = 1;
+        while (results.popError(err)) {
 
-    nlohmann::json_schema::json_validator validator;
-    validator.set_root_schema(schema);
-    validator.validate(spec_file, err);
-    if(err){
-        std::basic_string<char> err_loc = "/";
-        if(!err.error_ptr.to_string().empty()){
-            err_loc = err.error_ptr.to_string();
+            std::string context;
+            auto itr = err.context.begin();
+            for (; itr != err.context.end(); itr++) {
+                context += *itr;
+            }
+
+            std::cerr << "Error #" << errorNum << std::endl
+                      << "  context: " << context << std::endl
+                      << "  desc:    " << err.description << std::endl;
+            ++errorNum;
         }
-
-        std::string err_msg = schema_name + " specification file error:\n\tError location: " + err_loc + "\n\t" +"Error message: "+err.error_message;
-        spdlog::critical(err_msg);
-        throw std::invalid_argument(err_msg);
+        throw std::invalid_argument("");
     }
 }
