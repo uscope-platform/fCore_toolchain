@@ -30,8 +30,11 @@
 class emulator_builder {
 public:
     emulator_metadata load_program(const nlohmann::json &core_info, const nlohmann::json &input_connections, const nlohmann::json &output_connections);
+    std::map<int, std::string> get_core_ordering(){return cores_ordering;};
 private:
-
+    std::map<int, std::string> cores_ordering;
+    cores_ordering_t ordering_style = no_ordering;
+    int implicit_order_idx = 0;
 };
 
 

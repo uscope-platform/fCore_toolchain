@@ -31,6 +31,7 @@
 
 class C_pre_processor {
 public:
+    explicit C_pre_processor(std::istream &stream,  std::shared_ptr<define_map> &defmap);
     explicit C_pre_processor(const std::string &path,  std::shared_ptr<define_map> &defmap);
     std::string get_preprocessed_file();
     void set_absolute_includes(std::vector<std::string> list);
@@ -38,8 +39,6 @@ public:
     void substitute_defines();
     static std::string substitute_defines_in_line(std::string &line, const std::pair<std::string, std::shared_ptr<define>>& item);
 private:
-
-    std::string file_path;
 
     void process_pragmas(const std::string& line);
     bool process_define(const std::string& line);

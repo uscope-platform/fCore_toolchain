@@ -19,9 +19,14 @@
 
 #include <utility>
 
+C_pre_processor::C_pre_processor(std::istream &stream, std::shared_ptr<define_map> &defmap) {
+    working_content = std::string((std::istreambuf_iterator<char>(stream)),std::istreambuf_iterator<char>());
+    dmap = defmap;
+}
+
+
 C_pre_processor::C_pre_processor(const std::string &path, std::shared_ptr<define_map> &defmap) {
     std::ifstream file(path);
-    file_path = path;
     working_content = std::string((std::istreambuf_iterator<char>(file)),std::istreambuf_iterator<char>());
     dmap = defmap;
 }

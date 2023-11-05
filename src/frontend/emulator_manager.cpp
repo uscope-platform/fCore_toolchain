@@ -20,6 +20,7 @@
 emulator_manager::emulator_manager(nlohmann::json &spec_file) {
     ordering_style = no_ordering;
     implicit_order_idx = 0;
+    emulator_builder e_b;
     try{
         emulator_schema_validator validator;
         validator.validate(spec_file);
@@ -36,8 +37,9 @@ emulator_manager::emulator_manager(nlohmann::json &spec_file) {
         auto id = item["id"];
         if(item["program"].contains("filename")){
             emulators[id] = load_program(item);
+
         } else {
-            emulator_builder e_b;
+
             nlohmann::json src;
             nlohmann::json dst;
             for(auto &ic:spec_file["interconnect"]){
@@ -45,6 +47,7 @@ emulator_manager::emulator_manager(nlohmann::json &spec_file) {
                 if(id == ic["destination"]) dst = ic;
             }
             emulators[id] = e_b.load_program(item, dst, src);
+            cores_ordering = e_b.get_core_ordering();
         }
         emulators[id].input = load_input(item);
         emulators[id].output_specs = load_output_specs(item);

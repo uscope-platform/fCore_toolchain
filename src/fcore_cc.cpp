@@ -18,9 +18,18 @@
 #include <utility>
 
 
-fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl) : hl_manager(dump_lvl),
-                                                                                                                  ll_manager(dump_lvl) {
-    input_file =  path;
+
+
+fcore_cc::fcore_cc(std::vector<std::string> &contents) :
+hl_manager(0), ll_manager(0), input_string_stream(contents[0]){
+    type = "string";
+    logging = false;
+    dump_ast_level = 0;
+}
+
+fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl) :
+hl_manager(dump_lvl), ll_manager(dump_lvl), input_file_stream(path) {
+    type = "file";
     includes = inc;
     logging = print_debug;
     dump_ast_level = dump_lvl;
@@ -31,8 +40,8 @@ void fcore_cc::compile() {
         parse_dma_spec();
         parse(dma_io_spec);
         optimize(dma_io_map);
-
     } catch(std::runtime_error &e){
+        std::string error = e.what();
         error_code = e.what();
     }
 }
@@ -72,7 +81,12 @@ void fcore_cc::write_json(const std::string &output_file) {
 void fcore_cc::parse(std::unordered_map<std::string, variable_class_t> dma_specs) {
     std::shared_ptr<define_map> defines_map = std::make_shared<define_map>();
     error_code = "";
-    C_language_parser target_parser(input_file, defines_map);
+    C_language_parser target_parser;
+    if(type == "string"){
+        target_parser = C_language_parser(input_string_stream, defines_map);
+    } else{
+        target_parser = C_language_parser(input_file_stream, defines_map);
+    }
     target_parser.pre_process({});
     target_parser.parse(std::move(dma_specs));
     hl_ast = target_parser.AST;

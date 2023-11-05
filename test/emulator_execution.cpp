@@ -274,3 +274,17 @@ TEST(Emulator_execution, emulator_inteconnect) {
 
 }
 
+TEST(Emulator_execution, emulator_compilation) {
+
+    std::ifstream ifs("emu/test_compilation.json");
+    nlohmann::json specs = nlohmann::json::parse(ifs);
+    emulator_manager manager(specs);
+    manager.emulate();
+    auto res = nlohmann::json::parse(manager.get_results())["test"];
+
+    std::vector<uint32_t> reference = {59,62};
+    std::vector<uint32_t> result = res["outputs"]["out"][0];
+    ASSERT_EQ(result, reference);
+}
+
+

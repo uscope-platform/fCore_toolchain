@@ -1,0 +1,49 @@
+{
+  "cores": [
+    {
+      "id": "test",
+      "input_file": "emu/test_inputs.csv",
+      "inputs": [
+        {
+          "name": "input_1",
+          "type": "float",
+          "reg_n": 1,
+          "channel": 0
+        },
+        {
+          "name": "input_2",
+          "type": "float",
+          "reg_n": 2,
+          "channel": 0
+        }
+      ],
+      "outputs": [
+        {
+          "reg_n":4,
+          "type":"integer",
+          "name":"out"
+        }
+      ],
+      "program":{
+        "content": "int main(){float input_1; float input_2; float out; out = fti(input_1 + input_2);}",
+        "build_settings": {
+          "io": {
+            "inputs": [
+              "input_1",
+              "input_2"
+            ],
+            "outputs": [
+              "out"
+            ]
+          }
+        }
+      },
+      "order": 0,
+      "options":{
+        "comparators":"reducing",
+        "efi_implementation":"efi_sort"
+      },
+      "channels":1
+    }
+  ]
+}

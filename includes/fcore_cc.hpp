@@ -40,6 +40,7 @@
 class fcore_cc {
 public:
     fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl);
+    explicit fcore_cc(std::vector<std::string> &contents);
     void parse(std::unordered_map<std::string, variable_class_t> dma_specs);
     void optimize(std::unordered_map<std::string, std::vector<int>> &dma_map);
     void parse_dma_spec();
@@ -54,7 +55,9 @@ public:
     nlohmann::json get_dump() {return dump;};
     void set_dma_map(nlohmann::json &map){dma_spec = map;};
 private:
-    std::string input_file;
+    std::ifstream input_file_stream;
+    std::istringstream input_string_stream;
+    std::string type;
     std::vector<std::string> includes;
     bool logging;
     int dump_ast_level;
