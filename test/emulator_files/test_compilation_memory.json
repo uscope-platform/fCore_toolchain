@@ -1,0 +1,45 @@
+{
+  "cores": [
+    {
+      "id": "test",
+      "input_file": "emu/test_inputs.csv",
+      "inputs": [
+        {
+          "name": "input_1",
+          "type": "float",
+          "reg_n": 1,
+          "channel": 0
+        }
+      ],
+      "outputs": [
+        {
+          "reg_n":4,
+          "type":"float",
+          "name":"out"
+        }
+      ],
+      "program":{
+        "content": "int main(){float input_1; float mem; float out; mem = mem + input; out = mem;}",
+        "build_settings": {
+          "io": {
+            "inputs": [
+              "input_1"
+            ],
+            "memories": [
+              "mem"
+            ],
+            "outputs": [
+              "out"
+            ]
+          }
+        }
+      },
+      "order": 0,
+      "options":{
+        "comparators":"reducing",
+        "efi_implementation":"efi_sort"
+      },
+      "channels":1
+    }
+  ]
+}

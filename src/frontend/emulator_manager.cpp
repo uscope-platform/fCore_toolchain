@@ -34,28 +34,26 @@ emulator_manager::emulator_manager(nlohmann::json &spec_file) {
     }
     // Parse specification file;
     for(auto &item:spec_file["cores"]){
-        auto id = item["id"];
+        std::string id = item["id"];
         if(item["program"].contains("filename")){
             emulators[id] = load_program(item);
 
         } else {
 
-            nlohmann::json src;
-            nlohmann::json dst;
+            std::vector<nlohmann::json> src = {};
+            std::vector<nlohmann::json> dst = {};
             for(auto &ic:spec_file["interconnect"]){
-                if(id == ic["source"]) src = ic;
-                if(id == ic["destination"]) dst = ic;
+                std::string source = ic["source"];
+                if(id == source) src.push_back(ic);
+                std::string destination = ic["destination"];
+                if(id == destination) dst.push_back(ic);
             }
             emulators[id] = e_b.load_program(item, dst, src);
             cores_ordering = e_b.get_core_ordering();
         }
         emulators[id].input = load_input(item);
         emulators[id].output_specs = load_output_specs(item);
-        if(emulators[id].io_remapping_active){
-            emulators[id].memory_init = load_memory_init(item["memory_init"], emulators[id].io_map);
-        } else{
-            emulators[id].memory_init = load_memory_init(item["memory_init"]);
-        }
+        emulators[id].memory_init = load_memory_init(item["memory_init"]);
 
     }
     interconnects = load_interconnects(spec_file["interconnect"]);
@@ -225,12 +223,21 @@ std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
         std::string name = input_spec["name"];
 
         std::string type = input_spec["type"];
-        types[name] = type[0];
+        std::vector<std::string> labels;
+        std::string register_type = input_spec["register_type"];
+        if(register_type == "vector"){
+            labels = input_spec["vector_labels"];
+        } else {
+            labels = {name};
+        }
+        uint32_t channel_progressive = input_spec["channel"];
+        for(auto &l:labels){
+            types[l] = type[0];
+            regs[l] = input_spec["reg_n"];
+            channels[l] = channel_progressive;
+            channel_progressive++;
+        }
 
-        regs[name] = input_spec["reg_n"];
-
-        uint32_t c =  input_spec["channel"];
-        channels[name] = c;
     }
 
 
@@ -286,13 +293,22 @@ std::vector<emulator_output_t> emulator_manager:: load_output_specs(nlohmann::js
             out.type = type_float;
         } else if(type=="integer"){
             out.type = type_uint32;
-        } else {
-            spdlog::critical("Unknown output type.");
-            exit(-1);
         }
-        out.reg_n = item["reg_n"];
-        out.name = item["name"];
-        out_specs.push_back(out);
+        if(item["register_type"] == "vector"){
+            uint32_t register_progressive = 0;
+            for(auto &o:item["reg_n"]){
+                out.reg_n = o;
+                std::string out_name = item["name"];
+                out.name = out_name + std::to_string(register_progressive);
+                out_specs.push_back(out);
+                register_progressive++;
+            }
+        } else {
+            out.reg_n = item["reg_n"];
+            out.name = item["name"];
+            out_specs.push_back(out);
+        }
+
     }
     return out_specs;
 }
@@ -301,33 +317,30 @@ std::unordered_map<unsigned int, uint32_t> emulator_manager::load_memory_init(nl
 
     std::unordered_map<unsigned int, uint32_t> init_map;
 
-    for(int i = 0; i<mem_init["index"].size(); i++){
-        auto idx =  mem_init["index"][i];
-        if(mem_init["type"][i] == "f"){
-            init_map[idx] = emulator::float_to_uint32(mem_init["values"][i]);
-        } else {
-            init_map[idx] = mem_init["values"][i];
-        }
-    }
-    return init_map;
-}
-
-
-std::unordered_map<unsigned int, uint32_t>
-emulator_manager::load_memory_init(nlohmann::json &mem_init, std::unordered_map<uint16_t, uint16_t> io_map) {
-
-    std::unordered_map<unsigned int, uint32_t> init_map;
-
     for(auto &mem:mem_init){
-        if(mem["type"] == "float") {
-            init_map[mem["reg_n"]] = emulator::float_to_uint32(mem["value"]);
+        if(mem["reg_n"].is_array()){
+            for(int i = 0; i< mem["reg_n"].size();i++){
+                if(mem["type"] == "float") {
+                    init_map[mem["reg_n"][i]] = emulator::float_to_uint32(mem["value"][i]);
+                } else {
+                    init_map[mem["reg_n"][i]] = mem["value"][i];
+                }
+            }
         } else {
-            init_map[mem["reg_n"]] = mem["value"];
+            if(mem["type"] == "float") {
+                init_map[mem["reg_n"]] = emulator::float_to_uint32(mem["value"]);
+            } else {
+                init_map[mem["reg_n"]] = mem["value"];
+            }
         }
+
     }
 
     return init_map;
+
 }
+
+
 
 std::string emulator_manager::get_results() {
     nlohmann::json res;

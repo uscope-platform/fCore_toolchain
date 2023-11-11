@@ -43,7 +43,8 @@
                 "reg_n",
                 "channel",
                 "type",
-                "name"
+                "name",
+                "register_type"
               ],
               "properties": {
                 "channel": {
@@ -57,6 +58,11 @@
                 "type": {
                   "type": "string",
                   "title": "Type for the input"
+                },
+                "register_type": {
+                  "type": "string",
+                  "title": "Type of the target register (scalar or vector)",
+                  "enum": ["scalar", "vector"]
                 },
                 "name": {
                   "type": "string",
@@ -79,11 +85,24 @@
               ],
               "properties": {
                 "reg_n": {
-                  "type": "integer",
-                  "title": "array containing the register addres and channel nubert of the target"
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "title": "register address of the scalar output variable"
+                    },
+                    {
+                      "type": "array",
+                      "title": "array register address of the vector output variable",
+                      "items": {
+                        "type": "integer"
+                      }
+
+                    }
+                  ]
                 },
                 "type": {
                   "type": "string",
+                  "enum": ["float", "integer"],
                   "title": "type to use for the output"
                 },
                 "name": {
@@ -170,12 +189,35 @@
               ],
               "properties": {
                 "value": {
-                  "type": "number",
-                  "title": "Value to use for initialization of the state variable"
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "title": "register address of the state variable to initialize"
+                    },
+                    {
+                      "type": "array",
+                      "title": "register address of the state variable to initialize",
+                      "items": {
+                        "type": "number"
+                      }
+                    }
+                  ]
                 },
                 "reg_n": {
-                  "type": "integer",
-                  "title": "IO address (or register address if remapping is not active) of the state variable to initialize"
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "title": "register address of the state variable to initialize"
+                    },
+                    {
+                      "type": "array",
+                      "title": "register address of the state variable to initialize",
+                      "items": {
+                        "type": "integer"
+                      }
+
+                    }
+                  ]
                 },
                 "type": {
                   "type": "string",

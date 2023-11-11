@@ -1,0 +1,102 @@
+{
+  "cores": [
+    {
+      "id": "test",
+      "input_file": "emu/test_inputs.csv",
+      "inputs": [
+        {
+          "name": "input_1",
+          "type": "float",
+          "reg_n": 1,
+          "channel": 0
+        },
+        {
+          "name": "input_2",
+          "type": "float",
+          "reg_n": 2,
+          "channel": 0
+        }
+      ],
+      "outputs": [
+        {
+          "reg_n":4,
+          "type":"integer",
+          "name":"out"
+        }
+      ],
+      "program":{
+        "content": "int main(){float input_1; float input_2; float out; out = fti(input_1 + input_2); out2=out;}",
+        "build_settings": {
+          "io": {
+            "inputs": [
+              "input_1",
+              "input_2"
+            ],
+            "outputs": [
+              "out",
+              "out2"
+            ]
+          }
+        }
+      },
+      "order": 0,
+      "options":{
+        "comparators":"reducing",
+        "efi_implementation":"efi_sort"
+      },
+      "channels":1
+    },
+    {
+      "id": "test_move",
+      "input_file": "emu/test_inputs.csv",
+      "inputs": [],
+      "outputs": [
+        {
+          "reg_n":4,
+          "type":"integer",
+          "name":"out"
+        }
+      ],
+      "program":{
+        "content": "int main(){float input; float out; float val = itf(input); out = fti(val+1.0);}",
+        "build_settings": {
+          "io": {
+            "inputs": [
+              "input"
+            ],
+            "outputs": [
+              "out"
+            ]
+          }
+        }
+      },
+      "order": 1,
+      "options":{
+        "comparators":"reducing",
+        "efi_implementation":"efi_sort"
+      },
+      "channels":1
+    }
+  ],
+  "interconnect":[
+    {
+      "source":"test",
+      "destination":"test_move",
+      "channels":[
+        {
+          "name": "interconnect_name",
+          "source_output":"out2",
+          "source": {
+            "channel": 0,
+            "register": 6
+          },
+          "destination_input": "input",
+          "destination": {
+            "channel": 0,
+            "register": 1
+          }
+        }
+      ]
+    }
+  ]
+}

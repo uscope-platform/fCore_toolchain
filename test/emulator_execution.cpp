@@ -287,4 +287,33 @@ TEST(Emulator_execution, emulator_compilation) {
     ASSERT_EQ(result, reference);
 }
 
+TEST(Emulator_execution, emulator_compilation_interconnect) {
+
+    std::ifstream ifs("emu/test_compilation_interconnect.json");
+    nlohmann::json specs = nlohmann::json::parse(ifs);
+    emulator_manager manager(specs);
+    manager.emulate();
+    auto res = nlohmann::json::parse(manager.get_results());
+
+    std::vector<uint32_t> reference = {59,62};
+    std::vector<uint32_t> result = res["test"]["outputs"]["out"][0];
+    ASSERT_EQ(result, reference);
+    reference = {60,63};
+    std::vector<uint32_t> result2 = res["test_move"]["outputs"]["out"][0];
+    ASSERT_EQ(result2, reference);
+}
+
+
+TEST(Emulator_execution, emulator_compilation_memory) {
+
+    std::ifstream ifs("emu/test_compilation_memory.json");
+    nlohmann::json specs = nlohmann::json::parse(ifs);
+    emulator_manager manager(specs);
+    manager.emulate();
+    auto res = nlohmann::json::parse(manager.get_results())["test"];
+
+    std::vector<uint32_t> reference = {15,83};
+    std::vector<uint32_t> result = res["outputs"]["out"][0];
+    ASSERT_EQ(result, reference);
+}
 

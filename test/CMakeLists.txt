@@ -161,6 +161,8 @@ configure_file(emulator_files/test_interconnect.mem ${EMU_TEST_FILES_DIR} COPYON
 configure_file(emulator_files/test_inputs_spec.json ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_interconnect_spec.json ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_compilation.json ${EMU_TEST_FILES_DIR} COPYONLY)
+configure_file(emulator_files/test_compilation_interconnect.json ${EMU_TEST_FILES_DIR} COPYONLY)
+configure_file(emulator_files/test_compilation_memory.json ${EMU_TEST_FILES_DIR} COPYONLY)
 
 configure_file(emulator_files/exec_format/test_exec_format.json ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/exec_format/test_exec_format.mem ${EMU_TEST_FILES_DIR} COPYONLY)
