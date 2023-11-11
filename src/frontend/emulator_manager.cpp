@@ -225,18 +225,31 @@ std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
         std::string type = input_spec["type"];
         std::vector<std::string> labels;
         std::string register_type = input_spec["register_type"];
-        if(register_type == "vector"){
+        if(register_type == "vector") {
             labels = input_spec["vector_labels"];
+            uint32_t channel_progressive = input_spec["channel"];
+            for (auto &l: labels) {
+                types[l] = type[0];
+                regs[l] = input_spec["reg_n"];
+                channels[l] = channel_progressive;
+                channel_progressive++;
+            }
+        } else if(register_type == "explicit_vector"){
+            labels = input_spec["vector_labels"];
+            uint32_t channel_progressive = input_spec["channel"];
+            for (auto &l: labels) {
+                types[l] = type[0];
+                int base_address = input_spec["reg_n"];
+                regs[l] = base_address + channel_progressive;
+                channels[l] = 0;
+                channel_progressive++;
+            }
         } else {
-            labels = {name};
+            types[name] = type[0];
+            regs[name] = input_spec["reg_n"];
+            channels[name] = input_spec["channel"];
         }
-        uint32_t channel_progressive = input_spec["channel"];
-        for(auto &l:labels){
-            types[l] = type[0];
-            regs[l] = input_spec["reg_n"];
-            channels[l] = channel_progressive;
-            channel_progressive++;
-        }
+
 
     }
 
@@ -299,7 +312,7 @@ std::vector<emulator_output_t> emulator_manager:: load_output_specs(nlohmann::js
             for(auto &o:item["reg_n"]){
                 out.reg_n = o;
                 std::string out_name = item["name"];
-                out.name = out_name + std::to_string(register_progressive);
+                out.name = out_name + "["+ std::to_string(register_progressive) + "]";
                 out_specs.push_back(out);
                 register_progressive++;
             }
@@ -308,6 +321,30 @@ std::vector<emulator_output_t> emulator_manager:: load_output_specs(nlohmann::js
             out.name = item["name"];
             out_specs.push_back(out);
         }
+
+    }
+
+    for(auto &mem: core["memory_init"]){
+
+       if(mem["is_output"]){
+           auto dbg = mem.dump();
+           emulator_output_t out;
+           if(mem["reg_n"].is_array()){
+               for(int i = 0; i< mem["reg_n"].size();i++){
+                   out.type = type_float;
+                   int addr = mem["reg_n"];
+                   std::string name = mem["name"];
+                   out.reg_n = addr;
+                   out.name = name + "[" + std::to_string(addr) + "]";
+                   out_specs.push_back(out);
+               }
+           } else {
+               out.type = type_float;
+               out.reg_n = mem["reg_n"];
+               out.name = mem["name"];
+               out_specs.push_back(out);
+           }
+       }
 
     }
     return out_specs;

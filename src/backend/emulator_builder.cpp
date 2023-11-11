@@ -28,7 +28,6 @@ emulator_metadata emulator_builder::load_program(const nlohmann::json &core_info
 
     std::set<std::string> memory_names;
 
-    //TODO: CORRECTLY IMPLEMENT VECTOR TRANSFERS
     for(auto  &conn:input_connections){
         if(conn.contains("channels")){
             for(auto &item:conn["channels"]){
@@ -95,8 +94,18 @@ emulator_metadata emulator_builder::load_program(const nlohmann::json &core_info
     for(auto &item: core_info["inputs"]){
         nlohmann::json spec;
         spec["type"] = "input";
-        std::vector<uint32_t> addrs = {item["reg_n"]};
+        std::vector<uint32_t> addrs;
+        if(item["register_type"] == "explicit_vector"){
+            int base_addr = item["reg_n"];
+             for(int i = 0; i<item["vector_labels"].size(); i++){
+                 addrs.push_back(base_addr + i);
+             }
+        } else {
+            addrs.push_back(item["reg_n"]);
+        }
+
         spec["address"]  = addrs;
+
         assigned_inputs.insert(addrs.begin(), addrs.end());
         dma_io[item["name"]] = spec;
     }
@@ -107,7 +116,12 @@ emulator_metadata emulator_builder::load_program(const nlohmann::json &core_info
         if(!dma_io.contains(memory_name)){
             nlohmann::json spec;
             spec["type"] = "memory";
-            std::vector<uint32_t> addrs = {item["reg_n"]};
+            std::vector<uint32_t> addrs;
+            if(item["reg_n"].is_array()) {
+                for(const auto &r_a:item["reg_n"]) addrs.push_back(r_a);
+            } else {
+                addrs.push_back(item["reg_n"]);
+            }
             spec["address"]  = addrs;
             assigned_inputs.insert(addrs.begin(), addrs.end());
             dma_io[item["name"]] = spec;
@@ -163,6 +177,8 @@ emulator_metadata emulator_builder::load_program(const nlohmann::json &core_info
     compiler.compile();
 
     auto program = compiler.get_executable();
+    compiler.write_verilog_memfile("autogen/"+dbg2+ ".mem");
+
     binary_loader dis(program);
     metadata.io_map = dis.get_io_mapping();
     metadata.io_remapping_active = dis.is_io_mapped();

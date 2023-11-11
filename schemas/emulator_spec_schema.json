@@ -62,7 +62,7 @@
                 "register_type": {
                   "type": "string",
                   "title": "Type of the target register (scalar or vector)",
-                  "enum": ["scalar", "vector"]
+                  "enum": ["scalar", "vector", "explicit_vector"]
                 },
                 "name": {
                   "type": "string",
