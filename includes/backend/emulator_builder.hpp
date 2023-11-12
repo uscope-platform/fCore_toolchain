@@ -29,10 +29,34 @@
 
 class emulator_builder {
 public:
-    emulator_metadata load_program(const nlohmann::json &core_info, const std::vector<nlohmann::json> &input_connections,
+    emulator_metadata load_json_program(const nlohmann::json &core_info, const std::vector<nlohmann::json> &input_connections,
                                    const std::vector<nlohmann::json> &output_connections);
+
     std::map<int, std::string> get_core_ordering(){return cores_ordering;};
 private:
+
+    void process_interconnects(
+            const std::vector<nlohmann::json> &input_connections,
+            const std::vector<nlohmann::json> &output_connections,
+            std::set<std::string> memories
+    );
+
+    void process_ioms(
+            const nlohmann::json &inputs,
+            const nlohmann::json &outputs,
+            const nlohmann::json &memory_init_specs,
+            std::set<std::string> memories
+    );
+
+    std::vector<uint32_t>  compile_programs(const nlohmann::json &core_info, const std::vector<nlohmann::json> &input_connections,
+                          const std::vector<nlohmann::json> &output_connections);
+
+    nlohmann::json dma_io;
+    std::set<uint32_t> assigned_inputs;
+    std::set<uint32_t> assigned_outputs;
+    std::set<std::string> memory_names;
+
+
     std::map<int, std::string> cores_ordering;
     cores_ordering_t ordering_style = no_ordering;
     int implicit_order_idx = 0;

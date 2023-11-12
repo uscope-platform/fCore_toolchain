@@ -35,22 +35,28 @@ emulator_manager::emulator_manager(nlohmann::json &spec_file) {
     // Parse specification file;
     for(auto &item:spec_file["cores"]){
         std::string id = item["id"];
-        if(item["program"].contains("filename")){
-            emulators[id] = load_program(item);
+        try{
 
-        } else {
+            if(item["program"].contains("filename")){
+                emulators[id] = e_b.load_json_program(item, {}, {});
+                cores_ordering = e_b.get_core_ordering();
+            } else {
 
-            std::vector<nlohmann::json> src = {};
-            std::vector<nlohmann::json> dst = {};
-            for(auto &ic:spec_file["interconnect"]){
-                std::string source = ic["source"];
-                if(id == source) src.push_back(ic);
-                std::string destination = ic["destination"];
-                if(id == destination) dst.push_back(ic);
+                std::vector<nlohmann::json> src = {};
+                std::vector<nlohmann::json> dst = {};
+                for(auto &ic:spec_file["interconnect"]){
+                    std::string source = ic["source"];
+                    if(id == source) src.push_back(ic);
+                    std::string destination = ic["destination"];
+                    if(id == destination) dst.push_back(ic);
+                }
+                emulators[id] = e_b.load_json_program(item, dst, src);
+                cores_ordering = e_b.get_core_ordering();
             }
-            emulators[id] = e_b.load_program(item, dst, src);
-            cores_ordering = e_b.get_core_ordering();
+        } catch(std::runtime_error &e){
+            errors[id] = e.what();
         }
+
         emulators[id].input = load_input(item);
         emulators[id].output_specs = load_output_specs(item);
         emulators[id].memory_init = load_memory_init(item["memory_init"]);
@@ -133,77 +139,6 @@ void emulator_manager::run_cores() {
             }
         }
     }
-}
-
-emulator_metadata emulator_manager::load_program(nlohmann::json &core) {
-    auto program = core["program"];
-    emulator_metadata metadata;
-    std::ifstream stream;
-
-    bin_loader_input_type_t in_type;
-    std::string file_path = program["filename"];
-    if(!std::filesystem::is_regular_file(file_path)){
-        std::string core_id = core["id"];
-        spdlog::critical("Invalid program file for core: " + core_id);
-        exit(-1);
-    }
-    if(program["type"] == "mem") {
-        stream.open(file_path);
-        in_type = bin_loader_mem_input;
-    } else if(program["type"] == "hex") {
-        stream.open(file_path, std::ifstream::binary);
-        in_type = bin_loader_hex_input;
-    } else{
-        spdlog::critical("Unknown program type for core: " + nlohmann::to_string(core["id"]));
-        exit(2);
-    }
-
-    try{
-        binary_loader dis(stream, in_type);
-        metadata.io_map = dis.get_io_mapping();
-        metadata.io_remapping_active = dis.is_io_mapped();
-        std::shared_ptr<ll_ast_node> ast = dis.get_ast();
-
-        instruction_stream program_stream = instruction_stream_builder::build_stream(ast);
-
-        std::vector<int> io_res;
-        stream_pass_manager sman(io_res,0);
-        sman.set_enabled_passes({false, false, true, true, true,false, true});
-        program_stream = sman.process_stream(program_stream);
-
-        auto ch = core["channels"];
-        metadata.active_channels = ch;
-
-        metadata.emu = std::make_shared<emulator>(program_stream, ch, core["id"]);
-
-        if(core.contains("options")){
-            auto opt = core["options"];
-            metadata.efi_implementation = opt["efi_implementation"];
-            metadata.comparator_type = opt["comparators"];
-            metadata.emu->set_comparator_type(metadata.comparator_type);
-        }
-
-        if(core.contains("order")){
-            if(ordering_style==implicit_ordering){
-                spdlog::critical("Mixing of explicit and implicit cores ordering is not allowed");
-                exit(-1);
-            }
-                cores_ordering[core["order"]] = core["id"];
-                ordering_style = explicit_ordering;
-        } else {
-            if(ordering_style==explicit_ordering){
-                spdlog::critical("Mixing of explicit and implicit cores ordering is not allowed");
-                exit(-1);
-            }
-            ordering_style = implicit_ordering;
-
-            cores_ordering[implicit_order_idx] =  core["id"];
-            implicit_order_idx++;
-        }
-    } catch(std::runtime_error &e){
-        errors[core["id"]] = e.what();
-    }
-    return metadata;
 }
 
 std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
@@ -509,6 +444,73 @@ emulator_manager::io_remap_memory_init(std::unordered_map<unsigned int, uint32_t
         uint32_t io_address = item.first;
         uint32_t core_address  = io_map[io_address];
         ret[core_address] = item.second;
+    }
+
+    return ret;
+}
+
+nlohmann::json emulator_manager::dump_core(const emulator_metadata &md) {
+    nlohmann::json ret;
+    ret["inputs"] = nlohmann::json();
+    for(const auto &in:md.input){
+        nlohmann::json i;
+        i["reg_n"] = in.reg_n;
+        i["data"] = in.data;
+        i["channel"] = in.channel;
+        i["name"] = in.name;
+        ret["inputs"].push_back(i);
+    }
+
+    ret["outputs"] = nlohmann::json();
+    for(const auto &out:md.output_specs){
+        nlohmann::json o;
+        o["reg_n"] = out.reg_n;
+        o["name"] = out.name;
+        if(out.type == type_float){
+            o["type"] = "float";
+        } else{
+            o["type"] = "integer";
+        }
+        ret["outputs"].push_back(o);
+    }
+    ret["output_types"] = md.output_types;
+
+    ret["memory_init"] = md.memory_init;
+
+    //dump md.emu ?
+
+    ret["active_channels"] = md.active_channels;
+    ret["efi_implementation"] = md.efi_implementation;
+    ret["comparator_type"] = md.comparator_type;
+    ret["io_remapping_active"] = md.io_remapping_active;
+    ret["io_map"] = md.io_map;
+    ret["outputs"] = md.outputs;
+
+    return ret;
+}
+
+nlohmann::json emulator_manager::dump_interconnects(const std::vector<interconnect_t> &ics) {
+
+    nlohmann::json ret;
+    for(auto &md:ics){
+        nlohmann::json md_j;
+        md_j["source"] = md.source;
+        md_j["destination"] = md.destination;
+
+        std::vector<nlohmann::json> conns;
+        for(auto &c:md.connections){
+
+            nlohmann::json c_j;
+            c_j["first"] = nlohmann::json();
+            c_j["first"]["address"] = c.first.address;
+            c_j["first"]["channel"] = c.first.channel;
+            c_j["second"] = nlohmann::json();
+            c_j["second"]["address"] = c.first.address;
+            c_j["second"]["channel"] = c.first.channel;
+            conns.push_back(c_j);
+        }
+        md_j["connections"] = conns;
+        ret.push_back(md_j);
     }
 
     return ret;
