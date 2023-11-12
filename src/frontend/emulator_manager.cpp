@@ -146,14 +146,13 @@ std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
     if(core["inputs"].empty()){
         return inputs;
     }
-    std::string file_path = core["input_file"];
-    csv::CSVReader reader(file_path);
-    auto column_names = reader.get_col_names();
+
+
 
     std::unordered_map<std::string, std::string> types;
     std::unordered_map<std::string, int> regs;
     std::unordered_map<std::string, unsigned int> channels;
-
+    std::set<std::string> input_names;
     for (auto &input_spec: core["inputs"]) {
         std::string name = input_spec["name"];
 
@@ -167,6 +166,7 @@ std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
                 types[l] = type[0];
                 regs[l] = input_spec["reg_n"];
                 channels[l] = channel_progressive;
+                input_names.insert(l);
                 channel_progressive++;
             }
         } else if(register_type == "explicit_vector"){
@@ -177,45 +177,77 @@ std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
                 int base_address = input_spec["reg_n"];
                 regs[l] = base_address + channel_progressive;
                 channels[l] = 0;
+                input_names.insert(l);
                 channel_progressive++;
             }
         } else {
             types[name] = type[0];
             regs[name] = input_spec["reg_n"];
+            input_names.insert(name);
             channels[name] = input_spec["channel"];
         }
 
-
     }
 
 
-    std::unordered_map<std::string, std::vector<uint32_t>> inputs_vect;
+    if(core["input_data"].empty()){
+        std::string file_path = core["input_file"];
+        csv::CSVReader reader(file_path);
+        auto column_names = reader.get_col_names();
+        std::unordered_map<std::string, std::vector<uint32_t>> inputs_vect;
 
-    for (csv::CSVRow& row: reader) { // Input iterator
-        for(auto &col:column_names){
-            if(!types.contains(col) && !regs.contains(col)){
-                continue; //In this case the column in the input file is spurious and can be ignored
-            }
-            if(types[col] =="i"){
-                inputs_vect[col].push_back(row[col].get<uint32_t>());
-            } else if(types[col]=="f") {
-                inputs_vect[col].push_back(emulator::float_to_uint32(row[col].get<float>()));
-            } else{
-                spdlog::critical("unknown type: " + types[col] + " for input " + col);
-                exit(-1);
+        for (csv::CSVRow& row: reader) { // Input iterator
+            for(auto &col:column_names){
+                if(!types.contains(col) && !regs.contains(col)){
+                    continue; //In this case the column in the input file is spurious and can be ignored
+                }
+                if(types[col] =="i"){
+                    inputs_vect[col].push_back(row[col].get<uint32_t>());
+                } else if(types[col]=="f") {
+                    inputs_vect[col].push_back(emulator::float_to_uint32(row[col].get<float>()));
+                } else{
+                    spdlog::critical("unknown type: " + types[col] + " for input " + col);
+                    exit(-1);
+                }
             }
         }
-    }
-    for(auto &col:column_names){
-        if(regs.contains(col)){
+
+        for(auto &col:column_names){
+            if(regs.contains(col)){
+                inputs_t  in;
+                in.reg_n = regs[col];
+                in.data = inputs_vect[col];
+                in.channel = channels[col];
+                in.name = col;
+                inputs.emplace_back(in);
+            }
+        }
+
+    } else {
+        for(auto &col_name:input_names){
+            auto col = core["input_data"][col_name];
+            std::vector<uint32_t> data;
+            if(col[0].is_number_float()){
+                for(float n:col){
+                    data.push_back(emulator::float_to_uint32(n));
+                }
+            } else {
+                for(uint32_t n:col){
+                    data.push_back(n);
+                }
+            }
             inputs_t  in;
-            in.reg_n = regs[col];
-            in.data = inputs_vect[col];
-            in.channel = channels[col];
-            in.name = col;
+            in.reg_n = regs[col_name];
+            in.data = data;
+            in.channel = channels[col_name];
+            in.name = col_name;
             inputs.emplace_back(in);
         }
+
     }
+
+
+
 
 
     emu_length = -1;
