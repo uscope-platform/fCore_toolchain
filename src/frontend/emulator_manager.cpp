@@ -227,7 +227,7 @@ std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
         for(auto &col_name:input_names){
             auto col = core["input_data"][col_name];
             std::vector<uint32_t> data;
-            if(col[0].is_number_float()){
+            if(types[col_name]=="f"){
                 for(float n:col){
                     data.push_back(emulator::float_to_uint32(n));
                 }
