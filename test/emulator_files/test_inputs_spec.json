@@ -7,12 +7,14 @@
         {
           "name": "input_1",
           "type": "float",
+          "register_type": "scalar",
           "reg_n": 1,
           "channel": 0
         },
         {
           "name": "input_2",
           "type": "float",
+          "register_type": "scalar",
           "reg_n": 2,
           "channel": 0
         }

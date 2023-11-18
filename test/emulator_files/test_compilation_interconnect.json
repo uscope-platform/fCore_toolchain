@@ -8,11 +8,13 @@
           "name": "input_1",
           "type": "float",
           "reg_n": 1,
+          "register_type": "scalar",
           "channel": 0
         },
         {
           "name": "input_2",
           "type": "float",
+          "register_type": "scalar",
           "reg_n": 2,
           "channel": 0
         }
@@ -24,6 +26,7 @@
           "name":"out"
         }
       ],
+      "memory_init": [],
       "program":{
         "content": "int main(){float input_1; float input_2; float out; out = fti(input_1 + input_2); out2=out;}",
         "build_settings": {
@@ -35,7 +38,8 @@
             "outputs": [
               "out",
               "out2"
-            ]
+            ],
+            "memories": []
           }
         }
       },
@@ -57,6 +61,7 @@
           "name":"out"
         }
       ],
+      "memory_init": [],
       "program":{
         "content": "int main(){float input; float out; float val = itf(input); out = fti(val+1.0);}",
         "build_settings": {
@@ -66,7 +71,8 @@
             ],
             "outputs": [
               "out"
-            ]
+            ],
+            "memories": []
           }
         }
       },

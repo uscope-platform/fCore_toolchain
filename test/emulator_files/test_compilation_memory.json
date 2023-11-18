@@ -7,6 +7,7 @@
         {
           "name": "input_1",
           "type": "float",
+          "register_type": "scalar",
           "reg_n": 1,
           "channel": 0
         }
@@ -18,6 +19,7 @@
           "name":"out"
         }
       ],
+      "memory_init": [],
       "program":{
         "content": "int main(){float input_1; float mem; float out; mem = mem + input; out = mem;}",
         "build_settings": {

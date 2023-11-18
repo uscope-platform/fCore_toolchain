@@ -7,6 +7,7 @@
         {
           "name": "input_1",
           "type": "float",
+          "register_type": "scalar",
           "reg_n": 1,
           "channel": 0
         },
@@ -14,6 +15,7 @@
           "name": "input_2",
           "type": "float",
           "reg_n": 2,
+          "register_type": "scalar",
           "channel": 0
         }
       ],
@@ -24,6 +26,7 @@
           "name":"out"
         }
       ],
+      "memory_init": [],
       "program":{
         "content": "int main(){float input_1; float input_2; float out; out = fti(input_1 + input_2);}",
         "build_settings": {
@@ -34,7 +37,8 @@
             ],
             "outputs": [
               "out"
-            ]
+            ],
+            "memories": []
           }
         }
       },

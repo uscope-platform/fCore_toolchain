@@ -771,3 +771,29 @@ TEST(EndToEndC, constant_conversion) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+TEST(EndToEndC, constant_squaring) {
+
+    std::string input_file = "c_e2e/test_float_const_square.c";
+
+
+    std::vector<std::string> includes;
+
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "dt":{"type": "output","address":5},
+                    "dt2":{"type": "output","address":6}
+                }})"
+    );
+
+    fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+
+    std::vector<uint32_t> gold_standard = {0x50003, 0xc, 0x10005, 0x20006,0xc, 0x26, 0x37A7C5AC, 0x46, 0x2FDBE6FE ,0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}

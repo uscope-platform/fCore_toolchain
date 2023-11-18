@@ -8,6 +8,7 @@
         {
           "name": "v_grid_a",
           "type": "integer",
+          "register_type": "scalar",
           "reg_n": 4,
           "channel": 0
         }

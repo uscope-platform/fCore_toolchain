@@ -231,6 +231,7 @@ TEST(Emulator_execution, emulator_inputs) {
     auto in = nlohmann::json();
     in["name"] = "input_1";
     in["type"] = "float";
+    in["register_type"] = "scalar";
     in["reg_n"] = 1;
     in["channel"] = 0;
 
