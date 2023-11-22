@@ -60,7 +60,7 @@ add_subdirectory(includes/asm_parser)
 add_subdirectory(includes/C_parser)
 
 install(FILES schemas/compiler_spec_schema.json DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/fcore_toolchain)
-install(FILES schemas/compiler_spec_schema.json DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/fcore_toolchain)
+install(FILES schemas/emulator_spec_schema.json DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}/fcore_toolchain)
 
 if(${INCLUDE_DEVTOOLS})
     find_package(cpprestsdk REQUIRED)

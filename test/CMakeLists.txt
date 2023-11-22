@@ -124,6 +124,7 @@ configure_file(C_files/end_to_end/test_efi_load_elimination.c ${C_E2E_TEST_FILES
 configure_file(C_files/end_to_end/test_efi_load_elimination_in_func.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_constant_conversion.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_float_const_square.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
+configure_file(C_files/end_to_end/test_multiple_constant_op.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 
 configure_file(C_files/instruction_passes/test_constant_merging.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/instruction_passes/test_zero_assignment_removal.c ${C_E2E_TEST_FILES_DIR} COPYONLY)

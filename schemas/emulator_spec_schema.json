@@ -289,7 +289,7 @@
               "properties": {
                 "type": {
                   "type": "string",
-                  "enum": ["scatter_transfer", "vector_transfer", "gather_transfer", "2d_vector_transfer"]
+                  "enum": ["scalar_transfer","scatter_transfer", "vector_transfer", "gather_transfer", "2d_vector_transfer"]
                 },
                 "length": {
                   "type": "integer",

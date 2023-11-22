@@ -404,7 +404,9 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
                 transfer_type = "regular_transfer";
             } else {
                 transfer_type = ch["type"];
-                transfer_length = ch["length"];
+                if(transfer_type != "regular_transfer" && transfer_type != "scalar_transfer"){
+                    transfer_length = ch["length"];
+                }
             }
 
 
@@ -437,7 +439,7 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
                     rs_d.address = dest_addr;
                     i.connections.emplace_back(rs_s,rs_d);
                 }
-            } else if(transfer_type == "regular_transfer"){
+            } else if(transfer_type == "regular_transfer" || transfer_type == "scalar_transfer" ){
                 rs_s.channel = source_ch;
                 rs_s.address = source_addr;
                 rs_d.channel = dest_ch;
