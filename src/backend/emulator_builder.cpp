@@ -93,7 +93,7 @@ emulator_metadata emulator_builder::load_json_program(const nlohmann::json &core
         implicit_order_idx++;
     }
 
-
+    clear_dma_io();
     return metadata;
 }
 
@@ -263,7 +263,18 @@ std::vector<uint32_t> emulator_builder::compile_programs(const nlohmann::json &c
     compiler.compile();
 
     auto program = compiler.get_executable();
-    std::string core_name = core_info["id"];
-    compiler.write_verilog_memfile("autogen/"+core_name+ ".mem");
+
+    if(std::filesystem::exists("autogen")){
+        std::string program_content = core_info["program"]["content"];
+        std::string core_name = core_info["id"];
+        std::ofstream ofs("autogen/" + core_name + "_dma_io.json");
+        ofs<<dma_io;
+
+        std::ofstream ofs2("autogen/" + core_name + "_src.c");
+        ofs2<<program_content;
+
+        compiler.write_verilog_memfile("autogen/"+core_name+ ".mem");
+    }
+
     return program;
 }

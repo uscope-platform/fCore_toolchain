@@ -817,7 +817,36 @@ TEST(EndToEndC, test_multiple_constant_op) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x50003, 0xc, 0x10005, 0x20006,0xc, 0x26, 0x37A7C5AC, 0x46, 0x2FDBE6FE ,0xc};
+    std::vector<uint32_t> gold_standard = {0x30002, 0xc, 0x10005,0xc, 0x26, 0x43AC8622,0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
+
+
+
+TEST(EndToEndC, test_constant_expression_output) {
+
+    std::string input_file = "c_e2e/test_constant_expression_output.c";
+
+
+    std::vector<std::string> includes;
+
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "v_cap":{"address":[63],"type":"memory"},
+                    "v_cap_s":{"address":[22],"type":"output"},
+                    "v_out":{"address":[20],"type":"output"}
+                }})"
+    );
+
+    fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+
+    std::vector<uint32_t> gold_standard = {0x70004, 0xc, 0x20014, 0x10016, 0x3F003F, 0xc, 0x7e6, 0x4201999A, 0x26, 0x44EFA51D,  0x46, 2876 ,0xc};
 
     ASSERT_EQ(gold_standard, result);
 

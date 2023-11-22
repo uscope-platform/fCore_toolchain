@@ -247,9 +247,6 @@ std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
     }
 
 
-
-
-
     emu_length = -1;
     for(auto &item:inputs){
         if(emu_length<0){

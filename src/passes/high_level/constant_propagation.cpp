@@ -68,7 +68,9 @@ std::shared_ptr<hl_ast_node> constant_propagation::purge_definition(std::shared_
         auto def = std::static_pointer_cast<hl_definition_node>(element);
         if(def->is_scalar()){
             if(tracker.needs_purging(def->get_name(), {0})){
-                def->set_array_initializer({});
+                if(def->get_variable()->get_variable_class() != variable_output_type && def->get_variable()->get_variable_class() != variable_memory_type){
+                    def->set_array_initializer({});
+                }
             }
         }else {
             bool array_needs_purging = true;

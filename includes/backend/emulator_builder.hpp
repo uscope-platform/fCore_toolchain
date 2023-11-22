@@ -32,6 +32,7 @@ public:
     emulator_metadata load_json_program(const nlohmann::json &core_info, const std::vector<nlohmann::json> &input_connections,
                                    const std::vector<nlohmann::json> &output_connections);
 
+    void clear_dma_io() {dma_io.clear();};
     std::map<int, std::string> get_core_ordering(){return cores_ordering;};
 private:
 
