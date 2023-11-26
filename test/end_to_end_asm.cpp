@@ -194,3 +194,25 @@ TEST(EndToEndAsm, json_writing) {
 
     ASSERT_EQ(gold_standard, compile_result);
 }
+
+
+TEST(EndToEndAsm, conditional_select) {
+    std::string input_string = "ldc r4, 100\n"
+                             "ldc r5, 200\n"
+                             "ldc r1, 1\n"
+                             "csel r1, r5, r4\n"
+                             "stop";
+
+    std::string include_dir;
+    std::vector<std::string> include_files = {};
+
+    std::istringstream stream(input_string);
+    fcore_has uut(stream,include_files,include_dir, 0, true);
+
+    std::vector<uint32_t> result = uut.get_executable();
+
+    std::vector<uint32_t> gold_standard = {0x80001, 0xc, 0xc,0x86, 0x64, 0xa6, 0xc8, 0x26, 1, 0x8283b, 0xc};
+    ASSERT_EQ( result, gold_standard);
+}
+
+

@@ -62,7 +62,8 @@ typedef enum {
     expr_efi = 34,
     expr_bset = 35,
     expr_bsel = 37,
-    expr_nop = 38
+    expr_nop = 38,
+    expr_csel = 39
 } expression_type_t;
 
 constexpr std::string_view expression_type_to_string(expression_type_t in){

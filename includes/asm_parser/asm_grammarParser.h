@@ -1,5 +1,5 @@
 
-// Generated from ../../src/frontend/asm_grammar.g4 by ANTLR 4.13.1
+// Generated from ./src/frontend/asm_grammar.g4 by ANTLR 4.13.1
 
 #pragma once
 
@@ -20,9 +20,9 @@ public:
     T__26 = 27, T__27 = 28, T__28 = 29, T__29 = 30, T__30 = 31, T__31 = 32, 
     T__32 = 33, T__33 = 34, T__34 = 35, T__35 = 36, T__36 = 37, T__37 = 38, 
     T__38 = 39, T__39 = 40, T__40 = 41, T__41 = 42, T__42 = 43, T__43 = 44, 
-    Register = 45, Identifier = 46, Hexnum = 47, Integer = 48, Octalnum = 49, 
-    FloatingPointLiteral = 50, String = 51, Label = 52, WS = 53, BlockComment = 54, 
-    LineComment = 55
+    T__44 = 45, Register = 46, Identifier = 47, Hexnum = 48, Integer = 49, 
+    Octalnum = 50, FloatingPointLiteral = 51, String = 52, Label = 53, WS = 54, 
+    BlockComment = 55, LineComment = 56
   };
 
   enum {

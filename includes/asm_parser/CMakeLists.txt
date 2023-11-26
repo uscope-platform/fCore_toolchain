@@ -20,4 +20,5 @@ add_custom_command(
         COMMENT "generating sources for fCore assembly"
 )
 
+
 add_custom_target(asm_parser_gen DEPENDS  ${ASM_PARSER_GEN_SRCS})

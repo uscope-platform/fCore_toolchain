@@ -40,7 +40,7 @@ immediate : Integer | Hexnum | Octalnum | Identifier;
 float_const : FloatingPointLiteral;
 integer_const: Integer | Hexnum | Octalnum;
 
-reg_opcode : 'add' | 'sub' | 'mul' | 'and' | 'or' | 'satp' | 'satn' | 'efi' | 'bset' | 'bsel' | 'xor';
+reg_opcode : 'add' | 'sub' | 'mul' | 'and' | 'or' | 'satp' | 'satn' | 'efi' | 'bset' | 'bsel' | 'xor' | 'csel';
 conv_opcode: 'itf' | 'fti' | 'not' | 'rec' | 'abs'| 'popcnt';
 imm_opcode : 'ldr';
 branch_opcode: 'ble' | 'bgt' | 'beq' | 'bne';
