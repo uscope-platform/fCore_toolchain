@@ -423,6 +423,22 @@ void C_Tree_visitor::exitLogicalAndExpression(C_parser::C_grammarParser::Logical
 }
 
 
+void C_Tree_visitor::exitConditionalExpression(C_parser::C_grammarParser::ConditionalExpressionContext *ctx) {
+
+    if(ctx->Question() != nullptr){
+        auto conditional = std::make_shared<hl_ast_conditional_node>();
+        conditional->set_else_block({expressions_stack.top()});
+        expressions_stack.pop();
+        conditional->set_if_block({expressions_stack.top()});
+        expressions_stack.pop();
+        conditional->set_condition(expressions_stack.top());
+        conditional->set_ternary(true);
+        expressions_stack.push(conditional);
+    }
+}
+
+
+
 void C_Tree_visitor::exitAssignmentExpression(C_parser::C_grammarParser::AssignmentExpressionContext *ctx) {
     std::string dbg = ctx->getText();
     if(ctx->unaryExpression()!= nullptr){
@@ -685,4 +701,3 @@ void C_Tree_visitor::enterForContent(C_parser::C_grammarParser::ForContentContex
 void C_Tree_visitor::exitForContent(C_parser::C_grammarParser::ForContentContext *ctx) {
     in_foor_loop_block = false;
 }
-

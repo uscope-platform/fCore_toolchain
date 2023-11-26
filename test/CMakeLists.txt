@@ -80,6 +80,7 @@ configure_file(C_files/tree_visitor/test_nested_loop.c ${C_AST_TEST_FILES_DIR} C
 configure_file(C_files/tree_visitor/test_array_init.c ${C_AST_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/tree_visitor/test_function_def.c ${C_AST_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/tree_visitor/test_float_constant.c ${C_AST_TEST_FILES_DIR} COPYONLY)
+configure_file(C_files/tree_visitor/test_ternary.c ${C_AST_TEST_FILES_DIR} COPYONLY)
 
 #OPTIMIZATION PASSES
 set(HL_OPT_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/hl_opt)
@@ -126,7 +127,7 @@ configure_file(C_files/end_to_end/test_constant_conversion.c ${C_E2E_TEST_FILES_
 configure_file(C_files/end_to_end/test_float_const_square.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_multiple_constant_op.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_constant_expression_output.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
-
+CONFIGURE_FILE(C_files/end_to_end/test_ternary_op.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 
 configure_file(C_files/instruction_passes/test_constant_merging.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/instruction_passes/test_zero_assignment_removal.c ${C_E2E_TEST_FILES_DIR} COPYONLY)

@@ -853,3 +853,30 @@ TEST(EndToEndC, test_constant_expression_output) {
 }
 
 
+
+TEST(EndToEndC, test_ternary_operator) {
+
+    std::string input_file = "c_e2e/test_ternary_op.c";
+
+
+    std::vector<std::string> includes;
+
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"address":3,"type":"input"}
+                }})"
+    );
+
+    fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+
+    std::vector<uint32_t> gold_standard = {0x70004, 0xc, 0x20014, 0x10016, 0x3F003F, 0xc, 0x7e6, 0x4201999A, 0x26, 0x44EFA51D,  0x46, 2876 ,0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
+
+

@@ -31,6 +31,8 @@ public:
     void set_condition(std::shared_ptr<hl_ast_node> node);
     std::shared_ptr<hl_ast_node> get_condition();
     std::string pretty_print() override;
+    void set_ternary(bool t){ternary_flag = t;};
+    bool is_ternary(){return ternary_flag;};
     friend bool operator==(const hl_ast_conditional_node& lhs, const hl_ast_conditional_node& rhs);
     bool is_terminal() override {
         return false;
@@ -43,7 +45,7 @@ private:
     std::vector<std::shared_ptr<hl_ast_node>> if_block;
     std::vector<std::shared_ptr<hl_ast_node>> else_block;
     std::shared_ptr<hl_ast_node> condition;
-
+    bool ternary_flag = false;
 };
 
 

@@ -84,6 +84,7 @@ public:
     void exitLogicalAndExpression(C_parser::C_grammarParser::LogicalAndExpressionContext *ctx) override;
     void exitAssignmentExpression(C_parser::C_grammarParser::AssignmentExpressionContext *ctx) override;
     void exitArgumentExpression(C_parser::C_grammarParser::ArgumentExpressionContext *ctx) override;
+    void exitConditionalExpression(C_parser::C_grammarParser::ConditionalExpressionContext *ctx) override;
 
     void exitStatement(C_parser::C_grammarParser::StatementContext *ctx) override;
     void exitFunctionCallExpression(C_parser::C_grammarParser::FunctionCallExpressionContext *ctx) override;
