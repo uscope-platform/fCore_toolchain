@@ -264,7 +264,9 @@ std::vector<uint32_t> emulator_builder::compile_programs(const nlohmann::json &c
 
     auto program = compiler.get_executable();
 
-    if(std::filesystem::exists("autogen")){
+    if(debug_autogen){
+        if(!std::filesystem::exists("autogen")) std::filesystem::create_directories("autogen");
+
         std::string program_content = core_info["program"]["content"];
         std::string core_name = core_info["id"];
         std::ofstream ofs("autogen/" + core_name + "_dma_io.json");
@@ -279,8 +281,11 @@ std::vector<uint32_t> emulator_builder::compile_programs(const nlohmann::json &c
 
         fcore_dis dis_engine(compiler.get_executable());
         dis_engine.write_disassembled_program("autogen/"+core_name+ ".s");
-
     }
 
     return program;
+}
+
+emulator_builder::emulator_builder(bool dbg) {
+    debug_autogen = dbg;
 }

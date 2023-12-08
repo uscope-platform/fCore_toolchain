@@ -17,10 +17,11 @@
 
 
 
-emulator_manager::emulator_manager(nlohmann::json &spec_file) {
+emulator_manager::emulator_manager(nlohmann::json &spec_file, bool dbg) {
+    debug_autogen = dbg;
     ordering_style = no_ordering;
     implicit_order_idx = 0;
-    emulator_builder e_b;
+    emulator_builder e_b(debug_autogen);
     try{
         emulator_schema_validator validator;
         validator.validate(spec_file);

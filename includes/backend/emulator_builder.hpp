@@ -30,6 +30,7 @@
 
 class emulator_builder {
 public:
+    emulator_builder(bool dbg);
     emulator_metadata load_json_program(const nlohmann::json &core_info, const std::vector<nlohmann::json> &input_connections,
                                    const std::vector<nlohmann::json> &output_connections);
 
@@ -62,6 +63,8 @@ private:
     std::map<int, std::string> cores_ordering;
     cores_ordering_t ordering_style = no_ordering;
     int implicit_order_idx = 0;
+
+    bool debug_autogen;
 };
 
 

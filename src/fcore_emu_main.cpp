@@ -30,6 +30,7 @@ int main(int argc, char **argv) {
 
     bool output_force = false;
     bool verbose_logging = false;
+    bool debug_autogen = false;
     std::string inputs_file;
     std::string output_file;
     std::string spec_file;
@@ -37,6 +38,7 @@ int main(int argc, char **argv) {
     app.add_flag("--log", verbose_logging, "Enable verbose logging.");
     app.add_flag("--f", output_force, "force the rewriting of an existing product file");
     app.add_option("--o", output_file, "Output file path");
+    app.add_flag("--debug_autogen", debug_autogen, "Write intermediate steps for autogen emulation debugging");
     CLI11_PARSE(app, argc, argv);
 
     std::shared_ptr<spdlog::logger> logger = spdlog::stdout_color_mt("logger", spdlog::color_mode::automatic);
@@ -69,7 +71,7 @@ int main(int argc, char **argv) {
 
     std::string results;
 
-    emulator_manager emu_manager(specs);
+    emulator_manager emu_manager(specs, debug_autogen);
     emu_manager.emulate();
     results = emu_manager.get_results();
     

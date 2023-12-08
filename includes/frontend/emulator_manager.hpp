@@ -33,7 +33,7 @@
 
 class emulator_manager {
 public:
-    emulator_manager(nlohmann::json &spec_file);
+    emulator_manager(nlohmann::json &spec_file, bool dbg);
     void emulate();
 
     std::shared_ptr<std::vector<uint32_t>> get_memory_snapshot(const std::string &core_id, int channel);
@@ -64,6 +64,7 @@ private:
     cores_ordering_t ordering_style;
     int implicit_order_idx;
     std::unordered_map<std::string, std::string> errors;
+    bool debug_autogen;
 
 };
 
