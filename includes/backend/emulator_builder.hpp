@@ -21,6 +21,7 @@
 #include <nlohmann/json.hpp>
 #include "frontend/emulator_metadata.hpp"
 #include "frontend/binary_loader.hpp"
+#include "fcore_dis.hpp"
 #include "data_structures/instruction_stream.hpp"
 #include "tools/instruction_stream_builder.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"

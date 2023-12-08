@@ -274,6 +274,12 @@ std::vector<uint32_t> emulator_builder::compile_programs(const nlohmann::json &c
         ofs2<<program_content;
 
         compiler.write_verilog_memfile("autogen/"+core_name+ ".mem");
+
+        bin_loader_input_type_t in_type;
+
+        fcore_dis dis_engine(compiler.get_executable());
+        dis_engine.write_disassembled_program("autogen/"+core_name+ ".s");
+
     }
 
     return program;

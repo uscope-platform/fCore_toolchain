@@ -54,6 +54,7 @@ public:
     void write_json(const std::string& output_file);
     nlohmann::json get_dump() {return dump;};
     void set_dma_map(nlohmann::json &map){dma_spec = map;};
+
 private:
     std::ifstream input_file_stream;
     std::istringstream input_string_stream;

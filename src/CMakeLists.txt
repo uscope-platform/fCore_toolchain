@@ -150,7 +150,7 @@ install(TARGETS fCore_cc DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(TARGETS fCore_dis DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 if(${INCLUDE_EMULATOR})
-    add_executable(fCore_emu ${FCORE_EMU_SRCS} ${C_PARSER_SRCS} ${FCORE_CC_SRCS} fcore_emu_main.cpp)
+    add_executable(fCore_emu ${FCORE_EMU_SRCS} ${C_PARSER_SRCS} ${FCORE_CC_SRCS} ${FCORE_DIS_SRCS} fcore_emu_main.cpp)
     target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel
             common_srcs
             spdlog::spdlog
