@@ -30,10 +30,9 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
-add_compile_options(-fsanitize=undefined -fsanitize=address)
-add_link_options(-fsanitize=undefined -fsanitize=address)
-
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_compile_options(-fsanitize=undefined -fsanitize=address)
+    add_link_options(-fsanitize=undefined -fsanitize=address)
     add_definitions(-DSCHEMAS_FOLDER="${CMAKE_SOURCE_DIR}/schemas")
 else()
     add_definitions(-DSCHEMAS_FOLDER="/usr/local/etc/fcore_toolchain")
