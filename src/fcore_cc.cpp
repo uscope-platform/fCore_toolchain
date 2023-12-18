@@ -21,14 +21,14 @@
 
 
 fcore_cc::fcore_cc(std::vector<std::string> &contents) :
-hl_manager(0), ll_manager(0), input_string_stream(contents[0]){
+        input_string_stream(contents[0]), hl_manager(0), ll_manager(0){
     type = "string";
     logging = false;
     dump_ast_level = 0;
 }
 
 fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl) :
-hl_manager(dump_lvl), ll_manager(dump_lvl), input_file_stream(path) {
+input_file_stream(path), hl_manager(dump_lvl), ll_manager(dump_lvl){
     type = "file";
     includes = inc;
     logging = print_debug;
