@@ -3,13 +3,19 @@
     {
       "id": "global_control",
       "order": 1,
-      "input_file": "global_control/inputs.csv",
+      "input_data": {
+        "v_grid_a": [0, 1]
+      },
       "inputs": [
         {
           "name": "v_grid_a",
           "type": "integer",
           "register_type": "scalar",
           "reg_n": 4,
+          "source": {
+            "type":"file",
+            "value": "v_grid_a"
+          },
           "channel": 0
         }
       ],
@@ -50,5 +56,6 @@
         }
       ]
     }
-  ]
+  ],
+  "n_cycles": 2
 }

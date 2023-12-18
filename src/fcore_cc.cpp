@@ -94,10 +94,8 @@ void fcore_cc::parse(std::unordered_map<std::string, variable_class_t> dma_specs
 
 void fcore_cc::optimize(std::unordered_map<std::string, std::vector<int>> &dma_map) {
     std::string ep = "main";
-    auto dbg = hl_ast;
     hl_manager = create_hl_pass_manager(ep,{}, dump_ast_level);
     hl_manager.run_morphing_passes(hl_ast);
-
     if(dump_ast_level>0) dump["high_level"] = hl_manager.get_dump();
 
     high_level_ast_lowering translator;

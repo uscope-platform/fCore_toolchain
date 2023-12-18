@@ -20,18 +20,16 @@
 
 TEST(Emulator, emulator_executable_format) {
 
-std::ifstream ifs("emu/test_exec_format.json");
-nlohmann::json specs = nlohmann::json::parse(ifs);
-emulator_manager manager(specs);
-manager.emulate();
-auto res_obj = nlohmann::json::parse(manager.get_results());
+    std::ifstream ifs("emu/test_exec_format.json");
+    nlohmann::json specs = nlohmann::json::parse(ifs);
+    emulator_manager manager(specs, false);
+    manager.emulate();
+    auto res_obj = nlohmann::json::parse(manager.get_results());
 
-auto s = res_obj.dump();
-
-std::vector<float>  result = std::vector<float>(res_obj["test"]["outputs"]["test_out"][0]);
-std::vector<float> reference = {58.62, 61.6};
-for(int i = 0; i<result.size(); ++i){
-    ASSERT_FLOAT_EQ(result[i], reference[i]);
-}
+    std::vector<float>  result = std::vector<float>(res_obj["test"]["outputs"]["test_out"][0]);
+    std::vector<float> reference = {58.62, 61.6};
+    for(int i = 0; i<result.size(); ++i){
+        ASSERT_FLOAT_EQ(result[i], reference[i]);
+    }
 
 }

@@ -94,6 +94,8 @@ set(FCORE_DIS_SRCS
         )
 
 set(FCORE_EMU_SRCS
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/emulation/emulator_input.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/emulation/emulator_input_factory.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator_builder.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/efi_implementations/efi_dispatcher.cpp

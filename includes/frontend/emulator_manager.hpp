@@ -22,6 +22,8 @@
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 
+#include "data_structures/emulation/emulator_input.hpp"
+#include "data_structures/emulation/emulator_input_factory.hpp"
 #include "frontend/binary_loader.hpp"
 #include "frontend/schema_validators/schema_validators.h"
 #include "../third_party/csv.hpp"
@@ -41,7 +43,7 @@ public:
 
 private:
 
-    std::vector<inputs_t> load_input(nlohmann::json &core);
+    std::unordered_map<std::string, emulator_input> load_input(nlohmann::json &core);
     std::vector<emulator_output_t> load_output_specs(nlohmann::json &core);
     std::unordered_map<unsigned int, uint32_t> load_memory_init(nlohmann::json &mem_init);
     std::vector<interconnect_t> load_interconnects(nlohmann::json &interconnects);
@@ -61,8 +63,6 @@ private:
     std::unordered_map<std::string, emulator_metadata> emulators;
     std::vector<interconnect_t> interconnects;
     int emu_length;
-    cores_ordering_t ordering_style;
-    int implicit_order_idx;
     std::unordered_map<std::string, std::string> errors;
     bool debug_autogen;
 

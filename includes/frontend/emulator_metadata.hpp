@@ -21,6 +21,7 @@
 #include <cstdint>
 #include <unordered_map>
 #include <memory>
+#include "data_structures/emulation/emulator_input_factory.hpp"
 
 
 // FORWARD DECLARATIONS
@@ -48,15 +49,12 @@ typedef struct{
     std::vector<std::pair<register_spec_t, register_spec_t>> connections;
 }interconnect_t;
 
-typedef struct {
-    unsigned int reg_n;
-    std::vector<uint32_t> data;
-    unsigned int channel;
-    std::string name;
-}inputs_t;
 
-typedef struct {
-    std::vector<inputs_t> input;
+
+class emulator_metadata {
+public:
+    emulator_metadata() = default;
+    std::unordered_map<std::string, emulator_input> input;
     std::vector<emulator_output_t> output_specs;
     std::unordered_map<unsigned int, std::pair<std::string, std::string>> output_types;
     std::unordered_map<unsigned int, uint32_t> memory_init;
@@ -67,7 +65,7 @@ typedef struct {
     bool io_remapping_active;
     std::unordered_map<uint16_t, uint16_t> io_map;
     std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outputs;
-}emulator_metadata;
+};
 
 
 

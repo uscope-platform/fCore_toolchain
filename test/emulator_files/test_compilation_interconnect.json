@@ -2,18 +2,39 @@
   "cores": [
     {
       "id": "test",
-      "input_file": "emu/test_inputs.csv",
+      "input_data": {
+        "input_1": [
+          15.7,
+          67.4
+        ],
+        "input_2": [
+          42.92,
+          -5.8
+        ],
+        "spurious": [
+          123.5,
+          5278.6
+        ]
+      },
       "inputs": [
         {
           "name": "input_1",
           "type": "float",
           "reg_n": 1,
           "register_type": "scalar",
+          "source": {
+            "type":"file",
+            "value": "input_1"
+          },
           "channel": 0
         },
         {
           "name": "input_2",
           "type": "float",
+          "source": {
+            "type":"file",
+            "value": "input_2"
+          },
           "register_type": "scalar",
           "reg_n": 2,
           "channel": 0
@@ -104,5 +125,6 @@
         }
       ]
     }
-  ]
+  ],
+  "n_cycles": 2
 }

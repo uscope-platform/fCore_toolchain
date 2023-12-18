@@ -19,8 +19,6 @@
 
 emulator_manager::emulator_manager(nlohmann::json &spec_file, bool dbg) {
     debug_autogen = dbg;
-    ordering_style = no_ordering;
-    implicit_order_idx = 0;
     emulator_builder e_b(debug_autogen);
     try{
         emulator_schema_validator validator;
@@ -64,8 +62,8 @@ emulator_manager::emulator_manager(nlohmann::json &spec_file, bool dbg) {
 
     }
     interconnects = load_interconnects(spec_file["interconnect"]);
-    if(spec_file.contains("run_length"))
-        emu_length = spec_file["run_length"];
+    if(spec_file.contains("n_cycles"))
+        emu_length = spec_file["n_cycles"];
     // Setup emulators
     for(auto &item:emulators){
         auto emu = item.second.emu;
@@ -80,10 +78,6 @@ emulator_manager::emulator_manager(nlohmann::json &spec_file, bool dbg) {
 }
 
 void emulator_manager::emulate() {
-    if(emu_length==-1){
-        spdlog::critical("Unspecified emulation length (at least one non empty input file should be present)");
-        exit(-1);
-    }
     run_cores();
 }
 
@@ -94,11 +88,11 @@ void emulator_manager::run_cores() {
             for(auto &in:emulators[core_id.second].input){
                 uint32_t core_reg;
                 if(emulators[core_id.second].io_remapping_active){
-                    core_reg = emulators[core_id.second].io_map[in.reg_n];
+                    core_reg = emulators[core_id.second].io_map[in.second.get_address()];
                 } else {
-                    core_reg = in.reg_n;
+                    core_reg = in.second.get_address();
                 }
-                emu->apply_inputs(core_reg, in.data[i], in.channel);
+                emu->apply_inputs(core_reg, in.second.get_data(i), in.second.get_channel());
             }
             for(int j = 0; j<emulators[core_id.second].active_channels; ++j){
                 spdlog::info("RUNNING ROUND " + std::to_string(i+1) + " of " + std::to_string(emu_length) + ": core ID = " + core_id.second + " (CH " + std::to_string(j) + ")");
@@ -142,124 +136,61 @@ void emulator_manager::run_cores() {
     }
 }
 
-std::vector<inputs_t> emulator_manager::load_input(nlohmann::json &core) {
-    std::vector<inputs_t> inputs;
+std::unordered_map<std::string, emulator_input> emulator_manager::load_input(nlohmann::json &core) {
+    emulator_input_factory factory(core["input_data"]);
     if(core["inputs"].empty()){
-        return inputs;
+        return {};
     }
 
-
-
-    std::unordered_map<std::string, std::string> types;
-    std::unordered_map<std::string, int> regs;
-    std::unordered_map<std::string, unsigned int> channels;
-    std::set<std::string> input_names;
+    bool is_vect;
     for (auto &input_spec: core["inputs"]) {
+
         std::string name = input_spec["name"];
 
         std::string type = input_spec["type"];
         std::vector<std::string> labels;
         std::string register_type = input_spec["register_type"];
-        if(register_type == "vector") {
+        std::vector<uint32_t> working_addresses;
+        std::vector<uint32_t> working_channels;
+        if(register_type == "vector" || register_type == "explicit_vector") {
+            is_vect = true;
             labels = input_spec["vector_labels"];
-            uint32_t channel_progressive = input_spec["channel"];
+            uint32_t channel_progressive = register_type == "vector" ? (uint32_t)input_spec["channel"] : 0;
+
             for (auto &l: labels) {
-                types[l] = type[0];
-                regs[l] = input_spec["reg_n"];
-                channels[l] = channel_progressive;
-                input_names.insert(l);
-                channel_progressive++;
-            }
-        } else if(register_type == "explicit_vector"){
-            labels = input_spec["vector_labels"];
-            uint32_t channel_progressive = input_spec["channel"];
-            for (auto &l: labels) {
-                types[l] = type[0];
-                int base_address = input_spec["reg_n"];
-                regs[l] = base_address + channel_progressive;
-                channels[l] = 0;
-                input_names.insert(l);
+                if(register_type == "vector"){
+                    working_addresses.push_back(input_spec["reg_n"]);
+                    working_channels.push_back(channel_progressive);
+                }else{
+                    working_addresses.push_back((uint32_t) input_spec["reg_n"] + channel_progressive);
+                    working_channels.push_back(input_spec["channel"]);
+                }
                 channel_progressive++;
             }
         } else {
-            types[name] = type[0];
-            regs[name] = input_spec["reg_n"];
-            input_names.insert(name);
-            channels[name] = input_spec["channel"];
+            working_addresses.push_back( (uint32_t) input_spec["reg_n"]);
+            working_channels.push_back(input_spec["channel"]);
         }
 
-    }
-
-
-    if(core["input_data"].empty()){
-        std::string file_path = core["input_file"];
-        csv::CSVReader reader(file_path);
-        auto column_names = reader.get_col_names();
-        std::unordered_map<std::string, std::vector<uint32_t>> inputs_vect;
-
-        for (csv::CSVRow& row: reader) { // Input iterator
-            for(auto &col:column_names){
-                if(!types.contains(col) && !regs.contains(col)){
-                    continue; //In this case the column in the input file is spurious and can be ignored
-                }
-                if(types[col] =="i"){
-                    inputs_vect[col].push_back(row[col].get<uint32_t>());
-                } else if(types[col]=="f") {
-                    inputs_vect[col].push_back(emulator::float_to_uint32(row[col].get<float>()));
-                } else{
-                    spdlog::critical("unknown type: " + types[col] + " for input " + col);
-                    exit(-1);
-                }
-            }
-        }
-
-        for(auto &col:column_names){
-            if(regs.contains(col)){
-                inputs_t  in;
-                in.reg_n = regs[col];
-                in.data = inputs_vect[col];
-                in.channel = channels[col];
-                in.name = col;
-                inputs.emplace_back(in);
-            }
-        }
-
-    } else {
-        for(auto &col_name:input_names){
-            auto col = core["input_data"][col_name];
-            std::vector<uint32_t> data;
-            if(types[col_name]=="f"){
-                for(float n:col){
-                    data.push_back(emulator::float_to_uint32(n));
-                }
+        factory.new_input(name, is_vect);
+        factory.set_labels(name, labels);
+        factory.set_type(name, type.substr(0,1));
+        factory.set_target_address(name, working_addresses);
+        factory.set_target_channel(name, working_channels);
+        if(input_spec["source"]["type"] == "constant"){
+            factory.set_data(name,(float) input_spec["source"]["value"]);
+        } else if(input_spec["source"]["type"] == "file"){
+            if(input_spec["source"]["value"].is_array()){
+                factory.set_data(name,(std::vector<std::string>) input_spec["source"]["value"]);
             } else {
-                for(uint32_t n:col){
-                    data.push_back(n);
-                }
+                factory.set_data(name,(std::string) input_spec["source"]["value"]);
             }
-            inputs_t  in;
-            in.reg_n = regs[col_name];
-            in.data = data;
-            in.channel = channels[col_name];
-            in.name = col_name;
-            inputs.emplace_back(in);
         }
+        factory.finalize_object();
 
     }
 
-
-    emu_length = -1;
-    for(auto &item:inputs){
-        if(emu_length<0){
-            emu_length = item.data.size();
-        } else{
-            if(emu_length != item.data.size()){
-                spdlog::critical("All input files must have the same length");
-                exit(-1);
-            }
-        }
-    }
-    return inputs;
+    return factory.get_map();
 }
 
 std::vector<emulator_output_t> emulator_manager:: load_output_specs(nlohmann::json &core) {
@@ -486,10 +417,10 @@ nlohmann::json emulator_manager::dump_core(const emulator_metadata &md) {
     ret["inputs"] = nlohmann::json();
     for(const auto &in:md.input){
         nlohmann::json i;
-        i["reg_n"] = in.reg_n;
-        i["data"] = in.data;
-        i["channel"] = in.channel;
-        i["name"] = in.name;
+        i["reg_n"] = in.second.get_address();
+        i["data"] = in.second.get_data();
+        i["channel"] = in.second.get_channel();
+        i["name"] = in.second.get_name();
         ret["inputs"].push_back(i);
     }
 

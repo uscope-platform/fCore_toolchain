@@ -67,7 +67,6 @@ emulator_metadata emulator_builder::load_json_program(const nlohmann::json &core
     metadata.active_channels = ch;
 
     metadata.emu = std::make_shared<emulator>(program_stream, ch, core_info["id"]);
-
     if(core_info.contains("options")){
         auto opt = core_info["options"];
         metadata.efi_implementation = opt["efi_implementation"];
@@ -276,8 +275,6 @@ std::vector<uint32_t> emulator_builder::compile_programs(const nlohmann::json &c
         ofs2<<program_content;
 
         compiler.write_verilog_memfile("autogen/"+core_name+ ".mem");
-
-        bin_loader_input_type_t in_type;
 
         fcore_dis dis_engine(compiler.get_executable());
         dis_engine.write_disassembled_program("autogen/"+core_name+ ".s");

@@ -3,7 +3,8 @@
   "type": "object",
   "title": "Root Schema",
   "required": [
-    "cores"
+    "cores",
+    "n_cycles"
   ],
   "properties": {
     "cores": {
@@ -24,10 +25,6 @@
             "type": "string",
             "title": "Identification string of the core"
           },
-          "input_file": {
-            "type": "string",
-            "title": "path of the data input file"
-          },
           "order": {
             "type": "integer",
             "title": "Field indicating the order in which cores must be run in a multicore emulation session"
@@ -43,6 +40,7 @@
                 "reg_n",
                 "channel",
                 "type",
+                "source",
                 "name",
                 "register_type"
               ],
@@ -67,6 +65,25 @@
                 "name": {
                   "type": "string",
                   "title": "Name of this input (tied to the CSV column title)"
+                },
+                "source": {
+                  "type": "object",
+                  "title": "Object describing a single external input",
+                  "required": [
+                    "type",
+                    "value"
+                  ],
+                  "properties":{
+                    "type": {
+                      "type": "string",
+                      "enum": ["constant", "file"],
+                      "title": "Type of source"
+                    },
+                    "value": {
+                      "type": ["number", "string"],
+                      "title": "Value of the source object"
+                    }
+                  }
                 }
               }
             }
@@ -354,6 +371,10 @@
           }
         }
       }
+    },
+    "n_cycles": {
+      "type": "integer",
+      "title": "Number of cycles to emulate"
     }
   }
 }
