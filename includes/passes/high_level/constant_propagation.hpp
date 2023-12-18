@@ -43,7 +43,7 @@ private:
     bool map_constants(const std::shared_ptr<hl_definition_node>& element, int instr_idx);
     bool map_constants(const std::shared_ptr<hl_ast_operand>& element, const std::shared_ptr<hl_ast_operand> &target, int instr_idx);
 
-    std::vector<int> get_index_array(const std::shared_ptr<hl_ast_operand> &target);
+    std::vector<uint32_t> get_index_array(const std::shared_ptr<hl_ast_operand> &target);
 
     void analyze_assignment(const std::shared_ptr<hl_expression_node> &element, int instr_idx);
     bool needs_termination(const std::shared_ptr<hl_expression_node> &element, int instr_idx);

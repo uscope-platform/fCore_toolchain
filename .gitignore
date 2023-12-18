@@ -18,3 +18,7 @@ CMakeUserPresets.json
 cmake-build-relwithdebinfo/
 
 conan_provider.cmake
+
+cmake-build-debug-llvm/
+
+cmake-build-relwithdebinfo-llvm/

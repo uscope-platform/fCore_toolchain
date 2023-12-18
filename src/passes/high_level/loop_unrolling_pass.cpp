@@ -135,7 +135,7 @@ unsigned int loop_unrolling_pass::process_loop_initializer(const std::shared_ptr
 }
 
 bool loop_unrolling_pass::evaluate_loop(const std::shared_ptr<hl_expression_node>& condition,
-                                        const std::shared_ptr<hl_expression_node>& iteration_exp,
+                                        const std::shared_ptr<hl_expression_node>& ,
                                         std::shared_ptr<hl_ast_operand> &loop_var) {
 
     if(current_loop_iteration ==  max_loop_iterations){

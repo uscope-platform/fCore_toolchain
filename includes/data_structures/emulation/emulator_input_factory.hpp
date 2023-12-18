@@ -30,10 +30,10 @@ public:
     void set_target_address(const std::string& s, std::vector<uint32_t> a);
     void set_target_channel(const std::string& s, std::vector<uint32_t> c);
     void set_data(const std::string& s, const std::string& series_name);
-    void set_data(const std::string& s, const std::vector<std::string>& vn);
+    void set_data(const std::vector<std::string>& vn);
     void set_data(const std::string& s, float f);
     void set_type(const std::string& s, std::string t);
-    void set_labels(const std::string& s, std::vector<std::string> l) {labels = std::move(l);};
+    void set_labels(std::vector<std::string> l) {labels = std::move(l);};
     void finalize_object();
     std::unordered_map<std::string, emulator_input> get_map(){return inputs;};
 private:

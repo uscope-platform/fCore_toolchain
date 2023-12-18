@@ -176,7 +176,7 @@ void emulator_builder::process_ioms(
         std::vector<uint32_t> addrs;
         if(item["register_type"] == "explicit_vector"){
             int base_addr = item["reg_n"];
-            for(int i = 0; i<item["vector_labels"].size(); i++){
+            for(uint32_t i = 0; i<item["vector_labels"].size(); i++){
                 addrs.push_back(base_addr + i);
             }
         } else {

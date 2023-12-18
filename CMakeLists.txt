@@ -29,8 +29,9 @@ endif(${INCLUDE_EMULATOR})
 set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-set(CMAKE_CXX_FLAGS_DEBUG "-g -fsanitize=undefined -fsanitize=address")
-set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+
+add_compile_options(-fsanitize=undefined -fsanitize=address)
+add_link_options(-fsanitize=undefined -fsanitize=address)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DSCHEMAS_FOLDER="${CMAKE_SOURCE_DIR}/schemas")

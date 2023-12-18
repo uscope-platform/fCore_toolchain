@@ -29,7 +29,6 @@ schema_validator_base::schema_validator_base(const std::string& schema_file) {
         throw std::runtime_error("Failed to load schema document");
     }
 
-     schema;
     valijson::SchemaParser parser;
     valijson::adapters::NlohmannJsonAdapter schema_adapter(chosen_schema_doc);
     parser.populateSchema(schema_adapter, schema);

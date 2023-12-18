@@ -15,28 +15,25 @@
 
 #include "frontend/C/C_ErrorHandling.hpp"
 
-void C_ErrorHandling::syntaxError(antlr4::Recognizer *recognizer, antlr4::Token *offendingSymbol, size_t line,
-                                size_t charPositionInLine, const std::string &msg, std::exception_ptr e) {
+void C_ErrorHandling::syntaxError(antlr4::Recognizer *, antlr4::Token *, size_t ,
+                                size_t , const std::string &msg, std::exception_ptr ) {
     throw std::runtime_error(msg);
 }
 
-void C_ErrorHandling::reportAmbiguity(antlr4::Parser *recognizer, const antlr4::dfa::DFA &dfa, size_t startIndex,
-                                    size_t stopIndex, bool exact, const antlrcpp::BitSet &ambigAlts,
-                                    antlr4::atn::ATNConfigSet *configs) {
-    int i = 0;
-    i++;
+void C_ErrorHandling::reportAmbiguity(antlr4::Parser *, const antlr4::dfa::DFA &, size_t ,
+                                    size_t , bool , const antlrcpp::BitSet &,
+                                    antlr4::atn::ATNConfigSet *) {
+
 }
 
 void
-C_ErrorHandling::reportAttemptingFullContext(antlr4::Parser *recognizer, const antlr4::dfa::DFA &dfa, size_t startIndex,
-                                           size_t stopIndex, const antlrcpp::BitSet &conflictingAlts,
-                                           antlr4::atn::ATNConfigSet *configs) {
-    int i = 0;
-    i++;
+C_ErrorHandling::reportAttemptingFullContext(antlr4::Parser *, const antlr4::dfa::DFA &, size_t ,
+                                           size_t , const antlrcpp::BitSet &,
+                                           antlr4::atn::ATNConfigSet *) {
+
 }
 
-void C_ErrorHandling::reportContextSensitivity(antlr4::Parser *recognizer, const antlr4::dfa::DFA &dfa, size_t startIndex,
-                                             size_t stopIndex, size_t prediction, antlr4::atn::ATNConfigSet *configs) {
-    int i = 0;
-    i++;
+void C_ErrorHandling::reportContextSensitivity(antlr4::Parser *, const antlr4::dfa::DFA &, size_t ,
+                                             size_t , size_t , antlr4::atn::ATNConfigSet *) {
+
 }

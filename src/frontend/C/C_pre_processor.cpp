@@ -171,7 +171,7 @@ std::string C_pre_processor::substitute_defines_in_line(std::string &line, const
 
     //USE POSITIONS AND LENGTHS
     unsigned int substring_start = 0;
-    for(int i = 0; i<positions.size(); i++){
+    for(uint32_t i = 0; i<positions.size(); i++){
         std::string preceding_symbol = {line[positions[i]-1]};
         std::string following_symbol = {line[positions[i]+lengths[i]]};
 

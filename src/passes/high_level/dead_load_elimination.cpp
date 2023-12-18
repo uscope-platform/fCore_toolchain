@@ -143,7 +143,7 @@ std::shared_ptr<hl_ast_node> dead_load_elimination::purge_dead_loads(std::shared
         }
 
         auto l = last_loads_map[node->get_name()];
-        if(l.last_assignment==idx || l.first_usage != -1 && (l.first_usage<l.last_assignment)){
+        if(l.last_assignment==idx || (l.first_usage != -1 && (l.first_usage<l.last_assignment))){
             return element;
         }
     } else if(element->node_type == hl_ast_node_type_expr){

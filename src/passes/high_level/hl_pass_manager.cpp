@@ -147,7 +147,7 @@ std::vector<std::shared_ptr<hl_ast_node>> hl_pass_manager::process_nodes(const s
     std::shared_ptr<hl_ast_node> result;
     std::vector<std::shared_ptr<hl_ast_node>> content = subtree->get_content();
     std::vector<std::shared_ptr<hl_ast_node>> result_vector = content;
-    for (int i = 0; i< content.size(); i++) {
+    for (uint32_t i = 0; i< content.size(); i++) {
         if(content[i]->is_terminal()) continue;
         std::vector<std::shared_ptr<hl_ast_node>> tmp_result;
         tmp_result = process_nodes(content[i], pass);

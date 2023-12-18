@@ -52,7 +52,7 @@ public:
     isa_instruction_type get_type();
     std::string get_opcode(){return opcode;};
     virtual std::vector<std::shared_ptr<variable>> get_arguments() {return {};};
-    virtual void set_arguments(const std::vector<std::shared_ptr<variable>> &a) {};
+    virtual void set_arguments(const std::vector<std::shared_ptr<variable>> &) {};
 
     nlohmann::json dump() override;
     static nlohmann::json dump_instruction_by_type(const std::shared_ptr<ll_instruction_node> &node);

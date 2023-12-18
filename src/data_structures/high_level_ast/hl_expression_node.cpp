@@ -174,7 +174,7 @@ bool hl_expression_node::is_unary() {
     return res;
 }
 
-bool hl_expression_node::is_hardware_compatible(expression_type_t et) {
+bool hl_expression_node::is_hardware_compatible(expression_type_t ) {
     return false;
 }
 

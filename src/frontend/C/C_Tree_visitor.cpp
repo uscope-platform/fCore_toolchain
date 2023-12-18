@@ -31,7 +31,7 @@ C_Tree_visitor::C_Tree_visitor() {
 
 
 
-void C_Tree_visitor::enterFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *ctx) {
+void C_Tree_visitor::enterFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *) {
     in_function_declaration = true;
     current_function = std::make_shared<hl_function_def_node>();
 }
@@ -108,7 +108,7 @@ void C_Tree_visitor::exitParameterDeclaration(C_parser::C_grammarParser::Paramet
     current_block_item = current_initializer;
 }
 
-void C_Tree_visitor::enterCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) {
+void C_Tree_visitor::enterCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *) {
     in_function_body = true;
 }
 
@@ -164,7 +164,7 @@ void C_Tree_visitor::exitDeclaration(C_parser::C_grammarParser::DeclarationConte
     }
 }
 
-void C_Tree_visitor::enterArrayAccessExpression(C_parser::C_grammarParser::ArrayAccessExpressionContext *ctx) {
+void C_Tree_visitor::enterArrayAccessExpression(C_parser::C_grammarParser::ArrayAccessExpressionContext *) {
     in_array_access = true;
 }
 
@@ -183,12 +183,12 @@ void C_Tree_visitor::exitArrayAccessExpression(C_parser::C_grammarParser::ArrayA
 }
 
 
-void C_Tree_visitor::enterInitializerList(C_parser::C_grammarParser::InitializerListContext *ctx) {
+void C_Tree_visitor::enterInitializerList(C_parser::C_grammarParser::InitializerListContext *) {
     in_initializer_list = true;
     initializer_array_level++;
 }
 
-void C_Tree_visitor::exitInitializerList(C_parser::C_grammarParser::InitializerListContext *ctx) {
+void C_Tree_visitor::exitInitializerList(C_parser::C_grammarParser::InitializerListContext *) {
     if(initializer_array_level==1) in_initializer_list = false;
     initializer_array_level--;
 }
@@ -204,7 +204,7 @@ void C_Tree_visitor::exitInitializer(C_parser::C_grammarParser::InitializerConte
 
 
 
-void C_Tree_visitor::exitCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *ctx) {
+void C_Tree_visitor::exitCompoundStatement(C_parser::C_grammarParser::CompoundStatementContext *) {
     in_function_body = false;
 
 }
@@ -521,7 +521,7 @@ void C_Tree_visitor::exitStatement(C_parser::C_grammarParser::StatementContext *
     }
 }
 
-void C_Tree_visitor::exitCompilationUnit(C_parser::C_grammarParser::CompilationUnitContext *ctx) {
+void C_Tree_visitor::exitCompilationUnit(C_parser::C_grammarParser::CompilationUnitContext *) {
     root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
     root->set_content(functions);
@@ -537,7 +537,7 @@ void C_Tree_visitor::processExpression(unsigned int expression_size, const T& op
     std::stack<std::string> operations;
     std::stack<std::shared_ptr<hl_ast_node>> reversed_operands;
 
-    for(int i = 0; i <= expression_size; ++i){
+    for(uint32_t i = 0; i <= expression_size; ++i){
         reversed_operands.push(expressions_stack.top());
         expressions_stack.pop();
     }
@@ -579,31 +579,32 @@ void C_Tree_visitor::exitFunctionCallExpression(C_parser::C_grammarParser::Funct
 
 }
 
-void C_Tree_visitor::exitArgumentExpression(C_parser::C_grammarParser::ArgumentExpressionContext *ctx) {
+void C_Tree_visitor::exitArgumentExpression(C_parser::C_grammarParser::ArgumentExpressionContext *) {
     argument_vector.push_back(expressions_stack.top());
     expressions_stack.pop();
 }
 
-void C_Tree_visitor::exitIfContent(C_parser::C_grammarParser::IfContentContext *ctx) {
+
+void C_Tree_visitor::exitIfContent(C_parser::C_grammarParser::IfContentContext *) {
     conditional->set_if_block(conditional_body);
     conditional_body.clear();
 }
 
-void C_Tree_visitor::exitConditionalBlockItem(C_parser::C_grammarParser::ConditionalBlockItemContext *ctx) {
+void C_Tree_visitor::exitConditionalBlockItem(C_parser::C_grammarParser::ConditionalBlockItemContext *) {
     conditional_body.push_back(current_block_item);
 }
 
-void C_Tree_visitor::exitElseContent(C_parser::C_grammarParser::ElseContentContext *ctx) {
+void C_Tree_visitor::exitElseContent(C_parser::C_grammarParser::ElseContentContext *) {
     conditional->set_else_block(conditional_body);
     conditional_body.clear();
 }
 
-void C_Tree_visitor::exitConditionContent(C_parser::C_grammarParser::ConditionContentContext *ctx) {
+void C_Tree_visitor::exitConditionContent(C_parser::C_grammarParser::ConditionContentContext *) {
     conditional->set_condition(expressions_stack.top());
     expressions_stack.pop();
 }
 
-void C_Tree_visitor::enterSelectionStatement(C_parser::C_grammarParser::SelectionStatementContext *ctx) {
+void C_Tree_visitor::enterSelectionStatement(C_parser::C_grammarParser::SelectionStatementContext *) {
     save_current_block_context();
     conditional = std::make_shared<hl_ast_conditional_node>();
     in_conditional_block = true;
@@ -611,12 +612,12 @@ void C_Tree_visitor::enterSelectionStatement(C_parser::C_grammarParser::Selectio
     in_function_body = false;
 }
 
-void C_Tree_visitor::exitSelectionStatement(C_parser::C_grammarParser::SelectionStatementContext *ctx) {
+void C_Tree_visitor::exitSelectionStatement(C_parser::C_grammarParser::SelectionStatementContext *) {
     restore_current_block_context();
 }
 
 
-void C_Tree_visitor::enterIterationStatement(C_parser::C_grammarParser::IterationStatementContext *ctx) {
+void C_Tree_visitor::enterIterationStatement(C_parser::C_grammarParser::IterationStatementContext *) {
     save_current_block_context();
     loop = std::make_shared<hl_ast_loop_node>();
     loop_body.clear();
@@ -625,7 +626,7 @@ void C_Tree_visitor::enterIterationStatement(C_parser::C_grammarParser::Iteratio
     in_conditional_block = false;
 }
 
-void C_Tree_visitor::exitIterationStatement(C_parser::C_grammarParser::IterationStatementContext *ctx) {
+void C_Tree_visitor::exitIterationStatement(C_parser::C_grammarParser::IterationStatementContext *) {
     loop->set_loop_content(loop_body);
     current_block_item = loop;
     restore_current_block_context();
@@ -675,29 +676,29 @@ void C_Tree_visitor::save_current_block_context() {
     }
 }
 
-void C_Tree_visitor::exitForExitCondition(C_parser::C_grammarParser::ForExitConditionContext *ctx) {
+void C_Tree_visitor::exitForExitCondition(C_parser::C_grammarParser::ForExitConditionContext *) {
     loop->set_condition(std::static_pointer_cast<hl_expression_node>(expressions_stack.top()));
     expressions_stack.pop();
 }
 
-void C_Tree_visitor::exitForDeclaration(C_parser::C_grammarParser::ForDeclarationContext *ctx) {
+void C_Tree_visitor::exitForDeclaration(C_parser::C_grammarParser::ForDeclarationContext *) {
     loop->set_init_statement(std::static_pointer_cast<hl_definition_node>(current_block_item));
     ext_decl.clear();
 }
 
-void C_Tree_visitor::exitForIterationExpression(C_parser::C_grammarParser::ForIterationExpressionContext *ctx) {
+void C_Tree_visitor::exitForIterationExpression(C_parser::C_grammarParser::ForIterationExpressionContext *) {
     loop->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(expressions_stack.top()));
     expressions_stack.pop();
 }
 
-void C_Tree_visitor::exitForBlockItem(C_parser::C_grammarParser::ForBlockItemContext *ctx) {
+void C_Tree_visitor::exitForBlockItem(C_parser::C_grammarParser::ForBlockItemContext *) {
     loop_body.push_back(current_block_item);
 }
 
-void C_Tree_visitor::enterForContent(C_parser::C_grammarParser::ForContentContext *ctx) {
+void C_Tree_visitor::enterForContent(C_parser::C_grammarParser::ForContentContext *) {
     in_foor_loop_block = true;
 }
 
-void C_Tree_visitor::exitForContent(C_parser::C_grammarParser::ForContentContext *ctx) {
+void C_Tree_visitor::exitForContent(C_parser::C_grammarParser::ForContentContext *) {
     in_foor_loop_block = false;
 }

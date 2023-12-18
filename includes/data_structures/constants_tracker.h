@@ -34,13 +34,13 @@ public:
 
 class constants_tracker {
 public:
-    std::string stringify_index(const std::vector<int>& v);
-    void add_constant(const std::string& s, std::shared_ptr<hl_ast_operand> op, int instr_idx, std::vector<int> array_idx);
-    void terminate_constant_range(const std::string &s, int instr_idx, std::vector<int> array_idx);
+    std::string stringify_index(const std::vector<uint32_t>& v);
+    void add_constant(const std::string& s, std::shared_ptr<hl_ast_operand> op, int instr_idx, std::vector<uint32_t> array_idx);
+    void terminate_constant_range(const std::string &s, int instr_idx, std::vector<uint32_t> array_idx);
     void terminate_all_constant_ranges(const std::string &s, int instr_idx);
-    bool is_constant(const std::string& s, int instr_idx, std::vector<int> array_idx);
-    std::shared_ptr<hl_ast_operand> get_constant(const std::string& s, int instr_idx, std::vector<int> array_idx);
-    bool needs_purging(const std::string& s, std::vector<int> array_idx);
+    bool is_constant(const std::string& s, int instr_idx, std::vector<uint32_t> array_idx);
+    std::shared_ptr<hl_ast_operand> get_constant(const std::string& s, int instr_idx, std::vector<uint32_t> array_idx);
+    bool needs_purging(const std::string& s, std::vector<uint32_t> array_idx);
     void clear();
 
 private:

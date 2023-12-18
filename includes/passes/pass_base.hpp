@@ -45,7 +45,7 @@ public:
         return element;
     };
     std::string get_name() {return name;};
-    virtual void analyze_element(std::shared_ptr<E> element) {};
+    virtual void analyze_element(std::shared_ptr<E> ) {};
     virtual std::vector<int> get_analysis_result() {return std::vector<int>();};
     virtual int get_pass_type() { return NONE_PASS;};
 private:

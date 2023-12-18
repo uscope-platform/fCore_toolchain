@@ -157,7 +157,7 @@ std::unordered_map<std::string, emulator_input> emulator_manager::load_input(nlo
             labels = input_spec["vector_labels"];
             uint32_t channel_progressive = register_type == "vector" ? (uint32_t)input_spec["channel"] : 0;
 
-            for (auto &l: labels) {
+            for ([[maybe_unused]]                  auto &l: labels) {
                 if(register_type == "vector"){
                     working_addresses.push_back(input_spec["reg_n"]);
                     working_channels.push_back(channel_progressive);
@@ -173,7 +173,7 @@ std::unordered_map<std::string, emulator_input> emulator_manager::load_input(nlo
         }
 
         factory.new_input(name, is_vect);
-        factory.set_labels(name, labels);
+        factory.set_labels(labels);
         factory.set_type(name, type.substr(0,1));
         factory.set_target_address(name, working_addresses);
         factory.set_target_channel(name, working_channels);
@@ -181,7 +181,7 @@ std::unordered_map<std::string, emulator_input> emulator_manager::load_input(nlo
             factory.set_data(name,(float) input_spec["source"]["value"]);
         } else if(input_spec["source"]["type"] == "file"){
             if(input_spec["source"]["value"].is_array()){
-                factory.set_data(name,(std::vector<std::string>) input_spec["source"]["value"]);
+                factory.set_data((std::vector<std::string>) input_spec["source"]["value"]);
             } else {
                 factory.set_data(name,(std::string) input_spec["source"]["value"]);
             }
@@ -226,7 +226,7 @@ std::vector<emulator_output_t> emulator_manager:: load_output_specs(nlohmann::js
            auto dbg = mem.dump();
            emulator_output_t out;
            if(mem["reg_n"].is_array()){
-               for(int i = 0; i< mem["reg_n"].size();i++){
+               for(uint32_t  i = 0; i< mem["reg_n"].size();i++){
                    out.type = type_float;
                    int addr = mem["reg_n"];
                    std::string name = mem["name"];
@@ -252,7 +252,7 @@ std::unordered_map<unsigned int, uint32_t> emulator_manager::load_memory_init(nl
 
     for(auto &mem:mem_init){
         if(mem["reg_n"].is_array()){
-            for(int i = 0; i< mem["reg_n"].size();i++){
+            for(uint32_t i = 0; i< mem["reg_n"].size();i++){
                 if(mem["type"] == "float") {
                     init_map[mem["reg_n"][i]] = emulator::float_to_uint32(mem["value"][i]);
                 } else {
@@ -345,7 +345,7 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
             uint32_t dest_addr = ch["destination"]["register"];
 
             if(transfer_type == "scatter_transfer"){
-                for(int j = 0; j<transfer_length; j++){
+                for(uint32_t j = 0; j<transfer_length; j++){
                     rs_s.channel = source_ch+j;
                     rs_s.address = source_addr;
                     rs_d.channel = dest_ch;
@@ -353,7 +353,7 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
                     i.connections.emplace_back(rs_s,rs_d);
                 }
             } else if(transfer_type == "vector_transfer"){
-                for(int j = 0; j<transfer_length; j++){
+                for(uint32_t j = 0; j<transfer_length; j++){
                     rs_s.channel = source_ch+j;
                     rs_s.address = source_addr;
                     rs_d.channel = dest_ch+j;
@@ -361,7 +361,7 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
                     i.connections.emplace_back(rs_s,rs_d);
                 }
             } else if(transfer_type == "gather_transfer"){
-                for(int j = 0; j<transfer_length; j++){
+                for(uint32_t  j = 0; j<transfer_length; j++){
                     rs_s.channel = source_ch;
                     rs_s.address = source_addr+j;
                     rs_d.channel = dest_ch+j;
@@ -377,8 +377,8 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
             } else if(transfer_type == "2d_vector_transfer"){
 
                 uint32_t transfer_stride = ch["stride"];
-                for (int k = 0; k < transfer_stride; k++) {
-                    for(int j = 0; j<transfer_length; j++) {
+                for (uint32_t  k = 0; k < transfer_stride; k++) {
+                    for(uint32_t  j = 0; j<transfer_length; j++) {
                         rs_s.channel = source_ch + j;
                         rs_s.address = source_addr + k;
                         rs_d.channel = dest_ch + j;

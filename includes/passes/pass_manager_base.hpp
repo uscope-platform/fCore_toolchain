@@ -27,14 +27,14 @@
 #include <nlohmann/json.hpp>
 
 template<class E>
-class pass_manager_base {;
+class pass_manager_base {
 public:
     // API FOR MORPHING PASSES
     void add_morphing_pass(const std::shared_ptr<pass_base<E>>& pass);
     void add_morphing_pass_group(const std::vector<std::shared_ptr<pass_base<E>>>& group);
     void run_morphing_passes(std::shared_ptr<E> AST);
-    virtual void run_morphing_pass(std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass) {};
-    virtual std::vector<nlohmann::json> run_morphing_pass_group(std::shared_ptr<E> &subtree, const std::vector<std::shared_ptr<pass_base<E>>>& group, int dal) {return nlohmann::json();};
+    virtual void run_morphing_pass(std::shared_ptr<E> &, const std::shared_ptr<pass_base<E>>& ) {};
+    virtual std::vector<nlohmann::json> run_morphing_pass_group(std::shared_ptr<E> &, const std::vector<std::shared_ptr<pass_base<E>>>& , int ) {return nlohmann::json();};
 
     std::vector<int> get_pass_order() { return pass_order;};
     void set_pass_order(std::vector<int> order) {pass_order = std::move(order);};

@@ -39,7 +39,7 @@ void emulator_input_factory::set_target_channel(const std::string& s, std::vecto
         inputs[s].set_target_channel(c[0]);
 }
 
-void emulator_input_factory::set_data(const std::string& s, const std::vector<std::string>& vn) {
+void emulator_input_factory::set_data(const std::vector<std::string>& vn) {
     vector_names = vn;
 }
 
@@ -86,7 +86,7 @@ std::vector<uint32_t> emulator_input_factory::vect_fti(std::vector<float> v) {
 
 void emulator_input_factory::finalize_object() {
     if(is_vector){
-        for(int i = 0; i< labels.size();i++){
+        for(uint32_t i = 0; i< labels.size();i++){
             emulator_input ei;
             ei.set_name(labels[i]);
             ei.set_target_channel(channels[i]);

@@ -84,7 +84,7 @@ bool operator==(const hl_function_def_node &lhs, const hl_function_def_node &rhs
         bool param_equal = true;
         if(lhs.parameters_list.size() != rhs.parameters_list.size()) return false;
 
-        for(int i = 0; i<lhs.parameters_list.size(); i++){
+        for(uint32_t i = 0; i<lhs.parameters_list.size(); i++){
             param_equal &= *lhs.parameters_list[i] == *rhs.parameters_list[i];
         }
         ret_val &= param_equal;

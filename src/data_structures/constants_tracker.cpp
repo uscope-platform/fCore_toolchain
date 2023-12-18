@@ -20,7 +20,7 @@
 
 
 void constants_tracker::add_constant(const std::string &s, std::shared_ptr<hl_ast_operand> op, int instr_idx,
-                                     std::vector<int> array_idx) {
+                                     std::vector<uint32_t> array_idx) {
 
     auto idx = stringify_index(array_idx);
     if(constants_map.contains(s)){
@@ -38,7 +38,7 @@ void constants_tracker::add_constant(const std::string &s, std::shared_ptr<hl_as
 }
 
 
-bool constants_tracker::is_constant(const std::string &s, int instr_idx, std::vector<int> array_idx) {
+bool constants_tracker::is_constant(const std::string &s, int instr_idx, std::vector<uint32_t> array_idx) {
     if(!constants_map.contains(s)) return false;
     auto idx = stringify_index(array_idx);
     if(!constants_map[s].contains(idx)) return false;
@@ -49,7 +49,7 @@ bool constants_tracker::is_constant(const std::string &s, int instr_idx, std::ve
 }
 
 
-std::shared_ptr<hl_ast_operand> constants_tracker::get_constant(const std::string &s, int instr_idx, std::vector<int> array_idx) {
+std::shared_ptr<hl_ast_operand> constants_tracker::get_constant(const std::string &s, int instr_idx, std::vector<uint32_t> array_idx) {
     auto idx = stringify_index(array_idx);
     for(auto &item:constants_map[s][idx]){
         if(instr_idx>=item.validity_range.first && (instr_idx<item.validity_range.second || item.validity_range.second == -1)) {
@@ -64,7 +64,7 @@ void constants_tracker::clear() {
     constants_map.clear();
 }
 
-void constants_tracker::terminate_constant_range(const std::string &s, int instr_idx, std::vector<int> array_idx) {
+void constants_tracker::terminate_constant_range(const std::string &s, int instr_idx, std::vector<uint32_t> array_idx) {
 
     if(constants_map.contains(s)){
         auto idx = stringify_index(array_idx);
@@ -93,12 +93,12 @@ void constants_tracker::terminate_all_constant_ranges(const std::string &s, int 
 }
 
 
-bool constants_tracker::needs_purging(const std::string &s, std::vector<int> array_idx) {
-    return purge_map[s][stringify_index(array_idx)];
+bool constants_tracker::needs_purging(const std::string &s, std::vector<uint32_t> array_idx) {
+        return purge_map[s][stringify_index(array_idx)];
 }
 
 
-std::string constants_tracker::stringify_index(const std::vector<int>& v) {
+std::string constants_tracker::stringify_index(const std::vector<uint32_t>& v) {
     std::string ret;
     for(auto &item:v){
         ret += std::to_string(item);

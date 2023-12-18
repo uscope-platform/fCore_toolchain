@@ -46,7 +46,7 @@ std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_pt
     content.clear();
     content.reserve(new_content.size());
 
-    for(int i = 0; i<new_content.size(); ++i){
+    for(uint32_t i = 0; i<new_content.size(); ++i){
         auto new_item = propagate_constant(new_content[i],i);
         content.push_back(new_item);
     }
@@ -75,7 +75,7 @@ std::shared_ptr<hl_ast_node> constant_propagation::purge_definition(std::shared_
         }else {
             bool array_needs_purging = true;
             auto init_list = def->get_array_initializer();
-            for(int i = 0; i<init_list.size(); ++i){
+            for(uint32_t i = 0; i<init_list.size(); ++i){
                 array_needs_purging &= tracker.needs_purging(def->get_name(), {i});
             }
             if(array_needs_purging){
@@ -161,7 +161,7 @@ std::shared_ptr<hl_ast_operand> constant_propagation::propagate_constant(std::sh
             }
             element->set_array_index(new_idx);
             ret_operand = element;
-            std::vector<int> indices = get_index_array(element);
+            std::vector<uint32_t> indices = get_index_array(element);
             if(!indices.empty()){
                 if(tracker.is_constant(element->get_name(), instr_idx, indices)){
 
@@ -224,7 +224,7 @@ bool constant_propagation::map_constants(const std::shared_ptr<hl_definition_nod
             }
         } else {
             auto array_init = element->get_array_initializer();
-            for(int i = 0; i<array_init.size(); i++){
+            for(uint32_t i = 0; i<array_init.size(); i++){
                 std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(array_init[i]);
                 if (op->get_type() == var_type_float_const || op->get_type() == var_type_int_const){
                     tracker.add_constant(element->get_name(), op, instr_idx, {i});
@@ -263,7 +263,7 @@ bool constant_propagation::map_constants(const std::shared_ptr<hl_ast_operand> &
         if(target->is_scalar()){
             tracker.add_constant(target->get_name(), op, instr_idx, {0});
         } else {
-            std::vector<int> indices = get_index_array(target);
+            std::vector<uint32_t > indices = get_index_array(target);
             if(!indices.empty()){
                 tracker.add_constant(target->get_name(), op, instr_idx, indices);
             }
@@ -278,8 +278,8 @@ bool constant_propagation::map_constants(const std::shared_ptr<hl_ast_operand> &
     return false;
 }
 
-std::vector<int> constant_propagation::get_index_array(const std::shared_ptr<hl_ast_operand> &target) {
-    std::vector<int> indices = {};
+std::vector<uint32_t> constant_propagation::get_index_array(const std::shared_ptr<hl_ast_operand> &target) {
+    std::vector<uint32_t> indices = {};
     for(auto &item: target->get_array_index()){
         if(item->node_type == hl_ast_node_type_operand){
             if(std::static_pointer_cast<hl_ast_operand>(item)->get_variable()->is_constant()){
@@ -304,7 +304,7 @@ void constant_propagation::analyze_assignment(const std::shared_ptr<hl_expressio
             if(lhs->get_array_index()[0]->node_type != hl_ast_node_type_operand){
                 tracker.terminate_all_constant_ranges(lhs->get_name(), instr_idx+1);
             } else{
-                std::vector<int> indices = get_index_array(lhs);
+                std::vector<uint32_t> indices = get_index_array(lhs);
                 if(!indices.empty()){
                     tracker.terminate_constant_range(lhs->get_name(), instr_idx+1, indices);
                 }
@@ -322,7 +322,7 @@ bool constant_propagation::needs_termination(const std::shared_ptr<hl_expression
     auto dest = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
 
     if(dest->get_variable()->get_type() == var_type_array){
-        std::vector<int> indices = get_index_array(dest);
+        std::vector<uint32_t> indices = get_index_array(dest);
         if(!indices.empty()){
             analyze_rhs = tracker.is_constant(dest->get_name(), instr_idx, {indices});
         } else {

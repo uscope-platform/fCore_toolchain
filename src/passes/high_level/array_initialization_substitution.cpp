@@ -39,7 +39,7 @@ array_initialization_substitution::process_node_by_type(const std::shared_ptr<hl
         if(!def->is_scalar()){
             if(def->is_initialized()){
                 std::vector<std::shared_ptr<hl_ast_node>> ret;
-                for(int i = 0; i<def->get_array_initializer().size(); ++i){
+                for(uint32_t i = 0; i<def->get_array_initializer().size(); ++i){
 
                     auto init_expr = build_initialization_expr(def, i);
 

@@ -23,7 +23,8 @@ void emulator_input::set_data(std::vector<uint32_t> d) {
 
 
 void emulator_input::set_data(uint32_t d) {
-    data = {d};
+    data = std::vector<uint32_t>();
+    data.push_back(d);
     input_source = emulator_in_type_constant;
 }
 

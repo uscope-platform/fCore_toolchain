@@ -60,7 +60,7 @@ bool operator==(const hl_ast_node &lhs, const hl_ast_node &rhs) {
         bool body_equal = true;
         if(lhs.content.size() != rhs.content.size()) return false;
 
-        for(int i = 0; i<lhs.content.size(); i++){
+        for(uint32_t i = 0; i<lhs.content.size(); i++){
             body_equal &=  hl_ast_node::compare_content_by_type(lhs.content[i], rhs.content[i]);
         }
         ret_val &= body_equal;
@@ -311,7 +311,7 @@ bool hl_ast_node::compare_vectors(const std::vector<std::shared_ptr<hl_ast_node>
         bool body_equal = true;
         if(lhs.size() != rhs.size()) return false;
 
-        for(int i = 0; i<lhs.size(); i++){
+        for(uint32_t i = 0; i<lhs.size(); i++){
             body_equal &= hl_ast_node::compare_content_by_type( lhs[i], rhs[i]);
         }
         ret_val &= body_equal;
