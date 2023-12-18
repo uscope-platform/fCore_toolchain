@@ -33,14 +33,14 @@ public:
     bool is_initialized();
     bool is_scalar();
     void set_constant(bool c);
-    bool is_constant();
+    bool is_constant() const;
 
     std::vector<std::shared_ptr<hl_ast_node>> get_array_index() {return array_index;};
     void set_array_index(std::vector<std::shared_ptr<hl_ast_node>> i) {array_index = std::move(i);};
 
     std::shared_ptr<hl_ast_node> get_scalar_initializer();
     void set_scalar_initializer(const std::shared_ptr<hl_ast_node>& init);
-    void set_scalar_initializer(const std::shared_ptr<hl_ast_node>& init, int idx);
+    void set_scalar_initializer(const std::shared_ptr<hl_ast_node>& init, uint32_t idx);
 
     std::vector<std::shared_ptr<hl_ast_node>> get_array_initializer() {return initializer;};
     void set_array_initializer(const std::vector<std::shared_ptr<hl_ast_node>> &init) {initializer = init;};

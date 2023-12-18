@@ -71,7 +71,8 @@ contiguous_array_identification::process_element(std::shared_ptr<hl_expression_n
                     std::shared_ptr<variable> var = std::make_shared<variable>("constant", 0);
                     std::shared_ptr<hl_ast_operand> idx = std::make_shared<hl_ast_operand>(var);
                     std::vector<std::shared_ptr<hl_ast_node>> new_idx;
-                    for(auto &item:efi_return->get_variable()->get_array_shape()){
+                    auto shape = efi_return->get_variable()->get_array_shape();
+                    for(uint32_t i  = 0; i<shape.size(); i++){
                         new_idx.push_back(idx);
                     }
                     efi_return->set_array_index(new_idx);
@@ -112,7 +113,8 @@ contiguous_array_identification::process_efi_arguments(std::shared_ptr<hl_expres
         std::shared_ptr<variable> var = std::make_shared<variable>("constant", 0);
         std::shared_ptr<hl_ast_operand> idx = std::make_shared<hl_ast_operand>(var);
         std::vector<std::shared_ptr<hl_ast_node>> new_idx;
-        for(auto &item:efi_arg->get_variable()->get_array_shape()){
+        auto shape = efi_arg->get_variable()->get_array_shape();
+        for(uint32_t i = 0; i<shape.size(); i++) {
             new_idx.push_back(idx);
         }
         efi_arg->set_array_index(new_idx);

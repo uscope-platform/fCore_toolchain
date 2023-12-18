@@ -168,6 +168,7 @@ std::unordered_map<std::string, emulator_input> emulator_manager::load_input(nlo
                 channel_progressive++;
             }
         } else {
+            is_vect = false;
             working_addresses.push_back( (uint32_t) input_spec["reg_n"]);
             working_channels.push_back(input_spec["channel"]);
         }
@@ -189,8 +190,8 @@ std::unordered_map<std::string, emulator_input> emulator_manager::load_input(nlo
         factory.finalize_object();
 
     }
-
-    return factory.get_map();
+    auto dbg = factory.get_map();
+    return dbg;
 }
 
 std::vector<emulator_output_t> emulator_manager:: load_output_specs(nlohmann::json &core) {
@@ -328,7 +329,7 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
             register_spec_t rs_s;
             register_spec_t rs_d;
             std::string transfer_type;
-            uint32_t transfer_length;
+            uint32_t transfer_length = 0;
             if(!ch.contains("type")){
                 transfer_type = "regular_transfer";
             } else {

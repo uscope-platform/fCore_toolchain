@@ -38,7 +38,7 @@ void hl_definition_node::set_constant(bool c) {
     constant = c;
 }
 
-bool hl_definition_node::is_constant() {
+bool hl_definition_node::is_constant() const {
     return constant;
 }
 
@@ -46,7 +46,7 @@ std::shared_ptr<hl_ast_node> hl_definition_node::get_scalar_initializer() {
     return initializer[0];
 }
 
-void hl_definition_node::set_scalar_initializer(const std::shared_ptr<hl_ast_node> &init, int idx) {
+void hl_definition_node::set_scalar_initializer(const std::shared_ptr<hl_ast_node> &init, uint32_t idx) {
     if(initializer.size()<idx) throw std::runtime_error("Error: Attempt to set undefined initializer");
     initializer[idx] = init;
 }

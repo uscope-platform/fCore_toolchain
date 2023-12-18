@@ -22,3 +22,5 @@ conan_provider.cmake
 cmake-build-debug-llvm/
 
 cmake-build-relwithdebinfo-llvm/
+
+cmake-build-release-llvm/

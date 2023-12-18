@@ -234,7 +234,7 @@ loop_unrolling_pass::substitute_index_in_operand(const std::shared_ptr<hl_ast_op
 std::shared_ptr<hl_definition_node>
 loop_unrolling_pass::substitute_index_in_definition(const std::shared_ptr<hl_definition_node>& node, const std::string& idx_name,
                                                     int value) {
-    std:std::shared_ptr<hl_definition_node> ret_val = std::static_pointer_cast<hl_definition_node>(hl_ast_node::deep_copy(node));
+    std::shared_ptr<hl_definition_node> ret_val = std::static_pointer_cast<hl_definition_node>(hl_ast_node::deep_copy(node));
 
     if(node->is_initialized()){
         if(node->is_scalar()){

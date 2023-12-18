@@ -38,7 +38,7 @@ public:
     void run_round(int channel);
     void set_efi_selector(std::string sel){ efi_selector = std::move(sel);};
     std::shared_ptr<std::vector<uint32_t>> get_memory(int channel) { return memory_pool[channel];};
-    std::unordered_map<int, std::shared_ptr<std::vector<uint32_t>>> get_memory_pool() { return memory_pool;};
+    std::unordered_map<uint32_t , std::shared_ptr<std::vector<uint32_t>>> get_memory_pool() { return memory_pool;};
 
     std::string get_name() {return core_name;};
 
@@ -86,7 +86,7 @@ private:
     std::string core_name;
 
     std::shared_ptr<std::vector<uint32_t>> working_memory;
-    std::unordered_map<int, std::shared_ptr<std::vector<uint32_t>>> memory_pool;
+    std::unordered_map<uint32_t , std::shared_ptr<std::vector<uint32_t>>> memory_pool;
 };
 
 
