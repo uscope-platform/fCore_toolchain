@@ -79,7 +79,3 @@ include(ExternalProject)
 
 add_custom_target(parsers)
 add_dependencies(parsers c_parser_gen asm_parser_gen)
-
-
-
-target_compile_options(fCore_emu PRIVATE -Wall -Wextra -Wpedantic)
