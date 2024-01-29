@@ -15,9 +15,9 @@
 
 #include <string>
 #include <vector>
-#include "frontend/schema_validators/schema_validators.h"
 #include <CLI/CLI.hpp>
 #include <spdlog/spdlog.h>
+#include "frontend/schema_validators/schema_validator_base.h"
 #include "fcore_cc.hpp"
 
 int main(int argc, char **argv) {
@@ -31,7 +31,8 @@ int main(int argc, char **argv) {
     std::ifstream ifs(input_file);
     nlohmann::json spec = nlohmann::json::parse(ifs);
     try{
-        fcore_toolchain::compiler_schema_validator validator;
+        std::string s_f = SCHEMAS_FOLDER;
+        fcore_toolchain::schema_validator_base validator(  s_f + "/compiler_spec_schema.json");
         validator.validate(spec);
     } catch(std::invalid_argument &ex){
         exit(-1);

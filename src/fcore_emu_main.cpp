@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
 
     std::string results;
 
-    emulator_manager emu_manager(specs, debug_autogen);
+    emulator_manager emu_manager(specs, debug_autogen, SCHEMAS_FOLDER);
     emu_manager.emulate();
     results = emu_manager.get_results();
     

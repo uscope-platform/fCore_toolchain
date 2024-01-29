@@ -24,8 +24,8 @@
 
 #include "data_structures/emulation/emulator_input.hpp"
 #include "data_structures/emulation/emulator_input_factory.hpp"
+#include "frontend/schema_validators/schema_validator_base.h"
 #include "frontend/binary_loader.hpp"
-#include "frontend/schema_validators/schema_validators.h"
 #include "../third_party/csv.hpp"
 #include "backend/emulator/emulator.hpp"
 #include "tools/instruction_stream_builder.hpp"
@@ -35,7 +35,7 @@
 
 class emulator_manager {
 public:
-    emulator_manager(nlohmann::json &spec_file, bool dbg);
+    emulator_manager(nlohmann::json &spec_file, bool dbg, std::string s_f);
     void emulate();
 
     std::shared_ptr<std::vector<uint32_t>> get_memory_snapshot(const std::string &core_id, int channel);

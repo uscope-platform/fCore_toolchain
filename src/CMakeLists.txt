@@ -76,8 +76,7 @@ set(FCORE_CC_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/high_level_ast_lowering.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/expression_evaluator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/schema_validators/schema_validator_base.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/schema_validators/schema_validators.cpp
-        )
+)
 
 
 set(FCORE_AS_SRCS
@@ -100,7 +99,6 @@ set(FCORE_EMU_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator/emulator_builder.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/efi_implementations/efi_dispatcher.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/emulator_manager.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/schema_validators/schema_validators.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/schema_validators/schema_validator_base.cpp
         )
 
@@ -191,6 +189,8 @@ target_link_libraries(fCore_emu
 
 target_compile_definitions(fcore_cc_lib PRIVATE SCHEMAS_FOLDER="${schema_folder}")
 target_compile_definitions(fcore_emu_lib PRIVATE SCHEMAS_FOLDER="${schema_folder}")
+target_compile_definitions(fCore_emu PRIVATE SCHEMAS_FOLDER="${schema_folder}")
+target_compile_definitions(fCore_cc PRIVATE SCHEMAS_FOLDER="${schema_folder}")
 
 
 

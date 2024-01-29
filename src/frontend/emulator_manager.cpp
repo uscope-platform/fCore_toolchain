@@ -17,11 +17,11 @@
 
 
 
-emulator_manager::emulator_manager(nlohmann::json &spec_file, bool dbg) {
+emulator_manager::emulator_manager(nlohmann::json &spec_file, bool dbg, std::string s_f) {
     debug_autogen = dbg;
     emulator_builder e_b(debug_autogen);
     try{
-        fcore_toolchain::emulator_schema_validator validator;
+        fcore_toolchain::schema_validator_base validator(s_f + "/emulator_spec_schema.json");
         validator.validate(spec_file);
     } catch(std::invalid_argument &ex){
         exit(-1);
