@@ -166,7 +166,7 @@ add_executable(fCore_emu fcore_emu_main.cpp)
 if(${INCLUDE_EMULATOR})
 
     add_library(fcore_emu_lib ${FCORE_EMU_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator/ba_executor.cpp)
-    target_compile_definitions(fCore_emu PUBLIC GENERAL_PURPOSE_EMULATION=0)
+    target_compile_definitions(fcore_emu_lib PUBLIC GENERAL_PURPOSE_EMULATION=0)
 
     target_link_libraries(fcore_emu_lib PUBLIC
             Ip_floating_point_v7_1_bitacc_cmodel
@@ -175,7 +175,7 @@ if(${INCLUDE_EMULATOR})
             DESTINATION ${CMAKE_INSTALL_LIBDIR})
 else ()
     add_library(fcore_emu_lib ${FCORE_EMU_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator/gp_executor.cpp)
-    target_compile_definitions(fCore_emu PUBLIC GENERAL_PURPOSE_EMULATION=1)
+    target_compile_definitions(fcore_emu_lib PUBLIC GENERAL_PURPOSE_EMULATION=1)
 
 endif(${INCLUDE_EMULATOR})
 
