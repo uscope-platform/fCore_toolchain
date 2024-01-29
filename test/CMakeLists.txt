@@ -16,7 +16,6 @@ set(TEST_SOURCES
 
 
 
-
 add_executable(test_target ${TEST_SOURCES})
 target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES}
         fcore_cc_lib
@@ -31,6 +30,9 @@ target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES}
         GTest::gmock
         GTest::gmock_main
         )
+
+target_compile_definitions(test_target PUBLIC GENERAL_PURPOSE_EMULATION)
+
 
 include(GoogleTest)
 gtest_discover_tests(test_target)

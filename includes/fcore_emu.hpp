@@ -27,7 +27,7 @@
 #include "tools/instruction_stream_builder.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 
-#include "backend/emulator.hpp"
+#include "backend/emulator/emulator.hpp"
 
 class fcore_emu {
 public:

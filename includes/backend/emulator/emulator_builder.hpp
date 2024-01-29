@@ -25,7 +25,7 @@
 #include "data_structures/instruction_stream.hpp"
 #include "tools/instruction_stream_builder.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
-#include "backend/emulator.hpp"
+#include "emulator.hpp"
 #include "fcore_cc.hpp"
 
 class emulator_builder {

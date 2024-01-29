@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "backend/emulator.hpp"
+#include "backend/emulator/emulator.hpp"
 
 
 
@@ -24,10 +24,6 @@ emulator::emulator(instruction_stream &s, int n_channels,const std::string &core
     }
     core_name = core;
     working_memory = memory_pool[0];
-    xip_fpo_init2(xil_a, 8, 24);
-    xip_fpo_init2(xil_b, 8, 24);
-    xip_fpo_init2(xil_res, 8, 24);
-    xip_fpo_fix_init2(xil_a_fixed_point, 32, 0);
     stop_requested = false;
 }
 
@@ -161,87 +157,28 @@ void emulator::run_load_constant_instruction(const std::shared_ptr<ll_load_const
 }
 
 uint32_t emulator::execute_add(uint32_t a, uint32_t b) {
-    if(b==0){ // I must be doing something wrong... investigate why these are necessary
-        return a;
-    } else if(a==0){
-        return b;
-    }
-    xip_fpo_set_flt(xil_a, uint32_to_float(a));
-    xip_fpo_set_flt(xil_b, uint32_to_float(b));
-
-    xip_fpo_exc_t exc = xip_fpo_add(xil_res, xil_a, xil_b);
-    if ( exc != 0) {
-        spdlog::critical("An exception occurred in the addition of"+ std::to_string(a) + " and " + std::to_string(b));
-        exit(-1);
-    }
-
-    auto fv = xip_fpo_get_flt(xil_res);
-    return float_to_uint32(fv);
+    return exec.execute_add(a, b);
 }
 
 uint32_t emulator::execute_sub(uint32_t a, uint32_t b) {
-    xip_fpo_set_flt(xil_a, uint32_to_float(a));
-    xip_fpo_set_flt(xil_b, uint32_to_float(b));
-
-    xip_fpo_exc_t exc = xip_fpo_sub(xil_res, xil_a, xil_b);
-
-    if ( exc != 0) {
-        spdlog::critical("An exception occurred in the subtraction of"+ std::to_string(a) + " and " + std::to_string(b));
-        exit(-1);
-    }
-
-    return float_to_uint32(xip_fpo_get_flt(xil_res));
+    return exec.execute_sub(a, b);
 }
 
 uint32_t emulator::execute_mul(uint32_t a, uint32_t b) {
-    xip_fpo_set_flt(xil_a, uint32_to_float(a));
-    xip_fpo_set_flt(xil_b, uint32_to_float(b));
-
-    xip_fpo_exc_t exc = xip_fpo_mul(xil_res, xil_a, xil_b);
-    if ( exc != 0) {
-        spdlog::critical("An exception occurred in the multiplication of"+ std::to_string(a) + " and " + std::to_string(b));
-        exit(-1);
-    }
-
-    return float_to_uint32(xip_fpo_get_flt(xil_res));
+    return exec.execute_mul(a, b);
 }
 
 uint32_t emulator::execute_rec(uint32_t a) {
-    xip_fpo_set_flt(xil_a, uint32_to_float(a));
-
-    xip_fpo_exc_t exc = xip_fpo_rec(xil_res, xil_a);
-
-    if ( exc != 0) {
-        spdlog::critical("An exception occurred during the calculation of the reciprocal of"+ std::to_string(a));
-        exit(-1);
-    }
-
-    return float_to_uint32(xip_fpo_get_flt(xil_res));
+    return exec.execute_rec(a);
 }
 
 uint32_t emulator::execute_fti(uint32_t a) {
-    xip_fpo_set_flt(xil_a, uint32_to_float(a));
-
-    xip_fpo_exc_t exc = xip_fpo_flttofix(xil_a_fixed_point, xil_a);
-
-    if ( exc != 0) {
-        spdlog::critical("An exception occurred during the conversion of "+ std::to_string(a) + "to float from integer");
-        exit(-1);
-    }
-    return (uint32_t) xip_fpo_fix_get_si(xil_a_fixed_point);
+    return exec.execute_fti(a);
 }
 
 
 uint32_t emulator::execute_itf(uint32_t a) {
-    xip_fpo_fix_set_si(xil_a_fixed_point, (int32_t)a);
-    xip_fpo_exc_t exc = xip_fpo_fixtoflt(xil_res, xil_a_fixed_point);
-
-    if ( exc != 0) {
-        spdlog::critical("An exception occurred during the conversion of "+ std::to_string(a) + "to integer from float");
-        exit(-1);
-    }
-    auto fv = xip_fpo_get_flt(xil_res);
-    return float_to_uint32(fv);
+    return exec.execute_itf(a);
 }
 
 uint32_t emulator::execute_compare_gt(uint32_t a, uint32_t b) {

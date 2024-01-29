@@ -1,11 +1,10 @@
-// Copyright 2021 University of Nottingham Ningbo China
-// Author: Filippo Savi <filssavi@gmail.com>
+//  Copyright 2022 Filippo Savi <filssavi@gmail.com>
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,12 +18,16 @@
 #include <utility>
 #include <spdlog/spdlog.h>
 
-#include "efi_implementations/efi_dispatcher.h"
+#include "backend/efi_implementations/efi_dispatcher.h"
 #include "data_structures/instruction_stream.hpp"
-#include "floating_point_v7_1_bitacc_cmodel.h"
 #include "fCore_isa.hpp"
 #include "frontend/emulator_metadata.hpp"
 
+#if GENERAL_PURPOSE_EMULATION==1
+    #include "backend/emulator/gp_executor.hpp"
+#else
+    #include "backend/emulator/ba_executor.hpp"
+#endif
 
 class emulator {
 public:
@@ -73,8 +76,14 @@ private:
     uint32_t execute_compare_eq(uint32_t a, uint32_t b);
     uint32_t execute_compare_ne(uint32_t a, uint32_t b);
     void execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest);
-    xip_fpo_t xil_a, xil_b, xil_res;
-    xip_fpo_fix_t xil_a_fixed_point;
+
+
+    #if GENERAL_PURPOSE_EMULATION==1
+        gp_executor exec;
+    #else
+        ba_executor exec;
+    #endif
+
     instruction_stream stream;
 
     bool stop_requested;

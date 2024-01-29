@@ -27,11 +27,11 @@
 #include "frontend/binary_loader.hpp"
 #include "frontend/schema_validators/schema_validators.h"
 #include "../third_party/csv.hpp"
-#include "backend/emulator.hpp"
+#include "backend/emulator/emulator.hpp"
 #include "tools/instruction_stream_builder.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "frontend/emulator_metadata.hpp"
-#include "backend/emulator_builder.hpp"
+#include "backend/emulator/emulator_builder.hpp"
 
 class emulator_manager {
 public:

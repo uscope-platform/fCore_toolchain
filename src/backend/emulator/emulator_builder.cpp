@@ -10,9 +10,9 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License.05/07/2021.
+// limitations under the License.
 
-#include "backend/emulator_builder.hpp"
+#include "backend/emulator/emulator_builder.hpp"
 
 
 emulator_metadata emulator_builder::load_json_program(const nlohmann::json &core_info, const std::vector<nlohmann::json> &input_connections,
