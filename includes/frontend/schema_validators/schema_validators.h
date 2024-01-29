@@ -21,7 +21,7 @@
 #include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
 
-#include "schema_validator_base.h"
+#include "frontend/schema_validators/schema_validator_base.h"
 
 namespace fcore_toolchain {
     class emulator_schema_validator : public schema_validator_base {
