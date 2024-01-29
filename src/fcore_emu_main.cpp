@@ -22,7 +22,6 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <CLI/CLI.hpp>
-#include "fcore_emu.hpp"
 #include "frontend/emulator_manager.hpp"
 
 int main(int argc, char **argv) {

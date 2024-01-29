@@ -15,7 +15,6 @@
 
 #include <fstream>
 #include <gtest/gtest.h>
-#include "fcore_emu.hpp"
 #include "frontend/emulator_manager.hpp"
 
 nlohmann::json prepare_spec(const std::string &file, int run_length){

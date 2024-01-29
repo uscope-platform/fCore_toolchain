@@ -23,18 +23,20 @@
 
 #include "schema_validator_base.h"
 
-class emulator_schema_validator : public schema_validator_base {
+namespace fcore_toolchain {
+    class emulator_schema_validator : public schema_validator_base {
     public:
         emulator_schema_validator();
-};
+    };
 
-class compiler_schema_validator : public schema_validator_base {
-public:
-    compiler_schema_validator();
-};
+    class compiler_schema_validator : public schema_validator_base {
+    public:
+        compiler_schema_validator();
+    };
 
-class assembler_schema_validator : public schema_validator_base {
-public:
-    assembler_schema_validator();
-};
+    class assembler_schema_validator : public schema_validator_base {
+    public:
+        assembler_schema_validator();
+    };
+}
 #endif //FCORE_TOOLCHAIN_EMULATOR_SCHEMA_VALIDATOR_H

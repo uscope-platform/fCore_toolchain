@@ -21,7 +21,7 @@ emulator_manager::emulator_manager(nlohmann::json &spec_file, bool dbg) {
     debug_autogen = dbg;
     emulator_builder e_b(debug_autogen);
     try{
-        emulator_schema_validator validator;
+        fcore_toolchain::emulator_schema_validator validator;
         validator.validate(spec_file);
     } catch(std::invalid_argument &ex){
         exit(-1);

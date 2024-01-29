@@ -15,7 +15,7 @@
 
 #include "frontend/schema_validators/schema_validator_base.h"
 
-schema_validator_base::schema_validator_base(const std::string& schema_file) {
+fcore_toolchain::schema_validator_base::schema_validator_base(const std::string& schema_file) {
     std::string schemas_path = SCHEMAS_FOLDER;
     std::string full_schema_path = schemas_path  + "/" + schema_file;
     if(!std::filesystem::exists(full_schema_path)){
@@ -37,7 +37,7 @@ schema_validator_base::schema_validator_base(const std::string& schema_file) {
 }
 
 
-void schema_validator_base::validate(nlohmann::json &spec_file) {
+void fcore_toolchain::schema_validator_base::validate(nlohmann::json &spec_file) {
     valijson::Validator validator;
     valijson::ValidationResults results;
     valijson::adapters::NlohmannJsonAdapter myTargetAdapter(spec_file);

@@ -30,7 +30,8 @@
 #include <valijson/validator.hpp>
 
 
-class schema_validator_base {
+namespace fcore_toolchain{
+    class schema_validator_base {
     public:
         schema_validator_base(const std::string& schema_file);
         void validate(nlohmann::json &spec_file);
@@ -38,7 +39,9 @@ class schema_validator_base {
         valijson::Schema schema;
         std::string error;
         std::string schema_name;
-};
+    };
+}
+
 
 
 #endif //FCORE_TOOLCHAIN_SCHEMA_VALIDATOR_BASE_H
