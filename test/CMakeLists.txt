@@ -17,14 +17,15 @@ set(TEST_SOURCES
 
 
 
-add_executable(test_target ${FCORE_SRCS} ${TEST_SOURCES} ${C_PARSER_SRCS} ${ASM_PARSER_SRCS})
+add_executable(test_target ${TEST_SOURCES})
 target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES}
+        fcore_cc_lib
+        fcore_has_lib
+        fcore_dis_lib
+        fcore_emu_lib
         pthread
-        antlr4_static
         Ip_floating_point_v7_1_bitacc_cmodel
         spdlog::spdlog
-        nlohmann_json::nlohmann_json
-        ValiJSON::valijson
         GTest::gtest
         GTest::gtest_main
         GTest::gmock

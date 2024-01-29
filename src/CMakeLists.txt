@@ -112,34 +112,48 @@ set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_
 
 add_library(common_srcs ${FCORE_COMMON_SRCS_I})
 
-target_link_libraries(common_srcs PRIVATE nlohmann_json::nlohmann_json ValiJSON::valijson)
+target_link_libraries(common_srcs PUBLIC
+        nlohmann_json::nlohmann_json
+        ValiJSON::valijson
+)
 
-add_executable(fCore_has ${FCORE_AS_SRCS} ${ASM_PARSER_SRCS} fcore_has_main.cpp)
-target_link_libraries(fCore_has PRIVATE
+add_library(fcore_has_lib ${FCORE_AS_SRCS} ${ASM_PARSER_SRCS})
+target_link_libraries(fcore_has_lib PUBLIC
         common_srcs
-        nlohmann_json::nlohmann_json
-        CLI11::CLI11
         antlr4_static
         spdlog::spdlog
-        ValiJSON::valijson
+)
+
+
+add_executable(fCore_has fcore_has_main.cpp)
+target_link_libraries(fCore_has PRIVATE
+        fcore_has_lib
+        CLI11::CLI11
         )
 
-add_executable(fCore_cc ${FCORE_CC_SRCS} ${C_PARSER_SRCS} fcore_cc_main.cpp)
-target_link_libraries(fCore_cc PRIVATE common_srcs
-        nlohmann_json::nlohmann_json
-        ValiJSON::valijson
-        CLI11::CLI11
-        GTest::gtest
+add_library(fcore_cc_lib ${FCORE_CC_SRCS} ${C_PARSER_SRCS})
+target_link_libraries(fcore_cc_lib PUBLIC
+        common_srcs
         antlr4_static
+        GTest::gtest
         spdlog::spdlog
+)
+
+add_executable(fCore_cc fcore_cc_main.cpp)
+target_link_libraries(fCore_cc PRIVATE common_srcs
+        fcore_cc_lib
+        CLI11::CLI11
         )
+
+add_library(fcore_dis_lib ${FCORE_DIS_SRCS})
+target_link_libraries(fcore_dis_lib PUBLIC
+        common_srcs
+)
 
 add_executable(fCore_dis ${FCORE_DIS_SRCS} fcore_dis_main.cpp)
 target_link_libraries(fCore_dis PRIVATE
-        nlohmann_json::nlohmann_json
-        ValiJSON::valijson
+        fcore_dis_lib
         CLI11::CLI11
-        common_srcs
         spdlog::spdlog
         )
 
@@ -152,15 +166,20 @@ install(TARGETS fCore_cc DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(TARGETS fCore_dis DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 if(${INCLUDE_EMULATOR})
-    add_executable(fCore_emu ${FCORE_EMU_SRCS} ${C_PARSER_SRCS} ${FCORE_CC_SRCS} ${FCORE_DIS_SRCS} fcore_emu_main.cpp)
-    target_link_libraries(fCore_emu Ip_floating_point_v7_1_bitacc_cmodel
-            common_srcs
+
+
+    add_library(fcore_emu_lib ${FCORE_EMU_SRCS})
+    target_link_libraries(fcore_emu_lib PUBLIC
+            fcore_dis_lib
+            fcore_cc_lib
+    )
+
+    add_executable(fCore_emu fcore_emu_main.cpp)
+    target_link_libraries(
+            fCore_emu Ip_floating_point_v7_1_bitacc_cmodel
+            fcore_emu_lib
             spdlog::spdlog
-            antlr4_static
-            GTest::gtest
-            nlohmann_json::nlohmann_json
             CLI11::CLI11
-            ValiJSON::valijson
             )
 
     install(TARGETS fCore_emu DESTINATION ${CMAKE_INSTALL_BINDIR})
@@ -173,11 +192,9 @@ if(${INCLUDE_DEVTOOLS})
     target_link_libraries(fCore_dev_server PRIVATE
             cpprestsdk::cpprest
             spdlog::spdlog
-            nlohmann_json::nlohmann_json
             CLI11::CLI11
             crypto
             antlr4_static
-            ValiJSON::valijson
             common_srcs
             )
 
