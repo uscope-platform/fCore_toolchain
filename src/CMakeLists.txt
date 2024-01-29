@@ -160,7 +160,6 @@ target_link_libraries(fCore_dis PRIVATE
 add_custom_target(toolchain)
 add_dependencies(toolchain fCore_has fCore_cc fCore_dis)
 
-
 add_executable(fCore_emu fcore_emu_main.cpp)
 
 if(${INCLUDE_EMULATOR})
@@ -189,6 +188,10 @@ target_link_libraries(fCore_emu
         spdlog::spdlog
         CLI11::CLI11
 )
+
+target_compile_definitions(fcore_cc_lib PRIVATE SCHEMAS_FOLDER="${schema_folder}")
+target_compile_definitions(fcore_emu_lib PRIVATE SCHEMAS_FOLDER="${schema_folder}")
+
 
 
 install(TARGETS fCore_has DESTINATION ${CMAKE_INSTALL_BINDIR})

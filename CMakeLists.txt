@@ -33,11 +33,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_options(-fsanitize=undefined -fsanitize=address)
     add_link_options(-fsanitize=undefined -fsanitize=address)
-    add_definitions(-DSCHEMAS_FOLDER="${CMAKE_SOURCE_DIR}/schemas")
+    set(schema_folder "${CMAKE_SOURCE_DIR}/schemas")
 else()
-    add_definitions(-DSCHEMAS_FOLDER="/usr/local/etc/fcore_toolchain")
+    set(schema_folder "/usr/local/etc/fcore_toolchain")
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
-
 
 if(${INCLUDE_COVERAGE})
     add_compile_options(-Wno-attributes -fprofile-arcs -ftest-coverage)
