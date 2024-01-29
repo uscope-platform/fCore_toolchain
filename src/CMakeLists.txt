@@ -96,8 +96,6 @@ set(FCORE_DIS_SRCS
 set(FCORE_EMU_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/emulation/emulator_input.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/emulation/emulator_input_factory.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator/ba_executor.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator/gp_executor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator/emulator.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator/emulator_builder.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/efi_implementations/efi_dispatcher.cpp
@@ -162,16 +160,12 @@ target_link_libraries(fCore_dis PRIVATE
 add_custom_target(toolchain)
 add_dependencies(toolchain fCore_has fCore_cc fCore_dis)
 
-add_library(fcore_emu_lib ${FCORE_EMU_SRCS})
-target_link_libraries(fcore_emu_lib PUBLIC
-        fcore_dis_lib
-        fcore_cc_lib
-)
 
 add_executable(fCore_emu fcore_emu_main.cpp)
 
 if(${INCLUDE_EMULATOR})
 
+    add_library(fcore_emu_lib ${FCORE_EMU_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator/ba_executor.cpp)
     target_compile_definitions(fCore_emu PUBLIC GENERAL_PURPOSE_EMULATION=0)
 
     target_link_libraries(fcore_emu_lib PUBLIC
@@ -180,9 +174,15 @@ if(${INCLUDE_EMULATOR})
     install(FILES ../third_party/fp_ip_cmodel/lib/libIp_floating_point_v7_1_bitacc_cmodel.so
             DESTINATION ${CMAKE_INSTALL_LIBDIR})
 else ()
+    add_library(fcore_emu_lib ${FCORE_EMU_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator/gp_executor.cpp)
     target_compile_definitions(fCore_emu PUBLIC GENERAL_PURPOSE_EMULATION=1)
 
 endif(${INCLUDE_EMULATOR})
+
+target_link_libraries(fcore_emu_lib PUBLIC
+        fcore_dis_lib
+        fcore_cc_lib
+)
 
 target_link_libraries(fCore_emu
         fcore_emu_lib
