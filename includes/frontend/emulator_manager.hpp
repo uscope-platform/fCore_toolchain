@@ -40,7 +40,7 @@ public:
 
     std::shared_ptr<std::vector<uint32_t>> get_memory_snapshot(const std::string &core_id, int channel);
     std::string get_results();
-
+    std::unordered_map<std::string, emulator_metadata> get_emulators(){return emulators;};
 private:
 
     std::unordered_map<std::string, emulator_input> load_input(nlohmann::json &core);
