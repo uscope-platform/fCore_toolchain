@@ -32,7 +32,6 @@ void binary_generator::process_stream(
     }
     ex.add_code_section(code_sect);
 
-    auto io_mapping = std::vector<io_map_entry>();
     for(const auto& item:dma_map){
         if(item.second.size() == 1){
             if(allocation_map->contains(item.first)){

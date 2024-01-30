@@ -38,9 +38,9 @@ emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s
     for(auto &item:spec_file["cores"]){
         std::string id = item["id"];
         try{
-
+            std::vector<io_map_entry> io_map;
             if(item["program"].contains("filename")){
-                emulators[id] = e_b.load_json_program(item, {}, {});
+                emulators[id] = e_b.load_json_program(item, {}, {}, io_map);
                 cores_ordering = e_b.get_core_ordering();
             } else {
 
@@ -52,7 +52,7 @@ emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s
                     std::string destination = ic["destination"];
                     if(id == destination) dst.push_back(ic);
                 }
-                emulators[id] = e_b.load_json_program(item, dst, src);
+                emulators[id] = e_b.load_json_program(item, dst, src, io_map);
                 cores_ordering = e_b.get_core_ordering();
             }
         } catch(std::runtime_error &e){
@@ -97,9 +97,7 @@ std::vector<program_bundle> emulator_manager::get_programs() {
                 std::string destination = ic["destination"];
                 if(id == destination) dst.push_back(ic);
             }
-            std::shared_ptr<io_map> am = std::make_shared<io_map>();
-            b.program = e_b.compile_programs(item, dst, src, am);
-            b.io = am;
+            b.program = e_b.compile_programs(item, dst, src, b.io);
             cores_ordering = e_b.get_core_ordering();
         } catch(std::runtime_error &e){
             errors[id] = e.what();
@@ -138,6 +136,7 @@ void emulator_manager::run_cores() {
                     auto src = emulators[conn.source].emu;
                     auto dst = emulators[conn.destination].emu;
                     for(auto &reg:conn.connections){
+                        auto src_id = src->get_name();
                         uint32_t first_address, second_address;
                         if(emulators[core_id.second].io_remapping_active){
                             first_address = emulators[src->get_name()].io_map[reg.first.address];

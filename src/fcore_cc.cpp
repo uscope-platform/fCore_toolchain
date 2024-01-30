@@ -115,7 +115,7 @@ void fcore_cc::optimize(std::unordered_map<std::string, std::vector<int>> &dma_m
     auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
     stream_pass_manager sman(dump_ast_level, bindings_map, allocation_map);
     program_stream = sman.process_stream(program_stream);
-
+    auto dbg = allocation_map;
     if(dump_ast_level>0) dump["stream"] = sman.get_dump();
 
     if(program_stream.empty()){
@@ -162,11 +162,6 @@ std::vector<uint32_t> fcore_cc::get_executable() {
     return writer.get_executable();
 }
 
-std::shared_ptr<io_map> fcore_cc::get_io_map() {
-    std::shared_ptr<io_map> ret = std::make_shared<io_map>();
-    for(auto &item:*allocation_map){
-        if(item.second[0].type != "g")
-            ret->insert(item);
-    }
-    return ret;
+std::vector<io_map_entry> fcore_cc::get_io_map() {
+    return writer.get_io_mapping();
 }

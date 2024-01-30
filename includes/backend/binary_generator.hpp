@@ -43,8 +43,10 @@ public:
     void write_mem_file(const std::string& filename);
     std::vector<uint32_t> generate_hex(bool endian_swap);
     std::vector<std::string> generate_mem();
+    std::vector<io_map_entry> get_io_mapping(){return io_mapping;};
 private:
     std::shared_ptr<ll_ast_node> program;
+    std::vector<io_map_entry> io_mapping;
     int progress_counter = 0;
     executable ex;
     static inline uint16_t Reverse16(uint16_t value)
