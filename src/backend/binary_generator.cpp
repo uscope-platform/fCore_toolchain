@@ -18,7 +18,7 @@
 void binary_generator::process_stream(
         const instruction_stream& stream,
         const std::unordered_map<std::string, std::vector<int>>& dma_map,
-        const std::shared_ptr<std::unordered_map<std::string, std::vector<std::pair<int,int>>>>& allocation_map,
+        const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& allocation_map,
         bool debug_print
 ) {
     auto code_sect = std::vector<uint32_t>();
@@ -32,19 +32,19 @@ void binary_generator::process_stream(
     }
     ex.add_code_section(code_sect);
 
-    auto io_mapping = std::set<std::pair<uint16_t, uint16_t>>();
+    auto io_mapping = std::vector<io_map_entry>();
     for(const auto& item:dma_map){
         if(item.second.size() == 1){
             if(allocation_map->contains(item.first)){
                 for(auto &allocated_item:allocation_map->at(item.first)){
-                    if(allocated_item.second != -1){
-                        uint16_t core_reg = allocated_item.first;
-                        uint16_t dma_reg = item.second[allocated_item.second];
-                        io_mapping.emplace(dma_reg,core_reg);
+                    if(allocated_item.io_addr != -1){
+                        uint16_t core_reg = allocated_item.core_addr;
+                        uint16_t dma_reg = item.second[allocated_item.io_addr];
+                        io_mapping.emplace_back(dma_reg,core_reg, allocated_item.type);
                     } else {
-                        uint16_t core_reg = allocated_item.first;
+                        uint16_t core_reg = allocated_item.core_addr;
                         uint16_t dma_reg = item.second[0];
-                        io_mapping.emplace(dma_reg,core_reg);
+                        io_mapping.emplace_back(dma_reg,core_reg, allocated_item.type);
                     }
                 }
 
@@ -54,9 +54,9 @@ void binary_generator::process_stream(
                 auto identifier = item.first+"_"+std::to_string(i);
                 if(allocation_map->contains(identifier)){
                     for(auto &allocated_item:allocation_map->at(identifier)){
-                        uint16_t core_reg = allocated_item.first;
+                        uint16_t core_reg = allocated_item.core_addr;
                         uint16_t dma_reg = item.second[i];
-                        io_mapping.emplace(dma_reg,core_reg);
+                        io_mapping.emplace_back(dma_reg,core_reg, allocated_item.type);
                     }
                 }
             }
@@ -69,7 +69,7 @@ void binary_generator::process_stream(
 
 void binary_generator::process_stream(const instruction_stream &stream, bool debug_print) {
     auto dma_map = std::unordered_map<std::string, std::vector<int>>();
-    auto am = std::make_shared<std::unordered_map<std::string, std::vector<std::pair<int, int>>>>();
+    auto am = std::make_shared<std::unordered_map<std::string, std::vector<io_map_entry>>>();
     process_stream(stream, dma_map, am, debug_print);
 }
 

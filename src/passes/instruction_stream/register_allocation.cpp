@@ -19,7 +19,7 @@
 register_allocation::register_allocation(
         std::shared_ptr<variable_map> vmap,
         std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm,
-        const std::shared_ptr<std::unordered_map<std::string, std::vector<std::pair<int,int>>>>& all_map
+        const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
         ) : stream_pass_base("register allocation") {
 
     allocation_map = all_map;
@@ -123,11 +123,12 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
 void register_allocation::allocate_register(std::shared_ptr<variable> &var, int reg_addr) {
     reg_map.insert(var, reg_addr, var->get_first_occurrence(), var->get_last_occurrence());
     auto lin_identifier = var->get_linear_identifier();
+    std::string var_type =get_variable_type(var);
     if(allocation_map->contains(lin_identifier)){
-        allocation_map->at(lin_identifier).emplace_back(reg_addr, var->get_linear_index());
+        allocation_map->at(lin_identifier).emplace_back(var->get_linear_index(),reg_addr, var_type);
     } else {
-        auto item = std::vector<std::pair<int, int>>();
-        item.emplace_back(reg_addr, var->get_linear_index());
+        auto item = std::vector<io_map_entry>();
+        item.emplace_back( var->get_linear_index(), reg_addr,var_type);
         allocation_map->emplace(lin_identifier, item);
     }
     if(var->get_variable_class() == variable_output_type){
@@ -140,16 +141,17 @@ void register_allocation::allocate_array(std::shared_ptr<variable> &var, int reg
     std::pair<int, int> reg_pair = {reg_addr, var->get_size()};
     reg_map.insert(var, reg_pair, var->get_first_occurrence(), var->get_last_occurrence());
     allocated_contiguous_arrays[var->get_name()] = {reg_addr, reg_addr+var->get_size()-1};
+    std::string var_type =get_variable_type(var);
 
     for(int i=0; i<var->get_size(); i++){
 
         auto lin_identifier = var->get_linear_identifier(i);
 
         if(allocation_map->contains(lin_identifier)){
-            allocation_map->at(lin_identifier).emplace_back(reg_addr+i, i);
+            allocation_map->at(lin_identifier).emplace_back( i,reg_addr+i, var_type);
         } else {
-            auto item = std::vector<std::pair<int, int>>();
-            item.emplace_back(reg_addr+i, i);
+            auto item = std::vector<io_map_entry>();
+            item.emplace_back(i,reg_addr+i,  var_type);
             allocation_map->emplace(lin_identifier, item);
         }
 
@@ -160,5 +162,19 @@ void register_allocation::allocate_array(std::shared_ptr<variable> &var, int reg
         }
     }
 
+}
+
+std::string register_allocation::get_variable_type(std::shared_ptr<variable> &var) {
+    std::string var_type;
+    if(var->get_variable_class() == variable_input_type){
+        var_type = "i";
+    } else if(var->get_variable_class() == variable_output_type){
+        var_type = "o";
+    }else if(var->get_variable_class() == variable_memory_type ){
+        var_type = "m";
+    } else{
+        var_type = "g";
+    }
+    return var_type;
 }
 

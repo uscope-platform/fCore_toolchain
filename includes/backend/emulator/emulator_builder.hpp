@@ -36,6 +36,10 @@ public:
 
     void clear_dma_io() {dma_io.clear();};
     std::map<int, std::string> get_core_ordering(){return cores_ordering;};
+
+    std::vector<uint32_t>  compile_programs(const nlohmann::json &core_info, const std::vector<nlohmann::json> &input_connections,
+                                            const std::vector<nlohmann::json> &output_connections);
+
 private:
 
     void process_interconnects(
@@ -50,9 +54,6 @@ private:
             const nlohmann::json &memory_init_specs,
             std::set<std::string> memories
     );
-
-    std::vector<uint32_t>  compile_programs(const nlohmann::json &core_info, const std::vector<nlohmann::json> &input_connections,
-                          const std::vector<nlohmann::json> &output_connections);
 
     nlohmann::json dma_io;
     std::set<uint32_t> assigned_inputs;

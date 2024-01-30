@@ -17,9 +17,12 @@
 
 
 
-emulator_manager::emulator_manager(nlohmann::json &spec_file, bool dbg, std::string s_f) {
+emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s_f) {
     debug_autogen = dbg;
     emulator_builder e_b(debug_autogen);
+
+    spec_file = spec;
+    schema_file = s_f + "/emulator_spec_schema.json";
     try{
         fcore_toolchain::schema_validator_base validator(s_f + "/emulator_spec_schema.json");
         validator.validate(spec_file);
@@ -76,6 +79,33 @@ emulator_manager::emulator_manager(nlohmann::json &spec_file, bool dbg, std::str
     }
 
 }
+
+std::unordered_map<std::string, std::vector<uint32_t>> emulator_manager::get_programs() {
+    emulator_builder e_b(false);
+    std::unordered_map<std::string, std::vector<uint32_t>> programs;
+
+    for(auto &item:spec_file["cores"]){
+        std::string id = item["id"];
+        try{
+            std::vector<nlohmann::json> src = {};
+            std::vector<nlohmann::json> dst = {};
+            for(auto &ic:spec_file["interconnect"]){
+                std::string source = ic["source"];
+                if(id == source) src.push_back(ic);
+                std::string destination = ic["destination"];
+                if(id == destination) dst.push_back(ic);
+            }
+            programs[id] = e_b.compile_programs(item, dst, src);
+            cores_ordering = e_b.get_core_ordering();
+        } catch(std::runtime_error &e){
+            errors[id] = e.what();
+        }
+    }
+    return programs;
+}
+
+
+
 
 void emulator_manager::emulate() {
     run_cores();
@@ -479,4 +509,3 @@ nlohmann::json emulator_manager::dump_interconnects(const std::vector<interconne
 
     return ret;
 }
-

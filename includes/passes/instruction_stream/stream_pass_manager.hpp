@@ -37,7 +37,7 @@ public:
     stream_pass_manager(
             int dal,
             std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
-            const std::shared_ptr<std::unordered_map<std::string, std::vector<std::pair<int,int>>>>& all_map
+            const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
             );
     stream_pass_manager(
             std::vector<int> &io_res,
@@ -46,7 +46,7 @@ public:
     void constructs_pass_manager(
             int dal,
             std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
-            const std::shared_ptr<std::unordered_map<std::string, std::vector<std::pair<int,int>>>>& all_map
+            const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
     );
     instruction_stream process_stream(instruction_stream stream);
     instruction_stream apply_pass(const instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass);

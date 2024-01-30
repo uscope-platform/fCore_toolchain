@@ -110,7 +110,7 @@ void fcore_cc::optimize(std::unordered_map<std::string, std::vector<int>> &dma_m
 
     instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
 
-    auto allocation_map = std::make_shared<std::unordered_map<std::string, std::vector<std::pair<int,int>>>>();
+    auto allocation_map = std::make_shared<std::unordered_map<std::string, std::vector<io_map_entry>>>();
 
     auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
     stream_pass_manager sman(dump_ast_level, bindings_map, allocation_map);

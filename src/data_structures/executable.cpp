@@ -44,11 +44,15 @@ void executable::add_code_section(std::vector<uint32_t> code) {
     sections["code"] = std::move(code);
 }
 
-void executable::add_io_mapping(std::set<std::pair<uint16_t, uint16_t>> mapping) {
-    for(auto pair:mapping){
+void executable::add_io_mapping(const std::vector<io_map_entry>&  mapping) {
+    std::set<uint32_t>maps;
+    for(const auto& pair:mapping){
         io_mapping_present = true;
-        uint32_t raw_mapping = pair.first + (pair.second<<16);
-        sections["io_remapping"].push_back(raw_mapping);
+        uint32_t raw_mapping = pair.io_addr+ (pair.core_addr<<16);
+        if(!maps.contains(raw_mapping)){
+            maps.insert(raw_mapping);
+            sections["io_remapping"].push_back(raw_mapping);
+        }
     }
     sections["io_remapping"].push_back(0xC);
 }
