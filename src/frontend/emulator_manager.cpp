@@ -38,7 +38,7 @@ emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s
     for(auto &item:spec_file["cores"]){
         std::string id = item["id"];
         try{
-            std::vector<io_map_entry> io_map;
+            std::set<io_map_entry> io_map;
             if(item["program"].contains("filename")){
                 emulators[id] = e_b.load_json_program(item, {}, {}, io_map);
                 cores_ordering = e_b.get_core_ordering();

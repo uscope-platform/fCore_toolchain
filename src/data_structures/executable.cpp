@@ -44,7 +44,7 @@ void executable::add_code_section(std::vector<uint32_t> code) {
     sections["code"] = std::move(code);
 }
 
-void executable::add_io_mapping(const std::vector<io_map_entry>&  mapping) {
+void executable::add_io_mapping(const std::set<io_map_entry>&  mapping) {
     std::set<uint32_t>maps;
     for(const auto& pair:mapping){
         io_mapping_present = true;

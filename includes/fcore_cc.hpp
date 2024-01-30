@@ -48,7 +48,7 @@ public:
     void parse_dma_spec();
     void compile();
 
-    std::vector<io_map_entry>  get_io_map();
+    std::set<io_map_entry>  get_io_map();
     std::vector<uint32_t> get_raw_code();
     std::vector<uint32_t> get_executable();
     std::string get_errors();

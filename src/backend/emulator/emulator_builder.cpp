@@ -18,7 +18,7 @@
 emulator_metadata emulator_builder::load_json_program(const nlohmann::json &core_info,
                                                       const std::vector<nlohmann::json> &input_connections,
                                                       const std::vector<nlohmann::json> &output_connections,
-                                                      std::vector<io_map_entry> &am
+                                                      std::set<io_map_entry> &am
                              ) {
     emulator_metadata metadata;
 
@@ -253,7 +253,7 @@ void emulator_builder::process_ioms(
 std::vector<uint32_t> emulator_builder::compile_programs(const nlohmann::json &core_info,
                                         const std::vector<nlohmann::json> &input_connections,
                                         const std::vector<nlohmann::json> &output_connections,
-                                        std::vector<io_map_entry> &am
+                                        std::set<io_map_entry> &am
 ) {
 
     std::set<std::string> memories = core_info["program"]["build_settings"]["io"]["memories"];

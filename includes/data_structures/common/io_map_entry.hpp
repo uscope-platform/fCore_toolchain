@@ -26,6 +26,14 @@ public:
     int32_t io_addr;
     int32_t core_addr;
     std::string type;
+    bool operator<(io_map_entry& rhs) const
+    {
+        return io_addr < rhs.io_addr;
+    }
+    bool operator<(const io_map_entry& rhs) const
+    {
+        return io_addr < rhs.io_addr;
+    }
 };
 
 

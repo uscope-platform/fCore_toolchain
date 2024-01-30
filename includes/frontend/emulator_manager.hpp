@@ -38,7 +38,7 @@ class program_bundle{
 public:
     std::string name;
     std::vector<uint32_t> program;
-    std::vector<io_map_entry> io;
+    std::set<io_map_entry> io;
 };
 
 class emulator_manager {

@@ -162,6 +162,6 @@ std::vector<uint32_t> fcore_cc::get_executable() {
     return writer.get_executable();
 }
 
-std::vector<io_map_entry> fcore_cc::get_io_map() {
+std::set<io_map_entry> fcore_cc::get_io_map() {
     return writer.get_io_mapping();
 }

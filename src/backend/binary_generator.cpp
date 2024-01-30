@@ -39,11 +39,11 @@ void binary_generator::process_stream(
                     if(allocated_item.io_addr != -1){
                         uint16_t core_reg = allocated_item.core_addr;
                         uint16_t dma_reg = item.second[allocated_item.io_addr];
-                        io_mapping.emplace_back(dma_reg,core_reg, allocated_item.type);
+                        io_mapping.emplace(dma_reg,core_reg, allocated_item.type);
                     } else {
                         uint16_t core_reg = allocated_item.core_addr;
                         uint16_t dma_reg = item.second[0];
-                        io_mapping.emplace_back(dma_reg,core_reg, allocated_item.type);
+                        io_mapping.emplace(dma_reg,core_reg, allocated_item.type);
                     }
                 }
 
@@ -55,7 +55,7 @@ void binary_generator::process_stream(
                     for(auto &allocated_item:allocation_map->at(identifier)){
                         uint16_t core_reg = allocated_item.core_addr;
                         uint16_t dma_reg = item.second[i];
-                        io_mapping.emplace_back(dma_reg,core_reg, allocated_item.type);
+                        io_mapping.emplace(dma_reg,core_reg, allocated_item.type);
                     }
                 }
             }

@@ -35,7 +35,7 @@ class emulator_builder {
 public:
     emulator_builder(bool dbg);
     emulator_metadata load_json_program(const nlohmann::json &core_info, const std::vector<nlohmann::json> &input_connections,
-                                   const std::vector<nlohmann::json> &output_connections, std::vector<io_map_entry> &am);
+                                   const std::vector<nlohmann::json> &output_connections, std::set<io_map_entry> &am);
 
     void clear_dma_io() {dma_io.clear();};
     std::map<int, std::string> get_core_ordering(){return cores_ordering;};
@@ -44,7 +44,7 @@ public:
             const nlohmann::json &core_info,
             const std::vector<nlohmann::json> &input_connections,
             const std::vector<nlohmann::json> &output_connections,
-            std::vector<io_map_entry> &am
+            std::set<io_map_entry> &am
     );
 
 private:

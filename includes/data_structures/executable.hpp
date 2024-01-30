@@ -18,6 +18,7 @@
 #include <cstdint>
 #include <utility>
 #include <vector>
+#include <unordered_set>
 #include <set>
 #include <unordered_map>
 #include <string>
@@ -34,7 +35,7 @@ public:
     }
     explicit executable(std::vector<uint32_t> executable);
     void add_code_section(std::vector<uint32_t> code);
-    void add_io_mapping(const std::vector<io_map_entry>& iom);
+    void add_io_mapping(const std::set<io_map_entry>& iom);
     std::vector<uint32_t> get_executable();
     std::vector<uint32_t> get_code();
     std::set<std::pair<uint16_t, uint16_t>> get_io_mapping();
