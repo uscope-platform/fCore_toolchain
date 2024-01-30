@@ -110,7 +110,7 @@ void fcore_cc::optimize(std::unordered_map<std::string, std::vector<int>> &dma_m
 
     instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
 
-    auto allocation_map = std::make_shared<std::unordered_map<std::string, std::vector<io_map_entry>>>();
+    allocation_map = std::make_shared<io_map>();
 
     auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
     stream_pass_manager sman(dump_ast_level, bindings_map, allocation_map);
@@ -160,4 +160,8 @@ void fcore_cc::parse_dma_spec() {
 
 std::vector<uint32_t> fcore_cc::get_executable() {
     return writer.get_executable();
+}
+
+std::shared_ptr<io_map> fcore_cc::get_io_map() {
+    return allocation_map;
 }

@@ -18,6 +18,8 @@
 
 #include <vector>
 #include <cstdint>
+#include <memory>
+
 #include <nlohmann/json.hpp>
 #include "frontend/emulator_metadata.hpp"
 #include "frontend/binary_loader.hpp"
@@ -28,6 +30,7 @@
 #include "emulator.hpp"
 #include "fcore_cc.hpp"
 
+
 class emulator_builder {
 public:
     emulator_builder(bool dbg);
@@ -37,8 +40,12 @@ public:
     void clear_dma_io() {dma_io.clear();};
     std::map<int, std::string> get_core_ordering(){return cores_ordering;};
 
-    std::vector<uint32_t>  compile_programs(const nlohmann::json &core_info, const std::vector<nlohmann::json> &input_connections,
-                                            const std::vector<nlohmann::json> &output_connections);
+    std::vector<uint32_t>  compile_programs(
+            const nlohmann::json &core_info,
+            const std::vector<nlohmann::json> &input_connections,
+            const std::vector<nlohmann::json> &output_connections,
+            const std::shared_ptr<io_map> &am
+    );
 
 private:
 
@@ -52,7 +59,7 @@ private:
             const nlohmann::json &inputs,
             const nlohmann::json &outputs,
             const nlohmann::json &memory_init_specs,
-            std::set<std::string> memories
+            const std::set<std::string> memories
     );
 
     nlohmann::json dma_io;

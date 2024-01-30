@@ -37,6 +37,8 @@
 
 
 
+typedef std::unordered_map<std::string, std::vector<io_map_entry>> io_map;
+
 class fcore_cc {
 public:
     fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl);
@@ -46,6 +48,7 @@ public:
     void parse_dma_spec();
     void compile();
 
+    std::shared_ptr<io_map> get_io_map();
     std::vector<uint32_t> get_raw_code();
     std::vector<uint32_t> get_executable();
     std::string get_errors();
@@ -73,6 +76,7 @@ private:
 
     std::unordered_map<std::string, std::vector<int>> dma_io_map;
     std::unordered_map<std::string, variable_class_t> dma_io_spec;
+    std::shared_ptr<io_map> allocation_map;
 
 
 };

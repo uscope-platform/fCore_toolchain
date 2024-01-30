@@ -48,7 +48,7 @@ emulator_metadata emulator_builder::load_json_program(const nlohmann::json &core
         ast = dis.get_ast();
 
     } else {
-        auto program = compile_programs(core_info, input_connections, output_connections);
+        auto program = compile_programs(core_info, input_connections, output_connections, nullptr);
 
         binary_loader dis(program);
         metadata.io_map = dis.get_io_mapping();
@@ -249,7 +249,9 @@ void emulator_builder::process_ioms(
 
 std::vector<uint32_t> emulator_builder::compile_programs(const nlohmann::json &core_info,
                                         const std::vector<nlohmann::json> &input_connections,
-                                        const std::vector<nlohmann::json> &output_connections) {
+                                        const std::vector<nlohmann::json> &output_connections,
+                                        const std::shared_ptr<io_map> &am
+) {
 
     std::set<std::string> memories = core_info["program"]["build_settings"]["io"]["memories"];
 
@@ -278,6 +280,11 @@ std::vector<uint32_t> emulator_builder::compile_programs(const nlohmann::json &c
 
         fcore_dis dis_engine(compiler.get_executable());
         dis_engine.write_disassembled_program("autogen/"+core_name+ ".s");
+    }
+
+    if(am != nullptr){
+        auto cm = compiler.get_io_map();
+        am->insert(cm->begin(), cm->end());
     }
 
     return program;

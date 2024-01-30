@@ -80,12 +80,14 @@ emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s
 
 }
 
-std::unordered_map<std::string, std::vector<uint32_t>> emulator_manager::get_programs() {
+std::vector<program_bundle> emulator_manager::get_programs() {
     emulator_builder e_b(false);
-    std::unordered_map<std::string, std::vector<uint32_t>> programs;
+    std::vector<program_bundle> programs;
 
     for(auto &item:spec_file["cores"]){
         std::string id = item["id"];
+        program_bundle b;
+        b.name = id;
         try{
             std::vector<nlohmann::json> src = {};
             std::vector<nlohmann::json> dst = {};
@@ -95,16 +97,17 @@ std::unordered_map<std::string, std::vector<uint32_t>> emulator_manager::get_pro
                 std::string destination = ic["destination"];
                 if(id == destination) dst.push_back(ic);
             }
-            programs[id] = e_b.compile_programs(item, dst, src);
+            std::shared_ptr<io_map> am = std::make_shared<io_map>();
+            b.program = e_b.compile_programs(item, dst, src, am);
+            b.io = am;
             cores_ordering = e_b.get_core_ordering();
         } catch(std::runtime_error &e){
             errors[id] = e.what();
         }
+        programs.push_back(b);
     }
     return programs;
 }
-
-
 
 
 void emulator_manager::emulate() {

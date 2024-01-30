@@ -33,6 +33,14 @@
 #include "frontend/emulator_metadata.hpp"
 #include "backend/emulator/emulator_builder.hpp"
 
+
+class program_bundle{
+public:
+    std::string name;
+    std::vector<uint32_t> program;
+    std::shared_ptr<io_map> io;
+};
+
 class emulator_manager {
 public:
     emulator_manager(nlohmann::json &spec_file, bool dbg, std::string s_f);
@@ -41,7 +49,7 @@ public:
     std::shared_ptr<std::vector<uint32_t>> get_memory_snapshot(const std::string &core_id, int channel);
     std::string get_results();
     std::unordered_map<std::string, emulator_metadata> get_emulators(){return emulators;};
-    std::unordered_map<std::string, std::vector<uint32_t>> get_programs();
+    std::vector<program_bundle> get_programs();
 private:
 
     std::unordered_map<std::string, emulator_input> load_input(nlohmann::json &core);
