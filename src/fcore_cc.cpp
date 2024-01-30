@@ -163,5 +163,10 @@ std::vector<uint32_t> fcore_cc::get_executable() {
 }
 
 std::shared_ptr<io_map> fcore_cc::get_io_map() {
-    return allocation_map;
+    std::shared_ptr<io_map> ret = std::make_shared<io_map>();
+    for(auto &item:*allocation_map){
+        if(item.second[0].type != "g")
+            ret->insert(item);
+    }
+    return ret;
 }
