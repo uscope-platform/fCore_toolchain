@@ -155,8 +155,6 @@ target_link_libraries(fCore_dis PRIVATE
         spdlog::spdlog
         )
 
-add_custom_target(toolchain)
-add_dependencies(toolchain fCore_has fCore_cc fCore_dis)
 
 add_executable(fCore_emu fcore_emu_main.cpp)
 
@@ -192,6 +190,8 @@ target_compile_definitions(fcore_emu_lib PRIVATE SCHEMAS_FOLDER="${schema_folder
 target_compile_definitions(fCore_emu PRIVATE SCHEMAS_FOLDER="${schema_folder}")
 target_compile_definitions(fCore_cc PRIVATE SCHEMAS_FOLDER="${schema_folder}")
 
+add_custom_target(toolchain)
+add_dependencies(toolchain fCore_has fCore_cc fCore_dis fCore_emu)
 
 
 install(TARGETS fCore_has DESTINATION ${CMAKE_INSTALL_BINDIR})
