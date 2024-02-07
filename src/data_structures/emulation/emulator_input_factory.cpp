@@ -101,3 +101,7 @@ void emulator_input_factory::finalize_object() {
     }
 }
 
+void emulator_input_factory::set_data_int(const std::string &s, uint32_t i) {
+    inputs[s].set_data(i);
+}
+

@@ -32,6 +32,7 @@ public:
     void set_data(const std::string& s, const std::string& series_name);
     void set_data(const std::vector<std::string>& vn);
     void set_data(const std::string& s, float f);
+    void set_data_int(const std::string& s, uint32_t f);
     void set_type(const std::string& s, std::string t);
     void set_labels(std::vector<std::string> l) {labels = std::move(l);};
     void finalize_object();

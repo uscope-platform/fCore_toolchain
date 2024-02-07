@@ -211,7 +211,12 @@ std::unordered_map<std::string, emulator_input> emulator_manager::load_input(nlo
         factory.set_target_address(name, working_addresses);
         factory.set_target_channel(name, working_channels);
         if(input_spec["source"]["type"] == "constant"){
-            factory.set_data(name,(float) input_spec["source"]["value"]);
+            if(type=="float") {
+                factory.set_data(name,(float) input_spec["source"]["value"]);
+            } else {
+                factory.set_data_int(name, input_spec["source"]["value"]);
+            }
+
         } else if(input_spec["source"]["type"] == "file"){
             if(input_spec["source"]["value"].is_array()){
                 factory.set_data((std::vector<std::string>) input_spec["source"]["value"]);
