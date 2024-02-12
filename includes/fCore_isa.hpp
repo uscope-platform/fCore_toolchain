@@ -178,7 +178,7 @@ static std::map <expression_type_t, bool> fcore_implemented_operations {
 };
 
 static std::map <std::string, std::string>  fcore_pseudo_op {
-        std::make_pair("mov", "add"),
+        std::make_pair("mov", "or"),
         std::make_pair("neg", "sub")
 };
 

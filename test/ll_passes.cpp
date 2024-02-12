@@ -43,7 +43,7 @@ TEST(llPassesTest, pseudo_inst_pass) {
     writer.process_stream(program_stream, false);
 
     std::vector<uint32_t> result = writer.get_code();
-    std::vector<uint32_t> gold_standard = {0x80061};
+    std::vector<uint32_t> gold_standard = {0x8006E};
     ASSERT_EQ(result, gold_standard);
 }
 
