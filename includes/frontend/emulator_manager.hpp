@@ -39,6 +39,7 @@ public:
     std::string name;
     std::vector<uint32_t> program;
     std::set<io_map_entry> io;
+    std::unordered_map<uint32_t, uint32_t> mem_init;
 };
 
 class emulator_manager {

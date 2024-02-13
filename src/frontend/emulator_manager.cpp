@@ -86,6 +86,7 @@ std::vector<program_bundle> emulator_manager::get_programs() {
 
     for(auto &item:spec_file["cores"]){
         std::string id = item["id"];
+
         program_bundle b;
         b.name = id;
         try{
@@ -101,6 +102,15 @@ std::vector<program_bundle> emulator_manager::get_programs() {
             cores_ordering = e_b.get_core_ordering();
         } catch(std::runtime_error &e){
             errors[id] = e.what();
+        }
+        for(auto &mem:item["memory_init"]){
+            int reg_idx = mem["reg_n"];
+            if(mem["value"].is_number_float()){
+                float flt_v = mem["value"];
+                b.mem_init[reg_idx] = emulator::float_to_uint32(flt_v);
+            } else {
+                b.mem_init[reg_idx] = mem["value"];
+            }
         }
         e_b.clear_dma_io();
         programs.push_back(b);
