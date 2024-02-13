@@ -102,6 +102,7 @@ std::vector<program_bundle> emulator_manager::get_programs() {
         } catch(std::runtime_error &e){
             errors[id] = e.what();
         }
+        e_b.clear_dma_io();
         programs.push_back(b);
     }
     return programs;
