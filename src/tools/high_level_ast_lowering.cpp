@@ -181,7 +181,7 @@ high_level_ast_lowering::translate_node(const std::shared_ptr<hl_ast_operand>& i
         var = input->get_variable();
         std::shared_ptr<variable> op_b = std::make_shared<variable>("r0");
         std::vector<std::shared_ptr<variable>> args = {var, op_b, dest};
-        retval = create_ast_node(isa_register_instruction, args, "add");
+        retval = create_ast_node(isa_register_instruction, args, "or");
         return retval;
     }
     std::vector<std::shared_ptr<variable>> args = {std::move(dest), var};
