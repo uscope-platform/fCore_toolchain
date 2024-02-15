@@ -76,9 +76,7 @@ void constant_merging::map_exclusions(std::shared_ptr<ll_instruction_node> eleme
 
 std::shared_ptr<ll_instruction_node> constant_merging::merge_register_inst(const std::shared_ptr<ll_register_instr_node> &instr) {
     std::vector<std::shared_ptr<variable>> new_args;
-    if(is_last_io_assignment(instr->get_destination())){
-        return instr;
-    }
+
 
     auto op = instr->get_operand_a();
     if(op->is_constant() || processed_constants.contains(op->get_identifier())){

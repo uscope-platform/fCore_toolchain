@@ -115,7 +115,7 @@ void fcore_cc::optimize(std::unordered_map<std::string, std::vector<int>> &dma_m
     auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
     stream_pass_manager sman(dump_ast_level, bindings_map, allocation_map);
     program_stream = sman.process_stream(program_stream);
-    auto dbg = allocation_map;
+
     if(dump_ast_level>0) dump["stream"] = sman.get_dump();
 
     if(program_stream.empty()){
