@@ -81,7 +81,7 @@ emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s
 }
 
 std::vector<program_bundle> emulator_manager::get_programs() {
-    emulator_builder e_b(false);
+    emulator_builder e_b(debug_autogen);
     std::vector<program_bundle> programs;
 
     for(auto &item:spec_file["cores"]){
