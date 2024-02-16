@@ -73,41 +73,47 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
     auto a = working_memory->at(op_a);
     auto b = working_memory->at(op_b);
 
+    uint32_t result;
+    uint32_t writeback_address = dest;
+
     if(opcode == "add"){
-        working_memory->at(dest) = execute_add(a, b);
+        result = execute_add(a, b);
     } else if (opcode == "sub"){
-        working_memory->at(dest) = execute_sub(a, b);
+        result = execute_sub(a, b);
     } else if (opcode == "mul"){
-        working_memory->at(dest) = execute_mul(a, b);
+        result = execute_mul(a, b);
     } else if (opcode == "and"){
-        working_memory->at(dest) = execute_and(a, b);
+        result = execute_and(a, b);
     } else if (opcode == "or"){
-        working_memory->at(dest) = execute_or(a, b);
+        result = execute_or(a, b);
     } else if (opcode == "xor"){
-        working_memory->at(dest) = execute_xor(a, b);
+        result = execute_xor(a, b);
     } else if (opcode == "satp"){
-        working_memory->at(dest) = execute_satp(a, b);
+        result = execute_satp(a, b);
     } else if (opcode == "satn"){
-        working_memory->at(dest) = execute_satn(a, b);
+        result  = execute_satn(a, b);
     } else if (opcode == "beq"){
-        working_memory->at(dest) = execute_compare_eq(a, b);
+        result = execute_compare_eq(a, b);
     } else if (opcode == "bne"){
-        working_memory->at(dest) = execute_compare_ne(a, b);
+        result = execute_compare_ne(a, b);
     } else if (opcode == "bgt"){
-        working_memory->at(dest) = execute_compare_gt(a, b);
+        result = execute_compare_gt(a, b);
     } else if (opcode == "ble"){
-        working_memory->at(dest) = execute_compare_le(a, b);
+        result = execute_compare_le(a, b);
     } else if (opcode == "efi"){
         execute_efi(op_a, op_b, dest);
+        return;
     } else if (opcode == "bset"){
-        auto res = execute_bset(working_memory->at(op_a), working_memory->at(op_b), working_memory->at(dest));
-        working_memory->at(op_a) = res;
+        result = execute_bset(working_memory->at(op_a), working_memory->at(op_b), working_memory->at(dest));
+        writeback_address = op_a;
     } else if (opcode == "bsel"){
-        working_memory->at(dest) = execute_bsel(a, b);
+        result = execute_bsel(a, b);
     } else {
         spdlog::critical("Encountered the following unimplemented operation: " + opcode);
         exit(-1);
     }
+
+    working_memory->at(writeback_address) = result;
 }
 
 void emulator::run_independent_instruction(const std::shared_ptr<ll_independent_inst_node>& node) {
@@ -127,22 +133,28 @@ void emulator::run_conversion_instruction(const std::shared_ptr<ll_conversion_in
     uint32_t src = node->get_source()->get_bound_reg();
     uint32_t dest = node->get_destination()->get_bound_reg();
 
+    auto dbg_src = working_memory->at(src);
+
+    uint32_t result;
     if(opcode == "rec"){
-        working_memory->at(dest) = execute_rec(working_memory->at(src));
+        result = execute_rec(working_memory->at(src));
     } else if(opcode == "fti"){
-        working_memory->at(dest) = execute_fti(working_memory->at(src));
+        result = execute_fti(working_memory->at(src));
     } else if(opcode == "itf"){
-        working_memory->at(dest) = execute_itf(working_memory->at(src));
+        result = execute_itf(working_memory->at(src));
     } else if (opcode == "not"){
-        working_memory->at(dest) = execute_not(working_memory->at(src));
+        result = execute_not(working_memory->at(src));
     } else if(opcode == "abs") {
-        working_memory->at(dest) = execute_abs(working_memory->at(src));
+        result = execute_abs(working_memory->at(src));
     } else if(opcode == "popcnt") {
-        working_memory->at(dest) = execute_popcnt(working_memory->at(src));
+        result = execute_popcnt(working_memory->at(src));
     } else {
         spdlog::critical("Encountered the following unimplemented operation: " + opcode);
         exit(-1);
     }
+
+    working_memory->at(dest) = result;
+
 }
 
 void emulator::run_load_constant_instruction(const std::shared_ptr<ll_load_constant_instr_node>& node) {
