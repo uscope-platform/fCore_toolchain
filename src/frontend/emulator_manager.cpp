@@ -27,12 +27,11 @@ emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s
         fcore_toolchain::schema_validator_base validator(s_f + "/emulator_spec_schema.json");
         validator.validate(spec_file);
     } catch(std::invalid_argument &ex){
-        exit(-1);
+        throw std::runtime_error("Failed to validate emulator schema");
     }
 
     if(!spec_file.contains("cores")){
-        spdlog::critical("No cores section found in the emulator specification file");
-        exit(-1);
+        throw std::runtime_error("No cores section found in the emulator specification file");
     }
     // Parse specification file;
     for(auto &item:spec_file["cores"]){

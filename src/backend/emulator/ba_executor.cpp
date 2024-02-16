@@ -34,8 +34,7 @@ uint32_t ba_executor::execute_add(uint32_t a, uint32_t b) {
 
     xip_fpo_exc_t exc = xip_fpo_add(xil_res, xil_a, xil_b);
     if ( exc != 0) {
-        spdlog::critical("An exception occurred in the addition of"+ std::to_string(a) + " and " + std::to_string(b));
-        exit(-1);
+        throw std::runtime_error("An exception occurred in the addition of"+ std::to_string(a) + " and " + std::to_string(b));
     }
 
     auto fv = xip_fpo_get_flt(xil_res);
@@ -49,8 +48,7 @@ uint32_t ba_executor::execute_sub(uint32_t a, uint32_t b) {
     xip_fpo_exc_t exc = xip_fpo_sub(xil_res, xil_a, xil_b);
 
     if ( exc != 0) {
-        spdlog::critical("An exception occurred in the subtraction of"+ std::to_string(a) + " and " + std::to_string(b));
-        exit(-1);
+        throw std::runtime_error("An exception occurred in the subtraction of"+ std::to_string(a) + " and " + std::to_string(b));
     }
 
     return float_to_uint32(xip_fpo_get_flt(xil_res));
@@ -62,8 +60,7 @@ uint32_t ba_executor::execute_mul(uint32_t a, uint32_t b) {
 
     xip_fpo_exc_t exc = xip_fpo_mul(xil_res, xil_a, xil_b);
     if ( exc != 0) {
-        spdlog::critical("An exception occurred in the multiplication of"+ std::to_string(a) + " and " + std::to_string(b));
-        exit(-1);
+        throw std::runtime_error("An exception occurred in the multiplication of"+ std::to_string(a) + " and " + std::to_string(b));
     }
 
     return float_to_uint32(xip_fpo_get_flt(xil_res));
@@ -75,8 +72,7 @@ uint32_t ba_executor::execute_rec(uint32_t a) {
     xip_fpo_exc_t exc = xip_fpo_rec(xil_res, xil_a);
 
     if ( exc != 0) {
-        spdlog::critical("An exception occurred during the calculation of the reciprocal of"+ std::to_string(a));
-        exit(-1);
+        throw std::runtime_error("An exception occurred during the calculation of the reciprocal of"+ std::to_string(a));
     }
 
     return float_to_uint32(xip_fpo_get_flt(xil_res));
@@ -88,8 +84,7 @@ uint32_t ba_executor::execute_fti(uint32_t a) {
     xip_fpo_exc_t exc = xip_fpo_flttofix(xil_a_fixed_point, xil_a);
 
     if ( exc != 0) {
-        spdlog::critical("An exception occurred during the conversion of "+ std::to_string(a) + "to float from integer");
-        exit(-1);
+        throw std::runtime_error("An exception occurred during the conversion of "+ std::to_string(a) + "to float from integer");
     }
     return (uint32_t) xip_fpo_fix_get_si(xil_a_fixed_point);
 }
@@ -100,8 +95,7 @@ uint32_t ba_executor::execute_itf(uint32_t a) {
     xip_fpo_exc_t exc = xip_fpo_fixtoflt(xil_res, xil_a_fixed_point);
 
     if ( exc != 0) {
-        spdlog::critical("An exception occurred during the conversion of "+ std::to_string(a) + "to integer from float");
-        exit(-1);
+        throw std::runtime_error("An exception occurred during the conversion of "+ std::to_string(a) + "to integer from float");
     }
     auto fv = xip_fpo_get_flt(xil_res);
     return float_to_uint32(fv);

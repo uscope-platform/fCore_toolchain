@@ -32,8 +32,7 @@ emulator_metadata emulator_builder::load_json_program(const nlohmann::json &core
         std::string file_path = p["filename"];
         if(!std::filesystem::is_regular_file(file_path)){
             std::string core_id = core_info["id"];
-            spdlog::critical("Invalid program file for core: " + core_id);
-            exit(-1);
+            throw std::runtime_error("Invalid program file for core: " + core_id);
         }
         if(p["type"] == "mem") {
             stream.open(file_path);
@@ -42,8 +41,7 @@ emulator_metadata emulator_builder::load_json_program(const nlohmann::json &core
             stream.open(file_path, std::ifstream::binary);
             in_type = bin_loader_hex_input;
         } else{
-            spdlog::critical("Unknown program type for core: " + nlohmann::to_string(core_info["id"]));
-            exit(2);
+            throw std::runtime_error("Unknown program type for core: " + nlohmann::to_string(core_info["id"]));
         }
         binary_loader dis = binary_loader(stream, in_type);
         metadata.io_map = dis.get_io_mapping();
@@ -79,15 +77,13 @@ emulator_metadata emulator_builder::load_json_program(const nlohmann::json &core
 
     if(core_info.contains("order")){
         if(ordering_style==implicit_ordering){
-            spdlog::critical("Mixing of explicit and implicit cores ordering is not allowed");
-            exit(-1);
+            throw std::runtime_error("Mixing of explicit and implicit cores ordering is not allowed");
         }
         cores_ordering[core_info["order"]] = core_info["id"];
         ordering_style = explicit_ordering;
     } else {
         if(ordering_style==explicit_ordering){
-            spdlog::critical("Mixing of explicit and implicit cores ordering is not allowed");
-            exit(-1);
+            throw std::runtime_error("Mixing of explicit and implicit cores ordering is not allowed");
         }
         ordering_style = implicit_ordering;
 

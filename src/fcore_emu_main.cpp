@@ -70,9 +70,15 @@ int main(int argc, char **argv) {
 
     std::string results;
 
-    emulator_manager emu_manager(specs, debug_autogen, SCHEMAS_FOLDER);
-    emu_manager.emulate();
-    results = emu_manager.get_results();
+    try{
+        emulator_manager emu_manager(specs, debug_autogen, SCHEMAS_FOLDER);
+        emu_manager.emulate();
+        results = emu_manager.get_results();
+    } catch (std::runtime_error &err) {
+        spdlog::critical(err.what());
+        exit(-1);
+    }
+
     
     std::ofstream ss(output_file);
     ss<< results;

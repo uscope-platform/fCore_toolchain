@@ -109,8 +109,7 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
     } else if (opcode == "bsel"){
         result = execute_bsel(a, b);
     } else {
-        spdlog::critical("Encountered the following unimplemented operation: " + opcode);
-        exit(-1);
+        throw std::runtime_error("Encountered the following unimplemented operation: " + opcode);
     }
 
     working_memory->at(writeback_address) = result;
@@ -122,8 +121,7 @@ void emulator::run_independent_instruction(const std::shared_ptr<ll_independent_
     } else if (opcode == "stop"){
         stop_requested = true;
     } else {
-        spdlog::critical("Encountered the following unimplemented operation: " + opcode);
-        exit(-1);
+        throw std::runtime_error("Encountered the following unimplemented operation: " + opcode);
     }
 }
 
@@ -149,8 +147,7 @@ void emulator::run_conversion_instruction(const std::shared_ptr<ll_conversion_in
     } else if(opcode == "popcnt") {
         result = execute_popcnt(working_memory->at(src));
     } else {
-        spdlog::critical("Encountered the following unimplemented operation: " + opcode);
-        exit(-1);
+        throw std::runtime_error("Encountered the following unimplemented operation: " + opcode);
     }
 
     working_memory->at(dest) = result;
