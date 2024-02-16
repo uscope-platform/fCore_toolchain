@@ -128,13 +128,17 @@ void emulator_manager::run_cores() {
         for(auto &core_id:cores_ordering){
             auto emu = emulators[core_id.second].emu;
             for(auto &in:emulators[core_id.second].input){
-                uint32_t core_reg;
+                uint32_t core_reg = 0;
                 if(emulators[core_id.second].io_remapping_active){
-                    core_reg = emulators[core_id.second].io_map[in.second.get_address()];
+                    if(emulators[core_id.second].io_map.contains(in.second.get_address())){
+                        core_reg = emulators[core_id.second].io_map[in.second.get_address()];
+                    }
                 } else {
                     core_reg = in.second.get_address();
                 }
-                emu->apply_inputs(core_reg, in.second.get_data(i), in.second.get_channel());
+                if(core_reg != 0){
+                    emu->apply_inputs(core_reg, in.second.get_data(i), in.second.get_channel());
+                }
             }
             for(int j = 0; j<emulators[core_id.second].active_channels; ++j){
                 spdlog::info("RUNNING ROUND " + std::to_string(i+1) + " of " + std::to_string(emu_length) + ": core ID = " + core_id.second + " (CH " + std::to_string(j) + ")");
