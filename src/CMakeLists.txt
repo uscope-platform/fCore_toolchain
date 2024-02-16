@@ -163,6 +163,21 @@ if(${INCLUDE_EMULATOR})
     add_library(fcore_emu_lib ${FCORE_EMU_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator/ba_executor.cpp)
     target_compile_definitions(fcore_emu_lib PUBLIC GENERAL_PURPOSE_EMULATION=0)
 
+    add_library(fcore_emu_lib_gp ${FCORE_EMU_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/backend/emulator/gp_executor.cpp)
+    target_compile_definitions(fcore_emu_lib_gp PUBLIC GENERAL_PURPOSE_EMULATION=1)
+    target_link_libraries(fcore_emu_lib_gp PUBLIC
+            fcore_dis_lib
+            fcore_cc_lib
+    )
+
+    add_executable(fCore_emu_gp fcore_emu_main.cpp)
+    target_link_libraries(fCore_emu_gp
+            fcore_emu_lib_gp
+            spdlog::spdlog
+            CLI11::CLI11
+    )
+    target_compile_definitions(fCore_emu_gp PRIVATE SCHEMAS_FOLDER="${schema_folder}")
+
     target_link_libraries(fcore_emu_lib PUBLIC
             Ip_floating_point_v7_1_bitacc_cmodel
     )
