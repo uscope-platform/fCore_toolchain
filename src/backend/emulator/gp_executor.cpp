@@ -48,7 +48,13 @@ uint32_t gp_executor::execute_fti(uint32_t a) {
 }
 
 uint32_t gp_executor::execute_itf(uint32_t a) {
-    float op_a = a;
+    int32_t singed_a;
+    if (a > INT32_MAX) {
+        singed_a = static_cast<int32_t>(a - UINT32_MAX - 1);
+    } else {
+        singed_a = static_cast<int32_t>(a);
+    }
+    float op_a = singed_a;
 
     return float_to_uint32(op_a);
 }
