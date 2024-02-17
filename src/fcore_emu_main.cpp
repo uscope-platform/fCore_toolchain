@@ -72,6 +72,7 @@ int main(int argc, char **argv) {
 
     try{
         emulator_manager emu_manager(specs, debug_autogen, SCHEMAS_FOLDER);
+        emu_manager.process();
         emu_manager.emulate();
         results = emu_manager.get_results();
     } catch (std::runtime_error &err) {
