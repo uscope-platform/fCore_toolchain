@@ -45,6 +45,7 @@ public:
 class emulator_manager {
 public:
     emulator_manager(nlohmann::json &spec_file, bool dbg, std::string s_f);
+    void process();
     void emulate();
 
     std::shared_ptr<std::vector<uint32_t>> get_memory_snapshot(const std::string &core_id, int channel);
@@ -66,7 +67,6 @@ private:
     void run_cores();
 
     nlohmann::json get_channel_outputs(std::vector<emulator_output_t> specs, int ch, std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outs);
-
     static std::vector<float> uint32_to_float(std::vector<uint32_t> &vect);
     std::map<int, std::string> cores_ordering;
 

@@ -23,6 +23,7 @@ TEST(Emulator, emulator_executable_format) {
     std::ifstream ifs("emu/test_exec_format.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
     emulator_manager manager(specs, false, SCHEMAS_FOLDER);
+    manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
 
@@ -42,6 +43,7 @@ TEST(Emulator, emulator_compile_error) {
     EXPECT_THROW({
         try{
             emulator_manager manager(specs, false, SCHEMAS_FOLDER);
+            manager.process();
         }
         catch( const std::runtime_error& e ) {
 

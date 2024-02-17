@@ -19,12 +19,16 @@
 
 emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s_f) {
     debug_autogen = dbg;
-    emulator_builder e_b(debug_autogen);
 
     spec_file = spec;
     schema_file = s_f + "/emulator_spec_schema.json";
+}
+
+void emulator_manager::process() {
+    emulator_builder e_b(debug_autogen);
+
     try{
-        fcore_toolchain::schema_validator_base validator(s_f + "/emulator_spec_schema.json");
+        fcore_toolchain::schema_validator_base validator(schema_file);
         validator.validate(spec_file);
     } catch(std::invalid_argument &ex){
         throw std::runtime_error("Failed to validate emulator schema");
@@ -34,6 +38,7 @@ emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s
         throw std::runtime_error("No cores section found in the emulator specification file");
     }
     // Parse specification file;
+
     for(auto &item:spec_file["cores"]){
         std::string id = item["id"];
         try{
@@ -54,6 +59,7 @@ emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s
                 emulators[id] = e_b.load_json_program(item, dst, src, io_map);
                 cores_ordering = e_b.get_core_ordering();
             }
+
         } catch(std::runtime_error &e){
             throw std::runtime_error("CORE " + id + ": " + e.what());
         }
@@ -76,7 +82,6 @@ emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s
             emu->init_memory(item.second.memory_init);
         }
     }
-
 }
 
 std::vector<program_bundle> emulator_manager::get_programs() {
