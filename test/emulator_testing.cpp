@@ -33,3 +33,21 @@ TEST(Emulator, emulator_executable_format) {
     }
 
 }
+
+TEST(Emulator, emulator_compile_error) {
+
+    std::ifstream ifs("emu/test_exec_format_error.json");
+    nlohmann::json specs = nlohmann::json::parse(ifs);
+
+    EXPECT_THROW({
+        try{
+            emulator_manager manager(specs, false, SCHEMAS_FOLDER);
+        }
+        catch( const std::runtime_error& e ) {
+
+         EXPECT_STREQ( "CORE test: Function UNDEFINED is not defined", e.what() );
+         throw;
+        }
+    }, std::runtime_error );
+}
+

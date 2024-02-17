@@ -55,7 +55,7 @@ emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s
                 cores_ordering = e_b.get_core_ordering();
             }
         } catch(std::runtime_error &e){
-            errors[id] = e.what();
+            throw std::runtime_error("CORE " + id + ": " + e.what());
         }
 
         emulators[id].input = load_input(item);
