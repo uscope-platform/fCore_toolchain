@@ -140,7 +140,7 @@ void emulator_manager::run_cores() {
                 }
             }
             for(int j = 0; j<emulators[core_id.second].active_channels; ++j){
-                spdlog::info("RUNNING ROUND " + std::to_string(i+1) + " of " + std::to_string(emu_length) + ": core ID = " + core_id.second + " (CH " + std::to_string(j) + ")");
+                spdlog::trace("RUNNING ROUND " + std::to_string(i+1) + " of " + std::to_string(emu_length) + ": core ID = " + core_id.second + " (CH " + std::to_string(j) + ")");
                 emu->run_round(j);
             }
 
