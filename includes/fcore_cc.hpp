@@ -46,7 +46,7 @@ public:
     void parse(std::unordered_map<std::string, variable_class_t> dma_specs);
     void optimize(std::unordered_map<std::string, std::vector<int>> &dma_map);
     void parse_dma_spec();
-    void compile();
+    bool compile();
 
     std::set<io_map_entry>  get_io_map();
     std::vector<uint32_t> get_raw_code();

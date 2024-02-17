@@ -260,8 +260,11 @@ std::vector<uint32_t> emulator_builder::compile_programs(const nlohmann::json &c
     std::vector<std::string> content = {core_info["program"]["content"]};
     fcore_cc compiler(content);
     compiler.set_dma_map(dma_io);
-    compiler.compile();
+    bool result = compiler.compile();
 
+    if(!result){
+        throw std::runtime_error(compiler.get_errors());
+    }
     auto program = compiler.get_executable();
 
     if(debug_autogen){

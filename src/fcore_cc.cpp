@@ -35,7 +35,7 @@ input_file_stream(path), hl_manager(dump_lvl), ll_manager(dump_lvl){
     dump_ast_level = dump_lvl;
 }
 
-void fcore_cc::compile() {
+bool fcore_cc::compile() {
     try{
         parse_dma_spec();
         parse(dma_io_spec);
@@ -43,7 +43,9 @@ void fcore_cc::compile() {
     } catch(std::runtime_error &e){
         std::string error = e.what();
         error_code = e.what();
+        return false;
     }
+    return true;
 }
 
 

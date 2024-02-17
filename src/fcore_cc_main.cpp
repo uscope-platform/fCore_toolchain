@@ -66,7 +66,12 @@ int main(int argc, char **argv) {
     if(spec.contains("dma_io")){
         cc_engine.set_dma_map(spec["dma_io"]);
     }
-    cc_engine.compile();
+    bool compilation_result = cc_engine.compile();
+
+    if(!compilation_result){
+        spdlog::critical(cc_engine.get_errors());
+        return -1;
+    }
 
     if(output_hex){
         cc_engine.write_hexfile(output_file);
@@ -85,10 +90,6 @@ int main(int argc, char **argv) {
         std::ofstream ss(output_file+"_dump.json");
         ss<<str;
         ss.close();
-    }
-
-    if(!cc_engine.get_errors().empty()){
-        spdlog::critical(cc_engine.get_errors());
     }
 
     return 0;
