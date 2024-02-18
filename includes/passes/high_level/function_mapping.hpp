@@ -24,7 +24,8 @@
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "passes/pass_base.hpp"
 
-class function_mapping : public pass_base<hl_ast_node> {
+namespace fcore{
+    class function_mapping : public pass_base<hl_ast_node> {
     public:
         function_mapping();
         std::vector<std::shared_ptr<hl_ast_node>>process_node(std::shared_ptr<hl_ast_node> element) override;
@@ -32,7 +33,9 @@ class function_mapping : public pass_base<hl_ast_node> {
         int get_pass_type() override { return NODE_PASS;};
     protected:
         std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>>> functions_map;
-};
+    };
+}
+
 
 
 

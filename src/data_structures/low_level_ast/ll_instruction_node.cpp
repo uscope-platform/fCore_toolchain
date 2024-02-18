@@ -23,34 +23,26 @@
 #include "data_structures/low_level_ast/ll_pseudo_instr_node.hpp"
 #include "data_structures/low_level_ast/ll_intercalated_const_instr_node.hpp"
 
-ll_instruction_node::ll_instruction_node(isa_instruction_type t) : ll_ast_node(ll_type_instr) {
+fcore::ll_instruction_node::ll_instruction_node(isa_instruction_type t) : ll_ast_node(ll_type_instr) {
     instruction_type = t;
 }
 
-ll_instruction_node::ll_instruction_node(const ll_instruction_node &old_obj) {
+fcore::ll_instruction_node::ll_instruction_node(const ll_instruction_node &old_obj) {
 
     instruction_type = old_obj.instruction_type;
     opcode = old_obj.opcode;
 }
 
-isa_instruction_type ll_instruction_node::get_type() {
+fcore::isa_instruction_type fcore::ll_instruction_node::get_type() {
     return instruction_type;
 }
 
-bool ll_instruction_node::is_terminal() {
+bool fcore::ll_instruction_node::is_terminal() {
     return true;
 }
 
-bool operator==(const ll_instruction_node &lhs, const ll_instruction_node &rhs) {
-    bool retval = true;
-
-    retval &= lhs.opcode == rhs.opcode;
-    return retval;
-}
-
-
 bool
-ll_instruction_node::compare_content_by_type(const std::shared_ptr<ll_instruction_node> &lhs, const std::shared_ptr<ll_instruction_node> &rhs) {
+fcore::ll_instruction_node::compare_content_by_type(const std::shared_ptr<ll_instruction_node> &lhs, const std::shared_ptr<ll_instruction_node> &rhs) {
     if(lhs->get_type() != rhs->get_type()) return false;
 
     switch (lhs->instruction_type) {
@@ -70,14 +62,14 @@ ll_instruction_node::compare_content_by_type(const std::shared_ptr<ll_instructio
     return false;
 }
 
-nlohmann::json ll_instruction_node::dump() {
+nlohmann::json fcore::ll_instruction_node::dump() {
     nlohmann::json retval = ll_ast_node::dump();
     retval["opcode"] = opcode;
     retval["instruction_type"] = isa_instr_type_to_string(instruction_type);
     return retval;
 }
 
-nlohmann::json ll_instruction_node::dump_instruction_by_type(const std::shared_ptr<ll_instruction_node> &node) {
+nlohmann::json fcore::ll_instruction_node::dump_instruction_by_type(const std::shared_ptr<ll_instruction_node> &node) {
     switch (node->get_type()) {
         case isa_independent_instruction: return std::static_pointer_cast<ll_independent_inst_node>(node)->dump();
         case isa_register_instruction: return std::static_pointer_cast<ll_register_instr_node>(node)->dump();
@@ -90,7 +82,7 @@ nlohmann::json ll_instruction_node::dump_instruction_by_type(const std::shared_p
     }
 }
 
-bool ll_instruction_node::is_stop() {
+bool fcore::ll_instruction_node::is_stop() {
     return opcode == "stop";
 }
 

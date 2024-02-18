@@ -20,14 +20,16 @@
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "passes/pass_base.hpp"
 
-class operating_assignment_implementation_pass : public pass_base<hl_ast_node> {
-public:
-    operating_assignment_implementation_pass();
-    std::shared_ptr<hl_ast_node> process_leaf(std::shared_ptr<hl_ast_node> element) override;
-    int get_pass_type() override { return LEAF_PASS;};
-private:
-    static std::shared_ptr<hl_expression_node> create_top_expression(assignment_type_t a);
-};
+namespace fcore{
+    class operating_assignment_implementation_pass : public pass_base<hl_ast_node> {
+    public:
+        operating_assignment_implementation_pass();
+        std::shared_ptr<hl_ast_node> process_leaf(std::shared_ptr<hl_ast_node> element) override;
+        int get_pass_type() override { return LEAF_PASS;};
+    private:
+        static std::shared_ptr<hl_expression_node> create_top_expression(assignment_type_t a);
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_OPERATING_ASSIGNMENT_IMPLEMENTATION_PASS_H

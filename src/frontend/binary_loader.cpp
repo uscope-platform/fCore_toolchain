@@ -15,7 +15,7 @@
 
 #include "frontend/binary_loader.hpp"
 
-binary_loader::binary_loader(std::istream &stream, bin_loader_input_type_t in_type) {
+fcore::binary_loader::binary_loader(std::istream &stream, bin_loader_input_type_t in_type) {
     std::string line;
     std::vector<uint32_t> file_content;
 
@@ -34,11 +34,11 @@ binary_loader::binary_loader(std::istream &stream, bin_loader_input_type_t in_ty
     load_program(file_content);
 }
 
-binary_loader::binary_loader(const std::vector<uint32_t> &file_content) {
+fcore::binary_loader::binary_loader(const std::vector<uint32_t> &file_content) {
     load_program(file_content);
 }
 
-void binary_loader::load_program(const std::vector<uint32_t> &file_content) {
+void fcore::binary_loader::load_program(const std::vector<uint32_t> &file_content) {
 
     executable exec(file_content);
     construct_ast(exec.get_code());
@@ -47,7 +47,7 @@ void binary_loader::load_program(const std::vector<uint32_t> &file_content) {
 }
 
 
-void binary_loader::construct_ast(const std::vector<uint32_t> &program) {
+void fcore::binary_loader::construct_ast(const std::vector<uint32_t> &program) {
     ast_root = std::make_shared<ll_ast_node>(ll_type_program_head);
 
     for(auto it = std::begin(program); it != std::end(program); it++){
@@ -83,7 +83,7 @@ void binary_loader::construct_ast(const std::vector<uint32_t> &program) {
     }
 }
 
-std::shared_ptr<ll_ast_node> binary_loader::process_register_instr(uint32_t instruction) {
+std::shared_ptr<fcore::ll_ast_node> fcore::binary_loader::process_register_instr(uint32_t instruction) {
     uint32_t opcode = instruction & (1<<fcore_opcode_width)-1;
 
     uint32_t operand_a = (instruction >> fcore_opcode_width) & (1<<fcore_register_address_width)-1;
@@ -97,13 +97,13 @@ std::shared_ptr<ll_ast_node> binary_loader::process_register_instr(uint32_t inst
     return std::make_shared<ll_register_instr_node>(fcore_opcodes_reverse[opcode], op_a_var, op_b_var, dest_var);
 }
 
-std::shared_ptr<ll_ast_node> binary_loader::process_independent_instruction(uint32_t instruction) {
+std::shared_ptr<fcore::ll_ast_node> fcore::binary_loader::process_independent_instruction(uint32_t instruction) {
     uint32_t opcode = instruction & (1<<fcore_opcode_width)-1;
 
     return std::make_shared<ll_independent_inst_node>(fcore_opcodes_reverse[opcode]);;
 }
 
-std::shared_ptr<ll_ast_node> binary_loader::process_load_constant(uint32_t instruction, uint32_t raw_constant) {
+std::shared_ptr<fcore::ll_ast_node> fcore::binary_loader::process_load_constant(uint32_t instruction, uint32_t raw_constant) {
     float constant;
     std::memcpy(&constant, &raw_constant, sizeof(float));
 
@@ -116,7 +116,7 @@ std::shared_ptr<ll_ast_node> binary_loader::process_load_constant(uint32_t instr
     return std::make_shared<ll_load_constant_instr_node>(fcore_opcodes_reverse[opcode],dest_var, f_const);
 }
 
-std::shared_ptr<ll_ast_node> binary_loader::process_conversion_instr(uint32_t instruction) {
+std::shared_ptr<fcore::ll_ast_node> fcore::binary_loader::process_conversion_instr(uint32_t instruction) {
     uint32_t opcode = instruction & (1<<fcore_opcode_width)-1;
     uint32_t source = (instruction >> fcore_opcode_width) & (1<<fcore_register_address_width)-1;
     uint32_t destination = (instruction >> (fcore_opcode_width+fcore_register_address_width)) & (1<<fcore_register_address_width)-1;
@@ -127,7 +127,7 @@ std::shared_ptr<ll_ast_node> binary_loader::process_conversion_instr(uint32_t in
     return std::make_shared<ll_conversion_instr_node>(fcore_opcodes_reverse[opcode], source_var, dest_var);
 }
 
-uint32_t binary_loader::to_littleEndiann(uint32_t in_num) {
+uint32_t fcore::binary_loader::to_littleEndiann(uint32_t in_num) {
     uint8_t in_bytes[4];
 
     in_bytes[0] = (in_num & 0x000000ff);
@@ -137,7 +137,7 @@ uint32_t binary_loader::to_littleEndiann(uint32_t in_num) {
     return (in_bytes[3]<<0) | (in_bytes[2]<<8) | (in_bytes[1]<<16) | (in_bytes[0]<<24);
 }
 
-std::unordered_map <uint16_t, uint16_t> binary_loader::get_io_mapping() {
+std::unordered_map <uint16_t, uint16_t> fcore::binary_loader::get_io_mapping() {
     std::unordered_map<uint16_t, uint16_t> ret_val;
     for(auto &item:io_mapping){
         ret_val[item.first] = item.second;

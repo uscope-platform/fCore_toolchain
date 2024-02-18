@@ -16,7 +16,7 @@
 
 #include "tools/array_linearizer.hpp"
 
-int linearize_array(std::vector<int> shape, std::vector<int> indices){
+int fcore::linearize_array(std::vector<int> shape, std::vector<int> indices){
 
     int linearized_idx = indices.back();
     for(int i = indices.size()-2; i>=0; --i){
@@ -31,7 +31,7 @@ int linearize_array(std::vector<int> shape, std::vector<int> indices){
 
 
 
-std::vector<int> array_delinearize(const std::vector<int>& shape, int index){
+std::vector<int> fcore::array_delinearize(const std::vector<int>& shape, int index){
     std::vector<int> multidim_index;
 
     if(shape.size()==1) return {index};

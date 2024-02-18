@@ -16,12 +16,12 @@
 
 #include "passes/instruction_stream/zero_assignment_removal_pass.hpp"
 
-zero_assignment_removal_pass::zero_assignment_removal_pass() : stream_pass_base("Zero assignment removal"){
+fcore::zero_assignment_removal_pass::zero_assignment_removal_pass() : stream_pass_base("Zero assignment removal"){
     delete_intercalated_const = false;
 }
 
-std::shared_ptr<ll_instruction_node>
-zero_assignment_removal_pass::apply_pass(std::shared_ptr<ll_instruction_node> element) {
+std::shared_ptr<fcore::ll_instruction_node>
+fcore::zero_assignment_removal_pass::apply_pass(std::shared_ptr<ll_instruction_node> element) {
     if(element->get_type() == isa_load_constant_instruction){
         std::shared_ptr<ll_load_constant_instr_node> node = std::static_pointer_cast<ll_load_constant_instr_node>(element);
         if(node->get_destination()->get_name() == "r0"){

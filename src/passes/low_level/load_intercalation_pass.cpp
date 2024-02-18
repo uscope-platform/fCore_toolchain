@@ -15,12 +15,12 @@
 
 #include "passes/low_level/load_intercalation_pass.hpp"
 
-load_intercalation_pass::load_intercalation_pass() : pass_base<ll_ast_node>("load intercalation pass") {
+fcore::load_intercalation_pass::load_intercalation_pass() : pass_base<ll_ast_node>("load intercalation pass") {
 
 }
 
 
-std::shared_ptr<ll_ast_node> load_intercalation_pass::process_leaf(std::shared_ptr<ll_ast_node> element) {
+std::shared_ptr<fcore::ll_ast_node> fcore::load_intercalation_pass::process_leaf(std::shared_ptr<ll_ast_node> element) {
     std::shared_ptr<ll_ast_node> container = std::make_shared<ll_ast_node>(ll_type_code_block);
 
     bool float_present = false;

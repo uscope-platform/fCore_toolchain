@@ -16,11 +16,11 @@
 
 #include "passes/high_level/normalization_pass.hpp"
 
-normalization_pass::normalization_pass() : pass_base<hl_ast_node>("normalization pass"){
+fcore::normalization_pass::normalization_pass() : pass_base<hl_ast_node>("normalization pass"){
 }
 
 
-std::shared_ptr<hl_ast_node> normalization_pass::process_global(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node> fcore::normalization_pass::process_global(std::shared_ptr<hl_ast_node> element) {
     std::shared_ptr<hl_ast_node> retval = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
     std::vector<std::shared_ptr<hl_ast_node>> normalized_body;
@@ -36,7 +36,7 @@ std::shared_ptr<hl_ast_node> normalization_pass::process_global(std::shared_ptr<
 }
 
 
-bool normalization_pass::is_normal(const std::shared_ptr<hl_ast_node>& element) {
+bool fcore::normalization_pass::is_normal(const std::shared_ptr<hl_ast_node>& element) {
 
     if(element->node_type== hl_ast_node_type_expr){
         std::shared_ptr<hl_expression_node> expr = std::static_pointer_cast<hl_expression_node>(element);
@@ -63,7 +63,7 @@ bool normalization_pass::is_normal(const std::shared_ptr<hl_ast_node>& element) 
     }
 }
 
-norm_pair_t normalization_pass::process_node_by_type(std::shared_ptr<hl_ast_node> n) {
+fcore::norm_pair_t fcore::normalization_pass::process_node_by_type(std::shared_ptr<hl_ast_node> n) {
     if(n->node_type== hl_ast_node_type_expr){
         return process_node_exp(std::static_pointer_cast<hl_expression_node>(n));
     } else if(n->node_type == hl_ast_node_type_definition){
@@ -74,7 +74,7 @@ norm_pair_t normalization_pass::process_node_by_type(std::shared_ptr<hl_ast_node
 }
 
 
-norm_pair_t normalization_pass::process_node_exp(const std::shared_ptr<hl_expression_node>& n) {
+fcore::norm_pair_t fcore::normalization_pass::process_node_exp(const std::shared_ptr<hl_expression_node>& n) {
     std::shared_ptr<hl_expression_node> normalized_expression = n;
     std::vector<std::shared_ptr<hl_ast_node>> extracted_expressions = {};
     norm_pair_t ret_val = std::make_pair(normalized_expression, extracted_expressions);
@@ -143,7 +143,7 @@ norm_pair_t normalization_pass::process_node_exp(const std::shared_ptr<hl_expres
 
 
 
-norm_pair_t normalization_pass::process_node_def(const std::shared_ptr<hl_definition_node>& n) {
+fcore::norm_pair_t fcore::normalization_pass::process_node_def(const std::shared_ptr<hl_definition_node>& n) {
     std::vector<std::shared_ptr<hl_ast_node>> extracted_expressions;
 
     if(n->is_initialized()){
@@ -157,7 +157,7 @@ norm_pair_t normalization_pass::process_node_def(const std::shared_ptr<hl_defini
     return std::make_pair(n, extracted_expressions);
 }
 
-c_types_t normalization_pass::get_expression_type(std::shared_ptr<hl_expression_node> expr) {
+fcore::c_types_t fcore::normalization_pass::get_expression_type(std::shared_ptr<hl_expression_node> expr) {
 
     variable_type_t type_rhs = std::static_pointer_cast<hl_ast_operand>(expr->get_rhs())->get_type();
     c_types_t expr_type;

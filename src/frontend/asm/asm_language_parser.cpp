@@ -20,18 +20,18 @@
 using namespace antlr4;
 
 
-asm_language_parser::asm_language_parser(std::istream &stream) {
+fcore::asm_language_parser::asm_language_parser(std::istream &stream) {
     variable_map varmap;
 
     construct_parser(stream, std::make_shared<variable_map>(varmap));
 }
 
-asm_language_parser::asm_language_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap) {
+fcore::asm_language_parser::asm_language_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap) {
 
     construct_parser(stream, std::move(existing_varmap));
 }
 
-void asm_language_parser::construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap){
+void fcore::asm_language_parser::construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap){
 
 
     ANTLRInputStream input(stream);

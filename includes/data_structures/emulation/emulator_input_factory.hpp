@@ -21,38 +21,41 @@
 #include "emulator_input.hpp"
 #include <nlohmann/json.hpp>
 
-class emulator_input_factory {
-public:
-    emulator_input_factory() = default;
-    emulator_input_factory(emulator_input_factory &em);
-    explicit emulator_input_factory(nlohmann::json &id);
-    void new_input(std::string &str, bool v);
-    void set_target_address(const std::string& s, std::vector<uint32_t> a);
-    void set_target_channel(const std::string& s, std::vector<uint32_t> c);
-    void set_data(const std::string& s, const std::string& series_name);
-    void set_data(const std::vector<std::string>& vn);
-    void set_data(const std::string& s, float f);
-    void set_data_int(const std::string& s, uint32_t f);
-    void set_type(const std::string& s, std::string t);
-    void set_labels(std::vector<std::string> l) {labels = std::move(l);};
-    void finalize_object();
-    std::unordered_map<std::string, emulator_input> get_map(){return inputs;};
-private:
+namespace fcore{
+    class emulator_input_factory {
+    public:
+        emulator_input_factory() = default;
+        emulator_input_factory(emulator_input_factory &em);
+        explicit emulator_input_factory(nlohmann::json &id);
+        void new_input(std::string &str, bool v);
+        void set_target_address(const std::string& s, std::vector<uint32_t> a);
+        void set_target_channel(const std::string& s, std::vector<uint32_t> c);
+        void set_data(const std::string& s, const std::string& series_name);
+        void set_data(const std::vector<std::string>& vn);
+        void set_data(const std::string& s, float f);
+        void set_data_int(const std::string& s, uint32_t f);
+        void set_type(const std::string& s, std::string t);
+        void set_labels(std::vector<std::string> l) {labels = std::move(l);};
+        void finalize_object();
+        std::unordered_map<std::string, emulator_input> get_map(){return inputs;};
+    private:
 
-    std::unordered_map<std::string, emulator_input> inputs;
-    // HELPER METHODS
-    std::vector<uint32_t> vect_fti(std::vector<float> v);
-    uint32_t fti(float f);
-    // CONSTRUCTION DATA;
-    nlohmann::json data_file;
-    bool is_vector = false;
-    std::vector<std::string> labels;
-    std::vector<uint32_t> addresses;
-    std::vector<uint32_t> channels;
-    std::vector<std::string> vector_names;
-    std::string type;
+        std::unordered_map<std::string, emulator_input> inputs;
+        // HELPER METHODS
+        std::vector<uint32_t> vect_fti(std::vector<float> v);
+        uint32_t fti(float f);
+        // CONSTRUCTION DATA;
+        nlohmann::json data_file;
+        bool is_vector = false;
+        std::vector<std::string> labels;
+        std::vector<uint32_t> addresses;
+        std::vector<uint32_t> channels;
+        std::vector<std::string> vector_names;
+        std::string type;
 
-};
+    };
+}
+
 
 
 #endif //FCORE_TOOLCHAIN_EMULATOR_INPUT_FACTORY_HPP

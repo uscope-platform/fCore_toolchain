@@ -21,13 +21,14 @@
 #include "passes/pass_base.hpp"
 #include "fCore_isa.hpp"
 
-
-class pseudo_instructions_pass: public pass_base<ll_ast_node> {
-public:
-    pseudo_instructions_pass();
-    std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
-    int get_pass_type() override { return LEAF_PASS;};
-};
+namespace fcore{
+    class pseudo_instructions_pass: public pass_base<ll_ast_node> {
+    public:
+        pseudo_instructions_pass();
+        std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
+        int get_pass_type() override { return LEAF_PASS;};
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_PSEUDO_INSTRUCTIONS_PASS_HPP

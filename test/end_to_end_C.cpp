@@ -19,6 +19,7 @@
 #include "fcore_cc.hpp"
 #include "data_structures/instruction_stream.hpp"
 
+using namespace fcore;
 
 TEST(EndToEndC, fcore_cc) {
 

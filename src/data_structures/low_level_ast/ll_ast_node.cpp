@@ -18,22 +18,22 @@
 #include "data_structures/low_level_ast/ll_ast_pragma.hpp"
 #include "data_structures/low_level_ast/ll_instruction_node.hpp"
 
-ll_ast_node::ll_ast_node() {
+fcore::ll_ast_node::ll_ast_node() {
 
 }
 
-ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type) {
+fcore::ll_ast_node::ll_ast_node(ll_ast_node_type_t block_type) {
     type = block_type;
 }
 
 
 
-bool ll_ast_node::is_terminal() {
+bool fcore::ll_ast_node::is_terminal() {
 
     return false;
 }
 
-std::shared_ptr<ll_ast_node> ll_ast_node::deep_copy_element(const std::shared_ptr<ll_ast_node> &element) {
+std::shared_ptr<fcore::ll_ast_node> fcore::ll_ast_node::deep_copy_element(const std::shared_ptr<ll_ast_node> &element) {
     std::shared_ptr<ll_ast_node> result;
 
     if(element->type == ll_type_for_block) {
@@ -71,34 +71,8 @@ std::shared_ptr<ll_ast_node> ll_ast_node::deep_copy_element(const std::shared_pt
     return result;
 }
 
-
-
-
-
-
-bool operator==(const ll_ast_node &lhs, const ll_ast_node &rhs) {
-    if(lhs.type != rhs.type) return false;
-
-        bool retval = true;
-        if(lhs.content.empty() && rhs.content.empty()){
-            retval &= true;
-        } else if(lhs.content.empty() || rhs.content.empty()){
-            retval = false;
-        } else {
-            bool args_equal = true;
-            if(lhs.content.size() != rhs.content.size()) return false;
-            for (int i = 0; i < lhs.content.size(); i++) {
-                args_equal &= *lhs.content[i] == *rhs.content[i];
-            }
-            retval &= args_equal;
-        }
-        return retval;
-
-}
-
-
 bool
-ll_ast_node::compare_content_by_type(const std::shared_ptr<ll_ast_node> &lhs, const std::shared_ptr<ll_ast_node> &rhs) {
+fcore::ll_ast_node::compare_content_by_type(const std::shared_ptr<ll_ast_node> &lhs, const std::shared_ptr<ll_ast_node> &rhs) {
     if(lhs->type != rhs->type) return false;
 
     switch (lhs->type) {
@@ -117,14 +91,14 @@ ll_ast_node::compare_content_by_type(const std::shared_ptr<ll_ast_node> &lhs, co
     return false;
 }
 
-nlohmann::json ll_ast_node::dump() {
+nlohmann::json fcore::ll_ast_node::dump() {
     nlohmann::json ret_val;
     ret_val["type"] = ll_ast_node_to_string(type);
     ret_val["content"] = dump_array(content);
     return ret_val;
 }
 
-std::vector<nlohmann::json> ll_ast_node::dump_array(const std::vector<std::shared_ptr<ll_ast_node>>& vect) {
+std::vector<nlohmann::json> fcore::ll_ast_node::dump_array(const std::vector<std::shared_ptr<ll_ast_node>>& vect) {
     std::vector<nlohmann::json> ret_val;
     for(auto &i: vect){
         ret_val.push_back(ll_ast_node::dump_by_type(i));
@@ -132,7 +106,7 @@ std::vector<nlohmann::json> ll_ast_node::dump_array(const std::vector<std::share
     return ret_val;
 }
 
-nlohmann::json ll_ast_node::dump_by_type(const std::shared_ptr<ll_ast_node>& node) {
+nlohmann::json fcore::ll_ast_node::dump_by_type(const std::shared_ptr<ll_ast_node>& node) {
     switch (node->type) {
         case ll_type_for_block: return std::static_pointer_cast<ll_loop_node>(node)->dump();
         case ll_type_instr: return ll_instruction_node::dump_instruction_by_type(std::static_pointer_cast<ll_instruction_node>(node));

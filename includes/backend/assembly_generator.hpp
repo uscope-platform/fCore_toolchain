@@ -20,16 +20,17 @@
 
 #include "data_structures/instruction_stream.hpp"
 
-class assembly_generator {
-public:
-    explicit assembly_generator(const instruction_stream& stream);
-    void set_io_map(const std::unordered_map<uint16_t, uint16_t> &iom){io_map = iom;};
-    void write_program(const std::string& filename);
-    std::string get_program() {return  program;};
-private:
-    std::unordered_map<uint16_t, uint16_t> io_map;
-    std::string program;
-};
-
+namespace fcore{
+    class assembly_generator {
+    public:
+        explicit assembly_generator(const instruction_stream& stream);
+        void set_io_map(const std::unordered_map<uint16_t, uint16_t> &iom){io_map = iom;};
+        void write_program(const std::string& filename);
+        std::string get_program() {return  program;};
+    private:
+        std::unordered_map<uint16_t, uint16_t> io_map;
+        std::string program;
+    };
+}
 
 #endif //FCORE_TOOLCHAIN_ASSEMBLY_GENERATOR_H

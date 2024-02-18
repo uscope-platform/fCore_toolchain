@@ -13,11 +13,12 @@
 // limitations under the License.
 
 #include "data_structures/common/memory_tracker.hpp"
-memory_tracker::memory_tracker(const std::pair<uint32_t, uint32_t> r){
+
+fcore::memory_tracker::memory_tracker(const std::pair<uint32_t, uint32_t> r){
     free_memory.push_back(r);
 }
 
-memory_range_t memory_tracker::get_free_memory_range(uint32_t size){
+fcore::memory_range_t fcore::memory_tracker::get_free_memory_range(uint32_t size){
 
     for(auto & i : free_memory){
         if(i.second-i.first>=size){
@@ -31,12 +32,12 @@ memory_range_t memory_tracker::get_free_memory_range(uint32_t size){
 
 };
 
-uint32_t memory_tracker::get_free_memory_cell(){
+uint32_t fcore::memory_tracker::get_free_memory_cell(){
     memory_range_t r = get_free_memory_range(1);
     return r.first;
 }
 
-void memory_tracker::reserve_register(uint32_t r) {
+void fcore::memory_tracker::reserve_register(uint32_t r) {
     for(int i = 0;i<free_memory.size();i++){
         if(r>=free_memory[i].first && r<free_memory[i].second){
 

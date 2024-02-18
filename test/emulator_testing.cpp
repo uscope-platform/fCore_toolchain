@@ -18,6 +18,8 @@
 
 #include "frontend/emulator_manager.hpp"
 
+using namespace fcore;
+
 TEST(Emulator, emulator_executable_format) {
 
     std::ifstream ifs("emu/test_exec_format.json");

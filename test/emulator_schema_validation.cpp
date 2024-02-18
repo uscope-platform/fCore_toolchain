@@ -21,14 +21,14 @@ std::string s_f = SCHEMAS_FOLDER;
 TEST(emulator_schema, validation_success) {
     std::ifstream ifs("emu/schemas/valid_emulator_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    fcore_toolchain::schema_validator_base validator(s_f+ "/emulator_spec_schema.json");
+    fcore::schema_validator_base validator(s_f+ "/emulator_spec_schema.json");
     EXPECT_NO_THROW(validator.validate(spec));
 }
 
 TEST(emulator_schema, validation_fail_no_cores) {
     std::ifstream ifs("emu/schemas/valid_emulator_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    fcore_toolchain::schema_validator_base validator(s_f  + "/emulator_spec_schema.json");
+    fcore::schema_validator_base validator(s_f  + "/emulator_spec_schema.json");
     spec.erase("cores");
     testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(spec), std::invalid_argument);
@@ -41,7 +41,7 @@ TEST(emulator_schema, validation_fail_no_cores) {
 TEST(emulator_schema, validation_fail_no_program) {
     std::ifstream ifs("emu/schemas/valid_emulator_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    fcore_toolchain::schema_validator_base validator(s_f  + "/emulator_spec_schema.json");
+    fcore::schema_validator_base validator(s_f  + "/emulator_spec_schema.json");
     spec["cores"][0].erase("program");
     testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(spec), std::invalid_argument);
@@ -55,7 +55,7 @@ TEST(emulator_schema, validation_fail_no_program) {
 TEST(compiler_schema, validation_success) {
     std::ifstream ifs("emu/schemas/valid_compiler_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    fcore_toolchain::schema_validator_base validator(s_f  + "/compiler_spec_schema.json");
+    fcore::schema_validator_base validator(s_f  + "/compiler_spec_schema.json");
     EXPECT_NO_THROW(validator.validate(spec));
 
 }
@@ -64,7 +64,7 @@ TEST(compiler_schema, validation_success) {
 TEST(compiler_schema, validation_fail_no_input) {
     std::ifstream ifs("emu/schemas/valid_compiler_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    fcore_toolchain::schema_validator_base validator(s_f  + "/compiler_spec_schema.json");
+    fcore::schema_validator_base validator(s_f  + "/compiler_spec_schema.json");
     spec.erase("input_file");
     testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(spec), std::invalid_argument);

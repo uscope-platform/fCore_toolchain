@@ -16,19 +16,19 @@
 
 #include "tools/define_map.hpp"
 
-void define_map::insert(const std::string &key, std::shared_ptr<define> item) {
+void fcore::define_map::insert(const std::string &key, std::shared_ptr<define> item) {
     defines[key] = std::move(item);
 }
 
-unsigned int define_map::count(const std::string &key) {
+unsigned int fcore::define_map::count(const std::string &key) {
     return defines.count(key);
 }
 
-std::shared_ptr<define> define_map::at(const std::string &key) {
+std::shared_ptr<fcore::define> fcore::define_map::at(const std::string &key) {
     return defines.at(key);
 }
 
-std::shared_ptr<define> define_map::operator[](const std::string &key) {
+std::shared_ptr<fcore::define> fcore::define_map::operator[](const std::string &key) {
     return defines[key];
 }
 

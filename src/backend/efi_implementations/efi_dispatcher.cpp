@@ -15,11 +15,11 @@
 
 #include "backend/efi_implementations/efi_dispatcher.h"
 
-efi_dispatcher::efi_dispatcher(const std::string &core) {
+fcore::efi_dispatcher::efi_dispatcher(const std::string &core) {
     core_name = core;
 }
 
-void efi_dispatcher::emulate_efi(const std::string& function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
+void fcore::efi_dispatcher::emulate_efi(const std::string& function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
     if(function == "efi_sort"){
         efi_sort(op_a, op_b, dest, m);
     } else if(function =="efi_trig") {
@@ -31,7 +31,7 @@ void efi_dispatcher::emulate_efi(const std::string& function, uint32_t op_a, uin
     }
 }
 
-void efi_dispatcher::efi_sort(uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
+void fcore::efi_dispatcher::efi_sort(uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
 
 
     bool descending_order  = m->at(op_a) != 1;
@@ -53,13 +53,13 @@ void efi_dispatcher::efi_sort(uint32_t op_a, uint32_t op_b, uint32_t dest, std::
 
 
 
-uint32_t efi_dispatcher::float_to_uint32(float f) {
+uint32_t fcore::efi_dispatcher::float_to_uint32(float f) {
     uint32_t ret;
     std::memcpy(&ret, &f, sizeof(f));
     return ret;
 }
 
-float efi_dispatcher::uint32_to_float(uint32_t u) {
+float fcore::efi_dispatcher::uint32_to_float(uint32_t u) {
     float ret;
     std::memcpy(&ret, &u, sizeof(u));
     return ret;
@@ -74,7 +74,7 @@ inline T signextend(const T x)
     return s.x = x;
 }
 
-void efi_dispatcher::efi_trig(uint32_t op_a, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
+void fcore::efi_dispatcher::efi_trig(uint32_t op_a, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
 
     int opcode  = m->at(op_a);
 

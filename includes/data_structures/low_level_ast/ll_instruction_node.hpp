@@ -28,43 +28,49 @@
 #include "data_structures/common/variable.hpp"
 #include "fCore_isa.hpp"
 
+namespace fcore{
+    class ll_instruction_node : public ll_ast_node{
 
-class ll_instruction_node : public ll_ast_node{
+    public:
+        explicit ll_instruction_node(isa_instruction_type t);
+        ll_instruction_node(const ll_instruction_node &old_obj);
 
-public:
-    explicit ll_instruction_node(isa_instruction_type t);
-    ll_instruction_node(const ll_instruction_node &old_obj);
-
-    bool is_stop();
-
-
-    virtual uint32_t emit() { return 0;};
-    virtual void print() {};
-    virtual std::string disassemble() {return "";};
-    virtual int instruction_count() { return 0;};
-
-    bool is_terminal() override;
-
-    friend bool operator==(const ll_instruction_node& lhs, const ll_instruction_node& rhs);
-    static bool compare_content_by_type(const std::shared_ptr<ll_instruction_node> &lhs, const std::shared_ptr<ll_instruction_node> &rhs);
-    [[nodiscard]] bool is_pseudo() const { return instruction_type == isa_pseudo_instruction;};
-
-    isa_instruction_type get_type();
-    std::string get_opcode(){return opcode;};
-    virtual std::vector<std::shared_ptr<variable>> get_arguments() {return {};};
-    virtual void set_arguments(const std::vector<std::shared_ptr<variable>> &) {};
-
-    nlohmann::json dump() override;
-    static nlohmann::json dump_instruction_by_type(const std::shared_ptr<ll_instruction_node> &node);
-
-protected:
-
-    isa_instruction_type instruction_type;
-
-    std::string opcode;
+        bool is_stop();
 
 
-};
+        virtual uint32_t emit() { return 0;};
+        virtual void print() {};
+        virtual std::string disassemble() {return "";};
+        virtual int instruction_count() { return 0;};
+
+        bool is_terminal() override;
+
+        friend bool operator==(const ll_instruction_node& lhs, const ll_instruction_node& rhs){
+            bool retval = true;
+
+            retval &= lhs.opcode == rhs.opcode;
+            return retval;
+        };
+        static bool compare_content_by_type(const std::shared_ptr<ll_instruction_node> &lhs, const std::shared_ptr<ll_instruction_node> &rhs);
+        [[nodiscard]] bool is_pseudo() const { return instruction_type == isa_pseudo_instruction;};
+
+        isa_instruction_type get_type();
+        std::string get_opcode(){return opcode;};
+        virtual std::vector<std::shared_ptr<variable>> get_arguments() {return {};};
+        virtual void set_arguments(const std::vector<std::shared_ptr<variable>> &) {};
+
+        nlohmann::json dump() override;
+        static nlohmann::json dump_instruction_by_type(const std::shared_ptr<ll_instruction_node> &node);
+
+    protected:
+
+        isa_instruction_type instruction_type;
+
+        std::string opcode;
+
+
+    };
+}
 
 
 

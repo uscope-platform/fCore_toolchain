@@ -56,16 +56,16 @@ int main(int argc, char **argv) {
     std::ifstream stream;
 
 
-    bin_loader_input_type_t in_type;
+    fcore::bin_loader_input_type_t in_type;
     if(input_mem) {
         stream.open(input_file);
-        in_type = bin_loader_mem_input;
+        in_type = fcore::bin_loader_mem_input;
     } else {
         stream.open(input_file, std::ifstream::binary);
-        in_type = bin_loader_hex_input;
+        in_type = fcore::bin_loader_hex_input;
     }
 
-    fcore_dis dis_engine(stream, in_type);
+    fcore::fcore_dis dis_engine(stream, in_type);
     if(output_json){
         dis_engine.write_json(output_file);
     } else {

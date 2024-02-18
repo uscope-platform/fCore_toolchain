@@ -20,12 +20,13 @@
 #include "tools/variable_map.hpp"
 #include "passes/pass_base.hpp"
 
-
-class load_intercalation_pass: public pass_base<ll_ast_node> {
-public:
-    load_intercalation_pass();
-    std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
-    int get_pass_type() override { return LEAF_PASS;};
-};
+namespace fcore{
+    class load_intercalation_pass: public pass_base<ll_ast_node> {
+    public:
+        load_intercalation_pass();
+        std::shared_ptr<ll_ast_node> process_leaf(std::shared_ptr<ll_ast_node> element) override ;
+        int get_pass_type() override { return LEAF_PASS;};
+    };
+}
 
 #endif //FCORE_TOOLCHAIN_LOAD_INTERCALATION_PASS_HPP

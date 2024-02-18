@@ -16,7 +16,7 @@
 #include "passes/instruction_stream/register_allocation.hpp"
 
 
-register_allocation::register_allocation(
+fcore::register_allocation::register_allocation(
         std::shared_ptr<variable_map> vmap,
         std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm,
         const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
@@ -36,7 +36,7 @@ register_allocation::register_allocation(
     excluded[0] = true;
 }
 
-void register_allocation::setup() {
+void fcore::register_allocation::setup() {
     int memory_idx = 0;
     int inputs_idx = 1;
 
@@ -67,7 +67,7 @@ void register_allocation::setup() {
 
 
 
-std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared_ptr<ll_instruction_node> element) {
+std::shared_ptr<fcore::ll_instruction_node> fcore::register_allocation::apply_pass(std::shared_ptr<ll_instruction_node> element) {
     std::shared_ptr<ll_instruction_node> ret_val = element;
 
     auto arguments = element->get_arguments();
@@ -120,7 +120,7 @@ std::shared_ptr<ll_instruction_node> register_allocation::apply_pass(std::shared
     return ret_val;
 }
 
-void register_allocation::allocate_register(std::shared_ptr<variable> &var, int reg_addr) {
+void fcore::register_allocation::allocate_register(std::shared_ptr<variable> &var, int reg_addr) {
     reg_map.insert(var, reg_addr, var->get_first_occurrence(), var->get_last_occurrence());
     auto lin_identifier = var->get_linear_identifier();
     std::string var_type =get_variable_type(var);
@@ -136,7 +136,7 @@ void register_allocation::allocate_register(std::shared_ptr<variable> &var, int 
     }
 }
 
-void register_allocation::allocate_array(std::shared_ptr<variable> &var, int reg_addr) {
+void fcore::register_allocation::allocate_array(std::shared_ptr<variable> &var, int reg_addr) {
 
     std::pair<int, int> reg_pair = {reg_addr, var->get_size()};
     reg_map.insert(var, reg_pair, var->get_first_occurrence(), var->get_last_occurrence());
@@ -164,7 +164,7 @@ void register_allocation::allocate_array(std::shared_ptr<variable> &var, int reg
 
 }
 
-std::string register_allocation::get_variable_type(std::shared_ptr<variable> &var) {
+std::string fcore::register_allocation::get_variable_type(std::shared_ptr<variable> &var) {
     std::string var_type;
     if(var->get_variable_class() == variable_input_type){
         var_type = "i";

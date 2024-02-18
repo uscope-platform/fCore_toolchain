@@ -20,21 +20,39 @@
 
 #include "data_structures/low_level_ast/ll_instruction_node.hpp"
 #include "data_structures/common/variable.hpp"
+namespace fcore{
 
-class ll_pseudo_instr_node :public ll_instruction_node {
-public:
-    ll_pseudo_instr_node(std::string op, std::vector<std::shared_ptr<variable>> args);
+    class ll_pseudo_instr_node :public ll_instruction_node {
+    public:
+        ll_pseudo_instr_node(std::string op, std::vector<std::shared_ptr<variable>> args);
 
-    std::vector<std::shared_ptr<variable>> get_arguments() {return arguments;};
-    void set_arguments(std::vector<std::shared_ptr<variable>> a) {arguments = std::move(a);};
-    int instruction_count() override;
+        std::vector<std::shared_ptr<variable>> get_arguments() {return arguments;};
+        void set_arguments(std::vector<std::shared_ptr<variable>> a) {arguments = std::move(a);};
+        int instruction_count() override;
 
-    nlohmann::json dump();
-    
-    friend bool operator==(const ll_pseudo_instr_node& lhs, const ll_pseudo_instr_node& rhs);
-private:
-    std::vector<std::shared_ptr<variable>> arguments;
-};
+        nlohmann::json dump();
+
+        friend bool operator==(const ll_pseudo_instr_node& lhs, const ll_pseudo_instr_node& rhs){
+            bool retval = true;
+
+            if(lhs.arguments.empty() && rhs.arguments.empty()){
+                retval &= true;
+            } else if(lhs.arguments.empty() || rhs.arguments.empty()){
+                retval = false;
+            } else {
+                bool args_equal = true;
+                args_equal &= lhs.arguments.size() == rhs.arguments.size();
+                for (int i = 0; i < lhs.arguments.size(); i++) {
+                    args_equal &= *lhs.arguments[i] == *rhs.arguments[i];
+                }
+                retval &= args_equal;
+            }
+            return retval;
+        };
+    private:
+        std::vector<std::shared_ptr<variable>> arguments;
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_LL_PSEUDO_INSTR_NODE_HPP

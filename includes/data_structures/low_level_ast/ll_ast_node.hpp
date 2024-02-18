@@ -25,45 +25,64 @@
 #include "data_structures/common/variable.hpp"
 #include "data_structures/ast_node_base.hpp"
 
+namespace fcore{
+    typedef enum {
+        ll_type_instr = 1,
+        ll_type_for_block = 4,
+        ll_type_program_head = 5,
+        ll_type_pragma = 6,
+        ll_type_code_block = 7,
+    } ll_ast_node_type_t;
 
-typedef enum {
-    ll_type_instr = 1,
-    ll_type_for_block = 4,
-    ll_type_program_head = 5,
-    ll_type_pragma = 6,
-    ll_type_code_block = 7,
-} ll_ast_node_type_t;
-
-constexpr std::string_view ll_ast_node_to_string(ll_ast_node_type_t i){
-    switch (i) {
-        case ll_type_instr:return "ll_type_instr";
-        case ll_type_for_block: return "ll_type_for_block";
-        case ll_type_program_head: return "ll_type_program_head";
-        case ll_type_pragma: return "ll_type_pragma";
-        case ll_type_code_block: return "ll_type_code_block";
+    constexpr std::string_view ll_ast_node_to_string(ll_ast_node_type_t i){
+        switch (i) {
+            case ll_type_instr:return "ll_type_instr";
+            case ll_type_for_block: return "ll_type_for_block";
+            case ll_type_program_head: return "ll_type_program_head";
+            case ll_type_pragma: return "ll_type_pragma";
+            case ll_type_code_block: return "ll_type_code_block";
+        }
+        return "";
     }
-    return "";
+
+    class ll_ast_node : public ast_node_base<ll_ast_node> {
+
+    public:
+        ll_ast_node();
+        explicit ll_ast_node(ll_ast_node_type_t block_type);
+
+        virtual bool is_terminal();
+        static std::shared_ptr<ll_ast_node> deep_copy_element(const std::shared_ptr<ll_ast_node>& element);
+        bool compare_content_by_type(const std::shared_ptr<ll_ast_node> &lhs, const std::shared_ptr<ll_ast_node> &rhs);
+        ll_ast_node_type_t type;
+
+        virtual nlohmann::json dump();
+        static std::vector<nlohmann::json> dump_array(const std::vector<std::shared_ptr<ll_ast_node>>& vect);
+        static nlohmann::json dump_by_type(const std::shared_ptr<ll_ast_node>& node);
+
+        friend bool operator==(const ll_ast_node& lhs, const ll_ast_node& rhs){
+            if(lhs.type != rhs.type) return false;
+
+            bool retval = true;
+            if(lhs.content.empty() && rhs.content.empty()){
+                retval &= true;
+            } else if(lhs.content.empty() || rhs.content.empty()){
+                retval = false;
+            } else {
+                bool args_equal = true;
+                if(lhs.content.size() != rhs.content.size()) return false;
+                for (int i = 0; i < lhs.content.size(); i++) {
+                    args_equal &= *lhs.content[i] == *rhs.content[i];
+                }
+                retval &= args_equal;
+            }
+            return retval;
+
+        };
+
+    };
 }
 
-class ll_ast_node : public ast_node_base<ll_ast_node> {
-
-public:
-    ll_ast_node();
-    explicit ll_ast_node(ll_ast_node_type_t block_type);
-
-    virtual bool is_terminal();
-    static std::shared_ptr<ll_ast_node> deep_copy_element(const std::shared_ptr<ll_ast_node>& element);
-    bool compare_content_by_type(const std::shared_ptr<ll_ast_node> &lhs, const std::shared_ptr<ll_ast_node> &rhs);
-    ll_ast_node_type_t type;
-
-    virtual nlohmann::json dump();
-    static std::vector<nlohmann::json> dump_array(const std::vector<std::shared_ptr<ll_ast_node>>& vect);
-    static nlohmann::json dump_by_type(const std::shared_ptr<ll_ast_node>& node);
-
-    friend bool operator==(const ll_ast_node& lhs, const ll_ast_node& rhs);
-
-
-};
 
 
 

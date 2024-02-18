@@ -18,17 +18,19 @@
 
 #include "data_structures/low_level_ast/low_level_ast.hpp"
 
-class stream_pass_base {
-public:
-    explicit stream_pass_base(std::string n) {name = std::move(n);};
+namespace fcore{
+    class stream_pass_base {
+    public:
+        explicit stream_pass_base(std::string n) {name = std::move(n);};
 
-    virtual void setup() {};
-    virtual std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) {
-        return element;
+        virtual void setup() {};
+        virtual std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) {
+            return element;
+        };
+        std::string get_name() {return name;};
+    private:
+        std::string name;
     };
-    std::string get_name() {return name;};
-private:
-    std::string name;
-};
+}
 
 #endif //FCORE_TOOLCHAIN_STREAM_PASS_BASE_HPP

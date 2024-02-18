@@ -18,15 +18,8 @@
 
 
 
-define::define(int l, std::string n, std::string c) {
+fcore::define::define(int l, std::string n, std::string c) {
 line = l;
 name = std::move(n);
 content = std::move(c);
-}
-
-bool operator==(const define &lhs, const define &rhs) {
-    bool cond = lhs.name == rhs.name;
-    cond &= lhs.line == rhs.line;
-    cond &= lhs.content == rhs.content;
-    return cond;
 }

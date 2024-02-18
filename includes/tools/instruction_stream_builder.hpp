@@ -17,12 +17,13 @@
 #define FCORE_TOOLCHAIN_INSTRUCTION_STREAM_BUILDER_HPP
 
 #include "data_structures/instruction_stream.hpp"
+namespace fcore {
+    class instruction_stream_builder {
+    public:
+        static instruction_stream build_stream(const std::shared_ptr<ll_ast_node>& tree);
 
-class instruction_stream_builder {
-public:
-    static instruction_stream build_stream(const std::shared_ptr<ll_ast_node>& tree);
-
-};
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_INSTRUCTION_STREAM_BUILDER_HPP

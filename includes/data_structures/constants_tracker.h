@@ -24,30 +24,32 @@
 
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
-class constant{
-public:
-    int array_index;
-    std::pair<int, int> validity_range;
-    std::shared_ptr<hl_ast_operand> value;
-};
+namespace fcore{
+    class constant{
+    public:
+        int array_index;
+        std::pair<int, int> validity_range;
+        std::shared_ptr<hl_ast_operand> value;
+    };
 
 
-class constants_tracker {
-public:
-    std::string stringify_index(const std::vector<uint32_t>& v);
-    void add_constant(const std::string& s, std::shared_ptr<hl_ast_operand> op, int instr_idx, std::vector<uint32_t> array_idx);
-    void terminate_constant_range(const std::string &s, int instr_idx, std::vector<uint32_t> array_idx);
-    void terminate_all_constant_ranges(const std::string &s, int instr_idx);
-    bool is_constant(const std::string& s, int instr_idx, std::vector<uint32_t> array_idx);
-    std::shared_ptr<hl_ast_operand> get_constant(const std::string& s, int instr_idx, std::vector<uint32_t> array_idx);
-    bool needs_purging(const std::string& s, std::vector<uint32_t> array_idx);
-    void clear();
+    class constants_tracker {
+    public:
+        std::string stringify_index(const std::vector<uint32_t>& v);
+        void add_constant(const std::string& s, std::shared_ptr<hl_ast_operand> op, int instr_idx, std::vector<uint32_t> array_idx);
+        void terminate_constant_range(const std::string &s, int instr_idx, std::vector<uint32_t> array_idx);
+        void terminate_all_constant_ranges(const std::string &s, int instr_idx);
+        bool is_constant(const std::string& s, int instr_idx, std::vector<uint32_t> array_idx);
+        std::shared_ptr<hl_ast_operand> get_constant(const std::string& s, int instr_idx, std::vector<uint32_t> array_idx);
+        bool needs_purging(const std::string& s, std::vector<uint32_t> array_idx);
+        void clear();
 
-private:
+    private:
 
-    std::unordered_map<std::string, std::unordered_map<std::string , std::vector<constant>>> constants_map;
-    std::unordered_map<std::string, std::unordered_map<std::string, bool>> purge_map;
-};
+        std::unordered_map<std::string, std::unordered_map<std::string , std::vector<constant>>> constants_map;
+        std::unordered_map<std::string, std::unordered_map<std::string, bool>> purge_map;
+    };
+}
 
 
 

@@ -17,12 +17,12 @@
 #include "passes/high_level/operating_assignment_implementation_pass.hpp"
 
 
-operating_assignment_implementation_pass::operating_assignment_implementation_pass() : pass_base<hl_ast_node>("operating assignments implementation pass"){
+fcore::operating_assignment_implementation_pass::operating_assignment_implementation_pass() : pass_base<hl_ast_node>("operating assignments implementation pass"){
 
 }
 
-std::shared_ptr<hl_ast_node>
-operating_assignment_implementation_pass::process_leaf(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node>
+fcore::operating_assignment_implementation_pass::process_leaf(std::shared_ptr<hl_ast_node> element) {
 
     std::shared_ptr<hl_ast_node> ret_val = element;
     if(element->node_type == hl_ast_node_type_expr){
@@ -41,8 +41,8 @@ operating_assignment_implementation_pass::process_leaf(std::shared_ptr<hl_ast_no
 
 }
 
-std::shared_ptr<hl_expression_node>
-operating_assignment_implementation_pass::create_top_expression(assignment_type_t a) {
+std::shared_ptr<fcore::hl_expression_node>
+fcore::operating_assignment_implementation_pass::create_top_expression(assignment_type_t a) {
     std::shared_ptr<hl_expression_node> retval;
     switch (a) {
         case addition_assignment:

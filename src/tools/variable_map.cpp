@@ -16,7 +16,7 @@
 #include "tools/variable_map.hpp"
 
 
-variable_map::variable_map() {
+fcore::variable_map::variable_map() {
     for(int i = 0; i<std::pow(2, fcore_register_address_width); i++){
         std::string reg_name = "r"+std::to_string(i);
         std::shared_ptr<variable> reg = std::make_shared<variable>(reg_name);
@@ -24,11 +24,11 @@ variable_map::variable_map() {
     }
 }
 
-std::shared_ptr<variable> variable_map::operator[](const std::string& key) {
+std::shared_ptr<fcore::variable> fcore::variable_map::operator[](const std::string& key) {
     return map[key];
 }
 
-void variable_map::insert(const std::string& key, std::shared_ptr<variable>item) {
+void fcore::variable_map::insert(const std::string& key, std::shared_ptr<variable>item) {
     std::regex re("r(\\d\\d?)");
     std::smatch m;
     if(map.count(key)>0) return;
@@ -49,39 +49,15 @@ void variable_map::insert(const std::string& key, std::shared_ptr<variable>item)
     map[key] = std::move(item);
 }
 
-unsigned int variable_map::count(const std::string &key) {
+unsigned int fcore::variable_map::count(const std::string &key) {
     return map.count(key);
 }
 
-std::shared_ptr<variable> variable_map::at(const std::string &key) {
+std::shared_ptr<fcore::variable> fcore::variable_map::at(const std::string &key) {
     return map.at(key);
 }
 
-bool operator==(const variable_map &lhs, const variable_map &rhs) {
-    bool retval = true;
 
-    retval &= lhs.n_inputs_ == rhs.n_inputs_;
-    retval &= lhs.n_outputs_ == rhs.n_outputs_;
-    retval &= lhs.n_variables_ == rhs.n_variables_;
-
-    for(auto &i: lhs.map){
-        if(rhs.map.count(i.first)){
-            retval &= *rhs.map.at(i.first) == *lhs.map.at(i.first);
-        } else{
-            retval &= false;
-        }
-
-    }
-    for(auto &i: rhs.map){
-        if(lhs.map.count(i.first)){
-            retval &= *rhs.map.at(i.first) == *lhs.map.at(i.first);
-        } else{
-            retval &= false;
-        }
-    }
-    return retval;
-}
-
-unsigned int variable_map::size() {
+unsigned int fcore::variable_map::size() {
     return map.size();
 }

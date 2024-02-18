@@ -17,41 +17,41 @@
 #include "data_structures/high_level_ast/hl_definition_node.hpp"
 
 
-hl_definition_node::hl_definition_node(std::string n, c_types_t ct, std::shared_ptr<variable> v) : hl_ast_node(hl_ast_node_type_definition) {
+fcore::hl_definition_node::hl_definition_node(std::string n, c_types_t ct, std::shared_ptr<variable> v) : hl_ast_node(hl_ast_node_type_definition) {
     name = std::move(n);
     type = ct;
     constant = false;
     inner_variable = std::move(v);
 }
 
-bool hl_definition_node::is_initialized() {
+bool fcore::hl_definition_node::is_initialized() {
     return !initializer.empty();
 }
 
-void hl_definition_node::set_scalar_initializer(const std::shared_ptr<hl_ast_node>& init) {
+void fcore::hl_definition_node::set_scalar_initializer(const std::shared_ptr<hl_ast_node>& init) {
     initializer.clear();
     initializer.push_back(init);
 
 }
 
-void hl_definition_node::set_constant(bool c) {
+void fcore::hl_definition_node::set_constant(bool c) {
     constant = c;
 }
 
-bool hl_definition_node::is_constant() const {
+bool fcore::hl_definition_node::is_constant() const {
     return constant;
 }
 
-std::shared_ptr<hl_ast_node> hl_definition_node::get_scalar_initializer() {
+std::shared_ptr<fcore::hl_ast_node> fcore::hl_definition_node::get_scalar_initializer() {
     return initializer[0];
 }
 
-void hl_definition_node::set_scalar_initializer(const std::shared_ptr<hl_ast_node> &init, uint32_t idx) {
+void fcore::hl_definition_node::set_scalar_initializer(const std::shared_ptr<hl_ast_node> &init, uint32_t idx) {
     if(initializer.size()<idx) throw std::runtime_error("Error: Attempt to set undefined initializer");
     initializer[idx] = init;
 }
 
-std::string hl_definition_node::pretty_print() {
+std::string fcore::hl_definition_node::pretty_print() {
 
 
     std::ostringstream ss;
@@ -74,34 +74,16 @@ std::string hl_definition_node::pretty_print() {
 
 }
 
-bool operator==(const hl_definition_node &lhs, const hl_definition_node &rhs) {
-    bool ret_val = true;
-
-    ret_val &= lhs.constant == rhs.constant;
-    ret_val &= lhs.type == rhs.type;
-    ret_val &= lhs.name == rhs.name;
-
-
-    ret_val &= hl_ast_node::compare_vectors(lhs.array_index, rhs.array_index);
-    ret_val &= hl_ast_node::compare_vectors(lhs.initializer, rhs.initializer);
-
-    if(lhs.inner_variable == nullptr && rhs.inner_variable == nullptr) ret_val &= true;
-    else if (lhs.inner_variable == nullptr || rhs.inner_variable == nullptr) ret_val &= false;
-    else ret_val &= *lhs.inner_variable == *rhs.inner_variable;
-
-    return ret_val;
-}
-
-void hl_definition_node::set_name(std::string n) {
+void fcore::hl_definition_node::set_name(std::string n) {
     name = std::move(n);
 }
 
-bool hl_definition_node::is_scalar() {
+bool fcore::hl_definition_node::is_scalar() {
     return inner_variable->get_type() != var_type_array;
 }
 
 
-nlohmann::json hl_definition_node::dump() {
+nlohmann::json fcore::hl_definition_node::dump() {
     nlohmann::json retval = hl_ast_node::dump();
 
     retval["array_index"] = hl_ast_node::dump_array(array_index);

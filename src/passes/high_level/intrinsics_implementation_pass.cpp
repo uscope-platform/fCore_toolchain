@@ -15,7 +15,7 @@
 
 #include "passes/high_level/intrinsics_implementation_pass.hpp"
 
-intrinsics_implementation_pass::intrinsics_implementation_pass() : pass_base<hl_ast_node>("intrinsics implementation pass") {
+fcore::intrinsics_implementation_pass::intrinsics_implementation_pass() : pass_base<hl_ast_node>("intrinsics implementation pass") {
     substitutions = {
         std::make_pair("itf", expr_itf),
         std::make_pair("fti", expr_fti),
@@ -44,16 +44,16 @@ intrinsics_implementation_pass::intrinsics_implementation_pass() : pass_base<hl_
     };
 }
 
-std::shared_ptr<hl_ast_node>
-intrinsics_implementation_pass::process_leaf(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node>
+fcore::intrinsics_implementation_pass::process_leaf(std::shared_ptr<hl_ast_node> element) {
 
     std::shared_ptr<hl_ast_node> node = process_node_by_type(element);
 
     return node;
 }
 
-std::shared_ptr<hl_ast_node>
-intrinsics_implementation_pass::process_node_by_type(const std::shared_ptr<hl_ast_node>& element) {
+std::shared_ptr<fcore::hl_ast_node>
+fcore::intrinsics_implementation_pass::process_node_by_type(const std::shared_ptr<hl_ast_node>& element) {
     std::shared_ptr<hl_ast_node> retval = element;
 
     if(element->node_type==hl_ast_node_type_function_call){
@@ -64,8 +64,8 @@ intrinsics_implementation_pass::process_node_by_type(const std::shared_ptr<hl_as
     return retval;
 }
 
-std::shared_ptr<hl_ast_node>
-intrinsics_implementation_pass::process_function_call(const std::shared_ptr<hl_function_call_node> &element) {
+std::shared_ptr<fcore::hl_ast_node>
+fcore::intrinsics_implementation_pass::process_function_call(const std::shared_ptr<hl_function_call_node> &element) {
 
     for(auto &item:element->get_arguments()){
         item = process_node_by_type(item);

@@ -25,27 +25,28 @@
 #include <utility>
 
 #include "data_structures/common/io_map_entry.hpp"
+namespace fcore{
+    class executable {
+    public:
+        executable();
+        static void split_word(uint32_t w, uint16_t fields[2]){
+            fields[0] = w&0xFFFF;
+            fields[1] = (w&0xFFFF0000)>>16;
+        }
+        explicit executable(std::vector<uint32_t> executable);
+        void add_code_section(std::vector<uint32_t> code);
+        void add_io_mapping(const std::set<io_map_entry>& iom);
+        std::vector<uint32_t> get_executable();
+        std::vector<uint32_t> get_code();
+        std::set<std::pair<uint16_t, uint16_t>> get_io_mapping();
+        void generate_metadata();
+        bool is_io_mapped() {return io_mapping_present;};
+    private:
 
-class executable {
-public:
-    executable();
-    static void split_word(uint32_t w, uint16_t fields[2]){
-        fields[0] = w&0xFFFF;
-        fields[1] = (w&0xFFFF0000)>>16;
-    }
-    explicit executable(std::vector<uint32_t> executable);
-    void add_code_section(std::vector<uint32_t> code);
-    void add_io_mapping(const std::set<io_map_entry>& iom);
-    std::vector<uint32_t> get_executable();
-    std::vector<uint32_t> get_code();
-    std::set<std::pair<uint16_t, uint16_t>> get_io_mapping();
-    void generate_metadata();
-    bool is_io_mapped() {return io_mapping_present;};
-private:
-
-    std::unordered_map<std::string, std::vector<uint32_t>> sections;
-    bool io_mapping_present = false;
-};
+        std::unordered_map<std::string, std::vector<uint32_t>> sections;
+        bool io_mapping_present = false;
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_EXECUTABLE_HPP

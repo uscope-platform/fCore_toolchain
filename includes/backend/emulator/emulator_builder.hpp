@@ -30,50 +30,52 @@
 #include "emulator.hpp"
 #include "fcore_cc.hpp"
 
+namespace fcore {
+    class emulator_builder {
+    public:
+        emulator_builder(bool dbg);
+        emulator_metadata load_json_program(const nlohmann::json &core_info, const std::vector<nlohmann::json> &input_connections,
+                                            const std::vector<nlohmann::json> &output_connections, std::set<io_map_entry> &am);
 
-class emulator_builder {
-public:
-    emulator_builder(bool dbg);
-    emulator_metadata load_json_program(const nlohmann::json &core_info, const std::vector<nlohmann::json> &input_connections,
-                                   const std::vector<nlohmann::json> &output_connections, std::set<io_map_entry> &am);
+        void clear_dma_io() {dma_io.clear();};
+        std::map<int, std::string> get_core_ordering(){return cores_ordering;};
 
-    void clear_dma_io() {dma_io.clear();};
-    std::map<int, std::string> get_core_ordering(){return cores_ordering;};
+        std::vector<uint32_t>  compile_programs(
+                const nlohmann::json &core_info,
+                const std::vector<nlohmann::json> &input_connections,
+                const std::vector<nlohmann::json> &output_connections,
+                std::set<io_map_entry> &am
+        );
 
-    std::vector<uint32_t>  compile_programs(
-            const nlohmann::json &core_info,
-            const std::vector<nlohmann::json> &input_connections,
-            const std::vector<nlohmann::json> &output_connections,
-            std::set<io_map_entry> &am
-    );
+    private:
 
-private:
+        void process_interconnects(
+                const std::vector<nlohmann::json> &input_connections,
+                const std::vector<nlohmann::json> &output_connections,
+                std::set<std::string> memories
+        );
 
-    void process_interconnects(
-            const std::vector<nlohmann::json> &input_connections,
-            const std::vector<nlohmann::json> &output_connections,
-            std::set<std::string> memories
-    );
+        void process_ioms(
+                const nlohmann::json &inputs,
+                const nlohmann::json &outputs,
+                const nlohmann::json &memory_init_specs,
+                const std::set<std::string> memories
+        );
 
-    void process_ioms(
-            const nlohmann::json &inputs,
-            const nlohmann::json &outputs,
-            const nlohmann::json &memory_init_specs,
-            const std::set<std::string> memories
-    );
-
-    nlohmann::json dma_io;
-    std::set<uint32_t> assigned_inputs;
-    std::set<uint32_t> assigned_outputs;
-    std::set<std::string> memory_names;
+        nlohmann::json dma_io;
+        std::set<uint32_t> assigned_inputs;
+        std::set<uint32_t> assigned_outputs;
+        std::set<std::string> memory_names;
 
 
-    std::map<int, std::string> cores_ordering;
-    cores_ordering_t ordering_style = no_ordering;
-    int implicit_order_idx = 0;
+        std::map<int, std::string> cores_ordering;
+        cores_ordering_t ordering_style = no_ordering;
+        int implicit_order_idx = 0;
 
-    bool debug_autogen;
-};
+        bool debug_autogen;
+    };
+}
+
 
 
 #endif //FCORE_TOOLCHAIN_EMULATOR_BUILDER_HPP

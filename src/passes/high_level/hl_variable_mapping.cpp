@@ -15,18 +15,18 @@
 
 #include "passes/high_level/hl_variable_mapping.hpp"
 
-hl_variable_mapping::hl_variable_mapping(std::shared_ptr<variable_map> &v) : pass_base<hl_ast_node>("high level variable mapping"){
+fcore::hl_variable_mapping::hl_variable_mapping(std::shared_ptr<variable_map> &v) : pass_base<hl_ast_node>("high level variable mapping"){
     var_map = v;
 }
 
-std::shared_ptr<hl_ast_node> hl_variable_mapping::process_global(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node> fcore::hl_variable_mapping::process_global(std::shared_ptr<hl_ast_node> element) {
     for(auto &i:element->get_content()){
         process_var(i);
     }
     return element;
 }
 
-void hl_variable_mapping::process_var(std::shared_ptr<hl_ast_node> element) {
+void fcore::hl_variable_mapping::process_var(std::shared_ptr<hl_ast_node> element) {
     if(element->node_type == hl_ast_node_type_definition) {
         std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(element);
         if (node->is_initialized()) process_var(node->get_scalar_initializer());

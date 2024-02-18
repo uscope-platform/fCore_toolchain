@@ -15,11 +15,11 @@
 
 #include "passes/high_level/array_initialization_substitution.h"
 
-array_initialization_substitution::array_initialization_substitution() : pass_base<hl_ast_node>("array_initialization_substitution"){
+fcore::array_initialization_substitution::array_initialization_substitution() : pass_base<hl_ast_node>("array_initialization_substitution"){
 
 }
 
-std::shared_ptr<hl_ast_node> array_initialization_substitution::process_global(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node> fcore::array_initialization_substitution::process_global(std::shared_ptr<hl_ast_node> element) {
     std::vector<std::shared_ptr<hl_ast_node>> new_content;
 
     for(auto &item:element->get_content()){
@@ -32,8 +32,8 @@ std::shared_ptr<hl_ast_node> array_initialization_substitution::process_global(s
 }
 
 
-std::vector<std::shared_ptr<hl_ast_node>>
-array_initialization_substitution::process_node_by_type(const std::shared_ptr<hl_ast_node> &node) {
+std::vector<std::shared_ptr<fcore::hl_ast_node>>
+fcore::array_initialization_substitution::process_node_by_type(const std::shared_ptr<hl_ast_node> &node) {
     if(node->node_type == hl_ast_node_type_definition){
         auto def = std::static_pointer_cast<hl_definition_node>(node);
         if(!def->is_scalar()){
@@ -63,7 +63,7 @@ array_initialization_substitution::process_node_by_type(const std::shared_ptr<hl
 }
 
 
-std::shared_ptr<hl_expression_node> array_initialization_substitution::build_initialization_expr(const std::shared_ptr<hl_definition_node>& def, int index) {
+std::shared_ptr<fcore::hl_expression_node> fcore::array_initialization_substitution::build_initialization_expr(const std::shared_ptr<hl_definition_node>& def, int index) {
     std::shared_ptr<hl_expression_node> init_expr = std::make_shared<hl_expression_node>(expr_assign);
     init_expr->set_rhs(def->get_array_initializer()[index]);
     std::shared_ptr<variable> var = std::make_shared<variable>(def->get_name());

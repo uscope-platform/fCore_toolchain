@@ -19,20 +19,22 @@
 #include <spdlog/spdlog.h>
 #include <string>
 
+namespace fcore{
+    class gp_executor {
+    public:
+        uint32_t execute_add(uint32_t a, uint32_t b);
+        uint32_t execute_sub(uint32_t a, uint32_t b);
+        uint32_t execute_mul(uint32_t a, uint32_t b);
+        uint32_t execute_rec(uint32_t a);
+        uint32_t execute_fti(uint32_t a);
+        uint32_t execute_itf(uint32_t a);
+    private:
 
-class gp_executor {
-public:
-    uint32_t execute_add(uint32_t a, uint32_t b);
-    uint32_t execute_sub(uint32_t a, uint32_t b);
-    uint32_t execute_mul(uint32_t a, uint32_t b);
-    uint32_t execute_rec(uint32_t a);
-    uint32_t execute_fti(uint32_t a);
-    uint32_t execute_itf(uint32_t a);
-private:
+        static uint32_t float_to_uint32(float f);
+        static float uint32_to_float(uint32_t u);
+    };
+}
 
-    static uint32_t float_to_uint32(float f);
-    static float uint32_to_float(uint32_t u);
-};
 
 
 

@@ -20,6 +20,7 @@
 #include "data_structures/common/variable.hpp"
 #include "data_structures/low_level_ast/low_level_ast.hpp"
 
+using namespace fcore;
 
 TEST(InstructionClasses, register_instruction) {
 

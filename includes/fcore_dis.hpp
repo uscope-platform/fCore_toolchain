@@ -27,22 +27,23 @@
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "backend/assembly_generator.hpp"
 
+namespace fcore{
+    class fcore_dis {
+    public:
+        fcore_dis(std::istream &input, bin_loader_input_type_t in_type);
+        explicit fcore_dis(const std::vector<uint32_t> &mem);
+        std::string get_errors();
+        void write_json(const std::string& output_file);
+        std::string get_disassenbled_program();
+        void write_disassembled_program(const std::string& output_file);
+    private:
+        void process_ast(std::shared_ptr<ll_ast_node> ast);
+        std::shared_ptr<ll_ast_node> ll_ast;
+        std::unordered_map<uint16_t, uint16_t> io_map;
+        std::unique_ptr<assembly_generator> gen;
+        std::string error_code;
+    };
+}
 
-
-class fcore_dis {
-public:
-    fcore_dis(std::istream &input, bin_loader_input_type_t in_type);
-    explicit fcore_dis(const std::vector<uint32_t> &mem);
-    std::string get_errors();
-    void write_json(const std::string& output_file);
-    std::string get_disassenbled_program();
-    void write_disassembled_program(const std::string& output_file);
-private:
-    void process_ast(std::shared_ptr<ll_ast_node> ast);
-    std::shared_ptr<ll_ast_node> ll_ast;
-    std::unordered_map<uint16_t, uint16_t> io_map;
-    std::unique_ptr<assembly_generator> gen;
-    std::string error_code;
-};
 
 #endif //FCORE_TOOLCHAIN_FCORE_DIS_H

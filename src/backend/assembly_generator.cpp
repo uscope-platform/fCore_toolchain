@@ -15,7 +15,7 @@
 
 #include "backend/assembly_generator.hpp"
 
-assembly_generator::assembly_generator(const instruction_stream &stream) {
+fcore::assembly_generator::assembly_generator(const instruction_stream &stream) {
     std::ostringstream disassembled_program;
 
     for(const auto& item:stream){
@@ -24,7 +24,7 @@ assembly_generator::assembly_generator(const instruction_stream &stream) {
     program = disassembled_program.str();
 }
 
-void assembly_generator::write_program(const std::string &filename) {
+void fcore::assembly_generator::write_program(const std::string &filename) {
     std::ofstream output(filename);
 
     if(!io_map.empty()){

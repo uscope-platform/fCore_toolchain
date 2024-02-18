@@ -17,11 +17,11 @@
 
 #include "passes/high_level/dead_variable_elimination.hpp"
 
-dead_variable_elimination::dead_variable_elimination() : pass_base<hl_ast_node>("dead variable elimination"){
+fcore::dead_variable_elimination::dead_variable_elimination() : pass_base<hl_ast_node>("dead variable elimination"){
 
 }
 
-std::shared_ptr<hl_ast_node> dead_variable_elimination::process_global(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node> fcore::dead_variable_elimination::process_global(std::shared_ptr<hl_ast_node> element) {
     std::shared_ptr<hl_ast_node> retval =  std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
     std::vector<std::shared_ptr<hl_ast_node>> new_body;
 

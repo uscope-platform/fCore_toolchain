@@ -15,44 +15,31 @@
 
 #include "data_structures/instruction_stream.hpp"
 
-void instruction_stream::push_back(const std::shared_ptr<ll_instruction_node>& item) {
+void fcore::instruction_stream::push_back(const std::shared_ptr<ll_instruction_node>& item) {
  stream_store.push_back(item);
 }
 
-void instruction_stream::push_back(const instruction_stream &stream_in) {
+void fcore::instruction_stream::push_back(const instruction_stream &stream_in) {
     stream_store.insert(stream_store.end(), stream_in.begin(), stream_in.end());
 }
 
-bool instruction_stream::empty(instruction_stream &store) {
+bool fcore::instruction_stream::empty(instruction_stream &store) {
     return store.empty();
 }
 
-unsigned long instruction_stream::size(instruction_stream &store) {
+unsigned long fcore::instruction_stream::size(instruction_stream &store) {
     return store.size();
 }
 
-bool instruction_stream::empty() {
+bool fcore::instruction_stream::empty() {
     return stream_store.empty();
 }
 
-unsigned long instruction_stream::size() {
+unsigned long fcore::instruction_stream::size() {
     return stream_store.size();
 }
 
-bool operator==(const instruction_stream &lhs, const instruction_stream &rhs) {
-    bool retval = true;
-
-    if(lhs.stream_store.size() != rhs.stream_store.size()){
-        retval = false;
-    } else{
-        for(unsigned long i = 0; i<lhs.stream_store.size();++i){
-            retval &= ll_instruction_node::compare_content_by_type(lhs.stream_store[i],rhs.stream_store[i]);
-        }
-    }
-    return retval;
-}
-
-nlohmann::json instruction_stream::dump() {
+nlohmann::json fcore::instruction_stream::dump() {
     nlohmann::json retval;
     std::vector<nlohmann::json> stream;
     for(const auto &i:stream_store){

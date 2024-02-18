@@ -21,13 +21,15 @@
 #include "data_structures/low_level_ast/low_level_ast.hpp"
 #include "passes/pass_base.hpp"
 
-class loop_implementation_pass : public pass_base<ll_ast_node> {
+namespace fcore{
+    class loop_implementation_pass : public pass_base<ll_ast_node> {
 
-public:
-    loop_implementation_pass();
-    std::vector<std::shared_ptr<ll_ast_node>>process_node(std::shared_ptr<ll_ast_node> element) override;
-    int get_pass_type() override { return NODE_PASS;};
-};
+    public:
+        loop_implementation_pass();
+        std::vector<std::shared_ptr<ll_ast_node>>process_node(std::shared_ptr<ll_ast_node> element) override;
+        int get_pass_type() override { return NODE_PASS;};
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_LOOP_IMPLEMENTATION_PASS_HPP

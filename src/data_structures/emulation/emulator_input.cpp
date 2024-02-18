@@ -16,20 +16,20 @@
 
 #include <utility>
 
-void emulator_input::set_data(std::vector<uint32_t> d) {
+void fcore::emulator_input::set_data(std::vector<uint32_t> d) {
     data = std::move(d);
     input_source = emulator_in_type_vector;
 }
 
 
-void emulator_input::set_data(uint32_t d) {
+void fcore::emulator_input::set_data(uint32_t d) {
     data = std::vector<uint32_t>();
     data.push_back(d);
     input_source = emulator_in_type_constant;
 }
 
 
-uint32_t emulator_input::get_data(uint32_t i) {
+uint32_t fcore::emulator_input::get_data(uint32_t i) {
     if(input_source == emulator_in_type_constant){
         return data[0];
     } else{

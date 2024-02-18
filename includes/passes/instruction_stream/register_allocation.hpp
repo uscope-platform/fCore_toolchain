@@ -27,30 +27,31 @@
 #include "tools/array_linearizer.hpp"
 #include "data_structures/common/io_map_entry.hpp"
 
+namespace fcore{
+    class register_allocation : public stream_pass_base{
+    public:
+        register_allocation(
+                std::shared_ptr<variable_map> vmap,
+                std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm,
+                const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
+        );
+        void setup() override;
+        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
+    private:
+        void allocate_register(std::shared_ptr<variable> &var, int reg_addr);
+        void allocate_array(std::shared_ptr<variable> &var, int reg_addr);
+        std::string get_variable_type(std::shared_ptr<variable> &var);
+        register_map reg_map;
+        std::shared_ptr<variable_map> var_map;
+        std::unordered_map<std::string, int> io_reservations;
+        std::vector<bool> excluded;
 
-class register_allocation : public stream_pass_base{
-public:
-    register_allocation(
-            std::shared_ptr<variable_map> vmap,
-            std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm,
-            const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
-            );
-    void setup() override;
-    std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
-private:
-    void allocate_register(std::shared_ptr<variable> &var, int reg_addr);
-    void allocate_array(std::shared_ptr<variable> &var, int reg_addr);
-    std::string get_variable_type(std::shared_ptr<variable> &var);
-    register_map reg_map;
-    std::shared_ptr<variable_map> var_map;
-    std::unordered_map<std::string, int> io_reservations;
-    std::vector<bool> excluded;
-
-    std::unordered_map<std::string, std::pair<int, int>> allocated_contiguous_arrays;
-    std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>> allocation_map;
-    std::unordered_map<std::string, int> input_allocations;
-    std::unordered_map<std::string, int> memory_vars;
-};
+        std::unordered_map<std::string, std::pair<int, int>> allocated_contiguous_arrays;
+        std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>> allocation_map;
+        std::unordered_map<std::string, int> input_allocations;
+        std::unordered_map<std::string, int> memory_vars;
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_REGISTER_ALLOCATION_HPP

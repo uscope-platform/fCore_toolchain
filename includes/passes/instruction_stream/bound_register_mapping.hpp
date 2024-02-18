@@ -20,15 +20,17 @@
 #include "passes/instruction_stream/stream_pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
-class bound_register_mapping_pass : public stream_pass_base{
-public:
-    bound_register_mapping_pass();
-    std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
-private:
-    std::shared_ptr<ll_instruction_node> process_reg_instr(std::shared_ptr<ll_instruction_node> node);
-    std::shared_ptr<ll_instruction_node> process_conv_instr(std::shared_ptr<ll_instruction_node> node);
-    std::shared_ptr<ll_instruction_node> process_load_instr(std::shared_ptr<ll_instruction_node> node);
-};
+namespace fcore{
+    class bound_register_mapping_pass : public stream_pass_base{
+    public:
+        bound_register_mapping_pass();
+        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
+    private:
+        std::shared_ptr<ll_instruction_node> process_reg_instr(std::shared_ptr<ll_instruction_node> node);
+        std::shared_ptr<ll_instruction_node> process_conv_instr(std::shared_ptr<ll_instruction_node> node);
+        std::shared_ptr<ll_instruction_node> process_load_instr(std::shared_ptr<ll_instruction_node> node);
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_BOUND_REGISTER_MAPPING_PASS_HPP

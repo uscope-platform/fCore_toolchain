@@ -20,26 +20,35 @@
 
 #include "data_structures/low_level_ast/ll_instruction_node.hpp"
 #include <utility>
+namespace fcore{
+    class ll_conversion_instr_node: public ll_instruction_node {
+    public:
+        ll_conversion_instr_node(std::string op, std::shared_ptr<variable> s, std::shared_ptr<variable> d);
+        uint32_t emit() override;
+        void print() override;
+        std::string disassemble() override;
+        int instruction_count() override;
 
-class ll_conversion_instr_node: public ll_instruction_node {
-public:
-    ll_conversion_instr_node(std::string op, std::shared_ptr<variable> s, std::shared_ptr<variable> d);
-    uint32_t emit() override;
-    void print() override;
-    std::string disassemble() override;
-    int instruction_count() override;
+        std::shared_ptr<variable> get_source() {return source;};
+        std::shared_ptr<variable> get_destination() {return destination;};
+        std::vector<std::shared_ptr<variable>> get_arguments() override {return {source, destination};};
+        void set_arguments(const std::vector<std::shared_ptr<variable>> &a) override;
 
-    std::shared_ptr<variable> get_source() {return source;};
-    std::shared_ptr<variable> get_destination() {return destination;};
-    std::vector<std::shared_ptr<variable>> get_arguments() override {return {source, destination};};
-    void set_arguments(const std::vector<std::shared_ptr<variable>> &a) override;
+        nlohmann::json dump() override;
+        friend bool operator==(const ll_conversion_instr_node& lhs, const ll_conversion_instr_node& rhs){
+            bool retval = true;
 
-    nlohmann::json dump() override;
-    friend bool operator==(const ll_conversion_instr_node& lhs, const ll_conversion_instr_node& rhs);
-private:
-    std::shared_ptr<variable> source;
-    std::shared_ptr<variable> destination;
-};
+            retval &= *lhs.source == *rhs.source;
+            retval &= *lhs.destination == *rhs.destination;
+            retval &= rhs.opcode == lhs.opcode;
+            return retval;
+        };
+    private:
+        std::shared_ptr<variable> source;
+        std::shared_ptr<variable> destination;
+    };
+}
+
 
 
 #endif //FCORE_TOOLCHAIN_LL_CONVERSION_INSTR_NODE_HPP

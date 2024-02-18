@@ -17,11 +17,11 @@
 #include "passes/high_level/function_inlining_pass.hpp"
 
 
-function_inlining_pass::function_inlining_pass() : pass_base<hl_ast_node>("function inlining pass"){
+fcore::function_inlining_pass::function_inlining_pass() : pass_base<hl_ast_node>("function inlining pass"){
 
 }
 
-std::shared_ptr<hl_ast_node> function_inlining_pass::process_global(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node> fcore::function_inlining_pass::process_global(std::shared_ptr<hl_ast_node> element) {
 
     for(auto &item:element->get_content()){
         if(item->node_type == hl_ast_node_type_function_def){
@@ -39,7 +39,7 @@ std::shared_ptr<hl_ast_node> function_inlining_pass::process_global(std::shared_
     return element;
 }
 
-std::vector<std::shared_ptr<hl_ast_node>> function_inlining_pass::process_element(std::shared_ptr<hl_ast_node> element) {
+std::vector<std::shared_ptr<fcore::hl_ast_node>> fcore::function_inlining_pass::process_element(std::shared_ptr<hl_ast_node> element) {
     switch (element->node_type) {
         case hl_ast_node_type_expr:
             return {process_expression(std::static_pointer_cast<hl_expression_node>(element))};
@@ -60,7 +60,7 @@ std::vector<std::shared_ptr<hl_ast_node>> function_inlining_pass::process_elemen
     }
 }
 
-std::shared_ptr<hl_ast_loop_node> function_inlining_pass::process_loop(std::shared_ptr<hl_ast_loop_node> element) {
+std::shared_ptr<fcore::hl_ast_loop_node> fcore::function_inlining_pass::process_loop(std::shared_ptr<hl_ast_loop_node> element) {
 
     std::vector<std::shared_ptr<hl_ast_node>> processed_condition = process_expression(element->get_condition());
     if(processed_condition.size()>1){
@@ -90,8 +90,8 @@ std::shared_ptr<hl_ast_loop_node> function_inlining_pass::process_loop(std::shar
     return element;
 }
 
-std::shared_ptr<hl_ast_conditional_node>
-function_inlining_pass::process_conditional(std::shared_ptr<hl_ast_conditional_node> element) {
+std::shared_ptr<fcore::hl_ast_conditional_node>
+fcore::function_inlining_pass::process_conditional(std::shared_ptr<hl_ast_conditional_node> element) {
     element->set_condition(process_element(element->get_condition())[0]);
 
     std::vector<std::shared_ptr<hl_ast_node>> new_content;
@@ -111,8 +111,8 @@ function_inlining_pass::process_conditional(std::shared_ptr<hl_ast_conditional_n
     return element;
 }
 
-std::vector<std::shared_ptr<hl_ast_node>>
-function_inlining_pass::process_expression(std::shared_ptr<hl_expression_node> element) {
+std::vector<std::shared_ptr<fcore::hl_ast_node>>
+fcore::function_inlining_pass::process_expression(std::shared_ptr<hl_expression_node> element) {
     std::vector<std::shared_ptr<hl_ast_node>> ret_val;
    if(!element->is_immediate()){
        if(!element->is_unary()){
@@ -138,8 +138,8 @@ function_inlining_pass::process_expression(std::shared_ptr<hl_expression_node> e
     return ret_val;
 }
 
-std::vector<std::shared_ptr<hl_ast_node>>
-function_inlining_pass::process_definition(std::shared_ptr<hl_definition_node> element) {
+std::vector<std::shared_ptr<fcore::hl_ast_node>>
+fcore::function_inlining_pass::process_definition(std::shared_ptr<hl_definition_node> element) {
 
     std::vector<std::shared_ptr<hl_ast_node>> ret_val;
 
@@ -174,8 +174,8 @@ function_inlining_pass::process_definition(std::shared_ptr<hl_definition_node> e
     return ret_val;
 }
 
-std::shared_ptr<hl_function_def_node>
-function_inlining_pass::process_function_def(std::shared_ptr<hl_function_def_node> element) {
+std::shared_ptr<fcore::hl_function_def_node>
+fcore::function_inlining_pass::process_function_def(std::shared_ptr<hl_function_def_node> element) {
 
 
     std::vector<std::shared_ptr<hl_ast_node>> new_content;
@@ -197,13 +197,13 @@ function_inlining_pass::process_function_def(std::shared_ptr<hl_function_def_nod
     return element;
 }
 
-std::shared_ptr<hl_ast_operand> function_inlining_pass::process_operand(std::shared_ptr<hl_ast_operand> element) {
+std::shared_ptr<fcore::hl_ast_operand> fcore::function_inlining_pass::process_operand(std::shared_ptr<hl_ast_operand> element) {
     return element;
 }
 
 
-std::vector<std::shared_ptr<hl_ast_node>>
-function_inlining_pass::process_function_call(std::shared_ptr<hl_function_call_node> f_call) {
+std::vector<std::shared_ptr<fcore::hl_ast_node>>
+fcore::function_inlining_pass::process_function_call(std::shared_ptr<hl_function_call_node> f_call) {
     std::shared_ptr<hl_ast_node> ret_val;
 
 
@@ -245,7 +245,7 @@ function_inlining_pass::process_function_call(std::shared_ptr<hl_function_call_n
     return {inlined_code};
     }
 
- std::shared_ptr<hl_ast_node> function_inlining_pass::substitute_arguments(const std::shared_ptr<hl_ast_node> &statement,
+ std::shared_ptr<fcore::hl_ast_node> fcore::function_inlining_pass::substitute_arguments(const std::shared_ptr<hl_ast_node> &statement,
                                                                            std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
     std::shared_ptr<hl_ast_node> retval = statement;
     if (statement->node_type == hl_ast_node_type_expr){
@@ -264,8 +264,8 @@ function_inlining_pass::process_function_call(std::shared_ptr<hl_function_call_n
      return retval;
 }
 
-std::shared_ptr<hl_ast_node>
-function_inlining_pass::substitute_loop_arguments(const std::shared_ptr<hl_ast_loop_node> &statement,
+std::shared_ptr<fcore::hl_ast_node>
+fcore::function_inlining_pass::substitute_loop_arguments(const std::shared_ptr<hl_ast_loop_node> &statement,
                                                   std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
 
     std::vector<std::shared_ptr<hl_ast_node>> tmp_vect;
@@ -286,8 +286,8 @@ function_inlining_pass::substitute_loop_arguments(const std::shared_ptr<hl_ast_l
     return statement;
 }
 
-std::shared_ptr<hl_ast_node>
-function_inlining_pass::substitute_conditional_arguments(const std::shared_ptr<hl_ast_conditional_node> &statement,
+std::shared_ptr<fcore::hl_ast_node>
+fcore::function_inlining_pass::substitute_conditional_arguments(const std::shared_ptr<hl_ast_conditional_node> &statement,
                                                          std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
 
     std::vector<std::shared_ptr<hl_ast_node>> tmp_vect;
@@ -306,8 +306,8 @@ function_inlining_pass::substitute_conditional_arguments(const std::shared_ptr<h
     return statement;
 }
 
-std::shared_ptr<hl_ast_node>
-function_inlining_pass::substitute_expression_arguments(const std::shared_ptr<hl_expression_node> &statement,
+std::shared_ptr<fcore::hl_ast_node>
+fcore::function_inlining_pass::substitute_expression_arguments(const std::shared_ptr<hl_expression_node> &statement,
                                                         std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
     if(statement->is_immediate()){
         return statement;
@@ -322,8 +322,8 @@ function_inlining_pass::substitute_expression_arguments(const std::shared_ptr<hl
     return statement;
 }
 
-std::shared_ptr<hl_ast_node>
-function_inlining_pass::substitute_definition_arguments(const std::shared_ptr<hl_definition_node> &statement,
+std::shared_ptr<fcore::hl_ast_node>
+fcore::function_inlining_pass::substitute_definition_arguments(const std::shared_ptr<hl_definition_node> &statement,
                                                         std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
     if(statement->is_initialized()){
         std::shared_ptr<hl_ast_node> tmp = statement->get_scalar_initializer();
@@ -351,8 +351,8 @@ function_inlining_pass::substitute_definition_arguments(const std::shared_ptr<hl
 
     return statement;
 }
-std::shared_ptr<hl_ast_node>
-function_inlining_pass::substitute_code_block(const std::shared_ptr<hl_ast_node> &statement,
+std::shared_ptr<fcore::hl_ast_node>
+fcore::function_inlining_pass::substitute_code_block(const std::shared_ptr<hl_ast_node> &statement,
                                               std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
 
     std::shared_ptr<hl_ast_node> ret_code_block = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
@@ -368,8 +368,8 @@ function_inlining_pass::substitute_code_block(const std::shared_ptr<hl_ast_node>
 
 }
 
-std::shared_ptr<hl_ast_node>
-function_inlining_pass::substitute_operand_arguments(const std::shared_ptr<hl_ast_operand> &old_operand,
+std::shared_ptr<fcore::hl_ast_node>
+fcore::function_inlining_pass::substitute_operand_arguments(const std::shared_ptr<hl_ast_operand> &old_operand,
                                                      std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
 
 

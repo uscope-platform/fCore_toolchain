@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
     std::string results;
 
     try{
-        emulator_manager emu_manager(specs, debug_autogen, SCHEMAS_FOLDER);
+        fcore::emulator_manager emu_manager(specs, debug_autogen, SCHEMAS_FOLDER);
         emu_manager.process();
         emu_manager.emulate();
         results = emu_manager.get_results();

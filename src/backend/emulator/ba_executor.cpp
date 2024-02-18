@@ -16,14 +16,14 @@
 #include "backend/emulator/ba_executor.hpp"
 
 
-ba_executor::ba_executor() {
+fcore::ba_executor::ba_executor() {
     xip_fpo_init2(xil_a, 8, 24);
     xip_fpo_init2(xil_b, 8, 24);
     xip_fpo_init2(xil_res, 8, 24);
     xip_fpo_fix_init2(xil_a_fixed_point, 32, 0);
 }
 
-uint32_t ba_executor::execute_add(uint32_t a, uint32_t b) {
+uint32_t fcore::ba_executor::execute_add(uint32_t a, uint32_t b) {
     if(b==0){ // I must be doing something wrong... investigate why these are necessary
         return a;
     } else if(a==0){
@@ -41,7 +41,7 @@ uint32_t ba_executor::execute_add(uint32_t a, uint32_t b) {
     return float_to_uint32(fv);
 }
 
-uint32_t ba_executor::execute_sub(uint32_t a, uint32_t b) {
+uint32_t fcore::ba_executor::execute_sub(uint32_t a, uint32_t b) {
     xip_fpo_set_flt(xil_a, uint32_to_float(a));
     xip_fpo_set_flt(xil_b, uint32_to_float(b));
 
@@ -54,7 +54,7 @@ uint32_t ba_executor::execute_sub(uint32_t a, uint32_t b) {
     return float_to_uint32(xip_fpo_get_flt(xil_res));
 }
 
-uint32_t ba_executor::execute_mul(uint32_t a, uint32_t b) {
+uint32_t fcore::ba_executor::execute_mul(uint32_t a, uint32_t b) {
     xip_fpo_set_flt(xil_a, uint32_to_float(a));
     xip_fpo_set_flt(xil_b, uint32_to_float(b));
 
@@ -66,7 +66,7 @@ uint32_t ba_executor::execute_mul(uint32_t a, uint32_t b) {
     return float_to_uint32(xip_fpo_get_flt(xil_res));
 }
 
-uint32_t ba_executor::execute_rec(uint32_t a) {
+uint32_t fcore::ba_executor::execute_rec(uint32_t a) {
     xip_fpo_set_flt(xil_a, uint32_to_float(a));
 
     xip_fpo_exc_t exc = xip_fpo_rec(xil_res, xil_a);
@@ -78,7 +78,7 @@ uint32_t ba_executor::execute_rec(uint32_t a) {
     return float_to_uint32(xip_fpo_get_flt(xil_res));
 }
 
-uint32_t ba_executor::execute_fti(uint32_t a) {
+uint32_t fcore::ba_executor::execute_fti(uint32_t a) {
     xip_fpo_set_flt(xil_a, uint32_to_float(a));
 
     xip_fpo_exc_t exc = xip_fpo_flttofix(xil_a_fixed_point, xil_a);
@@ -90,7 +90,7 @@ uint32_t ba_executor::execute_fti(uint32_t a) {
 }
 
 
-uint32_t ba_executor::execute_itf(uint32_t a) {
+uint32_t fcore::ba_executor::execute_itf(uint32_t a) {
     xip_fpo_fix_set_si(xil_a_fixed_point, (int32_t)a);
     xip_fpo_exc_t exc = xip_fpo_fixtoflt(xil_res, xil_a_fixed_point);
 
@@ -102,13 +102,13 @@ uint32_t ba_executor::execute_itf(uint32_t a) {
 }
 
 
-uint32_t ba_executor::float_to_uint32(float f) {
+uint32_t fcore::ba_executor::float_to_uint32(float f) {
     uint32_t ret;
     memcpy(&ret, &f, sizeof(f));
     return ret;
 }
 
-float ba_executor::uint32_to_float(uint32_t u) {
+float fcore::ba_executor::uint32_to_float(uint32_t u) {
     float ret;
     memcpy(&ret, &u, sizeof(u));
     return ret;

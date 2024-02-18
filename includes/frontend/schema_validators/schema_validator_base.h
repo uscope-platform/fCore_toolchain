@@ -29,8 +29,7 @@
 #include <valijson/schema_parser.hpp>
 #include <valijson/validator.hpp>
 
-
-namespace fcore_toolchain{
+namespace fcore{
     class schema_validator_base {
     public:
         schema_validator_base(const std::string& schema_file);
@@ -41,6 +40,7 @@ namespace fcore_toolchain{
         std::string schema_name;
     };
 }
+
 
 
 

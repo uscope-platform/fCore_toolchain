@@ -20,21 +20,23 @@
 #include <string>
 #include <cstdint>
 
-class io_map_entry{
-public:
-    io_map_entry(int32_t i, int32_t c, const std::string &t) {io_addr =i; core_addr = c; type = t;};
-    int32_t io_addr;
-    int32_t core_addr;
-    std::string type;
-    bool operator<(io_map_entry& rhs) const
-    {
-        return io_addr < rhs.io_addr;
-    }
-    bool operator<(const io_map_entry& rhs) const
-    {
-        return io_addr < rhs.io_addr;
-    }
-};
+namespace fcore{
+    class io_map_entry{
+    public:
+        io_map_entry(int32_t i, int32_t c, const std::string &t) {io_addr =i; core_addr = c; type = t;};
+        int32_t io_addr;
+        int32_t core_addr;
+        std::string type;
+        bool operator<(io_map_entry& rhs) const
+        {
+            return io_addr < rhs.io_addr;
+        }
+        bool operator<(const io_map_entry& rhs) const
+        {
+            return io_addr < rhs.io_addr;
+        }
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_IO_MAP_ENTRY_HPP

@@ -16,13 +16,13 @@
 
 #include "passes/low_level/ll_pass_manager.hpp"
 
-ll_pass_manager::ll_pass_manager(int dal) {
+fcore::ll_pass_manager::ll_pass_manager(int dal) {
     dump_ast_level = dal;
 }
 
 
-std::vector<std::shared_ptr<ll_ast_node>>
-ll_pass_manager::process_nodes(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>> &pass) {
+std::vector<std::shared_ptr<fcore::ll_ast_node>>
+fcore::ll_pass_manager::process_nodes(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>> &pass) {
     std::shared_ptr<ll_ast_node> result;
     std::vector<std::shared_ptr<ll_ast_node>> content = subtree->get_content();
     std::vector<std::shared_ptr<ll_ast_node>> result_vector = content;
@@ -38,7 +38,7 @@ ll_pass_manager::process_nodes(const std::shared_ptr<ll_ast_node> &subtree, cons
     return pass->process_node(subtree);
 }
 
-std::shared_ptr<ll_ast_node> ll_pass_manager::process_leaves(const std::shared_ptr<ll_ast_node> &subtree,
+std::shared_ptr<fcore::ll_ast_node> fcore::ll_pass_manager::process_leaves(const std::shared_ptr<ll_ast_node> &subtree,
                                                              const std::shared_ptr<pass_base<ll_ast_node>> &pass) {
 
     std::shared_ptr<ll_ast_node> result;
@@ -56,7 +56,7 @@ std::shared_ptr<ll_ast_node> ll_pass_manager::process_leaves(const std::shared_p
     return subtree;
 }
 
-void ll_pass_manager::run_morphing_pass(std::shared_ptr<ll_ast_node> &subtree,
+void fcore::ll_pass_manager::run_morphing_pass(std::shared_ptr<ll_ast_node> &subtree,
                                                        const std::shared_ptr<pass_base<ll_ast_node>> &pass) {
     switch (pass->get_pass_type()) {
         case NODE_PASS:{

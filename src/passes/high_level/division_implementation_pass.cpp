@@ -17,11 +17,11 @@
 #include "passes/high_level/division_implementation_pass.hpp"
 
 
-division_implementation_pass::division_implementation_pass() : pass_base<hl_ast_node>("division implementation pass"){
+fcore::division_implementation_pass::division_implementation_pass() : pass_base<hl_ast_node>("division implementation pass"){
 
 }
 
-std::shared_ptr<hl_ast_node> division_implementation_pass::process_leaf(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node> fcore::division_implementation_pass::process_leaf(std::shared_ptr<hl_ast_node> element) {
     std::shared_ptr<hl_ast_node> ret_val = element;
     if(element->node_type == hl_ast_node_type_expr){
         ret_val = process_expression(std::static_pointer_cast<hl_expression_node>(element));
@@ -31,7 +31,7 @@ std::shared_ptr<hl_ast_node> division_implementation_pass::process_leaf(std::sha
     return ret_val;
 }
 
-std::shared_ptr<hl_ast_node> division_implementation_pass::process_expression(std::shared_ptr<hl_expression_node> exp) {
+std::shared_ptr<fcore::hl_ast_node> fcore::division_implementation_pass::process_expression(std::shared_ptr<hl_expression_node> exp) {
     if(exp->get_type() == expr_div){
         std::shared_ptr<hl_ast_node> lhs = exp->get_lhs();
         std::shared_ptr<hl_expression_node> modulo_expr = std::make_shared<hl_expression_node>(expr_reciprocal);
@@ -45,7 +45,7 @@ std::shared_ptr<hl_ast_node> division_implementation_pass::process_expression(st
     }
 }
 
-std::shared_ptr<hl_ast_node> division_implementation_pass::process_f_call(std::shared_ptr<hl_function_call_node> f_call) {
+std::shared_ptr<fcore::hl_ast_node> fcore::division_implementation_pass::process_f_call(std::shared_ptr<hl_function_call_node> f_call) {
     auto args = f_call->get_arguments();
     for(auto &i: args) {
         if(i->node_type == hl_ast_node_type_expr){

@@ -18,35 +18,31 @@
 
 
 
-ll_independent_inst_node::ll_independent_inst_node(std::string op) : ll_instruction_node(isa_independent_instruction) {
+fcore::ll_independent_inst_node::ll_independent_inst_node(std::string op) : ll_instruction_node(isa_independent_instruction) {
     opcode = std::move(op);
 }
 
 
-uint32_t ll_independent_inst_node::emit() {
+uint32_t fcore::ll_independent_inst_node::emit() {
     uint32_t raw_instr = 0;
     uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
     raw_instr += fcore_opcodes[opcode] & opcode_mask;
     return raw_instr;
 }
 
-void ll_independent_inst_node::print() {
+void fcore::ll_independent_inst_node::print() {
     std::cout << std::setfill('0') << std::setw(4) << std::hex << emit() << " -> OPCODE: " << opcode << std::endl;
 }
 
-int ll_independent_inst_node::instruction_count() {
+int fcore::ll_independent_inst_node::instruction_count() {
     return 1;
 }
 
-bool operator==(const ll_independent_inst_node &lhs, const ll_independent_inst_node &rhs) {
-    return rhs.opcode == lhs.opcode;
-}
-
-std::string ll_independent_inst_node::disassemble() {
+std::string fcore::ll_independent_inst_node::disassemble() {
     return opcode;
 }
 
-nlohmann::json ll_independent_inst_node::dump() {
+nlohmann::json fcore::ll_independent_inst_node::dump() {
     nlohmann::json retval = ll_instruction_node::dump();
     return retval;
 }

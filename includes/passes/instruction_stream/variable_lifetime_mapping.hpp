@@ -20,20 +20,22 @@
 #include "data_structures/common/variable.hpp"
 #include "tools/variable_map.hpp"
 
-class variable_lifetime_mapping : public stream_pass_base{
-public:
-    explicit variable_lifetime_mapping(std::shared_ptr<variable_map> &v);
-    std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
+namespace fcore{
+    class variable_lifetime_mapping : public stream_pass_base{
+    public:
+        explicit variable_lifetime_mapping(std::shared_ptr<variable_map> &v);
+        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
 
-private:
-    std::shared_ptr<variable> update_variable_lifetime(const std::shared_ptr<variable>& var) const;
-    void map_register_inst(const std::shared_ptr<ll_register_instr_node>& instr);
-    void map_conv_instr(const std::shared_ptr<ll_conversion_instr_node>& instr);
-    void map_load_const_instr(const std::shared_ptr<ll_load_constant_instr_node>& instr);
+    private:
+        std::shared_ptr<variable> update_variable_lifetime(const std::shared_ptr<variable>& var) const;
+        void map_register_inst(const std::shared_ptr<ll_register_instr_node>& instr);
+        void map_conv_instr(const std::shared_ptr<ll_conversion_instr_node>& instr);
+        void map_load_const_instr(const std::shared_ptr<ll_load_constant_instr_node>& instr);
 
-    std::shared_ptr<variable_map> vmap;
-    unsigned int instr_cntr;
-};
+        std::shared_ptr<variable_map> vmap;
+        unsigned int instr_cntr;
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_VARIABLE_LIFETIME_MAPPING_HPP

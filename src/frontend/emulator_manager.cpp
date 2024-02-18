@@ -17,7 +17,7 @@
 
 
 
-emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s_f) {
+fcore::emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s_f) {
     debug_autogen = dbg;
 
     spec_file = spec;
@@ -25,12 +25,12 @@ emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s
     emu_length = 1;
 }
 
-void emulator_manager::process() {
+void fcore::emulator_manager::process() {
     bus_map.clear();
     emulator_builder e_b(debug_autogen);
 
     try{
-        fcore_toolchain::schema_validator_base validator(schema_file);
+        fcore::schema_validator_base validator(schema_file);
         validator.validate(spec_file);
     } catch(std::invalid_argument &ex){
         throw std::runtime_error("Failed to validate emulator schema");
@@ -93,7 +93,7 @@ void emulator_manager::process() {
     }
 }
 
-std::vector<program_bundle> emulator_manager::get_programs() {
+std::vector<fcore::program_bundle> fcore::emulator_manager::get_programs() {
     emulator_builder e_b(debug_autogen);
     std::vector<program_bundle> programs;
 
@@ -132,11 +132,11 @@ std::vector<program_bundle> emulator_manager::get_programs() {
 }
 
 
-void emulator_manager::emulate() {
+void fcore::emulator_manager::emulate() {
     run_cores();
 }
 
-void emulator_manager::run_cores() {
+void fcore::emulator_manager::run_cores() {
     for(int i= 0; i<emu_length;i++){
         for(auto &core_id:cores_ordering){
             auto emu = emulators[core_id.second].emu;
@@ -196,7 +196,7 @@ void emulator_manager::run_cores() {
     }
 }
 
-std::unordered_map<std::string, emulator_input> emulator_manager::load_input(nlohmann::json &core) {
+std::unordered_map<std::string, fcore::emulator_input> fcore::emulator_manager::load_input(nlohmann::json &core) {
     emulator_input_factory factory(core["input_data"]);
     if(core["inputs"].empty()){
         return {};
@@ -257,7 +257,7 @@ std::unordered_map<std::string, emulator_input> emulator_manager::load_input(nlo
     return dbg;
 }
 
-std::vector<emulator_output_t> emulator_manager:: load_output_specs(nlohmann::json &core) {
+std::vector<fcore::emulator_output_t> fcore::emulator_manager:: load_output_specs(nlohmann::json &core) {
     std::vector<emulator_output_t> out_specs;
     for(auto &item: core["outputs"]){
         emulator_output_t out;
@@ -312,7 +312,7 @@ std::vector<emulator_output_t> emulator_manager:: load_output_specs(nlohmann::js
     return out_specs;
 }
 
-std::unordered_map<unsigned int, uint32_t> emulator_manager::load_memory_init(nlohmann::json &mem_init) {
+std::unordered_map<unsigned int, uint32_t> fcore::emulator_manager::load_memory_init(nlohmann::json &mem_init) {
 
     std::unordered_map<unsigned int, uint32_t> init_map;
 
@@ -341,7 +341,7 @@ std::unordered_map<unsigned int, uint32_t> emulator_manager::load_memory_init(nl
 
 
 
-std::string emulator_manager::get_results() {
+std::string fcore::emulator_manager::get_results() {
     nlohmann::json res;
     for(auto &item:emulators){
         nlohmann::json j;
@@ -355,7 +355,7 @@ std::string emulator_manager::get_results() {
     return res.dump(4);
 }
 
-nlohmann::json emulator_manager::get_channel_outputs(std::vector<emulator_output_t> specs, int ch, std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outs) {
+nlohmann::json fcore::emulator_manager::get_channel_outputs(std::vector<emulator_output_t> specs, int ch, std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outs) {
     nlohmann::json res;
 
     for(auto &s: specs){
@@ -376,14 +376,14 @@ nlohmann::json emulator_manager::get_channel_outputs(std::vector<emulator_output
 }
 
 
-std::vector<float> emulator_manager::uint32_to_float(std::vector<uint32_t> &vect) {
+std::vector<float> fcore::emulator_manager::uint32_to_float(std::vector<uint32_t> &vect) {
     std::vector<float> cast_vect;
     for(auto &item:vect)
         cast_vect.push_back(emulator::uint32_to_float(item));
     return cast_vect;
 }
 
-std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json &itc) {
+std::vector<fcore::interconnect_t> fcore::emulator_manager::load_interconnects(nlohmann::json &itc) {
     std::vector<interconnect_t> res;
     for(auto &item:itc){
         interconnect_t i;
@@ -465,12 +465,12 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
     return res;
 }
 
-std::shared_ptr<std::vector<uint32_t>> emulator_manager::get_memory_snapshot(const std::string &core_id, int channel) {
+std::shared_ptr<std::vector<uint32_t>> fcore::emulator_manager::get_memory_snapshot(const std::string &core_id, int channel) {
     return emulators[core_id].emu->get_memory(channel);
 }
 
 std::unordered_map<unsigned int, uint32_t>
-emulator_manager::io_remap_memory_init(std::unordered_map<unsigned int, uint32_t> &map,
+fcore::emulator_manager::io_remap_memory_init(std::unordered_map<unsigned int, uint32_t> &map,
                                        std::unordered_map<uint16_t, uint16_t> &io_map) {
     std::unordered_map<unsigned int, uint32_t> ret;
 

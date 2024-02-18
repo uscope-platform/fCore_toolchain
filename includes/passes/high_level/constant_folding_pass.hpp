@@ -22,13 +22,15 @@
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "tools/expression_evaluator.hpp"
 
+namespace fcore{
+    class constant_folding_pass : public  pass_base<hl_ast_node> {
+    public:
+        constant_folding_pass();
+        std::shared_ptr<hl_ast_node> process_leaf(std::shared_ptr<hl_ast_node> element) override;
+        int get_pass_type() override { return LEAF_PASS;};
+    };
+}
 
-class constant_folding_pass : public  pass_base<hl_ast_node> {
-public:
-    constant_folding_pass();
-    std::shared_ptr<hl_ast_node> process_leaf(std::shared_ptr<hl_ast_node> element) override;
-    int get_pass_type() override { return LEAF_PASS;};
-};
 
 
 #endif //FCORE_TOOLCHAIN_CONSTANT_FOLDING_PASS_HPP

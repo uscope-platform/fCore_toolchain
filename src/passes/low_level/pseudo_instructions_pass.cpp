@@ -16,11 +16,11 @@
 #include "passes/low_level/pseudo_instructions_pass.hpp"
 
 
-pseudo_instructions_pass::pseudo_instructions_pass() : pass_base<ll_ast_node>("pseudo instruction implementation pass"){
+fcore::pseudo_instructions_pass::pseudo_instructions_pass() : pass_base<ll_ast_node>("pseudo instruction implementation pass"){
 
 }
 
-std::shared_ptr<ll_ast_node> pseudo_instructions_pass::process_leaf(std::shared_ptr<ll_ast_node> element) {
+std::shared_ptr<fcore::ll_ast_node> fcore::pseudo_instructions_pass::process_leaf(std::shared_ptr<ll_ast_node> element) {
     std::shared_ptr<ll_ast_node> ret_val = element;
     if(element->type == ll_type_instr){
         std::shared_ptr<ll_instruction_node> node = std::static_pointer_cast<ll_instruction_node>(element);

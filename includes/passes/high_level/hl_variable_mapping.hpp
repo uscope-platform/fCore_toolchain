@@ -21,15 +21,18 @@
 
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
-class hl_variable_mapping : public pass_base<hl_ast_node> {
-public:
-    explicit hl_variable_mapping(std::shared_ptr<variable_map>  &v);
-    std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
-    void process_var(std::shared_ptr<hl_ast_node> element);
-    int get_pass_type() override { return GLOBAL_PASS;};
-private:
-    std::shared_ptr<variable_map> var_map;
-};
+namespace fcore{
+    class hl_variable_mapping : public pass_base<hl_ast_node> {
+    public:
+        explicit hl_variable_mapping(std::shared_ptr<variable_map>  &v);
+        std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
+        void process_var(std::shared_ptr<hl_ast_node> element);
+        int get_pass_type() override { return GLOBAL_PASS;};
+    private:
+        std::shared_ptr<variable_map> var_map;
+    };
+}
+
 
 
 #endif //FCORE_TOOLCHAIN_HL_VARIABLE_MAPPING_HPP

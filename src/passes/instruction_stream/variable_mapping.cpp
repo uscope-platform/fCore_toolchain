@@ -15,11 +15,11 @@
 
 #include "passes/instruction_stream/variable_mapping.hpp"
 
-variable_mapping::variable_mapping(std::shared_ptr<variable_map> &v) : stream_pass_base("Variable mapping"){
+fcore::variable_mapping::variable_mapping(std::shared_ptr<variable_map> &v) : stream_pass_base("Variable mapping"){
     vmap = v;
 }
 
-std::shared_ptr<ll_instruction_node> variable_mapping::apply_pass(std::shared_ptr<ll_instruction_node> element) {
+std::shared_ptr<fcore::ll_instruction_node> fcore::variable_mapping::apply_pass(std::shared_ptr<ll_instruction_node> element) {
 
     switch (element->get_type()) {
         case isa_register_instruction:
@@ -43,7 +43,7 @@ std::shared_ptr<ll_instruction_node> variable_mapping::apply_pass(std::shared_pt
     return element;
 }
 
-void variable_mapping::map_register_inst(const std::shared_ptr<ll_register_instr_node>& instr) {
+void fcore::variable_mapping::map_register_inst(const std::shared_ptr<ll_register_instr_node>& instr) {
     std::string op_a = instr->get_operand_a()->get_linear_identifier();
     std::string op_b = instr->get_operand_b()->get_linear_identifier();
     std::string dst = instr->get_destination()->get_linear_identifier();
@@ -53,7 +53,7 @@ void variable_mapping::map_register_inst(const std::shared_ptr<ll_register_instr
     vmap->insert(dst, instr->get_destination());
 }
 
-void variable_mapping::map_conv_instr(const std::shared_ptr<ll_conversion_instr_node>& instr) {
+void fcore::variable_mapping::map_conv_instr(const std::shared_ptr<ll_conversion_instr_node>& instr) {
     std::string src = instr->get_source()->get_linear_identifier();
     std::string dst = instr->get_destination()->get_linear_identifier();
 
@@ -62,7 +62,7 @@ void variable_mapping::map_conv_instr(const std::shared_ptr<ll_conversion_instr_
 }
 
 
-void variable_mapping::map_load_const_instr(const std::shared_ptr<ll_load_constant_instr_node>& instr) {
+void fcore::variable_mapping::map_load_const_instr(const std::shared_ptr<ll_load_constant_instr_node>& instr) {
     std::string dst = instr->get_destination()->get_linear_identifier();
     vmap->insert(dst, instr->get_destination());
 

@@ -22,46 +22,60 @@
 
 #include <string>
 
+namespace fcore{
 
-class hl_ast_operand : public hl_ast_node{
-public:
-    explicit hl_ast_operand(std::shared_ptr<variable> iv);
-    // VARIABLE NAME
-    void set_name(const std::string &name);
-    std::string get_name() { return inner_variable->get_name();};
-    std::string get_identifier() { return inner_variable->get_identifier();};
-    // INTEGER IMMEDIATE VALUE
-    void set_immediate(const int &v);
-    [[nodiscard]] int get_int_value() const;
-    // FLOAT IMMEDIATE VALUE
-    void set_immediate(const float &v);
-    [[nodiscard]] float get_float_val() const;
-    // TYPE
-    variable_type_t get_type();
-    void set_type(variable_type_t type);
-    // ARRAY INDEX
-    std::vector<std::shared_ptr<hl_ast_node>> get_array_index();
-    void set_array_index(std::vector<std::shared_ptr<hl_ast_node>> idx);
+    class hl_ast_operand : public hl_ast_node{
+    public:
+        explicit hl_ast_operand(std::shared_ptr<variable> iv);
+        // VARIABLE NAME
+        void set_name(const std::string &name);
+        std::string get_name() { return inner_variable->get_name();};
+        std::string get_identifier() { return inner_variable->get_identifier();};
+        // INTEGER IMMEDIATE VALUE
+        void set_immediate(const int &v);
+        [[nodiscard]] int get_int_value() const;
+        // FLOAT IMMEDIATE VALUE
+        void set_immediate(const float &v);
+        [[nodiscard]] float get_float_val() const;
+        // TYPE
+        variable_type_t get_type();
+        void set_type(variable_type_t type);
+        // ARRAY INDEX
+        std::vector<std::shared_ptr<hl_ast_node>> get_array_index();
+        void set_array_index(std::vector<std::shared_ptr<hl_ast_node>> idx);
 
-    // ARRAY CONTIGUITY
+        // ARRAY CONTIGUITY
         void set_contiguity(bool c){ inner_variable->set_contiguity(c);}
         bool get_contiguity() {return inner_variable->is_contiguous();};
 
-    //INNER VARIABLE
-    void set_variable(std::shared_ptr<variable> v);
-    std::shared_ptr<variable> get_variable();
+        //INNER VARIABLE
+        void set_variable(std::shared_ptr<variable> v);
+        std::shared_ptr<variable> get_variable();
 
-    nlohmann::json dump() override;
+        nlohmann::json dump() override;
 
-    bool is_terminal() override {return true;}
-    bool is_scalar() {return  inner_variable->get_type()!=var_type_array;};
-    std::string pretty_print() override;
-    operator std::string();
-    friend bool operator==(const hl_ast_operand& lhs, const hl_ast_operand& rhs);
-private:
+        bool is_terminal() override {return true;}
+        bool is_scalar() {return  inner_variable->get_type()!=var_type_array;};
+        std::string pretty_print() override;
+        operator std::string();
+        friend bool operator==(const hl_ast_operand& lhs, const hl_ast_operand& rhs){
+            bool ret_val = true;
+            ret_val &= lhs.node_type == rhs.node_type;
 
-    std::vector<std::shared_ptr<hl_ast_node>> array_index;
-    std::shared_ptr<variable> inner_variable;
-};
+            if(lhs.inner_variable == nullptr && rhs.inner_variable == nullptr) ret_val &= true;
+            else if (lhs.inner_variable == nullptr || rhs.inner_variable == nullptr) ret_val &= false;
+            else ret_val &= *lhs.inner_variable == *rhs.inner_variable;
+
+            ret_val &= hl_ast_node::compare_vectors(lhs.array_index, rhs.array_index);
+
+            return ret_val;
+        };
+    private:
+
+        std::vector<std::shared_ptr<hl_ast_node>> array_index;
+        std::shared_ptr<variable> inner_variable;
+    };
+}
+
 
 #endif //FCORE_TOOLCHAIN_HL_AST_OPERAND_HPP

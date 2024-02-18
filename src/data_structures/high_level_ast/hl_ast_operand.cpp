@@ -18,56 +18,43 @@
 
 #include <utility>
 
-hl_ast_operand::hl_ast_operand(std::shared_ptr<variable> iv) : hl_ast_node(hl_ast_node_type_operand) {
+fcore::hl_ast_operand::hl_ast_operand(std::shared_ptr<variable> iv) : hl_ast_node(hl_ast_node_type_operand) {
 inner_variable = std::move(iv);
 }
 
-void hl_ast_operand::set_name(const std::string &n) {
+void fcore::hl_ast_operand::set_name(const std::string &n) {
     inner_variable->set_name(n);
 }
 
-void hl_ast_operand::set_immediate(const int &v) {
+void fcore::hl_ast_operand::set_immediate(const int &v) {
     inner_variable->set_const_i(v);
 }
 
-void hl_ast_operand::set_immediate(const float &v) {
+void fcore::hl_ast_operand::set_immediate(const float &v) {
     inner_variable->set_const_f(v);
 }
 
-int hl_ast_operand::get_int_value() const {
+int fcore::hl_ast_operand::get_int_value() const {
     return inner_variable->get_const_i();
 }
 
-float hl_ast_operand::get_float_val() const {
+float fcore::hl_ast_operand::get_float_val() const {
     return inner_variable->get_const_f();
 }
 
-void hl_ast_operand::set_type(variable_type_t type) {
+void fcore::hl_ast_operand::set_type(variable_type_t type) {
     inner_variable->set_type(type);
 }
 
-variable_type_t hl_ast_operand::get_type() {
+fcore::variable_type_t fcore::hl_ast_operand::get_type() {
     return inner_variable->get_type();
 }
 
-bool operator==(const hl_ast_operand &lhs, const hl_ast_operand &rhs) {
-    bool ret_val = true;
-    ret_val &= lhs.node_type == rhs.node_type;
-
-    if(lhs.inner_variable == nullptr && rhs.inner_variable == nullptr) ret_val &= true;
-    else if (lhs.inner_variable == nullptr || rhs.inner_variable == nullptr) ret_val &= false;
-    else ret_val &= *lhs.inner_variable == *rhs.inner_variable;
-
-    ret_val &= hl_ast_node::compare_vectors(lhs.array_index, rhs.array_index);
-
-    return ret_val;
-}
-
-hl_ast_operand::operator std::string() {
+fcore::hl_ast_operand::operator std::string() {
     return pretty_print();
 }
 
-std::string hl_ast_operand::pretty_print() {
+std::string fcore::hl_ast_operand::pretty_print() {
     std::string ret_val;
     switch (inner_variable->get_type()) {
         case var_type_int_const:
@@ -90,23 +77,23 @@ std::string hl_ast_operand::pretty_print() {
     return ret_val;
 }
 
-std::vector<std::shared_ptr<hl_ast_node>> hl_ast_operand::get_array_index() {
+std::vector<std::shared_ptr<fcore::hl_ast_node>> fcore::hl_ast_operand::get_array_index() {
     return array_index;
 }
 
-void hl_ast_operand::set_array_index(std::vector<std::shared_ptr<hl_ast_node>> idx) {
+void fcore::hl_ast_operand::set_array_index(std::vector<std::shared_ptr<hl_ast_node>> idx) {
     array_index = std::move(idx);
 }
 
-void hl_ast_operand::set_variable(std::shared_ptr<variable> v) {
+void fcore::hl_ast_operand::set_variable(std::shared_ptr<variable> v) {
     inner_variable = std::move(v);
 }
 
-std::shared_ptr<variable> hl_ast_operand::get_variable() {
+std::shared_ptr<fcore::variable> fcore::hl_ast_operand::get_variable() {
     return inner_variable;
 }
 
-nlohmann::json hl_ast_operand::dump() {
+nlohmann::json fcore::hl_ast_operand::dump() {
     nlohmann::json retval = hl_ast_node::dump();
     retval["inner_variable"] = inner_variable->dump();
     std::vector<nlohmann::json> array_index_dump;

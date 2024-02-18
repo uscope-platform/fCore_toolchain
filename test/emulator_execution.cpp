@@ -17,6 +17,8 @@
 #include <gtest/gtest.h>
 #include "frontend/emulator_manager.hpp"
 
+using namespace fcore;
+
 nlohmann::json prepare_spec(const std::string &file, int run_length){
     nlohmann::json spec;
     spec["cores"] = std::vector<nlohmann::json>();

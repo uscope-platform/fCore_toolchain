@@ -16,12 +16,12 @@
 
 #include "passes/high_level/inline_constant_extraction.hpp"
 
-inline_constant_extraction::inline_constant_extraction() : pass_base<hl_ast_node>("inline constant extraction pass"){
+fcore::inline_constant_extraction::inline_constant_extraction() : pass_base<hl_ast_node>("inline constant extraction pass"){
     n_var = 0;
 }
 
-std::shared_ptr<hl_ast_node>
-inline_constant_extraction::process_global(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node>
+fcore::inline_constant_extraction::process_global(std::shared_ptr<hl_ast_node> element) {
     std::shared_ptr<hl_ast_node> retval = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
     std::vector<std::shared_ptr<hl_ast_node>> new_content;
 
@@ -44,7 +44,7 @@ inline_constant_extraction::process_global(std::shared_ptr<hl_ast_node> element)
 
 
 
-std::vector<std::shared_ptr<hl_ast_node>> inline_constant_extraction::process_node(const std::shared_ptr<hl_expression_node> &element) {
+std::vector<std::shared_ptr<fcore::hl_ast_node>> fcore::inline_constant_extraction::process_node(const std::shared_ptr<hl_expression_node> &element) {
     std::vector<std::shared_ptr<hl_ast_node>> ret_val;
     if(!element->is_immediate() && element->get_type()!=expr_assign){
         throw std::runtime_error("Non assignment top level expressions should not reach inline constant extraction pass");
@@ -64,8 +64,8 @@ std::vector<std::shared_ptr<hl_ast_node>> inline_constant_extraction::process_no
     return ret_val;
 }
 
-std::vector<std::shared_ptr<hl_ast_node>>
-inline_constant_extraction::process_node(const std::shared_ptr<hl_definition_node> &element) {
+std::vector<std::shared_ptr<fcore::hl_ast_node>>
+fcore::inline_constant_extraction::process_node(const std::shared_ptr<hl_definition_node> &element) {
 
     std::vector<std::shared_ptr<hl_ast_node>> ret_val;
     if(element->is_initialized()){
@@ -84,8 +84,8 @@ inline_constant_extraction::process_node(const std::shared_ptr<hl_definition_nod
 }
 
 
-std::vector<std::shared_ptr<hl_ast_node>>
-inline_constant_extraction::process_expression(const std::shared_ptr<hl_expression_node> &element) {
+std::vector<std::shared_ptr<fcore::hl_ast_node>>
+fcore::inline_constant_extraction::process_expression(const std::shared_ptr<hl_expression_node> &element) {
 std::vector<std::shared_ptr<hl_ast_node>> retval;
 
     std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
@@ -113,8 +113,8 @@ std::vector<std::shared_ptr<hl_ast_node>> retval;
 }
 
 
-std::vector<std::shared_ptr<hl_ast_node>>
-inline_constant_extraction::process_operand(const std::shared_ptr<hl_ast_operand>& element) {
+std::vector<std::shared_ptr<fcore::hl_ast_node>>
+fcore::inline_constant_extraction::process_operand(const std::shared_ptr<hl_ast_operand>& element) {
 
     std::vector<std::shared_ptr<hl_ast_node>> retval;
 

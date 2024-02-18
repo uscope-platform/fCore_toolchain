@@ -21,29 +21,29 @@
 
 using namespace antlr4;
 
-C_language_parser::C_language_parser(){
+fcore::C_language_parser::C_language_parser(){
     dmap = std::make_shared<define_map>();
 }
 
-C_language_parser::C_language_parser(std::istream &file, std::shared_ptr<define_map> &existing_defmap) {
+fcore::C_language_parser::C_language_parser(std::istream &file, std::shared_ptr<define_map> &existing_defmap) {
     dmap = existing_defmap;
     preproc = std::make_unique<C_pre_processor>(file,dmap);
 }
 
-C_language_parser::C_language_parser(const std::string &path, std::shared_ptr<define_map> &existing_defmap) {
+fcore::C_language_parser::C_language_parser(const std::string &path, std::shared_ptr<define_map> &existing_defmap) {
     dmap = existing_defmap;
     preproc = std::make_unique<C_pre_processor>(path,dmap);
 }
 
 
-void C_language_parser::pre_process(const std::vector<std::string> &abs_includes) {
+void fcore::C_language_parser::pre_process(const std::vector<std::string> &abs_includes) {
     preproc->set_absolute_includes(abs_includes);
     preproc->process_file();
     preproc->substitute_defines();
     preprocessed_content = preproc->get_preprocessed_file();
 }
 
-void C_language_parser::parse(std::unordered_map<std::string, variable_class_t> dma_specs) {
+void fcore::C_language_parser::parse(std::unordered_map<std::string, variable_class_t> dma_specs) {
 
     std::istringstream ss(preprocessed_content);
     ANTLRInputStream input(ss);

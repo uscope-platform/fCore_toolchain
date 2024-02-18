@@ -19,21 +19,25 @@
 #include <utility>
 
 #include "data_structures/low_level_ast/ll_instruction_node.hpp"
+namespace fcore{
+    class ll_independent_inst_node: public ll_instruction_node {
+    public:
+        explicit ll_independent_inst_node(std::string opcode);
+        uint32_t emit() override;
+        std::string disassemble() override;
+        void print() override;
+        int instruction_count() override;
 
-class ll_independent_inst_node: public ll_instruction_node {
-public:
-    explicit ll_independent_inst_node(std::string opcode);
-    uint32_t emit() override;
-    std::string disassemble() override;
-    void print() override;
-    int instruction_count() override;
+        nlohmann::json dump() override;
 
-    nlohmann::json dump() override;
+        friend bool operator==(const ll_independent_inst_node& lhs, const ll_independent_inst_node& rhs){
+            return rhs.opcode == lhs.opcode;
+        };
+    private:
 
-    friend bool operator==(const ll_independent_inst_node& lhs, const ll_independent_inst_node& rhs);
-private:
+    };
+}
 
-};
 
 
 #endif //FCORE_TOOLCHAIN_LL_INDEPENDENT_INST_NODE_HPP

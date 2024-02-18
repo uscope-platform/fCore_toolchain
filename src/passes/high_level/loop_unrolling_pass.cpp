@@ -17,11 +17,11 @@
 #include "passes/high_level/loop_unrolling_pass.hpp"
 
 
-loop_unrolling_pass::loop_unrolling_pass() : pass_base<hl_ast_node>("C loop unrolling pass"){
+fcore::loop_unrolling_pass::loop_unrolling_pass() : pass_base<hl_ast_node>("C loop unrolling pass"){
     current_loop_iteration = 0;
 }
 
-std::shared_ptr<hl_ast_node> loop_unrolling_pass::process_global(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node> fcore::loop_unrolling_pass::process_global(std::shared_ptr<hl_ast_node> element) {
     std::shared_ptr<hl_ast_node> retval = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
     std::vector<std::shared_ptr<hl_ast_node>> new_content;
 
@@ -41,8 +41,8 @@ std::shared_ptr<hl_ast_node> loop_unrolling_pass::process_global(std::shared_ptr
     return retval;
 }
 
-std::shared_ptr<hl_ast_node>
-loop_unrolling_pass::process_function_def(const std::shared_ptr<hl_function_def_node> &node) {
+std::shared_ptr<fcore::hl_ast_node>
+fcore::loop_unrolling_pass::process_function_def(const std::shared_ptr<hl_function_def_node> &node) {
 
     std::shared_ptr<hl_function_def_node> retval = node;
     std::vector<std::shared_ptr<hl_ast_node>> new_body;
@@ -61,7 +61,7 @@ loop_unrolling_pass::process_function_def(const std::shared_ptr<hl_function_def_
 
 }
 
-std::vector<std::shared_ptr<hl_ast_node>> loop_unrolling_pass::process_loop(const std::shared_ptr<hl_ast_loop_node>& element) {
+std::vector<std::shared_ptr<fcore::hl_ast_node>> fcore::loop_unrolling_pass::process_loop(const std::shared_ptr<hl_ast_loop_node>& element) {
     std::vector<std::shared_ptr<hl_ast_node>> retval;
     if(!element->get_init_statement()->is_initialized()){
         throw std::runtime_error("Incomplete loop initialization statement");
@@ -105,7 +105,7 @@ std::vector<std::shared_ptr<hl_ast_node>> loop_unrolling_pass::process_loop(cons
     return retval;
 }
 
-unsigned int loop_unrolling_pass::process_loop_initializer(const std::shared_ptr<hl_ast_node>& raw_initializer) {
+unsigned int fcore::loop_unrolling_pass::process_loop_initializer(const std::shared_ptr<hl_ast_node>& raw_initializer) {
 
     unsigned int ret_val;
 
@@ -134,7 +134,7 @@ unsigned int loop_unrolling_pass::process_loop_initializer(const std::shared_ptr
     return ret_val;
 }
 
-bool loop_unrolling_pass::evaluate_loop(const std::shared_ptr<hl_expression_node>& condition,
+bool fcore::loop_unrolling_pass::evaluate_loop(const std::shared_ptr<hl_expression_node>& condition,
                                         const std::shared_ptr<hl_expression_node>& ,
                                         std::shared_ptr<hl_ast_operand> &loop_var) {
 
@@ -149,8 +149,8 @@ bool loop_unrolling_pass::evaluate_loop(const std::shared_ptr<hl_expression_node
     return res;
 }
 
-std::shared_ptr<hl_expression_node>
-loop_unrolling_pass::update_loop_condition(std::shared_ptr<hl_expression_node> expression,
+std::shared_ptr<fcore::hl_expression_node>
+fcore::loop_unrolling_pass::update_loop_condition(std::shared_ptr<hl_expression_node> expression,
                                            std::shared_ptr<hl_ast_operand> loop_var) {
     std::shared_ptr<hl_expression_node> ret_val = expression;
     loop_var->set_immediate((int)current_loop_iteration);
@@ -158,7 +158,7 @@ loop_unrolling_pass::update_loop_condition(std::shared_ptr<hl_expression_node> e
     return ret_val;
 }
 
-void loop_unrolling_pass::update_expression(std::shared_ptr<hl_expression_node> expression, std::shared_ptr<hl_ast_operand> loop_var) {
+void fcore::loop_unrolling_pass::update_expression(std::shared_ptr<hl_expression_node> expression, std::shared_ptr<hl_ast_operand> loop_var) {
     if(expression->get_lhs()->node_type == hl_ast_node_type_operand){
         std::shared_ptr<hl_ast_operand> node = std::static_pointer_cast<hl_ast_operand>(expression->get_lhs());
             std::string var_name = node->get_name();
@@ -180,8 +180,8 @@ void loop_unrolling_pass::update_expression(std::shared_ptr<hl_expression_node> 
 
 
 
-std::shared_ptr<hl_ast_node>
-loop_unrolling_pass::substitute_index(std::shared_ptr<hl_ast_node> element, std::string idx_name, int value) {
+std::shared_ptr<fcore::hl_ast_node>
+fcore::loop_unrolling_pass::substitute_index(std::shared_ptr<hl_ast_node> element, std::string idx_name, int value) {
     switch (element->node_type) {
         case hl_ast_node_type_function_call:
             return substitute_index_in_function_call(std::static_pointer_cast<hl_function_call_node>(element), idx_name, value);
@@ -198,8 +198,8 @@ loop_unrolling_pass::substitute_index(std::shared_ptr<hl_ast_node> element, std:
     }
 }
 
-std::shared_ptr<hl_expression_node>
-loop_unrolling_pass::substitute_index_in_expression(const std::shared_ptr<hl_expression_node>& node, const std::string& idx_name,
+std::shared_ptr<fcore::hl_expression_node>
+fcore::loop_unrolling_pass::substitute_index_in_expression(const std::shared_ptr<hl_expression_node>& node, const std::string& idx_name,
                                                     int value) {
     std::shared_ptr<hl_expression_node> retval = std::static_pointer_cast<hl_expression_node>(hl_ast_node::deep_copy(node));
     if(node->is_immediate()){
@@ -212,8 +212,8 @@ loop_unrolling_pass::substitute_index_in_expression(const std::shared_ptr<hl_exp
     return retval;
 }
 
-std::shared_ptr<hl_ast_operand>
-loop_unrolling_pass::substitute_index_in_operand(const std::shared_ptr<hl_ast_operand>& node, const std::string& idx_name,
+std::shared_ptr<fcore::hl_ast_operand>
+fcore::loop_unrolling_pass::substitute_index_in_operand(const std::shared_ptr<hl_ast_operand>& node, const std::string& idx_name,
                                                  int value) {
     std::shared_ptr<hl_ast_operand> retval = std::static_pointer_cast<hl_ast_operand>(hl_ast_operand::deep_copy(node));
     if(node->get_type() == var_type_scalar) {
@@ -231,8 +231,8 @@ loop_unrolling_pass::substitute_index_in_operand(const std::shared_ptr<hl_ast_op
     return retval;
 }
 
-std::shared_ptr<hl_definition_node>
-loop_unrolling_pass::substitute_index_in_definition(const std::shared_ptr<hl_definition_node>& node, const std::string& idx_name,
+std::shared_ptr<fcore::hl_definition_node>
+fcore::loop_unrolling_pass::substitute_index_in_definition(const std::shared_ptr<hl_definition_node>& node, const std::string& idx_name,
                                                     int value) {
     std::shared_ptr<hl_definition_node> ret_val = std::static_pointer_cast<hl_definition_node>(hl_ast_node::deep_copy(node));
 
@@ -258,8 +258,8 @@ loop_unrolling_pass::substitute_index_in_definition(const std::shared_ptr<hl_def
 
 
 
-std::shared_ptr<hl_ast_conditional_node>
-loop_unrolling_pass::substitute_index_in_conditional(const std::shared_ptr<hl_ast_conditional_node> &node,
+std::shared_ptr<fcore::hl_ast_conditional_node>
+fcore::loop_unrolling_pass::substitute_index_in_conditional(const std::shared_ptr<hl_ast_conditional_node> &node,
                                                      const std::string &idx_name, int value) {
     std::shared_ptr<hl_ast_conditional_node> new_node = std::static_pointer_cast<hl_ast_conditional_node>(hl_ast_node::deep_copy(node));
 
@@ -279,8 +279,8 @@ loop_unrolling_pass::substitute_index_in_conditional(const std::shared_ptr<hl_as
     return new_node;
 }
 
-std::shared_ptr<hl_function_call_node>
-loop_unrolling_pass::substitute_index_in_function_call(const std::shared_ptr<hl_function_call_node> &node,
+std::shared_ptr<fcore::hl_function_call_node>
+fcore::loop_unrolling_pass::substitute_index_in_function_call(const std::shared_ptr<hl_function_call_node> &node,
                                                        const std::string &idx_name, int value) {
     std::vector<std::shared_ptr<hl_ast_node>> new_args;
     for(auto &item:node->get_arguments()){
@@ -290,8 +290,8 @@ loop_unrolling_pass::substitute_index_in_function_call(const std::shared_ptr<hl_
     return node;
 }
 
-std::vector<std::shared_ptr<hl_ast_node>>
-loop_unrolling_pass::proces_array_of_indices(const std::vector<std::shared_ptr<hl_ast_node>>& old_idx_array, const std::string& idx_name,
+std::vector<std::shared_ptr<fcore::hl_ast_node>>
+fcore::loop_unrolling_pass::proces_array_of_indices(const std::vector<std::shared_ptr<hl_ast_node>>& old_idx_array, const std::string& idx_name,
                                            int value ) {
     std::vector<std::shared_ptr<hl_ast_node>> new_idx_array;
     for(auto &item:old_idx_array){

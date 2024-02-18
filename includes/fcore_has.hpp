@@ -36,32 +36,34 @@ extern "C"{
     std::tuple<std::vector<uint32_t>, int> fCore_has_embeddable_s(const std::string& content);
     void fCore_has_embeddable_f(const char * filename, uint32_t *hex, int *hex_size, bool print_debug);
 };
+namespace fcore{
+    class fcore_has {
+    public:
+        fcore_has(std::istream &input, std::vector<std::istream*> &includes, int dump_ast_level, bool print_debug);
+        fcore_has(std::istream &input, const std::vector<std::string>& include_files,  const std::string& include_directory, int dump_ast_level, bool print_debug);
+        void construct_assembler(std::istream &input, std::vector<std::istream*> &includes, int dump_ast_level, bool print_debug);
 
-class fcore_has {
-public:
-    fcore_has(std::istream &input, std::vector<std::istream*> &includes, int dump_ast_level, bool print_debug);
-    fcore_has(std::istream &input, const std::vector<std::string>& include_files,  const std::string& include_directory, int dump_ast_level, bool print_debug);
-    void construct_assembler(std::istream &input, std::vector<std::istream*> &includes, int dump_ast_level, bool print_debug);
+        static std::vector<std::istream*> process_includes(const std::vector<std::string>& include_files, const std::string& include_directory);
 
-    static std::vector<std::istream*> process_includes(const std::vector<std::string>& include_files, const std::string& include_directory);
+        std::vector<uint32_t> get_hexfile(bool endian_swap);
+        std::vector<uint32_t> get_executable();
+        std::vector<uint32_t> get_raw_code();
+        std::string get_errors();
+        void write_hexfile(const std::string& ouput_file);
+        void write_verilog_memfile(const std::string& ouput_file);
+        void write_json(const std::string& output_file);
+        uint32_t get_program_size();
+        uint32_t get_inst_count();
+        nlohmann::json get_dump() {return dump;};
+    private:
+        std::shared_ptr<ll_ast_node> AST;
+        binary_generator writer;
+        ll_pass_manager manager;
+        std::string error_code;
+        nlohmann::json dump;
+    };
+}
 
-    std::vector<uint32_t> get_hexfile(bool endian_swap);
-    std::vector<uint32_t> get_executable();
-    std::vector<uint32_t> get_raw_code();
-    std::string get_errors();
-    void write_hexfile(const std::string& ouput_file);
-    void write_verilog_memfile(const std::string& ouput_file);
-    void write_json(const std::string& output_file);
-    uint32_t get_program_size();
-    uint32_t get_inst_count();
-    nlohmann::json get_dump() {return dump;};
-private:
-    std::shared_ptr<ll_ast_node> AST;
-    binary_generator writer;
-    ll_pass_manager manager;
-    std::string error_code;
-    nlohmann::json dump;
-};
 
 
 #endif //FCORE_TOOLCHAIN_FCORE_HAS_HPP

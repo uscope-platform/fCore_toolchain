@@ -14,8 +14,11 @@
 
 #include "backend/emulator/emulator_builder.hpp"
 
+fcore::emulator_builder::emulator_builder(bool dbg) {
+    debug_autogen = dbg;
+}
 
-emulator_metadata emulator_builder::load_json_program(const nlohmann::json &core_info,
+fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohmann::json &core_info,
                                                       const std::vector<nlohmann::json> &input_connections,
                                                       const std::vector<nlohmann::json> &output_connections,
                                                       std::set<io_map_entry> &am
@@ -95,7 +98,7 @@ emulator_metadata emulator_builder::load_json_program(const nlohmann::json &core
     return metadata;
 }
 
-void emulator_builder::process_interconnects(
+void fcore::emulator_builder::process_interconnects(
         const std::vector<nlohmann::json> &input_connections,
         const std::vector<nlohmann::json> &output_connections,
         std::set<std::string> memories
@@ -162,7 +165,7 @@ void emulator_builder::process_interconnects(
 
 }
 
-void emulator_builder::process_ioms(
+void fcore::emulator_builder::process_ioms(
         const nlohmann::json &inputs,
         const nlohmann::json &outputs,
         const nlohmann::json &memory_init_specs,
@@ -246,7 +249,7 @@ void emulator_builder::process_ioms(
 }
 
 
-std::vector<uint32_t> emulator_builder::compile_programs(const nlohmann::json &core_info,
+std::vector<uint32_t> fcore::emulator_builder::compile_programs(const nlohmann::json &core_info,
                                         const std::vector<nlohmann::json> &input_connections,
                                         const std::vector<nlohmann::json> &output_connections,
                                         std::set<io_map_entry> &am
@@ -288,8 +291,4 @@ std::vector<uint32_t> emulator_builder::compile_programs(const nlohmann::json &c
     am = compiler.get_io_map();
 
     return program;
-}
-
-emulator_builder::emulator_builder(bool dbg) {
-    debug_autogen = dbg;
 }

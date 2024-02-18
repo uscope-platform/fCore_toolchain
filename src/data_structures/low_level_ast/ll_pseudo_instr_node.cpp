@@ -17,35 +17,17 @@
 
 
 
-ll_pseudo_instr_node::ll_pseudo_instr_node(std::string op, std::vector<std::shared_ptr<variable>> args)
+fcore::ll_pseudo_instr_node::ll_pseudo_instr_node(std::string op, std::vector<std::shared_ptr<variable>> args)
 : ll_instruction_node(isa_pseudo_instruction){
  opcode = std::move(op);
  arguments = std::move(args);
 }
 
-bool operator==(const ll_pseudo_instr_node &lhs, const ll_pseudo_instr_node &rhs) {
-    bool retval = true;
-
-    if(lhs.arguments.empty() && rhs.arguments.empty()){
-        retval &= true;
-    } else if(lhs.arguments.empty() || rhs.arguments.empty()){
-        retval = false;
-    } else {
-        bool args_equal = true;
-        args_equal &= lhs.arguments.size() == rhs.arguments.size();
-        for (int i = 0; i < lhs.arguments.size(); i++) {
-            args_equal &= *lhs.arguments[i] == *rhs.arguments[i];
-        }
-        retval &= args_equal;
-    }
-    return retval;
-}
-
-int ll_pseudo_instr_node::instruction_count() {
+int fcore::ll_pseudo_instr_node::instruction_count() {
     return 1;
 }
 
-nlohmann::json ll_pseudo_instr_node::dump() {
+nlohmann::json fcore::ll_pseudo_instr_node::dump() {
     nlohmann::json retval = ll_instruction_node::dump();
 
     std::vector<nlohmann::json> args_dump;

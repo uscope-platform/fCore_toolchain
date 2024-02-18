@@ -17,7 +17,7 @@
 
 
 
-emulator::emulator(instruction_stream &s, int n_channels,const std::string &core) : efi_implementation(core){
+fcore::emulator::emulator(instruction_stream &s, int n_channels,const std::string &core) : efi_implementation(core){
     stream = s;
     for(int i = 0; i<n_channels; i++){
         memory_pool[i] = std::make_shared<std::vector<uint32_t>>(2 << (fcore_register_address_width - 1), 0);
@@ -27,12 +27,12 @@ emulator::emulator(instruction_stream &s, int n_channels,const std::string &core
     stop_requested = false;
 }
 
-void emulator::apply_inputs(uint32_t addr, uint32_t data, unsigned int channel) {
+void fcore::emulator::apply_inputs(uint32_t addr, uint32_t data, unsigned int channel) {
     auto selected_mem = memory_pool[channel];
     selected_mem->at(addr) = data;
 }
 
-void emulator::run_round(int channel) {
+void fcore::emulator::run_round(int channel) {
 
     working_memory = memory_pool[channel];
     for(auto &item:stream){
@@ -44,7 +44,7 @@ void emulator::run_round(int channel) {
     }
 }
 
-void emulator::run_instruction_by_type(const std::shared_ptr<ll_instruction_node>& node) {
+void fcore::emulator::run_instruction_by_type(const std::shared_ptr<ll_instruction_node>& node) {
     switch (node->get_type()) {
         case isa_independent_instruction:
             run_independent_instruction(std::static_pointer_cast<ll_independent_inst_node>(node));
@@ -63,7 +63,7 @@ void emulator::run_instruction_by_type(const std::shared_ptr<ll_instruction_node
     }
 }
 
-void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_node>& node) {
+void fcore::emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_node>& node) {
     std::string opcode = node->get_opcode();
 
     uint32_t dest = node->get_destination()->get_bound_reg();
@@ -115,7 +115,7 @@ void emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_
     working_memory->at(writeback_address) = result;
 }
 
-void emulator::run_independent_instruction(const std::shared_ptr<ll_independent_inst_node>& node) {
+void fcore::emulator::run_independent_instruction(const std::shared_ptr<ll_independent_inst_node>& node) {
     std::string opcode = node->get_opcode();
     if(opcode == "nop"){
     } else if (opcode == "stop"){
@@ -125,7 +125,7 @@ void emulator::run_independent_instruction(const std::shared_ptr<ll_independent_
     }
 }
 
-void emulator::run_conversion_instruction(const std::shared_ptr<ll_conversion_instr_node>& node) {
+void fcore::emulator::run_conversion_instruction(const std::shared_ptr<ll_conversion_instr_node>& node) {
     std::string opcode = node->get_opcode();
 
     uint32_t src = node->get_source()->get_bound_reg();
@@ -154,7 +154,7 @@ void emulator::run_conversion_instruction(const std::shared_ptr<ll_conversion_in
 
 }
 
-void emulator::run_load_constant_instruction(const std::shared_ptr<ll_load_constant_instr_node>& node) {
+void fcore::emulator::run_load_constant_instruction(const std::shared_ptr<ll_load_constant_instr_node>& node) {
     uint32_t const_val;
     float raw_const = node->get_constant_f();
 
@@ -165,32 +165,32 @@ void emulator::run_load_constant_instruction(const std::shared_ptr<ll_load_const
     working_memory->at(dest) = const_val;
 }
 
-uint32_t emulator::execute_add(uint32_t a, uint32_t b) {
+uint32_t fcore::emulator::execute_add(uint32_t a, uint32_t b) {
     return exec.execute_add(a, b);
 }
 
-uint32_t emulator::execute_sub(uint32_t a, uint32_t b) {
+uint32_t fcore::emulator::execute_sub(uint32_t a, uint32_t b) {
     return exec.execute_sub(a, b);
 }
 
-uint32_t emulator::execute_mul(uint32_t a, uint32_t b) {
+uint32_t fcore::emulator::execute_mul(uint32_t a, uint32_t b) {
     return exec.execute_mul(a, b);
 }
 
-uint32_t emulator::execute_rec(uint32_t a) {
+uint32_t fcore::emulator::execute_rec(uint32_t a) {
     return exec.execute_rec(a);
 }
 
-uint32_t emulator::execute_fti(uint32_t a) {
+uint32_t fcore::emulator::execute_fti(uint32_t a) {
     return exec.execute_fti(a);
 }
 
 
-uint32_t emulator::execute_itf(uint32_t a) {
+uint32_t fcore::emulator::execute_itf(uint32_t a) {
     return exec.execute_itf(a);
 }
 
-uint32_t emulator::execute_compare_gt(uint32_t a, uint32_t b) {
+uint32_t fcore::emulator::execute_compare_gt(uint32_t a, uint32_t b) {
     bool sign_a = (1<<31) & a;
     bool sign_b = (1<<31) & b;
 
@@ -221,7 +221,7 @@ uint32_t emulator::execute_compare_gt(uint32_t a, uint32_t b) {
     }
 }
 
-uint32_t emulator::execute_compare_le(uint32_t a, uint32_t b) {
+uint32_t fcore::emulator::execute_compare_le(uint32_t a, uint32_t b) {
     bool sign_a = (1<<31) & a;
     bool sign_b = (1<<31) & b;
 
@@ -253,7 +253,7 @@ uint32_t emulator::execute_compare_le(uint32_t a, uint32_t b) {
     }
 }
 
-uint32_t emulator::execute_compare_eq(uint32_t a, uint32_t b) {
+uint32_t fcore::emulator::execute_compare_eq(uint32_t a, uint32_t b) {
     bool res = a==b;
     if(comparator_type== "full") {
         if(res){
@@ -270,7 +270,7 @@ uint32_t emulator::execute_compare_eq(uint32_t a, uint32_t b) {
     }
 }
 
-uint32_t emulator::execute_compare_ne(uint32_t a, uint32_t b) {
+uint32_t fcore::emulator::execute_compare_ne(uint32_t a, uint32_t b) {
     bool res = a!=b;
     if(comparator_type== "full") {
         if(res){
@@ -287,27 +287,27 @@ uint32_t emulator::execute_compare_ne(uint32_t a, uint32_t b) {
     }
 }
 
-uint32_t emulator::execute_or(uint32_t a, uint32_t b) {
+uint32_t fcore::emulator::execute_or(uint32_t a, uint32_t b) {
     return a | b;
 }
 
-uint32_t emulator::execute_and(uint32_t a, uint32_t b) {
+uint32_t fcore::emulator::execute_and(uint32_t a, uint32_t b) {
     return a & b;
 }
 
-uint32_t emulator::execute_not(uint32_t a) {
+uint32_t fcore::emulator::execute_not(uint32_t a) {
     return ~a;
 }
 
-uint32_t emulator::execute_abs(uint32_t a) {
+uint32_t fcore::emulator::execute_abs(uint32_t a) {
     return a&0x7fffffff;
 }
 
-uint32_t emulator::execute_popcnt(uint32_t a) {
+uint32_t fcore::emulator::execute_popcnt(uint32_t a) {
     return std::bitset<32>(a).count();
 }
 
-uint32_t emulator::execute_satp(uint32_t a, uint32_t b) {
+uint32_t fcore::emulator::execute_satp(uint32_t a, uint32_t b) {
     float raw_a = uint32_to_float(a);
     float raw_b = uint32_to_float(b);
 
@@ -322,7 +322,7 @@ uint32_t emulator::execute_satp(uint32_t a, uint32_t b) {
     return float_to_uint32(raw_res);
 }
 
-uint32_t emulator::execute_satn(uint32_t a, uint32_t b) {
+uint32_t fcore::emulator::execute_satn(uint32_t a, uint32_t b) {
     float raw_a = uint32_to_float(a);
     float raw_b = uint32_to_float(b);
 
@@ -336,38 +336,38 @@ uint32_t emulator::execute_satn(uint32_t a, uint32_t b) {
     return float_to_uint32(raw_res);
 }
 
-void emulator::execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest) {
+void fcore::emulator::execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest) {
     efi_implementation.emulate_efi(efi_selector, op_a, op_b, dest, working_memory);
 }
 
 
-uint32_t emulator::float_to_uint32(float f) {
+uint32_t fcore::emulator::float_to_uint32(float f) {
     uint32_t ret;
     memcpy(&ret, &f, sizeof(f));
        return ret;
 }
 
-float emulator::uint32_to_float(uint32_t u) {
+float fcore::emulator::uint32_to_float(uint32_t u) {
     float ret;
     memcpy(&ret, &u, sizeof(u));
     return ret;
 }
 
-uint32_t emulator::execute_bset(uint32_t a, uint32_t b, uint32_t c) {
+uint32_t fcore::emulator::execute_bset(uint32_t a, uint32_t b, uint32_t c) {
     std::bitset<32> bits(a);
     bits[b] = c;
     return bits.to_ulong();
 }
 
-uint32_t emulator::execute_bsel(uint32_t a, uint32_t b) {
+uint32_t fcore::emulator::execute_bsel(uint32_t a, uint32_t b) {
     return (a & (1<<b))>>b;
 }
 
-uint32_t emulator::execute_xor(uint32_t a, uint32_t b) {
+uint32_t fcore::emulator::execute_xor(uint32_t a, uint32_t b) {
     return a ^ b;
 }
 
-void emulator::init_memory(const std::unordered_map<unsigned int, uint32_t> &mem_init) {
+void fcore::emulator::init_memory(const std::unordered_map<unsigned int, uint32_t> &mem_init) {
     for(auto &item: mem_init){
         for(const auto& reg_file:memory_pool){
             reg_file.second->at(item.first) = item.second;
@@ -376,7 +376,7 @@ void emulator::init_memory(const std::unordered_map<unsigned int, uint32_t> &mem
     }
 }
 
-uint32_t emulator::get_output(uint32_t addr, int channel) {
+uint32_t fcore::emulator::get_output(uint32_t addr, int channel) {
     auto selected_memory = memory_pool[channel];
     return selected_memory->at(addr);
 }

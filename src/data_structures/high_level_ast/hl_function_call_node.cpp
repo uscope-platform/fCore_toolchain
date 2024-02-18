@@ -20,12 +20,12 @@
 
 
 
-hl_function_call_node::hl_function_call_node(std::string n, std::vector<std::shared_ptr<hl_ast_node>> a) : hl_ast_node(hl_ast_node_type_function_call){
+fcore::hl_function_call_node::hl_function_call_node(std::string n, std::vector<std::shared_ptr<hl_ast_node>> a) : hl_ast_node(hl_ast_node_type_function_call){
     name = std::move(n);
     arguments = std::move(a);
 }
 
-std::string hl_function_call_node::pretty_print() {
+std::string fcore::hl_function_call_node::pretty_print() {
     std::ostringstream ss;
     ss << name<<"( ";
     if(!arguments.empty()){
@@ -48,17 +48,8 @@ std::string hl_function_call_node::pretty_print() {
     return ret;
 }
 
-bool operator==(const hl_function_call_node &lhs, const hl_function_call_node &rhs) {
-    bool ret_val = true;
 
-    ret_val &= lhs.name == rhs.name;
-
-    ret_val &= hl_ast_node::compare_vectors(lhs.arguments, rhs.arguments);
-
-    return ret_val;
-}
-
-nlohmann::json hl_function_call_node::dump() {
+nlohmann::json fcore::hl_function_call_node::dump() {
     nlohmann::json retval = hl_ast_node::dump();
 
     retval["name"] = name;

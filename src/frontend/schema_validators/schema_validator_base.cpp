@@ -15,7 +15,7 @@
 
 #include "frontend/schema_validators/schema_validator_base.h"
 
-fcore_toolchain::schema_validator_base::schema_validator_base(const std::string& schema_file) {
+fcore::schema_validator_base::schema_validator_base(const std::string& schema_file) {
     if(!std::filesystem::exists(schema_file)){
         std::string err_msg = "JSON schema file not found: " + schema_file;
         spdlog::critical(err_msg);
@@ -35,7 +35,7 @@ fcore_toolchain::schema_validator_base::schema_validator_base(const std::string&
 }
 
 
-void fcore_toolchain::schema_validator_base::validate(nlohmann::json &spec_file) {
+void fcore::schema_validator_base::validate(nlohmann::json &spec_file) {
     valijson::Validator validator;
     valijson::ValidationResults results;
     valijson::adapters::NlohmannJsonAdapter myTargetAdapter(spec_file);

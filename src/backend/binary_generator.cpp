@@ -15,7 +15,7 @@
 
 #include "backend/binary_generator.hpp"
 
-void binary_generator::process_stream(
+void fcore::binary_generator::process_stream(
         const instruction_stream& stream,
         const std::unordered_map<std::string, std::vector<int>>& dma_map,
         const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& allocation_map,
@@ -66,14 +66,14 @@ void binary_generator::process_stream(
     ex.generate_metadata();
 }
 
-void binary_generator::process_stream(const instruction_stream &stream, bool debug_print) {
+void fcore::binary_generator::process_stream(const instruction_stream &stream, bool debug_print) {
     auto dma_map = std::unordered_map<std::string, std::vector<int>>();
     auto am = std::make_shared<std::unordered_map<std::string, std::vector<io_map_entry>>>();
     process_stream(stream, dma_map, am, debug_print);
 }
 
 
-void binary_generator::write_hex_file(const std::string& filename) {
+void fcore::binary_generator::write_hex_file(const std::string& filename) {
     std::ofstream output(filename, std::ios::binary | std::ios::out);
     auto executable_vect = ex.get_executable();
     for(auto &it:executable_vect){
@@ -82,7 +82,7 @@ void binary_generator::write_hex_file(const std::string& filename) {
     }
 }
 
-void binary_generator::write_mem_file(const std::string& filename) {
+void fcore::binary_generator::write_mem_file(const std::string& filename) {
     std::ofstream output(filename);
     auto executable_vect = ex.get_executable();
     for(auto &it:executable_vect){
@@ -91,7 +91,7 @@ void binary_generator::write_mem_file(const std::string& filename) {
 }
 
 
-std::vector<uint32_t> binary_generator::generate_hex(bool endian_swap) {
+std::vector<uint32_t> fcore::binary_generator::generate_hex(bool endian_swap) {
     std::vector<uint32_t> ret;
     auto executable_vect = ex.get_executable();
     for(auto &it:executable_vect){
@@ -101,7 +101,7 @@ std::vector<uint32_t> binary_generator::generate_hex(bool endian_swap) {
     return ret;
 }
 
-std::vector<std::string> binary_generator::generate_mem() {
+std::vector<std::string> fcore::binary_generator::generate_mem() {
     std::vector<std::string> ret;
     auto executable_vect = ex.get_executable();
     for(auto &it:executable_vect){
@@ -112,16 +112,16 @@ std::vector<std::string> binary_generator::generate_mem() {
     return ret;
 }
 
-std::vector<uint32_t> binary_generator::get_executable() {
+std::vector<uint32_t> fcore::binary_generator::get_executable() {
     return ex.get_executable();
 }
 
 
-uint32_t binary_generator::get_program_size() {
+uint32_t fcore::binary_generator::get_program_size() {
     return ex.get_executable().size();
 }
 
-std::vector<uint32_t> binary_generator::get_code() {
+std::vector<uint32_t> fcore::binary_generator::get_code() {
     return ex.get_code();
 }
 

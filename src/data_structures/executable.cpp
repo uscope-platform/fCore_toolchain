@@ -16,13 +16,13 @@
 
 
 
-executable::executable() {
+fcore::executable::executable() {
     sections["metadata"] = std::vector<uint32_t>();
     sections["io_remapping"] = std::vector<uint32_t>();
     sections["code"] = std::vector<uint32_t>();
 }
 
-executable::executable(std::vector<uint32_t> exec) {
+fcore::executable::executable(std::vector<uint32_t> exec) {
     std::vector<uint32_t> executable = std::move(exec);
     sections["metadata"].push_back(executable[0]);
 
@@ -40,11 +40,11 @@ executable::executable(std::vector<uint32_t> exec) {
 }
 
 
-void executable::add_code_section(std::vector<uint32_t> code) {
+void fcore::executable::add_code_section(std::vector<uint32_t> code) {
     sections["code"] = std::move(code);
 }
 
-void executable::add_io_mapping(const std::set<io_map_entry>&  mapping) {
+void fcore::executable::add_io_mapping(const std::set<io_map_entry>&  mapping) {
     std::set<uint32_t>maps;
     for(const auto& pair:mapping){
         io_mapping_present = true;
@@ -57,13 +57,13 @@ void executable::add_io_mapping(const std::set<io_map_entry>&  mapping) {
     sections["io_remapping"].push_back(0xC);
 }
 
-void executable::generate_metadata() {
+void fcore::executable::generate_metadata() {
     sections["metadata"].push_back(sections["io_remapping"].size() + (sections["code"].size()<<16));
     sections["metadata"].push_back(0xC);
 }
 
 
-std::vector<uint32_t> executable::get_executable() {
+std::vector<uint32_t> fcore::executable::get_executable() {
     std::vector<uint32_t> ret_exec;
     auto metadata_sect = sections["metadata"];
     auto io_remap_sect = sections["io_remapping"];
@@ -74,11 +74,11 @@ std::vector<uint32_t> executable::get_executable() {
     return ret_exec;
 }
 
-std::vector<uint32_t> executable::get_code() {
+std::vector<uint32_t> fcore::executable::get_code() {
     return sections["code"];
 }
 
-std::set<std::pair<uint16_t, uint16_t>> executable::get_io_mapping() {
+std::set<std::pair<uint16_t, uint16_t>> fcore::executable::get_io_mapping() {
     std::set<std::pair<uint16_t, uint16_t>> ret_val;
     for(auto &item:sections["io_remapping"]){
         uint16_t pair[2];

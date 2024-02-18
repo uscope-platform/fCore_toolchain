@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
     nlohmann::json spec = nlohmann::json::parse(ifs);
     try{
         std::string s_f = SCHEMAS_FOLDER;
-        fcore_toolchain::schema_validator_base validator(  s_f + "/compiler_spec_schema.json");
+        fcore::schema_validator_base validator(  s_f + "/compiler_spec_schema.json");
         validator.validate(spec);
     } catch(std::invalid_argument &ex){
         exit(-1);
@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
     }
 
     std::vector<std::string> include_files = {""};
-    fcore_cc cc_engine(input_file, include_files, false, dump_ast_level);
+    fcore::fcore_cc cc_engine(input_file, include_files, false, dump_ast_level);
 
     if(spec.contains("dma_io")){
         cc_engine.set_dma_map(spec["dma_io"]);

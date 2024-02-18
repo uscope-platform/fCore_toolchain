@@ -16,11 +16,11 @@
 
 #include "passes/high_level/conditional_implementation_pass.h"
 
-conditional_implementation_pass::conditional_implementation_pass() : pass_base<hl_ast_node>("Conditional Implementation pass"){
+fcore::conditional_implementation_pass::conditional_implementation_pass() : pass_base<hl_ast_node>("Conditional Implementation pass"){
 
 }
 
-std::shared_ptr<hl_ast_node> conditional_implementation_pass::process_global(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node> fcore::conditional_implementation_pass::process_global(std::shared_ptr<hl_ast_node> element) {
     std::shared_ptr<hl_ast_node> ret_val = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
     std::vector<std::shared_ptr<hl_ast_node>> body;
@@ -35,8 +35,8 @@ std::shared_ptr<hl_ast_node> conditional_implementation_pass::process_global(std
 }
 
 
-std::vector<std::shared_ptr<hl_ast_node>>
-conditional_implementation_pass::process_block_by_type(const std::shared_ptr<hl_ast_node> &node,
+std::vector<std::shared_ptr<fcore::hl_ast_node>>
+fcore::conditional_implementation_pass::process_block_by_type(const std::shared_ptr<hl_ast_node> &node,
                                                        const std::shared_ptr<hl_ast_node> &subtree) {
 
     if(node->node_type == hl_ast_node_type_loop){
@@ -51,8 +51,8 @@ conditional_implementation_pass::process_block_by_type(const std::shared_ptr<hl_
     }
 }
 
-std::vector<std::shared_ptr<hl_ast_node>>
-conditional_implementation_pass::process_loop(const std::shared_ptr<hl_ast_loop_node> &node,
+std::vector<std::shared_ptr<fcore::hl_ast_node>>
+fcore::conditional_implementation_pass::process_loop(const std::shared_ptr<hl_ast_loop_node> &node,
                                               const std::shared_ptr<hl_ast_node> &subtree) {
 
     std::vector<std::shared_ptr<hl_ast_node>> new_block_content;
@@ -70,8 +70,8 @@ conditional_implementation_pass::process_loop(const std::shared_ptr<hl_ast_loop_
     return new_block_content;
 }
 
-std::vector<std::shared_ptr<hl_ast_node>>
-conditional_implementation_pass::process_conditional(const std::shared_ptr<hl_ast_conditional_node>& node, const std::shared_ptr<hl_ast_node>& subtree) {
+std::vector<std::shared_ptr<fcore::hl_ast_node>>
+fcore::conditional_implementation_pass::process_conditional(const std::shared_ptr<hl_ast_conditional_node>& node, const std::shared_ptr<hl_ast_node>& subtree) {
     std::vector<std::shared_ptr<hl_ast_node>> result_body;
 
 
@@ -99,8 +99,8 @@ conditional_implementation_pass::process_conditional(const std::shared_ptr<hl_as
 }
 
 
-std::shared_ptr<hl_ast_operand>
-conditional_implementation_pass::find_variable_definition(const std::shared_ptr<hl_ast_node>& subexpr,
+std::shared_ptr<fcore::hl_ast_operand>
+fcore::conditional_implementation_pass::find_variable_definition(const std::shared_ptr<hl_ast_node>& subexpr,
                                                           const std::shared_ptr<hl_ast_node>& item,
                                                           const std::vector<std::shared_ptr<hl_ast_node>>& prog_content) {
     std::shared_ptr<hl_ast_operand> retval;
@@ -130,8 +130,8 @@ conditional_implementation_pass::find_variable_definition(const std::shared_ptr<
 }
 
 
-std::shared_ptr<hl_ast_operand>
-conditional_implementation_pass::get_operands(const std::shared_ptr<hl_ast_node> &subexpr,
+std::shared_ptr<fcore::hl_ast_operand>
+fcore::conditional_implementation_pass::get_operands(const std::shared_ptr<hl_ast_node> &subexpr,
                                               const std::shared_ptr<hl_ast_node> &item,
                                               const std::vector<std::shared_ptr<hl_ast_node>> &prog_content) {
     std::shared_ptr<hl_ast_operand> retval;

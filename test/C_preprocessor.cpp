@@ -19,6 +19,8 @@
 
 #include <stdexcept>
 
+using namespace fcore;
+
 TEST( cFrontend, preprocessor_decomment) {
     std::string input_file = "c_prep/test_comments.c";
 

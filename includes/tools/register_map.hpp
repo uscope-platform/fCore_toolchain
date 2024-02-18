@@ -24,27 +24,29 @@
 #include "fCore_isa.hpp"
 
 #define N_REGISTERS 2<<fcore_register_address_width
+namespace fcore {
 
-typedef struct{
-    int start;
-    int end;
-} range_t;
+    typedef struct{
+        int start;
+        int end;
+    } range_t;
 
-class register_map {
-public:
-    register_map();
-    bool is_used(int reg, int from_inst, int to_inst);
-    bool is_used(std::pair<int,int> array, int from_inst, int to_inst);
-    void insert(std::shared_ptr<variable> var, int reg, int from_inst, int to_inst);
-    void insert(std::shared_ptr<variable> var, std::pair<int,int> reg, int from_inst, int to_inst);
+    class register_map {
+    public:
+        register_map();
+        bool is_used(int reg, int from_inst, int to_inst);
+        bool is_used(std::pair<int,int> array, int from_inst, int to_inst);
+        void insert(std::shared_ptr<variable> var, int reg, int from_inst, int to_inst);
+        void insert(std::shared_ptr<variable> var, std::pair<int,int> reg, int from_inst, int to_inst);
 
-    std::shared_ptr<variable> get_identifier(const std::shared_ptr<variable>& var);
-    void add_bound_identifier(const std::shared_ptr<variable> & var, int reg);
-    bool is_allocated(const std::shared_ptr<variable> &var) {return identifiers_map.contains(var->get_identifier());};
-private:
-    std::unordered_map<std::string, std::shared_ptr<variable>> identifiers_map;
-    std::vector<std::vector<range_t>> reg_map;
-};
+        std::shared_ptr<variable> get_identifier(const std::shared_ptr<variable>& var);
+        void add_bound_identifier(const std::shared_ptr<variable> & var, int reg);
+        bool is_allocated(const std::shared_ptr<variable> &var) {return identifiers_map.contains(var->get_identifier());};
+    private:
+        std::unordered_map<std::string, std::shared_ptr<variable>> identifiers_map;
+        std::vector<std::vector<range_t>> reg_map;
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_REGISTER_MAP_HPP

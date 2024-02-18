@@ -21,14 +21,16 @@
 #include "passes/pass_manager_base.hpp"
 #include "passes/pass_base.hpp"
 
-class ll_pass_manager : public pass_manager_base<ll_ast_node> {
-public:
-    explicit ll_pass_manager(int dal);
-    void run_morphing_pass( std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>>& pass) override;
-    std::vector<std::shared_ptr<ll_ast_node>> process_nodes(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>>& pass);
-    std::shared_ptr<ll_ast_node> process_leaves(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>>& pass);
+namespace fcore{
+    class ll_pass_manager : public pass_manager_base<ll_ast_node> {
+    public:
+        explicit ll_pass_manager(int dal);
+        void run_morphing_pass( std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>>& pass) override;
+        std::vector<std::shared_ptr<ll_ast_node>> process_nodes(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>>& pass);
+        std::shared_ptr<ll_ast_node> process_leaves(const std::shared_ptr<ll_ast_node> &subtree, const std::shared_ptr<pass_base<ll_ast_node>>& pass);
 
-};
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_LL_PASS_MANAGER_HPP

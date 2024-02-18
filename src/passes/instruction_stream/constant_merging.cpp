@@ -17,13 +17,13 @@
 
 #include <utility>
 
-constant_merging::constant_merging(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam) : stream_pass_base("constant merging pass"){
+fcore::constant_merging::constant_merging(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam) : stream_pass_base("constant merging pass"){
     delete_intercalated_const = false;
     assignments_map = std::move(lam);
     idx = 0;
 }
 
-std::shared_ptr<ll_instruction_node> constant_merging::apply_pass(std::shared_ptr<ll_instruction_node> element) {
+std::shared_ptr<fcore::ll_instruction_node> fcore::constant_merging::apply_pass(std::shared_ptr<ll_instruction_node> element) {
     map_exclusions(element);
     std::shared_ptr<ll_instruction_node> ret_val;
     switch (element->get_type()) {
@@ -51,7 +51,7 @@ std::shared_ptr<ll_instruction_node> constant_merging::apply_pass(std::shared_pt
 
 }
 
-void constant_merging::map_exclusions(std::shared_ptr<ll_instruction_node> element) {
+void fcore::constant_merging::map_exclusions(std::shared_ptr<ll_instruction_node> element) {
     std::shared_ptr<variable> dest;
     switch (element->get_type()) {
         case isa_register_instruction:
@@ -74,7 +74,7 @@ void constant_merging::map_exclusions(std::shared_ptr<ll_instruction_node> eleme
 
 }
 
-std::shared_ptr<ll_instruction_node> constant_merging::merge_register_inst(const std::shared_ptr<ll_register_instr_node> &instr) {
+std::shared_ptr<fcore::ll_instruction_node> fcore::constant_merging::merge_register_inst(const std::shared_ptr<ll_register_instr_node> &instr) {
     std::vector<std::shared_ptr<variable>> new_args;
 
 
@@ -96,7 +96,7 @@ std::shared_ptr<ll_instruction_node> constant_merging::merge_register_inst(const
     return instr;
 }
 
-std::shared_ptr<ll_instruction_node> constant_merging::merge_conv_instr(const std::shared_ptr<ll_conversion_instr_node> &instr) {
+std::shared_ptr<fcore::ll_instruction_node> fcore::constant_merging::merge_conv_instr(const std::shared_ptr<ll_conversion_instr_node> &instr) {
     std::vector<std::shared_ptr<variable>> new_args;
     if(is_last_io_assignment(instr->get_destination())){
         return instr;
@@ -113,7 +113,7 @@ std::shared_ptr<ll_instruction_node> constant_merging::merge_conv_instr(const st
     return instr;
 }
 
-std::shared_ptr<ll_instruction_node> constant_merging::merge_load_const_instr(const std::shared_ptr<ll_load_constant_instr_node> &instr) {
+std::shared_ptr<fcore::ll_instruction_node> fcore::constant_merging::merge_load_const_instr(const std::shared_ptr<ll_load_constant_instr_node> &instr) {
     std::shared_ptr<ll_instruction_node> ret;
     if(is_last_io_assignment(instr->get_destination())){
         return instr;
@@ -144,8 +144,8 @@ std::shared_ptr<ll_instruction_node> constant_merging::merge_load_const_instr(co
     return ret;
 }
 
-std::shared_ptr<ll_instruction_node>
-constant_merging::merge_interc_const(const std::shared_ptr<ll_intercalated_const_instr_node> &instr) {
+std::shared_ptr<fcore::ll_instruction_node>
+fcore::constant_merging::merge_interc_const(const std::shared_ptr<ll_intercalated_const_instr_node> &instr) {
     if(!delete_intercalated_const){
         return instr;
     } else {
@@ -155,7 +155,7 @@ constant_merging::merge_interc_const(const std::shared_ptr<ll_intercalated_const
 
 }
 
-std::shared_ptr<variable> constant_merging::get_merged_constant(std::shared_ptr<variable> v) {
+std::shared_ptr<fcore::variable> fcore::constant_merging::get_merged_constant(std::shared_ptr<variable> v) {
     auto var_name = v->get_identifier();
     if(!processed_constants.contains(var_name)){
         return v;
@@ -172,7 +172,7 @@ std::shared_ptr<variable> constant_merging::get_merged_constant(std::shared_ptr<
 
 }
 
-bool constant_merging::is_last_io_assignment(const std::shared_ptr<variable> &dest) {
+bool fcore::constant_merging::is_last_io_assignment(const std::shared_ptr<variable> &dest) {
     if(dest->get_variable_class() == variable_output_type || dest->get_variable_class() == variable_memory_type){
         if(assignments_map->contains(dest->get_identifier())){
             auto last_assignment_idx = assignments_map->at(dest->get_identifier()).second;

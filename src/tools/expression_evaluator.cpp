@@ -17,7 +17,7 @@
 #include "tools/expression_evaluator.hpp"
 
 
-bool expression_evaluator::is_constant_expression(const std::shared_ptr<hl_expression_node>& expression) {
+bool fcore::expression_evaluator::is_constant_expression(const std::shared_ptr<hl_expression_node>& expression) {
     bool retval = true;
     if(expression->is_immediate()) return false;
     if(expression->get_type() == expr_efi) return false;
@@ -26,7 +26,7 @@ bool expression_evaluator::is_constant_expression(const std::shared_ptr<hl_expre
     return retval;
 }
 
-bool expression_evaluator::is_constant_subexpr(const std::shared_ptr<hl_ast_node>& subex) {
+bool fcore::expression_evaluator::is_constant_subexpr(const std::shared_ptr<hl_ast_node>& subex) {
     if(subex->node_type == hl_ast_node_type_operand){
         std::shared_ptr<hl_ast_operand> node = std::static_pointer_cast<hl_ast_operand>(subex);
         if(node->get_type() == var_type_scalar ||  node->get_type() == var_type_array){
@@ -39,8 +39,8 @@ bool expression_evaluator::is_constant_subexpr(const std::shared_ptr<hl_ast_node
     }
 }
 
-std::shared_ptr<hl_ast_operand>
-expression_evaluator::evaluate_expression(std::shared_ptr<hl_expression_node> expression) {
+std::shared_ptr<fcore::hl_ast_operand>
+fcore::expression_evaluator::evaluate_expression(std::shared_ptr<hl_expression_node> expression) {
     if(expression->is_unary()){
         return evaluate_unary_expression(expression);
     } else {
@@ -50,8 +50,8 @@ expression_evaluator::evaluate_expression(std::shared_ptr<hl_expression_node> ex
 
 
 
-std::shared_ptr<hl_ast_operand>
-expression_evaluator::evaluate_unary_expression(std::shared_ptr<hl_expression_node> expression) {
+std::shared_ptr<fcore::hl_ast_operand>
+fcore::expression_evaluator::evaluate_unary_expression(std::shared_ptr<hl_expression_node> expression) {
     std::shared_ptr<hl_ast_operand> retval;
 
     std::shared_ptr<hl_ast_operand> rhs;
@@ -107,8 +107,8 @@ expression_evaluator::evaluate_unary_expression(std::shared_ptr<hl_expression_no
     return retval;
 }
 
-std::shared_ptr<hl_ast_operand>
-expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_node> expression) {
+std::shared_ptr<fcore::hl_ast_operand>
+fcore::expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_node> expression) {
 
     std::shared_ptr<hl_ast_operand> retval;
 
@@ -163,8 +163,8 @@ expression_evaluator::evaluate_regular_expression(std::shared_ptr<hl_expression_
 
 
 
-std::shared_ptr<hl_ast_operand>
-expression_evaluator::evaluate_expression_side(const std::shared_ptr<hl_ast_node> &side) {
+std::shared_ptr<fcore::hl_ast_operand>
+fcore::expression_evaluator::evaluate_expression_side(const std::shared_ptr<hl_ast_node> &side) {
     std::shared_ptr<hl_ast_operand> retval;
 
     if(side->node_type == hl_ast_node_type_operand){
@@ -176,7 +176,7 @@ expression_evaluator::evaluate_expression_side(const std::shared_ptr<hl_ast_node
 }
 
 
-float expression_evaluator::evaluate_unary_expr_f(float operand, expression_type_t operation) {
+float fcore::expression_evaluator::evaluate_unary_expr_f(float operand, expression_type_t operation) {
     switch (operation) {
         case expr_reciprocal:
             return 1/operand;
@@ -198,7 +198,7 @@ float expression_evaluator::evaluate_unary_expr_f(float operand, expression_type
     }
 }
 
-int expression_evaluator::evaluate_unary_expr_i(int operand, expression_type_t operation) {
+int fcore::expression_evaluator::evaluate_unary_expr_i(int operand, expression_type_t operation) {
     switch (operation) {
         case expr_reciprocal:
             return 1/operand;
@@ -221,7 +221,7 @@ int expression_evaluator::evaluate_unary_expr_i(int operand, expression_type_t o
 }
 
 
-float expression_evaluator::evaluate_regular_expr_f(float operand_a, float operand_b, expression_type_t operation) {
+float fcore::expression_evaluator::evaluate_regular_expr_f(float operand_a, float operand_b, expression_type_t operation) {
     switch (operation) {
         case expr_add:
             return operand_a+operand_b;
@@ -252,7 +252,7 @@ float expression_evaluator::evaluate_regular_expr_f(float operand_a, float opera
     }
 }
 
-int expression_evaluator::evaluate_regular_expr_i(int operand_a, int operand_b, expression_type_t operation) {
+int fcore::expression_evaluator::evaluate_regular_expr_i(int operand_a, int operand_b, expression_type_t operation) {
     switch (operation) {
         case expr_add:
             return operand_a+operand_b;

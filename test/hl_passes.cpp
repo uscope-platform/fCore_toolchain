@@ -29,6 +29,7 @@
 #include <memory>
 #include <fstream>
 
+using namespace fcore;
 
 TEST(HlPassesTest, divisionImplementation) {
 

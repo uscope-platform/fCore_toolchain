@@ -21,21 +21,24 @@
 #include "passes/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
-class contiguous_array_identification : public pass_base<hl_ast_node>{
-public:
-    contiguous_array_identification();
-    std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
-    int get_pass_type() override { return GLOBAL_PASS;};
-private:
-    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_node> element);
-    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_expression_node> element);
-    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_definition_node> element);
-    std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_operand> element);
+namespace fcore{
+    class contiguous_array_identification : public pass_base<hl_ast_node>{
+    public:
+        contiguous_array_identification();
+        std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
+        int get_pass_type() override { return GLOBAL_PASS;};
+    private:
+        std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_node> element);
+        std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_expression_node> element);
+        std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_definition_node> element);
+        std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_operand> element);
 
-    void process_efi_arguments(std::shared_ptr<hl_expression_node> element);
+        void process_efi_arguments(std::shared_ptr<hl_expression_node> element);
 
-    std::set<std::string> contiguous_arrays;
-};
+        std::set<std::string> contiguous_arrays;
+    };
+}
+
 
 
 #endif //FCORE_TOOLCHAIN_CONTIGUOUS_ARRAY_IDENTIFICATION_HPP

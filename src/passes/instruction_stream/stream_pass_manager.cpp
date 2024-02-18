@@ -16,14 +16,14 @@
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 
 
-stream_pass_manager::stream_pass_manager(int dal,
+fcore::stream_pass_manager::stream_pass_manager(int dal,
         std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
         const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
         ) {
     constructs_pass_manager(dal, bm, all_map);
 }
 
-stream_pass_manager::stream_pass_manager(std::vector<int> &io_res, int dal) {
+fcore::stream_pass_manager::stream_pass_manager(std::vector<int> &io_res, int dal) {
 
     auto bm = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
     auto am = std::make_shared<std::unordered_map<std::string, std::vector<io_map_entry>>>();
@@ -32,7 +32,7 @@ stream_pass_manager::stream_pass_manager(std::vector<int> &io_res, int dal) {
 
 
 void
-stream_pass_manager::constructs_pass_manager(int dal,
+fcore::stream_pass_manager::constructs_pass_manager(int dal,
                                              std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
                                              const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
                                              ) {
@@ -52,7 +52,7 @@ stream_pass_manager::constructs_pass_manager(int dal,
 }
 
 
-instruction_stream stream_pass_manager::process_stream(instruction_stream stream) {
+fcore::instruction_stream fcore::stream_pass_manager::process_stream(instruction_stream stream) {
     int pass_n = 0;
     if(dump_ast_level>0) pre_opt_dump = stream.dump();
     instruction_stream ret_val = std::move(stream);
@@ -72,8 +72,8 @@ instruction_stream stream_pass_manager::process_stream(instruction_stream stream
     return ret_val;
 }
 
-instruction_stream
-stream_pass_manager::apply_pass(const instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass) {
+fcore::instruction_stream
+fcore::stream_pass_manager::apply_pass(const instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass) {
     instruction_stream retval;
     pass->setup();
     for(auto &instr:in_stream){
@@ -84,7 +84,7 @@ stream_pass_manager::apply_pass(const instruction_stream& in_stream, const std::
     return retval;
 }
 
-nlohmann::json stream_pass_manager::get_dump() {
+nlohmann::json fcore::stream_pass_manager::get_dump() {
     nlohmann::json retval;
 
     retval["pre-opt"] = pre_opt_dump;

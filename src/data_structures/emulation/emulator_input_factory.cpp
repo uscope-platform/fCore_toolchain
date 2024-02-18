@@ -16,7 +16,7 @@
 #include "data_structures/emulation/emulator_input_factory.hpp"
 
 
-void emulator_input_factory::new_input(std::string &str, bool v) {
+void fcore::emulator_input_factory::new_input(std::string &str, bool v) {
     emulator_input ei;
     if(!is_vector){
         ei.set_name(str);
@@ -25,25 +25,25 @@ void emulator_input_factory::new_input(std::string &str, bool v) {
     is_vector = v;
 }
 
-void emulator_input_factory::set_target_address(const std::string& s, std::vector<uint32_t> a) {
+void fcore::emulator_input_factory::set_target_address(const std::string& s, std::vector<uint32_t> a) {
     if(is_vector)
         addresses = std::move(a);
     else
         inputs[s].set_target_address(a[0]);
 }
 
-void emulator_input_factory::set_target_channel(const std::string& s, std::vector<uint32_t> c) {
+void fcore::emulator_input_factory::set_target_channel(const std::string& s, std::vector<uint32_t> c) {
     if(is_vector)
         channels = std::move(c);
     else
         inputs[s].set_target_channel(c[0]);
 }
 
-void emulator_input_factory::set_data(const std::vector<std::string>& vn) {
+void fcore::emulator_input_factory::set_data(const std::vector<std::string>& vn) {
     vector_names = vn;
 }
 
-void emulator_input_factory::set_data(const std::string& s, const std::string& series_name) {
+void fcore::emulator_input_factory::set_data(const std::string& s, const std::string& series_name) {
     auto col = data_file[series_name];
 
     if(inputs[s].get_type()=="f"){
@@ -53,30 +53,30 @@ void emulator_input_factory::set_data(const std::string& s, const std::string& s
     }
 }
 
-void emulator_input_factory::set_data(const std::string& s, float d) {
+void fcore::emulator_input_factory::set_data(const std::string& s, float d) {
     inputs[s].set_data(fti(d));
 }
 
-void emulator_input_factory::set_type(const std::string& s, std::string t) {
+void fcore::emulator_input_factory::set_type(const std::string& s, std::string t) {
     type = t;
     inputs[s].set_type(std::move(t));
 }
 
-emulator_input_factory::emulator_input_factory(emulator_input_factory &im) {
+fcore::emulator_input_factory::emulator_input_factory(emulator_input_factory &im) {
     inputs = im.inputs;
 }
 
-emulator_input_factory::emulator_input_factory(nlohmann::json &id) {
+fcore::emulator_input_factory::emulator_input_factory(nlohmann::json &id) {
     data_file = id;
 }
 
-uint32_t emulator_input_factory::fti(float f) {
+uint32_t fcore::emulator_input_factory::fti(float f) {
     uint32_t i;
     memcpy(&i, &f, sizeof(f));
     return i;
 }
 
-std::vector<uint32_t> emulator_input_factory::vect_fti(std::vector<float> v) {
+std::vector<uint32_t> fcore::emulator_input_factory::vect_fti(std::vector<float> v) {
     std::vector<uint32_t> dv;
     for(float f:v){
         dv.push_back(fti(f));
@@ -84,7 +84,7 @@ std::vector<uint32_t> emulator_input_factory::vect_fti(std::vector<float> v) {
     return dv;
 }
 
-void emulator_input_factory::finalize_object() {
+void fcore::emulator_input_factory::finalize_object() {
     if(is_vector){
         for(uint32_t i = 0; i< labels.size();i++){
             emulator_input ei;
@@ -101,7 +101,7 @@ void emulator_input_factory::finalize_object() {
     }
 }
 
-void emulator_input_factory::set_data_int(const std::string &s, uint32_t i) {
+void fcore::emulator_input_factory::set_data_int(const std::string &s, uint32_t i) {
     inputs[s].set_data(i);
 }
 

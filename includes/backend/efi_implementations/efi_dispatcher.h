@@ -25,37 +25,40 @@
 #include <cstring>
 #include <algorithm>
 
+namespace fcore{
 
-class cell {
-public:
-    cell(double v, int s, bool o) {
-        voltage = v;
-        idx = s;
-        order = o;
+    class cell {
+    public:
+        cell(double v, int s, bool o) {
+            voltage = v;
+            idx = s;
+            order = o;
+        };
+        bool operator <(const cell &b) const {
+            if(order)
+                return voltage > b.voltage;
+            else
+                return b.voltage > voltage;
+        };
+        double voltage;
+        float idx;  // Does not participate in comparisons
+        bool order;
     };
-    bool operator <(const cell &b) const {
-        if(order)
-            return voltage > b.voltage;
-        else
-            return b.voltage > voltage;
+
+    class efi_dispatcher {
+
+    public:
+        explicit efi_dispatcher(const std::string &core);
+        void emulate_efi(const std::string& function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m);
+    private:
+        void efi_sort(uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m);
+        static uint32_t float_to_uint32(float f);
+        static float uint32_to_float(uint32_t u);
+        void efi_trig(uint32_t op_a, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m);
+        std::string core_name;
     };
-    double voltage;
-    float idx;  // Does not participate in comparisons
-    bool order;
-};
 
-class efi_dispatcher {
-
-public:
-    explicit efi_dispatcher(const std::string &core);
-    void emulate_efi(const std::string& function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m);
-private:
-    void efi_sort(uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m);
-    static uint32_t float_to_uint32(float f);
-    static float uint32_to_float(uint32_t u);
-    void efi_trig(uint32_t op_a, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m);
-    std::string core_name;
-};
+}
 
 
 #endif //FCORE_TOOLCHAIN_EFI_DISPATCHER_H

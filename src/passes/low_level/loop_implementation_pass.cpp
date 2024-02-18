@@ -16,11 +16,11 @@
 #include "passes/low_level/loop_implementation_pass.hpp"
 
 
-loop_implementation_pass::loop_implementation_pass() : pass_base<ll_ast_node>("loop implementation pass"){
+fcore::loop_implementation_pass::loop_implementation_pass() : pass_base<ll_ast_node>("loop implementation pass"){
 
 }
 
-std::vector<std::shared_ptr<ll_ast_node>> loop_implementation_pass::process_node(std::shared_ptr<ll_ast_node> element) {
+std::vector<std::shared_ptr<fcore::ll_ast_node>> fcore::loop_implementation_pass::process_node(std::shared_ptr<ll_ast_node> element) {
     bool unroll_mode = false;
     std::vector<std::shared_ptr<ll_ast_node>> loop_content;
     std::vector<std::shared_ptr<ll_ast_node>> new_loop_content;

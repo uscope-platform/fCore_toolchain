@@ -16,10 +16,10 @@
 
 #include "passes/high_level/constant_propagation.hpp"
 
-constant_propagation::constant_propagation() : pass_base<hl_ast_node>("Constant Propagation Pass"){
+fcore::constant_propagation::constant_propagation() : pass_base<hl_ast_node>("Constant Propagation Pass"){
 }
 
-std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node> fcore::constant_propagation::process_global(std::shared_ptr<hl_ast_node> element) {
 
     tracker.clear();
 
@@ -63,7 +63,7 @@ std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_pt
 
 }
 
-std::shared_ptr<hl_ast_node> constant_propagation::purge_definition(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node> fcore::constant_propagation::purge_definition(std::shared_ptr<hl_ast_node> element) {
     if(element->node_type==hl_ast_node_type_definition){
         auto def = std::static_pointer_cast<hl_definition_node>(element);
         if(def->is_scalar()){
@@ -88,7 +88,7 @@ std::shared_ptr<hl_ast_node> constant_propagation::purge_definition(std::shared_
 }
 
 
-std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::shared_ptr<hl_ast_node> element, int instr_idx) {
+std::shared_ptr<fcore::hl_ast_node> fcore::constant_propagation::propagate_constant(std::shared_ptr<hl_ast_node> element, int instr_idx) {
 
     if(element->node_type == hl_ast_node_type_expr){
         return propagate_constant(std::static_pointer_cast<hl_expression_node>(element), instr_idx);
@@ -101,7 +101,7 @@ std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::share
     }
 }
 
-std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::shared_ptr<hl_expression_node> element, int instr_idx) {
+std::shared_ptr<fcore::hl_ast_node> fcore::constant_propagation::propagate_constant(std::shared_ptr<hl_expression_node> element, int instr_idx) {
     if(element->is_immediate()){
         return element;
     }
@@ -139,7 +139,7 @@ std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::share
     return element;
 }
 
-std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::shared_ptr<hl_definition_node> element, int instr_idx) {
+std::shared_ptr<fcore::hl_ast_node> fcore::constant_propagation::propagate_constant(std::shared_ptr<hl_definition_node> element, int instr_idx) {
     if(element->is_initialized()){
         std::shared_ptr<hl_ast_node> initializer = element->get_scalar_initializer();
         std::shared_ptr<hl_ast_node> new_init = propagate_constant(initializer, instr_idx);
@@ -149,7 +149,7 @@ std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::share
     return element;
 }
 
-std::shared_ptr<hl_ast_operand> constant_propagation::propagate_constant(std::shared_ptr<hl_ast_operand> element, int instr_idx) {
+std::shared_ptr<fcore::hl_ast_operand> fcore::constant_propagation::propagate_constant(std::shared_ptr<hl_ast_operand> element, int instr_idx) {
 
     std::shared_ptr<hl_ast_operand> ret_operand;
 
@@ -199,7 +199,7 @@ std::shared_ptr<hl_ast_operand> constant_propagation::propagate_constant(std::sh
     return ret_operand;
 }
 
-bool constant_propagation::map_constants(const std::shared_ptr<hl_ast_node>& element, int instr_idx) {
+bool fcore::constant_propagation::map_constants(const std::shared_ptr<hl_ast_node>& element, int instr_idx) {
 
     if(element->node_type == hl_ast_node_type_definition) {
         return map_constants(std::static_pointer_cast<hl_definition_node>(element), instr_idx);
@@ -210,7 +210,7 @@ bool constant_propagation::map_constants(const std::shared_ptr<hl_ast_node>& ele
 
 }
 
-bool constant_propagation::map_constants(const std::shared_ptr<hl_definition_node>& element, int instr_idx) {
+bool fcore::constant_propagation::map_constants(const std::shared_ptr<hl_definition_node>& element, int instr_idx) {
     if (
         element->get_variable()->get_variable_class() != variable_input_type &&
         element->is_initialized() &&
@@ -238,7 +238,7 @@ bool constant_propagation::map_constants(const std::shared_ptr<hl_definition_nod
     return false;
 }
 
-bool constant_propagation::map_constants(const std::shared_ptr<hl_expression_node> &element, int instr_idx) {
+bool fcore::constant_propagation::map_constants(const std::shared_ptr<hl_expression_node> &element, int instr_idx) {
 
 
     if(element->get_type() == expr_assign){
@@ -258,7 +258,7 @@ bool constant_propagation::map_constants(const std::shared_ptr<hl_expression_nod
 }
 
 
-bool constant_propagation::map_constants(const std::shared_ptr<hl_ast_operand> &op, const std::shared_ptr<hl_ast_operand> &target, int instr_idx) {
+bool fcore::constant_propagation::map_constants(const std::shared_ptr<hl_ast_operand> &op, const std::shared_ptr<hl_ast_operand> &target, int instr_idx) {
     if(op->get_type() == var_type_float_const || op->get_type() == var_type_int_const){
         if(target->is_scalar()){
             tracker.add_constant(target->get_name(), op, instr_idx, {0});
@@ -278,7 +278,7 @@ bool constant_propagation::map_constants(const std::shared_ptr<hl_ast_operand> &
     return false;
 }
 
-std::vector<uint32_t> constant_propagation::get_index_array(const std::shared_ptr<hl_ast_operand> &target) {
+std::vector<uint32_t> fcore::constant_propagation::get_index_array(const std::shared_ptr<hl_ast_operand> &target) {
     std::vector<uint32_t> indices = {};
     for(auto &item: target->get_array_index()){
         if(item->node_type == hl_ast_node_type_operand){
@@ -296,7 +296,7 @@ std::vector<uint32_t> constant_propagation::get_index_array(const std::shared_pt
 
 
 
-void constant_propagation::analyze_assignment(const std::shared_ptr<hl_expression_node> &element, int instr_idx) {
+void fcore::constant_propagation::analyze_assignment(const std::shared_ptr<hl_expression_node> &element, int instr_idx) {
     std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
 
     if(needs_termination(element, instr_idx)){
@@ -316,7 +316,7 @@ void constant_propagation::analyze_assignment(const std::shared_ptr<hl_expressio
 }
 
 
-bool constant_propagation::needs_termination(const std::shared_ptr<hl_expression_node> &element, int instr_idx) {
+bool fcore::constant_propagation::needs_termination(const std::shared_ptr<hl_expression_node> &element, int instr_idx) {
     bool needs_termination = false;
     bool analyze_rhs;
     auto dest = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());

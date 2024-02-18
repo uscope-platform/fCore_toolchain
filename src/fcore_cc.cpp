@@ -20,14 +20,14 @@
 
 
 
-fcore_cc::fcore_cc(std::vector<std::string> &contents) :
+fcore::fcore_cc::fcore_cc(std::vector<std::string> &contents) :
         input_string_stream(contents[0]), hl_manager(0), ll_manager(0){
     type = "string";
     logging = false;
     dump_ast_level = 0;
 }
 
-fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl) :
+fcore::fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl) :
 input_file_stream(path), hl_manager(dump_lvl), ll_manager(dump_lvl){
     type = "file";
     includes = inc;
@@ -35,7 +35,7 @@ input_file_stream(path), hl_manager(dump_lvl), ll_manager(dump_lvl){
     dump_ast_level = dump_lvl;
 }
 
-bool fcore_cc::compile() {
+bool fcore::fcore_cc::compile() {
     try{
         parse_dma_spec();
         parse(dma_io_spec);
@@ -49,24 +49,24 @@ bool fcore_cc::compile() {
 }
 
 
-std::string fcore_cc::get_errors() {
+std::string fcore::fcore_cc::get_errors() {
     return error_code;
 }
 
-std::vector<uint32_t> fcore_cc::get_raw_code() {
+std::vector<uint32_t> fcore::fcore_cc::get_raw_code() {
     return writer.get_code();
 }
 
 
-void fcore_cc::write_hexfile(const std::string &ouput_file) {
+void fcore::fcore_cc::write_hexfile(const std::string &ouput_file) {
     writer.write_hex_file(ouput_file);
 }
 
-void fcore_cc::write_verilog_memfile(const std::string &ouput_file) {
+void fcore::fcore_cc::write_verilog_memfile(const std::string &ouput_file) {
     writer.write_mem_file(ouput_file);
 }
 
-void fcore_cc::write_json(const std::string &output_file) {
+void fcore::fcore_cc::write_json(const std::string &output_file) {
     nlohmann::json j;
     j["error_code"] = error_code;
     if(error_code.empty()){
@@ -80,7 +80,7 @@ void fcore_cc::write_json(const std::string &output_file) {
     ss.close();
 }
 
-void fcore_cc::parse(std::unordered_map<std::string, variable_class_t> dma_specs) {
+void fcore::fcore_cc::parse(std::unordered_map<std::string, variable_class_t> dma_specs) {
     std::shared_ptr<define_map> defines_map = std::make_shared<define_map>();
     error_code = "";
     C_language_parser target_parser;
@@ -94,7 +94,7 @@ void fcore_cc::parse(std::unordered_map<std::string, variable_class_t> dma_specs
     hl_ast = target_parser.AST;
 }
 
-void fcore_cc::optimize(std::unordered_map<std::string, std::vector<int>> &dma_map) {
+void fcore::fcore_cc::optimize(std::unordered_map<std::string, std::vector<int>> &dma_map) {
     std::string ep = "main";
     hl_manager = create_hl_pass_manager(ep,{}, dump_ast_level);
     hl_manager.run_morphing_passes(hl_ast);
@@ -130,7 +130,7 @@ void fcore_cc::optimize(std::unordered_map<std::string, std::vector<int>> &dma_m
     writer.process_stream(program_stream,dma_map,allocation_map, logging);
 }
 
-void fcore_cc::parse_dma_spec() {
+void fcore::fcore_cc::parse_dma_spec() {
     for(auto &item:dma_spec.items()){
         std::shared_ptr<variable> v = std::make_shared<variable>(item.key());
         if(item.value()["type"] =="input"){
@@ -160,10 +160,10 @@ void fcore_cc::parse_dma_spec() {
 
 }
 
-std::vector<uint32_t> fcore_cc::get_executable() {
+std::vector<uint32_t> fcore::fcore_cc::get_executable() {
     return writer.get_executable();
 }
 
-std::set<io_map_entry> fcore_cc::get_io_map() {
+std::set<fcore::io_map_entry> fcore::fcore_cc::get_io_map() {
     return writer.get_io_mapping();
 }

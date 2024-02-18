@@ -22,27 +22,30 @@
 #include "tools/expression_evaluator.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
-class array_scalarization_pass : public pass_base<hl_ast_node> {
-public:
-    array_scalarization_pass();
-    std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
-    int get_pass_type() override { return GLOBAL_PASS;};
-private:
+namespace fcore{
+    class array_scalarization_pass : public pass_base<hl_ast_node> {
+    public:
+        array_scalarization_pass();
+        std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
+        int get_pass_type() override { return GLOBAL_PASS;};
+    private:
 
-    std::shared_ptr<hl_ast_node> process_element(const std::shared_ptr<hl_ast_node>& node);
-    std::shared_ptr<hl_expression_node> process_expression(std::shared_ptr<hl_expression_node> node);
-    std::shared_ptr<hl_ast_operand> process_operand(std::shared_ptr<hl_ast_operand> node);
-    std::shared_ptr<hl_definition_node> process_definition(std::shared_ptr<hl_definition_node> node);
-    std::shared_ptr<hl_function_call_node> process_function_call(std::shared_ptr<hl_function_call_node> node);
-    std::shared_ptr<hl_function_def_node> process_function_def(std::shared_ptr<hl_function_def_node> node);
-    std::shared_ptr<hl_ast_conditional_node> process_conditional(std::shared_ptr<hl_ast_conditional_node> node);
+        std::shared_ptr<hl_ast_node> process_element(const std::shared_ptr<hl_ast_node>& node);
+        std::shared_ptr<hl_expression_node> process_expression(std::shared_ptr<hl_expression_node> node);
+        std::shared_ptr<hl_ast_operand> process_operand(std::shared_ptr<hl_ast_operand> node);
+        std::shared_ptr<hl_definition_node> process_definition(std::shared_ptr<hl_definition_node> node);
+        std::shared_ptr<hl_function_call_node> process_function_call(std::shared_ptr<hl_function_call_node> node);
+        std::shared_ptr<hl_function_def_node> process_function_def(std::shared_ptr<hl_function_def_node> node);
+        std::shared_ptr<hl_ast_conditional_node> process_conditional(std::shared_ptr<hl_ast_conditional_node> node);
 
-    int evaluate_index_definition(std::shared_ptr<hl_definition_node> node);
+        int evaluate_index_definition(std::shared_ptr<hl_definition_node> node);
 
-    std::string mangle_name(std::vector<std::shared_ptr<hl_ast_node>> old_array_idx, std::string var_name, int array_size);
-    std::unordered_map<std::string, std::shared_ptr<hl_definition_node>> def_map_vect;
-    std::unordered_map<std::string, std::shared_ptr<hl_definition_node>> def_map_s;
-};
+        std::string mangle_name(std::vector<std::shared_ptr<hl_ast_node>> old_array_idx, std::string var_name, int array_size);
+        std::unordered_map<std::string, std::shared_ptr<hl_definition_node>> def_map_vect;
+        std::unordered_map<std::string, std::shared_ptr<hl_definition_node>> def_map_s;
+    };
+}
+
 
 
 #endif //FCORE_TOOLCHAIN_ARRAY_SCALARIZATION_PASS_HPP

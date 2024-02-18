@@ -21,14 +21,17 @@
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "passes/pass_base.hpp"
 
-class inlined_function_elimination : public  pass_base<hl_ast_node>{
-public:
-    explicit inlined_function_elimination(std::string entry_point_name);
-    std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
-    int get_pass_type() override { return GLOBAL_PASS;};
-private:
-    std::string entry_point;
-};
+namespace fcore{
+    class inlined_function_elimination : public  pass_base<hl_ast_node>{
+    public:
+        explicit inlined_function_elimination(std::string entry_point_name);
+        std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
+        int get_pass_type() override { return GLOBAL_PASS;};
+    private:
+        std::string entry_point;
+    };
+}
+
 
 
 

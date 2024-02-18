@@ -17,12 +17,12 @@
 
 
 
-AsmTree_visitor::AsmTree_visitor(std::shared_ptr<variable_map> map) {
+fcore::AsmTree_visitor::AsmTree_visitor(std::shared_ptr<variable_map> map) {
     varmap = std::move(map);
 }
 
 
-void AsmTree_visitor::exitReg_instr(asm_parser::asm_grammarParser::Reg_instrContext *ctx) {
+void fcore::AsmTree_visitor::exitReg_instr(asm_parser::asm_grammarParser::Reg_instrContext *ctx) {
     std::string opcode = ctx->reg_opcode()->getText();
 
     std::string op_a_str;
@@ -54,7 +54,7 @@ void AsmTree_visitor::exitReg_instr(asm_parser::asm_grammarParser::Reg_instrCont
     current_element->add_content(node);
 }
 
-void AsmTree_visitor::exitConv_instr(asm_parser::asm_grammarParser::Conv_instrContext *ctx) {
+void fcore::AsmTree_visitor::exitConv_instr(asm_parser::asm_grammarParser::Conv_instrContext *ctx) {
     std::string opcode = ctx->conv_opcode()->getText();
 
     std::shared_ptr<variable> op_a = std::make_shared<variable>(ctx->operand(0)->getText());
@@ -65,7 +65,7 @@ void AsmTree_visitor::exitConv_instr(asm_parser::asm_grammarParser::Conv_instrCo
     current_element->add_content(node);
 }
 
-void AsmTree_visitor::exitBranch_instr(asm_parser::asm_grammarParser::Branch_instrContext *ctx) {
+void fcore::AsmTree_visitor::exitBranch_instr(asm_parser::asm_grammarParser::Branch_instrContext *ctx) {
     std::string opcode = ctx->branch_opcode()->getText();
 
     std::shared_ptr<variable> op_a = std::make_shared<variable>(ctx->operand(0)->getText());
@@ -79,7 +79,7 @@ void AsmTree_visitor::exitBranch_instr(asm_parser::asm_grammarParser::Branch_ins
 
 }
 
-void AsmTree_visitor::exitPseudo_instr(asm_parser::asm_grammarParser::Pseudo_instrContext *ctx) {
+void fcore::AsmTree_visitor::exitPseudo_instr(asm_parser::asm_grammarParser::Pseudo_instrContext *ctx) {
     std::string opcode = ctx->pseudo_opcode()->getText();
 
     std::string op_a_str;
@@ -118,7 +118,7 @@ void AsmTree_visitor::exitPseudo_instr(asm_parser::asm_grammarParser::Pseudo_ins
 
 }
 
-void AsmTree_visitor::exitIndep_instr(asm_parser::asm_grammarParser::Indep_instrContext *ctx) {
+void fcore::AsmTree_visitor::exitIndep_instr(asm_parser::asm_grammarParser::Indep_instrContext *ctx) {
     std::string opcode = ctx->getText();
 
 
@@ -127,7 +127,7 @@ void AsmTree_visitor::exitIndep_instr(asm_parser::asm_grammarParser::Indep_instr
 
 }
 
-void AsmTree_visitor::exitLoad_instr(asm_parser::asm_grammarParser::Load_instrContext *ctx) {
+void fcore::AsmTree_visitor::exitLoad_instr(asm_parser::asm_grammarParser::Load_instrContext *ctx) {
 
     std::string dest_str;
     if(ctx->destination()->Identifier() != nullptr)
@@ -151,13 +151,13 @@ void AsmTree_visitor::exitLoad_instr(asm_parser::asm_grammarParser::Load_instrCo
 
 }
 
-void AsmTree_visitor::enterFor_block(asm_parser::asm_grammarParser::For_blockContext *ctx) {
+void fcore::AsmTree_visitor::enterFor_block(asm_parser::asm_grammarParser::For_blockContext *ctx) {
 
     parent_elements.push(current_element);
     current_element = std::make_shared<ll_ast_node>(ll_type_for_block);
 
 }
-void AsmTree_visitor::exitFor_block(asm_parser::asm_grammarParser::For_blockContext *ctx) {
+void fcore::AsmTree_visitor::exitFor_block(asm_parser::asm_grammarParser::For_blockContext *ctx) {
     //Process loop initialization
     std::shared_ptr<ll_loop_node> loop = std::make_shared<ll_loop_node>();
 
@@ -197,24 +197,24 @@ void AsmTree_visitor::exitFor_block(asm_parser::asm_grammarParser::For_blockCont
 }
 
 
-void AsmTree_visitor::enterProgram(asm_parser::asm_grammarParser::ProgramContext *ctx) {
+void fcore::AsmTree_visitor::enterProgram(asm_parser::asm_grammarParser::ProgramContext *ctx) {
     current_element = std::make_shared<ll_ast_node>(ll_type_program_head);
 }
 
-void AsmTree_visitor::exitProgram(asm_parser::asm_grammarParser::ProgramContext *ctx) {
+void fcore::AsmTree_visitor::exitProgram(asm_parser::asm_grammarParser::ProgramContext *ctx) {
     program_head = current_element;
 }
 
-std::shared_ptr<ll_ast_node> AsmTree_visitor::get_program() {
+std::shared_ptr<fcore::ll_ast_node> fcore::AsmTree_visitor::get_program() {
     return program_head;
 }
 
-void AsmTree_visitor::exitPragma(asm_parser::asm_grammarParser::PragmaContext *ctx) {
+void fcore::AsmTree_visitor::exitPragma(asm_parser::asm_grammarParser::PragmaContext *ctx) {
     std::shared_ptr<ll_ast_pragma> node = std::make_shared<ll_ast_pragma>(ctx->Identifier()->getText());
     current_element->add_content(node);
 }
 
-void AsmTree_visitor::exitConstant_decl(asm_parser::asm_grammarParser::Constant_declContext *ctx) {
+void fcore::AsmTree_visitor::exitConstant_decl(asm_parser::asm_grammarParser::Constant_declContext *ctx) {
     std::string identifier;
     if(ctx->Identifier() != nullptr) {
         identifier = ctx->Identifier()->getText();
@@ -226,7 +226,7 @@ void AsmTree_visitor::exitConstant_decl(asm_parser::asm_grammarParser::Constant_
     varmap->insert(identifier, std::make_shared<variable>(tmp));
 }
 
-void AsmTree_visitor::exitVariable_decl(asm_parser::asm_grammarParser::Variable_declContext *ctx) {
+void fcore::AsmTree_visitor::exitVariable_decl(asm_parser::asm_grammarParser::Variable_declContext *ctx) {
     std::string identifier;
 
     if(ctx->Identifier() != nullptr) {
@@ -239,13 +239,13 @@ void AsmTree_visitor::exitVariable_decl(asm_parser::asm_grammarParser::Variable_
     varmap->insert(identifier, std::make_shared<variable>(tmp));
 }
 
-void AsmTree_visitor::exitInput_decl(asm_parser::asm_grammarParser::Input_declContext *ctx) {
+void fcore::AsmTree_visitor::exitInput_decl(asm_parser::asm_grammarParser::Input_declContext *ctx) {
     std::string identifier = ctx->Identifier()->getText();
     variable tmp = variable(identifier);
     varmap->insert(identifier, std::make_shared<variable>(tmp));
 }
 
-void AsmTree_visitor::exitOutput_decl(asm_parser::asm_grammarParser::Output_declContext *ctx) {
+void fcore::AsmTree_visitor::exitOutput_decl(asm_parser::asm_grammarParser::Output_declContext *ctx) {
     std::string identifier = ctx->Identifier()->getText();
     variable tmp = variable( identifier);
     tmp.set_used(true);
@@ -253,7 +253,7 @@ void AsmTree_visitor::exitOutput_decl(asm_parser::asm_grammarParser::Output_decl
 }
 
 
-void AsmTree_visitor::exitImmediate(asm_parser::asm_grammarParser::ImmediateContext *ctx) {
+void fcore::AsmTree_visitor::exitImmediate(asm_parser::asm_grammarParser::ImmediateContext *ctx) {
     if(ctx->Identifier()== nullptr){
         std::string identifier;
         if(ctx->Integer() != nullptr)
@@ -268,7 +268,7 @@ void AsmTree_visitor::exitImmediate(asm_parser::asm_grammarParser::ImmediateCont
     }
 }
 
-void AsmTree_visitor::exitFloat_const(asm_parser::asm_grammarParser::Float_constContext *ctx) {
+void fcore::AsmTree_visitor::exitFloat_const(asm_parser::asm_grammarParser::Float_constContext *ctx) {
     std::string identifier = ctx->FloatingPointLiteral()->getText();
     variable tmp = variable("constant", std::stof(identifier));
     varmap->insert(identifier, std::make_shared<variable>(tmp));

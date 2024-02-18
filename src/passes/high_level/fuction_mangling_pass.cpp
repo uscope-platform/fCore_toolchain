@@ -17,11 +17,11 @@
 
 #include <utility>
 
-fuction_mangling_pass::fuction_mangling_pass() : pass_base<hl_ast_node>("Function Mangling pass") {
+fcore::fuction_mangling_pass::fuction_mangling_pass() : pass_base<hl_ast_node>("Function Mangling pass") {
 
 }
 
-std::shared_ptr<hl_ast_node> fuction_mangling_pass::process_global(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node> fcore::fuction_mangling_pass::process_global(std::shared_ptr<hl_ast_node> element) {
     std::shared_ptr<hl_ast_node> ret_val = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
     std::vector<std::shared_ptr<hl_ast_node>> body;
@@ -64,7 +64,7 @@ std::shared_ptr<hl_ast_node> fuction_mangling_pass::process_global(std::shared_p
     return ret_val;
 }
 
-std::shared_ptr<hl_ast_node> fuction_mangling_pass::mangle_node(const std::shared_ptr<hl_ast_node>& node, const std::string &function) {
+std::shared_ptr<fcore::hl_ast_node> fcore::fuction_mangling_pass::mangle_node(const std::shared_ptr<hl_ast_node>& node, const std::string &function) {
     switch (node->node_type) {
         case hl_ast_node_type_expr:
             return mangle_node(std::static_pointer_cast<hl_expression_node>(node), function);
@@ -85,16 +85,16 @@ std::shared_ptr<hl_ast_node> fuction_mangling_pass::mangle_node(const std::share
     }
 }
 
-std::shared_ptr<hl_ast_conditional_node>
-fuction_mangling_pass::mangle_node(std::shared_ptr<hl_ast_conditional_node> node, const std::string& function) {
+std::shared_ptr<fcore::hl_ast_conditional_node>
+fcore::fuction_mangling_pass::mangle_node(std::shared_ptr<hl_ast_conditional_node> node, const std::string& function) {
     node->set_condition(mangle_node(node->get_condition(), function));
     node->set_if_block(mangle_vector(node->get_if_block(), function));
     node->set_else_block(mangle_vector(node->get_else_block(), function));
     return node;
 }
 
-std::shared_ptr<hl_ast_loop_node>
-fuction_mangling_pass::mangle_node(std::shared_ptr<hl_ast_loop_node> node, const std::string& function) {
+std::shared_ptr<fcore::hl_ast_loop_node>
+fcore::fuction_mangling_pass::mangle_node(std::shared_ptr<hl_ast_loop_node> node, const std::string& function) {
     node->set_condition(mangle_node(node->get_condition(), function));
     node->set_init_statement(mangle_node(node->get_init_statement(), function));
     node->set_iteration_expr(mangle_node(node->get_iteration_expr(), function));
@@ -102,8 +102,8 @@ fuction_mangling_pass::mangle_node(std::shared_ptr<hl_ast_loop_node> node, const
     return node;
 }
 
-std::shared_ptr<hl_expression_node>
-fuction_mangling_pass::mangle_node(std::shared_ptr<hl_expression_node> node, const std::string& function) {
+std::shared_ptr<fcore::hl_expression_node>
+fcore::fuction_mangling_pass::mangle_node(std::shared_ptr<hl_expression_node> node, const std::string& function) {
     if(node->is_immediate())
         return node;
     if(!node->is_unary()){
@@ -113,8 +113,8 @@ fuction_mangling_pass::mangle_node(std::shared_ptr<hl_expression_node> node, con
     return node;
 }
 
-std::shared_ptr<hl_definition_node>
-fuction_mangling_pass::mangle_node(const std::shared_ptr<hl_definition_node>& node, const std::string& function) {
+std::shared_ptr<fcore::hl_definition_node>
+fcore::fuction_mangling_pass::mangle_node(const std::shared_ptr<hl_definition_node>& node, const std::string& function) {
     node->set_array_index(mangle_vector(node->get_array_index(),function));
     node->set_array_initializer(mangle_vector(node->get_array_initializer(), function));
     node->set_name(mangle_string(node->get_name(),function));
@@ -122,32 +122,32 @@ fuction_mangling_pass::mangle_node(const std::shared_ptr<hl_definition_node>& no
     return node;
 }
 
-std::shared_ptr<hl_function_call_node>
-fuction_mangling_pass::mangle_node(const std::shared_ptr<hl_function_call_node>& node, const std::string& function) {
+std::shared_ptr<fcore::hl_function_call_node>
+fcore::fuction_mangling_pass::mangle_node(const std::shared_ptr<hl_function_call_node>& node, const std::string& function) {
     node->set_arguments(mangle_vector(node->get_arguments(), function));
     return node;
 }
 
-std::shared_ptr<hl_ast_operand>
-fuction_mangling_pass::mangle_node(const std::shared_ptr<hl_ast_operand>& node, const std::string& function) {
+std::shared_ptr<fcore::hl_ast_operand>
+fcore::fuction_mangling_pass::mangle_node(const std::shared_ptr<hl_ast_operand>& node, const std::string& function) {
     node->set_variable(mangle_variable(node->get_variable(), function));
     node->set_array_index(mangle_vector(node->get_array_index(),function));
     return node;
 }
 
-std::vector<std::shared_ptr<hl_ast_node>>
-fuction_mangling_pass::mangle_vector(const std::vector<std::shared_ptr<hl_ast_node>> &v, const std::string& function) {
+std::vector<std::shared_ptr<fcore::hl_ast_node>>
+fcore::fuction_mangling_pass::mangle_vector(const std::vector<std::shared_ptr<hl_ast_node>> &v, const std::string& function) {
     for(auto &item:v){
         mangle_node(item, function);
     }
     return v;
 }
 
-std::string fuction_mangling_pass::mangle_string(const std::string& s, const std::string& function) {
+std::string fcore::fuction_mangling_pass::mangle_string(const std::string& s, const std::string& function) {
     return "_fcmglr_function_"+  function + "_" + s;
 }
 
-std::shared_ptr<variable> fuction_mangling_pass::mangle_variable(const std::shared_ptr<variable> &v, const std::string &function) {
+std::shared_ptr<fcore::variable> fcore::fuction_mangling_pass::mangle_variable(const std::shared_ptr<variable> &v, const std::string &function) {
     v->set_name(mangle_string(v->get_name(), function));
     v->set_variable_class(variable_regular_type);
     v->set_bound_reg(-1);

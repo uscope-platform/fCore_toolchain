@@ -15,13 +15,13 @@
 
 #include "passes/instruction_stream/variable_lifetime_mapping.hpp"
 
-variable_lifetime_mapping::variable_lifetime_mapping(std::shared_ptr<variable_map> &v) : stream_pass_base("Variable lifetime mapping") {
+fcore::variable_lifetime_mapping::variable_lifetime_mapping(std::shared_ptr<variable_map> &v) : stream_pass_base("Variable lifetime mapping") {
     vmap = v;
     instr_cntr = 0;
 }
 
-std::shared_ptr<ll_instruction_node>
-variable_lifetime_mapping::apply_pass(std::shared_ptr<ll_instruction_node> element) {
+std::shared_ptr<fcore::ll_instruction_node>
+fcore::variable_lifetime_mapping::apply_pass(std::shared_ptr<ll_instruction_node> element) {
     switch (element->get_type()) {
         case isa_register_instruction:
             map_register_inst(std::static_pointer_cast<ll_register_instr_node>(element));
@@ -44,7 +44,7 @@ variable_lifetime_mapping::apply_pass(std::shared_ptr<ll_instruction_node> eleme
     return element;
 }
 
-void variable_lifetime_mapping::map_register_inst(const std::shared_ptr<ll_register_instr_node> &instr) {
+void fcore::variable_lifetime_mapping::map_register_inst(const std::shared_ptr<ll_register_instr_node> &instr) {
     std::shared_ptr<variable> op_a = vmap->at(instr->get_operand_a()->get_linear_identifier());
     vmap->insert(op_a->get_linear_identifier(), update_variable_lifetime(op_a));
 
@@ -56,7 +56,7 @@ void variable_lifetime_mapping::map_register_inst(const std::shared_ptr<ll_regis
 
 }
 
-void variable_lifetime_mapping::map_conv_instr(const std::shared_ptr<ll_conversion_instr_node> &instr) {
+void fcore::variable_lifetime_mapping::map_conv_instr(const std::shared_ptr<ll_conversion_instr_node> &instr) {
     std::shared_ptr<variable> src = vmap->at(instr->get_source()->get_linear_identifier());
     vmap->insert(src->get_linear_identifier(), update_variable_lifetime(src));
 
@@ -65,12 +65,12 @@ void variable_lifetime_mapping::map_conv_instr(const std::shared_ptr<ll_conversi
 
 }
 
-void variable_lifetime_mapping::map_load_const_instr(const std::shared_ptr<ll_load_constant_instr_node> &instr) {
+void fcore::variable_lifetime_mapping::map_load_const_instr(const std::shared_ptr<ll_load_constant_instr_node> &instr) {
     std::shared_ptr<variable> dest = vmap->at(instr->get_destination()->get_linear_identifier());
     vmap->insert(dest->get_linear_identifier(), update_variable_lifetime(dest));
 }
 
-std::shared_ptr<variable> variable_lifetime_mapping::update_variable_lifetime(const std::shared_ptr<variable>& var) const {
+std::shared_ptr<fcore::variable> fcore::variable_lifetime_mapping::update_variable_lifetime(const std::shared_ptr<variable>& var) const {
    std::shared_ptr<variable> retval = var;
     if(!var->is_constant()){
         if(var->get_variable_class()==variable_input_type){

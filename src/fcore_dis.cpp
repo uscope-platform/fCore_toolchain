@@ -15,7 +15,7 @@
 
 #include "fcore_dis.hpp"
 
-fcore_dis::fcore_dis(std::istream &input, bin_loader_input_type_t in_type) {
+fcore::fcore_dis::fcore_dis(std::istream &input, bin_loader_input_type_t in_type) {
     error_code = "";
     try{
         binary_loader dis(input, in_type);
@@ -27,7 +27,7 @@ fcore_dis::fcore_dis(std::istream &input, bin_loader_input_type_t in_type) {
 }
 
 
-fcore_dis::fcore_dis(const std::vector<uint32_t> &mem) {
+fcore::fcore_dis::fcore_dis(const std::vector<uint32_t> &mem) {
     error_code = "";
     try{
         binary_loader dis(mem);
@@ -38,11 +38,11 @@ fcore_dis::fcore_dis(const std::vector<uint32_t> &mem) {
     }
 }
 
-std::string fcore_dis::get_errors() {
+std::string fcore::fcore_dis::get_errors() {
     return error_code;
 }
 
-void fcore_dis::write_json(const std::string &output_file) {
+void fcore::fcore_dis::write_json(const std::string &output_file) {
     nlohmann::json j;
     j["error_code"] = error_code;
     if(error_code.empty()){
@@ -56,15 +56,15 @@ void fcore_dis::write_json(const std::string &output_file) {
     ss.close();
 }
 
-std::string fcore_dis::get_disassenbled_program() {
+std::string fcore::fcore_dis::get_disassenbled_program() {
     return gen->get_program();
 }
 
-void fcore_dis::write_disassembled_program(const std::string &output_file) {
+void fcore::fcore_dis::write_disassembled_program(const std::string &output_file) {
     gen->write_program(output_file);
 }
 
-void fcore_dis::process_ast(std::shared_ptr<ll_ast_node> ast) {
+void fcore::fcore_dis::process_ast(std::shared_ptr<ll_ast_node> ast) {
     instruction_stream program_stream = instruction_stream_builder::build_stream(ast);
     std::vector<int> io_res;
 

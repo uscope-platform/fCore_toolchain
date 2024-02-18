@@ -17,6 +17,7 @@
 
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
+using namespace fcore;
 
 TEST( HlAstDeepCopy, operand){
     std::vector<std::shared_ptr<hl_ast_node>> init;

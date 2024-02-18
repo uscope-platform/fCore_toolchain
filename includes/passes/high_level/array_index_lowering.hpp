@@ -18,12 +18,14 @@
 
 #include "passes/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
+namespace fcore{
+    class array_index_lowering : public  pass_base<hl_ast_node> {
+    public:
+        array_index_lowering();
+        std::shared_ptr<hl_ast_node> process_leaf(std::shared_ptr<hl_ast_node> element) override;
+        int get_pass_type() override { return LEAF_PASS;};
+    };
+}
 
-class array_index_lowering : public  pass_base<hl_ast_node> {
-public:
-    array_index_lowering();
-    std::shared_ptr<hl_ast_node> process_leaf(std::shared_ptr<hl_ast_node> element) override;
-    int get_pass_type() override { return LEAF_PASS;};
-};
 
 #endif //FCORE_TOOLCHAIN_ARRAY_INDEX_LOWERING_HPP

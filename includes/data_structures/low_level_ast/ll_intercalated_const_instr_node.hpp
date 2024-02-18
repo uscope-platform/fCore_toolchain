@@ -17,24 +17,33 @@
 #define FCORE_TOOLCHAIN_LL_INTERCALATED_CONST_INSTR_NODE_HPP
 
 #include "data_structures/low_level_ast/low_level_ast.hpp"
+namespace fcore{
+    class ll_intercalated_const_instr_node : public ll_instruction_node {
+    public:
+        explicit ll_intercalated_const_instr_node(float constant);
+        explicit ll_intercalated_const_instr_node(uint32_t constant);
+        uint32_t emit() override;
+        void print() override;
+        int instruction_count() override;
 
-class ll_intercalated_const_instr_node : public ll_instruction_node {
-public:
-    explicit ll_intercalated_const_instr_node(float constant);
-    explicit ll_intercalated_const_instr_node(uint32_t constant);
-    uint32_t emit() override;
-    void print() override;
-    int instruction_count() override;
+        friend bool operator==(const ll_intercalated_const_instr_node& lhs, const ll_intercalated_const_instr_node& rhs){
+            {
+                bool retval = true;
 
-    friend bool operator==(const ll_intercalated_const_instr_node& lhs, const ll_intercalated_const_instr_node& rhs);
+                retval &= lhs.float_const == rhs.float_const;
+                retval &= rhs.opcode == lhs.opcode;
+                return retval;
+            }
+        };
 
-    nlohmann::json dump();
+        nlohmann::json dump();
 
-private:
-    float float_const;
-    uint32_t int_const;
-    bool is_float;
-};
+    private:
+        float float_const;
+        uint32_t int_const;
+        bool is_float;
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_LL_INTERCALATED_CONST_INSTR_NODE_HPP

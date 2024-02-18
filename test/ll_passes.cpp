@@ -22,6 +22,8 @@
 #include "tools/instruction_stream_builder.hpp"
 #include "data_structures/instruction_stream.hpp"
 
+using namespace fcore;
+
 TEST(llPassesTest, pseudo_inst_pass) {
 
     std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);

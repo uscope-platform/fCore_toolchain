@@ -23,26 +23,38 @@
 #include "data_structures/high_level_ast/hl_definition_node.hpp"
 #include "data_structures/high_level_ast/hl_expression_node.hpp"
 
-class hl_ast_loop_node : public hl_ast_node {
-public:
-    hl_ast_loop_node();
-    void set_loop_content(std::vector<std::shared_ptr<hl_ast_node>> content) {loop_content = std::move(content);};
-    std::vector<std::shared_ptr<hl_ast_node>> get_loop_content() {return loop_content;};
-    std::shared_ptr<hl_expression_node> get_condition() {return condition;};
-    void set_condition(std::shared_ptr<hl_expression_node> c) {condition = std::move(c);};
-    std::shared_ptr<hl_definition_node> get_init_statement() { return  init_statement;};
-    void set_init_statement(std::shared_ptr<hl_definition_node> init_s) {init_statement = std::move(init_s);}
-    std::shared_ptr<hl_expression_node> get_iteration_expr() {return iteration_expr;};
-    void set_iteration_expr(std::shared_ptr<hl_expression_node> i) {iteration_expr = std::move(i);};
-    std::string pretty_print() override;
-    nlohmann::json dump() override;
-    friend bool operator==(const hl_ast_loop_node& lhs, const hl_ast_loop_node& rhs);
-private:
-    std::vector<std::shared_ptr<hl_ast_node>> loop_content;
-    std::shared_ptr<hl_expression_node> condition;
-    std::shared_ptr<hl_expression_node> iteration_expr;
-    std::shared_ptr<hl_definition_node> init_statement;
-};
+namespace fcore{
+    class hl_ast_loop_node : public hl_ast_node {
+    public:
+        hl_ast_loop_node();
+        void set_loop_content(std::vector<std::shared_ptr<hl_ast_node>> content) {loop_content = std::move(content);};
+        std::vector<std::shared_ptr<hl_ast_node>> get_loop_content() {return loop_content;};
+        std::shared_ptr<hl_expression_node> get_condition() {return condition;};
+        void set_condition(std::shared_ptr<hl_expression_node> c) {condition = std::move(c);};
+        std::shared_ptr<hl_definition_node> get_init_statement() { return  init_statement;};
+        void set_init_statement(std::shared_ptr<hl_definition_node> init_s) {init_statement = std::move(init_s);}
+        std::shared_ptr<hl_expression_node> get_iteration_expr() {return iteration_expr;};
+        void set_iteration_expr(std::shared_ptr<hl_expression_node> i) {iteration_expr = std::move(i);};
+        std::string pretty_print() override;
+        nlohmann::json dump() override;
+        friend bool operator==(const hl_ast_loop_node& lhs, const hl_ast_loop_node& rhs){
+            bool ret_val = true;
+
+            ret_val &= hl_ast_node::compare_content_by_type( lhs.init_statement, rhs.init_statement);
+            ret_val &= hl_ast_node::compare_content_by_type( lhs.condition, rhs.condition);
+            ret_val &= hl_ast_node::compare_content_by_type( lhs.iteration_expr, rhs.iteration_expr);
+
+            ret_val &= hl_ast_node::compare_vectors(lhs.loop_content, rhs.loop_content);
+
+            return ret_val;
+        };
+    private:
+        std::vector<std::shared_ptr<hl_ast_node>> loop_content;
+        std::shared_ptr<hl_expression_node> condition;
+        std::shared_ptr<hl_expression_node> iteration_expr;
+        std::shared_ptr<hl_definition_node> init_statement;
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_HL_AST_LOOP_NODE_H

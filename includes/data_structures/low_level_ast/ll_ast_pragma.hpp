@@ -20,18 +20,24 @@
 
 #include "ll_ast_node.hpp"
 
-class ll_ast_pragma :public ll_ast_node{
-public:
-    ll_ast_pragma();
-    explicit ll_ast_pragma(std::string directive);
-    std::string get_directive();
-    bool is_terminal() override;
-    friend bool operator==(const ll_ast_pragma& lhs, const ll_ast_pragma& rhs);
-    void print();
-    nlohmann::json dump() override;
-private:
-    std::string directive;
-};
+namespace fcore{
+    class ll_ast_pragma :public ll_ast_node{
+    public:
+        ll_ast_pragma();
+        explicit ll_ast_pragma(std::string directive);
+        std::string get_directive();
+        bool is_terminal() override;
+        friend bool operator==(const ll_ast_pragma& lhs, const ll_ast_pragma& rhs){
+            bool retval = true;
+            retval &= lhs.directive == rhs.directive;
+            return retval;
+        };
+        void print();
+        nlohmann::json dump() override;
+    private:
+        std::string directive;
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_LL_AST_PRAGMA_HPP

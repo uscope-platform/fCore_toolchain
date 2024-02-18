@@ -20,27 +20,30 @@
 #include "passes/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
-struct load_t {
-    int last_assignment;
-    int first_usage;
-};
+namespace fcore{
 
-class dead_load_elimination : public pass_base<hl_ast_node>{
-public:
-    explicit dead_load_elimination();
-    std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
-    int get_pass_type() override { return GLOBAL_PASS;};
-private:
-    int idx;
-    void search_usages(std::shared_ptr<hl_ast_node> element);
-    void search_usages(std::shared_ptr<hl_expression_node> element);
-    void search_usages(std::shared_ptr<hl_definition_node> element);
-    void search_usages(std::shared_ptr<hl_ast_operand> element);
-    void search_constants(std::shared_ptr<hl_ast_node> element);
-    std::shared_ptr<hl_ast_node> purge_dead_loads(std::shared_ptr<hl_ast_node> element);
-    std::unordered_map<std::string, load_t> last_loads_map;
-    bool efi_mode;
-};
+    struct load_t {
+        int last_assignment;
+        int first_usage;
+    };
+
+    class dead_load_elimination : public pass_base<hl_ast_node>{
+    public:
+        explicit dead_load_elimination();
+        std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
+        int get_pass_type() override { return GLOBAL_PASS;};
+    private:
+        int idx;
+        void search_usages(std::shared_ptr<hl_ast_node> element);
+        void search_usages(std::shared_ptr<hl_expression_node> element);
+        void search_usages(std::shared_ptr<hl_definition_node> element);
+        void search_usages(std::shared_ptr<hl_ast_operand> element);
+        void search_constants(std::shared_ptr<hl_ast_node> element);
+        std::shared_ptr<hl_ast_node> purge_dead_loads(std::shared_ptr<hl_ast_node> element);
+        std::unordered_map<std::string, load_t> last_loads_map;
+        bool efi_mode;
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_DEAD_LOAD_ELIMINATION_HPP

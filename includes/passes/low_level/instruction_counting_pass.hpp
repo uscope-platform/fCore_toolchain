@@ -21,15 +21,17 @@
 
 #include "data_structures/low_level_ast/ll_instruction_node.hpp"
 
-class instruction_counting_pass : public pass_base<ll_ast_node> {
+namespace fcore{
+    class instruction_counting_pass : public pass_base<ll_ast_node> {
 
-public:
-    instruction_counting_pass();
-    void analyze_element(std::shared_ptr<ll_ast_node> element) override;
-    int get_pass_type() override { return ANALYSIS_PASS;};
-    std::vector<int> get_analysis_result() override;
-    int instruction_count{0};
-};
+    public:
+        instruction_counting_pass();
+        void analyze_element(std::shared_ptr<ll_ast_node> element) override;
+        int get_pass_type() override { return ANALYSIS_PASS;};
+        std::vector<int> get_analysis_result() override;
+        int instruction_count{0};
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_INSTRUCTION_COUNTING_PASS_HPP

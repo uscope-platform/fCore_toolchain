@@ -17,11 +17,11 @@
 #include "passes/high_level/inlined_function_elimination.hpp"
 
 
-inlined_function_elimination::inlined_function_elimination(std::string entry_point_name) : pass_base("inlined function elimination pass") {
+fcore::inlined_function_elimination::inlined_function_elimination(std::string entry_point_name) : pass_base("inlined function elimination pass") {
     entry_point = std::move(entry_point_name);
 }
 
-std::shared_ptr<hl_ast_node> inlined_function_elimination::process_global(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node> fcore::inlined_function_elimination::process_global(std::shared_ptr<hl_ast_node> element) {
     std::shared_ptr<hl_ast_node> new_root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
     std::vector<std::shared_ptr<hl_ast_node>> new_content;
 

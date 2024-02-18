@@ -18,7 +18,7 @@
 
 
 
-bool hil_bus_map::check_duplicates() {
+bool fcore::hil_bus_map::check_duplicates() {
     std::map<uint32_t, hil_bus_map_entry> working_set;
 
     for(auto &entry:data_struct){
@@ -33,7 +33,7 @@ bool hil_bus_map::check_duplicates() {
     return !duplicates.empty();
 }
 
-nlohmann::json hil_bus_map::get_duplicates() {
+nlohmann::json fcore::hil_bus_map::get_duplicates() {
     nlohmann::json ret;
     ret["duplicates"] = duplicates;
     return ret;

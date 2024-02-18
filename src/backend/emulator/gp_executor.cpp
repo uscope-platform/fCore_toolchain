@@ -15,39 +15,39 @@
 
 #include "backend/emulator/gp_executor.hpp"
 
-uint32_t gp_executor::execute_add(uint32_t a, uint32_t b) {
+uint32_t fcore::gp_executor::execute_add(uint32_t a, uint32_t b) {
     auto op_a = uint32_to_float(a);
     auto op_b = uint32_to_float(b);
     auto res = op_a + op_b;
     return float_to_uint32(res);
 }
 
-uint32_t gp_executor::execute_sub(uint32_t a, uint32_t b) {
+uint32_t fcore::gp_executor::execute_sub(uint32_t a, uint32_t b) {
     auto op_a = uint32_to_float(a);
     auto op_b = uint32_to_float(b);
     auto res = op_a - op_b;
     return float_to_uint32(res);
 }
 
-uint32_t gp_executor::execute_mul(uint32_t a, uint32_t b) {
+uint32_t fcore::gp_executor::execute_mul(uint32_t a, uint32_t b) {
     auto op_a = uint32_to_float(a);
     auto op_b = uint32_to_float(b);
     auto res = op_a * op_b;
     return float_to_uint32(res);
 }
 
-uint32_t gp_executor::execute_rec(uint32_t a) {
+uint32_t fcore::gp_executor::execute_rec(uint32_t a) {
     auto op_a = uint32_to_float(a);
     auto res = 1.0f/op_a;
     return float_to_uint32(res);
 }
 
-uint32_t gp_executor::execute_fti(uint32_t a) {
+uint32_t fcore::gp_executor::execute_fti(uint32_t a) {
     auto op_a = uint32_to_float(a);
     return op_a;
 }
 
-uint32_t gp_executor::execute_itf(uint32_t a) {
+uint32_t fcore::gp_executor::execute_itf(uint32_t a) {
     int32_t singed_a;
     if (a > INT32_MAX) {
         singed_a = static_cast<int32_t>(a - UINT32_MAX - 1);
@@ -59,13 +59,13 @@ uint32_t gp_executor::execute_itf(uint32_t a) {
     return float_to_uint32(op_a);
 }
 
-uint32_t gp_executor::float_to_uint32(float f) {
+uint32_t fcore::gp_executor::float_to_uint32(float f) {
     uint32_t ret;
     memcpy(&ret, &f, sizeof(f));
     return ret;
 }
 
-float gp_executor::uint32_to_float(uint32_t u) {
+float fcore::gp_executor::uint32_to_float(uint32_t u) {
     float ret;
     memcpy(&ret, &u, sizeof(u));
     return ret;

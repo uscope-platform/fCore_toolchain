@@ -23,22 +23,24 @@
 
 #include "floating_point_v7_1_bitacc_cmodel.h"
 
-class ba_executor {
-public:
-    ba_executor();
-    uint32_t execute_add(uint32_t a, uint32_t b);
-    uint32_t execute_sub(uint32_t a, uint32_t b);
-    uint32_t execute_mul(uint32_t a, uint32_t b);
-    uint32_t execute_rec(uint32_t a);
-    uint32_t execute_fti(uint32_t a);
-    uint32_t execute_itf(uint32_t a);
-private:
-    xip_fpo_t xil_a, xil_b, xil_res;
-    xip_fpo_fix_t xil_a_fixed_point;
+namespace fcore{
+    class ba_executor {
+    public:
+        ba_executor();
+        uint32_t execute_add(uint32_t a, uint32_t b);
+        uint32_t execute_sub(uint32_t a, uint32_t b);
+        uint32_t execute_mul(uint32_t a, uint32_t b);
+        uint32_t execute_rec(uint32_t a);
+        uint32_t execute_fti(uint32_t a);
+        uint32_t execute_itf(uint32_t a);
+    private:
+        xip_fpo_t xil_a, xil_b, xil_res;
+        xip_fpo_fix_t xil_a_fixed_point;
 
-    static uint32_t float_to_uint32(float f);
-    static float uint32_to_float(uint32_t u);
-};
+        static uint32_t float_to_uint32(float f);
+        static float uint32_to_float(uint32_t u);
+    };
 
+}
 
 #endif //FCORE_TOOLCHAIN_BA_EXECUTOR_HPP

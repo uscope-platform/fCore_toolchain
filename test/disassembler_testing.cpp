@@ -18,6 +18,8 @@
 
 #include "fcore_dis.hpp"
 
+using namespace fcore;
+
 TEST( Disassembler, disassembler_mem) {
     std::string input_file = "dis/test_add.mem";
     std::ifstream ifs(input_file);

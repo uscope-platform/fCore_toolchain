@@ -19,23 +19,23 @@
 
 #include <utility>
 
-C_pre_processor::C_pre_processor(std::istream &stream, std::shared_ptr<define_map> &defmap) {
+fcore::C_pre_processor::C_pre_processor(std::istream &stream, std::shared_ptr<define_map> &defmap) {
     working_content = std::string((std::istreambuf_iterator<char>(stream)),std::istreambuf_iterator<char>());
     dmap = defmap;
 }
 
 
-C_pre_processor::C_pre_processor(const std::string &path, std::shared_ptr<define_map> &defmap) {
+fcore::C_pre_processor::C_pre_processor(const std::string &path, std::shared_ptr<define_map> &defmap) {
     std::ifstream file(path);
     working_content = std::string((std::istreambuf_iterator<char>(file)),std::istreambuf_iterator<char>());
     dmap = defmap;
 }
 
-std::string  C_pre_processor::get_preprocessed_file() {
+std::string  fcore::C_pre_processor::get_preprocessed_file() {
     return working_content;
 }
 
-void C_pre_processor::process_file() {
+void fcore::C_pre_processor::process_file() {
     std::string line;
     std::string decommented_line;
     std::istringstream ss(working_content);
@@ -83,7 +83,7 @@ void C_pre_processor::process_file() {
     working_content = processed_file_ss.str();
 }
 
-bool C_pre_processor::process_define(const std::string& line) {
+bool fcore::C_pre_processor::process_define(const std::string& line) {
     bool line_contains_str = false;
     std::regex define_regex(R"(#define\s+([A-Za-z0-9_]*)\s+(.*))");
     std::smatch match;
@@ -97,7 +97,7 @@ bool C_pre_processor::process_define(const std::string& line) {
     return line_contains_str;
 }
 
-std::string C_pre_processor::process_rel_includes(const std::string& line) {
+std::string fcore::C_pre_processor::process_rel_includes(const std::string& line) {
     std::regex rel_include_regex(R"(#include\s*\"(.*)\")");
     std::smatch match;
     if(std::regex_search( line,match,rel_include_regex)){
@@ -113,7 +113,7 @@ std::string C_pre_processor::process_rel_includes(const std::string& line) {
     return "";
 }
 
-std::string C_pre_processor::process_abs_includes(const std::string &line) {
+std::string fcore::C_pre_processor::process_abs_includes(const std::string &line) {
     std::regex abs_include_regex(R"(#include\s*<(.*)>)");
     std::smatch match;
     if(std::regex_search( line,match,abs_include_regex)){
@@ -130,11 +130,11 @@ std::string C_pre_processor::process_abs_includes(const std::string &line) {
 }
 
 
-void C_pre_processor::set_absolute_includes(std::vector<std::string> list) {
+void fcore::C_pre_processor::set_absolute_includes(std::vector<std::string> list) {
     allowed_absolute_includes = std::move(list);
 }
 
-void C_pre_processor::substitute_defines() {
+void fcore::C_pre_processor::substitute_defines() {
 
     std::string line;
     std::istringstream ss(working_content);
@@ -154,7 +154,7 @@ void C_pre_processor::substitute_defines() {
 
 }
 
-std::string C_pre_processor::substitute_defines_in_line(std::string &line, const std::pair<std::string, std::shared_ptr<define>>& item) {
+std::string fcore::C_pre_processor::substitute_defines_in_line(std::string &line, const std::pair<std::string, std::shared_ptr<define>>& item) {
 
     std::string operating_line;
     std::vector<std::smatch> false_positives = {};

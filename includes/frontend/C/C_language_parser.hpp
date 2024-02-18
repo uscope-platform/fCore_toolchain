@@ -33,48 +33,52 @@
 #include "C_parser/C_grammarLexer.h"
 #include "C_parser/C_grammarParser.h"
 
+namespace fcore{
 
-class C_language_parser{
+    class C_language_parser{
     public:
-    explicit C_language_parser();
-    C_language_parser(std::istream &file, std::shared_ptr<define_map> &existing_defmap);
-    C_language_parser(const std::string &path, std::shared_ptr<define_map> &existing_defmap);
+        explicit C_language_parser();
+        C_language_parser(std::istream &file, std::shared_ptr<define_map> &existing_defmap);
+        C_language_parser(const std::string &path, std::shared_ptr<define_map> &existing_defmap);
 
-    void pre_process(const std::vector<std::string> &abs_includes);
-    void parse(std::unordered_map<std::string, variable_class_t> dma_specs);
-    std::shared_ptr<hl_ast_node> AST;
-    std::string error;
+        void pre_process(const std::vector<std::string> &abs_includes);
+        void parse(std::unordered_map<std::string, variable_class_t> dma_specs);
+        std::shared_ptr<hl_ast_node> AST;
+        std::string error;
+
+
 
     private:
 
-    C_Tree_visitor visitor;
+        C_Tree_visitor visitor;
 
 
-    std::unique_ptr<C_pre_processor> preproc;
-    std::shared_ptr<define_map> dmap;
-    // preprocessor test
-    FRIEND_TEST( cFrontend, preprocessor_include);
-    FRIEND_TEST( cFrontend, preprocessor_pragma);
-    // tree visitor test
-    FRIEND_TEST( cTreeVisitor, unaryExpressions);
-    FRIEND_TEST( cTreeVisitor, multiplicativeExpressions);
-    FRIEND_TEST( cTreeVisitor, additiveExpressions);
-    FRIEND_TEST(cTreeVisitor, shiftExpressions);
-    FRIEND_TEST(cTreeVisitor, relationalExpressions);
-    FRIEND_TEST(cTreeVisitor, equalityExpressions);
-    FRIEND_TEST(cTreeVisitor, exOrBinExpressions);
-    FRIEND_TEST(cTreeVisitor, andBinExpressions);
-    FRIEND_TEST(cTreeVisitor, orBinExpressions);
-    FRIEND_TEST(cTreeVisitor, andLogExpressions);
-    FRIEND_TEST(cTreeVisitor, orLogExpressions);
-    FRIEND_TEST( cTreeVisitor, assignmentExpressions);
-    FRIEND_TEST(cTreeVisitor, definition);
-    FRIEND_TEST(cTreeVisitor, function_def);
-    FRIEND_TEST(cTreeVisitor, function_call);
-    FRIEND_TEST(cTreeVisitor, returnTest);
+        std::unique_ptr<C_pre_processor> preproc;
+        std::shared_ptr<define_map> dmap;
+        // preprocessor test
+        FRIEND_TEST( cFrontend, preprocessor_include);
+        FRIEND_TEST( cFrontend, preprocessor_pragma);
+        // tree visitor test
+        FRIEND_TEST( cTreeVisitor, unaryExpressions);
+        FRIEND_TEST( cTreeVisitor, multiplicativeExpressions);
+        FRIEND_TEST( cTreeVisitor, additiveExpressions);
+        FRIEND_TEST(cTreeVisitor, shiftExpressions);
+        FRIEND_TEST(cTreeVisitor, relationalExpressions);
+        FRIEND_TEST(cTreeVisitor, equalityExpressions);
+        FRIEND_TEST(cTreeVisitor, exOrBinExpressions);
+        FRIEND_TEST(cTreeVisitor, andBinExpressions);
+        FRIEND_TEST(cTreeVisitor, orBinExpressions);
+        FRIEND_TEST(cTreeVisitor, andLogExpressions);
+        FRIEND_TEST(cTreeVisitor, orLogExpressions);
+        FRIEND_TEST( cTreeVisitor, assignmentExpressions);
+        FRIEND_TEST(cTreeVisitor, definition);
+        FRIEND_TEST(cTreeVisitor, function_def);
+        FRIEND_TEST(cTreeVisitor, function_call);
+        FRIEND_TEST(cTreeVisitor, returnTest);
 
-    std::string preprocessed_content;
-};
+        std::string preprocessed_content;
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_C_LANGUAGE_PARSER_HPP

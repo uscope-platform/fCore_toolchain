@@ -19,16 +19,23 @@
 #include <string>
 #include <utility>
 
-class define {
-public:
-    define(int l, std::string n, std::string c);
-    std::string get_content() {return content;};
-    friend bool operator==(const define& lhs, const define& rhs);
-private:
-    int line;
-    std::string name;
-    std::string content;
-};
+namespace fcore{
+    class define {
+    public:
+        define(int l, std::string n, std::string c);
+        std::string get_content() {return content;};
+        friend bool operator==(const define& lhs, const define& rhs) {
+            bool cond = lhs.name == rhs.name;
+            cond &= lhs.line == rhs.line;
+            cond &= lhs.content == rhs.content;
+            return cond;
+        };
+    private:
+        int line;
+        std::string name;
+        std::string content;
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_DEFINE_HPP

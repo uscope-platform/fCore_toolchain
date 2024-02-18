@@ -25,7 +25,7 @@ void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size, boo
     std::vector<std::istream*> includes = {iss};
     // parse target file
 
-    fcore_has assembler(stream,includes, 0, print_debug);
+    fcore::fcore_has assembler(stream,includes, 0, print_debug);
     std::vector<uint32_t> data = assembler.get_hexfile(false);
     unsigned int int_size = assembler.get_program_size();
     memcpy(hex_size, &int_size, sizeof(int));
@@ -36,11 +36,11 @@ void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size, boo
 }
 
 
-fcore_has::fcore_has(std::istream &input, std::vector<std::istream *> &includes, int dump_ast_level,bool print_debug) : manager(dump_ast_level) {
+fcore::fcore_has::fcore_has(std::istream &input, std::vector<std::istream *> &includes, int dump_ast_level,bool print_debug) : manager(dump_ast_level) {
     construct_assembler(input, includes, dump_ast_level,print_debug);
 }
 
-fcore_has::fcore_has(std::istream &input, const std::vector<std::string>& include_files, const std::string& include_directory, int dump_ast_level,bool print_debug): manager(dump_ast_level){
+fcore::fcore_has::fcore_has(std::istream &input, const std::vector<std::string>& include_files, const std::string& include_directory, int dump_ast_level,bool print_debug): manager(dump_ast_level){
 
     std::vector<std::istream*> includes = process_includes(include_files, include_directory);
 
@@ -48,7 +48,7 @@ fcore_has::fcore_has(std::istream &input, const std::vector<std::string>& includ
 }
 
 
-void fcore_has::construct_assembler(std::istream &input, std::vector<std::istream*> &includes, int dump_ast_level, bool print_debug) {
+void fcore::fcore_has::construct_assembler(std::istream &input, std::vector<std::istream*> &includes, int dump_ast_level, bool print_debug) {
     variable_map tmp_map;
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>(tmp_map);
     // Parse includes files
@@ -97,7 +97,7 @@ void fcore_has::construct_assembler(std::istream &input, std::vector<std::istrea
 
 
 std::vector<std::istream*>
-fcore_has::process_includes(const std::vector<std::string> &include_files, const std::string &include_directory) {
+fcore::fcore_has::process_includes(const std::vector<std::string> &include_files, const std::string &include_directory) {
     std::vector<std::istream*> input_streams;
 
     for(auto const &item:include_files){
@@ -110,11 +110,11 @@ fcore_has::process_includes(const std::vector<std::string> &include_files, const
     return input_streams;
 }
 
-std::vector<uint32_t> fcore_has::get_hexfile(bool endian_swap) {
+std::vector<uint32_t> fcore::fcore_has::get_hexfile(bool endian_swap) {
     return writer.generate_hex(endian_swap);
 }
 
-uint32_t fcore_has::get_inst_count() {
+uint32_t fcore::fcore_has::get_inst_count() {
     int program_lenght = manager.analysis_passes["instruction_counting"]->get_analysis_result()[0];
     float program_runtime = (float) program_lenght*0.01f;
     std::cout << "The compiled program is " << program_lenght << "instructions long"<< std::endl;
@@ -122,24 +122,24 @@ uint32_t fcore_has::get_inst_count() {
     return 0;
 }
 
-void fcore_has::write_hexfile(const std::string& ouput_file) {
+void fcore::fcore_has::write_hexfile(const std::string& ouput_file) {
     writer.write_hex_file(ouput_file);
 }
 
-void fcore_has::write_verilog_memfile(const std::string& ouput_file) {
+void fcore::fcore_has::write_verilog_memfile(const std::string& ouput_file) {
     writer.write_mem_file(ouput_file);
 }
 
 
-uint32_t fcore_has::get_program_size() {
+uint32_t fcore::fcore_has::get_program_size() {
     return writer.get_program_size();
 }
 
-std::string fcore_has::get_errors() {
+std::string fcore::fcore_has::get_errors() {
     return  error_code;
 }
 
-void fcore_has::write_json(const std::string &output_file) {
+void fcore::fcore_has::write_json(const std::string &output_file) {
     nlohmann::json j;
     j["error_code"] = error_code;
     if(error_code.empty()){
@@ -153,10 +153,10 @@ void fcore_has::write_json(const std::string &output_file) {
     ss.close();
 }
 
-std::vector<uint32_t> fcore_has::get_raw_code() {
+std::vector<uint32_t> fcore::fcore_has::get_raw_code() {
     return writer.get_code();
 }
 
-std::vector<uint32_t> fcore_has::get_executable() {
+std::vector<uint32_t> fcore::fcore_has::get_executable() {
     return writer.get_executable();
 }

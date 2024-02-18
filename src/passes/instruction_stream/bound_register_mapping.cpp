@@ -16,12 +16,12 @@
 
 #include "passes/instruction_stream/bound_register_mapping.hpp"
 
-bound_register_mapping_pass::bound_register_mapping_pass() : stream_pass_base("Bound register mapping"){
+fcore::bound_register_mapping_pass::bound_register_mapping_pass() : stream_pass_base("Bound register mapping"){
 
 }
 
-std::shared_ptr<ll_instruction_node>
-bound_register_mapping_pass::apply_pass(std::shared_ptr<ll_instruction_node> element) {
+std::shared_ptr<fcore::ll_instruction_node>
+fcore::bound_register_mapping_pass::apply_pass(std::shared_ptr<ll_instruction_node> element) {
 
     switch (element->get_type()) {
         case isa_intercalated_constant:
@@ -39,8 +39,8 @@ bound_register_mapping_pass::apply_pass(std::shared_ptr<ll_instruction_node> ele
     return element;
 }
 
-std::shared_ptr<ll_instruction_node>
-bound_register_mapping_pass::process_reg_instr(std::shared_ptr<ll_instruction_node> node) {
+std::shared_ptr<fcore::ll_instruction_node>
+fcore::bound_register_mapping_pass::process_reg_instr(std::shared_ptr<ll_instruction_node> node) {
     auto instr = std::static_pointer_cast<ll_register_instr_node>(node);
 
     std::string raw_dest = instr->get_destination()->get_name();
@@ -59,8 +59,8 @@ bound_register_mapping_pass::process_reg_instr(std::shared_ptr<ll_instruction_no
     return node;
 }
 
-std::shared_ptr<ll_instruction_node>
-bound_register_mapping_pass::process_conv_instr(std::shared_ptr<ll_instruction_node> node) {
+std::shared_ptr<fcore::ll_instruction_node>
+fcore::bound_register_mapping_pass::process_conv_instr(std::shared_ptr<ll_instruction_node> node) {
     auto instr = std::static_pointer_cast<ll_conversion_instr_node>(node);
     std::string raw_dest = instr->get_destination()->get_name();
     int dest = std::stoi(raw_dest.substr(1, raw_dest.size()-1));
@@ -73,8 +73,8 @@ bound_register_mapping_pass::process_conv_instr(std::shared_ptr<ll_instruction_n
     return node;
 }
 
-std::shared_ptr<ll_instruction_node>
-bound_register_mapping_pass::process_load_instr(std::shared_ptr<ll_instruction_node> node) {
+std::shared_ptr<fcore::ll_instruction_node>
+fcore::bound_register_mapping_pass::process_load_instr(std::shared_ptr<ll_instruction_node> node) {
     auto instr = std::static_pointer_cast<ll_load_constant_instr_node>(node);
 
     std::string raw_dest = instr->get_destination()->get_name();

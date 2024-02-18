@@ -34,52 +34,53 @@
 #include "frontend/emulator_metadata.hpp"
 #include "backend/emulator/emulator_builder.hpp"
 
+namespace fcore{
+    class program_bundle{
+    public:
+        std::string name;
+        std::vector<uint32_t> program;
+        std::set<io_map_entry> io;
+        std::unordered_map<uint32_t, uint32_t> mem_init;
+    };
 
-class program_bundle{
-public:
-    std::string name;
-    std::vector<uint32_t> program;
-    std::set<io_map_entry> io;
-    std::unordered_map<uint32_t, uint32_t> mem_init;
-};
+    class emulator_manager {
+    public:
+        emulator_manager(nlohmann::json &spec_file, bool dbg, std::string s_f);
+        void process();
+        void emulate();
 
-class emulator_manager {
-public:
-    emulator_manager(nlohmann::json &spec_file, bool dbg, std::string s_f);
-    void process();
-    void emulate();
+        std::shared_ptr<std::vector<uint32_t>> get_memory_snapshot(const std::string &core_id, int channel);
+        std::string get_results();
+        std::unordered_map<std::string, emulator_metadata> get_emulators(){return emulators;};
+        std::vector<program_bundle> get_programs();
+        std::vector<interconnect_t> load_interconnects(nlohmann::json &interconnects);
+    private:
 
-    std::shared_ptr<std::vector<uint32_t>> get_memory_snapshot(const std::string &core_id, int channel);
-    std::string get_results();
-    std::unordered_map<std::string, emulator_metadata> get_emulators(){return emulators;};
-    std::vector<program_bundle> get_programs();
-    std::vector<interconnect_t> load_interconnects(nlohmann::json &interconnects);
-private:
-
-    std::unordered_map<std::string, emulator_input> load_input(nlohmann::json &core);
-    std::vector<emulator_output_t> load_output_specs(nlohmann::json &core);
-    std::unordered_map<unsigned int, uint32_t> load_memory_init(nlohmann::json &mem_init);
-    std::unordered_map<unsigned int, uint32_t> io_remap_memory_init(std::unordered_map<unsigned int, uint32_t> &map,
-                                                                    std::unordered_map<uint16_t, uint16_t> &io_map);
+        std::unordered_map<std::string, emulator_input> load_input(nlohmann::json &core);
+        std::vector<emulator_output_t> load_output_specs(nlohmann::json &core);
+        std::unordered_map<unsigned int, uint32_t> load_memory_init(nlohmann::json &mem_init);
+        std::unordered_map<unsigned int, uint32_t> io_remap_memory_init(std::unordered_map<unsigned int, uint32_t> &map,
+                                                                        std::unordered_map<uint16_t, uint16_t> &io_map);
 
 
-    void run_cores();
+        void run_cores();
 
-    nlohmann::json get_channel_outputs(std::vector<emulator_output_t> specs, int ch, std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outs);
-    static std::vector<float> uint32_to_float(std::vector<uint32_t> &vect);
-    std::map<int, std::string> cores_ordering;
+        nlohmann::json get_channel_outputs(std::vector<emulator_output_t> specs, int ch, std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outs);
+        static std::vector<float> uint32_to_float(std::vector<uint32_t> &vect);
+        std::map<int, std::string> cores_ordering;
 
-    std::unordered_map<std::string, emulator_metadata> emulators;
-    std::vector<interconnect_t> interconnects;
-    int emu_length;
-    std::unordered_map<std::string, std::string> errors;
-    bool debug_autogen;
+        std::unordered_map<std::string, emulator_metadata> emulators;
+        std::vector<interconnect_t> interconnects;
+        int emu_length;
+        std::unordered_map<std::string, std::string> errors;
+        bool debug_autogen;
 
-    nlohmann::json spec_file;
-    std::string schema_file;
+        nlohmann::json spec_file;
+        std::string schema_file;
 
-    hil_bus_map bus_map;
-};
+        hil_bus_map bus_map;
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_EMULATOR_MANAGER_HPP

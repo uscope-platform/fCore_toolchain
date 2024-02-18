@@ -24,21 +24,35 @@
 #include <utility>
 #include <sstream>
 
-class hl_function_call_node : public hl_ast_node {
-public:
-    hl_function_call_node(std::string n, std::vector<std::shared_ptr<hl_ast_node>> a);
-    std::string get_name() {return name;};
-    std::string pretty_print();
-    std::vector<std::shared_ptr<hl_ast_node>> get_arguments() { return arguments;};
-    void set_arguments(std::vector<std::shared_ptr<hl_ast_node>> args) {arguments = args;};
-    friend bool operator==(const hl_function_call_node& lhs, const hl_function_call_node& rhs);
-    nlohmann::json dump() override;
-    bool is_terminal() override {
-        return true;
-    }
-protected:
-    std::string name;
-    std::vector<std::shared_ptr<hl_ast_node>> arguments;
-};
+namespace fcore{
+
+    class hl_function_call_node : public hl_ast_node {
+    public:
+        hl_function_call_node(std::string n, std::vector<std::shared_ptr<hl_ast_node>> a);
+        std::string get_name() {return name;};
+        std::string pretty_print();
+        std::vector<std::shared_ptr<hl_ast_node>> get_arguments() { return arguments;};
+        void set_arguments(std::vector<std::shared_ptr<hl_ast_node>> args) {arguments = std::move(args);};
+
+        friend bool operator==(const fcore::hl_function_call_node& lhs, const fcore::hl_function_call_node& rhs){
+            bool ret_val = true;
+
+            ret_val &= lhs.name == rhs.name;
+
+            ret_val &= fcore::hl_ast_node::compare_vectors(lhs.arguments, rhs.arguments);
+
+            return ret_val;
+        };
+
+        nlohmann::json dump() override;
+        bool is_terminal() override {
+            return true;
+        }
+    protected:
+        std::string name;
+        std::vector<std::shared_ptr<hl_ast_node>> arguments;
+    };
+}
+
 
 #endif //FCORE_TOOLCHAIN_HL_FUNCTION_CALL_NODE_HPP

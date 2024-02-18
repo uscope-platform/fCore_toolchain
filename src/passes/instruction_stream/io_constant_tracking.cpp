@@ -17,12 +17,12 @@
 
 #include <utility>
 
-io_constant_tracking::io_constant_tracking(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam) : stream_pass_base("io_constant_tracking"){
+fcore::io_constant_tracking::io_constant_tracking(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam) : stream_pass_base("io_constant_tracking"){
     index = 0;
     last_assignment_map = std::move(lam);
 }
 
-std::shared_ptr<ll_instruction_node> io_constant_tracking::apply_pass(std::shared_ptr<ll_instruction_node> element) {
+std::shared_ptr<fcore::ll_instruction_node> fcore::io_constant_tracking::apply_pass(std::shared_ptr<ll_instruction_node> element) {
     if(element->get_type() == isa_register_instruction){
         auto dest = std::static_pointer_cast<ll_register_instr_node>(element)->get_destination();
         if(dest->get_variable_class() ==variable_output_type ||dest->get_variable_class() ==variable_input_type){
@@ -43,7 +43,7 @@ std::shared_ptr<ll_instruction_node> io_constant_tracking::apply_pass(std::share
     return element;
 }
 
-void io_constant_tracking::add_assignment(const std::string& s) {
+void fcore::io_constant_tracking::add_assignment(const std::string& s) {
     if(last_assignment_map->contains(s)){
         last_assignment_map->at(s) = {last_assignment_map->at(s).first, index};
     } else {

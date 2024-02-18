@@ -28,29 +28,32 @@
 #include "antlr4-runtime.h"
 #include "asm_parser/asm_grammarLexer.h"
 #include "asm_parser/asm_grammarParser.h"
+namespace fcore{
 
-class asm_language_parser{
+    class asm_language_parser{
     public:
-    explicit asm_language_parser(std::istream &stream);
-    asm_language_parser(std::istream &stream, std::shared_ptr<variable_map> new_varmap);
-    void construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap);
+        explicit asm_language_parser(std::istream &stream);
+        asm_language_parser(std::istream &stream, std::shared_ptr<variable_map> new_varmap);
+        void construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap);
 
-    unsigned int n_inputs() const {return n_inputs_;};
-    unsigned int n_outputs() const {return n_outputs_;};
-    unsigned int n_variables() const {return n_variables_;};
+        unsigned int n_inputs() const {return n_inputs_;};
+        unsigned int n_outputs() const {return n_outputs_;};
+        unsigned int n_variables() const {return n_variables_;};
 
-    std::shared_ptr<ll_ast_node> AST;
-    varmap_t var_map;
+        std::shared_ptr<ll_ast_node> AST;
+        varmap_t var_map;
 
-    std::string error;
+        std::string error;
 
 
     private:
 
-    unsigned int n_inputs_ = 0;
-    unsigned int n_outputs_ = 0;
-    unsigned int n_variables_ = 0;
-};
+        unsigned int n_inputs_ = 0;
+        unsigned int n_outputs_ = 0;
+        unsigned int n_variables_ = 0;
+    };
+}
+
 
 
 #endif //FCORE_TOOLCHAIN_ASM_LANGUAGE_PARSER_HPP

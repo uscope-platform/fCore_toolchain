@@ -20,13 +20,15 @@
 #include "passes/instruction_stream/stream_pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
-class zero_assignment_removal_pass : public stream_pass_base{
-public:
-    zero_assignment_removal_pass();
-    std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
-private:
-    bool delete_intercalated_const;
-};
+namespace fcore{
+    class zero_assignment_removal_pass : public stream_pass_base{
+    public:
+        zero_assignment_removal_pass();
+        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
+    private:
+        bool delete_intercalated_const;
+    };
+}
 
 
 #endif //FCORE_TOOLCHAIN_ZERO_ASSIGNMENT_REMOVAL_PASS_HPP

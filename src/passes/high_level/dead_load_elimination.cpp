@@ -16,11 +16,11 @@
 
 #include "passes/high_level/dead_load_elimination.hpp"
 
-dead_load_elimination::dead_load_elimination() : pass_base<hl_ast_node>("dead_load_elimination") {
+fcore::dead_load_elimination::dead_load_elimination() : pass_base<hl_ast_node>("dead_load_elimination") {
     efi_mode = false;
 }
 
-std::shared_ptr<hl_ast_node> dead_load_elimination::process_global(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node> fcore::dead_load_elimination::process_global(std::shared_ptr<hl_ast_node> element) {
     std::shared_ptr<hl_ast_node> retval = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
     std::vector<std::shared_ptr<hl_ast_node>> new_content;
@@ -43,7 +43,7 @@ std::shared_ptr<hl_ast_node> dead_load_elimination::process_global(std::shared_p
 }
 
 
-void dead_load_elimination::search_constants(std::shared_ptr<hl_ast_node> element) {
+void fcore::dead_load_elimination::search_constants(std::shared_ptr<hl_ast_node> element) {
     if(element->node_type == hl_ast_node_type_definition) {
         std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(element);
         if(last_loads_map.contains(node->get_name())){
@@ -65,7 +65,7 @@ void dead_load_elimination::search_constants(std::shared_ptr<hl_ast_node> elemen
     }
 }
 
-void dead_load_elimination::search_usages(std::shared_ptr<hl_ast_node> element) {
+void fcore::dead_load_elimination::search_usages(std::shared_ptr<hl_ast_node> element) {
     if(element->node_type == hl_ast_node_type_definition) {
         std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(element);
         search_usages(node);
@@ -77,7 +77,7 @@ void dead_load_elimination::search_usages(std::shared_ptr<hl_ast_node> element) 
     }
 }
 
-void dead_load_elimination::search_usages(std::shared_ptr<hl_definition_node> element) {
+void fcore::dead_load_elimination::search_usages(std::shared_ptr<hl_definition_node> element) {
     if(element->is_initialized()){
         if(element->get_scalar_initializer()->node_type == hl_ast_node_type_expr){
             search_usages(std::static_pointer_cast<hl_expression_node>(element->get_scalar_initializer()));
@@ -89,7 +89,7 @@ void dead_load_elimination::search_usages(std::shared_ptr<hl_definition_node> el
     }
 }
 
-void dead_load_elimination::search_usages(std::shared_ptr<hl_expression_node> element) {
+void fcore::dead_load_elimination::search_usages(std::shared_ptr<hl_expression_node> element) {
     if(element->is_immediate()){
         return;
     }
@@ -112,7 +112,7 @@ void dead_load_elimination::search_usages(std::shared_ptr<hl_expression_node> el
 }
 
 
-void dead_load_elimination::search_usages(std::shared_ptr<hl_ast_operand> element) {
+void fcore::dead_load_elimination::search_usages(std::shared_ptr<hl_ast_operand> element) {
     if(efi_mode){
         for(auto &item:last_loads_map){
             if(item.first.starts_with(element->get_name()+"_")){
@@ -131,7 +131,7 @@ void dead_load_elimination::search_usages(std::shared_ptr<hl_ast_operand> elemen
 
 }
 
-std::shared_ptr<hl_ast_node> dead_load_elimination::purge_dead_loads(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node> fcore::dead_load_elimination::purge_dead_loads(std::shared_ptr<hl_ast_node> element) {
     if(element->node_type == hl_ast_node_type_definition) {
         std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(element);
         if(node->is_initialized()){

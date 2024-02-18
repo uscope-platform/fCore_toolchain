@@ -15,7 +15,7 @@
 #include "data_structures/common/variable.hpp"
 
 
-variable::variable() {
+fcore::variable::variable() {
 
     name = "invalid-variable";
     used = {false};
@@ -26,7 +26,7 @@ variable::variable() {
     contiguity = false;
 }
 
-variable::variable(std::string n, float value) {
+fcore::variable::variable(std::string n, float value) {
     name = std::move(n);
     const_f = value;
     variable_type = var_type_float_const;
@@ -40,7 +40,7 @@ variable::variable(std::string n, float value) {
     contiguity = false;
 }
 
-variable::variable(std::string n, int value) {
+fcore::variable::variable(std::string n, int value) {
     name = std::move(n);
     const_i = value;
     variable_type = var_type_int_const;
@@ -54,7 +54,7 @@ variable::variable(std::string n, int value) {
 }
 
 
-variable::variable(std::string n) {
+fcore::variable::variable(std::string n) {
     name = std::move(n);
     const_i = 0;
     variable_type = var_type_scalar;
@@ -68,15 +68,15 @@ variable::variable(std::string n) {
 }
 
 
-void variable::set_used(bool status) {
+void fcore::variable::set_used(bool status) {
     used[0] = status;
 }
 
-bool variable::is_used() const {
+bool fcore::variable::is_used() const {
     return used[0];
 }
 
-uint32_t variable::get_value() const {
+uint32_t fcore::variable::get_value() const {
 
     std::regex re("r(\\d\\d?)");
     std::smatch m;
@@ -91,23 +91,7 @@ uint32_t variable::get_value() const {
     throw std::runtime_error("Invalid operation: the compiler tried to get the numeric value of a variable");
 }
 
-bool operator==(const variable &lhs, const variable &rhs) {
-    bool cond = lhs.variable_class == rhs.variable_class;
-    cond &= lhs.first_occurrence == rhs.first_occurrence;
-    cond &= lhs.last_occurrence == rhs.last_occurrence;
-    cond &= lhs.name == rhs.name;
-    cond &= lhs.bound_register == rhs.bound_register;
-    cond &= lhs.used == rhs.used;
-    cond &= lhs.variable_type == rhs.variable_type;
-    cond &= lhs.const_i == rhs.const_i;
-    cond &= lhs.const_f == rhs.const_f;
-    cond &= lhs.contiguity == rhs.contiguity;
-    cond &= lhs.array_index == rhs.array_index;
-    cond &= lhs.array_shape == rhs.array_shape;
-    return cond;
-}
-
-float variable::get_const_f() {
+float fcore::variable::get_const_f() {
     if(variable_type == var_type_float_const){
         return const_f;
     } else {
@@ -115,7 +99,7 @@ float variable::get_const_f() {
     }
 }
 
-int variable::get_const_i() {
+int fcore::variable::get_const_i() {
     if(variable_type == var_type_int_const){
         return const_i;
     } else {
@@ -123,7 +107,7 @@ int variable::get_const_i() {
     }
 }
 
-std::string variable::to_str() {
+std::string fcore::variable::to_str() {
     switch (variable_type) {
         case var_type_int_const:
             return std::to_string(const_i);
@@ -136,7 +120,7 @@ std::string variable::to_str() {
     return "";
 }
 
-void variable::set_const_f(float f) {
+void fcore::variable::set_const_f(float f) {
     if(variable_type == var_type_float_const){
         const_f = f;
     } else {
@@ -144,7 +128,7 @@ void variable::set_const_f(float f) {
     }
 }
 
-void variable::set_const_i(int i) {
+void fcore::variable::set_const_i(int i) {
     if(variable_type == var_type_int_const){
         const_i = i;
     } else {
@@ -152,7 +136,7 @@ void variable::set_const_i(int i) {
     }
 }
 
-std::shared_ptr<variable> variable::deep_copy(const std::shared_ptr <variable>& original) {
+std::shared_ptr<fcore::variable> fcore::variable::deep_copy(const std::shared_ptr <variable>& original) {
     std::shared_ptr<variable> copied_var = std::make_shared<variable>();
 
     copied_var->name = original->name;
@@ -170,7 +154,7 @@ std::shared_ptr<variable> variable::deep_copy(const std::shared_ptr <variable>& 
     return copied_var;
 }
 
-nlohmann::json variable::dump() {
+nlohmann::json fcore::variable::dump() {
     nlohmann::json ret_val;
 
     ret_val["name"] = name;
@@ -188,11 +172,11 @@ nlohmann::json variable::dump() {
     return ret_val;
 }
 
-std::string variable::get_identifier() {
+std::string fcore::variable::get_identifier() {
     return get_identifier(array_index);
 }
 
-std::string variable::get_identifier(const std::vector<int>& idx) {
+std::string fcore::variable::get_identifier(const std::vector<int>& idx) {
     std::string ret = name;
     for(auto &elem:idx){
         ret += "_" + std::to_string(elem);
@@ -200,7 +184,7 @@ std::string variable::get_identifier(const std::vector<int>& idx) {
     return ret;
 }
 
-std::string variable::get_linear_identifier() {
+std::string fcore::variable::get_linear_identifier() {
     if(array_shape.empty()){
         return name;
     }
@@ -208,7 +192,7 @@ std::string variable::get_linear_identifier() {
     return ret;
 }
 
-std::string variable::get_linear_identifier(const std::vector<int> &idx) {
+std::string fcore::variable::get_linear_identifier(const std::vector<int> &idx) {
     if(array_shape.empty()){
         return name;
     }
@@ -216,7 +200,7 @@ std::string variable::get_linear_identifier(const std::vector<int> &idx) {
     return ret;
 }
 
-std::string variable::get_linear_identifier(const int &idx) {
+std::string fcore::variable::get_linear_identifier(const int &idx) {
     if(array_shape.empty()){
         return name;
     }
@@ -227,25 +211,25 @@ std::string variable::get_linear_identifier(const int &idx) {
 
 
 
-int variable::get_linear_index() {
+int fcore::variable::get_linear_index() {
     return get_linear_index(array_index);
 }
 
-int variable::get_linear_index(const std::vector<int> &idx) {
+int fcore::variable::get_linear_index(const std::vector<int> &idx) {
     if(variable_type == var_type_scalar || variable_type == var_type_float_const || variable_type == var_type_int_const){
         return -1;
     }
     return linearize_array(array_shape, idx);
 }
 
-int variable::get_bound_reg() {
+int fcore::variable::get_bound_reg() {
     if(!array_index.empty() && bound_register.size()!=1){
         return bound_register[get_linear_index()];
     }
     return bound_register[0];
 }
 
-unsigned int variable::get_size() {
+unsigned int fcore::variable::get_size() {
 
     unsigned int shape = 1;
     for(auto &dim:array_shape){

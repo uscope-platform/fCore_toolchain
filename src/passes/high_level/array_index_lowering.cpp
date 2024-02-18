@@ -15,11 +15,11 @@
 
 #include "passes/high_level/array_index_lowering.hpp"
 
-array_index_lowering::array_index_lowering() : pass_base<hl_ast_node>("array index lowering"){
+fcore::array_index_lowering::array_index_lowering() : pass_base<hl_ast_node>("array index lowering"){
 
 }
 
-std::shared_ptr<hl_ast_node> array_index_lowering::process_leaf(std::shared_ptr<hl_ast_node> element) {
+std::shared_ptr<fcore::hl_ast_node> fcore::array_index_lowering::process_leaf(std::shared_ptr<hl_ast_node> element) {
     if(element->node_type==hl_ast_node_type_operand){
         std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(element);
         if(op->get_type()==var_type_array){

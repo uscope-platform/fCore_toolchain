@@ -17,11 +17,11 @@
 #include "passes/high_level/hl_pass_manager.hpp"
 #include "passes/pass_base.hpp"
 
-hl_pass_manager::hl_pass_manager(int dal) {
+fcore::hl_pass_manager::hl_pass_manager(int dal) {
     dump_ast_level = dal;
 }
 
-std::vector<nlohmann::json> hl_pass_manager::run_morphing_pass_group(std::shared_ptr<hl_ast_node> &subtree,
+std::vector<nlohmann::json> fcore::hl_pass_manager::run_morphing_pass_group(std::shared_ptr<hl_ast_node> &subtree,
                                               const std::vector<std::shared_ptr<pass_base<hl_ast_node>>> &group, int dal) {
 
     std::vector<nlohmann::json> ret_val;
@@ -48,7 +48,7 @@ std::vector<nlohmann::json> hl_pass_manager::run_morphing_pass_group(std::shared
 
 
 
-void hl_pass_manager::run_morphing_pass( std::shared_ptr<hl_ast_node> &subtree,
+void fcore::hl_pass_manager::run_morphing_pass( std::shared_ptr<hl_ast_node> &subtree,
                                                        const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
 
     switch (pass->get_pass_type()) {
@@ -72,13 +72,13 @@ void hl_pass_manager::run_morphing_pass( std::shared_ptr<hl_ast_node> &subtree,
 }
 
 
-std::shared_ptr<hl_ast_node> hl_pass_manager::run_global_pass(const std::shared_ptr<hl_ast_node> &subtree,
+std::shared_ptr<fcore::hl_ast_node> fcore::hl_pass_manager::run_global_pass(const std::shared_ptr<hl_ast_node> &subtree,
                                                               const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
     return pass->process_global(subtree);
 }
 
 
-std::shared_ptr<hl_ast_node> hl_pass_manager::process_leaves(const std::shared_ptr<hl_ast_node> &subtree,
+std::shared_ptr<fcore::hl_ast_node> fcore::hl_pass_manager::process_leaves(const std::shared_ptr<hl_ast_node> &subtree,
                                                              const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
 
     std::shared_ptr<hl_ast_node> result;
@@ -141,7 +141,7 @@ std::shared_ptr<hl_ast_node> hl_pass_manager::process_leaves(const std::shared_p
     return result;
 }
 
-std::vector<std::shared_ptr<hl_ast_node>> hl_pass_manager::process_nodes(const std::shared_ptr<hl_ast_node> &subtree,
+std::vector<std::shared_ptr<fcore::hl_ast_node>> fcore::hl_pass_manager::process_nodes(const std::shared_ptr<hl_ast_node> &subtree,
                                                                          const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
 
     std::shared_ptr<hl_ast_node> result;
@@ -162,8 +162,8 @@ std::vector<std::shared_ptr<hl_ast_node>> hl_pass_manager::process_nodes(const s
 
 }
 
-std::shared_ptr<hl_ast_node>
-hl_pass_manager::process_expression(const std::shared_ptr<hl_expression_node> &subtree,
+std::shared_ptr<fcore::hl_ast_node>
+fcore::hl_pass_manager::process_expression(const std::shared_ptr<hl_expression_node> &subtree,
                                     const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
 
     std::shared_ptr<hl_expression_node> result = std::static_pointer_cast<hl_expression_node>(hl_ast_node::deep_copy(subtree));
@@ -182,20 +182,20 @@ hl_pass_manager::process_expression(const std::shared_ptr<hl_expression_node> &s
 
 }
 
-std::shared_ptr<hl_ast_operand> hl_pass_manager::process_operand(const std::shared_ptr<hl_ast_operand> &subtree,
+std::shared_ptr<fcore::hl_ast_operand> fcore::hl_pass_manager::process_operand(const std::shared_ptr<hl_ast_operand> &subtree,
                                                                     const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
     return std::static_pointer_cast<hl_ast_operand>(pass->process_leaf(subtree));
 }
 
-std::shared_ptr<hl_ast_node>
-hl_pass_manager::process_function_call(const std::shared_ptr<hl_function_call_node> &subtree,
+std::shared_ptr<fcore::hl_ast_node>
+fcore::hl_pass_manager::process_function_call(const std::shared_ptr<hl_function_call_node> &subtree,
                                     const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
 
     return pass->process_leaf(subtree);
 }
 
-std::shared_ptr<hl_definition_node>
-hl_pass_manager::process_definition(const std::shared_ptr<hl_definition_node> &subtree,
+std::shared_ptr<fcore::hl_definition_node>
+fcore::hl_pass_manager::process_definition(const std::shared_ptr<hl_definition_node> &subtree,
                                     const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
     if(subtree->is_initialized()){
         if(subtree->is_scalar()){
@@ -212,7 +212,7 @@ hl_pass_manager::process_definition(const std::shared_ptr<hl_definition_node> &s
     return std::static_pointer_cast<hl_definition_node>(pass->process_leaf(subtree));
 }
 
-std::shared_ptr<hl_ast_loop_node> hl_pass_manager::process_loop(const std::shared_ptr<hl_ast_loop_node> &subtree,
+std::shared_ptr<fcore::hl_ast_loop_node> fcore::hl_pass_manager::process_loop(const std::shared_ptr<hl_ast_loop_node> &subtree,
                                                                 const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
 
     subtree->set_condition(std::static_pointer_cast<hl_expression_node>(process_terminal_by_type(subtree->get_condition(), pass)));
@@ -227,8 +227,8 @@ std::shared_ptr<hl_ast_loop_node> hl_pass_manager::process_loop(const std::share
     return subtree;
 }
 
-std::shared_ptr<hl_ast_conditional_node>
-hl_pass_manager::process_conditional(const std::shared_ptr<hl_ast_conditional_node> &subtree,
+std::shared_ptr<fcore::hl_ast_conditional_node>
+fcore::hl_pass_manager::process_conditional(const std::shared_ptr<hl_ast_conditional_node> &subtree,
                                      const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
 
     subtree->set_condition(pass->process_leaf(subtree->get_condition()));
@@ -249,8 +249,8 @@ hl_pass_manager::process_conditional(const std::shared_ptr<hl_ast_conditional_no
 
 
 
-std::shared_ptr<hl_ast_node>
-hl_pass_manager::process_terminal_by_type(const std::shared_ptr<hl_ast_node> &subtree,
+std::shared_ptr<fcore::hl_ast_node>
+fcore::hl_pass_manager::process_terminal_by_type(const std::shared_ptr<hl_ast_node> &subtree,
                                           const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
     std::shared_ptr<hl_ast_node> res;
     switch (subtree->node_type) {

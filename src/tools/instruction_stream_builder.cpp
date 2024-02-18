@@ -15,7 +15,7 @@
 
 #include "tools/instruction_stream_builder.hpp"
 
-instruction_stream instruction_stream_builder::build_stream(const std::shared_ptr<ll_ast_node>& tree) {
+fcore::instruction_stream fcore::instruction_stream_builder::build_stream(const std::shared_ptr<ll_ast_node>& tree) {
     instruction_stream stream;
     std::vector<std::shared_ptr<ll_ast_node>> content = tree->get_content();
     for(auto &item:content){
