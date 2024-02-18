@@ -55,7 +55,7 @@ namespace fcore{
         std::vector<program_bundle> get_programs();
         std::vector<interconnect_t> load_interconnects(nlohmann::json &interconnects);
     private:
-
+        void check_bus_duplicates();
         std::unordered_map<std::string, emulator_input> load_input(nlohmann::json &core);
         std::vector<emulator_output_t> load_output_specs(nlohmann::json &core);
         std::unordered_map<unsigned int, uint32_t> load_memory_init(nlohmann::json &mem_init);

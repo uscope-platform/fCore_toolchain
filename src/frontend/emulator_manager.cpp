@@ -87,13 +87,11 @@ void fcore::emulator_manager::process() {
             emu->init_memory(item.second.memory_init);
         }
     }
-    if(bus_map.check_duplicates()){
-        auto duplicates = bus_map.get_duplicates().dump();
-        throw std::domain_error(duplicates);
-    }
+    check_bus_duplicates();
 }
 
 std::vector<fcore::program_bundle> fcore::emulator_manager::get_programs() {
+    bus_map.clear();
     emulator_builder e_b(debug_autogen);
     std::vector<program_bundle> programs;
 
@@ -137,6 +135,7 @@ std::vector<fcore::program_bundle> fcore::emulator_manager::get_programs() {
         e_b.clear_dma_io();
         programs.push_back(b);
     }
+    check_bus_duplicates();
     return programs;
 }
 
@@ -490,4 +489,11 @@ fcore::emulator_manager::io_remap_memory_init(std::unordered_map<unsigned int, u
     }
 
     return ret;
+}
+
+void fcore::emulator_manager::check_bus_duplicates() {
+    if(bus_map.check_duplicates()){
+        auto duplicates = bus_map.get_duplicates().dump();
+        throw std::domain_error(duplicates);
+    }
 }
