@@ -24,6 +24,7 @@
 
 #include "data_structures/emulation/emulator_input.hpp"
 #include "data_structures/emulation/emulator_input_factory.hpp"
+#include "data_structures/emulation/hil_bus_map.hpp"
 #include "frontend/schema_validators/schema_validator_base.h"
 #include "frontend/binary_loader.hpp"
 #include "../third_party/csv.hpp"
@@ -61,8 +62,6 @@ private:
     std::unordered_map<unsigned int, uint32_t> io_remap_memory_init(std::unordered_map<unsigned int, uint32_t> &map,
                                                                     std::unordered_map<uint16_t, uint16_t> &io_map);
 
-    nlohmann::json dump_core(const emulator_metadata &md);
-    nlohmann::json dump_interconnects(const std::vector<interconnect_t> &md);
 
     void run_cores();
 
@@ -78,6 +77,8 @@ private:
 
     nlohmann::json spec_file;
     std::string schema_file;
+
+    hil_bus_map bus_map;
 };
 
 

@@ -22,9 +22,11 @@ emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s
 
     spec_file = spec;
     schema_file = s_f + "/emulator_spec_schema.json";
+    emu_length = 1;
 }
 
 void emulator_manager::process() {
+    bus_map.clear();
     emulator_builder e_b(debug_autogen);
 
     try{
@@ -69,9 +71,12 @@ void emulator_manager::process() {
         emulators[id].memory_init = load_memory_init(item["memory_init"]);
 
     }
+
     interconnects = load_interconnects(spec_file["interconnect"]);
+
     if(spec_file.contains("n_cycles"))
         emu_length = spec_file["n_cycles"];
+
     // Setup emulators
     for(auto &item:emulators){
         auto emu = item.second.emu;
@@ -81,6 +86,10 @@ void emulator_manager::process() {
         } else{
             emu->init_memory(item.second.memory_init);
         }
+    }
+    if(bus_map.check_duplicates()){
+        auto duplicates = bus_map.get_duplicates().dump();
+        throw std::domain_error(duplicates);
     }
 }
 
@@ -195,9 +204,7 @@ std::unordered_map<std::string, emulator_input> emulator_manager::load_input(nlo
 
     bool is_vect;
     for (auto &input_spec: core["inputs"]) {
-
         std::string name = input_spec["name"];
-
         std::string type = input_spec["type"];
         std::vector<std::string> labels;
         std::string register_type = input_spec["register_type"];
@@ -262,25 +269,25 @@ std::vector<emulator_output_t> emulator_manager:: load_output_specs(nlohmann::js
         }
         if(item["register_type"] == "vector"){
             uint32_t register_progressive = 0;
-            for(auto &o:item["reg_n"]){
+            for(int o:item["reg_n"]){
                 out.reg_n = o;
                 std::string out_name = item["name"];
                 out.name = out_name + "["+ std::to_string(register_progressive) + "]";
                 out_specs.push_back(out);
+                bus_map.add_entry(core["id"], "standalone_output", o, out_name);
                 register_progressive++;
             }
         } else {
             out.reg_n = item["reg_n"];
             out.name = item["name"];
+            bus_map.add_entry(core["id"], "standalone_output", item["reg_n"], item["name"]);
             out_specs.push_back(out);
         }
-
     }
 
     for(auto &mem: core["memory_init"]){
 
        if(mem["is_output"]){
-           auto dbg = mem.dump();
            emulator_output_t out;
            if(mem["reg_n"].is_array()){
                for(uint32_t  i = 0; i< mem["reg_n"].size();i++){
@@ -289,12 +296,14 @@ std::vector<emulator_output_t> emulator_manager:: load_output_specs(nlohmann::js
                    std::string name = mem["name"];
                    out.reg_n = addr;
                    out.name = name + "[" + std::to_string(addr) + "]";
+                   bus_map.add_entry(core["id"], "memory_as_output", addr,mem["name"]);
                    out_specs.push_back(out);
                }
            } else {
                out.type = type_float;
                out.reg_n = mem["reg_n"];
                out.name = mem["name"];
+               bus_map.add_entry(core["id"], "memory_as_output", mem["reg_n"],mem["name"]);
                out_specs.push_back(out);
            }
        }
@@ -407,6 +416,7 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
                     rs_s.address = source_addr;
                     rs_d.channel = dest_ch;
                     rs_d.address = dest_addr+j;
+                    bus_map.add_entry(item["source"], "interconnect", dest_addr, ch["name"]);
                     i.connections.emplace_back(rs_s,rs_d);
                 }
             } else if(transfer_type == "vector_transfer"){
@@ -415,6 +425,7 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
                     rs_s.address = source_addr;
                     rs_d.channel = dest_ch+j;
                     rs_d.address = dest_addr;
+                    bus_map.add_entry(item["source"], "interconnect", dest_addr, ch["name"]);
                     i.connections.emplace_back(rs_s,rs_d);
                 }
             } else if(transfer_type == "gather_transfer"){
@@ -423,6 +434,7 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
                     rs_s.address = source_addr+j;
                     rs_d.channel = dest_ch+j;
                     rs_d.address = dest_addr;
+                    bus_map.add_entry(item["source"], "interconnect", dest_addr, ch["name"]);
                     i.connections.emplace_back(rs_s,rs_d);
                 }
             } else if(transfer_type == "regular_transfer" || transfer_type == "scalar_transfer" ){
@@ -430,6 +442,7 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
                 rs_s.address = source_addr;
                 rs_d.channel = dest_ch;
                 rs_d.address = dest_addr;
+                bus_map.add_entry(item["source"], "interconnect", dest_addr, ch["name"]);
                 i.connections.emplace_back(rs_s,rs_d);
             } else if(transfer_type == "2d_vector_transfer"){
 
@@ -440,6 +453,7 @@ std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json 
                         rs_s.address = source_addr + k;
                         rs_d.channel = dest_ch + j;
                         rs_d.address = dest_addr + k;
+                        bus_map.add_entry(item["source"], "interconnect", dest_addr + k, ch["name"]);
                         i.connections.emplace_back(rs_s, rs_d);
                     }
                 }
@@ -464,73 +478,6 @@ emulator_manager::io_remap_memory_init(std::unordered_map<unsigned int, uint32_t
         uint32_t io_address = item.first;
         uint32_t core_address  = io_map[io_address];
         ret[core_address] = item.second;
-    }
-
-    return ret;
-}
-
-nlohmann::json emulator_manager::dump_core(const emulator_metadata &md) {
-    nlohmann::json ret;
-    ret["inputs"] = nlohmann::json();
-    for(const auto &in:md.input){
-        nlohmann::json i;
-        i["reg_n"] = in.second.get_address();
-        i["data"] = in.second.get_data();
-        i["channel"] = in.second.get_channel();
-        i["name"] = in.second.get_name();
-        ret["inputs"].push_back(i);
-    }
-
-    ret["outputs"] = nlohmann::json();
-    for(const auto &out:md.output_specs){
-        nlohmann::json o;
-        o["reg_n"] = out.reg_n;
-        o["name"] = out.name;
-        if(out.type == type_float){
-            o["type"] = "float";
-        } else{
-            o["type"] = "integer";
-        }
-        ret["outputs"].push_back(o);
-    }
-    ret["output_types"] = md.output_types;
-
-    ret["memory_init"] = md.memory_init;
-
-    //dump md.emu ?
-
-    ret["active_channels"] = md.active_channels;
-    ret["efi_implementation"] = md.efi_implementation;
-    ret["comparator_type"] = md.comparator_type;
-    ret["io_remapping_active"] = md.io_remapping_active;
-    ret["io_map"] = md.io_map;
-    ret["outputs"] = md.outputs;
-
-    return ret;
-}
-
-nlohmann::json emulator_manager::dump_interconnects(const std::vector<interconnect_t> &ics) {
-
-    nlohmann::json ret;
-    for(auto &md:ics){
-        nlohmann::json md_j;
-        md_j["source"] = md.source;
-        md_j["destination"] = md.destination;
-
-        std::vector<nlohmann::json> conns;
-        for(auto &c:md.connections){
-
-            nlohmann::json c_j;
-            c_j["first"] = nlohmann::json();
-            c_j["first"]["address"] = c.first.address;
-            c_j["first"]["channel"] = c.first.channel;
-            c_j["second"] = nlohmann::json();
-            c_j["second"]["address"] = c.first.address;
-            c_j["second"]["channel"] = c.first.channel;
-            conns.push_back(c_j);
-        }
-        md_j["connections"] = conns;
-        ret.push_back(md_j);
     }
 
     return ret;

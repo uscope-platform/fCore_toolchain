@@ -100,6 +100,7 @@ set(FCORE_EMU_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/backend/efi_implementations/efi_dispatcher.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/emulator_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/frontend/schema_validators/schema_validator_base.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/emulation/hil_bus_map.cpp
         )
 
 set(FCORE_DEVTOOLS_SRCS

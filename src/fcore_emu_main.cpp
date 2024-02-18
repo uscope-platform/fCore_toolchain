@@ -78,6 +78,12 @@ int main(int argc, char **argv) {
     } catch (std::runtime_error &err) {
         spdlog::critical(err.what());
         exit(-1);
+    } catch (std::domain_error &err){
+        spdlog::critical("Duplicate bus address detected");
+        std::ofstream ss("duplicates.json");
+        ss<<err.what();
+        ss.close();
+        exit(-1);
     }
 
     
