@@ -97,8 +97,17 @@ std::vector<fcore::program_bundle> fcore::emulator_manager::get_programs() {
     emulator_builder e_b(debug_autogen);
     std::vector<program_bundle> programs;
 
+    // I do not need to load all this stuff, however since these functions run the duplication check it is worth doing
+    // as the performance hit is not too bad.
+    interconnects = load_interconnects(spec_file["interconnect"]);
+
     for(auto &item:spec_file["cores"]){
         std::string id = item["id"];
+
+        //same as before, these are loaded just for the check
+        auto output_specs = load_output_specs(item);
+        auto memory_init = load_memory_init(item["memory_init"]);
+
 
         program_bundle b;
         b.name = id;
