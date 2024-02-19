@@ -125,7 +125,7 @@ std::vector<fcore::program_bundle> fcore::emulator_manager::get_programs() {
         }
         for(auto &mem:item["memory_init"]){
             int reg_idx = mem["reg_n"];
-            if(mem["value"].is_number_float()){
+            if(mem["type"]== "float"){
                 float flt_v = mem["value"];
                 b.mem_init[reg_idx] = emulator::float_to_uint32(flt_v);
             } else {
