@@ -66,6 +66,7 @@ namespace fcore{
         bool io_remapping_active;
         std::unordered_map<uint16_t, uint16_t> io_map;
         std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outputs;
+        uint32_t multirate_divisor;
     };
 
 

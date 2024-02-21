@@ -268,6 +268,10 @@
                 "title": "EFI implementation selector"
               }
             }
+          },
+          "multirate_divisor": {
+            "type": "integer",
+            "title": "number of base cycles to skip when running the core"
           }
         }
       }

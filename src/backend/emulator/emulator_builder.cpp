@@ -94,6 +94,12 @@ fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohma
         implicit_order_idx++;
     }
 
+    if(core_info.contains("multirate_divisor")){
+        metadata.multirate_divisor = core_info["multirate_divisor"];
+    } else {
+        metadata.multirate_divisor = 0;
+    }
+
     clear_dma_io();
     return metadata;
 }
