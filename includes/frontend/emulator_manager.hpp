@@ -62,7 +62,6 @@ namespace fcore{
         std::unordered_map<unsigned int, uint32_t> io_remap_memory_init(std::unordered_map<unsigned int, uint32_t> &map,
                                                                         std::unordered_map<uint16_t, uint16_t> &io_map);
 
-
         void run_cores();
 
         nlohmann::json get_channel_outputs(std::vector<emulator_output_t> specs, int ch, std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outs);
@@ -79,6 +78,8 @@ namespace fcore{
         std::string schema_file;
 
         hil_bus_map bus_map;
+
+        std::unordered_map<std::string, uint32_t> skipping_counters;
     };
 }
 

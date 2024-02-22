@@ -58,7 +58,8 @@
         "comparators":"reducing",
         "efi_implementation":"efi_sort"
       },
-      "channels":1
+      "channels":1,
+      "multirate_divisor": 0
     }
   ],
   "n_cycles": 2
