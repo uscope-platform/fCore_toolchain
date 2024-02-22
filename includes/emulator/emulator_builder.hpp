@@ -21,7 +21,7 @@
 #include <memory>
 
 #include <nlohmann/json.hpp>
-#include "frontend/emulator_metadata.hpp"
+#include "emulator/emulator_metadata.hpp"
 #include "frontend/binary_loader.hpp"
 #include "fcore_dis.hpp"
 #include "data_structures/instruction_stream.hpp"

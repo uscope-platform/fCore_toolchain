@@ -21,12 +21,12 @@
 #include "backend/efi_implementations/efi_dispatcher.h"
 #include "data_structures/instruction_stream.hpp"
 #include "fCore_isa.hpp"
-#include "frontend/emulator_metadata.hpp"
+#include "emulator/emulator_metadata.hpp"
 
 #if GENERAL_PURPOSE_EMULATION==1
-    #include "backend/emulator/gp_executor.hpp"
+    #include "emulator/gp_executor.hpp"
 #else
-    #include "backend/emulator/ba_executor.hpp"
+    #include "emulator/ba_executor.hpp"
 #endif
 
 

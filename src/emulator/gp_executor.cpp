@@ -13,7 +13,7 @@
 // limitations under the License.05/07/2021.
 
 
-#include "backend/emulator/gp_executor.hpp"
+#include "emulator/gp_executor.hpp"
 
 uint32_t fcore::gp_executor::execute_add(uint32_t a, uint32_t b) {
     auto op_a = uint32_to_float(a);

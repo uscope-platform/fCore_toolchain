@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#include "frontend/emulator_manager.hpp"
+#include "emulator/emulator_manager.hpp"
 
 
 
@@ -398,13 +398,6 @@ nlohmann::json fcore::emulator_manager::get_channel_outputs(std::vector<emulator
     return res;
 }
 
-
-std::vector<float> fcore::emulator_manager::uint32_to_float(std::vector<uint32_t> &vect) {
-    std::vector<float> cast_vect;
-    for(auto &item:vect)
-        cast_vect.push_back(emulator::uint32_to_float(item));
-    return cast_vect;
-}
 
 std::vector<fcore::interconnect_t> fcore::emulator_manager::load_interconnects(nlohmann::json &itc) {
     std::vector<interconnect_t> res;

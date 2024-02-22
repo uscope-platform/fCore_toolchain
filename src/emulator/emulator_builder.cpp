@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "backend/emulator/emulator_builder.hpp"
+#include "emulator/emulator_builder.hpp"
 
 fcore::emulator_builder::emulator_builder(bool dbg) {
     debug_autogen = dbg;

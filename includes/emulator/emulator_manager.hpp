@@ -1,17 +1,16 @@
-// Copyright 2022 Filippo Savi <filssavi@gmail.com>
+//  Copyright 2022 Filippo Savi <filssavi@gmail.com>
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 
 #ifndef FCORE_TOOLCHAIN_EMULATOR_MANAGER_HPP
 #define FCORE_TOOLCHAIN_EMULATOR_MANAGER_HPP
@@ -27,12 +26,12 @@
 #include "data_structures/emulation/hil_bus_map.hpp"
 #include "frontend/schema_validators/schema_validator_base.h"
 #include "frontend/binary_loader.hpp"
-#include "../third_party/csv.hpp"
-#include "backend/emulator/emulator.hpp"
+#include "../../third_party/csv.hpp"
+#include "emulator.hpp"
 #include "tools/instruction_stream_builder.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
-#include "frontend/emulator_metadata.hpp"
-#include "backend/emulator/emulator_builder.hpp"
+#include "emulator_metadata.hpp"
+#include "emulator_builder.hpp"
 
 namespace fcore{
     class program_bundle{
@@ -65,7 +64,7 @@ namespace fcore{
         void run_cores();
 
         nlohmann::json get_channel_outputs(std::vector<emulator_output_t> specs, int ch, std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outs);
-        static std::vector<float> uint32_to_float(std::vector<uint32_t> &vect);
+
         std::map<int, std::string> cores_ordering;
 
         std::unordered_map<std::string, emulator_metadata> emulators;

@@ -22,7 +22,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <CLI/CLI.hpp>
-#include "frontend/emulator_manager.hpp"
+#include "emulator/emulator_manager.hpp"
 
 int main(int argc, char **argv) {
     CLI::App app{"fCore Emulator"};

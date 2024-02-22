@@ -16,7 +16,7 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 
-#include "frontend/emulator_manager.hpp"
+#include "emulator/emulator_manager.hpp"
 
 using namespace fcore;
 
