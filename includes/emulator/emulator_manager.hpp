@@ -32,6 +32,7 @@
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "emulator_metadata.hpp"
 #include "emulator_builder.hpp"
+#include "emulator/multirate_io_repeater.hpp"
 
 namespace fcore{
     class program_bundle{
@@ -79,6 +80,8 @@ namespace fcore{
         hil_bus_map bus_map;
 
         std::unordered_map<std::string, uint32_t> skipping_counters;
+        std::unordered_map<std::string, bool> skipping_status;
+        multirate_io_repeater output_repeater;
     };
 }
 
