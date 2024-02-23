@@ -134,6 +134,7 @@ std::vector<fcore::program_bundle> fcore::emulator_manager::get_programs() {
             }
         }
         e_b.clear_dma_io();
+        b.multirate_divisor = item["multirate_divisor"];
         programs.push_back(b);
     }
     check_bus_duplicates();
