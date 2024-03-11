@@ -42,6 +42,7 @@ int main(int argc, char **argv) {
 
     std::shared_ptr<spdlog::logger> logger = spdlog::stdout_color_mt("logger", spdlog::color_mode::automatic);
 
+    std::unordered_map<std::string, std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::nanoseconds>> profiling_data;
 
     if(!output_file.empty() & !output_force){
         if(std::filesystem::exists(output_file)){
@@ -70,10 +71,14 @@ int main(int argc, char **argv) {
 
     std::string results;
 
+    profiling_data["start"] = std::chrono::high_resolution_clock::now();
+
     try{
         fcore::emulator_manager emu_manager(specs, debug_autogen, SCHEMAS_FOLDER);
         emu_manager.process();
+        profiling_data["built"] = std::chrono::high_resolution_clock::now();
         emu_manager.emulate();
+        profiling_data["emulated"] = std::chrono::high_resolution_clock::now();
         results = emu_manager.get_results();
     } catch (std::runtime_error &err) {
         spdlog::critical(err.what());
@@ -86,10 +91,16 @@ int main(int argc, char **argv) {
         exit(-1);
     }
 
-    
+
+    profiling_data["done"] = std::chrono::high_resolution_clock::now();
     std::ofstream ss(output_file);
     ss<< results;
     ss.close();
+
+
+    std::cout << "BUILD PHASE duration:" << std::chrono::duration_cast<std::chrono::milliseconds>(profiling_data["built"]-profiling_data["start"]) << std::endl;
+    std::cout << "EMULATION PHASE duration:" << std::chrono::duration_cast<std::chrono::milliseconds>(profiling_data["emulated"]-profiling_data["built"])<< std::endl;
+    std::cout << "OUTPUT PHASE duration:"<< std::chrono::duration_cast<std::chrono::milliseconds>(profiling_data["done"]-profiling_data["emulated"]) << std::endl;
 
 
     return 0;

@@ -148,7 +148,12 @@ void fcore::emulator_manager::emulate() {
 }
 
 void fcore::emulator_manager::run_cores() {
+
+    spdlog::info("EMULATION START");
     for(int i= 0; i<emu_length;i++){
+        if(i%100000==0 && i != 0){
+            spdlog::info("EMULATION PROGRESS: {0} cycles done out of {1}", i, emu_length);
+        }
         for(auto &core_id:cores_ordering){
             auto emu = emulators[core_id.second].emu;
 
@@ -234,6 +239,7 @@ void fcore::emulator_manager::run_cores() {
             }
         }
     }
+    spdlog::info("EMULATION DONE");
 }
 
 std::unordered_map<std::string, fcore::emulator_input> fcore::emulator_manager::load_input(nlohmann::json &core) {
