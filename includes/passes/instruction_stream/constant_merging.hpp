@@ -24,7 +24,7 @@ namespace fcore{
     class constant_merging : public stream_pass_base {
     public:
         constant_merging(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam);
-        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
+        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) override;
 
     private:
         std::set<std::string> processed_constants;

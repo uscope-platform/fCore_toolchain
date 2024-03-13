@@ -266,6 +266,9 @@ fcore::hl_pass_manager::process_terminal_by_type(const std::shared_ptr<hl_ast_no
         case hl_ast_node_type_definition:
             res = process_definition(std::static_pointer_cast<hl_definition_node>(subtree),pass);
             break;
+        case hl_ast_node_type_conditional:
+            res = process_conditional(std::static_pointer_cast<hl_ast_conditional_node>(subtree), pass);
+            break;
         default:
             break;
     };

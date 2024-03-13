@@ -147,19 +147,22 @@ namespace fcore{
     class hl_expression_node : public hl_ast_node{
     public:
         hl_expression_node( expression_type_t et);
-        void set_lhs(const std::shared_ptr<hl_ast_node> &node);
-        void set_rhs(const std::shared_ptr<hl_ast_node> &node);
-        std::shared_ptr<hl_ast_node> get_lhs();
-        std::shared_ptr<hl_ast_node> get_rhs();
+        void set_lhs(const std::shared_ptr<hl_ast_node> &node) {lhs = node;};
+        void set_rhs(const std::shared_ptr<hl_ast_node> &node) {rhs = node;};
+        void set_ths(const std::shared_ptr<hl_ast_node> &node) {ths = node;};
+
+        std::shared_ptr<hl_ast_node> get_lhs(){return lhs;};
+        std::shared_ptr<hl_ast_node> get_rhs(){return rhs;};
+        std::shared_ptr<hl_ast_node> get_ths(){return ths;};
 
         void set_assignment_type(assignment_type_t a) { assignment_type = a;};
         assignment_type_t get_assignment_type() {return assignment_type;};
 
-        expression_type_t get_type();
+        expression_type_t get_type(){return expr_type;};
         std::string pretty_print() override;
         bool is_unary();
+        bool is_ternary();
         bool is_immediate();
-        static bool is_hardware_compatible(expression_type_t et);
         nlohmann::json dump() override;
 
         bool is_terminal() override {
@@ -171,8 +174,11 @@ namespace fcore{
     private:
         expression_type_t expr_type;
         assignment_type_t assignment_type;
+
         std::shared_ptr<hl_ast_node> lhs;
         std::shared_ptr<hl_ast_node> rhs;
+        std::shared_ptr<hl_ast_node> ths;
+
         std::map<expression_type_t, std::string> type_print;
         std::map<assignment_type_t, std::string> assign_prefix_print;
     };

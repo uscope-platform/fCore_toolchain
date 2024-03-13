@@ -15,11 +15,13 @@
 
 #include "passes/instruction_stream/variable_mapping.hpp"
 
-fcore::variable_mapping::variable_mapping(std::shared_ptr<variable_map> &v) : stream_pass_base("Variable mapping"){
+fcore::variable_mapping::variable_mapping(std::shared_ptr<variable_map> &v) :
+stream_pass_base("Variable mapping", 1){
     vmap = v;
 }
 
-std::shared_ptr<fcore::ll_instruction_node> fcore::variable_mapping::apply_pass(std::shared_ptr<ll_instruction_node> element) {
+std::shared_ptr<fcore::ll_instruction_node>
+fcore::variable_mapping::apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) {
 
     switch (element->get_type()) {
         case isa_register_instruction:

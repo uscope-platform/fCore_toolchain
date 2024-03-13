@@ -15,13 +15,14 @@
 
 #include "passes/instruction_stream/variable_lifetime_mapping.hpp"
 
-fcore::variable_lifetime_mapping::variable_lifetime_mapping(std::shared_ptr<variable_map> &v) : stream_pass_base("Variable lifetime mapping") {
+fcore::variable_lifetime_mapping::variable_lifetime_mapping(std::shared_ptr<variable_map> &v) :
+stream_pass_base("Variable lifetime mapping", 1) {
     vmap = v;
     instr_cntr = 0;
 }
 
 std::shared_ptr<fcore::ll_instruction_node>
-fcore::variable_lifetime_mapping::apply_pass(std::shared_ptr<ll_instruction_node> element) {
+fcore::variable_lifetime_mapping::apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) {
     switch (element->get_type()) {
         case isa_register_instruction:
             map_register_inst(std::static_pointer_cast<ll_register_instr_node>(element));

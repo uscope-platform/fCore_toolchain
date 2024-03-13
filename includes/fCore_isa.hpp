@@ -27,7 +27,8 @@ namespace fcore{
         isa_pseudo_instruction = 4,
         isa_conversion_instruction = 6,
         isa_load_constant_instruction = 7,
-        isa_intercalated_constant= 8
+        isa_intercalated_constant= 8,
+        isa_ternary_instruction = 9,
     }isa_instruction_type;
 
     constexpr std::string_view isa_instr_type_to_string(isa_instruction_type t){
@@ -38,6 +39,7 @@ namespace fcore{
             case isa_conversion_instruction: return "isa_conversion_instruction";
             case isa_load_constant_instruction: return "isa_load_constant_instruction";
             case isa_intercalated_constant: return "isa_intercalated_constant";
+            case isa_ternary_instruction: return  "isa_ternary_instruction";
             default: return "unknown_isa_instr_type";
         }
     }
@@ -131,7 +133,7 @@ namespace fcore{
             std::make_pair("bsel",isa_register_instruction),
             std::make_pair("mov", isa_pseudo_instruction),
             std::make_pair("neg", isa_pseudo_instruction),
-            std::make_pair("csel",isa_register_instruction)
+            std::make_pair("csel",isa_ternary_instruction)
     };
 
 

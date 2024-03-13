@@ -16,12 +16,12 @@
 
 #include "passes/instruction_stream/bound_register_mapping.hpp"
 
-fcore::bound_register_mapping_pass::bound_register_mapping_pass() : stream_pass_base("Bound register mapping"){
+fcore::bound_register_mapping_pass::bound_register_mapping_pass() : stream_pass_base("Bound register mapping" , 1){
 
 }
 
 std::shared_ptr<fcore::ll_instruction_node>
-fcore::bound_register_mapping_pass::apply_pass(std::shared_ptr<ll_instruction_node> element) {
+fcore::bound_register_mapping_pass::apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) {
 
     switch (element->get_type()) {
         case isa_intercalated_constant:

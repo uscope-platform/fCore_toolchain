@@ -17,13 +17,15 @@
 
 #include <utility>
 
-fcore::constant_merging::constant_merging(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam) : stream_pass_base("constant merging pass"){
+fcore::constant_merging::constant_merging(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam) :
+stream_pass_base("constant merging pass", 1){
     delete_intercalated_const = false;
     assignments_map = std::move(lam);
     idx = 0;
 }
 
-std::shared_ptr<fcore::ll_instruction_node> fcore::constant_merging::apply_pass(std::shared_ptr<ll_instruction_node> element) {
+std::shared_ptr<fcore::ll_instruction_node>
+fcore::constant_merging::apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) {
     map_exclusions(element);
     std::shared_ptr<ll_instruction_node> ret_val;
     switch (element->get_type()) {

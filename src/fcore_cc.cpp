@@ -105,6 +105,7 @@ void fcore::fcore_cc::optimize(std::unordered_map<std::string, std::vector<int>>
     translator.translate();
     ll_ast = translator.get_output_ast();
 
+    auto dbg = ll_ast;
     ll_manager = create_ll_pass_manager(dump_ast_level);
     ll_manager.run_morphing_passes(ll_ast);
 

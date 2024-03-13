@@ -106,6 +106,13 @@ std::vector<std::shared_ptr<hl_ast_node>> retval;
             if(lhs_result.size()==2)
                 retval.push_back(lhs_result[1]);
         }
+        if(node->is_ternary()){
+            std::shared_ptr<hl_ast_operand> ths = std::static_pointer_cast<hl_ast_operand>(node->get_ths());
+            std::vector<std::shared_ptr<hl_ast_node>> ths_result = process_operand(ths);
+            node->set_ths(ths_result[0]);
+            if(ths_result.size()==2)
+                retval.push_back(ths_result[1]);
+        }
         retval.insert(retval.begin(), node);
     }
 

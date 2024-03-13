@@ -39,21 +39,26 @@ std::vector<std::shared_ptr<fcore::hl_ast_node>>
 fcore::conditional_implementation_pass::process_block_by_type(const std::shared_ptr<hl_ast_node> &node,
                                                        const std::shared_ptr<hl_ast_node> &subtree) {
 
-    if(node->node_type == hl_ast_node_type_loop){
-        std::shared_ptr<hl_ast_loop_node> loop_node = std::static_pointer_cast<hl_ast_loop_node>(node);
-        std::vector<std::shared_ptr<hl_ast_node>> loop_content =  process_loop(loop_node, subtree);
-        loop_node->set_loop_content(loop_content);
-        return{loop_node};
-    } else if(node->node_type == hl_ast_node_type_conditional){
-        return process_conditional(std::static_pointer_cast<hl_ast_conditional_node>(node), subtree);
-    } else {
-        return {node};
+    switch (node->node_type) {
+        case hl_ast_node_type_loop:
+            return process_loop(std::static_pointer_cast<hl_ast_loop_node>(node), subtree);
+        case hl_ast_node_type_conditional:
+            return process_conditional(std::static_pointer_cast<hl_ast_conditional_node>(node), subtree);
+        case hl_ast_node_type_definition:
+            return process_definition(std::static_pointer_cast<hl_definition_node>(node), subtree);
+        case hl_ast_node_type_expr:
+            return process_expression(std::static_pointer_cast<hl_expression_node>(node), subtree);
+        default:
+            return {node};
     }
+
 }
 
 std::vector<std::shared_ptr<fcore::hl_ast_node>>
 fcore::conditional_implementation_pass::process_loop(const std::shared_ptr<hl_ast_loop_node> &node,
                                               const std::shared_ptr<hl_ast_node> &subtree) {
+
+
 
     std::vector<std::shared_ptr<hl_ast_node>> new_block_content;
     for(auto &loop_instr:node->get_loop_content()){
@@ -66,9 +71,50 @@ fcore::conditional_implementation_pass::process_loop(const std::shared_ptr<hl_as
         }
     }
     node->set_loop_content(new_block_content);
-
-    return new_block_content;
+    return {node};
 }
+
+std::vector<std::shared_ptr<fcore::hl_ast_node>>
+fcore::conditional_implementation_pass::process_definition(const std::shared_ptr<hl_definition_node> &node,
+                                                           const std::shared_ptr<hl_ast_node> &subtree) {
+    if(node->is_initialized()){
+        if(node->is_scalar()){
+            auto initializer = node->get_scalar_initializer();
+            if(initializer->node_type == hl_ast_node_type_conditional){
+                auto cond = std::static_pointer_cast<hl_ast_conditional_node>(initializer);
+                if(cond->is_ternary()){
+                    node->set_scalar_initializer(process_ternary(cond));
+                } else {
+                    throw std::runtime_error("Unexpected non ternary conditional found in variable initialization");
+                }
+            }
+        } else {
+            auto init_v = node->get_array_initializer();
+            std::vector<std::shared_ptr<hl_ast_node>> new_initializer;
+            for(auto & item:init_v){
+                if(item->node_type == hl_ast_node_type_conditional){
+                    auto cond = std::static_pointer_cast<hl_ast_conditional_node>(item);
+                    if(cond->is_ternary()){
+                        new_initializer.push_back(process_ternary(cond));
+                    } else {
+                        throw std::runtime_error("Unexpected non ternary conditional found in variable initialization");
+                    }
+                } else{
+                    new_initializer.push_back(item);
+                }
+            }
+            node->set_array_initializer(new_initializer);
+        }
+    }
+        return {node};
+}
+
+std::vector<std::shared_ptr<fcore::hl_ast_node>>
+fcore::conditional_implementation_pass::process_expression(const std::shared_ptr<hl_expression_node> &node,
+                                                           const std::shared_ptr<hl_ast_node> &subtree) {
+    return {node};
+}
+
 
 std::vector<std::shared_ptr<fcore::hl_ast_node>>
 fcore::conditional_implementation_pass::process_conditional(const std::shared_ptr<hl_ast_conditional_node>& node, const std::shared_ptr<hl_ast_node>& subtree) {
@@ -147,3 +193,14 @@ fcore::conditional_implementation_pass::get_operands(const std::shared_ptr<hl_as
     }
     return retval;
 }
+
+std::shared_ptr<fcore::hl_ast_node>
+fcore::conditional_implementation_pass::process_ternary(const std::shared_ptr<hl_ast_conditional_node> &node) {
+
+    std::shared_ptr<hl_expression_node> ret = std::make_shared<hl_expression_node>(expr_csel);
+    ret->set_lhs(node->get_condition());
+    ret->set_rhs(node->get_if_block()[0]);
+    ret->set_ths(node->get_else_block()[0]);
+    return ret;
+}
+

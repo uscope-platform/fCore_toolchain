@@ -17,5 +17,6 @@
 int main(){
 
     float a;
-    int test = a>0? 150: 200;
+    int test = a>0? 150.0: 200.0;
+    float c = a - 32.0;
 }

@@ -24,7 +24,7 @@ namespace fcore{
     class variable_lifetime_mapping : public stream_pass_base{
     public:
         explicit variable_lifetime_mapping(std::shared_ptr<variable_map> &v);
-        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
+        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) override;
 
     private:
         std::shared_ptr<variable> update_variable_lifetime(const std::shared_ptr<variable>& var) const;

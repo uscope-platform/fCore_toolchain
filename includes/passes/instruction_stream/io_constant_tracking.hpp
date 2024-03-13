@@ -22,7 +22,7 @@ namespace fcore{
     class io_constant_tracking : public stream_pass_base{
     public:
         io_constant_tracking(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam);
-        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
+        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) override;
     private:
         void add_assignment(const std::string&);
         int index;

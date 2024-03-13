@@ -25,7 +25,7 @@ namespace fcore{
     class variable_mapping : public stream_pass_base {
     public:
         explicit variable_mapping(std::shared_ptr<variable_map> &v);
-        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
+        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) override;
 
         void map_register_inst(const std::shared_ptr<ll_register_instr_node>& instr);
         void map_conv_instr(const std::shared_ptr<ll_conversion_instr_node>& instr);

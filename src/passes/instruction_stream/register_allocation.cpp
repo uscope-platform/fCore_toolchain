@@ -20,7 +20,7 @@ fcore::register_allocation::register_allocation(
         std::shared_ptr<variable_map> vmap,
         std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm,
         const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
-        ) : stream_pass_base("register allocation") {
+        ) : stream_pass_base("register allocation", 1) {
 
     allocation_map = all_map;
     var_map = std::move(vmap);
@@ -67,7 +67,8 @@ void fcore::register_allocation::setup() {
 
 
 
-std::shared_ptr<fcore::ll_instruction_node> fcore::register_allocation::apply_pass(std::shared_ptr<ll_instruction_node> element) {
+std::shared_ptr<fcore::ll_instruction_node>
+fcore::register_allocation::apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) {
     std::shared_ptr<ll_instruction_node> ret_val = element;
 
     auto arguments = element->get_arguments();

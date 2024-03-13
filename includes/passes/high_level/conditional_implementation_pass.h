@@ -38,6 +38,9 @@ namespace fcore{
         std::vector<std::shared_ptr<hl_ast_node>> process_block_by_type(const std::shared_ptr<hl_ast_node>& node, const std::shared_ptr<hl_ast_node>& subtree);
         std::vector<std::shared_ptr<hl_ast_node>> process_conditional(const std::shared_ptr<hl_ast_conditional_node>& node, const std::shared_ptr<hl_ast_node>& subtree);
         std::vector<std::shared_ptr<hl_ast_node>> process_loop(const std::shared_ptr<hl_ast_loop_node>& node, const std::shared_ptr<hl_ast_node>& subtree);
+        std::vector<std::shared_ptr<hl_ast_node>> process_definition(const std::shared_ptr<hl_definition_node> &node, const std::shared_ptr<hl_ast_node>& subtree);
+        std::vector<std::shared_ptr<hl_ast_node>> process_expression(const std::shared_ptr<hl_expression_node> &node, const std::shared_ptr<hl_ast_node>& subtree);
+        std::shared_ptr<hl_ast_node> process_ternary(const std::shared_ptr<hl_ast_conditional_node>& node);
     };
 }
 

@@ -25,6 +25,7 @@
 #include "data_structures/high_level_ast/hl_expression_node.hpp"
 #include "data_structures/high_level_ast/hl_definition_node.hpp"
 #include "data_structures/low_level_ast/low_level_ast.hpp"
+
 namespace fcore {
     class high_level_ast_lowering {
     public:
@@ -38,6 +39,7 @@ namespace fcore {
         std::shared_ptr<ll_ast_node> translate_node(const std::shared_ptr<hl_ast_operand>& input, std::shared_ptr<variable> dest);
         std::shared_ptr<ll_ast_node> translate_node(const std::shared_ptr<hl_definition_node>& input, const std::shared_ptr<variable>& dest);
         std::shared_ptr<ll_ast_node> process_unary_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest);
+        std::shared_ptr<ll_ast_node> process_ternary_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest);
         std::shared_ptr<ll_ast_node> process_immediate_expression(std::shared_ptr<hl_expression_node> input);
         std::shared_ptr<ll_ast_node> process_regular_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest);
         std::shared_ptr<hl_ast_node> input_ast;

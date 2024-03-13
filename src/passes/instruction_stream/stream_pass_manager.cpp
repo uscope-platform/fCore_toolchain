@@ -40,6 +40,7 @@ fcore::stream_pass_manager::constructs_pass_manager(int dal,
     dump_ast_level = dal;
     std::shared_ptr<variable_map> var_map = std::make_shared<variable_map>();
     auto  io_assignment_map = std::make_shared<std::unordered_map<std::string, std::pair<int, int>>>();
+    passes.push_back(std::make_shared<ternary_reduction>());
     passes.push_back(std::make_shared<io_constant_tracking>(io_assignment_map));
     passes.push_back(std::make_shared<constant_merging>(io_assignment_map));
     passes.push_back(std::make_shared<variable_mapping>(var_map));
@@ -76,10 +77,12 @@ fcore::instruction_stream
 fcore::stream_pass_manager::apply_pass(const instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass) {
     instruction_stream retval;
     pass->setup();
-    for(auto &instr:in_stream){
-        auto proc_val = pass->apply_pass(instr);
-        if(proc_val!= nullptr)
-            retval.push_back(proc_val);
+    for(int i = 0; i<pass->n_scans;i++){
+        for(auto &instr:in_stream){
+            auto proc_val = pass->apply_pass(instr, i);
+            if(proc_val!= nullptr)
+                retval.push_back(proc_val);
+        }
     }
     return retval;
 }

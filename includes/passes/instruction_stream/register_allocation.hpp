@@ -36,7 +36,7 @@ namespace fcore{
                 const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
         );
         void setup() override;
-        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
+        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) override;
     private:
         void allocate_register(std::shared_ptr<variable> &var, int reg_addr);
         void allocate_array(std::shared_ptr<variable> &var, int reg_addr);

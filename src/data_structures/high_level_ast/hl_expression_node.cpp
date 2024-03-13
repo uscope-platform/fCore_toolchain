@@ -64,22 +64,6 @@ fcore::hl_expression_node::hl_expression_node(expression_type_t et) : hl_ast_nod
     };
 }
 
-void fcore::hl_expression_node::set_lhs(const std::shared_ptr<hl_ast_node> &node) {
-    lhs = node;
-}
-
-void fcore::hl_expression_node::set_rhs(const std::shared_ptr<hl_ast_node> &node) {
-    rhs = node;
-}
-
-std::shared_ptr<fcore::hl_ast_node> fcore::hl_expression_node::get_lhs() {
-    return lhs;
-}
-
-std::shared_ptr<fcore::hl_ast_node> fcore::hl_expression_node::get_rhs() {
-    return rhs;
-}
-
 std::string fcore::hl_expression_node::pretty_print() {
     std::ostringstream ss;
     if (lhs != nullptr) {
@@ -109,9 +93,6 @@ std::string fcore::hl_expression_node::pretty_print() {
     return ret;
 }
 
-fcore::expression_type_t fcore::hl_expression_node::get_type() {
-    return expr_type;
-}
 
 bool fcore::hl_expression_node::is_unary() {
     bool res  = false;
@@ -131,8 +112,16 @@ bool fcore::hl_expression_node::is_unary() {
     return res;
 }
 
-bool fcore::hl_expression_node::is_hardware_compatible(expression_type_t ) {
-    return false;
+bool fcore::hl_expression_node::is_immediate() {
+    bool res  = false;
+    res |= expr_type == expr_nop;
+    return res;
+}
+
+bool fcore::hl_expression_node::is_ternary() {
+    bool res  = false;
+    res |= expr_type == expr_csel;
+    return res;
 }
 
 nlohmann::json fcore::hl_expression_node::dump() {
@@ -141,18 +130,16 @@ nlohmann::json fcore::hl_expression_node::dump() {
     if(!is_unary()){
         retval["lhs"] = hl_ast_node::dump_by_type(lhs);
     }
+    if(is_ternary()){
+        retval["ths"] = hl_ast_node::dump_by_type(ths);
+    }
     retval["rhs"] = hl_ast_node::dump_by_type(rhs);
     retval["expr_type"] = expression_type_to_string(expr_type);
     retval["assignment_type"] = assignment_type_to_string(assignment_type);
-
     return retval;
 }
 
-bool fcore::hl_expression_node::is_immediate() {
-    bool res  = false;
-    res |= expr_type == expr_nop;
-    return res;
-}
+
 
 bool fcore::operator==(const fcore::hl_expression_node &lhs, const fcore::hl_expression_node &rhs){
     bool ret_val = true;
@@ -191,8 +178,29 @@ bool fcore::operator==(const fcore::hl_expression_node &lhs, const fcore::hl_exp
     } else if(lhs.rhs == nullptr && rhs.rhs == nullptr);
     else return false;
 
+
+    if(lhs.ths != nullptr && rhs.ths != nullptr){
+        if((lhs.ths->node_type == hl_ast_node_type_expr) && (rhs.ths->node_type ==  hl_ast_node_type_expr)){
+            std::shared_ptr<fcore::hl_expression_node> ex_1 = std::static_pointer_cast<fcore::hl_expression_node>(lhs.ths);
+            std::shared_ptr<fcore::hl_expression_node> ex_2 = std::static_pointer_cast<fcore::hl_expression_node>(rhs.ths);
+            ret_val &= *ex_1 == *ex_2;
+        }else if((lhs.ths->node_type == hl_ast_node_type_operand) && (rhs.ths->node_type ==  hl_ast_node_type_operand)){
+            std::shared_ptr<fcore::hl_ast_operand> ex_1 = std::static_pointer_cast<fcore::hl_ast_operand>(lhs.ths);
+            std::shared_ptr<fcore::hl_ast_operand> ex_2 = std::static_pointer_cast<fcore::hl_ast_operand>(rhs.ths);
+            ret_val &= *ex_1 == *ex_2;
+        }else if((lhs.ths->node_type == hl_ast_node_type_function_call) && (rhs.ths->node_type ==  hl_ast_node_type_function_call)){
+            std::shared_ptr<hl_function_call_node> ex_1 = std::static_pointer_cast<hl_function_call_node>(lhs.ths);
+            std::shared_ptr<hl_function_call_node> ex_2 = std::static_pointer_cast<hl_function_call_node>(rhs.ths);
+            ret_val &= *ex_1 == *ex_2;
+        } else {
+            return false;
+        }
+    } else if(lhs.ths == nullptr && rhs.ths == nullptr);
+    else return false;
+
+
     ret_val &= lhs.expr_type == rhs.expr_type;
     ret_val &= lhs.assignment_type == rhs.assignment_type;
 
     return ret_val;
-};
+}

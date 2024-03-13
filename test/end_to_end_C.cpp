@@ -858,7 +858,7 @@ TEST(EndToEndC, test_constant_expression_output) {
 }
 
 
-/*
+
 TEST(EndToEndC, test_ternary_operator) {
 
     std::string input_file = "c_e2e/test_ternary_op.c";
@@ -883,5 +883,3 @@ TEST(EndToEndC, test_ternary_operator) {
     ASSERT_EQ(gold_standard, result);
 
 }
-
-*/

@@ -24,7 +24,7 @@ namespace fcore{
     class bound_register_mapping_pass : public stream_pass_base{
     public:
         bound_register_mapping_pass();
-        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) override;
+        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) override;
     private:
         std::shared_ptr<ll_instruction_node> process_reg_instr(std::shared_ptr<ll_instruction_node> node);
         std::shared_ptr<ll_instruction_node> process_conv_instr(std::shared_ptr<ll_instruction_node> node);

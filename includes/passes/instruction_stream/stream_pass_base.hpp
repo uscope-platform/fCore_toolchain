@@ -21,13 +21,18 @@
 namespace fcore{
     class stream_pass_base {
     public:
-        explicit stream_pass_base(std::string n) {name = std::move(n);};
+        explicit stream_pass_base(std::string n, uint32_t ns) {
+            name = std::move(n);
+            n_scans = ns;
+        };
 
         virtual void setup() {};
-        virtual std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element) {
+        virtual std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) {
             return element;
         };
         std::string get_name() {return name;};
+
+        uint32_t n_scans;
     private:
         std::string name;
     };

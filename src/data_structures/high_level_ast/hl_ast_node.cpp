@@ -120,9 +120,11 @@ std::shared_ptr<fcore::hl_ast_node> fcore::hl_ast_node::deep_copy_expr(const std
 
     std::shared_ptr<hl_ast_node> lhs = deep_copy(orig->get_lhs());
     std::shared_ptr<hl_ast_node> rhs = deep_copy(orig->get_rhs());
+    std::shared_ptr<hl_ast_node> ths = deep_copy(orig->get_ths());
 
     copied_obj->set_lhs(lhs);
     copied_obj->set_rhs(rhs);
+    copied_obj->set_ths(ths);
 
     copied_obj->set_assignment_type(orig->get_assignment_type());
 

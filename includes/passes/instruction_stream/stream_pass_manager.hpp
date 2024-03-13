@@ -30,6 +30,7 @@
 #include "passes/instruction_stream/zero_assignment_removal_pass.hpp"
 #include "passes/instruction_stream/bound_register_mapping.hpp"
 #include "passes/instruction_stream/io_constant_tracking.hpp"
+#include "passes/instruction_stream/ternary_reduction.hpp"
 #include "data_structures/common/memory_tracker.hpp"
 
 namespace fcore{
@@ -52,7 +53,7 @@ namespace fcore{
         instruction_stream process_stream(instruction_stream stream);
         instruction_stream apply_pass(const instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass);
         nlohmann::json get_dump();
-        void set_enabled_passes(std::vector<bool> ep) {enabled_passes = ep;};
+        void set_enabled_passes(std::vector<bool> ep) {enabled_passes = std::move(ep);};
     private:
         std::vector<std::shared_ptr<stream_pass_base>> passes;
         std::vector<bool> enabled_passes;

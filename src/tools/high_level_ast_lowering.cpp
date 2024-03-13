@@ -47,7 +47,8 @@ fcore::high_level_ast_lowering::high_level_ast_lowering() {
             {expr_bsel, "bsel"},
             {expr_bset, "bset"},
             {expr_nop, "nop"},
-            {expr_xor_b, "xor"}
+            {expr_xor_b, "xor"},
+            {expr_csel, "csel"}
     };
 }
 
@@ -112,8 +113,10 @@ std::shared_ptr<fcore::ll_ast_node> fcore::high_level_ast_lowering::translate_no
 std::shared_ptr<fcore::ll_ast_node> fcore::high_level_ast_lowering::translate_node(const std::shared_ptr<hl_expression_node>& input, const std::shared_ptr<variable>& dest) {
     if(input->is_immediate()){
         return process_immediate_expression(input);
-    }else if(input->is_unary()){
-        return process_unary_expression(input,dest);
+    }else if(input->is_unary()) {
+        return process_unary_expression(input, dest);
+    } else if(input->is_ternary()){
+        return process_ternary_expression(input, dest);
     } else{
         return process_regular_expression(input,dest);
     }
@@ -161,10 +164,29 @@ fcore::high_level_ast_lowering::process_regular_expression(std::shared_ptr<hl_ex
 
     std::shared_ptr<variable> op_a = std::static_pointer_cast<hl_ast_operand>(input->get_lhs())->get_variable();
     std::shared_ptr<variable> op_b = std::static_pointer_cast<hl_ast_operand>(input->get_rhs())->get_variable();
-    std::vector<std::shared_ptr<variable>> args = {op_a, op_b, dest};
+    std::vector<std::shared_ptr<variable>> args = {op_a, op_b, std::move(dest)};
     retval = create_ast_node(fcore_op_types[opcode], args, opcode);
     return retval;
 
+}
+
+std::shared_ptr<fcore::ll_ast_node>
+fcore::high_level_ast_lowering::process_ternary_expression(std::shared_ptr<hl_expression_node> input,
+                                                           std::shared_ptr<variable> dest) {
+
+    std::shared_ptr<ll_ast_node> retval;
+    expression_type_t op_type = input->get_type();
+    std::string opcode = expr_instruction_mapping[op_type];
+    if(!fcore_implemented_operations[op_type]) {
+        throw std::runtime_error("The required operation is not implementable on the fCore hardware");
+    }
+
+    std::shared_ptr<variable> op_a = std::static_pointer_cast<hl_ast_operand>(input->get_lhs())->get_variable();
+    std::shared_ptr<variable> op_b = std::static_pointer_cast<hl_ast_operand>(input->get_rhs())->get_variable();
+    std::shared_ptr<variable> op_c = std::static_pointer_cast<hl_ast_operand>(input->get_ths())->get_variable();
+    std::vector<std::shared_ptr<variable>> args = {op_a, op_b, op_c, dest};
+    retval = create_ast_node(fcore_op_types[opcode], args, opcode);
+    return retval;
 }
 
 std::shared_ptr<fcore::ll_ast_node>
@@ -215,6 +237,9 @@ fcore::high_level_ast_lowering::create_ast_node(isa_instruction_type t, std::vec
         case isa_pseudo_instruction:
             retval = std::make_shared<ll_pseudo_instr_node>(op, args);
             break;
+        case isa_ternary_instruction:
+            retval = std::make_shared<ll_ternary_instr_node>(op, args[0], args[1], args[2], args[3]);
+            break;
     }
     return retval;
 }
@@ -232,3 +257,4 @@ fcore::high_level_ast_lowering::process_immediate_expression(std::shared_ptr<hl_
     retval = create_ast_node(fcore_op_types[opcode], {}, opcode);
     return retval;
 }
+

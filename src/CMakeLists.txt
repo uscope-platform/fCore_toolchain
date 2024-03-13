@@ -12,6 +12,7 @@ set(FCORE_COMMON_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_loop_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_ast_pragma.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_ast_node.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_ternary_instr_node.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/instruction_stream.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/common/memory_tracker.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/instruction_stream_builder.cpp
@@ -34,6 +35,7 @@ set(FCORE_COMMON_SRCS_I
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/constant_merging.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/zero_assignment_removal_pass.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/bound_register_mapping.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/ternary_reduction.cpp
         )
 
 
