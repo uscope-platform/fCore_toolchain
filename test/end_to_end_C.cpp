@@ -874,6 +874,7 @@ TEST(EndToEndC, test_ternary_operator) {
 
     fcore_cc compiler(input_file, includes, true, 0);
     compiler.set_dma_map(dma_map["dma_io"]);
+   
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 

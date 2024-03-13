@@ -81,7 +81,7 @@ void fcore::fcore_has::construct_assembler(std::istream &input, std::vector<std:
 
         std::vector<int> io_res;
         stream_pass_manager sman(io_res, dump_ast_level);
-        sman.set_enabled_passes({false, false, true, true, true, false}); // do not mess with constants in assembly
+        sman.set_enabled_passes({false, false, false, true, true, true, false ,false}); // do not mess with constants in assembly
         
         program_stream = sman.process_stream(program_stream);
 

@@ -48,7 +48,8 @@ fcore::stream_pass_manager::constructs_pass_manager(int dal,
     passes.push_back(std::make_shared<register_allocation>(var_map, bm,all_map));
     passes.push_back(std::make_shared<zero_assignment_removal_pass>());
     passes.push_back(std::make_shared<bound_register_mapping_pass>());
-    enabled_passes = {true, true, true, true, true, true, false};
+    enabled_passes = {true, true, true, true, true, true, true, false};
+
 
 }
 

@@ -64,7 +64,7 @@ fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohma
 
     std::vector<int> io_res;
     stream_pass_manager sman(io_res,0);
-    sman.set_enabled_passes({false, false, true, true, true,false, true});
+    sman.set_enabled_passes({false, false, false, true, true, true,false, true});
     program_stream = sman.process_stream(program_stream);
 
     auto ch = core_info["channels"];
