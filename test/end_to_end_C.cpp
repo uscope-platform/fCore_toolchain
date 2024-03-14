@@ -868,7 +868,8 @@ TEST(EndToEndC, test_ternary_operator) {
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
-                    "a":{"address":3,"type":"input"}
+                    "a":{"address":3,"type":"input"},
+                    "c":{"address":2,"type":"output"}
                 }})"
     );
 
@@ -879,7 +880,7 @@ TEST(EndToEndC, test_ternary_operator) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x70004, 0xc, 0x20014, 0x10016, 0x3F003F, 0xc, 0x7e6, 0x4201999A, 0x26, 0x44EFA51D,  0x46, 2876 ,0xc};
+    std::vector<uint32_t> gold_standard = {0xA0003, 0xc, 0x30002, 0x10003, 0xc, 0x40028, 0x26, 0x43160000, 0x66,  0x43480000, 0x6085b, 0x26, 0x42000000,0x60842, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
