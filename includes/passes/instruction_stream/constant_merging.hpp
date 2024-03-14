@@ -33,6 +33,7 @@ namespace fcore{
         std::unordered_map<std::string, std::shared_ptr<variable>> reassignments_map;
         void map_exclusions(std::shared_ptr<ll_instruction_node> element);
         std::shared_ptr<ll_instruction_node> merge_register_inst(const std::shared_ptr<ll_register_instr_node>& instr);
+        std::shared_ptr<ll_instruction_node> merge_ternary_inst(const std::shared_ptr<ll_ternary_instr_node>& instr);
         std::shared_ptr<ll_instruction_node> merge_conv_instr(const std::shared_ptr<ll_conversion_instr_node>& instr);
         std::shared_ptr<ll_instruction_node> merge_load_const_instr(const std::shared_ptr<ll_load_constant_instr_node>& instr);
         std::shared_ptr<ll_instruction_node> merge_interc_const(const std::shared_ptr<ll_intercalated_const_instr_node>& instr);

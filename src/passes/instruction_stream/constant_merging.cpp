@@ -44,6 +44,9 @@ fcore::constant_merging::apply_pass(std::shared_ptr<ll_instruction_node> element
         case isa_load_constant_instruction:
             ret_val =  merge_load_const_instr(std::static_pointer_cast<ll_load_constant_instr_node>(element));
             break;
+        case isa_ternary_instruction:
+            ret_val = merge_ternary_inst(std::static_pointer_cast<ll_ternary_instr_node>(element));
+            break;
         default:
             throw std::runtime_error("Invalid instruction type reached variable mapping stage");
     }
@@ -65,10 +68,15 @@ void fcore::constant_merging::map_exclusions(std::shared_ptr<ll_instruction_node
         case isa_load_constant_instruction:
             dest = std::static_pointer_cast<ll_load_constant_instr_node>(element)->get_destination();
             break;
+        case isa_ternary_instruction:
+            dest = std::static_pointer_cast<ll_ternary_instr_node>(element)->get_destination();
+            break;
         case isa_intercalated_constant:
         case isa_independent_instruction:
         case isa_pseudo_instruction:
             return;
+        default:
+            throw std::runtime_error("Invalid instruction type reached variable mapping stage");
     }
     if(processed_constants.contains(dest->get_identifier())){
         processed_constants.erase(dest->get_identifier());
@@ -93,6 +101,37 @@ std::shared_ptr<fcore::ll_instruction_node> fcore::constant_merging::merge_regis
     } else{
        new_args.push_back(op);
     }
+    new_args.push_back(instr->get_destination());
+    instr->set_arguments(new_args);
+    return instr;
+}
+
+std::shared_ptr<fcore::ll_instruction_node>
+fcore::constant_merging::merge_ternary_inst(const std::shared_ptr<ll_ternary_instr_node> &instr) {
+    std::vector<std::shared_ptr<variable>> new_args;
+
+    auto op = instr->get_operand_a();
+    if(op->is_constant() || processed_constants.contains(op->get_identifier())){
+        new_args.push_back(get_merged_constant(op));
+    } else{
+        new_args.push_back(op);
+    }
+
+    op = instr->get_operand_b();
+    if(instr->get_operand_b()->is_constant() || processed_constants.contains(op->get_identifier())){
+        new_args.push_back(get_merged_constant(op));
+    } else{
+        new_args.push_back(op);
+    }
+
+    op = instr->get_operand_c();
+    if(instr->get_operand_c()->is_constant() || processed_constants.contains(op->get_identifier())){
+        new_args.push_back(get_merged_constant(op));
+    } else{
+        new_args.push_back(op);
+    }
+
+
     new_args.push_back(instr->get_destination());
     instr->set_arguments(new_args);
     return instr;

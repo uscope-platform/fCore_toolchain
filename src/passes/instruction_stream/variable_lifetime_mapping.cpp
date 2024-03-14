@@ -37,6 +37,9 @@ fcore::variable_lifetime_mapping::apply_pass(std::shared_ptr<ll_instruction_node
         case isa_load_constant_instruction:
             map_load_const_instr(std::static_pointer_cast<ll_load_constant_instr_node>(element));
             break;
+        case isa_ternary_instruction:
+            map_ternary_instr(std::static_pointer_cast<ll_ternary_instr_node>(element));
+            break;
         default:
             throw std::runtime_error("Invalid instruction type reached variable mapping stage");
     }
@@ -85,4 +88,18 @@ std::shared_ptr<fcore::variable> fcore::variable_lifetime_mapping::update_variab
             retval->set_last_occurrence(instr_cntr);
     }
     return retval;
+}
+
+void fcore::variable_lifetime_mapping::map_ternary_instr(const std::shared_ptr<ll_ternary_instr_node> &instr) {
+    std::shared_ptr<variable> op_a = vmap->at(instr->get_operand_a()->get_linear_identifier());
+    vmap->insert(op_a->get_linear_identifier(), update_variable_lifetime(op_a));
+
+    std::shared_ptr<variable> op_b = vmap->at(instr->get_operand_b()->get_linear_identifier());
+    vmap->insert(op_b->get_linear_identifier(), update_variable_lifetime(op_b));
+
+    std::shared_ptr<variable> op_c = vmap->at(instr->get_operand_c()->get_linear_identifier());
+    vmap->insert(op_c->get_linear_identifier(), update_variable_lifetime(op_b));
+
+    std::shared_ptr<variable> dest = vmap->at(instr->get_destination()->get_linear_identifier());
+    vmap->insert(dest->get_linear_identifier(), update_variable_lifetime(dest));
 }

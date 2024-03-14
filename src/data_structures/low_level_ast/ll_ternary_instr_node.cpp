@@ -25,7 +25,20 @@ fcore::ll_ternary_instr_node::ll_ternary_instr_node(std::string op, std::shared_
 }
 
 uint32_t fcore::ll_ternary_instr_node::emit() {
-    throw std::runtime_error("ERROR: Requested emission of ternary emission not supported by the hardware");
+    if(*operand_a != *destination){
+        throw std::runtime_error("ERROR: for ternary instructions operand a and destinations need to be equal");
+    }
+
+    uint32_t raw_instr = 0;
+    uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
+    uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
+    raw_instr += fcore_opcodes[opcode] & opcode_mask;
+    raw_instr += (operand_a->get_value() & register_mask) << fcore_opcode_width;
+    raw_instr += (operand_b->get_value() & register_mask) << (fcore_opcode_width+fcore_register_address_width);
+    raw_instr += (operand_c->get_value() & register_mask) << (fcore_opcode_width+2*fcore_register_address_width);
+
+    return raw_instr;
+
 }
 
 std::string fcore::ll_ternary_instr_node::disassemble() {

@@ -15,6 +15,8 @@
 #ifndef FCORE_TOOLCHAIN_LL_TERNARY_INSTR_NODE_HPP
 #define FCORE_TOOLCHAIN_LL_TERNARY_INSTR_NODE_HPP
 
+#include <utility>
+
 #include "data_structures/low_level_ast/ll_instruction_node.hpp"
 #include "data_structures/common/variable.hpp"
 
@@ -46,7 +48,8 @@ namespace fcore{
         std::shared_ptr<variable> get_operand_c() {return operand_c;};
 
         std::shared_ptr<variable> get_destination() {return destination;};
-        void set_destination(std::shared_ptr<variable> v){ destination = v;};
+        void set_operand_a(std::shared_ptr<variable> v){ operand_a = std::move(v);};
+        void set_destination(std::shared_ptr<variable> v){ destination = std::move(v);};
         std::vector<std::shared_ptr<variable>> get_arguments() override {return {operand_a, operand_b, operand_c, destination};};
         void set_arguments(const std::vector<std::shared_ptr<variable>> &a) override;
     private:

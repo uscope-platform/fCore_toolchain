@@ -31,6 +31,7 @@ namespace fcore{
         void map_register_inst(const std::shared_ptr<ll_register_instr_node>& instr);
         void map_conv_instr(const std::shared_ptr<ll_conversion_instr_node>& instr);
         void map_load_const_instr(const std::shared_ptr<ll_load_constant_instr_node>& instr);
+        void map_ternary_instr(const std::shared_ptr<ll_ternary_instr_node>& instr);
 
         std::shared_ptr<variable_map> vmap;
         unsigned int instr_cntr;

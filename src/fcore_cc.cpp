@@ -127,7 +127,6 @@ void fcore::fcore_cc::optimize(std::unordered_map<std::string, std::vector<int>>
     if(!program_stream.last()->is_stop()){
         program_stream.push_back(std::make_shared<ll_independent_inst_node>("stop"));
     }
-
     writer.process_stream(program_stream,dma_map,allocation_map, logging);
 }
 

@@ -37,6 +37,9 @@ fcore::variable_mapping::apply_pass(std::shared_ptr<ll_instruction_node> element
         case isa_load_constant_instruction:
             map_load_const_instr(std::static_pointer_cast<ll_load_constant_instr_node>(element));
             break;
+        case isa_ternary_instruction:
+            map_ternary_instr(std::static_pointer_cast<ll_ternary_instr_node>(element));
+            break;
         default:
             throw std::runtime_error("Invalid instruction type reached variable mapping stage");
     }
@@ -52,6 +55,18 @@ void fcore::variable_mapping::map_register_inst(const std::shared_ptr<ll_registe
 
     vmap->insert(op_a, instr->get_operand_a());
     vmap->insert(op_b, instr->get_operand_b());
+    vmap->insert(dst, instr->get_destination());
+}
+
+void fcore::variable_mapping::map_ternary_instr(const std::shared_ptr<ll_ternary_instr_node>& instr) {
+    std::string op_a = instr->get_operand_a()->get_linear_identifier();
+    std::string op_b = instr->get_operand_b()->get_linear_identifier();
+    std::string op_c = instr->get_operand_b()->get_linear_identifier();
+    std::string dst = instr->get_destination()->get_linear_identifier();
+
+    vmap->insert(op_a, instr->get_operand_a());
+    vmap->insert(op_b, instr->get_operand_b());
+    vmap->insert(op_c, instr->get_operand_c());
     vmap->insert(dst, instr->get_destination());
 }
 

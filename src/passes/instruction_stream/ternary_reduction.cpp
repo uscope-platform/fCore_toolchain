@@ -122,6 +122,7 @@ fcore::ternary_reduction::reduce_ternary_instr(std::shared_ptr<ll_ternary_instr_
             node->set_destination(substitution_map[node->get_destination()->get_name()]);
         }
     }
+    node->set_operand_a(node->get_destination());
     return node;
 }
 
