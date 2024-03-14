@@ -16,6 +16,8 @@
 #ifndef FCORE_TOOLCHAIN_LL_REGISTER_INSTR_NODE_H
 #define FCORE_TOOLCHAIN_LL_REGISTER_INSTR_NODE_H
 
+#include <utility>
+
 #include "data_structures/low_level_ast/ll_instruction_node.hpp"
 #include "data_structures/common/variable.hpp"
 
@@ -44,6 +46,7 @@ namespace fcore{
         std::shared_ptr<variable> get_operand_a() {return operand_a;};
         std::shared_ptr<variable> get_operand_b() {return operand_b;};
         std::shared_ptr<variable> get_destination() {return destination;};
+        void set_destination(std::shared_ptr<variable>d) {destination = std::move(d);};
         std::vector<std::shared_ptr<variable>> get_arguments() override {return {operand_a, operand_b, destination};};
         void set_arguments(const std::vector<std::shared_ptr<variable>> &a) override;
     private:

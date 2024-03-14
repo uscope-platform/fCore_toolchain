@@ -24,7 +24,7 @@ fcore::ternary_reduction::apply_pass(std::shared_ptr<ll_instruction_node> elemen
     if(last_pass != n)
         instr_ctr = 0;
     else {
-        instr_ctr = 1;
+        instr_ctr++;
     }
     last_pass = n;
     if(n == 0){
@@ -41,7 +41,9 @@ fcore::ternary_reduction::apply_pass(std::shared_ptr<ll_instruction_node> elemen
 void fcore::ternary_reduction::map_ternaries(std::shared_ptr<ll_instruction_node> element) {
     if(element->get_type() == isa_ternary_instruction){
         auto t = std::static_pointer_cast<ll_ternary_instr_node>(element);
-        ternaries_map[t->get_operand_a()->get_name()] = instr_ctr;
+        auto t_name = t->get_operand_a()->get_name();
+        ternaries_map[t_name] = instr_ctr;
+        substitution_map[t_name] = t->get_destination();
     }
 }
 
@@ -71,41 +73,61 @@ void fcore::ternary_reduction::map_conditions_source(std::shared_ptr<ll_instruct
         auto instr = std::static_pointer_cast<ll_conversion_instr_node>(element);
         update_conditions_map(instr->get_destination()->get_name());
     } else if(type == isa_register_instruction) {
-        auto instr = std::static_pointer_cast<ll_conversion_instr_node>(element);
+        auto instr = std::static_pointer_cast<ll_register_instr_node>(element);
         update_conditions_map(instr->get_destination()->get_name());
     } else if(type == isa_load_constant_instruction) {
-        auto instr = std::static_pointer_cast<ll_conversion_instr_node>(element);
+        auto instr = std::static_pointer_cast<ll_load_constant_instr_node>(element);
         update_conditions_map(instr->get_destination()->get_name());
     } else if(type == isa_ternary_instruction) {
-        auto instr = std::static_pointer_cast<ll_conversion_instr_node>(element);
+        auto instr = std::static_pointer_cast<ll_ternary_instr_node>(element);
         update_conditions_map(instr->get_destination()->get_name());
     }
 }
 
 
 std::shared_ptr<fcore::ll_instruction_node>
-fcore::ternary_reduction::reduce_register_instr(std::shared_ptr<ll_register_instr_node> element) {
-    return element;
+fcore::ternary_reduction::reduce_register_instr(std::shared_ptr<ll_register_instr_node> node) {
+    if(conditions_map.contains(node->get_destination()->get_name())){
+        if(conditions_map[node->get_destination()->get_name()] == instr_ctr){
+            node->set_destination(substitution_map[node->get_destination()->get_name()]);
+        }
+    }
+    return node;
 }
 
 std::shared_ptr<fcore::ll_instruction_node>
 fcore::ternary_reduction::reduce_conversion_instr(std::shared_ptr<ll_conversion_instr_node> node) {
+    if(conditions_map.contains(node->get_destination()->get_name())){
+        if(conditions_map[node->get_destination()->get_name()] == instr_ctr){
+            node->set_destination(substitution_map[node->get_destination()->get_name()]);
+        }
+    }
     return node;
 }
 
 std::shared_ptr<fcore::ll_instruction_node>
 fcore::ternary_reduction::reduce_load_instr(std::shared_ptr<ll_load_constant_instr_node> node) {
+    if(conditions_map.contains(node->get_destination()->get_name())){
+        if(conditions_map[node->get_destination()->get_name()] == instr_ctr){
+            node->set_destination(substitution_map[node->get_destination()->get_name()]);
+        }
+    }
     return node;
 }
 
 std::shared_ptr<fcore::ll_instruction_node>
 fcore::ternary_reduction::reduce_ternary_instr(std::shared_ptr<ll_ternary_instr_node> node) {
+    if(conditions_map.contains(node->get_destination()->get_name())){
+        if(conditions_map[node->get_destination()->get_name()] == instr_ctr){
+            node->set_destination(substitution_map[node->get_destination()->get_name()]);
+        }
+    }
     return node;
 }
 
 void fcore::ternary_reduction::update_conditions_map(std::string s){
     if(ternaries_map.contains(s)){
-        if(ternaries_map[s]<instr_ctr){
+        if(ternaries_map[s]>instr_ctr){
             conditions_map[s] = instr_ctr;
         }
     }

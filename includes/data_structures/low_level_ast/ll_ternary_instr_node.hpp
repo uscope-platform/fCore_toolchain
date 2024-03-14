@@ -46,6 +46,7 @@ namespace fcore{
         std::shared_ptr<variable> get_operand_c() {return operand_c;};
 
         std::shared_ptr<variable> get_destination() {return destination;};
+        void set_destination(std::shared_ptr<variable> v){ destination = v;};
         std::vector<std::shared_ptr<variable>> get_arguments() override {return {operand_a, operand_b, operand_c, destination};};
         void set_arguments(const std::vector<std::shared_ptr<variable>> &a) override;
     private:

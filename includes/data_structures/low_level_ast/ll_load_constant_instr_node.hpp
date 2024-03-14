@@ -34,6 +34,7 @@ namespace fcore{
         bool is_float();
         std::shared_ptr<variable> get_constant_variable() {return constant;};
         std::shared_ptr<variable> get_destination() {return destination;};
+        void set_destination(std::shared_ptr<variable> v){destination = v;};
         std::vector<std::shared_ptr<variable>> get_arguments() override {return {destination, constant};};
         void set_arguments(const std::vector<std::shared_ptr<variable>> &a) override;
 
