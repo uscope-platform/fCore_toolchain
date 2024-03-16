@@ -75,7 +75,8 @@ uint32_t fcore::ba_executor::execute_rec(uint32_t a) {
         throw std::runtime_error("An exception occurred during the calculation of the reciprocal of"+ std::to_string(a));
     }
 
-    return float_to_uint32(xip_fpo_get_flt(xil_res));
+    auto res = xip_fpo_get_flt(xil_res);
+    return float_to_uint32(res);
 }
 
 uint32_t fcore::ba_executor::execute_fti(uint32_t a) {

@@ -53,6 +53,7 @@ namespace fcore{
         void run_instruction_by_type(const std::shared_ptr<ll_instruction_node>& node);
 
         void run_register_instruction(const std::shared_ptr<ll_register_instr_node>& node);
+        void run_ternary_instruction(const std::shared_ptr<ll_ternary_instr_node>& node);
         void run_independent_instruction(const std::shared_ptr<ll_independent_inst_node>& node);
         void run_conversion_instruction(const std::shared_ptr<ll_conversion_instr_node>& node);
         void run_load_constant_instruction(const std::shared_ptr<ll_load_constant_instr_node>& node);
@@ -71,6 +72,7 @@ namespace fcore{
         uint32_t execute_satn(uint32_t a, uint32_t b);
         uint32_t execute_bset(uint32_t a, uint32_t b, uint32_t c);
         uint32_t execute_bsel(uint32_t a, uint32_t b);
+        uint32_t execute_csel(uint32_t a, uint32_t b, uint32_t c);
         static uint32_t execute_or(uint32_t a, uint32_t b);
         static uint32_t execute_xor(uint32_t a, uint32_t b);
         uint32_t execute_compare_gt(uint32_t a, uint32_t b);

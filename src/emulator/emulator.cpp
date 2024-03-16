@@ -58,9 +58,35 @@ void fcore::emulator::run_instruction_by_type(const std::shared_ptr<ll_instructi
         case isa_load_constant_instruction:
             run_load_constant_instruction(std::static_pointer_cast<ll_load_constant_instr_node>(node));
             break;
+        case isa_ternary_instruction:
+            run_ternary_instruction(std::static_pointer_cast<ll_ternary_instr_node>(node));
+            break;
         default:
             break;
     }
+}
+
+void fcore::emulator::run_ternary_instruction(const std::shared_ptr<ll_ternary_instr_node> &node) {
+    std::string opcode = node->get_opcode();
+
+    uint32_t op_a = node->get_operand_a()->get_bound_reg();
+    uint32_t op_b = node->get_operand_b()->get_bound_reg();
+    uint32_t op_c = node->get_operand_c()->get_bound_reg();
+
+    auto a = working_memory->at(op_a);
+    auto b = working_memory->at(op_b);
+    auto c = working_memory->at(op_c);
+
+    uint32_t result;
+    uint32_t writeback_address = op_a;
+
+    if(opcode == "csel"){
+        result = execute_csel(a, b, c);
+    } else {
+        throw std::runtime_error("Encountered the following unimplemented operation: " + opcode);
+    }
+
+    working_memory->at(writeback_address) = result;
 }
 
 void fcore::emulator::run_register_instruction(const std::shared_ptr<ll_register_instr_node>& node) {
@@ -379,4 +405,12 @@ void fcore::emulator::init_memory(const std::unordered_map<unsigned int, uint32_
 uint32_t fcore::emulator::get_output(uint32_t addr, int channel) {
     auto selected_memory = memory_pool[channel];
     return selected_memory->at(addr);
+}
+
+uint32_t fcore::emulator::execute_csel(uint32_t a, uint32_t b, uint32_t c) {
+    if(a & 0x1){
+        return b;
+    } else {
+        return c;
+    }
 }

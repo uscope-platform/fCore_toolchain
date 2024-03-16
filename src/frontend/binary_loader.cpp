@@ -72,6 +72,10 @@ void fcore::binary_loader::construct_ast(const std::vector<uint32_t> &program) {
                 ++it;
                 break;
             }
+            case isa_ternary_instruction:{
+                instr_node = process_ternary_instr(instruction);
+                break;
+            }
             // Pseudo instructions and intercalated constants are either not present in the stream, or dont have an opcode
             case isa_pseudo_instruction:
             case isa_intercalated_constant:
@@ -96,6 +100,22 @@ std::shared_ptr<fcore::ll_ast_node> fcore::binary_loader::process_register_instr
 
     return std::make_shared<ll_register_instr_node>(fcore_opcodes_reverse[opcode], op_a_var, op_b_var, dest_var);
 }
+
+std::shared_ptr<fcore::ll_ast_node> fcore::binary_loader::process_ternary_instr(uint32_t instruction) {
+    uint32_t opcode = instruction & (1<<fcore_opcode_width)-1;
+
+    uint32_t operand_a = (instruction >> fcore_opcode_width) & (1<<fcore_register_address_width)-1;
+    uint32_t operand_b = (instruction >> (fcore_opcode_width+fcore_register_address_width)) & (1<<fcore_register_address_width)-1;
+    uint32_t operand_c = (instruction >> (fcore_opcode_width+2*fcore_register_address_width)) & (1<<fcore_register_address_width)-1;
+
+    std::shared_ptr<variable> op_a_var = std::make_shared<variable>("r" + std::to_string(operand_a));
+    std::shared_ptr<variable> op_b_var  = std::make_shared<variable>("r" + std::to_string(operand_b));
+    std::shared_ptr<variable> op_c_var  = std::make_shared<variable>("r" + std::to_string(operand_c));
+    std::shared_ptr<variable> dest_var  = std::make_shared<variable>("r" + std::to_string(operand_a));
+
+    return std::make_shared<ll_ternary_instr_node>(fcore_opcodes_reverse[opcode], op_a_var, op_b_var, op_c_var, dest_var);
+}
+
 
 std::shared_ptr<fcore::ll_ast_node> fcore::binary_loader::process_independent_instruction(uint32_t instruction) {
     uint32_t opcode = instruction & (1<<fcore_opcode_width)-1;

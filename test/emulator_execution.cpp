@@ -19,7 +19,25 @@
 
 using namespace fcore;
 
-nlohmann::json prepare_spec(const std::string &file, int run_length){
+struct input_struct{
+    std::string name;
+    float value;
+    std::string type;
+};
+
+
+struct output_struct{
+    std::string name;
+    std::string type;
+};
+
+struct memory_struct{
+    std::string name;
+    float value;
+    std::string type;
+};
+
+nlohmann::json prepare_spec_file(const std::string &file, int run_length){
     nlohmann::json spec;
     spec["cores"] = std::vector<nlohmann::json>();
     spec["n_cycles"] = run_length;
@@ -33,179 +51,381 @@ nlohmann::json prepare_spec(const std::string &file, int run_length){
     return spec;
 }
 
+nlohmann::json prepare_spec(
+        const std::string &content,
+        int run_length,
+        std::vector<input_struct>inputs,
+        std::vector<output_struct> outputs,
+        std::vector<memory_struct> memories
+){
+    nlohmann::json spec;
+    spec["cores"] = std::vector<nlohmann::json>();
+    spec["n_cycles"] = run_length;
+
+    auto cs = nlohmann::json();
+
+    cs["order"] = 0;
+    cs["id"] = "test";
+
+    cs["program"] = nlohmann::json();
+    cs["program"]["content"] = content;
+    cs["channels"] = 1;
+    cs["options"] = nlohmann::json();
+    cs["options"]["comparators"] = "full";
+    cs["options"]["efi_implementation"] = "none";
+    cs["inputs"]= std::vector<nlohmann::json>();
+
+    cs["program"]["build_settings"] = nlohmann::json();
+    cs["program"]["build_settings"]["io"] = nlohmann::json();
+
+    cs["program"]["build_settings"]["io"]["inputs"] = std::vector<std::string>();
+    cs["program"]["build_settings"]["io"]["outputs"] = std::vector<std::string>();
+    cs["program"]["build_settings"]["io"]["memories"] = std::vector<std::string>();
+
+    for(int i = 0; i<inputs.size(); i++){
+        nlohmann::json in_obj;
+        in_obj["name"] = inputs[i].name;
+        in_obj["type"] = inputs[i].type;
+        in_obj["reg_n"] = i;
+        in_obj["register_type"] = "scalar";
+        in_obj["channel"] = 0;
+        in_obj["source"] = nlohmann::json();
+        in_obj["source"]["type"] = "constant";
+        in_obj["source"]["value"] = inputs[i].value;
+        cs["inputs"].push_back(in_obj);
+        cs["program"]["build_settings"]["io"]["inputs"].push_back(inputs[i].name);
+    }
+
+    cs["outputs"]= std::vector<nlohmann::json>();
+    for(int i = 0; i<outputs.size(); i++){
+        nlohmann::json out_obj;
+        out_obj["name"] = outputs[i].name;
+        out_obj["type"] = outputs[i].type;
+        out_obj["reg_n"] = 10+i;
+        out_obj["register_type"] = "scalar";
+        cs["program"]["build_settings"]["io"]["outputs"].push_back(outputs[i].name);
+        cs["outputs"].push_back(out_obj);
+    }
+    cs["memory_init"]= std::vector<nlohmann::json>();
+
+    for(int i = 0; i<memories.size(); i++){
+        nlohmann::json mem_obj;
+        mem_obj["name"] = memories[i].name;
+        mem_obj["type"] = memories[i].type;
+        mem_obj["reg_n"] = 20+i;
+        mem_obj["is_output"] = false;
+        mem_obj["value"] = memories[i].value;
+        cs["program"]["build_settings"]["io"]["memories"].push_back(memories[i].name);
+        cs["memory_init"].push_back(mem_obj);
+    }
+
+
+
+    spec["cores"].push_back(cs);
+    return spec;
+}
+
 TEST(Emulator_execution, emulator_load) {
 
-    nlohmann::json spec = prepare_spec("emu/test_load.mem", 1);
+    auto program = "int main(){int test = 5.0;}";
+
+    auto spec = prepare_spec(program, 1,
+                             {}, {{"test", "float"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(1), 0x3f47ae14);
-    ASSERT_EQ(result->at(15), 0x4306b333);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    float result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_NEAR(result, 5.0, 1e-6);
 }
 
 
 TEST(Emulator_execution, emulator_add) {
 
-    nlohmann::json spec = prepare_spec("emu/test_add.mem", 1);
+    auto program = "int main(){float a,b;int test = a+b;}";
+
+    auto spec = prepare_spec(program, 1,
+     {{"a", 2.3,"float"},{"b", 1.5, "float"}}, {{"test", "float"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(2), 0x43077ae1);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    float result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_NEAR(result, 3.8, 1e-6);
+
 }
 
 
 TEST(Emulator_execution, emulator_sub) {
-    nlohmann::json spec = prepare_spec("emu/test_sub.mem", 1);
+    auto program = "int main(){float a,b;int test = a-b;}";
+
+    auto spec = prepare_spec(program, 1,
+                             {{"a", 2.3,"float"},{"b", 1.5, "float"}}, {{"test", "float"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(2), 0xc305eb85);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    float result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_NEAR(result, 0.8, 1e-6);
 }
 
 TEST(Emulator_execution, emulator_mul) {
+    auto program = "int main(){float a,b;int test = a*b;}";
 
-    nlohmann::json spec = prepare_spec("emu/test_mul.mem", 1);
+    auto spec = prepare_spec(program, 1,
+                             {{"a", 2.3,"float"},{"b", 1.5, "float"}}, {{"test", "float"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(2), 0x42d221ca);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    float result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_NEAR(result, 3.45, 1e-6);
 }
 
 TEST(Emulator_execution, emulator_rec) {
 
-    nlohmann::json spec = prepare_spec("emu/test_rec.mem", 1);
+    auto program = "int main(){float a,b;int test = 1.0/a;}";
+
+    auto spec = prepare_spec(program, 1,
+                             {{"a", 2,"float"}}, {{"test", "float"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(1), 0x3fa41a42);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    float result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_NEAR(result, 0.5, 1e-6);
 }
 
 TEST(Emulator_execution, emulator_itf) {
+    auto program = "int main(){float a;int test = itf(a);}";
 
-    nlohmann::json spec = prepare_spec("emu/test_itf.mem", 1);
+    auto spec = prepare_spec(program, 1,
+                             {{"a", 2,"integer"}}, {{"test", "float"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(1), 0x40400000);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    float result = res_obj["test"]["outputs"]["test"][0][0];
+    auto dbg = manager.get_results();
+    EXPECT_NEAR(result, 2, 1e-6);
 }
 
 TEST(Emulator_execution, emulator_fti) {
 
-    nlohmann::json spec = prepare_spec("emu/test_fti.mem", 1);
+    auto program = "int main(){float a;int test = fti(a);}";
+
+    auto spec = prepare_spec(program, 1,
+                             {{"a", 2.3,"float"}}, {{"test", "integer"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(1), 15);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    float result = res_obj["test"]["outputs"]["test"][0][0];
+    auto dbg = manager.get_results();
+    EXPECT_NEAR(result, 2, 1e-6);
 }
 
 TEST(Emulator_execution, emulator_and) {
 
-    nlohmann::json spec = prepare_spec("emu/test_and.mem", 1);
+    auto program = "int main(){int a,b;int test = a&b;}";
+
+    auto spec = prepare_spec(program, 1,
+                             {{"a", 0x5,"integer"}, {"b", 0xd,"integer"}}, {{"test", "integer"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(3), 0x40000000);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    int result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_EQ(result, 5);
 }
 
 TEST(Emulator_execution, emulator_or) {
 
-    nlohmann::json spec = prepare_spec("emu/test_or.mem", 1);
+    auto program = "int main(){int a,b;int test = a|b;}";
+
+    auto spec = prepare_spec(program, 1,
+                             {{"a", 0x5,"integer"}, {"b", 0xA,"integer"}}, {{"test", "integer"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(3), 0xC578D666);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    int result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_EQ(result, 15);
 }
 
-TEST(Emulator_execution, emulator_nor) {
+TEST(Emulator_execution, emulator_not) {
 
-    nlohmann::json spec = prepare_spec("emu/test_not.mem", 1);
+    auto program = "int main(){int a;int test = ~a;}";
+
+    auto spec = prepare_spec(program, 1,
+                             {{"a", 0x210C,"integer"}}, {{"test", "integer"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(1), 0x3BF72999);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    int result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_EQ(result, 0xFFFFDEF3);
 }
 
 
 TEST(Emulator_execution, emulator_satn) {
 
-    nlohmann::json spec = prepare_spec("emu/test_satn.mem", 1);
+
+    auto program = "int main(){float a;int test = satn(a, -5.0);}";
+
+    auto spec = prepare_spec(program, 1,
+                             {{"a", -10,"float"}}, {{"test", "float"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(4), 0xc3fa0000);
-    ASSERT_EQ(result->at(5), 0xc408d666);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    float result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_NEAR(result, -5, 1e-6);
+
+    spec = prepare_spec(program, 1,
+                             {{"a", -3,"float"}}, {{"test", "float"}}, {});
+    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager.process();
+    manager.emulate();
+    res_obj = nlohmann::json::parse(manager.get_results());
+    result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_NEAR(result, -3, 1e-6);
 }
 
 
 TEST(Emulator_execution, emulator_satp) {
 
-    nlohmann::json spec = prepare_spec("emu/test_satp.mem", 1);
+    auto program = "int main(){float a;int test = satp(a, 5.0);}";
+
+    auto spec = prepare_spec(program, 1,
+                             {{"a", 10,"float"}}, {{"test", "float"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(4), 0x43fa0000);
-    ASSERT_EQ(result->at(5), 0x4408d666);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    float result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_NEAR(result, 5, 1e-6);
+    spec = prepare_spec(program, 1,
+                        {{"a", 3,"float"}}, {{"test", "float"}}, {});
+    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager.process();
+    manager.emulate();
+    res_obj = nlohmann::json::parse(manager.get_results());
+    result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_NEAR(result, 3, 1e-6);
 }
 
 TEST(Emulator_execution, emulator_beq) {
 
-    nlohmann::json spec = prepare_spec("emu/test_beq.mem", 1);
+    auto program = "int main(){float a, b;int test = a==b;}";
 
+    auto spec = prepare_spec(program, 1,
+                             {{"a", 10.0,"float"}, {"b", 10.0,"float"}}, {{"test", "integer"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(4), 0xffffffff);
-    ASSERT_EQ(result->at(5), 0x0);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    uint32_t result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_EQ(result, 0xffffffff);
+
+    spec = prepare_spec(program, 1,
+                        {{"a", 10.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
+    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager.process();
+    manager.emulate();
+    res_obj = nlohmann::json::parse(manager.get_results());
+    result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_EQ(result, 0);
+
 }
 
 TEST(Emulator_execution, emulator_bne) {
 
-    nlohmann::json spec = prepare_spec("emu/test_bne.mem", 1);
+
+    auto program = "int main(){float a, b;int test = a!=b;}";
+
+    auto spec = prepare_spec(program, 1,
+                             {{"a", 15.0,"float"}, {"b", 10.0,"float"}}, {{"test", "integer"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(4), 0xffffffff);
-    ASSERT_EQ(result->at(5), 0x0);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    uint32_t result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_EQ(result, 0xffffffff);
+
+    spec = prepare_spec(program, 1,
+                        {{"a", 5.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
+    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager.process();
+    manager.emulate();
+    res_obj = nlohmann::json::parse(manager.get_results());
+    result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_EQ(result, 0);
+
 }
 
 
 TEST(Emulator_execution, emulator_bgt) {
-    nlohmann::json spec = prepare_spec("emu/test_bgt.mem", 1);
+
+    auto program = "int main(){float a, b;int test = a>b;}";
+
+    auto spec = prepare_spec(program, 1,
+                             {{"a", 15.0,"float"}, {"b", 10.0,"float"}}, {{"test", "integer"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(4), 0xffffffff);
-    ASSERT_EQ(result->at(5), 0x0);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    uint32_t result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_EQ(result, 0xffffffff);
+
+    spec = prepare_spec(program, 1,
+                        {{"a", 5.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
+    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager.process();
+    manager.emulate();
+    res_obj = nlohmann::json::parse(manager.get_results());
+    result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_EQ(result, 0);
+
 }
 
 TEST(Emulator_execution, emulator_ble) {
-    nlohmann::json spec = prepare_spec("emu/test_ble.mem", 1);
+
+    auto program = "int main(){float a, b;int test = a<=b;}";
+
+    auto spec = prepare_spec(program, 1,
+                             {{"a", 5.0,"float"}, {"b", 10.0,"float"}}, {{"test", "integer"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(4), 0xffffffff);
-    ASSERT_EQ(result->at(5), 0x0);
-    ASSERT_EQ(result->at(6), 0xffffffff);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    uint32_t result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_EQ(result, 0xffffffff);
+
+    spec = prepare_spec(program, 1,
+                        {{"a", 5.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
+    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager.process();
+    manager.emulate();
+    res_obj = nlohmann::json::parse(manager.get_results());
+    result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_EQ(result, 0xffffffff);
+
+    spec = prepare_spec(program, 1,
+                        {{"a", 15.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
+    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager.process();
+    manager.emulate();
+    res_obj = nlohmann::json::parse(manager.get_results());
+    result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_EQ(result, 0);
+
+
+
 }
 
 TEST(Emulator_execution, emulator_stop) {
-    nlohmann::json spec = prepare_spec("emu/test_stop.mem", 1);
+    nlohmann::json spec = prepare_spec_file("emu/test_stop.mem", 1);
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
@@ -217,7 +437,7 @@ TEST(Emulator_execution, emulator_stop) {
 
 TEST(Emulator_execution, emulator_efi) {
 
-    nlohmann::json spec = prepare_spec("emu/test_efi.mem", 1);
+    nlohmann::json spec = prepare_spec_file("emu/test_efi.mem", 1);
     spec["cores"][0]["options"]["efi_implementation"] = "efi_sort";
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
@@ -230,21 +450,58 @@ TEST(Emulator_execution, emulator_efi) {
 
 
 TEST(Emulator_execution, emulator_bset) {
+    auto program = "int main(){float a; bset(a, 3, 1); test = a;}";
 
-    nlohmann::json spec = prepare_spec("emu/test_bset.mem", 1);
+    auto spec = prepare_spec(program, 1,
+                             {{"a", 5,"integer"}}, {{"test", "integer"}}, {});
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(56), 0x41b00000);
-    ASSERT_EQ(result->at(55), 0xC1b00000);
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    uint32_t result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_EQ(result, 0xd);
+
+    program = "int main(){float a; bset(a, 2, 0); test = a;}";
+
+    spec = prepare_spec(program, 1,
+                             {{"a", 5,"integer"}}, {{"test", "integer"}}, {});
+    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager.process();
+    manager.emulate();
+    res_obj = nlohmann::json::parse(manager.get_results());
+    result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_EQ(result, 0x1);
+}
+
+
+TEST(Emulator_execution, emulator_csel) {
+
+    auto program = "int main(){float a;int test = a>0? 150.0: 200.0;}";
+
+    auto spec = prepare_spec(program, 1,
+                             {{"a", 2,"float"}}, {{"test", "float"}}, {});
+    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    manager.process();
+    manager.emulate();
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+    float result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_NEAR(result, 150.0, 1e-6);
+
+    spec = prepare_spec(program, 1,
+                        {{"a", -1,"float"}}, {{"test", "float"}}, {});
+    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager.process();
+    manager.emulate();
+    res_obj = nlohmann::json::parse(manager.get_results());
+    result = res_obj["test"]["outputs"]["test"][0][0];
+    EXPECT_NEAR(result, 200.0, 1e-6);
 }
 
 
 
 TEST(Emulator_execution, emulator_inputs) {
 
-    nlohmann::json spec = prepare_spec("emu/test_inputs.mem", 2);
+    nlohmann::json spec = prepare_spec_file("emu/test_inputs.mem", 2);
 
     spec["cores"][0]["efi_implementation"] = "efi_sort";
     spec["cores"][0]["input_data"] = nlohmann::json();

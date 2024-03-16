@@ -36,6 +36,7 @@ namespace fcore{
         std::shared_ptr<ll_ast_node> get_ast() {return ast_root;};
         void construct_ast(const std::vector<uint32_t> &program);
         static std::shared_ptr<ll_ast_node> process_register_instr(uint32_t instruction);
+        static std::shared_ptr<ll_ast_node> process_ternary_instr(uint32_t instruction);
         static std::shared_ptr<ll_ast_node> process_independent_instruction(uint32_t instruction);
         static std::shared_ptr<ll_ast_node> process_load_constant(uint32_t instruction, uint32_t raw_constant);
         static std::shared_ptr<ll_ast_node> process_conversion_instr(uint32_t instruction);

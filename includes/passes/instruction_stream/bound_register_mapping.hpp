@@ -26,9 +26,10 @@ namespace fcore{
         bound_register_mapping_pass();
         std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) override;
     private:
-        std::shared_ptr<ll_instruction_node> process_reg_instr(std::shared_ptr<ll_instruction_node> node);
-        std::shared_ptr<ll_instruction_node> process_conv_instr(std::shared_ptr<ll_instruction_node> node);
-        std::shared_ptr<ll_instruction_node> process_load_instr(std::shared_ptr<ll_instruction_node> node);
+        std::shared_ptr<ll_instruction_node> process_reg_instr(std::shared_ptr<ll_register_instr_node> node);
+        std::shared_ptr<ll_instruction_node> process_conv_instr(std::shared_ptr<ll_conversion_instr_node> node);
+        std::shared_ptr<ll_instruction_node> process_load_instr(std::shared_ptr<ll_load_constant_instr_node> node);
+        std::shared_ptr<ll_instruction_node> process_ternary_instr(const std::shared_ptr<ll_ternary_instr_node>& node);
     };
 }
 
