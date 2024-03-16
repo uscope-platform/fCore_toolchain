@@ -20,24 +20,10 @@
 
 using namespace fcore;
 
-TEST( Disassembler, disassembler_mem) {
-    std::string input_file = "dis/test_add.mem";
-    std::ifstream ifs(input_file);
+TEST( Disassembler, disassembler) {
+    std::vector<uint32_t> program = {0x60001, 0xc, 0xc, 0x86, 0x42c80000, 0xa6, 0x43480000, 0xc2b01, 0xc};
 
-    fcore_dis disassembler(ifs, bin_loader_mem_input);
-
-    std::string result = disassembler.get_disassenbled_program();
-
-    std::string gold_standard = "ldc r4, 100.000000\nldc r5, 200.000000\nadd r24, r5, r6\nstop\n";
-
-    ASSERT_EQ(result, gold_standard);
-}
-
-TEST( Disassembler, disassembler_hex) {
-    std::string input_file = "dis/test_add.hex";
-    std::ifstream ifs(input_file);
-
-    fcore_dis disassembler(ifs, bin_loader_hex_input);
+    fcore_dis disassembler(program);
 
     std::string result = disassembler.get_disassenbled_program();
 
@@ -45,12 +31,13 @@ TEST( Disassembler, disassembler_hex) {
 
     ASSERT_EQ(result, gold_standard);
 }
+
 
 TEST( Disassembler, disassembler_file_out) {
-    std::string input_file = "dis/test_add.mem";
-    std::ifstream ifs(input_file);
 
-    fcore_dis disassembler(ifs, bin_loader_mem_input);
+    std::vector<uint32_t> program = {0x60001, 0xc, 0xc, 0x86, 0x42c80000, 0xa6, 0x43480000, 0xc2b01, 0xc};
+
+    fcore_dis disassembler(program);
 
     unsigned int filename = rand();
     std::string outfile_name = std::filesystem::temp_directory_path().string() + "/" + std::to_string(filename);
@@ -68,10 +55,9 @@ TEST( Disassembler, disassembler_file_out) {
 }
 
 TEST( Disassembler, disassembler_json) {
-    std::string input_file = "dis/test_add.hex";
-    std::ifstream ifs(input_file);
 
-    fcore_dis disassembler(ifs, bin_loader_hex_input);
+    std::vector<uint32_t> program = {0x60001, 0xc, 0xc, 0x86, 0x42c80000, 0xa6, 0x43480000, 0xc2b01, 0xc};
+    fcore_dis disassembler(program);
 
 
     unsigned int filename = rand();

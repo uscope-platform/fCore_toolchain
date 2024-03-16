@@ -140,7 +140,6 @@ configure_file(C_files/instruction_passes/test_zero_assignment_removal.c ${C_E2E
 set(DIS_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/dis)
 file(MAKE_DIRECTORY ${DIS_TEST_FILES_DIR})
 configure_file(disassembler_files/test_add.hex ${DIS_TEST_FILES_DIR} COPYONLY)
-configure_file(disassembler_files/test_add.mem ${DIS_TEST_FILES_DIR} COPYONLY)
 configure_file(disassembler_files/test_error.mem ${DIS_TEST_FILES_DIR} COPYONLY)
 
 # EMULATOR TESTING FILES
