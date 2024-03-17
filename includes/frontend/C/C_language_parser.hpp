@@ -38,8 +38,8 @@ namespace fcore{
     class C_language_parser{
     public:
         explicit C_language_parser();
-        C_language_parser(std::istream &file, std::shared_ptr<define_map> &existing_defmap);
-        C_language_parser(const std::string &path, std::shared_ptr<define_map> &existing_defmap);
+        C_language_parser(std::istream &file);
+        C_language_parser(const std::string &path);
 
         void pre_process(const std::vector<std::string> &abs_includes);
         void parse(std::unordered_map<std::string, variable_class_t> dma_specs);

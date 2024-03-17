@@ -36,9 +36,17 @@ input_file_stream(path), hl_manager(dump_lvl), ll_manager(dump_lvl){
 }
 
 bool fcore::fcore_cc::compile() {
+    std::vector<std::shared_ptr<hl_ast_node>> includes_ASTs;
+    if(!includes.empty()){
+        for(auto &i:includes){
+            includes_ASTs.push_back(parse_include(i));
+        }
+    }
+
     try{
         parse_dma_spec();
         parse(dma_io_spec);
+        merge_includes(includes_ASTs);
         optimize(dma_io_map);
     } catch(std::runtime_error &e){
         std::string error = e.what();
@@ -85,9 +93,9 @@ void fcore::fcore_cc::parse(std::unordered_map<std::string, variable_class_t> dm
     error_code = "";
     C_language_parser target_parser;
     if(type == "string"){
-        target_parser = C_language_parser(input_string_stream, defines_map);
+        target_parser = C_language_parser(input_string_stream);
     } else{
-        target_parser = C_language_parser(input_file_stream, defines_map);
+        target_parser = C_language_parser(input_file_stream);
     }
     target_parser.pre_process({});
     target_parser.parse(std::move(dma_specs));
@@ -166,4 +174,35 @@ std::vector<uint32_t> fcore::fcore_cc::get_executable() {
 
 std::set<fcore::io_map_entry> fcore::fcore_cc::get_io_map() {
     return writer.get_io_mapping();
+}
+
+std::shared_ptr<fcore::hl_ast_node>  fcore::fcore_cc::parse_include(const std::string &path) {
+    std::unordered_map<std::string, variable_class_t> dma_specs;
+    std::ifstream ifs(path);
+    C_language_parser target_parser(ifs);
+    target_parser.pre_process({});
+    target_parser.parse(std::move(dma_specs));
+    auto target = target_parser.AST;
+    return target;
+}
+
+void fcore::fcore_cc::merge_includes(const std::vector<std::shared_ptr<hl_ast_node>>& i) {
+    auto dbg = hl_ast;
+    std::set<std::string> target_functions;
+    for(auto & node: hl_ast->get_content()){
+        if(node->node_type == hl_ast_node_type_function_def){
+            target_functions.insert(std::static_pointer_cast<hl_function_def_node>(node)->get_name());
+        }
+    }
+
+    for(auto &include:i){
+        for(auto &node:include->get_content()){
+            if(node->node_type == hl_ast_node_type_function_def){
+                if(!target_functions.contains(std::static_pointer_cast<hl_function_def_node>(node)->get_name())){
+                    hl_ast->add_content(node);
+                }
+            }
+        }
+    }
+
 }

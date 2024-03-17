@@ -885,3 +885,34 @@ TEST(EndToEndC, test_ternary_operator) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+
+
+
+TEST(EndToEndC, test_include) {
+
+    std::string input_file = "c_e2e/test_include.c";
+
+
+    std::vector<std::string> includes = {"c_e2e/test_include.h"};
+
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"address":3,"type":"input"},
+                    "b":{"address":4,"type":"input"},
+                    "c":{"address":2,"type":"output"}
+                }})"
+    );
+
+    fcore_cc compiler(input_file, includes, true, 0);
+    compiler.set_dma_map(dma_map["dma_io"]);
+
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+
+    std::vector<uint32_t> gold_standard = {0x20004, 0xc, 0x30002, 0x20003, 0x10004, 0xc, 0x60841, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}

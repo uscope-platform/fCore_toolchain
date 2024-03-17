@@ -132,6 +132,8 @@ configure_file(C_files/end_to_end/test_float_const_square.c ${C_E2E_TEST_FILES_D
 configure_file(C_files/end_to_end/test_multiple_constant_op.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/end_to_end/test_constant_expression_output.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 CONFIGURE_FILE(C_files/end_to_end/test_ternary_op.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
+CONFIGURE_FILE(C_files/end_to_end/test_include.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
+CONFIGURE_FILE(C_files/end_to_end/test_include.h ${C_E2E_TEST_FILES_DIR} COPYONLY)
 
 configure_file(C_files/instruction_passes/test_constant_merging.c ${C_E2E_TEST_FILES_DIR} COPYONLY)
 configure_file(C_files/instruction_passes/test_zero_assignment_removal.c ${C_E2E_TEST_FILES_DIR} COPYONLY)

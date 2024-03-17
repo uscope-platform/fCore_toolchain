@@ -25,13 +25,12 @@ fcore::C_language_parser::C_language_parser(){
     dmap = std::make_shared<define_map>();
 }
 
-fcore::C_language_parser::C_language_parser(std::istream &file, std::shared_ptr<define_map> &existing_defmap) {
-    dmap = existing_defmap;
+fcore::C_language_parser::C_language_parser(std::istream &file) {
+    dmap = std::make_shared<define_map>();
     preproc = std::make_unique<C_pre_processor>(file,dmap);
 }
 
-fcore::C_language_parser::C_language_parser(const std::string &path, std::shared_ptr<define_map> &existing_defmap) {
-    dmap = existing_defmap;
+fcore::C_language_parser::C_language_parser(const std::string &path) {
     preproc = std::make_unique<C_pre_processor>(path,dmap);
 }
 

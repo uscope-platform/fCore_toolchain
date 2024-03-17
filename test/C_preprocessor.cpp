@@ -21,38 +21,14 @@
 
 using namespace fcore;
 
-TEST( cFrontend, preprocessor_decomment) {
-    std::string input_file = "c_prep/test_comments.c";
-
-    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-
-    C_language_parser parser(input_file,result_def);
-    parser.pre_process({});
-
-    define def_1(0, "TEST", "15");
-    define def_2(0, "TESTT", "1 ");
-    define def_3(0, "TESTQ", "5");
-    define res_1 = *result_def->at("TEST");
-    define res_2 = *result_def->at("TESTT");
-    define res_3 = *result_def->at("TESTQ");
-
-
-    ASSERT_EQ(def_1, res_1);
-    ASSERT_EQ(def_2, res_2);
-    ASSERT_EQ(def_3, res_3);
-}
-
 
 TEST( cFrontend, preprocessor_define) {
     std::string input_file = "c_prep/test_define.c";
 
-    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-
-
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["a"] = variable_input_type;
 
-    C_language_parser parser(input_file,result_def);
+    C_language_parser parser(input_file);
     parser.pre_process({});
 
     parser.parse(io_spec);
@@ -72,12 +48,10 @@ TEST( cFrontend, preprocessor_define) {
 TEST( cFrontend, preprocessor_include) {
     std::string input_file = "c_prep/test_include.c";
 
-    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["a"] = variable_input_type;
 
-    C_language_parser parser(input_file,result_def);
+    C_language_parser parser(input_file);
     parser.pre_process({});
     parser.parse(io_spec);
 
@@ -97,8 +71,7 @@ TEST( cFrontend, preprocessor_include) {
 TEST( cFrontend, preprocessor_include_fail) {
     std::string input_file = "c_prep/test_include_fail.c";
 
-    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-    C_language_parser parser(input_file,result_def);
+    C_language_parser parser(input_file);
     EXPECT_THROW(parser.pre_process({}), std::runtime_error);
 
 }
