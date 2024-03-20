@@ -42,7 +42,7 @@ namespace fcore {
     class fcore_cc {
     public:
         fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl);
-        explicit fcore_cc(std::vector<std::string> &contents);
+        explicit fcore_cc(std::vector<std::string> &contents, std::vector<std::string> &inc);
         void parse_dma_spec();
         bool compile();
         std::set<io_map_entry>  get_io_map();
@@ -57,14 +57,20 @@ namespace fcore {
 
     private:
         void merge_includes(const std::vector<std::shared_ptr<hl_ast_node>>& i);
+<<<<<<< HEAD
         std::shared_ptr<hl_ast_node>  parse_include(const std::string &path, std::shared_ptr<define_map> def_map);
         void parse(std::unordered_map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map);
+=======
+        std::shared_ptr<hl_ast_node>  parse_include(std::istream &file);
+        void parse(std::unordered_map<std::string, variable_class_t> dma_specs);
+>>>>>>> 09d590f... add headers support in emulator and hil
         void optimize(std::unordered_map<std::string, std::vector<int>> &dma_map);
 
         std::ifstream input_file_stream;
         std::istringstream input_string_stream;
         std::string type;
         std::vector<std::string> includes;
+        bool include_is_paths;
         bool logging;
         int dump_ast_level;
         nlohmann::json dma_spec;
