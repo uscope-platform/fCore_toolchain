@@ -20,9 +20,11 @@
 
 
 
-fcore::fcore_cc::fcore_cc(std::vector<std::string> &contents) :
+fcore::fcore_cc::fcore_cc(std::vector<std::string> &contents, std::vector<std::string> &inc) :
         input_string_stream(contents[0]), hl_manager(0), ll_manager(0){
     type = "string";
+    includes = inc;
+    include_is_paths = false;
     logging = false;
     dump_ast_level = 0;
 }
@@ -30,6 +32,7 @@ fcore::fcore_cc::fcore_cc(std::vector<std::string> &contents) :
 fcore::fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl) :
 input_file_stream(path), hl_manager(dump_lvl), ll_manager(dump_lvl){
     type = "file";
+    include_is_paths = true;
     includes = inc;
     logging = print_debug;
     dump_ast_level = dump_lvl;
@@ -39,7 +42,14 @@ bool fcore::fcore_cc::compile() {
     std::vector<std::shared_ptr<hl_ast_node>> includes_ASTs;
     if(!includes.empty()){
         for(auto &i:includes){
-            includes_ASTs.push_back(parse_include(i));
+            if(include_is_paths){
+                std::ifstream ifs(i);
+                includes_ASTs.push_back(parse_include(ifs));
+            } else {
+                std::istringstream ifs(i);
+                includes_ASTs.push_back(parse_include(ifs));
+            }
+
         }
     }
 
@@ -176,10 +186,9 @@ std::set<fcore::io_map_entry> fcore::fcore_cc::get_io_map() {
     return writer.get_io_mapping();
 }
 
-std::shared_ptr<fcore::hl_ast_node>  fcore::fcore_cc::parse_include(const std::string &path) {
+std::shared_ptr<fcore::hl_ast_node>  fcore::fcore_cc::parse_include(std::istream &input) {
     std::unordered_map<std::string, variable_class_t> dma_specs;
-    std::ifstream ifs(path);
-    C_language_parser target_parser(ifs);
+    C_language_parser target_parser(input);
     target_parser.pre_process({});
     target_parser.parse(std::move(dma_specs));
     auto target = target_parser.AST;
