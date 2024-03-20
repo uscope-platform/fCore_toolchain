@@ -267,7 +267,11 @@ std::vector<uint32_t> fcore::emulator_builder::compile_programs(const nlohmann::
     process_ioms(core_info["inputs"], core_info["outputs"],core_info["memory_init"], memories);
 
     std::vector<std::string> content = {core_info["program"]["content"]};
-    std::vector<std::string> headers = core_info["program"]["headers"];
+    std::vector<std::string> headers;
+    if(core_info["program"].contains("headers")){
+        headers = core_info["program"]["headers"];
+    }
+
 
     fcore_cc compiler(content, headers);
     compiler.set_dma_map(dma_io);

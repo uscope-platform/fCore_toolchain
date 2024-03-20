@@ -43,18 +43,13 @@ bool fcore::fcore_cc::compile() {
     std::vector<std::shared_ptr<hl_ast_node>> includes_ASTs;
     if(!includes.empty()){
         for(auto &i:includes){
-<<<<<<< HEAD
-            includes_ASTs.push_back(parse_include(i, def_map));
-=======
             if(include_is_paths){
                 std::ifstream ifs(i);
-                includes_ASTs.push_back(parse_include(ifs));
+                includes_ASTs.push_back(parse_include(ifs, def_map));
             } else {
                 std::istringstream ifs(i);
-                includes_ASTs.push_back(parse_include(ifs));
+                includes_ASTs.push_back(parse_include(ifs, def_map));
             }
-
->>>>>>> 09d590f... add headers support in emulator and hil
         }
     }
 
@@ -190,17 +185,9 @@ std::set<fcore::io_map_entry> fcore::fcore_cc::get_io_map() {
     return writer.get_io_mapping();
 }
 
-<<<<<<< HEAD
-std::shared_ptr<fcore::hl_ast_node>  fcore::fcore_cc::parse_include(const std::string &path, std::shared_ptr<define_map> def_map) {
-
+std::shared_ptr<fcore::hl_ast_node>  fcore::fcore_cc::parse_include(std::istream &input, std::shared_ptr<define_map> def_map) {
     std::unordered_map<std::string, variable_class_t> dma_specs;
-    std::ifstream ifs(path);
-    C_language_parser target_parser(ifs, def_map);
-=======
-std::shared_ptr<fcore::hl_ast_node>  fcore::fcore_cc::parse_include(std::istream &input) {
-    std::unordered_map<std::string, variable_class_t> dma_specs;
-    C_language_parser target_parser(input);
->>>>>>> 09d590f... add headers support in emulator and hil
+    C_language_parser target_parser(input, def_map);
     target_parser.pre_process({});
     target_parser.parse(std::move(dma_specs));
     auto target = target_parser.AST;

@@ -57,13 +57,8 @@ namespace fcore {
 
     private:
         void merge_includes(const std::vector<std::shared_ptr<hl_ast_node>>& i);
-<<<<<<< HEAD
-        std::shared_ptr<hl_ast_node>  parse_include(const std::string &path, std::shared_ptr<define_map> def_map);
+        std::shared_ptr<hl_ast_node>  parse_include(std::istream &file, std::shared_ptr<define_map> def_map);
         void parse(std::unordered_map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map);
-=======
-        std::shared_ptr<hl_ast_node>  parse_include(std::istream &file);
-        void parse(std::unordered_map<std::string, variable_class_t> dma_specs);
->>>>>>> 09d590f... add headers support in emulator and hil
         void optimize(std::unordered_map<std::string, std::vector<int>> &dma_map);
 
         std::ifstream input_file_stream;
