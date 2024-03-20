@@ -66,6 +66,14 @@
                     }
                 }
             }
+        },
+        "header": {
+            "title": "Paths of header files to include in the current file",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "title": "Include File path"
+            }
         }
     }
 }

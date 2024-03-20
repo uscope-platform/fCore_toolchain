@@ -61,6 +61,10 @@ int main(int argc, char **argv) {
     }
 
     std::vector<std::string> include_files = {""};
+    if(spec.contains("headers")){
+        include_files = spec["headers"];
+    }
+
     fcore::fcore_cc cc_engine(input_file, include_files, false, dump_ast_level);
 
     if(spec.contains("dma_io")){

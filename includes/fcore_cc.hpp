@@ -43,11 +43,8 @@ namespace fcore {
     public:
         fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl);
         explicit fcore_cc(std::vector<std::string> &contents);
-        void parse(std::unordered_map<std::string, variable_class_t> dma_specs);
-        void optimize(std::unordered_map<std::string, std::vector<int>> &dma_map);
         void parse_dma_spec();
         bool compile();
-
         std::set<io_map_entry>  get_io_map();
         std::vector<uint32_t> get_raw_code();
         std::vector<uint32_t> get_executable();
@@ -59,6 +56,11 @@ namespace fcore {
         void set_dma_map(nlohmann::json &map){dma_spec = map;};
 
     private:
+        void merge_includes(const std::vector<std::shared_ptr<hl_ast_node>>& i);
+        std::shared_ptr<hl_ast_node>  parse_include(const std::string &path, std::shared_ptr<define_map> def_map);
+        void parse(std::unordered_map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map);
+        void optimize(std::unordered_map<std::string, std::vector<int>> &dma_map);
+
         std::ifstream input_file_stream;
         std::istringstream input_string_stream;
         std::string type;

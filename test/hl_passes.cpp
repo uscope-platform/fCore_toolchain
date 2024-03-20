@@ -198,7 +198,7 @@ TEST(HlPassesTest, test_operating_assignments_implementation) {
     hl_pass_manager manager = create_hl_pass_manager(ep,{3}, 0);
     manager.run_morphing_passes(input_root);
 
-    std::shared_ptr<hl_ast_node> result = input_root;
+    const std::shared_ptr<hl_ast_node>& result = input_root;
 
     std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
@@ -320,7 +320,7 @@ TEST(HlPassesTest, function_inlining) {
 
     manager.run_morphing_passes(input_root);
 
-    std::shared_ptr<hl_ast_node> res = input_root;
+    const std::shared_ptr<hl_ast_node>& res = input_root;
 
     std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
 
@@ -724,12 +724,12 @@ TEST(HlPassesTest, function_return_inlining) {
 
     std::string input_file = "hl_opt/test_return_inlining.c";
 
-    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["ret"] = variable_output_type;
     io_spec["test_in"] = variable_input_type;
 
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
     parser.parse(io_spec);
@@ -877,12 +877,12 @@ TEST(HlPassesTest, dead_load_elimination) {
 TEST(HlPassesTest, nested_function_inlining) {
     std::string input_file = "hl_opt/test_nested_function_inlining.c";
 
-    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["input_1"] = variable_input_type;
     io_spec["memory_2"] = variable_memory_type;
 
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
     parser.parse(io_spec);
@@ -965,11 +965,10 @@ TEST(HlPassesTest, nested_function_inlining) {
 TEST(HlPassesTest, complex_division_implementation) {
     std::string input_file = "hl_opt/test_complex_division_implementation.c";
 
-    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["a"] = variable_input_type;
 
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
     C_language_parser parser(input_file, result_def);
     parser.pre_process({});
     parser.parse(io_spec);

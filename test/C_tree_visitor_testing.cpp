@@ -24,7 +24,6 @@ namespace fcore{
         std::string input_file = "c_ast/test_unary_expressions.c";
 
         std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-
         C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
@@ -90,7 +89,6 @@ namespace fcore{
         std::string input_file = "c_ast/test_multiplicative_expressions.c";
 
         std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-
         C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
@@ -790,13 +788,12 @@ namespace fcore{
     TEST( cTreeVisitor, loopTest) {
         std::string input_file = "c_ast/test_loop.c";
 
-        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-
         std::unordered_map<std::string, variable_class_t> io_spec;
         io_spec["a"] = variable_input_type;
         io_spec["h"] = variable_input_type;
         io_spec["j"] = variable_output_type;
 
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
         C_language_parser parser(input_file, result_def);
         parser.pre_process({});
         parser.parse(io_spec);
@@ -871,14 +868,12 @@ namespace fcore{
     TEST( cTreeVisitor, nestedLoopTest) {
         std::string input_file = "c_ast/test_nested_loop.c";
 
-
-        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-
         std::unordered_map<std::string, variable_class_t> io_spec;
         io_spec["a"] = variable_input_type;
         io_spec["h"] = variable_input_type;
         io_spec["j"] = variable_output_type;
 
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
         C_language_parser parser(input_file, result_def);
         parser.pre_process({});
         parser.parse(io_spec);
@@ -1000,11 +995,10 @@ namespace fcore{
     TEST( cTreeVisitor, array_test){
         std::string input_file = "c_ast/test_array.c";
 
-        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-
         std::unordered_map<std::string, variable_class_t> io_spec;
         io_spec["b"] = variable_output_type;
 
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
         C_language_parser parser(input_file, result_def);
         parser.pre_process({});
         parser.parse(io_spec);
