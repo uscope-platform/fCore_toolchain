@@ -39,23 +39,23 @@ input_file_stream(path), hl_manager(dump_lvl), ll_manager(dump_lvl){
 }
 
 bool fcore::fcore_cc::compile() {
+    auto def_map = std::make_shared<define_map>();
     std::vector<std::shared_ptr<hl_ast_node>> includes_ASTs;
     if(!includes.empty()){
         for(auto &i:includes){
             if(include_is_paths){
                 std::ifstream ifs(i);
-                includes_ASTs.push_back(parse_include(ifs));
+                includes_ASTs.push_back(parse_include(ifs, def_map));
             } else {
                 std::istringstream ifs(i);
-                includes_ASTs.push_back(parse_include(ifs));
+                includes_ASTs.push_back(parse_include(ifs, def_map));
             }
-
         }
     }
 
     try{
         parse_dma_spec();
-        parse(dma_io_spec);
+        parse(dma_io_spec, def_map);
         merge_includes(includes_ASTs);
         optimize(dma_io_map);
     } catch(std::runtime_error &e){
@@ -98,14 +98,13 @@ void fcore::fcore_cc::write_json(const std::string &output_file) {
     ss.close();
 }
 
-void fcore::fcore_cc::parse(std::unordered_map<std::string, variable_class_t> dma_specs) {
-    std::shared_ptr<define_map> defines_map = std::make_shared<define_map>();
+void fcore::fcore_cc::parse(std::unordered_map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map) {
     error_code = "";
     C_language_parser target_parser;
     if(type == "string"){
-        target_parser = C_language_parser(input_string_stream);
+        target_parser = C_language_parser(input_string_stream, def_map);
     } else{
-        target_parser = C_language_parser(input_file_stream);
+        target_parser = C_language_parser(input_file_stream, def_map);
     }
     target_parser.pre_process({});
     target_parser.parse(std::move(dma_specs));
@@ -186,9 +185,9 @@ std::set<fcore::io_map_entry> fcore::fcore_cc::get_io_map() {
     return writer.get_io_mapping();
 }
 
-std::shared_ptr<fcore::hl_ast_node>  fcore::fcore_cc::parse_include(std::istream &input) {
+std::shared_ptr<fcore::hl_ast_node>  fcore::fcore_cc::parse_include(std::istream &input, std::shared_ptr<define_map> def_map) {
     std::unordered_map<std::string, variable_class_t> dma_specs;
-    C_language_parser target_parser(input);
+    C_language_parser target_parser(input, def_map);
     target_parser.pre_process({});
     target_parser.parse(std::move(dma_specs));
     auto target = target_parser.AST;

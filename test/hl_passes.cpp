@@ -373,7 +373,9 @@ TEST(HlPassesTest, function_elimination) {
 
     std::string input_file = "hl_opt/test_normalization.c";
 
-    C_language_parser parser(input_file);
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+    
+    C_language_parser parser(input_file, result_def);
     std::unordered_map<std::string, variable_class_t> io_spec;
     parser.pre_process({});
     parser.parse(io_spec);
@@ -428,10 +430,12 @@ TEST(HlPassesTest, simple_normalization) {
 
     std::string input_file = "hl_opt/test_normalization.c";
 
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["a"] = variable_output_type;
 
-    C_language_parser parser(input_file);
+    C_language_parser parser(input_file, result_def);
     parser.pre_process({});
     parser.parse(io_spec);
 
@@ -491,7 +495,9 @@ TEST(HlPassesTest, hl_ast_lowering) {
 
     std::string input_file = "hl_opt/test_normalization.c";
 
-    C_language_parser parser(input_file);
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(input_file, result_def);
     parser.pre_process({});
 
     std::unordered_map<std::string, variable_class_t> io_spec;
@@ -535,7 +541,9 @@ TEST(HlPassesTest, loop_unrolling_array) {
 
     std::string input_file = "hl_opt/test_loop_unrolling.c";
 
-    C_language_parser parser(input_file);
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(input_file, result_def);
     parser.pre_process({});
     std::unordered_map<std::string, variable_class_t> io_spec;
     parser.parse(io_spec);
@@ -590,7 +598,10 @@ TEST(HlPassesTest, test_matrix_scalarization) {
 
     std::string input_file = "hl_opt/test_matrix_scalarization.c";
 
-    C_language_parser parser(input_file);
+
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(input_file, result_def);
     parser.pre_process({});
     std::unordered_map<std::string, variable_class_t> io_spec;
     parser.parse(io_spec);
@@ -677,7 +688,9 @@ TEST(HlPassesTest, function_inlining_array) {
 
     std::string input_file = "hl_opt/test_function_inlining_array.c";
 
-    C_language_parser parser(input_file);
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(input_file, result_def);
     parser.pre_process({});
     std::unordered_map<std::string, variable_class_t> io_spec;
     parser.parse(io_spec);
@@ -711,11 +724,13 @@ TEST(HlPassesTest, function_return_inlining) {
 
     std::string input_file = "hl_opt/test_return_inlining.c";
 
+
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["ret"] = variable_output_type;
     io_spec["test_in"] = variable_input_type;
 
-    C_language_parser parser(input_file);
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+    C_language_parser parser(input_file, result_def);
     parser.pre_process({});
     parser.parse(io_spec);
 
@@ -862,11 +877,13 @@ TEST(HlPassesTest, dead_load_elimination) {
 TEST(HlPassesTest, nested_function_inlining) {
     std::string input_file = "hl_opt/test_nested_function_inlining.c";
 
+
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["input_1"] = variable_input_type;
     io_spec["memory_2"] = variable_memory_type;
 
-    C_language_parser parser(input_file);
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+    C_language_parser parser(input_file, result_def);
     parser.pre_process({});
     parser.parse(io_spec);
 
@@ -951,7 +968,8 @@ TEST(HlPassesTest, complex_division_implementation) {
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["a"] = variable_input_type;
 
-    C_language_parser parser(input_file);
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+    C_language_parser parser(input_file, result_def);
     parser.pre_process({});
     parser.parse(io_spec);
 

@@ -28,7 +28,8 @@ TEST( cFrontend, preprocessor_define) {
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["a"] = variable_input_type;
 
-    C_language_parser parser(input_file);
+    auto dmap = std::make_shared<define_map>();
+    C_language_parser parser(input_file, dmap);
     parser.pre_process({});
 
     parser.parse(io_spec);
@@ -51,7 +52,8 @@ TEST( cFrontend, preprocessor_include) {
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["a"] = variable_input_type;
 
-    C_language_parser parser(input_file);
+    auto dmap = std::make_shared<define_map>();
+    C_language_parser parser(input_file, dmap);
     parser.pre_process({});
     parser.parse(io_spec);
 
@@ -71,7 +73,8 @@ TEST( cFrontend, preprocessor_include) {
 TEST( cFrontend, preprocessor_include_fail) {
     std::string input_file = "c_prep/test_include_fail.c";
 
-    C_language_parser parser(input_file);
+    auto dmap = std::make_shared<define_map>();
+    C_language_parser parser(input_file, dmap);
     EXPECT_THROW(parser.pre_process({}), std::runtime_error);
 
 }

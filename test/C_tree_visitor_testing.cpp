@@ -23,7 +23,8 @@ namespace fcore{
     TEST( cTreeVisitor, unaryExpressions) {
         std::string input_file = "c_ast/test_unary_expressions.c";
 
-        C_language_parser parser(input_file);
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         parser.parse(std::unordered_map<std::string, variable_class_t>());
@@ -87,7 +88,8 @@ namespace fcore{
     TEST( cTreeVisitor, multiplicativeExpressions) {
         std::string input_file = "c_ast/test_multiplicative_expressions.c";
 
-        C_language_parser parser(input_file);
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -138,7 +140,10 @@ namespace fcore{
     TEST( cTreeVisitor, additiveExpressions) {
         std::string input_file = "c_ast/test_additive_expressions.c";
 
-        C_language_parser parser(input_file);
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -180,7 +185,10 @@ namespace fcore{
     TEST( cTreeVisitor, shiftExpressions) {
         std::string input_file = "c_ast/test_shift_expressions.c";
 
-        C_language_parser parser(input_file);
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -223,7 +231,10 @@ namespace fcore{
     TEST( cTreeVisitor, relationalExpressions) {
         std::string input_file = "c_ast/test_relational_expressions.c";
 
-        C_language_parser parser(input_file);
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -277,7 +288,10 @@ namespace fcore{
     TEST( cTreeVisitor, equalityExpressions) {
         std::string input_file = "c_ast/test_equality_expressions.c";
 
-        C_language_parser parser(input_file);
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -321,7 +335,10 @@ namespace fcore{
     TEST( cTreeVisitor, andBinExpressions) {
         std::string input_file = "c_ast/test_andb_expressions.c";
 
-        C_language_parser parser(input_file);
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -353,7 +370,10 @@ namespace fcore{
     TEST( cTreeVisitor, exOrBinExpressions) {
         std::string input_file = "c_ast/test_exorb_expressions.c";
 
-        C_language_parser parser(input_file);
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -391,7 +411,10 @@ namespace fcore{
     TEST( cTreeVisitor, orLogExpressions) {
         std::string input_file = "c_ast/test_orl_expressions.c";
 
-        C_language_parser parser(input_file);
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -425,7 +448,10 @@ namespace fcore{
     TEST( cTreeVisitor, andLogExpressions) {
         std::string input_file = "c_ast/test_andl_expressions.c";
 
-        C_language_parser parser(input_file);
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -461,7 +487,10 @@ namespace fcore{
     TEST( cTreeVisitor, assignmentExpressions) {
         std::string input_file = "c_ast/test_assignment_expressions.c";
 
-        C_language_parser parser(input_file);
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -521,7 +550,10 @@ namespace fcore{
     TEST( cTreeVisitor, function_def) {
         std::string input_file = "c_ast/test_function_def.c";
 
-        C_language_parser parser(input_file);
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -573,7 +605,10 @@ namespace fcore{
     TEST( cTreeVisitor, function_call) {
         std::string input_file = "c_ast/test_function_call.c";
 
-        C_language_parser parser(input_file);
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -613,7 +648,10 @@ namespace fcore{
     TEST( cTreeVisitor, definition) {
         std::string input_file = "c_ast/test_definition.c";
 
-        C_language_parser parser(input_file);
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -651,7 +689,10 @@ namespace fcore{
     TEST( cTreeVisitor, returnTest) {
         std::string input_file = "c_ast/test_return.c";
 
-        C_language_parser parser(input_file);
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -694,7 +735,10 @@ namespace fcore{
     TEST( cTreeVisitor, ConditionalTest) {
         std::string input_file = "c_ast/test_conditional.c";
 
-        C_language_parser parser(input_file);
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -749,7 +793,8 @@ namespace fcore{
         io_spec["h"] = variable_input_type;
         io_spec["j"] = variable_output_type;
 
-        C_language_parser parser(input_file);
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
         parser.parse(io_spec);
 
@@ -828,7 +873,8 @@ namespace fcore{
         io_spec["h"] = variable_input_type;
         io_spec["j"] = variable_output_type;
 
-        C_language_parser parser(input_file);
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
         parser.parse(io_spec);
         std::shared_ptr<hl_ast_loop_node> result = std::static_pointer_cast<hl_ast_loop_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[3]);
@@ -952,7 +998,8 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         io_spec["b"] = variable_output_type;
 
-        C_language_parser parser(input_file);
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
         parser.parse(io_spec);
         std::vector<std::shared_ptr<hl_ast_node>> result = std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body();
@@ -1022,7 +1069,11 @@ namespace fcore{
     TEST( cTreeVisitor, array_init){
         std::string input_file = "c_ast/test_array_init.c";
 
-        C_language_parser parser(input_file);
+
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -1086,7 +1137,9 @@ namespace fcore{
     TEST( cTreeVisitor, float_const){
         std::string input_file = "c_ast/test_float_constant.c";
 
-        C_language_parser parser(input_file);
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
@@ -1108,7 +1161,9 @@ namespace fcore{
     TEST( cTreeVisitor, ternary_operation){
         std::string input_file = "c_ast/test_ternary.c";
 
-        C_language_parser parser(input_file);
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(input_file, result_def);
         parser.pre_process({});
 
         std::unordered_map<std::string, variable_class_t> io_spec;
