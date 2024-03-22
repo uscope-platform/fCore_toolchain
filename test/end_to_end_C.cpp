@@ -887,8 +887,6 @@ TEST(EndToEndC, test_ternary_operator) {
 }
 
 
-
-
 TEST(EndToEndC, test_include) {
 
     std::string input_file = "c_e2e/test_include.c";

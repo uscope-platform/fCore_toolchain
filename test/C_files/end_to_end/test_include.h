@@ -14,7 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-float add(float a, float b){
+float add_nested(float a, float b){
     return a + b;
 }
+
+
+float add(float a, float b){
+    return add_nested(a, b);
+}
+
