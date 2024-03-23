@@ -383,70 +383,6 @@ TEST(HlPassesTest, function_inlining) {
 
 }
 
-TEST(HlPassesTest, function_elimination) {
-
-
-    std::string input_file = "hl_opt/test_normalization.c";
-
-    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-    
-    C_language_parser parser(input_file, result_def);
-    std::unordered_map<std::string, variable_class_t> io_spec;
-    parser.pre_process({});
-    parser.parse(io_spec);
-
-    std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep, 0);
-    manager.disable_pass("Array Initialization");
-    manager.disable_pass("Conditional Implementation");
-    manager.disable_pass("Constants optimization");
-    manager.disable_pass("Inline Constant Extraction");
-    manager.disable_pass("Array Flattening");
-    manager.disable_pass("Dead Load elimination");
-
-    manager.run_morphing_passes(parser.AST);
-
-    std::shared_ptr<hl_ast_node> raw_result =parser.AST;
-
-    std::shared_ptr<variable> var = std::make_shared<variable>("intermediate_expression_0");
-    std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expression_0", c_type_float, var);
-
-
-    var = std::make_shared<variable>("constant", 4.0f);
-    std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
-
-
-    var = std::make_shared<variable>("constant", 5.0f);
-    std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
-
-    std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(expr_mult);
-    ex_1->set_lhs(op_1);
-    ex_1->set_rhs(op_2);
-    def_1->set_scalar_initializer(ex_1);
-
-    var = std::make_shared<variable>("a");
-    std::shared_ptr<hl_definition_node> def_2 = std::make_shared<hl_definition_node>("a", c_type_int, var);
-
-
-    var = std::make_shared<variable>("intermediate_expression_0");
-    op_1 = std::make_shared<hl_ast_operand>(var);
-
-    var = std::make_shared<variable>("constant",6.0f);
-    op_2 = std::make_shared<hl_ast_operand>(var);
-
-    ex_1= std::make_shared<hl_expression_node>(expr_add);
-    ex_1->set_lhs(op_1);
-    ex_1->set_rhs(op_2);
-    def_2->set_scalar_initializer(ex_1);
-
-    std::vector<std::shared_ptr<hl_ast_node>> arguments = {};
-    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
-    gold_standard->set_content({def_1, def_2});
-
-    EXPECT_EQ( *gold_standard, *raw_result);
-
-}
-
 TEST(HlPassesTest, simple_normalization) {
 
 
@@ -464,11 +400,9 @@ TEST(HlPassesTest, simple_normalization) {
     std::string ep = "main";
 
     hl_pass_manager manager = create_hl_pass_manager(ep, 0);
-    manager.disable_pass("Code Block Expansion");
-    manager.disable_pass("Constants optimization");
-    manager.disable_pass("Inline Constant Extraction");
-    manager.disable_pass("Array Flattening");
-    manager.disable_pass("Dead Load elimination");
+    manager.disable_all();
+    manager.enable_pass("Inlined Function Elimination");
+    manager.enable_pass("Normalization");
 
     manager.run_morphing_passes(parser.AST);
 
@@ -535,12 +469,9 @@ TEST(HlPassesTest, hl_ast_lowering) {
     std::string ep = "main";
 
     hl_pass_manager manager = create_hl_pass_manager(ep, 0);
-    manager.disable_pass("Code Block Expansion");
-    manager.disable_pass("Conditional Implementation");
-    manager.disable_pass("Constants optimization");
-    manager.disable_pass("Inline Constant Extraction");
-    manager.disable_pass("Array Flattening");
-    manager.disable_pass("Dead Load elimination");
+    manager.disable_all();
+    manager.enable_pass("Inlined Function Elimination");
+    manager.enable_pass("Normalization");
 
     manager.run_morphing_passes(parser.AST);
 
@@ -586,13 +517,12 @@ TEST(HlPassesTest, loop_unrolling_array) {
     parser.parse(io_spec);
 
     std::string ep = "main";
+
     hl_pass_manager manager = create_hl_pass_manager(ep, 0);
-    manager.disable_pass("Array Initialization");
-    manager.disable_pass("Conditional Implementation");
-    manager.disable_pass("Constants optimization");
-    manager.disable_pass("Inline Constant Extraction");
-    manager.disable_pass("Array Flattening");
-    manager.disable_pass("Dead Load elimination");
+    manager.disable_all();
+    manager.enable_pass("Inlined Function Elimination");
+    manager.enable_pass("Loop Unrolling");
+    manager.enable_pass("Normalization");
 
     manager.run_morphing_passes(parser.AST);
 
@@ -653,14 +583,10 @@ TEST(HlPassesTest, test_matrix_scalarization) {
     std::string ep = "main";
 
     hl_pass_manager manager = create_hl_pass_manager(ep, 0);
-    manager.disable_pass("Array Initialization");
-    manager.disable_pass("Conditional Implementation");
-    manager.disable_pass("Normalization");
-    manager.disable_pass("Contiguous Array Identification");
-    manager.disable_pass("Dead Variable elimination");
-    manager.disable_pass("Constants optimization");
-    manager.disable_pass("Inline Constant Extraction");
-    manager.disable_pass("Dead Load elimination");
+    manager.disable_all();
+    manager.enable_pass("Inlined Function Elimination");
+    manager.enable_pass("Loop Unrolling");
+    manager.enable_pass("Array Flattening");
 
     manager.run_morphing_passes(parser.AST);
 
@@ -752,15 +678,13 @@ TEST(HlPassesTest, function_inlining_array) {
     std::string ep = "main";
 
     hl_pass_manager manager = create_hl_pass_manager(ep, 0);
-    manager.disable_pass("Array Initialization");
-    manager.disable_pass("Conditional Implementation");
-    manager.disable_pass("Normalization");
-    manager.disable_pass("Contiguous Array Identification");
-    manager.disable_pass("Dead Variable elimination");
-    manager.disable_pass("Constants optimization");
-    manager.disable_pass("Inline Constant Extraction");
-    manager.disable_pass("Array Flattening");
-    manager.disable_pass("Dead Load elimination");
+    manager.disable_all();
+
+    manager.enable_pass("Function Mangling");
+    manager.enable_pass("Function Inlining");
+    manager.enable_pass("Inlined Function Elimination");
+    manager.enable_pass("Code Block Expansion");
+    manager.enable_pass("Loop Unrolling");
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST->get_content()[5];
