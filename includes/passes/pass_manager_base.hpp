@@ -27,38 +27,84 @@
 #include <nlohmann/json.hpp>
 
 namespace fcore{
+
+    enum pass_type {single_pass=0, pass_group = 1};
+
     template<class E>
     class pass_manager_base {
     public:
         // API FOR MORPHING PASSES
-        void add_morphing_pass(const std::shared_ptr<pass_base<E>>& pass);
-        void add_morphing_pass_group(const std::vector<std::shared_ptr<pass_base<E>>>& group);
+        void add_morphing_pass(const std::string& name, const std::shared_ptr<pass_base<E>>& pass);
+        void add_morphing_pass_group(const std::string& name, const std::vector<std::shared_ptr<pass_base<E>>>& group);
         void run_morphing_passes(std::shared_ptr<E> AST);
         virtual void run_morphing_pass(std::shared_ptr<E> &, const std::shared_ptr<pass_base<E>>& ) {};
         virtual std::vector<nlohmann::json> run_morphing_pass_group(std::shared_ptr<E> &, const std::vector<std::shared_ptr<pass_base<E>>>& , int ) {return nlohmann::json();};
 
-        std::vector<int> get_pass_order() { return pass_order;};
-        void set_pass_order(std::vector<int> order) {pass_order = std::move(order);};
-
+        void disable_all();
+        void enable_pass(const std::string& name);
+        void disable_pass(const std::string& name);
         nlohmann::json get_dump();
 
         std::vector<std::vector<int>> run_analysis_passes(const std::shared_ptr<E>& AST);
         void analyze_tree(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass);
         std::unordered_map<std::string, std::shared_ptr<pass_base<E>>> analysis_passes;
     protected:
-        std::vector<std::shared_ptr<pass_base<E>>> morphing_passes = {};
-        std::vector<int> pass_order;
-        std::vector<std::vector<std::shared_ptr<pass_base<E>>>> morphing_passes_groups{};
+
+        struct opt_pass {
+            std::vector<std::shared_ptr<pass_base<E>>> pass;
+            pass_type type = single_pass;
+            std::string name;
+            bool enabled = true;
+        };
+
+
+        std::vector<opt_pass> passes;
+
+        // DUMP DATA STRUCTURES
         nlohmann::json pre_opt_dump;
         std::vector<nlohmann::json> in_opt_dump;
         nlohmann::json post_opt_dump;
         int dump_ast_level = 0;
     };
 
+    template<class E>
+    void pass_manager_base<E>::disable_pass(const std::string &name) {
+        for(auto& p:passes) {
+            if(p.name == name) {
+                p.enabled = false;
+                return;
+            }
+        }
+        throw std::runtime_error("Required pass not found");
+    }
 
     template<class E>
-    void pass_manager_base<E>::add_morphing_pass(const std::shared_ptr<pass_base<E>>& pass) {
-        morphing_passes.push_back(pass);
+    void pass_manager_base<E>::enable_pass(const std::string& name) {
+        for(auto& p:passes) {
+            if(p.name == name) {
+                p.enabled = true;
+                return;
+            }
+        }
+        throw std::runtime_error("Required pass not found");
+    }
+
+    template<class E>
+    void pass_manager_base<E>::disable_all() {
+        for(auto& p:passes) {
+            p.enabled = false;
+        }
+    }
+
+
+    template<class E>
+    void pass_manager_base<E>::add_morphing_pass(const std::string& name, const std::shared_ptr<pass_base<E>>& pass) {
+        opt_pass p;
+        p.pass = {pass};
+        p.type = single_pass;
+        p.name = name;
+        p.enabled = true;
+        passes.push_back(p);
     }
 
 
@@ -67,23 +113,27 @@ namespace fcore{
         if(dump_ast_level>0) {
             pre_opt_dump = AST->dump();
         }
-        for(auto& idx:pass_order){
-            if(idx>=0){
-                int pass_index = idx-1;
-                std::shared_ptr<pass_base<E>> pass = morphing_passes[pass_index];
-                run_morphing_pass(AST, pass);
-                if(dump_ast_level>1){
-                    nlohmann::json ast_dump;
-                    ast_dump["pass_name"] = pass->get_name();
-                    ast_dump["ast"]= AST->dump();
-                    in_opt_dump.push_back(ast_dump);
+        for(auto& p:passes){
+            if(p.type == single_pass){
+                if(p.enabled){
+                    std::shared_ptr<pass_base<E>> pass = p.pass[0];
+                    run_morphing_pass(AST, pass);
+                    if(dump_ast_level>1){
+                        nlohmann::json ast_dump;
+                        ast_dump["pass_name"] = pass->get_name();
+                        ast_dump["ast"]= AST->dump();
+                        in_opt_dump.push_back(ast_dump);
+                    }
                 }
-
+            } else if(p.type == pass_group){
+                if(p.enabled){
+                    std::vector<nlohmann::json> result = run_morphing_pass_group(AST, p.pass, dump_ast_level);
+                    in_opt_dump.insert(in_opt_dump.end(), result.begin(), result.end());
+                }
             } else {
-                int pass_index = -idx -1;
-                std::vector<nlohmann::json> result = run_morphing_pass_group(AST, morphing_passes_groups[pass_index], dump_ast_level);
-                in_opt_dump.insert(in_opt_dump.end(), result.begin(), result.end());
+                throw std::runtime_error("ERROR: unexpected pass type");
             }
+
 
         }
         if(dump_ast_level>0)  post_opt_dump = AST->dump();
@@ -92,10 +142,10 @@ namespace fcore{
     template<class E>
     std::vector<std::vector<int>> pass_manager_base<E>::run_analysis_passes(const std::shared_ptr<E>& AST) {
         std::vector<std::vector<int>> results;
-        for( auto& pass:morphing_passes){
-            if(pass->get_pass_type() == ANALYSIS_PASS){
-                analyze_tree(AST, pass);
-                results.push_back(pass->get_analysis_result());
+        for( auto& p:passes){
+            if(p.pass[0]->get_pass_type() == ANALYSIS_PASS){
+                analyze_tree(AST, p.pass[0]);
+                results.push_back(p.pass[0]->get_analysis_result());
             }
         }
         return results;
@@ -112,8 +162,13 @@ namespace fcore{
     }
 
     template<class E>
-    void pass_manager_base<E>::add_morphing_pass_group(const std::vector<std::shared_ptr<pass_base<E>>> &group) {
-        morphing_passes_groups.push_back(group);
+    void pass_manager_base<E>::add_morphing_pass_group(const std::string& name, const std::vector<std::shared_ptr<pass_base<E>>> &group) {
+        opt_pass p;
+        p.pass = group;
+        p.type = pass_group;
+        p.name = name;
+        p.enabled = true;
+        passes.push_back(p);
     }
 
     template<class E>
