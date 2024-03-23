@@ -260,6 +260,8 @@ fcore::function_inlining_pass::process_function_call(std::shared_ptr<hl_function
         return substitute_loop_arguments(std::static_pointer_cast<hl_ast_loop_node>(statement), parameters);
     } else if(statement->node_type == hl_ast_node_type_code_block){
         return substitute_code_block(statement, parameters);
+    } else if(statement->node_type == hl_ast_node_type_function_call){
+        return substitute_call_arguments(std::static_pointer_cast<hl_function_call_node>(statement), parameters);
     }
      return retval;
 }
@@ -317,6 +319,12 @@ fcore::function_inlining_pass::substitute_expression_arguments(const std::shared
         std::shared_ptr<hl_ast_node> tmp_lhs = substitute_arguments(statement->get_lhs(), parameters);
         statement->set_lhs(tmp_lhs);
     }
+
+    if(statement->is_ternary()){
+        std::shared_ptr<hl_ast_node> tmp_ths = substitute_arguments(statement->get_ths(), parameters);
+        statement->set_lhs(tmp_ths);
+    }
+
     std::shared_ptr<hl_ast_node> tmp_rhs = substitute_arguments(statement->get_rhs(), parameters);
     statement->set_rhs(tmp_rhs);
     return statement;
@@ -420,4 +428,19 @@ fcore::function_inlining_pass::substitute_operand_arguments(const std::shared_pt
     }
 
     return ret_val;
+}
+
+std::shared_ptr<fcore::hl_ast_node>
+fcore::function_inlining_pass::substitute_call_arguments(const std::shared_ptr<hl_function_call_node> &statement,
+                                                         std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
+
+    std::vector<std::shared_ptr<hl_ast_node>> tmp_args;
+
+    for(auto &a:statement->get_arguments()){
+        auto new_arg = substitute_arguments(a, parameters);
+        tmp_args.push_back(new_arg);
+    }
+
+    statement->set_arguments(tmp_args);
+    return statement;
 }

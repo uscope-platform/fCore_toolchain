@@ -909,7 +909,7 @@ TEST(EndToEndC, test_include) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x20004, 0xc, 0x30002, 0x20003, 0x10004, 0xc, 0x60841, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20004, 0xc, 0x30002, 0x20003, 0x10004, 0xc,  0x60841, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
