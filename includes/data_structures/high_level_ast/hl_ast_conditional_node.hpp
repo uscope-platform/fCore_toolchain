@@ -33,7 +33,7 @@ namespace fcore{
         std::shared_ptr<hl_ast_node> get_condition();
         std::string pretty_print() override;
         void set_ternary(bool t){ternary_flag = t;};
-        bool is_ternary(){return ternary_flag;};
+        bool is_ternary() const{return ternary_flag;};
         friend bool operator==(const hl_ast_conditional_node& lhs, const hl_ast_conditional_node& rhs){
             bool ret_val = true;
 

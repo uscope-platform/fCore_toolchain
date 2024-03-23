@@ -28,7 +28,11 @@
 
 namespace fcore{
 
-    enum pass_type {single_pass=0, pass_group = 1};
+    enum pass_type {
+        single_pass=0,
+        repeating_pass_group = 1,
+        unique_pass_group = 2
+    };
 
     template<class E>
     class pass_manager_base {
@@ -36,9 +40,12 @@ namespace fcore{
         // API FOR MORPHING PASSES
         void add_morphing_pass(const std::string& name, const std::shared_ptr<pass_base<E>>& pass);
         void add_morphing_pass_group(const std::string& name, const std::vector<std::shared_ptr<pass_base<E>>>& group);
+        void add_unique_pass_group(const std::string &name, const std::vector<std::shared_ptr<pass_base<E>>>& group);
         void run_morphing_passes(std::shared_ptr<E> AST);
-        virtual void run_morphing_pass(std::shared_ptr<E> &, const std::shared_ptr<pass_base<E>>& ) {};
-        virtual std::vector<nlohmann::json> run_morphing_pass_group(std::shared_ptr<E> &, const std::vector<std::shared_ptr<pass_base<E>>>& , int ) {return nlohmann::json();};
+
+        virtual void run_single_pass(std::shared_ptr<E> &, const std::shared_ptr<pass_base<E>>& ) {};
+        virtual std::vector<nlohmann::json> run_repeating_pass_group(std::shared_ptr<E> &, const std::vector<std::shared_ptr<pass_base<E>>>& , int ) {return nlohmann::json();};
+        virtual std::vector<nlohmann::json> run_unique_pass_group(std::shared_ptr<E> &, const std::vector<std::shared_ptr<pass_base<E>>>& , int ) {return nlohmann::json();};
 
         void disable_all();
         void enable_pass(const std::string& name);
@@ -117,7 +124,7 @@ namespace fcore{
             if(p.type == single_pass){
                 if(p.enabled){
                     std::shared_ptr<pass_base<E>> pass = p.pass[0];
-                    run_morphing_pass(AST, pass);
+                    run_single_pass(AST, pass);
                     if(dump_ast_level>1){
                         nlohmann::json ast_dump;
                         ast_dump["pass_name"] = pass->get_name();
@@ -125,9 +132,14 @@ namespace fcore{
                         in_opt_dump.push_back(ast_dump);
                     }
                 }
-            } else if(p.type == pass_group){
+            } else if(p.type == repeating_pass_group) {
+                if (p.enabled) {
+                    std::vector<nlohmann::json> result = run_repeating_pass_group(AST, p.pass, dump_ast_level);
+                    in_opt_dump.insert(in_opt_dump.end(), result.begin(), result.end());
+                }
+            } else if(p.type == unique_pass_group) {
                 if(p.enabled){
-                    std::vector<nlohmann::json> result = run_morphing_pass_group(AST, p.pass, dump_ast_level);
+                    std::vector<nlohmann::json> result = run_unique_pass_group(AST, p.pass, dump_ast_level);
                     in_opt_dump.insert(in_opt_dump.end(), result.begin(), result.end());
                 }
             } else {
@@ -162,10 +174,20 @@ namespace fcore{
     }
 
     template<class E>
+    void pass_manager_base<E>::add_unique_pass_group(const std::string& name, const std::vector<std::shared_ptr<pass_base<E>>> &group) {
+        opt_pass p;
+        p.pass = group;
+        p.type = unique_pass_group;
+        p.name = name;
+        p.enabled = true;
+        passes.push_back(p);
+    }
+
+    template<class E>
     void pass_manager_base<E>::add_morphing_pass_group(const std::string& name, const std::vector<std::shared_ptr<pass_base<E>>> &group) {
         opt_pass p;
         p.pass = group;
-        p.type = pass_group;
+        p.type = repeating_pass_group;
         p.name = name;
         p.enabled = true;
         passes.push_back(p);

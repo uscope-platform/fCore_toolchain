@@ -58,7 +58,8 @@ namespace fcore{
 
         manager.add_morphing_pass("Operating Assignment Implementation", std::make_shared<operating_assignment_implementation_pass>()); // pass #3
         manager.add_morphing_pass("Function Mangling", std::make_shared<fuction_mangling_pass>()); // pass #4
-        manager.add_morphing_pass("Function Inlining", std::make_shared<function_inlining_pass>());  // pass #5
+
+        manager.add_morphing_pass_group("Function Inlining", {std::make_shared<function_inlining_pass>()}); // group #-1
 
         manager.add_morphing_pass("Inlined Function Elimination", std::make_shared<inlined_function_elimination>(entry_point)); // pass #6
 
@@ -72,10 +73,11 @@ namespace fcore{
         manager.add_morphing_pass("Contiguous Array Identification", std::make_shared<contiguous_array_identification>()); // pass #12
 
         manager.add_morphing_pass("Dead Variable elimination", std::make_shared<dead_variable_elimination>());  // pass #13
-        std::shared_ptr<constant_folding_pass> const_fold = std::make_shared<constant_folding_pass>();
-        std::shared_ptr<constant_propagation> const_prop = std::make_shared<constant_propagation>();
 
+        auto const_fold = std::make_shared<constant_folding_pass>();
+        auto const_prop = std::make_shared<constant_propagation>();
         manager.add_morphing_pass_group("Constants optimization", {const_fold, const_prop}); // group #-1
+
         manager.add_morphing_pass("Inline Constant Extraction", std::make_shared<inline_constant_extraction>()); // pass #14
         manager.add_morphing_pass("Array Flattening", std::make_shared<array_index_lowering>()); // pass #15
         manager.add_morphing_pass("Dead Load elimination", std::make_shared<dead_load_elimination>()); // pass #16

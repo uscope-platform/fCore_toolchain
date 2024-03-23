@@ -180,6 +180,8 @@ std::shared_ptr<fcore::hl_ast_node> fcore::hl_ast_node::deep_copy_conditional(co
     }
     copied_obj->set_else_block(block);
 
+    copied_obj->set_ternary(orig->is_ternary());
+
     return copied_obj;
 }
 

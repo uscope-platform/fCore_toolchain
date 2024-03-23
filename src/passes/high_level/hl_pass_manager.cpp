@@ -21,7 +21,7 @@ fcore::hl_pass_manager::hl_pass_manager(int dal) {
     dump_ast_level = dal;
 }
 
-std::vector<nlohmann::json> fcore::hl_pass_manager::run_morphing_pass_group(std::shared_ptr<hl_ast_node> &subtree,
+std::vector<nlohmann::json> fcore::hl_pass_manager::run_repeating_pass_group(std::shared_ptr<hl_ast_node> &subtree,
                                               const std::vector<std::shared_ptr<pass_base<hl_ast_node>>> &group, int dal) {
 
     std::vector<nlohmann::json> ret_val;
@@ -32,7 +32,7 @@ std::vector<nlohmann::json> fcore::hl_pass_manager::run_morphing_pass_group(std:
     do{
         old_tree = hl_ast_node::deep_copy(subtree);
         for(auto &pass:group){
-            run_morphing_pass(subtree, pass);
+            run_single_pass(subtree, pass);
             if(dal>1){
                 nlohmann::json ast_dump;
                 ast_dump["pass_name"] =  pass->get_name()+ " #" + std::to_string(run_number);
@@ -46,9 +46,27 @@ std::vector<nlohmann::json> fcore::hl_pass_manager::run_morphing_pass_group(std:
     return ret_val;
 }
 
+std::vector<nlohmann::json> fcore::hl_pass_manager::run_unique_pass_group(std::shared_ptr<hl_ast_node> &subtree,
+                                                                             const std::vector<std::shared_ptr<pass_base<hl_ast_node>>> &group, int dal) {
+
+    std::vector<nlohmann::json> ret_val;
+
+    for(auto &pass:group){
+        run_single_pass(subtree, pass);
+        if(dal>1){
+            nlohmann::json ast_dump;
+            ast_dump["pass_name"] =  pass->get_name();
+            ast_dump["ast"]= subtree->dump();
+            in_opt_dump.push_back(ast_dump);
+        }
+    }
+    return ret_val;
+}
 
 
-void fcore::hl_pass_manager::run_morphing_pass( std::shared_ptr<hl_ast_node> &subtree,
+
+
+void fcore::hl_pass_manager::run_single_pass( std::shared_ptr<hl_ast_node> &subtree,
                                                        const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
 
     switch (pass->get_pass_type()) {
@@ -67,7 +85,6 @@ void fcore::hl_pass_manager::run_morphing_pass( std::shared_ptr<hl_ast_node> &su
         }
         default:
             throw std::runtime_error("The pass  " + pass->get_name() + "  does not have a correct type");
-            break;
     }
 }
 
