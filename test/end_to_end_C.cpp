@@ -23,7 +23,12 @@ using namespace fcore;
 
 TEST(EndToEndC, fcore_cc) {
 
-    std::string input_file = "c_e2e/test_normalization.c";
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+        int a = 4.0*5.0+6.0;
+        // b = 1.0*2.0+7.0;
+    }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -33,7 +38,7 @@ TEST(EndToEndC, fcore_cc) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes,true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result = compiler.get_executable();
@@ -44,10 +49,17 @@ TEST(EndToEndC, fcore_cc) {
 
 TEST(EndToEndC, end_to_end_intrinsics) {
 
-
-    std::string input_file = "c_e2e/test_intrinsics_implementation.c";
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+        float b = itf(a);
+        float c = satp(a, 100.0);
+        float d = popcnt(a);
+        bset(a, r31, r1);
+    }
+    )""""};
 
     std::vector<std::string> includes;
+
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
@@ -55,7 +67,7 @@ TEST(EndToEndC, end_to_end_intrinsics) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes,true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result = compiler.get_executable();
@@ -64,8 +76,20 @@ TEST(EndToEndC, end_to_end_intrinsics) {
     ASSERT_EQ(result, gold_standard);
 }
 
+
 TEST(EndToEndC, exceptionHandling) {
-    std::string input_file = "c_e2e/test_exception.c";
+
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+        float v_cells;
+        float v_arms = 0;
+
+        for(int i = 0; i<2; ++i){
+            int idx_l = 10+i;
+            v_arms += "v_cells[idx_l]";
+        }
+    }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -76,7 +100,7 @@ TEST(EndToEndC, exceptionHandling) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes,true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::string result = compiler.get_errors();
@@ -85,11 +109,19 @@ TEST(EndToEndC, exceptionHandling) {
 }
 
 TEST(EndToEndC, json_writing) {
-    std::string input_file = "c_e2e/test_intrinsics_implementation.c";
 
-    std::string test_json = "/tmp/e2e_c_json_test.json";
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+        float b = itf(a);
+        float c = satp(a, 100.0);
+        float d = popcnt(a);
+        bset(a, r31, r1);
+    }
+    )""""};
 
     std::vector<std::string> includes;
+
+    std::string test_json = "/tmp/e2e_c_json_test.json";
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
@@ -97,7 +129,7 @@ TEST(EndToEndC, json_writing) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes,true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     compiler.write_json(test_json);
@@ -117,9 +149,22 @@ TEST(EndToEndC, json_writing) {
 }
 
 TEST(EndToEndC, iom) {
-    std::string input_file = "c_e2e/test_pragma_io.c";
+
+    std::vector<std::string> file_content = {R""""(
+        int main(int arg1, float arg2){
+
+            int a;
+            int b;
+            int c;
+
+            c = a + b;
+
+            int test = c*5.0/6.0;
+        }
+    )""""};
 
     std::vector<std::string> includes;
+
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
@@ -130,7 +175,7 @@ TEST(EndToEndC, iom) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes,true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -142,7 +187,19 @@ TEST(EndToEndC, iom) {
 }
 
 TEST(EndToEndC, conditional) {
-    std::string input_file = "c_e2e/test_full_conditional.c";
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+        int i = 3.0;
+
+
+        if( i == 0){
+            int a = 2.0;
+        } else
+            int a = 3.0;
+
+        int test  = i + a;
+    }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -152,7 +209,7 @@ TEST(EndToEndC, conditional) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes,true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -165,7 +222,27 @@ TEST(EndToEndC, conditional) {
 
 
 TEST(EndToEndC, loop) {
-    std::string input_file = "c_e2e/test_full_loop.c";
+    std::vector<std::string> file_content = {R""""(
+        int add (int a, int b){
+            return a+b;
+        }
+
+        int main(){
+
+            int h[4];
+
+            int k[4];
+            int b[4];
+            int j;
+            #pragma output(j, r15);
+
+            for(int i = 0+2; i+1<5; ++i){
+                if(3<5){
+                    b[i] = add(h[i], k[i]);
+                }
+            }
+        }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -176,7 +253,7 @@ TEST(EndToEndC, loop) {
                     "b":{"type": "output","address":[9,10,11,12]}
                 }})"
     );
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -189,7 +266,23 @@ TEST(EndToEndC, loop) {
 
 
 TEST(EndToEndC, nested_loop) {
-    std::string input_file = "c_e2e/test_full_nested_loop.c";
+
+    std::vector<std::string> file_content = {R""""(
+        int add (int a, int b){
+            return a+b;
+        }
+
+        int main(){
+            int h[4];
+            int a[4];
+            int c[4];
+
+            for(int i = 2; i<4; ++i)
+                for(int x = 0; x<2; ++x){
+                    c[i] = h[i] + a[x];
+                }
+        }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -200,7 +293,7 @@ TEST(EndToEndC, nested_loop) {
                     "c":{"type": "output","address":[9,10,11,12]}
                 }})"
     );
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -212,7 +305,25 @@ TEST(EndToEndC, nested_loop) {
 }
 
 TEST(EndToEndC, array_initialization) {
-    std::string input_file = "c_e2e/test_array_initialization.c";
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+        float c;
+        int a[2][2][3] = {
+                {
+                    {0.0, 1.0, 2.0},
+                    {3.0, 4.0, 5.0}
+                },
+                {
+                    {6.0, 7.0, 8.0},
+                    {9.0, 10.0, 11.0}
+                }
+        };
+        int b[2] = {2.0, 2.0};
+        a[1][0][0] = a[1][1][2]*c;
+        b[1] = a[1][0][0]*c;
+
+    }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -221,7 +332,7 @@ TEST(EndToEndC, array_initialization) {
                     "c":{"type": "output","address":7}
                 }})"
     );
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -234,17 +345,29 @@ TEST(EndToEndC, array_initialization) {
 
 
 TEST(EndToEndC, array_initialization_through_function) {
-    std::string input_file = "c_e2e/test_array_initialization_through_function.c";
+
+    std::vector<std::string> file_content = {R""""(
+        float add_first(float mem_1[2][2][3], float mem_2[7]){
+            return mem_1[0][0][1] + mem_2[1];
+        }
+
+
+        int main(){
+            int a[2][2][3] = {{{0.0, 1.0, 2.0}, {3.0, 4.0, 5.0}},{{6.0, 7.0, 8.0}, {9.0, 10.0, 11.0}}};
+            int b[7] = {2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0};
+
+            float c = add_first(a, b);
+        }
+    )""""};
 
     std::vector<std::string> includes;
-
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
                     "c":{"type": "output","address":18}
                 }})"
     );
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -257,7 +380,27 @@ TEST(EndToEndC, array_initialization_through_function) {
 
 
 TEST(EndToEndC, constant_argument_inlining) {
-    std::string input_file = "c_e2e/test_constant_argument_inlining.c";
+    std::vector<std::string> file_content = {R""""(
+        float add_first(float mem_1[2][2][3], float mem_2[7], int i){
+            return mem_1[0][0][i] + mem_2[i];
+        }
+
+
+        int main(){
+            int a[2][2][3] = {
+                    {
+                        {0.0, 1.0, 2.0}, {3.0, 4.0, 5.0}
+                    },
+                    {
+                        {6.0, 7.0, 8.0}, {9.0, 10.0, 11.0}
+                    }
+            };
+            int b[7] = {2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0};
+
+
+            float c = add_first(a, b, 1);
+        }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -266,7 +409,7 @@ TEST(EndToEndC, constant_argument_inlining) {
                     "c":{"type": "output","address":18}
                 }})"
     );
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -278,7 +421,19 @@ TEST(EndToEndC, constant_argument_inlining) {
 }
 
 TEST(EndToEndC, array_io_definition) {
-    std::string input_file = "c_e2e/test_array_io_definition.c";
+
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+        float a[2];
+        float b = a[0] + a[1];
+        float c[2];
+        c[0] = a[0] + a[1];
+        c[1] = a[0] - a[1];
+        float d[2];
+        d[0] = a[0] * a[1];
+        d[1] = a[0] * b;
+    }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -290,7 +445,7 @@ TEST(EndToEndC, array_io_definition) {
                     "d":{"type": "memory","address":[10,11]}
                 }})"
     );
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -304,10 +459,25 @@ TEST(EndToEndC, array_io_definition) {
 
 
 TEST(EndToEndC, multidimensional_array_io_definition) {
-    std::string input_file = "c_e2e/test_multidim_array_io_definition.c";
-
     std::vector<std::string> includes;
 
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+
+        float a[2];
+        float b = a[0] + a[1];
+        float c[2][2];
+        c[0][0] = a[0] + a[1];
+        c[1][0] = a[0] - a[1];
+        c[0][1] =  a[0] + a[1];
+        c[1][1] = a[0] - a[1];
+        float d[2][2];
+        d[0][0] = a[0] * a[1];
+        d[1][0] = a[0] * b;
+        d[0][1] = a[0] * a[1];
+        d[1][1] = a[0] * b;
+    }
+    )""""};
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
@@ -316,7 +486,7 @@ TEST(EndToEndC, multidimensional_array_io_definition) {
                     "d":{"type": "memory","address":[12,13,16,18]}
                 }})"
     );
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -330,9 +500,15 @@ TEST(EndToEndC, multidimensional_array_io_definition) {
 }
 
 TEST(EndToEndC, iom_initialization){
-    std::string input_file = "c_e2e/test_iom_initialization.c";
 
     std::vector<std::string> includes;
+
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+        float c[2][2] = {{1.0,2.0},{3.0,4.0}};
+        float b = c[0][0] + c[1][0];
+    }
+    )""""};
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
@@ -340,7 +516,7 @@ TEST(EndToEndC, iom_initialization){
                     "b":{"type": "output","address":20}
                 }})"
     );
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -353,9 +529,16 @@ TEST(EndToEndC, iom_initialization){
 
 
 TEST(EndToEndC, test_move){
-    std::string input_file = "c_e2e/test_move.c";
 
     std::vector<std::string> includes;
+
+    std::vector<std::string> file_content = {R""""(
+    int main(int arg1, float arg2){
+
+        int a;
+        int test = a;
+    }
+    )""""};
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
@@ -364,7 +547,7 @@ TEST(EndToEndC, test_move){
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -376,9 +559,20 @@ TEST(EndToEndC, test_move){
 }
 
 TEST(EndToEndC, test_complex_normalization){
-    std::string input_file = "c_e2e/test_complex_normalization.c";
 
     std::vector<std::string> includes;
+
+    std::vector<std::string> file_content = {R""""(
+        int main(int arg1, float arg2){
+
+            int a;
+            int b;
+            int test;
+
+            test += a*17.0*(b+5.0);
+
+        }
+    )""""};
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
@@ -388,7 +582,7 @@ TEST(EndToEndC, test_complex_normalization){
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -400,9 +594,16 @@ TEST(EndToEndC, test_complex_normalization){
 }
 
 TEST(EndToEndC, register_allocation){
-    std::string input_file = "c_e2e/test_register_allocation.c";
 
     std::vector<std::string> includes;
+
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+        int a;
+
+        int test = a*17.0;
+    }
+    )""""};
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
@@ -411,7 +612,7 @@ TEST(EndToEndC, register_allocation){
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -426,9 +627,25 @@ TEST(EndToEndC, register_allocation){
 
 TEST(EndToEndC, function_inlining_expression) {
 
-    std::string input_file = "c_e2e/test_function_inline_expression.c";
-
     std::vector<std::string> includes;
+
+    std::vector<std::string> file_content = {R""""(
+        float integrate(float in, float Ts, float memory) {
+            float out = memory+Ts*in;
+
+            out = satn(out, -150.0);
+            out = satp(out, 150.0);
+            return out;
+        }
+
+        int main(){
+            int test_in;
+            float in_1 = 5.0;
+            float integ;
+            float test_out = integrate(test_in*in_1, 1e-5, integ);
+            return 0;
+        }
+    )""""};
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
@@ -437,7 +654,7 @@ TEST(EndToEndC, function_inlining_expression) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -454,9 +671,25 @@ TEST(EndToEndC, function_inlining_expression) {
 
 TEST(EndToEndC, essential_variable_initialization) {
 
-    std::string input_file = "c_e2e/test_essential_variable_initialization.c";
-
     std::vector<std::string> includes;
+
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+
+        int test_in;
+
+        float test_out;
+
+
+        float test_var = 1.0;
+        int factor_1 = test_var <= test_in;
+
+        test_var=test_var+test_in;
+
+        test_out = test_var;
+        return 0;
+    }
+    )""""};
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
@@ -467,7 +700,7 @@ TEST(EndToEndC, essential_variable_initialization) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -483,8 +716,23 @@ TEST(EndToEndC, essential_variable_initialization) {
 
 TEST(EndToEndC, test_constant_propagation) {
 
-    std::string input_file = "c_e2e/test_constant_propagation.c";
     std::vector<std::string> includes;
+
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+        int a;
+        float switching_cell[2] = {1.0, 1.0};
+
+
+        switching_cell[0]=switching_cell[0]+a;
+
+        switching_cell[0] = 1.0;
+        switching_cell[1] = 1.0;
+
+        switching_cell[1]=switching_cell[1]+a;
+
+    }
+    )""""};
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
@@ -493,7 +741,7 @@ TEST(EndToEndC, test_constant_propagation) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -509,7 +757,15 @@ TEST(EndToEndC, test_constant_propagation) {
 
 TEST(EndToEndC, negative_leading_sum) {
 
-    std::string input_file = "c_e2e/test_negative_leading_sum.c";
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+        float a;
+        float b;
+        float c;
+
+        c = -a*b;
+    }
+    )""""};
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
@@ -520,7 +776,7 @@ TEST(EndToEndC, negative_leading_sum) {
             );
     std::vector<std::string> includes;
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -534,8 +790,21 @@ TEST(EndToEndC, negative_leading_sum) {
 
 TEST(EndToEndC, function_vars_mangling) {
 
-    std::string input_file = "c_e2e/test_function_vars_mangling.c";
+    std::vector<std::string> file_content = {R""""(
+        int add(int in_1, int in_2){
+            int a = in_1*4;
+            int b = in_2*2;
 
+            return a+b+in_2;
+        }
+
+        int main(){
+            int a;
+            int b;
+            int c = add(b,a);
+
+        }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -547,7 +816,7 @@ TEST(EndToEndC, function_vars_mangling) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -562,8 +831,21 @@ TEST(EndToEndC, function_vars_mangling) {
 
 TEST(EndToEndC, constant_merging) {
 
-    std::string input_file = "c_e2e/test_constant_merging.c";
+    std::vector<std::string> file_content = {R""""(
+        int main(){
 
+            float a[2];
+
+            float b[2];
+
+            float c = 45.0;
+            for(int i =0; i<2; ++i){
+                b[i] = a[i]*c;
+            }
+
+
+        }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -574,7 +856,7 @@ TEST(EndToEndC, constant_merging) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -590,8 +872,16 @@ TEST(EndToEndC, constant_merging) {
 
 TEST(EndToEndC, zero_assignment_removal) {
 
-    std::string input_file = "c_e2e/test_zero_assignment_removal.c";
+    std::vector<std::string> file_content = {R""""(
+        int main(){
 
+            float a;
+            float b;
+            float c = 0;
+            b= a+c;
+
+        }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -602,7 +892,7 @@ TEST(EndToEndC, zero_assignment_removal) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -616,8 +906,22 @@ TEST(EndToEndC, zero_assignment_removal) {
 
 TEST(EndToEndC, loop_index_expression) {
 
-    std::string input_file = "c_e2e/test_loop_index_expression.c";
+    std::vector<std::string> file_content = {R""""(
+        int main(){
 
+
+            float v_cells[20];
+            float v_arms[2] = {0.0, 0.0};
+
+
+            v_arms[1] = 0.0;
+
+            for(int i = 0; i<2; ++i){
+                int idx_l = 10+i;
+                v_arms[1] += v_cells[idx_l];
+            }
+        }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -628,7 +932,7 @@ TEST(EndToEndC, loop_index_expression) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -643,8 +947,21 @@ TEST(EndToEndC, loop_index_expression) {
 
 TEST(EndToEndC, loop_index_expression_multidim) {
 
-    std::string input_file = "c_e2e/test_loop_index_expression_multidim.c";
+    std::vector<std::string> file_content = {R""""(
+        int main(){
 
+            float v_cells[5][4];
+            float v_arms[2] = {0.0, 0.0};
+
+
+            v_arms[1] = 0.0; // THESE ARE NOT WORKING WHEN THE LOOP IS USED
+
+            for(int i = 0; i<2; ++i){
+                int idx_l = 2+i;
+                v_arms[1] += v_cells[idx_l][1];
+            }
+        }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -655,7 +972,7 @@ TEST(EndToEndC, loop_index_expression_multidim) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -669,8 +986,20 @@ TEST(EndToEndC, loop_index_expression_multidim) {
 
 TEST(EndToEndC, contiguos_array_allocation) {
 
-    std::string input_file = "c_e2e/test_contiguous_array_allocation.c";
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+        float out_1;
+        float out_2;
 
+        float index[2];
+
+        int c;
+        int a[2];
+        a = efi(index, 11);
+        out_1 = a[0] + c;
+        out_2 = a[1] + 2;
+    }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -682,7 +1011,7 @@ TEST(EndToEndC, contiguos_array_allocation) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -697,7 +1026,24 @@ TEST(EndToEndC, contiguos_array_allocation) {
 
 TEST(EndToEndC, efi_load_elimination) {
 
-    std::string input_file = "c_e2e/test_efi_load_elimination.c";
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+        float theta;
+
+        float s_th;
+        float c_th;
+
+
+        float trig_in[2];
+
+        trig_in[1] = theta;
+        trig_in[0] = 0;
+        s_th = efi(trig_in, 2);
+        s_th = 0.000030518*s_th;
+        trig_in[0] = 1;
+        c_th = efi(trig_in, 2);
+    }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -709,7 +1055,7 @@ TEST(EndToEndC, efi_load_elimination) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -725,7 +1071,41 @@ TEST(EndToEndC, efi_load_elimination) {
 
 TEST(EndToEndC, efi_load_elimination_in_func) {
 
-    std::string input_file = "c_e2e/test_efi_load_elimination_in_func.c";
+    std::vector<std::string> file_content = {R""""(
+
+        float sin(float theta){
+            float efi_in[2];
+
+            efi_in[0] = 0;
+            efi_in[1] = theta;
+
+            float sin_theta = efi(efi_in, 2);
+            sin_theta = itf(sin_theta);
+            sin_theta = 0.000030518*sin_theta;
+
+            return sin_theta;
+        }
+
+        float cos(float theta){
+
+            float efi_in[2];
+
+            efi_in[0] = 1;
+            efi_in[1] = theta;
+
+            float cos_theta = efi(efi_in, 2);
+            return cos_theta;
+        }
+
+
+        int main(){
+            float theta;
+
+            float s_th = sin(theta);
+            float c_th = cos(theta);
+
+        }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -737,7 +1117,7 @@ TEST(EndToEndC, efi_load_elimination_in_func) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -754,7 +1134,17 @@ TEST(EndToEndC, efi_load_elimination_in_func) {
 
 TEST(EndToEndC, constant_conversion) {
 
-    std::string input_file = "c_e2e/test_constant_conversion.c";
+    std::vector<std::string> file_content = {R""""(
+        int main(){
+
+            float v_ref=15;
+            float v_ref2=14.0;
+
+            float v_err = itf(v_ref);
+            float v_err2=fti(v_ref2);
+            return 0;
+        }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -765,7 +1155,7 @@ TEST(EndToEndC, constant_conversion) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -779,8 +1169,14 @@ TEST(EndToEndC, constant_conversion) {
 
 TEST(EndToEndC, constant_squaring) {
 
-    std::string input_file = "c_e2e/test_float_const_square.c";
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+        float Ts  = 2e-5;
 
+        float dt = Ts;
+        float dt2 = Ts*Ts;
+    }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -791,7 +1187,7 @@ TEST(EndToEndC, constant_squaring) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -805,8 +1201,12 @@ TEST(EndToEndC, constant_squaring) {
 
 TEST(EndToEndC, test_multiple_constant_op) {
 
-    std::string input_file = "c_e2e/test_multiple_constant_op.c";
-
+    std::vector<std::string> file_content = {R""""(
+    int main(){
+        float angle_n = 542.0;
+        float angle_test = 4.0*angle_n*0.15915494309;
+    }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -816,7 +1216,7 @@ TEST(EndToEndC, test_multiple_constant_op) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -832,8 +1232,16 @@ TEST(EndToEndC, test_multiple_constant_op) {
 
 TEST(EndToEndC, test_constant_expression_output) {
 
-    std::string input_file = "c_e2e/test_constant_expression_output.c";
+    std::vector<std::string> file_content = {R""""(
+    int main(){
 
+        float v_cap = 32.4;
+        float v_cap_s =v_cap*59.1715976331;
+
+        float v_out = fti( v_cap_s*1.5);
+
+    }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -845,7 +1253,7 @@ TEST(EndToEndC, test_constant_expression_output) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -861,8 +1269,14 @@ TEST(EndToEndC, test_constant_expression_output) {
 
 TEST(EndToEndC, test_ternary_operator) {
 
-    std::string input_file = "c_e2e/test_ternary_op.c";
+    std::vector<std::string> file_content = {R""""(
+    int main(){
 
+        float a;
+        int test = a>0? 150.0: 200.0;
+        float c = test - 32.0;
+    }
+    )""""};
 
     std::vector<std::string> includes;
 
@@ -873,7 +1287,7 @@ TEST(EndToEndC, test_ternary_operator) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
 
     compiler.compile();
@@ -887,12 +1301,27 @@ TEST(EndToEndC, test_ternary_operator) {
 }
 
 
+
 TEST(EndToEndC, test_include) {
 
-    std::string input_file = "c_e2e/test_include.c";
+    std::vector<std::string> file_content = {R""""(
+        int main(){
+            float a, b;
+            float c = add(a,b);
+        }
+    )""""};
+
+    std::vector<std::string> include_content = {R""""(
+        float add_nested(float a, float b){
+            return a + b;
+        }
 
 
-    std::vector<std::string> includes = {"c_e2e/test_include.h"};
+        float add(float a, float b){
+            return add_nested(a, b);
+        }
+
+    )""""};
 
     nlohmann::json dma_map = nlohmann::json::parse(
             R"({"dma_io":{
@@ -902,7 +1331,7 @@ TEST(EndToEndC, test_include) {
                 }})"
     );
 
-    fcore_cc compiler(input_file, includes, true, 0);
+    fcore_cc compiler(file_content, include_content);
     compiler.set_dma_map(dma_map["dma_io"]);
 
     compiler.compile();

@@ -385,15 +385,23 @@ TEST(HlPassesTest, function_inlining) {
 
 TEST(HlPassesTest, simple_normalization) {
 
+    std::string test_content = R""""(
+        int main(){
 
-    std::string input_file = "hl_opt/test_normalization.c";
+            int a = 4.0*5.0+6.0;
+            // b = 1.0*2.0+7.0;
+        }
+    )"""";
+
+    std::istringstream in(test_content);
+
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["a"] = variable_output_type;
 
-    C_language_parser parser(input_file, result_def);
+    C_language_parser parser(in, result_def);
     parser.pre_process({});
     parser.parse(io_spec);
 
@@ -452,15 +460,21 @@ TEST(HlPassesTest, simple_normalization) {
 
 }
 
-
 TEST(HlPassesTest, hl_ast_lowering) {
 
+    std::string test_content = R""""(
+        int main(){
 
-    std::string input_file = "hl_opt/test_normalization.c";
+            int a = 4.0*5.0+6.0;
+            // b = 1.0*2.0+7.0;
+        }
+    )"""";
+
+    std::istringstream in(test_content);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(input_file, result_def);
+    C_language_parser parser(in, result_def);
     parser.pre_process({});
 
     std::unordered_map<std::string, variable_class_t> io_spec;
@@ -507,11 +521,20 @@ TEST(HlPassesTest, hl_ast_lowering) {
 TEST(HlPassesTest, loop_unrolling_array) {
 
 
-    std::string input_file = "hl_opt/test_loop_unrolling.c";
+    std::string test_content = R""""(
+        int main(){
+            for(int i =5; i<7; ++i){
+                 j[i] = a[i] + h[i];
+            }
+        }
+    )"""";
+
+    std::istringstream in(test_content);
+
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(input_file, result_def);
+    C_language_parser parser(in, result_def);
     parser.pre_process({});
     std::unordered_map<std::string, variable_class_t> io_spec;
     parser.parse(io_spec);
@@ -569,13 +592,20 @@ TEST(HlPassesTest, loop_unrolling_array) {
 
 TEST(HlPassesTest, test_matrix_scalarization) {
 
+    std::string test_content = R""""(
+        int main(){
+            int a[10][2];
+            int b[3];
+            a[0][1] = b[0]*2;
+            b[2] = a[1][1]*2;
+        }
+    )"""";
 
-    std::string input_file = "hl_opt/test_matrix_scalarization.c";
-
+    std::istringstream in(test_content);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(input_file, result_def);
+    C_language_parser parser(in, result_def);
     parser.pre_process({});
     std::unordered_map<std::string, variable_class_t> io_spec;
     parser.parse(io_spec);
@@ -666,11 +696,34 @@ TEST(HlPassesTest, test_matrix_scalarization) {
 
 TEST(HlPassesTest, function_inlining_array) {
 
-    std::string input_file = "hl_opt/test_function_inlining_array.c";
+
+    std::string test_content = R""""(
+        #define MAX_MATRIX 3
+
+        void matrix_matrix_add(float mat_1[MAX_MATRIX][MAX_MATRIX], float mat_2[MAX_MATRIX][MAX_MATRIX], float mat_3[MAX_MATRIX][MAX_MATRIX], int M, int N){
+            mat_3[1][1] = mat_1[1][1]+ mat_2[0][1];
+        }
+
+        int main(){
+
+            float test_in;
+            #pragma input(test_in, r25)
+
+            float a[2][2] = {{1.0, 2.0}, {4.0, 5.0}};
+            float b[2][2] = {{1.0, 2.0}, {4.0, 5.0}};
+            #pragma output(c, {r12, r13, r14, r15})
+            float c[2][2];
+            matrix_matrix_add(a, b, c, 2, 2);
+            c[1][1] = test_in*c[1][1];
+            return 0;
+        }
+    )"""";
+
+    std::istringstream in(test_content);
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    C_language_parser parser(input_file, result_def);
+    C_language_parser parser(in, result_def);
     parser.pre_process({});
     std::unordered_map<std::string, variable_class_t> io_spec;
     parser.parse(io_spec);
@@ -710,15 +763,30 @@ TEST(HlPassesTest, function_inlining_array) {
 
 TEST(HlPassesTest, function_return_inlining) {
 
-    std::string input_file = "hl_opt/test_return_inlining.c";
+    std::string test_content = R""""(
+        float inlining_target(float num_1, float num_2){
+            float a = 800.0;
+            float b = 1e-3;
+            float c = a + b + num_1;
+            return c + num_2;
+        }
 
+        int main(){
+
+            float test_in;
+            float ret = inlining_target(7.0, test_in);
+            return 0;
+        }
+    )"""";
+
+    std::istringstream in(test_content);
 
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["ret"] = variable_output_type;
     io_spec["test_in"] = variable_input_type;
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-    C_language_parser parser(input_file, result_def);
+    C_language_parser parser(in, result_def);
     parser.pre_process({});
     parser.parse(io_spec);
 
@@ -868,18 +936,38 @@ TEST(HlPassesTest, dead_load_elimination) {
 }
 
 
-
-
 TEST(HlPassesTest, nested_function_inlining) {
-    std::string input_file = "hl_opt/test_nested_function_inlining.c";
 
+    std::string test_content = R""""(
+
+        float level_2(float c, float d){
+            float out = c + d;
+            return satp(out, 120);
+        }
+
+        float level_1(float a, float b){
+            return level_2(a, b);
+        }
+
+        int main(){
+
+            float input_1;
+            float memory_2;
+
+            memory_2 = level_1(input_1, memory_2);
+
+            return 0;
+        }
+    )"""";
+
+    std::istringstream in(test_content);
 
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["input_1"] = variable_input_type;
     io_spec["memory_2"] = variable_memory_type;
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-    C_language_parser parser(input_file, result_def);
+    C_language_parser parser(in, result_def);
     parser.pre_process({});
     parser.parse(io_spec);
 
@@ -959,13 +1047,26 @@ TEST(HlPassesTest, nested_function_inlining) {
 
 
 TEST(HlPassesTest, complex_division_implementation) {
-    std::string input_file = "hl_opt/test_complex_division_implementation.c";
+
+    std::string test_content = R""""(
+        int main(){
+
+
+            float a;
+
+            float b = 52.6;
+            int c = fti(a/b);
+
+        }
+    )"""";
+
+    std::istringstream in(test_content);
 
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["a"] = variable_input_type;
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
-    C_language_parser parser(input_file, result_def);
+    C_language_parser parser(in, result_def);
     parser.pre_process({});
     parser.parse(io_spec);
 
