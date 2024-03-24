@@ -43,6 +43,7 @@ namespace fcore {
     public:
         fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl);
         explicit fcore_cc(std::vector<std::string> &contents, std::vector<std::string> &inc);
+        void enable_logging(){logging = true;};
         void parse_dma_spec();
         bool compile();
         std::set<io_map_entry>  get_io_map();

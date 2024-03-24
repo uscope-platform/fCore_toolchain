@@ -39,6 +39,7 @@ TEST(EndToEndC, fcore_cc) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result = compiler.get_executable();
@@ -68,6 +69,7 @@ TEST(EndToEndC, end_to_end_intrinsics) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result = compiler.get_executable();
@@ -75,7 +77,6 @@ TEST(EndToEndC, end_to_end_intrinsics) {
     std::vector<uint32_t> gold_standard = {0x70002, 0xc, 0x1000A, 0xc, 0x1024,0x46,0x42C80000, 0x61030, 0x1033, 0x2f836, 0xc};
     ASSERT_EQ(result, gold_standard);
 }
-
 
 TEST(EndToEndC, exceptionHandling) {
 
@@ -101,6 +102,7 @@ TEST(EndToEndC, exceptionHandling) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::string result = compiler.get_errors();
@@ -130,6 +132,7 @@ TEST(EndToEndC, json_writing) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     compiler.write_json(test_json);
@@ -176,6 +179,7 @@ TEST(EndToEndC, iom) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -210,6 +214,7 @@ TEST(EndToEndC, conditional) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -219,7 +224,6 @@ TEST(EndToEndC, conditional) {
 
     ASSERT_EQ(gold_standard, result);
 }
-
 
 TEST(EndToEndC, loop) {
     std::vector<std::string> file_content = {R""""(
@@ -254,6 +258,7 @@ TEST(EndToEndC, loop) {
                 }})"
     );
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -263,7 +268,6 @@ TEST(EndToEndC, loop) {
 
    ASSERT_EQ(gold_standard, result);
 }
-
 
 TEST(EndToEndC, nested_loop) {
 
@@ -294,6 +298,7 @@ TEST(EndToEndC, nested_loop) {
                 }})"
     );
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -333,6 +338,7 @@ TEST(EndToEndC, array_initialization) {
                 }})"
     );
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -342,7 +348,6 @@ TEST(EndToEndC, array_initialization) {
 
     ASSERT_EQ(gold_standard, result);
 }
-
 
 TEST(EndToEndC, array_initialization_through_function) {
 
@@ -368,6 +373,7 @@ TEST(EndToEndC, array_initialization_through_function) {
                 }})"
     );
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -377,7 +383,6 @@ TEST(EndToEndC, array_initialization_through_function) {
 
     ASSERT_EQ(gold_standard, result);
 }
-
 
 TEST(EndToEndC, constant_argument_inlining) {
     std::vector<std::string> file_content = {R""""(
@@ -410,6 +415,7 @@ TEST(EndToEndC, constant_argument_inlining) {
                 }})"
     );
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -446,6 +452,7 @@ TEST(EndToEndC, array_io_definition) {
                 }})"
     );
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -456,7 +463,6 @@ TEST(EndToEndC, array_io_definition) {
 
     ASSERT_EQ(gold_standard, result);
 }
-
 
 TEST(EndToEndC, multidimensional_array_io_definition) {
     std::vector<std::string> includes;
@@ -487,6 +493,7 @@ TEST(EndToEndC, multidimensional_array_io_definition) {
                 }})"
     );
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -517,6 +524,7 @@ TEST(EndToEndC, iom_initialization){
                 }})"
     );
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -526,7 +534,6 @@ TEST(EndToEndC, iom_initialization){
 
     ASSERT_EQ(gold_standard, result);
 }
-
 
 TEST(EndToEndC, test_move){
 
@@ -548,6 +555,7 @@ TEST(EndToEndC, test_move){
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -583,6 +591,7 @@ TEST(EndToEndC, test_complex_normalization){
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -613,6 +622,7 @@ TEST(EndToEndC, register_allocation){
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -622,8 +632,6 @@ TEST(EndToEndC, register_allocation){
 
     ASSERT_EQ(gold_standard, result);
 }
-
-
 
 TEST(EndToEndC, function_inlining_expression) {
 
@@ -655,6 +663,7 @@ TEST(EndToEndC, function_inlining_expression) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -667,7 +676,6 @@ TEST(EndToEndC, function_inlining_expression) {
     ASSERT_EQ(gold_standard, result);
 
 }
-
 
 TEST(EndToEndC, essential_variable_initialization) {
 
@@ -702,6 +710,7 @@ TEST(EndToEndC, essential_variable_initialization) {
 
     fcore_cc compiler(file_content, includes);
     compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.enable_logging();
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -712,7 +721,6 @@ TEST(EndToEndC, essential_variable_initialization) {
     ASSERT_EQ(gold_standard, result);
 
 }
-
 
 TEST(EndToEndC, test_constant_propagation) {
 
@@ -742,6 +750,8 @@ TEST(EndToEndC, test_constant_propagation) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -753,7 +763,6 @@ TEST(EndToEndC, test_constant_propagation) {
     ASSERT_EQ(gold_standard, result);
 
 }
-
 
 TEST(EndToEndC, negative_leading_sum) {
 
@@ -777,6 +786,7 @@ TEST(EndToEndC, negative_leading_sum) {
     std::vector<std::string> includes;
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -786,7 +796,6 @@ TEST(EndToEndC, negative_leading_sum) {
 
     ASSERT_EQ(gold_standard, result);
 }
-
 
 TEST(EndToEndC, function_vars_mangling) {
 
@@ -817,6 +826,7 @@ TEST(EndToEndC, function_vars_mangling) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -827,7 +837,6 @@ TEST(EndToEndC, function_vars_mangling) {
     ASSERT_EQ(gold_standard, result);
 
 }
-
 
 TEST(EndToEndC, constant_merging) {
 
@@ -857,6 +866,7 @@ TEST(EndToEndC, constant_merging) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -867,8 +877,6 @@ TEST(EndToEndC, constant_merging) {
     ASSERT_EQ(gold_standard, result);
 
 }
-
-
 
 TEST(EndToEndC, zero_assignment_removal) {
 
@@ -893,6 +901,7 @@ TEST(EndToEndC, zero_assignment_removal) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -933,6 +942,7 @@ TEST(EndToEndC, loop_index_expression) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -943,7 +953,6 @@ TEST(EndToEndC, loop_index_expression) {
     ASSERT_EQ(gold_standard, result);
 
 }
-
 
 TEST(EndToEndC, loop_index_expression_multidim) {
 
@@ -973,6 +982,7 @@ TEST(EndToEndC, loop_index_expression_multidim) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -1012,6 +1022,7 @@ TEST(EndToEndC, contiguos_array_allocation) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -1022,7 +1033,6 @@ TEST(EndToEndC, contiguos_array_allocation) {
     ASSERT_EQ(gold_standard, result);
 
 }
-
 
 TEST(EndToEndC, efi_load_elimination) {
 
@@ -1056,6 +1066,7 @@ TEST(EndToEndC, efi_load_elimination) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -1067,7 +1078,6 @@ TEST(EndToEndC, efi_load_elimination) {
     ASSERT_EQ(gold_standard, result);
 
 }
-
 
 TEST(EndToEndC, efi_load_elimination_in_func) {
 
@@ -1118,6 +1128,7 @@ TEST(EndToEndC, efi_load_elimination_in_func) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -1130,7 +1141,6 @@ TEST(EndToEndC, efi_load_elimination_in_func) {
     ASSERT_EQ(gold_standard, result);
 
 }
-
 
 TEST(EndToEndC, constant_conversion) {
 
@@ -1156,6 +1166,7 @@ TEST(EndToEndC, constant_conversion) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -1188,6 +1199,7 @@ TEST(EndToEndC, constant_squaring) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -1217,6 +1229,7 @@ TEST(EndToEndC, test_multiple_constant_op) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -1227,8 +1240,6 @@ TEST(EndToEndC, test_multiple_constant_op) {
     ASSERT_EQ(gold_standard, result);
 
 }
-
-
 
 TEST(EndToEndC, test_constant_expression_output) {
 
@@ -1254,6 +1265,7 @@ TEST(EndToEndC, test_constant_expression_output) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -1264,8 +1276,6 @@ TEST(EndToEndC, test_constant_expression_output) {
     ASSERT_EQ(gold_standard, result);
 
 }
-
-
 
 TEST(EndToEndC, test_ternary_operator) {
 
@@ -1288,6 +1298,7 @@ TEST(EndToEndC, test_ternary_operator) {
     );
 
     fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
 
     compiler.compile();
@@ -1299,8 +1310,6 @@ TEST(EndToEndC, test_ternary_operator) {
     ASSERT_EQ(gold_standard, result);
 
 }
-
-
 
 TEST(EndToEndC, test_include) {
 
@@ -1332,6 +1341,7 @@ TEST(EndToEndC, test_include) {
     );
 
     fcore_cc compiler(file_content, include_content);
+    compiler.enable_logging();
     compiler.set_dma_map(dma_map["dma_io"]);
 
     compiler.compile();
@@ -1339,6 +1349,43 @@ TEST(EndToEndC, test_include) {
 
 
     std::vector<uint32_t> gold_standard = {0x20004, 0xc, 0x30002, 0x20003, 0x10004, 0xc,  0x60841, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
+
+TEST(EndToEndC, test_ternary_return) {
+
+    std::vector<std::string> file_content = {R""""(
+
+        float sign(float in){
+            return in>0.0 ? 1.0: -1.0;
+        }
+
+        int main(){
+            float a;
+            float b = sign(a);
+        }
+    )""""};
+
+    std::vector<std::string> include_content;
+
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"address":3,"type":"input"},
+                    "b":{"address":4,"type":"output"}
+                }})"
+    );
+
+    fcore_cc compiler(file_content, include_content);
+    compiler.enable_logging();
+    compiler.set_dma_map(dma_map["dma_io"]);
+
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+
+    std::vector<uint32_t> gold_standard = {0x70003, 0xc, 0x10003, 0x20004, 0xc, 0x40028, 0x26, 0x3f800000,0x66, 0xbf800000, 0x6085b, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
