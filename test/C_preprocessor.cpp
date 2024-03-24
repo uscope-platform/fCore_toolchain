@@ -23,13 +23,21 @@ using namespace fcore;
 
 
 TEST( cFrontend, preprocessor_define) {
-    std::string input_file = "c_prep/test_define.c";
+
+    std::istringstream test_content(R""""(
+        #define TEST 15
+
+
+        int main(){
+            int a = TEST;
+        }
+    )"""");
 
     std::unordered_map<std::string, variable_class_t> io_spec;
     io_spec["a"] = variable_input_type;
 
     auto dmap = std::make_shared<define_map>();
-    C_language_parser parser(input_file, dmap);
+    C_language_parser parser(test_content, dmap);
     parser.pre_process({});
 
     parser.parse(io_spec);
