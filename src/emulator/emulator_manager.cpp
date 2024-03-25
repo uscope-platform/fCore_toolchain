@@ -293,7 +293,9 @@ std::unordered_map<std::string, fcore::emulator_input> fcore::emulator_manager::
             if(input_spec["source"]["value"].is_array()){
                 factory.set_data((std::vector<std::string>) input_spec["source"]["value"]);
             } else {
-                factory.set_data(name,(std::string) input_spec["source"]["value"]);
+                std::string raw_name = input_spec["source"]["value"];
+                std::string series_name  = raw_name.substr(raw_name.find('.')+1, raw_name.length()-raw_name.find('.'));
+                factory.set_data(name,(std::string) series_name);
             }
         }
         factory.finalize_object();
