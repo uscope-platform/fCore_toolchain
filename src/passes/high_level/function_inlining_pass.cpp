@@ -336,7 +336,7 @@ fcore::function_inlining_pass::substitute_definition_arguments(const std::shared
     if(statement->is_initialized()){
         std::shared_ptr<hl_ast_node> tmp = statement->get_scalar_initializer();
         std::shared_ptr<hl_ast_node> substituted_node = substitute_arguments(tmp, parameters);
-        if(substituted_node->node_type == hl_ast_node_type_expr || substituted_node->node_type == hl_ast_node_type_operand) {
+        if(substituted_node->node_type == hl_ast_node_type_expr || substituted_node->node_type == hl_ast_node_type_operand || substituted_node->node_type == hl_ast_node_type_function_call) {
             statement->set_scalar_initializer(substituted_node);
         } else if(substituted_node->node_type == hl_ast_node_type_conditional){
             if(!std::static_pointer_cast<hl_ast_conditional_node>(substituted_node)->is_ternary()){
