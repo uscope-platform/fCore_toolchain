@@ -29,6 +29,7 @@ namespace fcore{
     private:
         std::vector<std::shared_ptr<hl_ast_node>> process_vector(const std::vector<std::shared_ptr<hl_ast_node>>& elements);
         std::vector<std::shared_ptr<hl_ast_node>> process_expression(const std::shared_ptr<hl_expression_node>& expr);
+        std::vector<std::shared_ptr<hl_ast_node>> process_function_definition(const std::shared_ptr<hl_function_def_node>& expr);
         std::shared_ptr<hl_ast_node> process_loop(std::shared_ptr<hl_ast_loop_node> element);
         std::shared_ptr<hl_ast_node> process_definition(std::shared_ptr<hl_definition_node> element);
         std::shared_ptr<hl_ast_node> process_conditional(std::shared_ptr<hl_ast_conditional_node> element);

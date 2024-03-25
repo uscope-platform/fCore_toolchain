@@ -32,6 +32,7 @@ namespace fcore{
         std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_expression_node> element);
         std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_definition_node> element);
         std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_operand> element);
+        std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_conditional_node> element);
 
         void process_efi_arguments(std::shared_ptr<hl_expression_node> element);
 

@@ -38,6 +38,8 @@ std::shared_ptr<fcore::hl_ast_node> fcore::contiguous_array_identification::proc
 
 std::shared_ptr<fcore::hl_ast_node> fcore::contiguous_array_identification::process_element(std::shared_ptr<hl_ast_node> element) {
         switch (element->node_type) {
+            case hl_ast_node_type_conditional:
+                return process_element(std::static_pointer_cast<hl_ast_conditional_node>(element));
             case hl_ast_node_type_expr:
                 return process_element(std::static_pointer_cast<hl_expression_node>(element));
             case hl_ast_node_type_definition:
@@ -49,7 +51,7 @@ std::shared_ptr<fcore::hl_ast_node> fcore::contiguous_array_identification::proc
             case hl_ast_node_type_program_root:
                 throw std::runtime_error("unexpected nested program root in contiguous array identification pass");
             default:
-                throw std::runtime_error("Internal erorr, this condition should never happern");
+                throw std::runtime_error("Internal error, this condition should never happen");
         }
 
 }
@@ -154,5 +156,23 @@ std::shared_ptr<fcore::hl_ast_node> fcore::contiguous_array_identification::proc
     if(contiguous_arrays.contains(element->get_name())){
         element->set_contiguity(true);
     }
+    return element;
+}
+
+std::shared_ptr<fcore::hl_ast_node> fcore::contiguous_array_identification::process_element(std::shared_ptr<hl_ast_conditional_node> element) {
+    element->set_condition(process_element(std::static_pointer_cast<hl_expression_node>(element->get_condition())));
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_if_block;
+    for(auto &item:element->get_if_block()) {
+        new_if_block.push_back(process_element(item));
+    }
+    element->set_if_block(new_if_block);
+
+    std::vector<std::shared_ptr<hl_ast_node>> new_else_block;
+    for(auto &item:element->get_else_block()) {
+        new_else_block.push_back(process_element(item));
+    }
+    element->set_else_block(new_else_block);
+
     return element;
 }

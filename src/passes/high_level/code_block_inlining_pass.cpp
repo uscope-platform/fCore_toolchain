@@ -53,6 +53,8 @@ std::vector<std::shared_ptr<fcore::hl_ast_node>> fcore::code_block_inlining_pass
             return {process_definition(std::static_pointer_cast<hl_definition_node>(element))};
         case hl_ast_node_type_code_block:
             return process_code_block(element);
+        case hl_ast_node_type_function_def:
+            return process_function_definition(std::static_pointer_cast<hl_function_def_node>(element));
         default:
             return {element};
     }
@@ -139,6 +141,15 @@ fcore::code_block_inlining_pass::process_code_block(const std::shared_ptr<hl_ast
     }
 
     return new_content;
+}
+
+std::vector<std::shared_ptr<fcore::hl_ast_node>>
+fcore::code_block_inlining_pass::process_function_definition(const std::shared_ptr<hl_function_def_node> &fdef) {
+
+    auto new_body = process_vector(fdef->get_body());
+    fdef->set_body(new_body);
+
+    return {fdef};
 }
 
 
