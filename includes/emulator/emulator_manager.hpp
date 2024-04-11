@@ -65,6 +65,11 @@ namespace fcore{
 
         void run_cores();
 
+        void inputs_phase(const std::string& n, uint64_t round_n);
+        void execution_phase(const std::string& n, uint64_t round_n);
+        void interconnects_phase(const std::string& n);
+        void outputs_phase(std::string n);
+
         nlohmann::json get_channel_outputs(std::vector<emulator_output_t> specs, int ch, std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outs);
 
         std::map<int, std::string> cores_ordering;

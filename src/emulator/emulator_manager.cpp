@@ -155,91 +155,110 @@ void fcore::emulator_manager::run_cores() {
             spdlog::info("EMULATION PROGRESS: {0} cycles done out of {1}", i, emu_length);
         }
         for(auto &core_id:cores_ordering){
-            auto emu = emulators[core_id.second].emu;
+            inputs_phase(core_id.second, i);
+            execution_phase(core_id.second, i);
+            interconnects_phase(core_id.second);
+            outputs_phase(core_id.second);
 
-            bool skipped_cycle = skipping_counters[core_id.second]!=emulators[core_id.second].multirate_divisor;
-            // APPLY INPUTS (ONLY WHEN THE EMULATOR IS RUN TO AVOID POTENTIALLY DESTROYING THE OUTPUTS IN MEMORY)
-            if(!skipped_cycle){
-                for(auto &in:emulators[core_id.second].input){
-                    uint32_t core_reg = 0;
-                    if(emulators[core_id.second].io_remapping_active){
-                        if(emulators[core_id.second].io_map.contains(in.second.get_address())){
-                            core_reg = emulators[core_id.second].io_map[in.second.get_address()];
-                        }
-                    } else {
-                        core_reg = in.second.get_address();
-                    }
-                    if(core_reg != 0){
-                        emu->apply_inputs(core_reg, in.second.get_data(i), in.second.get_channel());
-                    }
+        }
+    }
+    spdlog::info("EMULATION DONE");
+}
+
+
+void fcore::emulator_manager::inputs_phase(const std::string& n, uint64_t round_n) {
+
+    bool skipped_cycle = skipping_counters[n] != emulators[n].multirate_divisor;
+    // APPLY INPUTS (ONLY WHEN THE EMULATOR IS RUN TO AVOID POTENTIALLY DESTROYING THE OUTPUTS IN MEMORY)
+    if(!skipped_cycle){
+        for(auto &in:emulators[n].input){
+            uint32_t core_reg = 0;
+            if(emulators[n].io_remapping_active){
+                auto addr = in.second.get_address();
+                if(emulators[n].io_map.contains(addr)){
+                    core_reg = emulators[n].io_map.at(addr);
                 }
+            } else {
+                core_reg = in.second.get_address();
             }
+            if(core_reg != 0){
+                emulators[n].emu->apply_inputs(core_reg, in.second.get_data(round_n), in.second.get_channel());
+            }
+        }
+    }
 
-            // RUN EMULATION ( IF THE CYCLE IS NOT SKIPPED)
-            for(int j = 0; j<emulators[core_id.second].active_channels; ++j){
-                if(!skipped_cycle){
-                    spdlog::trace("RUNNING ROUND " + std::to_string(i+1) + " of " + std::to_string(emu_length) + ": core ID = " + core_id.second + " (CH " + std::to_string(j) + ")");
-                    emu->run_round(j);
-                    skipping_status[core_id.second] = false;
-                    skipping_counters[core_id.second] = 0;
+}
+
+void fcore::emulator_manager::execution_phase(const std::string& n, uint64_t round_n) {
+
+    bool skipped_cycle = skipping_counters[n] != emulators[n].multirate_divisor;
+    for(int j = 0; j<emulators[n].active_channels; ++j){
+        if(!skipped_cycle){
+            spdlog::trace("RUNNING ROUND " + std::to_string(round_n+1) + " of " + std::to_string(emu_length) + ": core ID = " + n + " (CH " + std::to_string(j) + ")");
+            emulators[n].emu->run_round(j);
+            skipping_status[n] = false;
+            skipping_counters[n] = 0;
+        } else {
+            skipping_status[n] = true;
+            skipping_counters[n]++;
+        }
+
+    }
+}
+
+void fcore::emulator_manager::interconnects_phase(const std::string& n) {
+
+    for(auto &conn:interconnects){
+        if(n == conn.source){
+
+            auto src = emulators[conn.source].emu;
+            auto dst = emulators[conn.destination].emu;
+            for(auto &reg:conn.connections){
+                auto src_id = src->get_name();
+                uint32_t first_address, second_address;
+                if(emulators[n].io_remapping_active){
+                    first_address = emulators[src->get_name()].io_map[reg.first.address];
+                    second_address = emulators[dst->get_name()].io_map[reg.second.address];
                 } else {
-                    skipping_status[core_id.second] = true;
-                    skipping_counters[core_id.second]++;
+                    first_address = reg.first.address;
+                    second_address = reg.second.address;
                 }
 
-            }
-            // EVALUATE DMA INTERCONNECTS
-            for(auto &conn:interconnects){
-                if(core_id.second == conn.source){
 
-                    auto src = emulators[conn.source].emu;
-                    auto dst = emulators[conn.destination].emu;
-                    for(auto &reg:conn.connections){
-                        auto src_id = src->get_name();
-                        uint32_t first_address, second_address;
-                        if(emulators[core_id.second].io_remapping_active){
-                            first_address = emulators[src->get_name()].io_map[reg.first.address];
-                            second_address = emulators[dst->get_name()].io_map[reg.second.address];
-                        } else {
-                            first_address = reg.first.address;
-                            second_address = reg.second.address;
-                        }
-
-
-                        if(!skipping_status[src_id]){
-                            auto val = src->get_output(first_address, reg.first.channel);
-                            output_repeater.add_output(src_id, first_address, val);
-                            dst->apply_inputs(second_address, val, reg.second.channel);
-                        } else {
-                            auto val = output_repeater.get_output(src_id, first_address);
-                            dst->apply_inputs(second_address, val, reg.second.channel);
-                        }
-                    }
-                }
-            }
-
-            // GATHER OUTPUTS
-            for(int j = 0; j<emulators[core_id.second].active_channels; ++j){
-                for (auto &out:emulators[core_id.second].output_specs) {
-                    uint32_t address;
-                    if(emulators[core_id.second].io_remapping_active){
-                        address = emulators[core_id.second].io_map[out.reg_n];
-                    } else {
-                        address = out.reg_n;
-                    }
-
-                    if(!skipped_cycle){
-                        auto value = emu->get_output(address, j);
-                        output_repeater.add_output(core_id.second, address, value);
-                        emulators[core_id.second].outputs[j][out.reg_n].push_back(value);
-                    } else {
-                        emulators[core_id.second].outputs[j][out.reg_n].push_back(output_repeater.get_output(core_id.second, address));
-                    }
+                if(!skipping_status[src_id]){
+                    auto val = src->get_output(first_address, reg.first.channel);
+                    output_repeater.add_output(src_id, first_address, val);
+                    dst->apply_inputs(second_address, val, reg.second.channel);
+                } else {
+                    auto val = output_repeater.get_output(src_id, first_address);
+                    dst->apply_inputs(second_address, val, reg.second.channel);
                 }
             }
         }
     }
-    spdlog::info("EMULATION DONE");
+}
+
+void fcore::emulator_manager::outputs_phase(std::string n) {
+
+    bool skipped_cycle = skipping_counters[n] != emulators[n].multirate_divisor;
+    for(int j = 0; j<emulators[n].active_channels; ++j){
+        for (auto &out:emulators[n].output_specs) {
+            uint32_t address;
+            if(emulators[n].io_remapping_active){
+                address = emulators[n].io_map[out.reg_n];
+            } else {
+                address = out.reg_n;
+            }
+
+            if(!skipped_cycle){
+                auto value = emulators[n].emu->get_output(address, j);
+                output_repeater.add_output(n, address, value);
+                emulators[n].outputs[j][out.reg_n].push_back(value);
+            } else {
+                emulators[n].outputs[j][out.reg_n].push_back(output_repeater.get_output(n, address));
+            }
+        }
+    }
 }
 
 std::unordered_map<std::string, fcore::emulator_input> fcore::emulator_manager::load_input(nlohmann::json &core) {
