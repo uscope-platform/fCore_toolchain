@@ -41,8 +41,10 @@ bool fcore::expression_evaluator::is_constant_subexpr(const std::shared_ptr<hl_a
 
 std::shared_ptr<fcore::hl_ast_operand>
 fcore::expression_evaluator::evaluate_expression(std::shared_ptr<hl_expression_node> expression) {
-    if(expression->is_unary()){
+    if(expression->is_unary()) {
         return evaluate_unary_expression(expression);
+    }else if(expression->is_ternary()){
+        return evaluate_ternary_expression(expression);
     } else {
         return evaluate_regular_expression(expression);
     }
@@ -297,4 +299,86 @@ int fcore::expression_evaluator::evaluate_regular_expr_i(int operand_a, int oper
         default:
             throw std::runtime_error("Internal Unexpected constant expression");
     }
+}
+
+int
+fcore::expression_evaluator::evaluate_ternary_expr_i(int operand_a, int operand_b, int operand_c) {
+    if(operand_a == 0){
+        return operand_c;
+    } else {
+        return operand_b;
+    }
+}
+
+float fcore::expression_evaluator::evaluate_ternary_expr_f(float operand_a, float operand_b, float operand_c) {
+    if(operand_a == 0){
+        return operand_c;
+    } else {
+        return operand_b;
+    }
+}
+
+std::shared_ptr<fcore::hl_ast_operand>
+fcore::expression_evaluator::evaluate_ternary_expression(std::shared_ptr<hl_expression_node> expression) {
+
+    std::shared_ptr<hl_ast_operand> retval;
+
+    std::shared_ptr<hl_ast_operand> lhs;
+    if(expression->get_lhs()->node_type ==hl_ast_node_type_expr){
+        lhs = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_lhs()));
+    } else if(expression->get_lhs()->node_type ==hl_ast_node_type_operand) {
+        lhs = std::static_pointer_cast<hl_ast_operand>(expression->get_lhs());
+    } else {
+        throw std::runtime_error("node type not expected during expression evaluation");
+    }
+
+    std::shared_ptr<hl_ast_operand> rhs;
+    if(expression->get_rhs()->node_type ==hl_ast_node_type_expr){
+        rhs = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_rhs()));
+    } else if(expression->get_rhs()->node_type ==hl_ast_node_type_operand) {
+        rhs = std::static_pointer_cast<hl_ast_operand>(expression->get_rhs());
+    } else {
+        throw std::runtime_error("node type not expected during expression evaluation");
+    }
+
+    std::shared_ptr<hl_ast_operand> ths;
+    if(expression->get_ths()->node_type ==hl_ast_node_type_expr){
+        ths = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_rhs()));
+    } else if(expression->get_rhs()->node_type ==hl_ast_node_type_operand) {
+        ths = std::static_pointer_cast<hl_ast_operand>(expression->get_rhs());
+    } else {
+        throw std::runtime_error("node type not expected during expression evaluation");
+    }
+
+    c_types_t expr_type = c_type_int;
+
+    if(rhs->get_type() == var_type_float_const || lhs->get_type() == var_type_float_const|| ths->get_type() == var_type_float_const){
+        expr_type = c_type_float;
+    }
+
+
+    if(expr_type == c_type_int) {
+        int op_a = lhs->get_int_value();
+        int op_b = rhs->get_int_value();
+        int op_c = ths->get_int_value();
+
+
+        int operand = evaluate_ternary_expr_i(op_a, op_b, op_c);
+
+        std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
+        retval = std::make_shared<hl_ast_operand>(var);
+
+    } else {
+        float op_a = lhs->get_float_val();
+        float op_b = rhs->get_float_val();
+        float op_c = ths->get_float_val();
+
+        float operand = evaluate_ternary_expr_f(op_a, op_b, op_c);
+
+        std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
+        retval = std::make_shared<hl_ast_operand>(var);
+
+    }
+
+    return retval;
 }

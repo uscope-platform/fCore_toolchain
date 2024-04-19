@@ -161,18 +161,22 @@ bool fcore::operator==(const fcore::hl_expression_node &lhs, const fcore::hl_exp
 
     if(lhs.rhs != nullptr && rhs.rhs != nullptr){
         if((lhs.rhs->node_type == hl_ast_node_type_expr) && (rhs.rhs->node_type ==  hl_ast_node_type_expr)){
-            std::shared_ptr<fcore::hl_expression_node> ex_1 = std::static_pointer_cast<fcore::hl_expression_node>(lhs.rhs);
-            std::shared_ptr<fcore::hl_expression_node> ex_2 = std::static_pointer_cast<fcore::hl_expression_node>(rhs.rhs);
+            auto ex_1 = std::static_pointer_cast<fcore::hl_expression_node>(lhs.rhs);
+            auto ex_2 = std::static_pointer_cast<fcore::hl_expression_node>(rhs.rhs);
             ret_val &= *ex_1 == *ex_2;
         }else if((lhs.rhs->node_type == hl_ast_node_type_operand) && (rhs.rhs->node_type ==  hl_ast_node_type_operand)){
-            std::shared_ptr<fcore::hl_ast_operand> ex_1 = std::static_pointer_cast<fcore::hl_ast_operand>(lhs.rhs);
-            std::shared_ptr<fcore::hl_ast_operand> ex_2 = std::static_pointer_cast<fcore::hl_ast_operand>(rhs.rhs);
+            auto ex_1 = std::static_pointer_cast<fcore::hl_ast_operand>(lhs.rhs);
+            auto ex_2 = std::static_pointer_cast<fcore::hl_ast_operand>(rhs.rhs);
             ret_val &= *ex_1 == *ex_2;
         }else if((lhs.rhs->node_type == hl_ast_node_type_function_call) && (rhs.rhs->node_type ==  hl_ast_node_type_function_call)){
-            std::shared_ptr<hl_function_call_node> ex_1 = std::static_pointer_cast<hl_function_call_node>(lhs.rhs);
-            std::shared_ptr<hl_function_call_node> ex_2 = std::static_pointer_cast<hl_function_call_node>(rhs.rhs);
+            auto ex_1 = std::static_pointer_cast<hl_function_call_node>(lhs.rhs);
+            auto ex_2 = std::static_pointer_cast<hl_function_call_node>(rhs.rhs);
             ret_val &= *ex_1 == *ex_2;
-        } else {
+        }else if((lhs.rhs->node_type == hl_ast_node_type_conditional) && (rhs.rhs->node_type ==  hl_ast_node_type_conditional)){
+            auto ex_1 = std::static_pointer_cast<hl_ast_conditional_node>(lhs.rhs);
+            auto ex_2 = std::static_pointer_cast<hl_ast_conditional_node>(rhs.rhs);
+            ret_val &= *ex_1 == *ex_2;
+        }  else {
             return false;
         }
     } else if(lhs.rhs == nullptr && rhs.rhs == nullptr);

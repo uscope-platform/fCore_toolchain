@@ -112,6 +112,13 @@ fcore::conditional_implementation_pass::process_definition(const std::shared_ptr
 std::vector<std::shared_ptr<fcore::hl_ast_node>>
 fcore::conditional_implementation_pass::process_expression(const std::shared_ptr<hl_expression_node> &node,
                                                            const std::shared_ptr<hl_ast_node> &subtree) {
+    if(node->get_type()== expr_assign){
+        auto rhs = node->get_rhs();
+        if(rhs->node_type==hl_ast_node_type_conditional){
+            auto cond = std::static_pointer_cast<hl_ast_conditional_node>(rhs);
+            node->set_rhs(process_ternary(cond));
+        }
+    }
     return {node};
 }
 
