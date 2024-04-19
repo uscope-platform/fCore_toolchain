@@ -46,7 +46,7 @@ namespace fcore{
 
     class emulator_manager {
     public:
-        emulator_manager(nlohmann::json &spec_file, bool dbg, std::string s_f);
+        emulator_manager(nlohmann::json &spec_file, bool dbg, const std::string& s_f);
         void process();
         void emulate();
 
@@ -88,6 +88,7 @@ namespace fcore{
         std::unordered_map<std::string, uint32_t> skipping_counters;
         std::unordered_map<std::string, bool> skipping_status;
         multirate_io_repeater output_repeater;
+        bool async_multirate;
     };
 }
 

@@ -41,6 +41,7 @@ nlohmann::json prepare_spec_file(const std::string &file, int run_length){
     nlohmann::json spec;
     spec["cores"] = std::vector<nlohmann::json>();
     spec["n_cycles"] = run_length;
+    spec["async_multirate"] = false;
     spec["cores"][0]["order"] = 0;
     spec["cores"][0]["id"] = "test";
     spec["cores"][0]["program"] = std::unordered_map<std::string, std::string>({{"type", "mem"}, { "filename", file}});
@@ -61,6 +62,7 @@ nlohmann::json prepare_spec(
     nlohmann::json spec;
     spec["cores"] = std::vector<nlohmann::json>();
     spec["n_cycles"] = run_length;
+    spec["async_multirate"] = false;
 
     auto cs = nlohmann::json();
 

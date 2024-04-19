@@ -4,6 +4,7 @@
   "title": "Root Schema",
   "required": [
     "cores",
+    "async_multirate",
     "n_cycles"
   ],
   "properties": {
@@ -60,7 +61,11 @@
                 "register_type": {
                   "type": "string",
                   "title": "Type of the target register (scalar or vector)",
-                  "enum": ["scalar", "vector", "explicit_vector"]
+                  "enum": [
+                    "scalar",
+                    "vector",
+                    "explicit_vector"
+                  ]
                 },
                 "name": {
                   "type": "string",
@@ -73,14 +78,20 @@
                     "type",
                     "value"
                   ],
-                  "properties":{
+                  "properties": {
                     "type": {
                       "type": "string",
-                      "enum": ["constant", "file"],
+                      "enum": [
+                        "constant",
+                        "file"
+                      ],
                       "title": "Type of source"
                     },
                     "value": {
-                      "type": ["number", "string"],
+                      "type": [
+                        "number",
+                        "string"
+                      ],
                       "title": "Value of the source object"
                     }
                   }
@@ -113,13 +124,15 @@
                       "items": {
                         "type": "integer"
                       }
-
                     }
                   ]
                 },
                 "type": {
                   "type": "string",
-                  "enum": ["float", "integer"],
+                  "enum": [
+                    "float",
+                    "integer"
+                  ],
                   "title": "type to use for the output"
                 },
                 "name": {
@@ -232,7 +245,6 @@
                       "items": {
                         "type": "integer"
                       }
-
                     }
                   ]
                 },
@@ -310,7 +322,13 @@
               "properties": {
                 "type": {
                   "type": "string",
-                  "enum": ["scalar_transfer","scatter_transfer", "vector_transfer", "gather_transfer", "2d_vector_transfer"]
+                  "enum": [
+                    "scalar_transfer",
+                    "scatter_transfer",
+                    "vector_transfer",
+                    "gather_transfer",
+                    "2d_vector_transfer"
+                  ]
                 },
                 "length": {
                   "type": "integer",
@@ -379,6 +397,10 @@
     "n_cycles": {
       "type": "integer",
       "title": "Number of cycles to emulate"
+    },
+    "async_multirate": {
+      "type": "boolean",
+      "title": "enables asynchronous multi-rate core emulation"
     }
   }
 }

@@ -17,7 +17,7 @@
 
 
 
-fcore::emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, std::string s_f) {
+fcore::emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, const std::string& s_f) {
     debug_autogen = dbg;
 
     spec_file = spec;
@@ -74,7 +74,7 @@ void fcore::emulator_manager::process() {
     }
 
     interconnects = load_interconnects(spec_file["interconnect"]);
-
+    async_multirate = spec_file["async_multirate"];
     if(spec_file.contains("n_cycles"))
         emu_length = spec_file["n_cycles"];
 

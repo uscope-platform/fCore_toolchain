@@ -71,5 +71,6 @@
       "channels":1
     }
   ],
-  "n_cycles": 2
+  "n_cycles": 2,
+  "async_multirate": false
 }
