@@ -78,21 +78,8 @@ fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohma
         metadata.emu->set_comparator_type(metadata.comparator_type);
     }
 
-    if(core_info.contains("order")){
-        if(ordering_style==implicit_ordering){
-            throw std::runtime_error("Mixing of explicit and implicit cores ordering is not allowed");
-        }
-        cores_ordering[core_info["order"]] = core_info["id"];
-        ordering_style = explicit_ordering;
-    } else {
-        if(ordering_style==explicit_ordering){
-            throw std::runtime_error("Mixing of explicit and implicit cores ordering is not allowed");
-        }
-        ordering_style = implicit_ordering;
-
-        cores_ordering[implicit_order_idx] =  core_info["id"];
-        implicit_order_idx++;
-    }
+    cores_ordering[core_info["order"]] = core_info["id"];
+    ordering_style = explicit_ordering;
 
     if(core_info.contains("multirate_divisor")){
         metadata.multirate_divisor = core_info["multirate_divisor"];

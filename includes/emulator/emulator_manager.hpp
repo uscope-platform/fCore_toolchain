@@ -24,6 +24,7 @@
 #include "data_structures/emulation/emulator_input.hpp"
 #include "data_structures/emulation/emulator_input_factory.hpp"
 #include "data_structures/emulation/hil_bus_map.hpp"
+#include "emulation_sequencer.hpp"
 #include "frontend/schema_validators/schema_validator_base.h"
 #include "frontend/binary_loader.hpp"
 #include "../../third_party/csv.hpp"
@@ -88,6 +89,7 @@ namespace fcore{
         std::unordered_map<std::string, uint32_t> skipping_counters;
         std::unordered_map<std::string, bool> skipping_status;
         multirate_io_repeater output_repeater;
+        emulation_sequencer sequencer;
         bool async_multirate;
     };
 }

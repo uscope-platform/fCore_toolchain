@@ -70,13 +70,13 @@ void fcore::emulator_manager::process() {
         emulators[id].output_specs = load_output_specs(item);
         emulators[id].memory_init = load_memory_init(item["memory_init"]);
 
+        sequencer.add_core(id, item["multirate_divisor"], item["order"]);
         skipping_counters[id] = 0;
     }
 
     interconnects = load_interconnects(spec_file["interconnect"]);
     async_multirate = spec_file["async_multirate"];
-    if(spec_file.contains("n_cycles"))
-        emu_length = spec_file["n_cycles"];
+    sequencer.setup_run(spec_file["n_cycles"]);
 
     // Setup emulators
     for(auto &item:emulators){
@@ -149,18 +149,30 @@ void fcore::emulator_manager::emulate() {
 
 void fcore::emulator_manager::run_cores() {
 
+    sequencer.calculate_sequence();
+
     spdlog::info("EMULATION START");
-    for(int i= 0; i<emu_length;i++){
-        if(i%100000==0 && i != 0){
-            spdlog::info("EMULATION PROGRESS: {0} cycles done out of {1}", i, emu_length);
+    while(!sequencer.sim_complete()){
+        uint64_t cur_c = sequencer.get_current_step();
+        if(cur_c%100000==0 && cur_c != 0){
+            spdlog::info("EMULATION PROGRESS: {0} cycles done out of {1}", cur_c, emu_length);
         }
+        auto running_cores = sequencer.get_running_cores();
+        if(running_cores.empty()) continue;
+
+        //TODO: REWRITE EXECUTION LOOP TO CUT OUT THE cores_ordering ARRAY, AND USE THE SEQUENCER INSTEAD
         for(auto &core_id:cores_ordering){
-            inputs_phase(core_id.second, i);
-            execution_phase(core_id.second, i);
+            inputs_phase(core_id.second, cur_c);
+            execution_phase(core_id.second, cur_c);
             interconnects_phase(core_id.second);
             outputs_phase(core_id.second);
-
         }
+
+        std::string rc;
+        for(auto &s: running_cores){
+            rc += s.id + " ";
+        }
+        spdlog::info(rc);
     }
     spdlog::info("EMULATION DONE");
 }
