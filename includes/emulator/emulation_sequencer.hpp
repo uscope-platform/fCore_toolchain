@@ -30,10 +30,11 @@ struct core_metadata {
     uint32_t exec_order;
 };
 
-struct step_core_metadata{
+struct core_step_metadata{
     bool running;
     std::string id;
     uint32_t order;
+    uint64_t step_n;
 };
 
 class emulation_sequencer {
@@ -43,11 +44,13 @@ public:
     void calculate_sequence();
     uint64_t get_current_step() const {return sim_length-progress;};
     bool sim_complete() const{return progress== 0;};
-    std::vector<step_core_metadata> get_running_cores();
+    std::vector<core_step_metadata> get_running_cores();
+    std::unordered_map<std::string, bool> get_enabled_cores() {return enabled_cores_map;};
 private:
     std::vector<core_metadata> cores;
     uint64_t progress;
     uint64_t sim_length;
+    std::unordered_map<std::string, bool> enabled_cores_map;
 };
 
 

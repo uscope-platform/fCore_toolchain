@@ -66,14 +66,12 @@ namespace fcore{
 
         void run_cores();
 
-        void inputs_phase(const std::string& n, uint64_t round_n);
-        void execution_phase(const std::string& n, uint64_t round_n);
-        void interconnects_phase(const std::string& n);
-        void outputs_phase(std::string n);
+        void inputs_phase(const core_step_metadata& info);
+        void execution_phase(const core_step_metadata& info);
+        void interconnects_phase(const core_step_metadata& info, std::unordered_map<std::string, bool> enabled_cores);
+        void outputs_phase(core_step_metadata info);
 
         nlohmann::json get_channel_outputs(std::vector<emulator_output_t> specs, int ch, std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outs);
-
-        std::map<int, std::string> cores_ordering;
 
         std::unordered_map<std::string, emulator_metadata> emulators;
         std::vector<interconnect_t> interconnects;
@@ -86,8 +84,6 @@ namespace fcore{
 
         hil_bus_map bus_map;
 
-        std::unordered_map<std::string, uint32_t> skipping_counters;
-        std::unordered_map<std::string, bool> skipping_status;
         multirate_io_repeater output_repeater;
         emulation_sequencer sequencer;
         bool async_multirate;

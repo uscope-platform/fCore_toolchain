@@ -1390,3 +1390,43 @@ TEST(EndToEndC, test_ternary_return) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+
+/*
+TEST(EndToEndC, test_ternary_mem_self_assign) {
+
+    std::vector<std::string> file_content = {R""""(
+
+        int main(){
+            float a;
+            float b;
+            float c;
+
+                c = a>0.0 ? b : c ;
+        }
+    )""""};
+
+    std::vector<std::string> include_content;
+
+    nlohmann::json dma_map = nlohmann::json::parse(
+            R"({"dma_io":{
+                    "a":{"address":3,"type":"input"},
+                    "b":{"address":4,"type":"input"},
+                    "c":{"address":5,"type":"memory"}
+                }})"
+    );
+
+    fcore_cc compiler(file_content, include_content);
+    compiler.enable_logging();
+    compiler.set_dma_map(dma_map["dma_io"]);
+
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+
+    std::vector<uint32_t> gold_standard = {0x70003, 0xc, 0x10003, 0x20004, 0xc, 0x40028, 0x26, 0x3f800000,0x66, 0xbf800000, 0x6085b, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
+ */

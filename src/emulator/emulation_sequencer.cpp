@@ -30,25 +30,35 @@ void emulation_sequencer::calculate_sequence() {
         frequencies.push_back(i.freq);
     }
 
-    uint32_t f_tb = std::accumulate(frequencies.begin(), frequencies.end(), 1,[](uint32_t a, uint32_t b){
-        return std::lcm(a,b);
-    });
 
-    for(auto &i: cores){
-        i.n_skips = f_tb/i.freq - 1;
+    if ( !std::equal(frequencies.begin() + 1, frequencies.end(), frequencies.begin()) ) {
+
+        uint32_t f_tb = std::accumulate(frequencies.begin(), frequencies.end(), 1,[](uint32_t a, uint32_t b){
+            return std::lcm(a,b);
+        });
+
+        for(auto &i: cores){
+            i.n_skips = f_tb/i.freq - 1;
+        }
+
+    } else {
+
+        for(auto &i: cores){
+            i.n_skips = 0;
+        }
     }
 
     std::sort(cores.begin(), cores.end(), [](core_metadata const& lhs, core_metadata const &rhs)-> bool {return lhs.exec_order<rhs.exec_order;});
 
 }
 
-std::vector<step_core_metadata> emulation_sequencer::get_running_cores() {
-    std::vector<step_core_metadata> ret;
+std::vector<core_step_metadata> emulation_sequencer::get_running_cores() {
+    std::vector<core_step_metadata> ret;
     progress--;
     bool empty_step = true;
     for(auto &i: cores){
         bool executing = false;
-        if(i.current_step == 0){
+        if(i.current_step == 0 || i.n_skips == 0){
             empty_step = false;
             ++i.current_step;
             executing = true;
@@ -57,7 +67,15 @@ std::vector<step_core_metadata> emulation_sequencer::get_running_cores() {
         } else {
             ++i.current_step;
         }
-        ret.emplace_back(executing, i.id, i.exec_order);
+
+        core_step_metadata m;
+        m.id = i.id;
+        m.running = executing;
+        enabled_cores_map[i.id] = executing;
+        m.order = i.exec_order;
+        m.step_n = get_current_step()-1;
+
+        ret.push_back(m);
     }
     if(empty_step){
         return {};
