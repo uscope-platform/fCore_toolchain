@@ -21,13 +21,13 @@
 #include <memory>
 
 #include <nlohmann/json.hpp>
-#include "emulator/emulator_metadata.hpp"
+#include "data_structures/emulation/emulator_metadata.hpp"
 #include "frontend/binary_loader.hpp"
 #include "fcore_dis.hpp"
 #include "data_structures/instruction_stream.hpp"
 #include "tools/instruction_stream_builder.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
-#include "emulator.hpp"
+#include "emulator/backend/emulator.hpp"
 #include "fcore_cc.hpp"
 
 namespace fcore {
@@ -37,8 +37,7 @@ namespace fcore {
         emulator_metadata load_json_program(const nlohmann::json &core_info, const std::vector<nlohmann::json> &input_connections,
                                             const std::vector<nlohmann::json> &output_connections, std::set<io_map_entry> &am);
 
-        void clear_dma_io() {dma_io.clear();};
-        std::map<int, std::string> get_core_ordering(){return cores_ordering;};
+        void clear_dma_io();
 
         std::vector<uint32_t>  compile_programs(
                 const nlohmann::json &core_info,
@@ -67,10 +66,6 @@ namespace fcore {
         std::set<uint32_t> assigned_outputs;
         std::set<std::string> memory_names;
 
-
-        std::map<int, std::string> cores_ordering;
-        cores_ordering_t ordering_style = no_ordering;
-        int implicit_order_idx = 0;
 
         bool debug_autogen;
     };

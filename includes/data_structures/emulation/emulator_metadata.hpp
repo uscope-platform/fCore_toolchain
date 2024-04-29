@@ -1,4 +1,4 @@
-//  Copyright 2022 Filippo Savi <filssavi@gmail.com>
+//  Copyright 2024 Filippo Savi <filssavi@gmail.com>
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -10,7 +10,7 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License.05/07/2021.
+// limitations under the License.
 
 #ifndef FCORE_TOOLCHAIN_EMULATOR_METADATA_HPP
 #define FCORE_TOOLCHAIN_EMULATOR_METADATA_HPP
@@ -57,7 +57,6 @@ namespace fcore{
         emulator_metadata() = default;
         std::unordered_map<std::string, emulator_input> input;
         std::vector<emulator_output_t> output_specs;
-        std::unordered_map<unsigned int, std::pair<std::string, std::string>> output_types;
         std::unordered_map<unsigned int, uint32_t> memory_init;
         std::shared_ptr<emulator> emu;
         int active_channels;
@@ -66,8 +65,6 @@ namespace fcore{
         bool io_remapping_active;
         std::unordered_map<uint16_t, uint16_t> io_map;
         std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outputs;
-        uint32_t multirate_divisor;
-        bool async_multirate;
     };
 
 

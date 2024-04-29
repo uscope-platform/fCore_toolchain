@@ -66,7 +66,11 @@ void fcore::emulator_manager::process() {
         }
 
         emulators[id].input = load_input(item);
-        emulators[id].output_specs = load_output_specs(item);
+        auto out_specs = load_output_specs(item);
+
+        outputs_manager.add_specs(id, out_specs, emulators[id].active_channels);
+        emulators[id].output_specs = out_specs;
+
         emulators[id].memory_init = load_memory_init(item["memory_init"]);
         if(async_multirate){
             sequencer.add_core(id, item["multirate_divisor"], item["order"]);
@@ -150,6 +154,7 @@ void fcore::emulator_manager::emulate() {
 void fcore::emulator_manager::run_cores() {
 
     sequencer.calculate_sequence();
+    outputs_manager.set_simulation_frequency(sequencer.get_simulation_frequency());
 
     spdlog::info("EMULATION START");
     while(!sequencer.sim_complete()){
@@ -168,13 +173,6 @@ void fcore::emulator_manager::run_cores() {
             outputs_phase(core);
         }
 
-        std::string rc;
-        for(auto &s: running_cores){
-            if(s.running){
-                rc += s.id + " ";
-            }
-        }
-        spdlog::info(rc);
     }
     spdlog::info("EMULATION DONE");
 }
@@ -245,25 +243,7 @@ void fcore::emulator_manager::interconnects_phase(const core_step_metadata& info
 }
 
 void fcore::emulator_manager::outputs_phase(core_step_metadata info) {
-
-    for(int j = 0; j<emulators[info.id].active_channels; ++j){
-        for (auto &out:emulators[info.id].output_specs) {
-            uint32_t address;
-            if(emulators[info.id].io_remapping_active){
-                address = emulators[info.id].io_map[out.reg_n];
-            } else {
-                address = out.reg_n;
-            }
-
-            if(info.running){
-                auto value = emulators[info.id].emu->get_output(address, j);
-                output_repeater.add_output(info.id, address, value);
-                emulators[info.id].outputs[j][out.reg_n].push_back(value);
-            } else {
-                emulators[info.id].outputs[j][out.reg_n].push_back(output_repeater.get_output(info.id, address));
-            }
-        }
-    }
+    outputs_manager.process_outputs(info.id, emulators[info.id], info.running);
 }
 
 std::unordered_map<std::string, fcore::emulator_input> fcore::emulator_manager::load_input(nlohmann::json &core) {
@@ -325,8 +305,7 @@ std::unordered_map<std::string, fcore::emulator_input> fcore::emulator_manager::
         factory.finalize_object();
 
     }
-    auto dbg = factory.get_map();
-    return dbg;
+    return factory.get_map();
 }
 
 std::vector<fcore::emulator_output_t> fcore::emulator_manager:: load_output_specs(nlohmann::json &core) {
@@ -418,7 +397,8 @@ std::string fcore::emulator_manager::get_results() {
     for(auto &item:emulators){
         nlohmann::json j;
         nlohmann::json outputs_json;
-        j["outputs"] = get_channel_outputs(item.second.output_specs, item.second.active_channels, item.second.outputs);
+
+        j["outputs"] = outputs_manager.get_emulation_output(item.first);
         j["error_code"] = errors[item.first];
         res[item.first] = j;
     }

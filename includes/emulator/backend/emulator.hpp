@@ -18,15 +18,15 @@
 #include <utility>
 #include <spdlog/spdlog.h>
 
-#include "backend/efi_implementations/efi_dispatcher.h"
+#include "efi_dispatcher.h"
 #include "data_structures/instruction_stream.hpp"
 #include "fCore_isa.hpp"
-#include "emulator/emulator_metadata.hpp"
+#include "data_structures/emulation/emulator_metadata.hpp"
 
 #if GENERAL_PURPOSE_EMULATION==1
     #include "emulator/gp_executor.hpp"
 #else
-    #include "emulator/ba_executor.hpp"
+    #include "emulator/backend/ba_executor.hpp"
 #endif
 
 
@@ -37,7 +37,7 @@ namespace fcore{
 
         void init_memory(const std::unordered_map<unsigned int, uint32_t> &mem_init);
         void apply_inputs(uint32_t addr, uint32_t data, unsigned int channel);
-        uint32_t get_output(uint32_t addr, int channel);
+        uint32_t get_output(uint32_t addr, int channel) const;
 
         void set_comparator_type(std::string &t){comparator_type = t;};
         void run_round(int channel);

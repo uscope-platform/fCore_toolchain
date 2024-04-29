@@ -99,12 +99,14 @@ set(FCORE_EMU_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/emulation/emulator_input.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/emulation/emulator_input_factory.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/emulation/hil_bus_map.cpp
-        emulator/backend/emulator.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/emulation/emulator_output.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/emulator/backend/emulator.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/emulator/backend/emulation_outputs_manager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/emulator/backend/efi_dispatcher.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/emulator/emulator_builder.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/emulator/emulation_sequencer.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/emulator/emulator_manager.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/emulator/multirate_io_repeater.cpp
-        emulator/backend/efi_dispatcher.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/emulator/backend/multirate_io_repeater.cpp
         )
 
 set(FCORE_DEVTOOLS_SRCS

@@ -28,12 +28,13 @@
 #include "frontend/schema_validators/schema_validator_base.h"
 #include "frontend/binary_loader.hpp"
 #include "../../third_party/csv.hpp"
-#include "emulator.hpp"
+#include "emulator/backend/emulator.hpp"
 #include "tools/instruction_stream_builder.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
-#include "emulator_metadata.hpp"
+#include "data_structures/emulation/emulator_metadata.hpp"
 #include "emulator_builder.hpp"
-#include "emulator/multirate_io_repeater.hpp"
+#include "emulator/backend/multirate_io_repeater.hpp"
+#include "emulator/backend/emulation_outputs_manager.hpp"
 
 namespace fcore{
     class program_bundle{
@@ -86,6 +87,7 @@ namespace fcore{
 
         multirate_io_repeater output_repeater;
         emulation_sequencer sequencer;
+        emulation_outputs_manager outputs_manager;
         bool async_multirate;
     };
 }

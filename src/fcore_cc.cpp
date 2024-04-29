@@ -122,7 +122,7 @@ void fcore::fcore_cc::optimize(std::unordered_map<std::string, std::vector<int>>
     translator.translate();
     ll_ast = translator.get_output_ast();
 
-    auto dbg = ll_ast;
+
     ll_manager = create_ll_pass_manager(dump_ast_level);
     ll_manager.run_morphing_passes(ll_ast);
 
@@ -195,7 +195,7 @@ std::shared_ptr<fcore::hl_ast_node>  fcore::fcore_cc::parse_include(std::istream
 }
 
 void fcore::fcore_cc::merge_includes(const std::vector<std::shared_ptr<hl_ast_node>>& i) {
-    auto dbg = hl_ast;
+
     std::set<std::string> target_functions;
     for(auto & node: hl_ast->get_content()){
         if(node->node_type == hl_ast_node_type_function_def){

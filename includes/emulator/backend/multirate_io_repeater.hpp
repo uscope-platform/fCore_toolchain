@@ -1,6 +1,6 @@
 
 
-//  Copyright 2022 Filippo Savi <filssavi@gmail.com>
+//  Copyright 2024 Filippo Savi <filssavi@gmail.com>
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -21,16 +21,18 @@
 #include <cstdint>
 #include <string>
 
+namespace fcore {
+    class multirate_io_repeater {
+    public:
+        void add_output(std::string &core, uint32_t addr, uint32_t value) { working_map[core][addr] = value; };
 
-class multirate_io_repeater {
-public:
-    void add_output(std::string &core, uint32_t addr,  uint32_t value) {working_map[core][addr] = value;};
-    uint32_t get_output(std::string &core, uint32_t addr) {return working_map[core][addr];};
-    void clear(){working_map.clear();};
-private:
-    std::unordered_map<std::string, std::unordered_map<uint32_t , uint32_t>> working_map;
+        uint32_t get_output(std::string &core, uint32_t addr) { return working_map[core][addr]; };
 
-};
+        void clear() { working_map.clear(); };
+    private:
+        std::unordered_map<std::string, std::unordered_map<uint32_t, uint32_t>> working_map;
 
+    };
+}
 
 #endif //FCORE_TOOLCHAIN_MULTIRATE_IO_REPEATER_HPP

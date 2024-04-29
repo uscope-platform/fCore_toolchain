@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "emulator/emulator.hpp"
+#include "emulator/backend/emulator.hpp"
 
 
 
@@ -156,8 +156,6 @@ void fcore::emulator::run_conversion_instruction(const std::shared_ptr<ll_conver
 
     uint32_t src = node->get_source()->get_bound_reg();
     uint32_t dest = node->get_destination()->get_bound_reg();
-
-    auto dbg_src = working_memory->at(src);
 
     uint32_t result;
     if(opcode == "rec"){
@@ -402,8 +400,8 @@ void fcore::emulator::init_memory(const std::unordered_map<unsigned int, uint32_
     }
 }
 
-uint32_t fcore::emulator::get_output(uint32_t addr, int channel) {
-    auto selected_memory = memory_pool[channel];
+uint32_t fcore::emulator::get_output(uint32_t addr, int channel) const {
+    auto selected_memory = memory_pool.at(channel);
     return selected_memory->at(addr);
 }
 

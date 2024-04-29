@@ -208,7 +208,6 @@ TEST(Emulator_execution, emulator_itf) {
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
     float result = res_obj["test"]["outputs"]["test"][0][0];
-    auto dbg = manager.get_results();
     EXPECT_NEAR(result, 2, 1e-6);
 }
 
@@ -223,7 +222,6 @@ TEST(Emulator_execution, emulator_fti) {
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
     float result = res_obj["test"]["outputs"]["test"][0][0];
-    auto dbg = manager.get_results();
     EXPECT_NEAR(result, 2, 1e-6);
 }
 

@@ -78,14 +78,6 @@ fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohma
         metadata.emu->set_comparator_type(metadata.comparator_type);
     }
 
-    cores_ordering[core_info["order"]] = core_info["id"];
-    ordering_style = explicit_ordering;
-
-    if(core_info.contains("multirate_divisor")){
-        metadata.multirate_divisor = core_info["multirate_divisor"];
-    } else {
-        metadata.multirate_divisor = 0;
-    }
 
     clear_dma_io();
     return metadata;
@@ -229,6 +221,7 @@ void fcore::emulator_builder::process_ioms(
             addrs = {item["reg_n"]};
         }
 
+        std::string dbg = item.dump();
         if(!assigned_outputs.contains(addrs[0])){
             spec["address"]  = addrs;
             if(!memory_names.contains(item["name"])){
@@ -290,4 +283,8 @@ std::vector<uint32_t> fcore::emulator_builder::compile_programs(const nlohmann::
     am = compiler.get_io_map();
 
     return program;
+}
+
+void fcore::emulator_builder::clear_dma_io() {
+    dma_io.clear();
 }

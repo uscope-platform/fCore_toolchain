@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-#include "backend/efi_implementations/efi_dispatcher.h"
+#include "emulator/backend/efi_dispatcher.h"
 
 fcore::efi_dispatcher::efi_dispatcher(const std::string &core) {
     core_name = core;

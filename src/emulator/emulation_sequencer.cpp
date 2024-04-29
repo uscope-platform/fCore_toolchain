@@ -15,7 +15,7 @@
 #include "emulator/emulation_sequencer.hpp"
 
 
-void emulation_sequencer::add_core(const std::string& core_id, uint32_t frequency, uint32_t order) {
+void fcore::emulation_sequencer::add_core(const std::string& core_id, uint32_t frequency, uint32_t order) {
     core_metadata s;
     s.id = core_id;
     s.freq = frequency;
@@ -24,7 +24,7 @@ void emulation_sequencer::add_core(const std::string& core_id, uint32_t frequenc
     cores.push_back(s);
 }
 
-void emulation_sequencer::calculate_sequence() {
+void fcore::emulation_sequencer::calculate_sequence() {
     std::vector<uint32_t> frequencies;
     for(auto &i: cores){
         frequencies.push_back(i.freq);
@@ -33,12 +33,12 @@ void emulation_sequencer::calculate_sequence() {
 
     if ( !std::equal(frequencies.begin() + 1, frequencies.end(), frequencies.begin()) ) {
 
-        uint32_t f_tb = std::accumulate(frequencies.begin(), frequencies.end(), 1,[](uint32_t a, uint32_t b){
+        simulation_frequency = std::accumulate(frequencies.begin(), frequencies.end(), 1,[](uint32_t a, uint32_t b){
             return std::lcm(a,b);
         });
 
         for(auto &i: cores){
-            i.n_skips = f_tb/i.freq - 1;
+            i.n_skips = simulation_frequency/i.freq - 1;
         }
 
     } else {
@@ -52,7 +52,7 @@ void emulation_sequencer::calculate_sequence() {
 
 }
 
-std::vector<core_step_metadata> emulation_sequencer::get_running_cores() {
+std::vector<fcore::core_step_metadata> fcore::emulation_sequencer::get_running_cores() {
     std::vector<core_step_metadata> ret;
     progress--;
     bool empty_step = true;
@@ -84,7 +84,7 @@ std::vector<core_step_metadata> emulation_sequencer::get_running_cores() {
     }
 }
 
-void emulation_sequencer::setup_run(uint64_t l) {
+void fcore::emulation_sequencer::setup_run(uint64_t l) {
     sim_length = l;
     progress = sim_length;
 }
