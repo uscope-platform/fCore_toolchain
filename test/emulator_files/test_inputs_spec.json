@@ -41,16 +41,32 @@
         }
       ],
       "outputs": [
-        {
-          "reg_n":4,
-          "type":"integer",
-          "name":"test_out"
-        }
       ],
       "program":{
-        "type":"mem",
-        "filename":"emu/test_inputs.mem"
+        "content": "void main(){float input_1,input_2; float c = input_1 + input_2; float test_out = test_out + c;}",
+        "build_settings": {
+          "io": {
+            "inputs": [
+              "input_1",
+              "input_2"
+            ],
+            "outputs": [
+            ],
+            "memories": [
+              "test_out"
+            ]
+          }
+        }
       },
+      "memory_init": [
+        {
+          "name": "test_out",
+          "type": "float",
+          "is_output": true,
+          "reg_n": 4,
+          "value": 0
+        }
+      ],
       "order": 0,
       "options":{
         "comparators":"reducing",
@@ -62,3 +78,5 @@
   "n_cycles": 2,
   "async_multirate": false
 }
+
+  

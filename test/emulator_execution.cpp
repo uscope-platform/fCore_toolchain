@@ -546,8 +546,9 @@ TEST(Emulator_execution, emulator_outputs) {
     manager.emulate();
     auto res = nlohmann::json::parse(manager.get_results())["test"];
 
-    std::vector<uint32_t> reference = {0x426a7ae1, 0x42f070a4};
-    ASSERT_EQ(res["outputs"]["test_out"][0], reference);
+    std::vector<float> reference = {58.6199989, 120.220001};
+    std::vector<float> test_out = res["outputs"]["test_out"][0];
+    ASSERT_EQ(test_out, reference);
 
 }
 
@@ -562,7 +563,7 @@ TEST(Emulator_execution, emulator_inteconnect) {
 
     auto s = res.dump();
     std::vector<uint32_t> reference = {0x426a7ae1, 0x42f070a4};
-    ASSERT_EQ(res["outputs"]["test_out"][0], reference);
+    ASSERT_EQ(res["outputs"]["consumer_out"][0], reference);
 
 }
 

@@ -72,7 +72,6 @@ configure_file(emulator_files/backend/test_stop.mem ${EMU_TEST_FILES_DIR} COPYON
 configure_file(emulator_files/backend/test_efi.mem ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_inputs.csv ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_inputs.mem ${EMU_TEST_FILES_DIR} COPYONLY)
-configure_file(emulator_files/test_interconnect.mem ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_inputs_spec.json ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_interconnect_spec.json ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_compilation.json ${EMU_TEST_FILES_DIR} COPYONLY)
