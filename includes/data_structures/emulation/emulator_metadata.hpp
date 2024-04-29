@@ -56,7 +56,6 @@ namespace fcore{
     public:
         emulator_metadata() = default;
         std::unordered_map<std::string, emulator_input> input;
-        std::vector<emulator_output_t> output_specs;
         std::unordered_map<unsigned int, uint32_t> memory_init;
         std::shared_ptr<emulator> emu;
         int active_channels;
@@ -64,7 +63,6 @@ namespace fcore{
         std::string comparator_type;
         bool io_remapping_active;
         std::unordered_map<uint16_t, uint16_t> io_map;
-        std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outputs;
     };
 
 

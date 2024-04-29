@@ -69,7 +69,6 @@ void fcore::emulator_manager::process() {
         auto out_specs = load_output_specs(item);
 
         outputs_manager.add_specs(id, out_specs, emulators[id].active_channels);
-        emulators[id].output_specs = out_specs;
 
         emulators[id].memory_init = load_memory_init(item["memory_init"]);
         if(async_multirate){
@@ -405,29 +404,6 @@ std::string fcore::emulator_manager::get_results() {
 
 
     return res.dump(4);
-}
-
-nlohmann::json fcore::emulator_manager::get_channel_outputs(std::vector<emulator_output_t> specs, int ch, std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outs) {
-    nlohmann::json res;
-
-    for(auto &s: specs){
-        nlohmann::json output_obj;
-        if(s.type == type_uint32){
-            for(int i = 0; i<ch; ++i){
-                output_obj[i] = outs[i][s.reg_n];
-            }
-        } else if(s.type == type_float){
-            for(int i = 0; i<ch; ++i){
-                std::vector<float> cast_vect;
-                for(int j = 0; j<outs[i][s.reg_n].size(); ++j){
-                    output_obj[i][j] = emulator::uint32_to_float(outs[i][s.reg_n][j]);
-                }
-            }
-        }
-        res[s.name] = output_obj;
-    }
-
-    return res;
 }
 
 

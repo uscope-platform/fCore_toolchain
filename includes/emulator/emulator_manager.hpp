@@ -72,8 +72,6 @@ namespace fcore{
         void interconnects_phase(const core_step_metadata& info, std::unordered_map<std::string, bool> enabled_cores);
         void outputs_phase(core_step_metadata info);
 
-        nlohmann::json get_channel_outputs(std::vector<emulator_output_t> specs, int ch, std::unordered_map<int, std::unordered_map<int, std::vector<uint32_t>>> outs);
-
         std::unordered_map<std::string, emulator_metadata> emulators;
         std::vector<interconnect_t> interconnects;
         int emu_length;
@@ -88,6 +86,7 @@ namespace fcore{
         multirate_io_repeater output_repeater;
         emulation_sequencer sequencer;
         emulation_outputs_manager outputs_manager;
+
         bool async_multirate;
     };
 }
