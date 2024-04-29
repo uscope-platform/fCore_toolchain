@@ -79,3 +79,16 @@ nlohmann::json fcore::emulation_outputs_manager::get_emulation_output(const std:
 
     return res;
 }
+
+std::vector<double> fcore::emulation_outputs_manager::get_timebase() {
+    std::vector<double> result;
+
+    auto output = data_section.begin()->second.begin()->second;
+    auto ts = output.get_sampling_period();
+    auto size = output.get_data_length();
+
+    for(int i = 0; i<size; i++){
+        result.push_back(ts*i);
+    }
+    return result;
+}

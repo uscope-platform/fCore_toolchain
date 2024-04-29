@@ -162,14 +162,16 @@ void fcore::emulator_manager::run_cores() {
             spdlog::info("EMULATION PROGRESS: {0} cycles done out of {1}", cur_c, emu_length);
         }
         auto running_cores = sequencer.get_running_cores();
-        if(running_cores.empty()) continue;
+
 
 
         for(auto &core:running_cores){
-            inputs_phase(core);
-            execution_phase(core);
-            interconnects_phase(core, sequencer.get_enabled_cores());
-            outputs_phase(core);
+            if(!sequencer.is_empty_step()){
+                inputs_phase(core);
+                execution_phase(core);
+                interconnects_phase(core, sequencer.get_enabled_cores());
+            }
+            outputs_manager.process_outputs(core.id, emulators[core.id], core.running);
         }
 
     }
@@ -241,9 +243,6 @@ void fcore::emulator_manager::interconnects_phase(const core_step_metadata& info
     }
 }
 
-void fcore::emulator_manager::outputs_phase(core_step_metadata info) {
-    outputs_manager.process_outputs(info.id, emulators[info.id], info.running);
-}
 
 std::unordered_map<std::string, fcore::emulator_input> fcore::emulator_manager::load_input(nlohmann::json &core) {
     emulator_input_factory factory(core["input_data"]);
@@ -403,6 +402,7 @@ std::string fcore::emulator_manager::get_results() {
     }
 
 
+    res["timebase"] = outputs_manager.get_timebase();
     return res.dump(4);
 }
 

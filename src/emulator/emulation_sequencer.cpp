@@ -55,7 +55,7 @@ void fcore::emulation_sequencer::calculate_sequence() {
 std::vector<fcore::core_step_metadata> fcore::emulation_sequencer::get_running_cores() {
     std::vector<core_step_metadata> ret;
     progress--;
-    bool empty_step = true;
+    empty_step = true;
     for(auto &i: cores){
         bool executing = false;
         if(i.current_step == 0 || i.n_skips == 0){
@@ -77,11 +77,7 @@ std::vector<fcore::core_step_metadata> fcore::emulation_sequencer::get_running_c
 
         ret.push_back(m);
     }
-    if(empty_step){
-        return {};
-    } else {
-        return ret;
-    }
+    return ret;
 }
 
 void fcore::emulation_sequencer::setup_run(uint64_t l) {

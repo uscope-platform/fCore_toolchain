@@ -70,7 +70,6 @@ namespace fcore{
         void inputs_phase(const core_step_metadata& info);
         void execution_phase(const core_step_metadata& info);
         void interconnects_phase(const core_step_metadata& info, std::unordered_map<std::string, bool> enabled_cores);
-        void outputs_phase(core_step_metadata info);
 
         std::unordered_map<std::string, emulator_metadata> emulators;
         std::vector<interconnect_t> interconnects;

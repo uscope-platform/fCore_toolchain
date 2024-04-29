@@ -33,6 +33,8 @@ namespace fcore{
         void repeat_last_data_point();
         std::vector<std::vector<uint32_t>> get_integer_data() {return data;}
         std::vector<std::vector<float>> get_float_data();
+        uint64_t get_data_length(){return data[0].size();};
+        double get_sampling_period() const{return sampling_period;};
 
     private:
         std::vector<std::string> id;
