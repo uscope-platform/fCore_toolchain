@@ -4,7 +4,6 @@
   "title": "Root Schema",
   "required": [
     "cores",
-    "async_multirate",
     "n_cycles"
   ],
   "properties": {
@@ -19,7 +18,8 @@
           "order",
           "program",
           "channels",
-          "options"
+          "options",
+          "sampling_frequency"
         ],
         "properties": {
           "id": {
@@ -281,9 +281,9 @@
               }
             }
           },
-          "multirate_divisor": {
+          "sampling_frequency": {
             "type": "integer",
-            "title": "number of base cycles to skip when running the core"
+            "title": "Sampling frequency for the core. "
           }
         }
       }
@@ -397,10 +397,6 @@
     "n_cycles": {
       "type": "integer",
       "title": "Number of cycles to emulate"
-    },
-    "async_multirate": {
-      "type": "boolean",
-      "title": "enables asynchronous multi-rate core emulation"
     }
   }
 }

@@ -40,7 +40,6 @@ void fcore::emulator_manager::process() {
         throw std::runtime_error("No cores section found in the emulator specification file");
     }
     // Parse specification file;
-    async_multirate = spec_file["async_multirate"];
 
     for(auto &item:spec_file["cores"]){
         std::string id = item["id"];
@@ -71,11 +70,8 @@ void fcore::emulator_manager::process() {
         outputs_manager.add_specs(id, out_specs, emulators[id].active_channels);
 
         emulators[id].memory_init = load_memory_init(item["memory_init"]);
-        if(async_multirate){
-            sequencer.add_core(id, item["multirate_divisor"], item["order"]);
-        } else {
-            sequencer.add_core(id, 1, item["order"]);
-        }
+
+        sequencer.add_core(id, item["sampling_frequency"], item["order"]);
 
     }
 
@@ -137,7 +133,7 @@ std::vector<fcore::program_bundle> fcore::emulator_manager::get_programs() {
             }
         }
         e_b.clear_dma_io();
-        b.multirate_divisor = item["multirate_divisor"];
+        b.sampling_frequency = item["sampling_frequency"];
         programs.push_back(b);
     }
     check_bus_duplicates();
