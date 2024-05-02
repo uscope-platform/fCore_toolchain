@@ -136,6 +136,8 @@ void fcore::fcore_cc::optimize(std::unordered_map<std::string, std::vector<int>>
     stream_pass_manager sman(dump_ast_level, bindings_map, allocation_map);
     program_stream = sman.process_stream(program_stream);
 
+    analyze_program_length(sman.get_instruction_count());
+
     if(dump_ast_level>0) dump["stream"] = sman.get_dump();
 
     if(program_stream.empty()){
@@ -215,14 +217,11 @@ void fcore::fcore_cc::merge_includes(const std::vector<std::shared_ptr<hl_ast_no
 
 }
 
-uint32_t fcore::fcore_cc::analyze_program_lenght(std::shared_ptr<struct instruction_count> ic) const {
+void fcore::fcore_cc::analyze_program_length(std::shared_ptr<struct instruction_count> c) {
 
-    uint32_t n_clk =
-            ic->regular*info.n_channels +
-            ic->efi*info.n_channels*info.efi_lenght +
-            ic->load*(info.n_channels + info.load_overhead) +
-            ic->stop*info.stop_duration +
+    program_length = c->regular * info.n_channels +
+            c->efi * info.n_channels * info.efi_lenght +
+            c->load * (info.n_channels + info.load_overhead) +
+            c->stop * info.stop_duration +
             info.fixed_core_overhead;
-
-    return  n_clk;
 }

@@ -65,13 +65,13 @@ namespace fcore {
 
         void set_dma_map(nlohmann::json &map){dma_spec = map;};
         void set_core_info(struct core_info &i) {info = i;};
-
+        uint32_t get_program_length() { return program_length;}
     private:
         void merge_includes(const std::vector<std::shared_ptr<hl_ast_node>>& i);
         std::shared_ptr<hl_ast_node>  parse_include(std::istream &file, std::shared_ptr<define_map> def_map);
         void parse(std::unordered_map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map);
         void optimize(std::unordered_map<std::string, std::vector<int>> &dma_map);
-        uint32_t analyze_program_lenght(std::shared_ptr<struct instruction_count> c) const;
+        void analyze_program_length(std::shared_ptr<struct instruction_count> c);
 
         std::ifstream input_file_stream;
         std::istringstream input_string_stream;
@@ -94,6 +94,7 @@ namespace fcore {
         std::shared_ptr<io_map> allocation_map;
 
         struct core_info info;
+        uint32_t program_length;
 
     };
 }

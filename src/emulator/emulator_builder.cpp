@@ -52,7 +52,7 @@ fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohma
         ast = dis.get_ast();
 
     } else {
-        auto program = compile_programs(core_info, input_connections, output_connections, am);
+        auto program = compile_program(core_info, input_connections, output_connections, am);
 
         binary_loader dis(program);
         metadata.io_map = dis.get_io_mapping();
@@ -235,7 +235,7 @@ void fcore::emulator_builder::process_ioms(
 }
 
 
-std::vector<uint32_t> fcore::emulator_builder::compile_programs(const nlohmann::json &core_info,
+std::vector<uint32_t> fcore::emulator_builder::compile_program(const nlohmann::json &core_info,
                                         const std::vector<nlohmann::json> &input_connections,
                                         const std::vector<nlohmann::json> &output_connections,
                                         std::set<io_map_entry> &am
@@ -256,6 +256,8 @@ std::vector<uint32_t> fcore::emulator_builder::compile_programs(const nlohmann::
     fcore_cc compiler(content, headers);
     compiler.set_dma_map(dma_io);
     bool result = compiler.compile();
+
+    exec_length = compiler.get_program_length();
 
     if(!result){
         throw std::runtime_error(compiler.get_errors());

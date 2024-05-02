@@ -39,12 +39,13 @@ namespace fcore {
 
         void clear_dma_io();
 
-        std::vector<uint32_t>  compile_programs(
+        std::vector<uint32_t>  compile_program(
                 const nlohmann::json &core_info,
                 const std::vector<nlohmann::json> &input_connections,
                 const std::vector<nlohmann::json> &output_connections,
                 std::set<io_map_entry> &am
         );
+        uint32_t get_program_length() const {return exec_length;};
 
     private:
 
@@ -66,6 +67,7 @@ namespace fcore {
         std::set<uint32_t> assigned_outputs;
         std::set<std::string> memory_names;
 
+        uint32_t exec_length;
 
         bool debug_autogen;
     };
