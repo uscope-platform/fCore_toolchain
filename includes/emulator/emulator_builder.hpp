@@ -45,7 +45,7 @@ namespace fcore {
                 const std::vector<nlohmann::json> &output_connections,
                 std::set<io_map_entry> &am
         );
-        uint32_t get_program_length() const {return exec_length;};
+        struct program_info get_program_info() const {return length_info;};
 
     private:
 
@@ -67,7 +67,7 @@ namespace fcore {
         std::set<uint32_t> assigned_outputs;
         std::set<std::string> memory_names;
 
-        uint32_t exec_length;
+        struct program_info length_info;
 
         bool debug_autogen;
     };

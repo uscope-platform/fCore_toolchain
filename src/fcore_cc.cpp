@@ -219,9 +219,8 @@ void fcore::fcore_cc::merge_includes(const std::vector<std::shared_ptr<hl_ast_no
 
 void fcore::fcore_cc::analyze_program_length(std::shared_ptr<struct instruction_count> c) {
 
-    program_length = c->regular * info.n_channels +
-            c->efi * info.n_channels * info.efi_lenght +
-            c->load * (info.n_channels + info.load_overhead) +
-            c->stop * info.stop_duration +
-            info.fixed_core_overhead;
+    length_info.per_channel_portion = c->regular + c->efi * info.efi_lenght + c->load;
+
+    length_info.fixed_portion = c->stop * info.stop_duration +
+            info.fixed_core_overhead + c->load*info.load_overhead;
 }

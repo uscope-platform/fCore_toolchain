@@ -45,6 +45,12 @@ namespace fcore {
         uint32_t fixed_core_overhead = 4;
     };
 
+    struct program_info {
+        uint32_t fixed_portion;
+        uint32_t per_channel_portion;
+    };
+
+
     typedef std::unordered_map<std::string, std::vector<io_map_entry>> io_map;
 
     class fcore_cc {
@@ -65,7 +71,7 @@ namespace fcore {
 
         void set_dma_map(nlohmann::json &map){dma_spec = map;};
         void set_core_info(struct core_info &i) {info = i;};
-        uint32_t get_program_length() { return program_length;}
+        struct program_info get_program_info() { return length_info;}
     private:
         void merge_includes(const std::vector<std::shared_ptr<hl_ast_node>>& i);
         std::shared_ptr<hl_ast_node>  parse_include(std::istream &file, std::shared_ptr<define_map> def_map);
@@ -94,7 +100,7 @@ namespace fcore {
         std::shared_ptr<io_map> allocation_map;
 
         struct core_info info;
-        uint32_t program_length;
+        struct program_info length_info;
 
     };
 }

@@ -120,7 +120,7 @@ std::vector<fcore::program_bundle> fcore::emulator_manager::get_programs() {
                 if(id == destination) dst.push_back(ic);
             }
             b.program = e_b.compile_program(item, dst, src, b.io);
-            b.program_length = e_b.get_program_length();
+            b.program_length = e_b.get_program_info();
 
         } catch(std::runtime_error &e){
             errors[id] = e.what();
