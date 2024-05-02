@@ -257,7 +257,7 @@ std::vector<uint32_t> fcore::emulator_builder::compile_program(const nlohmann::j
     compiler.set_dma_map(dma_io);
     bool result = compiler.compile();
 
-    exec_length = compiler.get_program_info();
+    length_info = compiler.get_program_info();
 
     if(!result){
         throw std::runtime_error(compiler.get_errors());
