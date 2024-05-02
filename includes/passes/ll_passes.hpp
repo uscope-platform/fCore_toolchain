@@ -20,7 +20,6 @@
 // LL passes
 #include "passes/low_level/loop_implementation_pass.hpp"
 #include "passes/low_level/pseudo_instructions_pass.hpp"
-#include "passes/low_level/instruction_counting_pass.hpp"
 #include "passes/low_level/load_intercalation_pass.hpp"
 
 #include "tools/variable_map.hpp"
@@ -34,9 +33,6 @@ namespace fcore{
         manager.add_morphing_pass("Loop Implementation", std::make_shared<loop_implementation_pass>());
         manager.add_morphing_pass("Pseudo Instruction Implementation", std::make_shared<pseudo_instructions_pass>());
         manager.add_morphing_pass("Load Intercalation", std::make_shared<load_intercalation_pass>());
-        std::shared_ptr<pass_base<ll_ast_node>> ic_pass =std::make_shared<instruction_counting_pass>();
-        manager.add_morphing_pass("Instruction counting", ic_pass);
-        manager.analysis_passes.insert(std::make_pair ("instruction_counting", ic_pass));
         return manager;
     }
 }

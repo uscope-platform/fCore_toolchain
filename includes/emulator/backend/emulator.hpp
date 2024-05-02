@@ -20,8 +20,8 @@
 
 #include "efi_dispatcher.h"
 #include "data_structures/instruction_stream.hpp"
-#include "fCore_isa.hpp"
 #include "data_structures/emulation/emulator_metadata.hpp"
+#include "fCore_isa.hpp"
 
 #if GENERAL_PURPOSE_EMULATION==1
     #include "emulator/backend/gp_executor.hpp"
