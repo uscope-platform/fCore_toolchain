@@ -214,3 +214,15 @@ void fcore::fcore_cc::merge_includes(const std::vector<std::shared_ptr<hl_ast_no
     }
 
 }
+
+uint32_t fcore::fcore_cc::analyze_program_lenght(std::shared_ptr<struct instruction_count> ic) const {
+
+    uint32_t n_clk =
+            ic->regular*info.n_channels +
+            ic->efi*info.n_channels*info.efi_lenght +
+            ic->load*(info.n_channels + info.load_overhead) +
+            ic->stop*info.stop_duration +
+            info.fixed_core_overhead;
+
+    return  n_clk;
+}

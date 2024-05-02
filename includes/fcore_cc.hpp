@@ -37,6 +37,14 @@
 
 namespace fcore {
 
+    struct core_info {
+        uint32_t n_channels = 11;
+        uint32_t efi_lenght = 13;
+        uint32_t load_overhead = 2;
+        uint32_t stop_duration = 1;
+        uint32_t fixed_core_overhead = 4;
+    };
+
     typedef std::unordered_map<std::string, std::vector<io_map_entry>> io_map;
 
     class fcore_cc {
@@ -54,13 +62,16 @@ namespace fcore {
         void write_verilog_memfile(const std::string& ouput_file);
         void write_json(const std::string& output_file);
         nlohmann::json get_dump() {return dump;};
+
         void set_dma_map(nlohmann::json &map){dma_spec = map;};
+        void set_core_info(struct core_info &i) {info = i;};
 
     private:
         void merge_includes(const std::vector<std::shared_ptr<hl_ast_node>>& i);
         std::shared_ptr<hl_ast_node>  parse_include(std::istream &file, std::shared_ptr<define_map> def_map);
         void parse(std::unordered_map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map);
         void optimize(std::unordered_map<std::string, std::vector<int>> &dma_map);
+        uint32_t analyze_program_lenght(std::shared_ptr<struct instruction_count> c) const;
 
         std::ifstream input_file_stream;
         std::istringstream input_string_stream;
@@ -82,6 +93,7 @@ namespace fcore {
         std::unordered_map<std::string, variable_class_t> dma_io_spec;
         std::shared_ptr<io_map> allocation_map;
 
+        struct core_info info;
 
     };
 }
