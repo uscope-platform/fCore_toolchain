@@ -42,7 +42,7 @@ void fcore::emulation_sequencer::calculate_sequence() {
         }
 
     } else {
-
+        simulation_frequency = frequencies[0];
         for(auto &i: cores){
             i.n_skips = 0;
         }
