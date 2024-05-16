@@ -136,6 +136,7 @@ std::vector<fcore::program_bundle> fcore::emulator_manager::get_programs() {
         }
         e_b.clear_dma_io();
         b.sampling_frequency = item["sampling_frequency"];
+        b.execution_order = item["order"];
         programs.push_back(b);
     }
     check_bus_duplicates();

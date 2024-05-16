@@ -44,6 +44,7 @@ namespace fcore{
         std::set<io_map_entry> io;
         std::unordered_map<uint32_t, uint32_t> mem_init;
         uint32_t sampling_frequency;
+        uint32_t execution_order;
         struct program_info program_length;
     };
 
