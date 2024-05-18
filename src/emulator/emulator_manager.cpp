@@ -76,7 +76,7 @@ void fcore::emulator_manager::process() {
     }
 
     interconnects = load_interconnects(spec_file["interconnect"]);
-    sequencer.setup_run(spec_file["n_cycles"]);
+    sequencer.setup_run(spec_file["emulation_time"]);
 
     // Setup emulators
     for(auto &item:emulators){

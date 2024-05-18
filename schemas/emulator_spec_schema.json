@@ -4,7 +4,7 @@
   "title": "Root Schema",
   "required": [
     "cores",
-    "n_cycles"
+    "emulation_time"
   ],
   "properties": {
     "cores": {
@@ -394,9 +394,9 @@
         }
       }
     },
-    "n_cycles": {
-      "type": "integer",
-      "title": "Number of cycles to emulate"
+    "emulation_time": {
+      "type": "number",
+      "title": "Length of time to emulate"
     }
   }
 }

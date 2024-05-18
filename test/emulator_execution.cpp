@@ -37,10 +37,10 @@ struct memory_struct{
     std::string type;
 };
 
-nlohmann::json prepare_spec_file(const std::string &file, int run_length){
+nlohmann::json prepare_spec_file(const std::string &file, float emulation_time){
     nlohmann::json spec;
     spec["cores"] = std::vector<nlohmann::json>();
-    spec["n_cycles"] = run_length;
+    spec["emulation_time"] = emulation_time;
     spec["cores"][0]["order"] = 0;
     spec["cores"][0]["id"] = "test";
     spec["cores"][0]["program"] = std::unordered_map<std::string, std::string>({{"type", "mem"}, { "filename", file}});
@@ -48,20 +48,20 @@ nlohmann::json prepare_spec_file(const std::string &file, int run_length){
     spec["cores"][0]["options"] = nlohmann::json();
     spec["cores"][0]["options"]["comparators"] = "full";
     spec["cores"][0]["options"]["efi_implementation"] = "none";
-    spec["cores"][0]["sampling_frequency"] =1000;
+    spec["cores"][0]["sampling_frequency"] =1;
     return spec;
 }
 
 nlohmann::json prepare_spec(
         const std::string &content,
-        int run_length,
+        float emulation_time,
         std::vector<input_struct>inputs,
         std::vector<output_struct> outputs,
         std::vector<memory_struct> memories
 ){
     nlohmann::json spec;
     spec["cores"] = std::vector<nlohmann::json>();
-    spec["n_cycles"] = run_length;
+    spec["emulation_time"] = emulation_time;
 
     auto cs = nlohmann::json();
 
@@ -74,7 +74,7 @@ nlohmann::json prepare_spec(
     cs["options"] = nlohmann::json();
     cs["options"]["comparators"] = "full";
     cs["options"]["efi_implementation"] = "none";
-    cs["sampling_frequency"] =1000;
+    cs["sampling_frequency"] =1;
     cs["inputs"]= std::vector<nlohmann::json>();
 
     cs["program"]["build_settings"] = nlohmann::json();

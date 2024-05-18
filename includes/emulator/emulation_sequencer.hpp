@@ -21,6 +21,7 @@
 #include <cstdint>
 #include <numeric>
 #include <algorithm>
+#include <cmath>
 
 namespace fcore {
     struct core_metadata {
@@ -41,7 +42,7 @@ namespace fcore {
     class emulation_sequencer {
     public:
         void add_core(const std::string &core_id, uint32_t frequency, uint32_t order);
-        void setup_run(uint64_t l);
+        void setup_run(float sim_l);
         void calculate_sequence();
 
         uint32_t get_simulation_frequency(){ return simulation_frequency;};
@@ -54,7 +55,7 @@ namespace fcore {
     private:
         std::vector<core_metadata> cores;
         uint64_t progress;
-        uint64_t sim_length;
+        float sim_length;
         uint32_t simulation_frequency;
         bool empty_step;
         std::unordered_map<std::string, bool> enabled_cores_map;

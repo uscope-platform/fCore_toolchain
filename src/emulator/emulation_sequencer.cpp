@@ -14,6 +14,8 @@
 
 #include "emulator/emulation_sequencer.hpp"
 
+#include <cmath>
+
 
 void fcore::emulation_sequencer::add_core(const std::string& core_id, uint32_t frequency, uint32_t order) {
     core_metadata s;
@@ -48,6 +50,8 @@ void fcore::emulation_sequencer::calculate_sequence() {
         }
     }
 
+    progress =  (uint64_t) std::round(sim_length*(float)simulation_frequency);
+
     std::sort(cores.begin(), cores.end(), [](core_metadata const& lhs, core_metadata const &rhs)-> bool {return lhs.exec_order<rhs.exec_order;});
 
 }
@@ -80,7 +84,6 @@ std::vector<fcore::core_step_metadata> fcore::emulation_sequencer::get_running_c
     return ret;
 }
 
-void fcore::emulation_sequencer::setup_run(uint64_t l) {
-    sim_length = l;
-    progress = sim_length;
+void fcore::emulation_sequencer::setup_run(float sim_l) {
+    sim_length = sim_l;
 }

@@ -73,10 +73,10 @@
         "efi_implementation":"efi_sort"
       },
       "channels":1,
-      "sampling_frequency": 1000
+      "sampling_frequency": 1
     }
   ],
-  "n_cycles": 2
+  "emulation_time": 2
 }
 
   
