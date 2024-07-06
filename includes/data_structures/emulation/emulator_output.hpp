@@ -26,6 +26,7 @@ namespace fcore{
 
     class emulator_output {
     public:
+        emulator_output() = default;
         emulator_output(const std::string& id, uint32_t size);
         void set_sampling_period(double per){sampling_period = per;};
         void add_data_point(const std::vector<uint32_t>& dp);

@@ -36,6 +36,9 @@ void fcore::emulation_outputs_manager::process_outputs(const std::string& core_i
     } else {
         for(auto &out: data_section[core_id]){
             uint16_t io_address = output_specs[core_id][out.first].reg_n;
+            if(!emu.io_map.contains(io_address)){
+                throw std::runtime_error("Address of output \"" + output_specs[core_id][out.first].name + "\" not found.");
+            }
             uint32_t core_address = emu.io_map.at(io_address);
 
             if(emu.active_channels==1){
@@ -82,8 +85,20 @@ nlohmann::json fcore::emulation_outputs_manager::get_emulation_output(const std:
 
 std::vector<double> fcore::emulation_outputs_manager::get_timebase() {
     std::vector<double> result;
-
-    auto output = data_section.begin()->second.begin()->second;
+    emulator_output output;
+    // TODO: this check should be done before the simulation is run, not after, and the output timebase existing or not
+    // Should not depend on whether an output is present or not...
+    bool found_output = false;
+    for(const auto &o:data_section){
+        if(!o.second.empty()){
+            output = o.second.begin()->second;
+            found_output = true;
+            break;
+        }
+    }
+    if(!found_output){
+        throw std::runtime_error("At least one emulator has to have an output defined");
+    }
     auto ts = output.get_sampling_period();
     auto size = output.get_data_length();
 
