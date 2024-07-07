@@ -61,7 +61,7 @@ std::vector<std::vector<float>> fcore::emulator_output::get_float_data() {
     for(const auto &vect:data){
         std::vector<float> ds;
         for(const auto &item:vect){
-            ds.push_back(emulator::uint32_to_float(item));
+            ds.push_back(emulator_backend::uint32_to_float(item));
         }
         ret_val.push_back(ds);
     }

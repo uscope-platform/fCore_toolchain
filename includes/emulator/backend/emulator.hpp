@@ -31,9 +31,9 @@
 
 
 namespace fcore{
-    class emulator {
+    class emulator_backend {
     public:
-        emulator(instruction_stream &s, int n_channels, const std::string &core);
+        emulator_backend(instruction_stream &s, int n_channels, const std::string &core);
 
         void init_memory(const std::unordered_map<unsigned int, uint32_t> &mem_init);
         void apply_inputs(uint32_t addr, uint32_t data, unsigned int channel);

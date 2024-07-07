@@ -129,7 +129,7 @@ std::vector<fcore::program_bundle> fcore::emulator_manager::get_programs() {
             int reg_idx = mem["reg_n"];
             if(mem["type"]== "float"){
                 float flt_v = mem["value"];
-                b.mem_init[reg_idx] = emulator::float_to_uint32(flt_v);
+                b.mem_init[reg_idx] = emulator_backend::float_to_uint32(flt_v);
             } else {
                 b.mem_init[reg_idx] = mem["value"];
             }
@@ -368,14 +368,14 @@ std::unordered_map<unsigned int, uint32_t> fcore::emulator_manager::load_memory_
         if(mem["reg_n"].is_array()){
             for(uint32_t i = 0; i< mem["reg_n"].size();i++){
                 if(mem["type"] == "float") {
-                    init_map[mem["reg_n"][i]] = emulator::float_to_uint32(mem["value"][i]);
+                    init_map[mem["reg_n"][i]] = emulator_backend::float_to_uint32(mem["value"][i]);
                 } else {
                     init_map[mem["reg_n"][i]] = mem["value"][i];
                 }
             }
         } else {
             if(mem["type"] == "float") {
-                init_map[mem["reg_n"]] = emulator::float_to_uint32(mem["value"]);
+                init_map[mem["reg_n"]] = emulator_backend::float_to_uint32(mem["value"]);
             } else {
                 init_map[mem["reg_n"]] = mem["value"];
             }

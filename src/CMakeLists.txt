@@ -100,7 +100,7 @@ set(FCORE_EMU_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/emulation/emulator_input_factory.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/emulation/hil_bus_map.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/emulation/emulator_output.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/emulator/backend/emulator.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/emulator/backend/emulator_backend.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/emulator/backend/emulation_outputs_manager.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/emulator/backend/efi_dispatcher.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/emulator/emulator_builder.cpp

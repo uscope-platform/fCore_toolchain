@@ -26,7 +26,7 @@
 namespace fcore{
 
 // FORWARD DECLARATIONS
-    class emulator;
+    class emulator_backend;
 
     typedef enum {
         type_uint32 = 1,
@@ -57,7 +57,7 @@ namespace fcore{
         emulator_metadata() = default;
         std::unordered_map<std::string, emulator_input> input;
         std::unordered_map<unsigned int, uint32_t> memory_init;
-        std::shared_ptr<emulator> emu;
+        std::shared_ptr<emulator_backend> emu;
         int active_channels;
         std::string efi_implementation;
         std::string comparator_type;
