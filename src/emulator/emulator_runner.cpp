@@ -18,5 +18,16 @@
 
 namespace fcore {
 
+    void emulator_runner::inputs_phase(const core_step_metadata &info) {
 
+    }
+
+    void emulator_runner::interconnects_phase(const core_step_metadata &info,
+                                              std::unordered_map<std::string, bool> enabled_cores) {
+
+    }
+
+    void emulator_runner::execution_phase(const core_step_metadata &info) {
+
+    }
 } // fcore

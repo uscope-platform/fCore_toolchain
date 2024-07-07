@@ -13,11 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "emulator/backend/emulator.hpp"
+#include "emulator/backend/emulator_backend.hpp"
 
 
 
-fcore::emulator_backend::emulator_backend(instruction_stream &s, int n_channels, const std::string &core) : efi_implementation(core){
+fcore::emulator_backend::emulator_backend(instruction_stream &s, int n_channels, const std::string &core) : efi_backend(core){
     stream = s;
     for(int i = 0; i<n_channels; i++){
         memory_pool[i] = std::make_shared<std::vector<uint32_t>>(2 << (fcore_register_address_width - 1), 0);
@@ -230,19 +230,7 @@ uint32_t fcore::emulator_backend::execute_compare_gt(uint32_t a, uint32_t b) {
         res = a>b;
     }
 
-    if(comparator_type== "full") {
-        if(res){
-            return 0xffffffff;
-        } else {
-            return 0;
-        }
-    } else if(comparator_type=="reducing"){
-        return res;
-    } else if(comparator_type == "none") {
-        throw std::runtime_error("The emulator has encountered a comparison instruction on core "+core_name+" which does not have comparators.");
-    } else{
-        throw std::runtime_error("The emulator has encountered a comparison instruction, however an unknown type was selected in the spec file");
-    }
+    return process_comparison_output(res);
 }
 
 uint32_t fcore::emulator_backend::execute_compare_le(uint32_t a, uint32_t b) {
@@ -261,54 +249,15 @@ uint32_t fcore::emulator_backend::execute_compare_le(uint32_t a, uint32_t b) {
     }else {
         res = a<=b;
     }
-
-    if(comparator_type== "full") {
-        if(res){
-            return 0xffffffff;
-        } else {
-            return 0;
-        }
-    } else if(comparator_type=="reducing"){
-        return res;
-    } else if(comparator_type == "none") {
-        throw std::runtime_error("The emulator has encountered a comparison instruction on core "+core_name+" which does not have comparators.");
-    } else{
-        throw std::runtime_error("The emulator has encountered a comparison instruction, however an unknown type was selected in the spec file");
-    }
+    return process_comparison_output(res);
 }
 
 uint32_t fcore::emulator_backend::execute_compare_eq(uint32_t a, uint32_t b) {
-    bool res = a==b;
-    if(comparator_type== "full") {
-        if(res){
-            return 0xffffffff;
-        } else {
-            return 0;
-        }
-    } else if(comparator_type=="reducing"){
-        return res;
-    } else if(comparator_type == "none") {
-        throw std::runtime_error("The emulator has encountered a comparison instruction on core "+core_name+" which does not have comparators.");
-    } else{
-        throw std::runtime_error("The emulator has encountered a comparison instruction, however an unknown type was selected in the spec file");
-    }
+    return process_comparison_output(a==b);
 }
 
 uint32_t fcore::emulator_backend::execute_compare_ne(uint32_t a, uint32_t b) {
-    bool res = a!=b;
-    if(comparator_type== "full") {
-        if(res){
-            return 0xffffffff;
-        } else {
-            return 0;
-        }
-    } else if(comparator_type=="reducing"){
-        return res;
-    } else if(comparator_type == "none") {
-        throw std::runtime_error("The emulator has encountered a comparison instruction on core "+core_name+" which does not have comparators.");
-    } else{
-        throw std::runtime_error("The emulator has encountered a comparison instruction, however an unknown type was selected in the spec file");
-    }
+    return process_comparison_output(a!=b);
 }
 
 uint32_t fcore::emulator_backend::execute_or(uint32_t a, uint32_t b) {
@@ -361,7 +310,7 @@ uint32_t fcore::emulator_backend::execute_satn(uint32_t a, uint32_t b) {
 }
 
 void fcore::emulator_backend::execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest) {
-    efi_implementation.emulate_efi(efi_selector, op_a, op_b, dest, working_memory);
+    efi_backend.emulate_efi(efi_selector, op_a, op_b, dest, working_memory);
 }
 
 
@@ -410,5 +359,22 @@ uint32_t fcore::emulator_backend::execute_csel(uint32_t a, uint32_t b, uint32_t 
         return b;
     } else {
         return c;
+    }
+}
+
+uint32_t fcore::emulator_backend::process_comparison_output(bool val) {
+
+    if(comparator_type== comparator_full) {
+        if(val){
+            return 0xffffffff;
+        } else {
+            return 0;
+        }
+    } else if(comparator_type==comparator_reducing){
+        return val;
+    } else if(comparator_type == comparator_none) {
+        throw std::runtime_error("The emulator has encountered a comparison instruction on core "+core_name+" which does not have comparators.");
+    } else{
+        throw std::runtime_error("The emulator has encountered a comparison instruction, however an unknown type was selected in the spec file");
     }
 }

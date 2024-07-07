@@ -39,9 +39,9 @@ namespace fcore{
         void apply_inputs(uint32_t addr, uint32_t data, unsigned int channel);
         uint32_t get_output(uint32_t addr, int channel) const;
 
-        void set_comparator_type(std::string &t){comparator_type = t;};
+        void set_comparator_type(const comparator_type_t &t){comparator_type = t;};
         void run_round(int channel);
-        void set_efi_selector(std::string sel){ efi_selector = std::move(sel);};
+        void set_efi_selector(const efi_implementation_t sel){ efi_selector = sel;};
         std::shared_ptr<std::vector<uint32_t>> get_memory(int channel) { return memory_pool[channel];};
         std::unordered_map<uint32_t , std::shared_ptr<std::vector<uint32_t>>> get_memory_pool() { return memory_pool;};
 
@@ -82,19 +82,21 @@ namespace fcore{
         void execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest);
 
 
+        uint32_t process_comparison_output(bool val);
+
         #if GENERAL_PURPOSE_EMULATION==1
                 gp_executor exec;
         #else
                 ba_executor exec;
         #endif
 
-        instruction_stream stream;
-
         bool stop_requested;
 
-        std::string efi_selector;
-        efi_dispatcher efi_implementation;
-        std::string comparator_type;
+        instruction_stream stream;
+        efi_implementation_t efi_selector;
+
+        efi_dispatcher efi_backend;
+        comparator_type_t comparator_type;
 
         std::string core_name;
 

@@ -81,12 +81,7 @@ void fcore::emulator_manager::process() {
     // Setup emulators
     for(auto &item:emulators){
         auto emu = item.second.emu;
-        emu->set_efi_selector(item.second.efi_implementation);
-        if(item.second.io_remapping_active){
-            emu->init_memory(io_remap_memory_init(item.second.memory_init, item.second.io_map));
-        } else{
-            emu->init_memory(item.second.memory_init);
-        }
+        emu->init_memory(io_remap_memory_init(item.second.memory_init, item.second.io_map));
     }
     check_bus_duplicates();
 }
@@ -184,13 +179,9 @@ void fcore::emulator_manager::inputs_phase(const core_step_metadata& info) {
     if(info.running){
         for(auto &in:emulators[info.id].input){
             uint32_t core_reg = 0;
-            if(emulators[info.id].io_remapping_active){
-                auto addr = in.second.get_address();
-                if(emulators[info.id].io_map.contains(addr)){
-                    core_reg = emulators[info.id].io_map.at(addr);
-                }
-            } else {
-                core_reg = in.second.get_address();
+            auto addr = in.second.get_address();
+            if(emulators[info.id].io_map.contains(addr)){
+                core_reg = emulators[info.id].io_map.at(addr);
             }
             if(core_reg != 0){
                 emulators[info.id].emu->apply_inputs(core_reg, in.second.get_data(info.step_n), in.second.get_channel());
@@ -220,14 +211,9 @@ void fcore::emulator_manager::interconnects_phase(const core_step_metadata& info
             for(auto &reg:conn.connections){
                 auto src_id = src->get_name();
                 uint32_t first_address, second_address;
-                if(emulators[info.id].io_remapping_active){
-                    first_address = emulators[src->get_name()].io_map[reg.first.address];
-                    second_address = emulators[dst->get_name()].io_map[reg.second.address];
-                } else {
-                    first_address = reg.first.address;
-                    second_address = reg.second.address;
-                }
 
+                first_address = emulators[src->get_name()].io_map[reg.first.address];
+                second_address = emulators[dst->get_name()].io_map[reg.second.address];
 
                 if(enabled_cores[src_id]){
                     auto val = src->get_output(first_address, reg.first.channel);

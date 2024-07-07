@@ -52,6 +52,20 @@ namespace fcore{
 
 
 
+    typedef enum {
+        efi_none = 0,
+        efi_trig = 1,
+        efi_sort = 2,
+    } efi_implementation_t;
+
+    typedef enum {
+        comparator_none = 0,
+        comparator_reducing= 1,
+        comparator_full = 2
+    } comparator_type_t;
+
+
+
     class emulator_metadata {
     public:
         emulator_metadata() = default;
@@ -59,9 +73,6 @@ namespace fcore{
         std::unordered_map<unsigned int, uint32_t> memory_init;
         std::shared_ptr<emulator_backend> emu;
         int active_channels;
-        std::string efi_implementation;
-        std::string comparator_type;
-        bool io_remapping_active;
         std::unordered_map<uint16_t, uint16_t> io_map;
     };
 

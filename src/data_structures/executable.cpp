@@ -30,7 +30,6 @@ fcore::executable::executable(std::vector<uint32_t> exec) {
     split_word(executable[0], metadata);
 
     executable.erase(executable.begin(), executable.begin()+2);
-    io_mapping_present = metadata[0]>1;
     for(int i = 0; i< metadata[0]-1; i++){
         sections["io_remapping"].push_back(executable[i]);
     }
@@ -47,7 +46,6 @@ void fcore::executable::add_code_section(std::vector<uint32_t> code) {
 void fcore::executable::add_io_mapping(const std::set<io_map_entry>&  mapping) {
     std::set<uint32_t>maps;
     for(const auto& pair:mapping){
-        io_mapping_present = true;
         uint32_t raw_mapping = pair.io_addr+ (pair.core_addr<<16);
         if(!maps.contains(raw_mapping)){
             maps.insert(raw_mapping);

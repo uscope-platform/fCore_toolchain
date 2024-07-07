@@ -19,19 +19,19 @@ fcore::efi_dispatcher::efi_dispatcher(const std::string &core) {
     core_name = core;
 }
 
-void fcore::efi_dispatcher::emulate_efi(const std::string& function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
-    if(function == "efi_sort"){
-        efi_sort(op_a, op_b, dest, m);
-    } else if(function =="efi_trig") {
-        efi_trig(op_a, dest, m);
-    } else if(function =="none") {
+void fcore::efi_dispatcher::emulate_efi(efi_implementation_t function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
+    if(function == efi_sort){
+        efi_sort_exec(op_a, op_b, dest, m);
+    } else if(function ==efi_trig) {
+        efi_trig_exec(op_a, dest, m);
+    } else if(function ==efi_none) {
         throw std::runtime_error("The emulator has encountered an EFI instruction on core "+core_name+" which does not have an EFI interface.");
     } else{
         throw std::runtime_error("The emulator has encountered an EFI instruction, however an unknown implementation was selected in the spec file");
     }
 }
 
-void fcore::efi_dispatcher::efi_sort(uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
+void fcore::efi_dispatcher::efi_sort_exec(uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
 
 
     bool descending_order  = m->at(op_a) != 1;
@@ -74,7 +74,7 @@ inline T signextend(const T x)
     return s.x = x;
 }
 
-void fcore::efi_dispatcher::efi_trig(uint32_t op_a, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
+void fcore::efi_dispatcher::efi_trig_exec(uint32_t op_a, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
 
     int opcode  = m->at(op_a);
 

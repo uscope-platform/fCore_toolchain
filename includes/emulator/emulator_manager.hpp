@@ -28,7 +28,7 @@
 #include "frontend/schema_validators/schema_validator_base.h"
 #include "frontend/binary_loader.hpp"
 #include "../../third_party/csv.hpp"
-#include "emulator/backend/emulator.hpp"
+#include "emulator/backend/emulator_backend.hpp"
 #include "tools/instruction_stream_builder.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "data_structures/emulation/emulator_metadata.hpp"
@@ -37,15 +37,16 @@
 #include "emulator/backend/emulation_outputs_manager.hpp"
 
 namespace fcore{
+
     class program_bundle{
-    public:
-        std::string name;
-        std::vector<uint32_t> program;
-        std::set<io_map_entry> io;
-        std::unordered_map<uint32_t, uint32_t> mem_init;
-        uint32_t sampling_frequency;
-        uint32_t execution_order;
-        struct program_info program_length;
+        public:
+            std::string name;
+            std::vector<uint32_t> program;
+            std::set<io_map_entry> io;
+            std::unordered_map<uint32_t, uint32_t> mem_init;
+            uint32_t sampling_frequency;
+            uint32_t execution_order;
+            struct program_info program_length;
     };
 
     class emulator_manager {

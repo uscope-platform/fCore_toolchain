@@ -43,7 +43,6 @@ void fcore::binary_loader::load_program(const std::vector<uint32_t> &file_conten
     executable exec(file_content);
     construct_ast(exec.get_code());
     io_mapping = exec.get_io_mapping();
-    has_io_mapping = exec.is_io_mapped();
 }
 
 

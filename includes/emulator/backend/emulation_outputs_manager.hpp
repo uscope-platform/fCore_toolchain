@@ -24,7 +24,7 @@
 
 #include "data_structures/emulation/emulator_output.hpp"
 #include "data_structures/emulation/emulator_metadata.hpp"
-#include "emulator/backend/emulator.hpp"
+#include "emulator/backend/emulator_backend.hpp"
 
 namespace fcore{
 

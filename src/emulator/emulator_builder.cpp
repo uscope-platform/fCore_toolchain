@@ -48,7 +48,6 @@ fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohma
         }
         binary_loader dis = binary_loader(stream, in_type);
         metadata.io_map = dis.get_io_mapping();
-        metadata.io_remapping_active = dis.is_io_mapped();
         ast = dis.get_ast();
 
     } else {
@@ -56,7 +55,6 @@ fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohma
 
         binary_loader dis(program);
         metadata.io_map = dis.get_io_mapping();
-        metadata.io_remapping_active = dis.is_io_mapped();
         ast = dis.get_ast();
     }
 
@@ -73,9 +71,9 @@ fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohma
     metadata.emu = std::make_shared<emulator_backend>(program_stream, ch, core_info["id"]);
     if(core_info.contains("options")){
         auto opt = core_info["options"];
-        metadata.efi_implementation = opt["efi_implementation"];
-        metadata.comparator_type = opt["comparators"];
-        metadata.emu->set_comparator_type(metadata.comparator_type);
+
+        metadata.emu->set_comparator_type(get_comparator_type(opt["comparators"]));
+        metadata.emu->set_efi_selector(get_efi_implementation(opt["efi_implementation"]));
     }
 
 
@@ -289,4 +287,32 @@ std::vector<uint32_t> fcore::emulator_builder::compile_program(const nlohmann::j
 
 void fcore::emulator_builder::clear_dma_io() {
     dma_io.clear();
+}
+
+fcore::efi_implementation_t fcore::emulator_builder::get_efi_implementation(const std::string &s) {
+    efi_implementation_t val;
+    if(s=="efi_trig"){
+        val = efi_trig;
+    } else if(s=="efi_sort"){
+        val = efi_sort;
+    } else if(s=="efi_none"){
+        val = efi_none;
+    } else {
+        val = efi_none;
+    }
+    return val;
+}
+
+fcore::comparator_type_t fcore::emulator_builder::get_comparator_type(const std::string &s) {
+    comparator_type_t val;
+    if(s=="full"){
+        val = comparator_full;
+    } else if(s=="reducing"){
+        val = comparator_reducing;
+    } else if(s=="none"){
+        val = comparator_none;
+    } else {
+        val = comparator_none;
+    }
+    return val;
 }

@@ -17,10 +17,23 @@
 #ifndef FCORE_TOOLCHAIN_EMULATOR_RUNNER_HPP
 #define FCORE_TOOLCHAIN_EMULATOR_RUNNER_HPP
 
+#include "emulator/emulation_sequencer.hpp"
+#include "emulator/backend/emulation_outputs_manager.hpp"
+#include "emulator/backend/multirate_io_repeater.hpp"
+
 namespace fcore {
 
     class emulator_runner {
+    public:
+    private:
+        void inputs_phase(const core_step_metadata& info);
+        void execution_phase(const core_step_metadata& info);
+        void interconnects_phase(const core_step_metadata& info, std::unordered_map<std::string, bool> enabled_cores);
 
+
+        multirate_io_repeater output_repeater;
+        emulation_sequencer sequencer;
+        emulation_outputs_manager outputs_manager;
     };
 
 } // fcore

@@ -27,7 +27,7 @@
 #include "data_structures/instruction_stream.hpp"
 #include "tools/instruction_stream_builder.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
-#include "emulator/backend/emulator.hpp"
+#include "emulator/backend/emulator_backend.hpp"
 #include "fcore_cc.hpp"
 
 namespace fcore {
@@ -61,6 +61,9 @@ namespace fcore {
                 const nlohmann::json &memory_init_specs,
                 const std::set<std::string> memories
         );
+
+        efi_implementation_t get_efi_implementation(const std::string &s);
+        comparator_type_t get_comparator_type(const std::string &s);
 
         nlohmann::json dma_io;
         std::set<uint32_t> assigned_inputs;
