@@ -36,10 +36,13 @@ void fcore::emulation_outputs_manager::process_outputs(const std::string& core_i
     } else {
         for(auto &out: data_section[core_id]){
             uint16_t io_address = output_specs[core_id][out.first].reg_n;
-            if(!emu.io_map.contains(io_address)){
-                throw std::runtime_error("Address of output \"" + output_specs[core_id][out.first].name + "\" not found.");
+
+            uint32_t core_address;
+            if(auto a = io_map_entry::get_io_map_entry_by_io_addr(emu.io_map_set, io_address)){
+                core_address = a->core_addr;
+            } else {
+                throw std::runtime_error("unable to find input address in the core io map during output phase");
             }
-            uint32_t core_address = emu.io_map.at(io_address);
 
             if(emu.active_channels==1){
                 auto data_point = emu.emu->get_output(core_address, 0);

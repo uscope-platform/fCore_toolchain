@@ -19,6 +19,8 @@
 
 #include <string>
 #include <cstdint>
+#include <optional>
+#include <set>
 
 namespace fcore{
     class io_map_entry{
@@ -35,8 +37,29 @@ namespace fcore{
         {
             return io_addr < rhs.io_addr;
         }
+        static std::optional<io_map_entry> get_io_map_entry_by_io_addr(const std::set<io_map_entry>& set, uint32_t addr){
+            for(auto &item:set){
+                if(item.io_addr == addr){
+                    return item;
+                }
+            }
+            return {};
+        }
+
+        static std::optional<io_map_entry>  get_io_map_entry_by_core_addr(const std::set<io_map_entry>& set, uint32_t addr){
+            for(auto &item:set){
+                if(item.core_addr == addr){
+                    return item;
+                }
+            }
+            return {};
+        }
     };
+
+
 }
+
+
 
 
 #endif //FCORE_TOOLCHAIN_IO_MAP_ENTRY_HPP

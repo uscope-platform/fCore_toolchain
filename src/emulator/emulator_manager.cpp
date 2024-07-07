@@ -81,7 +81,7 @@ void fcore::emulator_manager::process() {
     // Setup emulators
     for(auto &item:emulators){
         auto emu = item.second.emu;
-        emu->init_memory(io_remap_memory_init(item.second.memory_init, item.second.io_map));
+        emu->init_memory(io_remap_memory_init(item.second.memory_init, item.second.io_map_set));
     }
     check_bus_duplicates();
 }
@@ -132,6 +132,7 @@ std::vector<fcore::program_bundle> fcore::emulator_manager::get_programs() {
         e_b.clear_dma_io();
         b.sampling_frequency = item["sampling_frequency"];
         b.execution_order = item["order"];
+        b.active_channels = item["channels"];
         programs.push_back(b);
     }
     check_bus_duplicates();
@@ -179,10 +180,14 @@ void fcore::emulator_manager::inputs_phase(const core_step_metadata& info) {
     if(info.running){
         for(auto &in:emulators[info.id].input){
             uint32_t core_reg = 0;
-            auto addr = in.second.get_address();
-            if(emulators[info.id].io_map.contains(addr)){
-                core_reg = emulators[info.id].io_map.at(addr);
+            auto io_addr = in.second.get_address();
+
+            if(auto core_addr = io_map_entry::get_io_map_entry_by_io_addr(emulators[info.id].io_map_set, io_addr)){
+                core_reg = core_addr->core_addr;
+            } else {
+                throw std::runtime_error("unable to find input address in the core io map during input phase");
             }
+
             if(core_reg != 0){
                 emulators[info.id].emu->apply_inputs(core_reg, in.second.get_data(info.step_n), in.second.get_channel());
             }
@@ -212,8 +217,17 @@ void fcore::emulator_manager::interconnects_phase(const core_step_metadata& info
                 auto src_id = src->get_name();
                 uint32_t first_address, second_address;
 
-                first_address = emulators[src->get_name()].io_map[reg.first.address];
-                second_address = emulators[dst->get_name()].io_map[reg.second.address];
+
+                if(auto a = io_map_entry::get_io_map_entry_by_io_addr(emulators[src->get_name()].io_map_set, reg.first.address)){
+                    first_address = a->core_addr;
+                } else{
+                    throw std::runtime_error("Unable to find io address in the source address map");
+                }
+                if(auto a = io_map_entry::get_io_map_entry_by_io_addr(emulators[dst->get_name()].io_map_set, reg.second.address)){
+                    second_address = a->core_addr;
+                } else{
+                    throw std::runtime_error("Unable to find io address in the destination address map");
+                }
 
                 if(enabled_cores[src_id]){
                     auto val = src->get_output(first_address, reg.first.channel);
@@ -480,12 +494,17 @@ std::shared_ptr<std::vector<uint32_t>> fcore::emulator_manager::get_memory_snaps
 
 std::unordered_map<unsigned int, uint32_t>
 fcore::emulator_manager::io_remap_memory_init(std::unordered_map<unsigned int, uint32_t> &map,
-                                       std::unordered_map<uint16_t, uint16_t> &io_map) {
+                                              std::set<fcore::io_map_entry> &io_set) {
     std::unordered_map<unsigned int, uint32_t> ret;
 
     for(auto &item:map){
         uint32_t io_address = item.first;
-        uint32_t core_address  = io_map[io_address];
+        uint32_t core_address;
+        if(auto a = io_map_entry::get_io_map_entry_by_io_addr(io_set, io_address)){
+            core_address = a->core_addr;
+        } else {
+            throw std::runtime_error("unable to find input address in the core io map during memory initialization phase");
+        }
         ret[core_address] = item.second;
     }
 

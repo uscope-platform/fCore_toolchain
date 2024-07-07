@@ -47,6 +47,7 @@ namespace fcore{
             uint32_t sampling_frequency;
             uint32_t execution_order;
             struct program_info program_length;
+            uint32_t active_channels;
     };
 
     class emulator_manager {
@@ -66,7 +67,7 @@ namespace fcore{
         std::vector<emulator_output_t> load_output_specs(nlohmann::json &core);
         std::unordered_map<unsigned int, uint32_t> load_memory_init(nlohmann::json &mem_init);
         std::unordered_map<unsigned int, uint32_t> io_remap_memory_init(std::unordered_map<unsigned int, uint32_t> &map,
-                                                                        std::unordered_map<uint16_t, uint16_t> &io_map);
+                                                                        std::set<fcore::io_map_entry> &io_map);
 
         void run_cores();
 

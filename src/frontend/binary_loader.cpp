@@ -163,3 +163,12 @@ std::unordered_map <uint16_t, uint16_t> fcore::binary_loader::get_io_mapping() {
     }
     return ret_val;
 }
+
+std::set<fcore::io_map_entry> fcore::binary_loader::get_io_mapping_set() {
+    std::set<io_map_entry> ret_val = {};
+    for(auto &item:io_mapping){
+        io_map_entry e(item.first, item.second, "");
+       ret_val.insert(e);
+    }
+    return ret_val;
+}

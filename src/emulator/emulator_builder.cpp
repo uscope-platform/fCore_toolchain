@@ -47,14 +47,14 @@ fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohma
             throw std::runtime_error("Unknown program type for core: " + nlohmann::to_string(core_info["id"]));
         }
         binary_loader dis = binary_loader(stream, in_type);
-        metadata.io_map = dis.get_io_mapping();
+        metadata.io_map_set = dis.get_io_mapping_set();
         ast = dis.get_ast();
 
     } else {
         auto program = compile_program(core_info, input_connections, output_connections, am);
 
         binary_loader dis(program);
-        metadata.io_map = dis.get_io_mapping();
+        metadata.io_map_set = dis.get_io_mapping_set();
         ast = dis.get_ast();
     }
 

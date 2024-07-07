@@ -21,6 +21,8 @@
 #include <cstdint>
 #include <unordered_map>
 #include <memory>
+#include <set>
+#include "data_structures/common/io_map_entry.hpp"
 #include "data_structures/emulation/emulator_input_factory.hpp"
 
 namespace fcore{
@@ -73,7 +75,7 @@ namespace fcore{
         std::unordered_map<unsigned int, uint32_t> memory_init;
         std::shared_ptr<emulator_backend> emu;
         int active_channels;
-        std::unordered_map<uint16_t, uint16_t> io_map;
+        std::set<io_map_entry> io_map_set;
     };
 
 
