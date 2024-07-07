@@ -15,26 +15,21 @@
 
 #include "emulator/backend/emulator_backend.hpp"
 
+#include <utility>
+
 
 
 fcore::emulator_backend::emulator_backend(instruction_stream &s, int n_channels, const std::string &core) : efi_backend(core){
     stream = s;
-    for(int i = 0; i<n_channels; i++){
-        memory_pool[i] = std::make_shared<std::vector<uint32_t>>(2 << (fcore_register_address_width - 1), 0);
-    }
+
     core_name = core;
-    working_memory = memory_pool[0];
     stop_requested = false;
 }
 
-void fcore::emulator_backend::apply_inputs(uint32_t addr, uint32_t data, unsigned int channel) {
-    auto selected_mem = memory_pool[channel];
-    selected_mem->at(addr) = data;
-}
 
-void fcore::emulator_backend::run_round(int channel) {
+void fcore::emulator_backend::run_round(std::shared_ptr<std::vector<uint32_t>> mem) {
 
-    working_memory = memory_pool[channel];
+    working_memory = std::move(mem);
     for(auto &item:stream){
         run_instruction_by_type(item);
         if(stop_requested) {
@@ -340,19 +335,6 @@ uint32_t fcore::emulator_backend::execute_xor(uint32_t a, uint32_t b) {
     return a ^ b;
 }
 
-void fcore::emulator_backend::init_memory(const std::unordered_map<unsigned int, uint32_t> &mem_init) {
-    for(auto &item: mem_init){
-        for(const auto& reg_file:memory_pool){
-            reg_file.second->at(item.first) = item.second;
-        }
-
-    }
-}
-
-uint32_t fcore::emulator_backend::get_output(uint32_t addr, int channel) const {
-    auto selected_memory = memory_pool.at(channel);
-    return selected_memory->at(addr);
-}
 
 uint32_t fcore::emulator_backend::execute_csel(uint32_t a, uint32_t b, uint32_t c) {
     if(a & 0x1){

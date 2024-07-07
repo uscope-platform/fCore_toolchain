@@ -31,7 +31,12 @@ namespace fcore{
     class emulation_outputs_manager {
     public:
         void add_specs(const std::string& id, const std::vector<emulator_output_t>& specs, uint32_t active_channels);
-        void process_outputs(const std::string& core_id, const emulator_metadata &emu, bool running);
+        void process_outputs(const std::string& core_id,
+                            fcore::core_memory_pool_t &pool,
+                             bool running,
+                             uint32_t active_channels,
+                             std::set<io_map_entry>& io_map
+                             );
         void set_simulation_frequency(uint32_t freq);
         nlohmann::json get_emulation_output(const std::string& core_id);
         std::vector<double> get_timebase();

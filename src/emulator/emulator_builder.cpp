@@ -67,6 +67,7 @@ fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohma
 
     auto ch = core_info["channels"];
     metadata.active_channels = ch;
+    metadata.execution_order = core_info["order"];
 
     metadata.emu = std::make_shared<emulator_backend>(program_stream, ch, core_info["id"]);
     if(core_info.contains("options")){

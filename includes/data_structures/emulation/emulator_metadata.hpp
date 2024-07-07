@@ -30,6 +30,8 @@ namespace fcore{
 // FORWARD DECLARATIONS
     class emulator_backend;
 
+    typedef std::unordered_map<uint32_t , std::shared_ptr<std::vector<uint32_t>>> core_memory_pool_t;
+
     typedef enum {
         type_uint32 = 1,
         type_float = 2,
@@ -67,13 +69,13 @@ namespace fcore{
     } comparator_type_t;
 
 
-
     class emulator_metadata {
     public:
         emulator_metadata() = default;
         std::unordered_map<std::string, emulator_input> input;
-        std::unordered_map<unsigned int, uint32_t> memory_init;
+        std::unordered_map<uint32_t, uint32_t> memory_init;
         std::shared_ptr<emulator_backend> emu;
+        uint32_t execution_order;
         int active_channels;
         std::set<io_map_entry> io_map_set;
     };
@@ -83,4 +85,5 @@ namespace fcore{
     typedef  enum {explicit_ordering=1,implicit_ordering=2,no_ordering=0}cores_ordering_t;
 
 }
+
 #endif //FCORE_TOOLCHAIN_EMULATOR_METADATA_HPP

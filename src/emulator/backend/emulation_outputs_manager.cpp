@@ -26,7 +26,13 @@ void fcore::emulation_outputs_manager::add_specs(const std::string& id, const st
     output_specs[id];
 }
 
-void fcore::emulation_outputs_manager::process_outputs(const std::string& core_id, const fcore::emulator_metadata &emu, bool running) {
+void fcore::emulation_outputs_manager::process_outputs(
+        const std::string& core_id,
+        fcore::core_memory_pool_t &pool,
+        bool running,
+        uint32_t active_channels,
+        std::set<io_map_entry>& io_map
+) {
 
     if(!running){
         // carry over previous outputs
@@ -38,19 +44,19 @@ void fcore::emulation_outputs_manager::process_outputs(const std::string& core_i
             uint16_t io_address = output_specs[core_id][out.first].reg_n;
 
             uint32_t core_address;
-            if(auto a = io_map_entry::get_io_map_entry_by_io_addr(emu.io_map_set, io_address)){
+            if(auto a = io_map_entry::get_io_map_entry_by_io_addr(io_map, io_address)){
                 core_address = a->core_addr;
             } else {
                 throw std::runtime_error("unable to find input address in the core io map during output phase");
             }
 
-            if(emu.active_channels==1){
-                auto data_point = emu.emu->get_output(core_address, 0);
+            if(active_channels==1){
+                auto data_point = pool.at(0)->at(core_address);
                 out.second.add_data_point(data_point);
             } else {
                 std::vector<uint32_t> data_point;
-                for(int i = 0; i<emu.active_channels; i++){
-                    data_point.push_back(emu.emu->get_output(core_address, 0));
+                for(int i = 0; i<active_channels; i++){
+                    data_point.push_back(pool.at(i)->at(core_address));
                 }
                 out.second.add_data_point(data_point);
             }

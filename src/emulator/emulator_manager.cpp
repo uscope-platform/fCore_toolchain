@@ -23,6 +23,7 @@ fcore::emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, const 
     spec_file = spec;
     schema_file = s_f + "/emulator_spec_schema.json";
     emu_length = 1;
+
 }
 
 void fcore::emulator_manager::process() {
@@ -78,11 +79,6 @@ void fcore::emulator_manager::process() {
     interconnects = load_interconnects(spec_file["interconnect"]);
     sequencer.setup_run(spec_file["emulation_time"]);
 
-    // Setup emulators
-    for(auto &item:emulators){
-        auto emu = item.second.emu;
-        emu->init_memory(io_remap_memory_init(item.second.memory_init, item.second.io_map_set));
-    }
     check_bus_duplicates();
 }
 
@@ -141,6 +137,7 @@ std::vector<fcore::program_bundle> fcore::emulator_manager::get_programs() {
 
 
 void fcore::emulator_manager::emulate() {
+    allocate_memory();
     output_repeater.clear();
     run_cores();
 }
@@ -166,7 +163,13 @@ void fcore::emulator_manager::run_cores() {
                 execution_phase(core);
                 interconnects_phase(core, sequencer.get_enabled_cores());
             }
-            outputs_manager.process_outputs(core.id, emulators[core.id], core.running);
+            outputs_manager.process_outputs(
+                    core.id,
+                    emulators_memory[core.id],
+                    core.running,
+                    emulators[core.id].active_channels,
+                    emulators[core.id].io_map_set
+                    );
         }
 
     }
@@ -189,7 +192,7 @@ void fcore::emulator_manager::inputs_phase(const core_step_metadata& info) {
             }
 
             if(core_reg != 0){
-                emulators[info.id].emu->apply_inputs(core_reg, in.second.get_data(info.step_n), in.second.get_channel());
+                emulators_memory[info.id][in.second.get_channel()]->at(core_reg) = in.second.get_data(info.step_n);
             }
         }
     }
@@ -197,11 +200,12 @@ void fcore::emulator_manager::inputs_phase(const core_step_metadata& info) {
 }
 
 void fcore::emulator_manager::execution_phase(const core_step_metadata& info) {
+
     for(int j = 0; j<emulators[info.id].active_channels; ++j){
         if(info.running){
             spdlog::trace("RUNNING ROUND " + std::to_string(info.step_n+1) + " of " + std::to_string(emu_length) +
             ": core ID = " + info.id + " (CH " + std::to_string(j) + ")");
-            emulators[info.id].emu->run_round(j);
+            emulators[info.id].emu->run_round(emulators_memory[info.id][j]);
         }
     }
 }
@@ -230,12 +234,13 @@ void fcore::emulator_manager::interconnects_phase(const core_step_metadata& info
                 }
 
                 if(enabled_cores[src_id]){
-                    auto val = src->get_output(first_address, reg.first.channel);
+
+                    auto val = emulators_memory[src->get_name()][reg.first.channel]->at(first_address);
                     output_repeater.add_output(src_id, first_address, val);
-                    dst->apply_inputs(second_address, val, reg.second.channel);
+                    emulators_memory[dst->get_name()][reg.second.channel]->at(second_address) = val;
                 } else {
                     auto val = output_repeater.get_output(src_id, first_address);
-                    dst->apply_inputs(second_address, val, reg.second.channel);
+                    emulators_memory[dst->get_name()][reg.second.channel]->at(second_address) = val;
                 }
             }
         }
@@ -489,7 +494,7 @@ std::vector<fcore::interconnect_t> fcore::emulator_manager::load_interconnects(n
 }
 
 std::shared_ptr<std::vector<uint32_t>> fcore::emulator_manager::get_memory_snapshot(const std::string &core_id, int channel) {
-    return emulators[core_id].emu->get_memory(channel);
+    return emulators_memory[core_id][channel];
 }
 
 std::unordered_map<unsigned int, uint32_t>
@@ -516,4 +521,35 @@ void fcore::emulator_manager::check_bus_duplicates() {
         auto duplicates = bus_map.get_duplicates().dump();
         throw std::domain_error(duplicates);
     }
+}
+
+void fcore::emulator_manager::allocate_memory() {
+
+    for(auto &item:emulators){
+        core_memory_pool_t pool;
+        for(int i = 0; i<item.second.active_channels; i++){
+            pool[i] = std::make_shared<std::vector<uint32_t>>(2 << (fcore_register_address_width - 1), 0);
+        }
+        emulators_memory[item.first] = pool;
+
+        auto emu  = emulators[item.first];
+
+        auto mem = io_remap_memory_init(emu.memory_init, emu.io_map_set);
+
+        for(auto &init_val: mem){
+            // TODO: Add support for per channel initialization
+            for(const auto& reg_file:emulators_memory[item.first]){
+                reg_file.second->at(init_val.first) = init_val.second;
+            }
+        }
+    }
+}
+
+std::string fcore::emulator_manager::get_emulator_id_by_order(uint32_t i) {
+    for(auto &e:emulators){
+        if(e.second.execution_order==i){
+            return e.first;
+        }
+    }
+    throw std::runtime_error("Emulator with execution order "+ std::to_string(i) + " not found");
 }

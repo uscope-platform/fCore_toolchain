@@ -68,7 +68,8 @@ namespace fcore{
         std::unordered_map<unsigned int, uint32_t> load_memory_init(nlohmann::json &mem_init);
         std::unordered_map<unsigned int, uint32_t> io_remap_memory_init(std::unordered_map<unsigned int, uint32_t> &map,
                                                                         std::set<fcore::io_map_entry> &io_map);
-
+        void allocate_memory();
+        std::string  get_emulator_id_by_order(uint32_t i);
         void run_cores();
 
         void inputs_phase(const core_step_metadata& info);
@@ -89,6 +90,9 @@ namespace fcore{
         multirate_io_repeater output_repeater;
         emulation_sequencer sequencer;
         emulation_outputs_manager outputs_manager;
+
+
+        std::unordered_map<std::string, core_memory_pool_t> emulators_memory;
 
     };
 }
