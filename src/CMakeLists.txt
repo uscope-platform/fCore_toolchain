@@ -106,6 +106,7 @@ set(FCORE_EMU_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/emulator/emulator_builder.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/emulator/emulation_sequencer.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/emulator/emulator_manager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/emulator/emulator_runner.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/emulator/backend/multirate_io_repeater.cpp
         )
 
