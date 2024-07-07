@@ -1,117 +1,117 @@
 set(FCORE_COMMON_SRCS_I
-        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/binary_loader.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/backend/binary_generator.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/executable.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_instruction_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_register_instr_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_conversion_instr_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_independent_instr_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_intercalated_const_instr_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_load_constant_instr_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_pseudo_instr_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_loop_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_ast_pragma.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_ast_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/low_level_ast/ll_ternary_instr_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/instruction_stream.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/common/memory_tracker.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tools/instruction_stream_builder.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tools/define.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tools/register_map.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/common/variable.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tools/variable_map.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tools/define_map.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tools/array_linearizer.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/ll_pass_manager.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/loop_implementation_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/pseudo_instructions_pass.cpp
+        frontend/binary_loader.cpp
+        backend/binary_generator.cpp
+        data_structures/executable.cpp
+        data_structures/low_level_ast/ll_instruction_node.cpp
+        data_structures/low_level_ast/ll_register_instr_node.cpp
+        data_structures/low_level_ast/ll_conversion_instr_node.cpp
+        data_structures/low_level_ast/ll_independent_instr_node.cpp
+        data_structures/low_level_ast/ll_intercalated_const_instr_node.cpp
+        data_structures/low_level_ast/ll_load_constant_instr_node.cpp
+        data_structures/low_level_ast/ll_pseudo_instr_node.cpp
+        data_structures/low_level_ast/ll_loop_node.cpp
+        data_structures/low_level_ast/ll_ast_pragma.cpp
+        data_structures/low_level_ast/ll_ast_node.cpp
+        data_structures/low_level_ast/ll_ternary_instr_node.cpp
+        data_structures/instruction_stream.cpp
+        data_structures/common/memory_tracker.cpp
+        tools/instruction_stream_builder.cpp
+        tools/define.cpp
+        tools/register_map.cpp
+        data_structures/common/variable.cpp
+        tools/variable_map.cpp
+        tools/define_map.cpp
+        tools/array_linearizer.cpp
+        passes/low_level/ll_pass_manager.cpp
+        passes/low_level/loop_implementation_pass.cpp
+        passes/low_level/pseudo_instructions_pass.cpp
         passes/instruction_stream/instruction_counting_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/low_level/load_intercalation_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/io_constant_tracking.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/stream_pass_manager.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/variable_lifetime_mapping.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/variable_mapping.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/register_allocation.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/constant_merging.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/zero_assignment_removal_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/bound_register_mapping.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/instruction_stream/ternary_reduction.cpp
+        passes/low_level/load_intercalation_pass.cpp
+        passes/instruction_stream/io_constant_tracking.cpp
+        passes/instruction_stream/stream_pass_manager.cpp
+        passes/instruction_stream/variable_lifetime_mapping.cpp
+        passes/instruction_stream/variable_mapping.cpp
+        passes/instruction_stream/register_allocation.cpp
+        passes/instruction_stream/constant_merging.cpp
+        passes/instruction_stream/zero_assignment_removal_pass.cpp
+        passes/instruction_stream/bound_register_mapping.cpp
+        passes/instruction_stream/ternary_reduction.cpp
         )
 
 
 
 set(FCORE_CC_SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/C/C_language_parser.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/C/C_pre_processor.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/C/C_ErrorHandling.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/C/C_Tree_visitor.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_ast_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_definition_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_function_def_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_ast_loop_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_ast_conditional_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_expression_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_function_call_node.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/high_level_ast/hl_ast_operand.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/constants_tracker.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/array_index_lowering.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/dead_load_elimination.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/constant_folding_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/constant_propagation.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/array_initialization_substitution.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/hl_pass_manager.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/hl_variable_mapping.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/fuction_mangling_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/operating_assignment_implementation_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/inlined_function_elimination.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/inline_constant_extraction.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/intrinsics_implementation_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/function_inlining_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/division_implementation_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/code_block_inlining_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/dead_variable_elimination.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/conditional_implementation_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/loop_unrolling_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/normalization_pass.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/passes/high_level/contiguous_array_identification.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/fcore_cc.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tools/high_level_ast_lowering.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/tools/expression_evaluator.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/schema_validators/schema_validator_base.cpp
+        frontend/C/C_language_parser.cpp
+        frontend/C/C_pre_processor.cpp
+        frontend/C/C_ErrorHandling.cpp
+        frontend/C/C_Tree_visitor.cpp
+        data_structures/high_level_ast/hl_ast_node.cpp
+        data_structures/high_level_ast/hl_definition_node.cpp
+        data_structures/high_level_ast/hl_function_def_node.cpp
+        data_structures/high_level_ast/hl_ast_loop_node.cpp
+        data_structures/high_level_ast/hl_ast_conditional_node.cpp
+        data_structures/high_level_ast/hl_expression_node.cpp
+        data_structures/high_level_ast/hl_function_call_node.cpp
+        data_structures/high_level_ast/hl_ast_operand.cpp
+        data_structures/constants_tracker.cpp
+        passes/high_level/array_index_lowering.cpp
+        passes/high_level/dead_load_elimination.cpp
+        passes/high_level/constant_folding_pass.cpp
+        passes/high_level/constant_propagation.cpp
+        passes/high_level/array_initialization_substitution.cpp
+        passes/high_level/hl_pass_manager.cpp
+        passes/high_level/hl_variable_mapping.cpp
+        passes/high_level/fuction_mangling_pass.cpp
+        passes/high_level/operating_assignment_implementation_pass.cpp
+        passes/high_level/inlined_function_elimination.cpp
+        passes/high_level/inline_constant_extraction.cpp
+        passes/high_level/intrinsics_implementation_pass.cpp
+        passes/high_level/function_inlining_pass.cpp
+        passes/high_level/division_implementation_pass.cpp
+        passes/high_level/code_block_inlining_pass.cpp
+        passes/high_level/dead_variable_elimination.cpp
+        passes/high_level/conditional_implementation_pass.cpp
+        passes/high_level/loop_unrolling_pass.cpp
+        passes/high_level/normalization_pass.cpp
+        passes/high_level/contiguous_array_identification.cpp
+        fcore_cc.cpp
+        tools/high_level_ast_lowering.cpp
+        tools/expression_evaluator.cpp
+        frontend/schema_validators/schema_validator_base.cpp
 )
 
 
 set(FCORE_AS_SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/asm/AsmTree_visitor.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/asm/asm_language_parser.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/asm/AsmErrorHandling.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/fcore_has.cpp
+        frontend/asm/AsmTree_visitor.cpp
+        frontend/asm/asm_language_parser.cpp
+        frontend/asm/AsmErrorHandling.cpp
+        fcore_has.cpp
         )
 
 
 set(FCORE_DIS_SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/backend/assembly_generator.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/fcore_dis.cpp
+        backend/assembly_generator.cpp
+        fcore_dis.cpp
         )
 
 set(FCORE_EMU_SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/frontend/schema_validators/schema_validator_base.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/emulation/emulator_input.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/emulation/emulator_input_factory.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/emulation/hil_bus_map.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/data_structures/emulation/emulator_output.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/emulator/backend/emulator_backend.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/emulator/backend/emulation_outputs_manager.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/emulator/backend/efi_dispatcher.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/emulator/emulator_builder.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/emulator/emulation_sequencer.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/emulator/emulator_manager.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/emulator/emulator_runner.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/emulator/backend/multirate_io_repeater.cpp
+        frontend/schema_validators/schema_validator_base.cpp
+        data_structures/emulation/emulator_input.cpp
+        data_structures/emulation/emulator_input_factory.cpp
+        data_structures/emulation/hil_bus_map.cpp
+        data_structures/emulation/emulator_output.cpp
+        emulator/backend/emulator_backend.cpp
+        emulator/backend/emulation_outputs_manager.cpp
+        emulator/backend/efi_dispatcher.cpp
+        emulator/emulator_builder.cpp
+        emulator/emulation_sequencer.cpp
+        emulator/emulator_manager.cpp
+        emulator/emulator_runner.cpp
+        emulator/backend/multirate_io_repeater.cpp
         )
 
 set(FCORE_DEVTOOLS_SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/dev_server/rest_handler.cpp
+        dev_server/rest_handler.cpp
         )
 
 set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_DIS_SRCS} ${FCORE_EMU_SRCS} PARENT_SCOPE)
