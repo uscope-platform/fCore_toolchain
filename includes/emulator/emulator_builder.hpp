@@ -44,6 +44,13 @@ namespace fcore {
         );
         struct program_info get_program_info() const {return length_info;};
 
+
+        static std::set<io_map_entry> read_io_map(const std::vector<uint32_t>&  raw_prog);
+        static std::vector<uint32_t> sanitize_program(const std::vector<uint32_t>&  raw_prog);
+
+
+        efi_implementation_t get_efi_implementation(const std::string &s);
+        comparator_type_t get_comparator_type(const std::string &s);
     private:
 
         void process_interconnects(
@@ -52,9 +59,6 @@ namespace fcore {
                 std::set<std::string> memories
         );
 
-        std::set<io_map_entry> read_io_map(const std::vector<uint32_t>&  raw_prog);
-        std::vector<uint32_t> sanitize_program(const std::vector<uint32_t>&  raw_prog);
-
         void process_ioms(
                 const nlohmann::json &inputs,
                 const nlohmann::json &outputs,
@@ -62,8 +66,6 @@ namespace fcore {
                 const std::set<std::string> memories
         );
 
-        efi_implementation_t get_efi_implementation(const std::string &s);
-        comparator_type_t get_comparator_type(const std::string &s);
 
         nlohmann::json dma_io;
         std::set<uint32_t> assigned_inputs;

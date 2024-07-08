@@ -44,11 +44,16 @@ namespace fcore{
             std::vector<uint32_t> program;
             std::set<io_map_entry> io;
             std::unordered_map<uint32_t, uint32_t> mem_init;
+            std::unordered_map<std::string, emulator_input> input;
             uint32_t sampling_frequency;
             uint32_t execution_order;
             struct program_info program_length;
             uint32_t active_channels;
+            efi_implementation_t efi_selector;
+            comparator_type_t comparator_type;
     };
+
+
 
     class emulator_manager {
     public:
@@ -58,25 +63,31 @@ namespace fcore{
 
         std::shared_ptr<std::vector<uint32_t>> get_memory_snapshot(const std::string &core_id, int channel);
         std::string get_results();
-        std::unordered_map<std::string, emulator_metadata> get_emulators(){return emulators;};
         std::vector<program_bundle> get_programs();
         std::vector<interconnect_t> load_interconnects(nlohmann::json &interconnects);
     private:
         void check_bus_duplicates();
-        std::unordered_map<std::string, emulator_input> load_input(nlohmann::json &core);
+        static std::unordered_map<std::string, emulator_input> load_input(nlohmann::json &core);
         std::vector<emulator_output_t> load_output_specs(nlohmann::json &core);
         std::unordered_map<unsigned int, uint32_t> load_memory_init(nlohmann::json &mem_init);
         std::unordered_map<unsigned int, uint32_t> io_remap_memory_init(std::unordered_map<unsigned int, uint32_t> &map,
                                                                         std::set<fcore::io_map_entry> &io_map);
         void allocate_memory();
-        std::string  get_emulator_id_by_order(uint32_t i);
         void run_cores();
 
-        void inputs_phase(const core_step_metadata& info);
-        void execution_phase(const core_step_metadata& info);
+        void inputs_phase(const core_step_metadata& info, program_bundle &prog);
+        void execution_phase(const core_step_metadata& info, program_bundle &prog);
         void interconnects_phase(const core_step_metadata& info, std::unordered_map<std::string, bool> enabled_cores);
 
-        std::unordered_map<std::string, emulator_metadata> emulators;
+        program_bundle get_bundle_by_name(std::string name){
+            for(const auto & p : programs){
+                if(p.name==name){
+                    return p;
+                }
+            }
+            throw std::runtime_error("Program bundle with name: " + name + " not found");
+        }
+
         std::vector<interconnect_t> interconnects;
         int emu_length;
         std::unordered_map<std::string, std::string> errors;
@@ -93,6 +104,7 @@ namespace fcore{
 
         emulator_backend backend;
 
+        std::vector<program_bundle> programs;
         std::unordered_map<std::string, core_memory_pool_t> emulators_memory;
 
     };

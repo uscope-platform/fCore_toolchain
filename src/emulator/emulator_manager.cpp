@@ -42,35 +42,19 @@ void fcore::emulator_manager::process() {
     }
     // Parse specification file;
 
+    programs = get_programs();
+    for(auto &e: errors){
+        if(!e.second.empty()){
+            throw std::runtime_error("CORE " + e.first + ": " + e.second);
+        }
+    }
+
     for(auto &item:spec_file["cores"]){
         std::string id = item["id"];
-        try{
-            std::set<io_map_entry> io_map;
-            if(item["program"].contains("filename")){
-                emulators[id] = e_b.load_json_program(item, {}, {}, io_map);
-            } else {
 
-                std::vector<nlohmann::json> src = {};
-                std::vector<nlohmann::json> dst = {};
-                for(auto &ic:spec_file["interconnect"]){
-                    std::string source = ic["source"];
-                    if(id == source) src.push_back(ic);
-                    std::string destination = ic["destination"];
-                    if(id == destination) dst.push_back(ic);
-                }
-                emulators[id] = e_b.load_json_program(item, dst, src, io_map);
-            }
-
-        } catch(std::runtime_error &e){
-            throw std::runtime_error("CORE " + id + ": " + e.what());
-        }
-
-        emulators[id].input = load_input(item);
         auto out_specs = load_output_specs(item);
 
-        outputs_manager.add_specs(id, out_specs, emulators[id].active_channels);
-
-        emulators[id].memory_init = load_memory_init(item["memory_init"]);
+        outputs_manager.add_specs(id, out_specs, get_bundle_by_name(id).active_channels);
 
         sequencer.add_core(id, item["sampling_frequency"], item["order"]);
 
@@ -129,12 +113,14 @@ std::vector<fcore::program_bundle> fcore::emulator_manager::get_programs() {
         b.sampling_frequency = item["sampling_frequency"];
         b.execution_order = item["order"];
         b.active_channels = item["channels"];
+        b.input = load_input(item);
+        b.efi_selector = e_b.get_efi_implementation(item["options"]["efi_implementation"]);
+        b.comparator_type = e_b.get_comparator_type(item["options"]["comparators"]);
         programs.push_back(b);
     }
     check_bus_duplicates();
     return programs;
 }
-
 
 void fcore::emulator_manager::emulate() {
     allocate_memory();
@@ -156,19 +142,22 @@ void fcore::emulator_manager::run_cores() {
         auto running_cores = sequencer.get_running_cores();
 
 
-
         for(auto &core:running_cores){
+
+            auto sel_prog = get_bundle_by_name(core.id);
             if(!sequencer.is_empty_step()){
-                inputs_phase(core);
-                execution_phase(core);
+                inputs_phase(core, sel_prog);
+                execution_phase(core, sel_prog);
                 interconnects_phase(core, sequencer.get_enabled_cores());
             }
+
+
             outputs_manager.process_outputs(
                     core.id,
                     emulators_memory[core.id],
                     core.running,
-                    emulators[core.id].active_channels,
-                    emulators[core.id].io_map_set
+                    sel_prog.active_channels,
+                    sel_prog.io
                     );
         }
 
@@ -177,15 +166,15 @@ void fcore::emulator_manager::run_cores() {
 }
 
 
-void fcore::emulator_manager::inputs_phase(const core_step_metadata& info) {
+void fcore::emulator_manager::inputs_phase(const core_step_metadata& info, program_bundle &prog) {
 
     // APPLY INPUTS (ONLY WHEN THE EMULATOR IS RUN TO AVOID POTENTIALLY DESTROYING THE OUTPUTS IN MEMORY)
     if(info.running){
-        for(auto &in:emulators[info.id].input){
+        for(auto &in:prog.input){
             uint32_t core_reg = 0;
             auto io_addr = in.second.get_address();
 
-            if(auto core_addr = io_map_entry::get_io_map_entry_by_io_addr(emulators[info.id].io_map_set, io_addr)){
+            if(auto core_addr = io_map_entry::get_io_map_entry_by_io_addr(prog.io, io_addr)){
                 core_reg = core_addr->core_addr;
             } else {
                 throw std::runtime_error("unable to find input address in the core io map during input phase");
@@ -199,18 +188,18 @@ void fcore::emulator_manager::inputs_phase(const core_step_metadata& info) {
 
 }
 
-void fcore::emulator_manager::execution_phase(const core_step_metadata& info) {
+void fcore::emulator_manager::execution_phase(const core_step_metadata& info, program_bundle &prog) {
 
-    for(int j = 0; j<emulators[info.id].active_channels; ++j){
+    for(int j = 0; j<prog.active_channels; ++j){
         if(info.running){
 
             spdlog::trace("RUNNING ROUND " + std::to_string(info.step_n+1) + " of " + std::to_string(emu_length) +
             ": core ID = " + info.id + " (CH " + std::to_string(j) + ")");
 
             backend.set_core_name(info.id);
-            backend.set_program(emulators[info.id].program);
-            backend.set_efi_selector(emulators[info.id].efi_selector);
-            backend.set_comparator_type(emulators[info.id].comparator_type);
+            backend.set_program(emulator_builder::sanitize_program(prog.program));
+            backend.set_efi_selector(prog.efi_selector);
+            backend.set_comparator_type(prog.comparator_type);
             backend.run_round(emulators_memory[info.id][j]);
         }
     }
@@ -224,13 +213,16 @@ void fcore::emulator_manager::interconnects_phase(const core_step_metadata& info
             for(auto &reg:conn.connections){
                 uint32_t first_address, second_address;
 
+                auto src_prog =get_bundle_by_name(conn.source);
+                auto dst_prog =get_bundle_by_name(conn.destination);
 
-                if(auto a = io_map_entry::get_io_map_entry_by_io_addr(emulators[conn.source].io_map_set, reg.first.address)){
+
+                if(auto a = io_map_entry::get_io_map_entry_by_io_addr(src_prog.io, reg.first.address)){
                     first_address = a->core_addr;
                 } else{
                     throw std::runtime_error("Unable to find io address in the source address map");
                 }
-                if(auto a = io_map_entry::get_io_map_entry_by_io_addr(emulators[conn.destination].io_map_set, reg.second.address)){
+                if(auto a = io_map_entry::get_io_map_entry_by_io_addr(dst_prog.io, reg.second.address)){
                     second_address = a->core_addr;
                 } else{
                     throw std::runtime_error("Unable to find io address in the destination address map");
@@ -270,7 +262,7 @@ std::unordered_map<std::string, fcore::emulator_input> fcore::emulator_manager::
             labels = input_spec["vector_labels"];
             uint32_t channel_progressive = register_type == "vector" ? (uint32_t)input_spec["channel"] : 0;
 
-            for ([[maybe_unused]]                  auto &l: labels) {
+            for (auto &l: labels) {
                 if(register_type == "vector"){
                     working_addresses.push_back(input_spec["reg_n"]);
                     working_channels.push_back(channel_progressive);
@@ -399,13 +391,13 @@ std::unordered_map<unsigned int, uint32_t> fcore::emulator_manager::load_memory_
 
 std::string fcore::emulator_manager::get_results() {
     nlohmann::json res;
-    for(auto &item:emulators){
+    for(auto &item:programs){
         nlohmann::json j;
         nlohmann::json outputs_json;
 
-        j["outputs"] = outputs_manager.get_emulation_output(item.first);
-        j["error_code"] = errors[item.first];
-        res[item.first] = j;
+        j["outputs"] = outputs_manager.get_emulation_output(item.name);
+        j["error_code"] = errors[item.name];
+        res[item.name] = j;
     }
 
 
@@ -528,31 +520,20 @@ void fcore::emulator_manager::check_bus_duplicates() {
 
 void fcore::emulator_manager::allocate_memory() {
 
-    for(auto &item:emulators){
+    for(auto &item:programs){
         core_memory_pool_t pool;
-        for(int i = 0; i<item.second.active_channels; i++){
+        for(int i = 0; i<item.active_channels; i++){
             pool[i] = std::make_shared<std::vector<uint32_t>>(2 << (fcore_register_address_width - 1), 0);
         }
-        emulators_memory[item.first] = pool;
+        emulators_memory[item.name] = pool;
 
-        auto emu  = emulators[item.first];
-
-        auto mem = io_remap_memory_init(emu.memory_init, emu.io_map_set);
+        auto mem = io_remap_memory_init(item.mem_init, item.io);
 
         for(auto &init_val: mem){
             // TODO: Add support for per channel initialization
-            for(const auto& reg_file:emulators_memory[item.first]){
+            for(const auto& reg_file:emulators_memory[item.name]){
                 reg_file.second->at(init_val.first) = init_val.second;
             }
         }
     }
-}
-
-std::string fcore::emulator_manager::get_emulator_id_by_order(uint32_t i) {
-    for(auto &e:emulators){
-        if(e.second.execution_order==i){
-            return e.first;
-        }
-    }
-    throw std::runtime_error("Emulator with execution order "+ std::to_string(i) + " not found");
 }

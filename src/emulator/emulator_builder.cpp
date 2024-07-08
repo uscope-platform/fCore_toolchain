@@ -32,7 +32,7 @@ fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohma
     metadata.active_channels = ch;
     metadata.execution_order = core_info["order"];
 
-    metadata.io_map_set =read_io_map(program);
+    metadata.io_map =read_io_map(program);
     metadata.program = sanitize_program(program);
 
     if(core_info.contains("options")){
@@ -287,7 +287,6 @@ std::vector<uint32_t> fcore::emulator_builder::sanitize_program(const std::vecto
     int section = 0;
 
     for(auto &instr:raw_prog){
-        // TODO: generalize this using opcodes;
         if(section == 2){
             program.push_back(instr);
         }
@@ -303,7 +302,6 @@ std::set<fcore::io_map_entry> fcore::emulator_builder::read_io_map(const std::ve
     int section = 0;
 
     for(auto &instr:raw_prog){
-        // TODO: generalize this using opcodes;
         if(section == 1 && instr != fcore::fcore_opcodes["stop"]){
             auto io_addr = instr  & 0xFFFF;
             auto core_addr =( instr & 0xFFFF0000) >>16;
