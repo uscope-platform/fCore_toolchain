@@ -18,8 +18,7 @@
 
 
 
-fcore::emulator_backend::emulator_backend(instruction_stream &s, int n_channels, const std::string &core) : efi_backend(core){
-    stream = s;
+fcore::emulator_backend::emulator_backend(const std::string &core) : efi_backend(core){
 
     core_name = core;
     stop_requested = false;
@@ -29,43 +28,50 @@ fcore::emulator_backend::emulator_backend(instruction_stream &s, int n_channels,
 void fcore::emulator_backend::run_round(std::shared_ptr<std::vector<uint32_t>> mem) {
 
     working_memory = std::move(mem);
-    for(auto &item:stream){
-        run_instruction_by_type(item);
-        if(stop_requested) {
-            stop_requested = false;
+
+
+    for(int i = 0; i<program.size(); i++){
+        auto opcode = fcore::get_opcode(program[i]);
+        auto operands  = fcore::get_operands(program[i]);
+        if(opcode == fcore_opcodes["ldc"]){
+            run_load_constant_instruction(operands[0], program[i+1]);
+            i++;
+        } else{
+            run_instruction_by_type(opcode, operands);
+        }
+        if(stop_requested){
             break;
         }
     }
+    stop_requested = false;
+
 }
 
-void fcore::emulator_backend::run_instruction_by_type(const std::shared_ptr<ll_instruction_node>& node) {
-    switch (node->get_type()) {
+void fcore::emulator_backend::run_instruction_by_type(const uint32_t& raw_opcode, std::array<uint32_t, 3> operands) {
+    auto opcode = static_cast<opcode_table_t>(raw_opcode);
+    switch (fcore::fcore_op_types[fcore_opcodes_reverse[opcode]]) {
         case isa_independent_instruction:
-            run_independent_instruction(std::static_pointer_cast<ll_independent_inst_node>(node));
+            run_independent_instruction(opcode, operands);
             break;
         case isa_register_instruction:
-            run_register_instruction(std::static_pointer_cast<ll_register_instr_node>(node));
+            run_register_instruction(opcode,operands);
             break;
         case isa_conversion_instruction:
-            run_conversion_instruction(std::static_pointer_cast<ll_conversion_instr_node>(node));
-            break;
-        case isa_load_constant_instruction:
-            run_load_constant_instruction(std::static_pointer_cast<ll_load_constant_instr_node>(node));
+            run_conversion_instruction(opcode, operands);
             break;
         case isa_ternary_instruction:
-            run_ternary_instruction(std::static_pointer_cast<ll_ternary_instr_node>(node));
+            run_ternary_instruction(opcode,operands);
             break;
         default:
             break;
     }
 }
 
-void fcore::emulator_backend::run_ternary_instruction(const std::shared_ptr<ll_ternary_instr_node> &node) {
-    std::string opcode = node->get_opcode();
+void fcore::emulator_backend::run_ternary_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands) {
 
-    uint32_t op_a = node->get_operand_a()->get_bound_reg();
-    uint32_t op_b = node->get_operand_b()->get_bound_reg();
-    uint32_t op_c = node->get_operand_c()->get_bound_reg();
+    uint32_t op_a = operands[0];
+    uint32_t op_b = operands[1];
+    uint32_t op_c = operands[2];
 
     auto a = working_memory->at(op_a);
     auto b = working_memory->at(op_b);
@@ -73,114 +79,132 @@ void fcore::emulator_backend::run_ternary_instruction(const std::shared_ptr<ll_t
 
     uint32_t result;
     uint32_t writeback_address = op_a;
-
-    if(opcode == "csel"){
-        result = execute_csel(a, b, c);
-    } else {
-        throw std::runtime_error("Encountered the following unimplemented operation: " + opcode);
+    switch (opcode) {
+        case opcode_csel:
+            result = execute_csel(a, b, c);
+            break;
+        default:
+            throw std::runtime_error("Encountered the following unimplemented operation: " + fcore_opcodes_reverse[opcode]);
     }
 
     working_memory->at(writeback_address) = result;
 }
 
-void fcore::emulator_backend::run_register_instruction(const std::shared_ptr<ll_register_instr_node>& node) {
-    std::string opcode = node->get_opcode();
+void fcore::emulator_backend::run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands) {
 
-    uint32_t dest = node->get_destination()->get_bound_reg();
-    uint32_t op_a = node->get_operand_a()->get_bound_reg();
-    uint32_t op_b = node->get_operand_b()->get_bound_reg();
+
+    uint32_t dest = operands[2];
+    uint32_t op_a = operands[0];
+    uint32_t op_b = operands[1];
 
     auto a = working_memory->at(op_a);
     auto b = working_memory->at(op_b);
 
     uint32_t result;
     uint32_t writeback_address = dest;
-
-    if(opcode == "add"){
-        result = execute_add(a, b);
-    } else if (opcode == "sub"){
-        result = execute_sub(a, b);
-    } else if (opcode == "mul"){
-        result = execute_mul(a, b);
-    } else if (opcode == "and"){
-        result = execute_and(a, b);
-    } else if (opcode == "or"){
-        result = execute_or(a, b);
-    } else if (opcode == "xor"){
-        result = execute_xor(a, b);
-    } else if (opcode == "satp"){
-        result = execute_satp(a, b);
-    } else if (opcode == "satn"){
-        result  = execute_satn(a, b);
-    } else if (opcode == "beq"){
-        result = execute_compare_eq(a, b);
-    } else if (opcode == "bne"){
-        result = execute_compare_ne(a, b);
-    } else if (opcode == "bgt"){
-        result = execute_compare_gt(a, b);
-    } else if (opcode == "ble"){
-        result = execute_compare_le(a, b);
-    } else if (opcode == "efi"){
-        execute_efi(op_a, op_b, dest);
-        return;
-    } else if (opcode == "bset"){
-        result = execute_bset(working_memory->at(op_a), working_memory->at(op_b), working_memory->at(dest));
-        writeback_address = op_a;
-    } else if (opcode == "bsel"){
-        result = execute_bsel(a, b);
-    } else {
-        throw std::runtime_error("Encountered the following unimplemented operation: " + opcode);
+    switch (opcode) {
+        case opcode_add:
+            result = execute_add(a, b);
+            break;
+        case opcode_sub:
+            result = execute_sub(a, b);
+            break;
+        case opcode_mul:
+            result = execute_mul(a, b);
+            break;
+        case opcode_and:
+            result = execute_and(a, b);
+            break;
+        case opcode_or:
+            result = execute_or(a, b);
+            break;
+        case opcode_xor:
+            result = execute_xor(a, b);
+            break;
+        case opcode_satp:
+            result = execute_satp(a, b);
+            break;
+        case opcode_satn:
+            result  = execute_satn(a, b);
+            break;
+        case opcode_beq:
+            result = execute_compare_eq(a, b);
+            break;
+        case opcode_bne:
+            result = execute_compare_ne(a, b);
+            break;
+        case opcode_bgt:
+            result = execute_compare_gt(a, b);
+            break;
+        case opcode_ble:
+            result = execute_compare_le(a, b);
+            break;
+        case opcode_efi:
+            return execute_efi(op_a, op_b, dest);
+        case opcode_bset:
+            result = execute_bset(working_memory->at(op_a), working_memory->at(op_b), working_memory->at(dest));
+            writeback_address = op_a;
+            break;
+        case opcode_bsel:
+            result = execute_bsel(a, b);
+            break;
+        default:
+            throw std::runtime_error("Encountered the following unimplemented operation: " + fcore_opcodes_reverse[opcode]);
     }
 
     working_memory->at(writeback_address) = result;
 }
 
-void fcore::emulator_backend::run_independent_instruction(const std::shared_ptr<ll_independent_inst_node>& node) {
-    std::string opcode = node->get_opcode();
-    if(opcode == "nop"){
-    } else if (opcode == "stop"){
-        stop_requested = true;
-    } else {
-        throw std::runtime_error("Encountered the following unimplemented operation: " + opcode);
+void fcore::emulator_backend::run_independent_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands) {
+
+    switch (opcode) {
+        case opcode_nop:
+            break;
+        case opcode_stop:
+            stop_requested = true;
+            break;
+        default:
+            throw std::runtime_error("Encountered the following unimplemented operation: " + fcore_opcodes_reverse[opcode]);
     }
+
 }
 
-void fcore::emulator_backend::run_conversion_instruction(const std::shared_ptr<ll_conversion_instr_node>& node) {
-    std::string opcode = node->get_opcode();
+void fcore::emulator_backend::run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands) {
 
-    uint32_t src = node->get_source()->get_bound_reg();
-    uint32_t dest = node->get_destination()->get_bound_reg();
+    uint32_t src = operands[0];
+    uint32_t dest = operands[1];
 
     uint32_t result;
-    if(opcode == "rec"){
-        result = execute_rec(working_memory->at(src));
-    } else if(opcode == "fti"){
-        result = execute_fti(working_memory->at(src));
-    } else if(opcode == "itf"){
-        result = execute_itf(working_memory->at(src));
-    } else if (opcode == "not"){
-        result = execute_not(working_memory->at(src));
-    } else if(opcode == "abs") {
-        result = execute_abs(working_memory->at(src));
-    } else if(opcode == "popcnt") {
-        result = execute_popcnt(working_memory->at(src));
-    } else {
-        throw std::runtime_error("Encountered the following unimplemented operation: " + opcode);
+
+    switch (opcode) {
+        case opcode_rec:
+            result = execute_rec(working_memory->at(src));
+            break;
+        case opcode_fti:
+            result = execute_fti(working_memory->at(src));
+            break;
+        case opcode_itf:
+            result = execute_itf(working_memory->at(src));
+            break;
+        case opcode_not:
+            result = execute_not(working_memory->at(src));
+            break;
+        case opcode_abs:
+            result = execute_abs(working_memory->at(src));
+            break;
+        case opcode_popcnt:
+            result = execute_popcnt(working_memory->at(src));
+            break;
+        default:
+            throw std::runtime_error("Encountered the following unimplemented operation: " + fcore_opcodes_reverse[opcode]);
     }
 
     working_memory->at(dest) = result;
 
 }
 
-void fcore::emulator_backend::run_load_constant_instruction(const std::shared_ptr<ll_load_constant_instr_node>& node) {
-    uint32_t const_val;
-    float raw_const = node->get_constant_f();
-
-    memcpy(&const_val, &raw_const, sizeof(uint32_t));
-
-    uint32_t dest = node->get_destination()->get_bound_reg();
-
-    working_memory->at(dest) = const_val;
+void fcore::emulator_backend::run_load_constant_instruction(uint32_t dest, uint32_t val) {
+    working_memory->at(dest) = val;
 }
 
 uint32_t fcore::emulator_backend::execute_add(uint32_t a, uint32_t b) {

@@ -26,27 +26,16 @@ fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohma
     emulator_metadata metadata;
 
 
-    std::shared_ptr<ll_ast_node> ast;
-
     auto program = compile_program(core_info, input_connections, output_connections, am);
-
-    binary_loader dis(program);
-    metadata.io_map_set = dis.get_io_mapping_set();
-    ast = dis.get_ast();
-
-    instruction_stream program_stream = instruction_stream_builder::build_stream(ast);
-
-    std::vector<int> io_res;
-    stream_pass_manager sman(io_res,0);
-    sman.set_enabled_passes({false, false, false, true, true, true,false, true});
-    program_stream = sman.process_stream(program_stream);
 
     auto ch = core_info["channels"];
     metadata.active_channels = ch;
     metadata.execution_order = core_info["order"];
 
-    metadata.emu = std::make_shared<emulator_backend>(program_stream, ch, core_info["id"]);
-    metadata.emu->set_program(program);
+    metadata.io_map_set =read_io_map(program);
+    metadata.emu = std::make_shared<emulator_backend>(core_info["id"]);
+    metadata.emu->set_program(sanitize_program(program));
+
     if(core_info.contains("options")){
         auto opt = core_info["options"];
         metadata.efi_selector = get_efi_implementation(opt["efi_implementation"]);
@@ -292,4 +281,39 @@ fcore::comparator_type_t fcore::emulator_builder::get_comparator_type(const std:
         val = comparator_none;
     }
     return val;
+}
+
+std::vector<uint32_t> fcore::emulator_builder::sanitize_program(const std::vector<uint32_t>&  raw_prog) {
+    std::vector<uint32_t> program;
+    int section = 0;
+
+    for(auto &instr:raw_prog){
+        // TODO: generalize this using opcodes;
+        if(section == 2){
+            program.push_back(instr);
+        }
+        if(instr == fcore::fcore_opcodes["stop"]){
+            section++;
+        }
+    }
+    return program;
+}
+
+std::set<fcore::io_map_entry> fcore::emulator_builder::read_io_map(const std::vector<uint32_t> &raw_prog) {
+    std::set<fcore::io_map_entry>ret;
+    int section = 0;
+
+    for(auto &instr:raw_prog){
+        // TODO: generalize this using opcodes;
+        if(section == 1 && instr != fcore::fcore_opcodes["stop"]){
+            auto io_addr = instr  & 0xFFFF;
+            auto core_addr =( instr & 0xFFFF0000) >>16;
+            ret.emplace(io_addr, core_addr, "");
+        }
+        if(instr == fcore::fcore_opcodes["stop"]){
+            section++;
+        }
+        if(section==2) break;
+    }
+    return ret;
 }

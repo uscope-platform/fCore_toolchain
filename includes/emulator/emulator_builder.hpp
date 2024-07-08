@@ -24,9 +24,6 @@
 #include "data_structures/emulation/emulator_metadata.hpp"
 #include "frontend/binary_loader.hpp"
 #include "fcore_dis.hpp"
-#include "data_structures/instruction_stream.hpp"
-#include "tools/instruction_stream_builder.hpp"
-#include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "emulator/backend/emulator_backend.hpp"
 #include "fcore_cc.hpp"
 
@@ -54,6 +51,9 @@ namespace fcore {
                 const std::vector<nlohmann::json> &output_connections,
                 std::set<std::string> memories
         );
+
+        std::set<io_map_entry> read_io_map(const std::vector<uint32_t>&  raw_prog);
+        std::vector<uint32_t> sanitize_program(const std::vector<uint32_t>&  raw_prog);
 
         void process_ioms(
                 const nlohmann::json &inputs,

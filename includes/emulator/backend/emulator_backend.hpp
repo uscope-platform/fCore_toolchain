@@ -19,7 +19,6 @@
 #include <spdlog/spdlog.h>
 
 #include "efi_dispatcher.h"
-#include "data_structures/instruction_stream.hpp"
 #include "data_structures/emulation/emulator_metadata.hpp"
 #include "fCore_isa.hpp"
 
@@ -33,7 +32,7 @@
 namespace fcore{
     class emulator_backend {
     public:
-        emulator_backend(instruction_stream &s, int n_channels, const std::string &core);
+        explicit emulator_backend(const std::string &core);
         void set_program(std::vector<uint32_t> p) {program = std::move(p);};
         void set_comparator_type(const comparator_type_t &t){comparator_type = t;};
         void run_round(std::shared_ptr<std::vector<uint32_t>> mem);
@@ -44,13 +43,15 @@ namespace fcore{
         static uint32_t float_to_uint32(float f);
         static float uint32_to_float(uint32_t u);
     private:
-        void run_instruction_by_type(const std::shared_ptr<ll_instruction_node>& node);
 
-        void run_register_instruction(const std::shared_ptr<ll_register_instr_node>& node);
-        void run_ternary_instruction(const std::shared_ptr<ll_ternary_instr_node>& node);
-        void run_independent_instruction(const std::shared_ptr<ll_independent_inst_node>& node);
-        void run_conversion_instruction(const std::shared_ptr<ll_conversion_instr_node>& node);
-        void run_load_constant_instruction(const std::shared_ptr<ll_load_constant_instr_node>& node);
+
+        void run_instruction_by_type(const uint32_t& opcode, std::array<uint32_t, 3> operands);
+
+        void run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands);
+        void run_ternary_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands);
+        void run_independent_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands);
+        void run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands);
+        void run_load_constant_instruction(uint32_t dest, uint32_t val);
 
         uint32_t execute_add(uint32_t a, uint32_t b);
         uint32_t execute_sub(uint32_t a, uint32_t b);
@@ -86,7 +87,6 @@ namespace fcore{
 
         bool stop_requested;
 
-        instruction_stream stream;
         std::vector<uint32_t> program;
         efi_implementation_t efi_selector;
         comparator_type_t comparator_type;

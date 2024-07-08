@@ -21,6 +21,7 @@
 #include <map>
 
 namespace fcore{
+
     typedef enum {
         isa_independent_instruction = 2,
         isa_register_instruction = 3,
@@ -46,6 +47,55 @@ namespace fcore{
 
     static const int fcore_register_address_width = 6;
     static const int fcore_opcode_width = 5;
+
+
+    static uint32_t get_opcode(uint32_t instr) {
+        return instr & (1<<fcore_opcode_width)-1;
+    }
+
+    static uint32_t operand_mask(uint8_t operand_position){
+        return (
+                ((1<<(fcore_opcode_width +     operand_position*fcore_register_address_width))-1) -
+                ((1<<(fcore_opcode_width + (operand_position-1)*fcore_register_address_width))-1)
+        );
+    }
+
+    static std::array<uint32_t,3> get_operands(uint32_t instr){
+        std::array<uint32_t,3> result = {};
+        result[0] = (instr & operand_mask(1)) >> fcore_opcode_width;
+        result[1] = (instr & operand_mask(2)) >> (fcore_opcode_width + fcore_register_address_width);
+        result[2] = (instr & operand_mask(3)) >> (fcore_opcode_width + 2*fcore_register_address_width);
+        return result;
+
+    }
+
+    typedef enum {
+        opcode_nop = 0,
+        opcode_add = 1,
+        opcode_sub = 2,
+        opcode_mul = 3,
+        opcode_itf = 4,
+        opcode_fti = 5,
+        opcode_ldc = 6,
+        opcode_bgt = 8,
+        opcode_ble = 9,
+        opcode_beq = 10,
+        opcode_bne = 11,
+        opcode_stop = 12,
+        opcode_and = 13,
+        opcode_or = 14,
+        opcode_not = 15,
+        opcode_satp = 16,
+        opcode_satn = 17,
+        opcode_rec = 18,
+        opcode_popcnt = 19,
+        opcode_abs = 20,
+        opcode_efi = 21,
+        opcode_bset = 22,
+        opcode_bsel = 25,
+        opcode_xor = 26,
+        opcode_csel =27,
+    }opcode_table_t;
 
 
     static std::map <std::string, uint32_t>  fcore_opcodes {
