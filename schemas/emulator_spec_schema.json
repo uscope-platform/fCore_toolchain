@@ -189,19 +189,9 @@
                 }
               }
             },
-            "oneOf": [
-              {
-                "required": [
-                  "type",
-                  "filename"
-                ]
-              },
-              {
-                "required": [
-                  "content",
-                  "build_settings"
-                ]
-              }
+            "required": [
+              "content",
+              "build_settings"
             ]
           },
           "memory_init": {
