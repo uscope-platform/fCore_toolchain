@@ -79,7 +79,7 @@ namespace fcore{
         void execution_phase(const core_step_metadata& info, program_bundle &prog);
         void interconnects_phase(const core_step_metadata& info, std::unordered_map<std::string, bool> enabled_cores);
 
-        program_bundle get_bundle_by_name(std::string name){
+        program_bundle get_bundle_by_name(const std::string& name){
             for(const auto & p : programs){
                 if(p.name==name){
                     return p;

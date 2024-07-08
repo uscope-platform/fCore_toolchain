@@ -69,7 +69,7 @@ void fcore::emulator_manager::process() {
 std::vector<fcore::program_bundle> fcore::emulator_manager::get_programs() {
     bus_map.clear();
     emulator_builder e_b(debug_autogen);
-    std::vector<program_bundle> programs;
+    std::vector<program_bundle> res;
 
     // I do not need to load all this stuff, however since these functions run the duplication check it is worth doing
     // as the performance hit is not too bad.
@@ -78,13 +78,18 @@ std::vector<fcore::program_bundle> fcore::emulator_manager::get_programs() {
     for(auto &item:spec_file["cores"]){
         std::string id = item["id"];
 
-        //same as before, these are loaded just for the check
-        auto output_specs = load_output_specs(item);
-        auto memory_init = load_memory_init(item["memory_init"]);
-
-
         program_bundle b;
         b.name = id;
+        //same as before, these are loaded just for the check
+        auto output_specs = load_output_specs(item);
+        b.input = load_input(item);
+        b.mem_init = load_memory_init(item["memory_init"]);
+        b.sampling_frequency = item["sampling_frequency"];
+        b.execution_order = item["order"];
+        b.active_channels = item["channels"];
+        b.efi_selector = e_b.get_efi_implementation(item["options"]["efi_implementation"]);
+        b.comparator_type = e_b.get_comparator_type(item["options"]["comparators"]);
+
         try{
             std::vector<nlohmann::json> src = {};
             std::vector<nlohmann::json> dst = {};
@@ -100,26 +105,13 @@ std::vector<fcore::program_bundle> fcore::emulator_manager::get_programs() {
         } catch(std::runtime_error &e){
             errors[id] = e.what();
         }
-        for(auto &mem:item["memory_init"]){
-            int reg_idx = mem["reg_n"];
-            if(mem["type"]== "float"){
-                float flt_v = mem["value"];
-                b.mem_init[reg_idx] = emulator_backend::float_to_uint32(flt_v);
-            } else {
-                b.mem_init[reg_idx] = mem["value"];
-            }
-        }
+
         e_b.clear_dma_io();
-        b.sampling_frequency = item["sampling_frequency"];
-        b.execution_order = item["order"];
-        b.active_channels = item["channels"];
-        b.input = load_input(item);
-        b.efi_selector = e_b.get_efi_implementation(item["options"]["efi_implementation"]);
-        b.comparator_type = e_b.get_comparator_type(item["options"]["comparators"]);
-        programs.push_back(b);
+
+        res.push_back(b);
     }
     check_bus_duplicates();
-    return programs;
+    return res;
 }
 
 void fcore::emulator_manager::emulate() {
@@ -135,12 +127,8 @@ void fcore::emulator_manager::run_cores() {
 
     spdlog::info("EMULATION START");
     while(!sequencer.sim_complete()){
-        uint64_t cur_c = sequencer.get_current_step();
-        if(cur_c%100000==0 && cur_c != 0){
-            spdlog::info("EMULATION PROGRESS: {0} cycles done out of {1}", cur_c, emu_length);
-        }
-        auto running_cores = sequencer.get_running_cores();
 
+        auto running_cores = sequencer.get_running_cores();
 
         for(auto &core:running_cores){
 
@@ -150,7 +138,6 @@ void fcore::emulator_manager::run_cores() {
                 execution_phase(core, sel_prog);
                 interconnects_phase(core, sequencer.get_enabled_cores());
             }
-
 
             outputs_manager.process_outputs(
                     core.id,

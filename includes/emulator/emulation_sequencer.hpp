@@ -46,13 +46,14 @@ namespace fcore {
         void calculate_sequence();
 
         uint32_t get_simulation_frequency(){ return simulation_frequency;};
-        uint64_t get_current_step() const { return sim_length - progress; };
         bool sim_complete() const { return progress == 0; };
         bool is_empty_step() {return empty_step;};
         std::vector<core_step_metadata> get_running_cores();
 
         std::unordered_map<std::string, bool> get_enabled_cores() { return enabled_cores_map; };
     private:
+
+        uint64_t get_current_step() const { return sim_length - progress; };
         std::vector<core_metadata> cores;
         uint64_t progress;
         float sim_length;
