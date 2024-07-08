@@ -91,6 +91,7 @@ namespace fcore{
         emulation_sequencer sequencer;
         emulation_outputs_manager outputs_manager;
 
+        emulator_backend backend;
 
         std::unordered_map<std::string, core_memory_pool_t> emulators_memory;
 

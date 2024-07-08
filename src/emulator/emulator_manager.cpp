@@ -206,9 +206,12 @@ void fcore::emulator_manager::execution_phase(const core_step_metadata& info) {
 
             spdlog::trace("RUNNING ROUND " + std::to_string(info.step_n+1) + " of " + std::to_string(emu_length) +
             ": core ID = " + info.id + " (CH " + std::to_string(j) + ")");
-            emulators[info.id].emu->set_efi_selector(emulators[info.id].efi_selector);
-            emulators[info.id].emu->set_comparator_type(emulators[info.id].comparator_type);
-            emulators[info.id].emu->run_round(emulators_memory[info.id][j]);
+
+            backend.set_core_name(info.id);
+            backend.set_program(emulators[info.id].program);
+            backend.set_efi_selector(emulators[info.id].efi_selector);
+            backend.set_comparator_type(emulators[info.id].comparator_type);
+            backend.run_round(emulators_memory[info.id][j]);
         }
     }
 }
@@ -218,32 +221,29 @@ void fcore::emulator_manager::interconnects_phase(const core_step_metadata& info
     for(auto &conn:interconnects){
         if(info.id == conn.source){
 
-            auto src = emulators[conn.source].emu;
-            auto dst = emulators[conn.destination].emu;
             for(auto &reg:conn.connections){
-                auto src_id = src->get_name();
                 uint32_t first_address, second_address;
 
 
-                if(auto a = io_map_entry::get_io_map_entry_by_io_addr(emulators[src->get_name()].io_map_set, reg.first.address)){
+                if(auto a = io_map_entry::get_io_map_entry_by_io_addr(emulators[conn.source].io_map_set, reg.first.address)){
                     first_address = a->core_addr;
                 } else{
                     throw std::runtime_error("Unable to find io address in the source address map");
                 }
-                if(auto a = io_map_entry::get_io_map_entry_by_io_addr(emulators[dst->get_name()].io_map_set, reg.second.address)){
+                if(auto a = io_map_entry::get_io_map_entry_by_io_addr(emulators[conn.destination].io_map_set, reg.second.address)){
                     second_address = a->core_addr;
                 } else{
                     throw std::runtime_error("Unable to find io address in the destination address map");
                 }
 
-                if(enabled_cores[src_id]){
+                if(enabled_cores[conn.source]){
 
-                    auto val = emulators_memory[src->get_name()][reg.first.channel]->at(first_address);
-                    output_repeater.add_output(src_id, first_address, val);
-                    emulators_memory[dst->get_name()][reg.second.channel]->at(second_address) = val;
+                    auto val = emulators_memory[conn.source][reg.first.channel]->at(first_address);
+                    output_repeater.add_output(conn.source, first_address, val);
+                    emulators_memory[conn.destination][reg.second.channel]->at(second_address) = val;
                 } else {
-                    auto val = output_repeater.get_output(src_id, first_address);
-                    emulators_memory[dst->get_name()][reg.second.channel]->at(second_address) = val;
+                    auto val = output_repeater.get_output(conn.source, first_address);
+                    emulators_memory[conn.destination][reg.second.channel]->at(second_address) = val;
                 }
             }
         }

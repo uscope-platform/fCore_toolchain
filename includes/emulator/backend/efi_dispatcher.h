@@ -49,7 +49,7 @@ namespace fcore{
     class efi_dispatcher {
 
     public:
-        explicit efi_dispatcher(const std::string &core);
+        void set_core_name(std::string name) {core_name = std::move(name);};
         void emulate_efi(efi_implementation_t function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m);
     private:
         void efi_sort_exec(uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m);

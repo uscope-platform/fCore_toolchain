@@ -33,8 +33,7 @@ fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohma
     metadata.execution_order = core_info["order"];
 
     metadata.io_map_set =read_io_map(program);
-    metadata.emu = std::make_shared<emulator_backend>(core_info["id"]);
-    metadata.emu->set_program(sanitize_program(program));
+    metadata.program = sanitize_program(program);
 
     if(core_info.contains("options")){
         auto opt = core_info["options"];

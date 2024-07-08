@@ -74,7 +74,7 @@ namespace fcore{
         emulator_metadata() = default;
         std::unordered_map<std::string, emulator_input> input;
         std::unordered_map<uint32_t, uint32_t> memory_init;
-        std::shared_ptr<emulator_backend> emu;
+        std::vector<uint32_t > program;
         uint32_t execution_order;
         int active_channels;
         std::set<io_map_entry> io_map_set;

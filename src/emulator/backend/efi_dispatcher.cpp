@@ -15,9 +15,6 @@
 
 #include "emulator/backend/efi_dispatcher.h"
 
-fcore::efi_dispatcher::efi_dispatcher(const std::string &core) {
-    core_name = core;
-}
 
 void fcore::efi_dispatcher::emulate_efi(efi_implementation_t function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
     if(function == efi_sort){

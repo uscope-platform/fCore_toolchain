@@ -16,15 +16,6 @@
 #include "emulator/backend/emulator_backend.hpp"
 
 
-
-
-fcore::emulator_backend::emulator_backend(const std::string &core) : efi_backend(core){
-
-    core_name = core;
-    stop_requested = false;
-}
-
-
 void fcore::emulator_backend::run_round(std::shared_ptr<std::vector<uint32_t>> mem) {
 
     working_memory = std::move(mem);
