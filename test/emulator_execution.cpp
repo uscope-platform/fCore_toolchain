@@ -108,6 +108,7 @@ nlohmann::json prepare_spec(
         cs["program"]["build_settings"]["io"]["outputs"].push_back(outputs[i].name);
         cs["outputs"].push_back(out_obj);
     }
+
     cs["memory_init"]= std::vector<nlohmann::json>();
 
     for(int i = 0; i<memories.size(); i++){
@@ -424,28 +425,32 @@ TEST(Emulator_execution, emulator_ble) {
 
 }
 
-TEST(Emulator_execution, emulator_stop) {
-    nlohmann::json spec = prepare_spec_file("emu/test_stop.mem", 1);
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
-    manager.process();
-    manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(1), 0xc3fa8000);
-}
-
 
 
 TEST(Emulator_execution, emulator_efi) {
+    auto program = "int main(){float sort_input[4] = {1, 5.0, 0.5, 50.0};float sort_output[4];sort_output = efi(sort_input, 4);}";
 
-    nlohmann::json spec = prepare_spec_file("emu/test_efi.mem", 1);
+    auto spec = prepare_spec(program, 1,
+                             {}, {}, {});
+
+    nlohmann::json out_obj;
+    out_obj["name"] = "sort_output";
+    out_obj["type"] = "float";
+    out_obj["reg_n"] = {5, 6, 7};
+    out_obj["register_type"] = "vector";
+    spec["cores"][0]["program"]["build_settings"]["io"]["outputs"].push_back("sort_output");
+    spec["cores"][0]["outputs"].push_back(out_obj);
+
     spec["cores"][0]["options"]["efi_implementation"] = "efi_sort";
+
+    std::string dbg = spec.dump();
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
     auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(7), 1);
-    ASSERT_EQ(result->at(8), 0);
-    ASSERT_EQ(result->at(9), 2);
+    ASSERT_EQ(result->at(5), 1);
+    ASSERT_EQ(result->at(6), 0);
+    ASSERT_EQ(result->at(7), 2);
 }
 
 
@@ -480,6 +485,7 @@ TEST(Emulator_execution, emulator_csel) {
 
     auto spec = prepare_spec(program, 1,
                              {{"a", 2,"float"}}, {{"test", "float"}}, {});
+
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
@@ -501,13 +507,20 @@ TEST(Emulator_execution, emulator_csel) {
 
 TEST(Emulator_execution, emulator_inputs) {
 
-    nlohmann::json spec = prepare_spec_file("emu/test_inputs.mem", 2);
+
+    auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal + out;}";
+
+
+    auto spec = prepare_spec(program, 2,
+                             {}, {},{});
+
 
     spec["cores"][0]["efi_implementation"] = "efi_sort";
     spec["cores"][0]["input_data"] = nlohmann::json();
     spec["cores"][0]["input_data"]["input_1"] = {15.7,67.4};
     spec["cores"][0]["input_data"]["input_2"] = {42.92,-5.8};
     spec["cores"][0]["inputs"] = std::vector<nlohmann::json>();
+
     auto in = nlohmann::json();
     in["name"] = "input_1";
     in["type"] = "float";
@@ -517,8 +530,8 @@ TEST(Emulator_execution, emulator_inputs) {
     in["source"]["type"] = "file",
     in["source"]["value"] = "input_1",
     in["channel"] = 0;
-
     spec["cores"][0]["inputs"].push_back(in);
+
     in["name"] = "input_2";
     in["reg_n"] = 2;
     in["source"] = nlohmann::json();
@@ -526,12 +539,26 @@ TEST(Emulator_execution, emulator_inputs) {
     in["source"]["value"] = "input_2",
     spec["cores"][0]["inputs"].push_back(in);
 
+    auto MEM = nlohmann::json();
+    in["name"] = "out";
+    in["type"] = "float";
+    in["reg_n"] = 4;
+    in["is_output"] = true;
+    in["value"] = 0;
+    spec["cores"][0]["memory_init"].push_back(in);
+
+
+    spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_1");
+    spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_2");
+    spec["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("out");
+
+
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
     auto result = manager.get_memory_snapshot("test", 0);
 
-    ASSERT_EQ(result->at(4), 0x42f070a4);
+    ASSERT_EQ(result->at(63), 0x42f070a4);
 
 }
 

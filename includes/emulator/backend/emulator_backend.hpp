@@ -34,7 +34,7 @@ namespace fcore{
     class emulator_backend {
     public:
         emulator_backend(instruction_stream &s, int n_channels, const std::string &core);
-
+        void set_program(std::vector<uint32_t> p) {program = std::move(p);};
         void set_comparator_type(const comparator_type_t &t){comparator_type = t;};
         void run_round(std::shared_ptr<std::vector<uint32_t>> mem);
         void set_efi_selector(const efi_implementation_t sel){ efi_selector = sel;};
@@ -87,6 +87,7 @@ namespace fcore{
         bool stop_requested;
 
         instruction_stream stream;
+        std::vector<uint32_t> program;
         efi_implementation_t efi_selector;
         comparator_type_t comparator_type;
 

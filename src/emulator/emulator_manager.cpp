@@ -203,8 +203,11 @@ void fcore::emulator_manager::execution_phase(const core_step_metadata& info) {
 
     for(int j = 0; j<emulators[info.id].active_channels; ++j){
         if(info.running){
+
             spdlog::trace("RUNNING ROUND " + std::to_string(info.step_n+1) + " of " + std::to_string(emu_length) +
             ": core ID = " + info.id + " (CH " + std::to_string(j) + ")");
+            emulators[info.id].emu->set_efi_selector(emulators[info.id].efi_selector);
+            emulators[info.id].emu->set_comparator_type(emulators[info.id].comparator_type);
             emulators[info.id].emu->run_round(emulators_memory[info.id][j]);
         }
     }

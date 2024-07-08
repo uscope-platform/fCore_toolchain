@@ -78,6 +78,8 @@ namespace fcore{
         uint32_t execution_order;
         int active_channels;
         std::set<io_map_entry> io_map_set;
+        efi_implementation_t efi_selector;
+        comparator_type_t comparator_type;
     };
 
 

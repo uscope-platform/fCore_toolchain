@@ -68,10 +68,7 @@ configure_file(disassembler_files/test_error.mem ${DIS_TEST_FILES_DIR} COPYONLY)
 set(EMU_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/emu)
 file(MAKE_DIRECTORY ${EMU_TEST_FILES_DIR})
 
-configure_file(emulator_files/backend/test_stop.mem ${EMU_TEST_FILES_DIR} COPYONLY)
-configure_file(emulator_files/backend/test_efi.mem ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_inputs.csv ${EMU_TEST_FILES_DIR} COPYONLY)
-configure_file(emulator_files/test_inputs.mem ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_inputs_spec.json ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_interconnect_spec.json ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/test_compilation.json ${EMU_TEST_FILES_DIR} COPYONLY)
@@ -79,7 +76,6 @@ configure_file(emulator_files/test_compilation_interconnect.json ${EMU_TEST_FILE
 configure_file(emulator_files/test_compilation_memory.json ${EMU_TEST_FILES_DIR} COPYONLY)
 
 configure_file(emulator_files/exec_format/test_exec_format.json ${EMU_TEST_FILES_DIR} COPYONLY)
-configure_file(emulator_files/exec_format/test_exec_format.mem ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/exec_format/test_exec_format_error.json ${EMU_TEST_FILES_DIR} COPYONLY)
 
 

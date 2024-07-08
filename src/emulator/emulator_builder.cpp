@@ -27,36 +27,12 @@ fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohma
 
 
     std::shared_ptr<ll_ast_node> ast;
-    if(core_info["program"].contains("filename")){
-        auto p = core_info["program"];
-        std::ifstream stream;
 
-        bin_loader_input_type_t in_type;
-        std::string file_path = p["filename"];
-        if(!std::filesystem::is_regular_file(file_path)){
-            std::string core_id = core_info["id"];
-            throw std::runtime_error("Invalid program file for core: " + core_id);
-        }
-        if(p["type"] == "mem") {
-            stream.open(file_path);
-            in_type = bin_loader_mem_input;
-        } else if(p["type"] == "hex") {
-            stream.open(file_path, std::ifstream::binary);
-            in_type = bin_loader_hex_input;
-        } else{
-            throw std::runtime_error("Unknown program type for core: " + nlohmann::to_string(core_info["id"]));
-        }
-        binary_loader dis = binary_loader(stream, in_type);
-        metadata.io_map_set = dis.get_io_mapping_set();
-        ast = dis.get_ast();
+    auto program = compile_program(core_info, input_connections, output_connections, am);
 
-    } else {
-        auto program = compile_program(core_info, input_connections, output_connections, am);
-
-        binary_loader dis(program);
-        metadata.io_map_set = dis.get_io_mapping_set();
-        ast = dis.get_ast();
-    }
+    binary_loader dis(program);
+    metadata.io_map_set = dis.get_io_mapping_set();
+    ast = dis.get_ast();
 
     instruction_stream program_stream = instruction_stream_builder::build_stream(ast);
 
@@ -70,11 +46,11 @@ fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohma
     metadata.execution_order = core_info["order"];
 
     metadata.emu = std::make_shared<emulator_backend>(program_stream, ch, core_info["id"]);
+    metadata.emu->set_program(program);
     if(core_info.contains("options")){
         auto opt = core_info["options"];
-
-        metadata.emu->set_comparator_type(get_comparator_type(opt["comparators"]));
-        metadata.emu->set_efi_selector(get_efi_implementation(opt["efi_implementation"]));
+        metadata.efi_selector = get_efi_implementation(opt["efi_implementation"]);
+        metadata.comparator_type = get_comparator_type(opt["comparators"]);
     }
 
 

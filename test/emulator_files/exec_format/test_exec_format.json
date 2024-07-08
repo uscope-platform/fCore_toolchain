@@ -47,9 +47,21 @@
           "name":"test_out"
         }
       ],
+      "memory_init": [],
       "program":{
-        "type":"mem",
-        "filename":"emu/test_exec_format.mem"
+        "content": "int main() {float input_1;float input_2;float test_out;test_out = input_1 + input_2;}",
+        "build_settings": {
+          "io": {
+            "inputs": [
+              "input_1",
+              "input_2"
+            ],
+            "outputs": [
+              "test_out"
+            ],
+            "memories": []
+          }
+        }
       },
       "order": 0,
       "options":{
@@ -62,3 +74,5 @@
   ],
   "emulation_time": 2
 }
+
+
