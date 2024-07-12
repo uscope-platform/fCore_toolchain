@@ -35,7 +35,7 @@ fcore::schema_validator_base::schema_validator_base(const std::string& schema_fi
 }
 
 
-void fcore::schema_validator_base::validate(nlohmann::json &spec_file) {
+void fcore::schema_validator_base::validate(const nlohmann::json &spec_file) {
     valijson::Validator validator;
     valijson::ValidationResults results;
     valijson::adapters::NlohmannJsonAdapter myTargetAdapter(spec_file);

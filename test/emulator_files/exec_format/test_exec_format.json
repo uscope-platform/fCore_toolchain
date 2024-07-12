@@ -2,20 +2,43 @@
   "cores": [
     {
       "id": "test",
-      "input_data": {
-        "input_1": [
-          15.7,
-          67.4
-        ],
-        "input_2": [
-          42.92,
-          -5.8
-        ],
-        "spurious": [
-          123.5,
-          5278.6
-        ]
-      },
+      "input_data": [
+        {
+          "name": "file_a",
+          "data": {
+            "input_1": [
+              15.7,
+              67.4
+            ],
+            "input_2": [
+              42.92,
+              -5.8
+            ],
+            "spurious": [
+              123.5,
+              5278.6
+            ]
+          }
+        },
+        {
+          "name": "file_b",
+          "data": {
+            "input_1": [
+              135.7,
+              672.4
+            ],
+            "input_2": [
+              423.92,
+              -35.8
+            ],
+            "spurious": [
+              1213.5,
+              52378.6
+            ]
+          }
+
+        }
+      ],
       "inputs": [
         {
           "name": "input_1",
@@ -24,7 +47,8 @@
           "reg_n": 15,
           "source": {
             "type":"file",
-            "value": "input_1"
+            "series": "input_1",
+            "file": "file_a"
           },
           "channel": 0
         },
@@ -35,7 +59,8 @@
           "register_type": "scalar",
           "source": {
             "type":"file",
-            "value": "input_2"
+            "series": "input_2",
+            "file": "file_a"
           },
           "channel": 0
         }
@@ -44,6 +69,7 @@
         {
           "reg_n":42,
           "type":"float",
+          "register_type": "scalar",
           "name":"test_out"
         }
       ],
@@ -72,6 +98,7 @@
       "sampling_frequency": 1
     }
   ],
+  "interconnect": [],
   "emulation_time": 2
 }
 

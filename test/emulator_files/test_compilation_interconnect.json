@@ -2,20 +2,25 @@
   "cores": [
     {
       "id": "test",
-      "input_data": {
-        "input_1": [
-          15.7,
-          67.4
-        ],
-        "input_2": [
-          42.92,
-          -5.8
-        ],
-        "spurious": [
-          123.5,
-          5278.6
-        ]
-      },
+      "input_data": [
+        {
+          "name": "file_1",
+          "data": {
+            "input_1": [
+              15.7,
+              67.4
+            ],
+            "input_2": [
+              42.92,
+              -5.8
+            ],
+            "spurious": [
+              123.5,
+              5278.6
+            ]
+          }
+        }
+      ],
       "inputs": [
         {
           "name": "input_1",
@@ -24,7 +29,8 @@
           "register_type": "scalar",
           "source": {
             "type":"file",
-            "value": "input_1"
+            "file": "file_1",
+            "series": "input_1"
           },
           "channel": 0
         },
@@ -33,7 +39,8 @@
           "type": "float",
           "source": {
             "type":"file",
-            "value": "input_2"
+            "file": "file_1",
+            "series": "input_2"
           },
           "register_type": "scalar",
           "reg_n": 2,
@@ -44,7 +51,8 @@
         {
           "reg_n":4,
           "type":"integer",
-          "name":"out"
+          "name":"out",
+          "register_type": "scalar"
         }
       ],
       "memory_init": [],
@@ -76,11 +84,13 @@
       "id": "test_move",
       "input_file": "emu/test_inputs.csv",
       "inputs": [],
+      "input_data": [],
       "outputs": [
         {
           "reg_n":5,
           "type":"integer",
-          "name":"out"
+          "name":"out",
+          "register_type": "scalar"
         }
       ],
       "memory_init": [],
@@ -114,6 +124,8 @@
       "channels":[
         {
           "name": "interconnect_name",
+          "length": 1,
+          "type": "scalar_transfer",
           "source_output":"out2",
           "source": {
             "channel": 0,

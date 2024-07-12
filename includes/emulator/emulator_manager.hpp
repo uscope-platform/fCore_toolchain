@@ -24,12 +24,13 @@
 #include "data_structures/emulation/emulator_input.hpp"
 #include "data_structures/emulation/emulator_input_factory.hpp"
 #include "data_structures/emulation/hil_bus_map.hpp"
+#include "data_structures/emulation/specs/emulator_specs.hpp"
+
 #include "emulation_sequencer.hpp"
 #include "frontend/schema_validators/schema_validator_base.h"
 #include "frontend/binary_loader.hpp"
 #include "../../third_party/csv.hpp"
 #include "emulator/backend/emulator_backend.hpp"
-#include "tools/instruction_stream_builder.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "data_structures/emulation/emulator_metadata.hpp"
 #include "emulator_builder.hpp"
@@ -44,7 +45,7 @@ namespace fcore{
             std::vector<uint32_t> program;
             std::set<io_map_entry> io;
             std::unordered_map<uint32_t, uint32_t> mem_init;
-            std::unordered_map<std::string, emulator_input> input;
+            std::unordered_map<std::string, emulator::emulator_input_specs> input;
             uint32_t sampling_frequency;
             uint32_t execution_order;
             struct program_info program_length;
@@ -106,6 +107,9 @@ namespace fcore{
 
         std::vector<program_bundle> programs;
         std::unordered_map<std::string, core_memory_pool_t> emulators_memory;
+
+
+        emulator::emulator_specs emu_spec;
 
     };
 }

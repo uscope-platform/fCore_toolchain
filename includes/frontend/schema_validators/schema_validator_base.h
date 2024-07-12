@@ -33,7 +33,7 @@ namespace fcore{
     class schema_validator_base {
     public:
         schema_validator_base(const std::string& schema_file);
-        void validate(nlohmann::json &spec_file);
+        void validate(const nlohmann::json &spec_file);
     private:
         valijson::Schema schema;
         std::string error;

@@ -75,6 +75,7 @@ nlohmann::json prepare_spec(
     cs["options"]["comparators"] = "full";
     cs["options"]["efi_implementation"] = "none";
     cs["sampling_frequency"] =1;
+    cs["input_data"] = std::vector<nlohmann::json>();
     cs["inputs"]= std::vector<nlohmann::json>();
 
     cs["program"]["build_settings"] = nlohmann::json();
@@ -125,6 +126,7 @@ nlohmann::json prepare_spec(
 
 
     spec["cores"].push_back(cs);
+    spec["interconnect"] = std::vector<nlohmann::json>();
     return spec;
 }
 
@@ -516,9 +518,12 @@ TEST(Emulator_execution, emulator_inputs) {
 
 
     spec["cores"][0]["efi_implementation"] = "efi_sort";
-    spec["cores"][0]["input_data"] = nlohmann::json();
-    spec["cores"][0]["input_data"]["input_1"] = {15.7,67.4};
-    spec["cores"][0]["input_data"]["input_2"] = {42.92,-5.8};
+    spec["cores"][0]["input_data"] = std::vector<nlohmann::json>();
+    spec["cores"][0]["input_data"].push_back(nlohmann::json());
+    spec["cores"][0]["input_data"][0]["name"] = "data_file_1";
+    spec["cores"][0]["input_data"][0]["data"] = nlohmann::json();
+    spec["cores"][0]["input_data"][0]["data"]["input_1"] = {15.7,67.4};
+    spec["cores"][0]["input_data"][0]["data"]["input_2"] = {42.92,-5.8};
     spec["cores"][0]["inputs"] = std::vector<nlohmann::json>();
 
     auto in = nlohmann::json();
@@ -527,16 +532,18 @@ TEST(Emulator_execution, emulator_inputs) {
     in["register_type"] = "scalar";
     in["reg_n"] = 1;
     in["source"] = nlohmann::json();
-    in["source"]["type"] = "file",
-    in["source"]["value"] = "input_1",
+    in["source"]["type"] = "file";
+    in["source"]["file"] = "data_file_1";
+    in["source"]["series"] = "input_1";
     in["channel"] = 0;
     spec["cores"][0]["inputs"].push_back(in);
 
     in["name"] = "input_2";
     in["reg_n"] = 2;
     in["source"] = nlohmann::json();
-    in["source"]["type"] = "file",
-    in["source"]["value"] = "input_2",
+    in["source"]["type"] = "file";
+    in["source"]["file"] = "data_file_1";
+    in["source"]["series"] = "input_2";
     spec["cores"][0]["inputs"].push_back(in);
 
     auto MEM = nlohmann::json();

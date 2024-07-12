@@ -18,34 +18,6 @@ fcore::emulator_builder::emulator_builder(bool dbg) {
     debug_autogen = dbg;
 }
 
-fcore::emulator_metadata fcore::emulator_builder::load_json_program(const nlohmann::json &core_info,
-                                                      const std::vector<nlohmann::json> &input_connections,
-                                                      const std::vector<nlohmann::json> &output_connections,
-                                                      std::set<io_map_entry> &am
-                             ) {
-    emulator_metadata metadata;
-
-
-    auto program = compile_program(core_info, input_connections, output_connections, am);
-
-    auto ch = core_info["channels"];
-    metadata.active_channels = ch;
-    metadata.execution_order = core_info["order"];
-
-    metadata.io_map =read_io_map(program);
-    metadata.program = sanitize_program(program);
-
-    if(core_info.contains("options")){
-        auto opt = core_info["options"];
-        metadata.efi_selector = get_efi_implementation(opt["efi_implementation"]);
-        metadata.comparator_type = get_comparator_type(opt["comparators"]);
-    }
-
-
-    clear_dma_io();
-    return metadata;
-}
-
 void fcore::emulator_builder::process_interconnects(
         const std::vector<nlohmann::json> &input_connections,
         const std::vector<nlohmann::json> &output_connections,
