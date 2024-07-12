@@ -21,8 +21,6 @@
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 
-#include "data_structures/emulation/emulator_input.hpp"
-#include "data_structures/emulation/emulator_input_factory.hpp"
 #include "data_structures/emulation/hil_bus_map.hpp"
 #include "data_structures/emulation/specs/emulator_specs.hpp"
 
@@ -44,7 +42,7 @@ namespace fcore{
             std::string name;
             std::vector<uint32_t> program;
             std::set<io_map_entry> io;
-            std::unordered_map<uint32_t, uint32_t> mem_init;
+            std::vector<emulator::emulator_memory_specs> memories;
             std::unordered_map<std::string, emulator::emulator_input_specs> input;
             uint32_t sampling_frequency;
             uint32_t execution_order;
@@ -68,10 +66,7 @@ namespace fcore{
         std::vector<interconnect_t> load_interconnects(nlohmann::json &interconnects);
     private:
         void check_bus_duplicates();
-        static std::unordered_map<std::string, emulator_input> load_input(nlohmann::json &core);
-        std::vector<emulator_output_t> load_output_specs(nlohmann::json &core);
-        std::unordered_map<unsigned int, uint32_t> load_memory_init(nlohmann::json &mem_init);
-        std::unordered_map<unsigned int, uint32_t> io_remap_memory_init(std::unordered_map<unsigned int, uint32_t> &map,
+        std::unordered_map<unsigned int, uint32_t> io_remap_memory_init(std::vector<emulator::emulator_memory_specs> &mem,
                                                                         std::set<fcore::io_map_entry> &io_map);
         void allocate_memory();
         void run_cores();

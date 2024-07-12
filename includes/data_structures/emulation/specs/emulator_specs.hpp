@@ -38,11 +38,12 @@ namespace fcore::emulator{
         std::vector<emulator_interconnect> interconnects;
         double emulation_time;
     private:
+
         emulator_core process_core(const nlohmann::json &o);
         emulator_interconnect process_interconnect(const nlohmann::json &ic);
-        emulator_output_specs process_outputs(const nlohmann::json &o);
-        emulator_input_specs process_inputs(const nlohmann::json &i, const nlohmann::json &in_data);
-
+        emulator_output_specs process_output(const nlohmann::json &o);
+        emulator_input_specs process_input(const nlohmann::json &i, const nlohmann::json &in_data);
+        emulator_memory_specs process_memory(const nlohmann::json &m);
 
     };
 

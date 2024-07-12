@@ -33,8 +33,6 @@ namespace fcore {
     void emulator_manager::process() {
         bus_map.clear();
 
-        emulator::emulator_specs emu_spec(spec_file, schema_file);
-
         emulator_builder e_b(debug_autogen);
 
         try{
@@ -59,9 +57,7 @@ namespace fcore {
         for(auto &item:spec_file["cores"]){
             std::string id = item["id"];
 
-            auto out_specs = load_output_specs(item);
-
-            outputs_manager.add_specs(id, out_specs, get_bundle_by_name(id).active_channels);
+            outputs_manager.add_specs(id,  emu_spec.get_core_by_id(id).outputs, get_bundle_by_name(id).active_channels);
 
             sequencer.add_core(id, item["sampling_frequency"], item["order"]);
 
@@ -87,10 +83,8 @@ namespace fcore {
 
             program_bundle b;
             b.name = id;
-            //same as before, these are loaded just for the check
-            auto output_specs = load_output_specs(item);
             b.input = emu_spec.get_core_by_id(id).inputs;
-            b.mem_init = load_memory_init(item["memory_init"]);
+            b.memories = emu_spec.get_core_by_id(id).memories;
             b.sampling_frequency = item["sampling_frequency"];
             b.execution_order = item["order"];
             b.active_channels = item["channels"];
@@ -246,151 +240,6 @@ namespace fcore {
     }
 
 
-    std::unordered_map<std::string, emulator_input> emulator_manager::load_input(nlohmann::json &core) {
-        emulator_input_factory factory(core["input_data"]);
-        if(core["inputs"].empty()){
-            return {};
-        }
-
-        bool is_vect;
-        for (auto &input_spec: core["inputs"]) {
-            std::string name = input_spec["name"];
-            std::string type = input_spec["type"];
-            std::vector<std::string> labels;
-            std::string register_type = input_spec["register_type"];
-            std::vector<uint32_t> working_addresses;
-            std::vector<uint32_t> working_channels;
-            if(register_type == "vector" || register_type == "explicit_vector") {
-                is_vect = true;
-                labels = input_spec["vector_labels"];
-                uint32_t channel_progressive = register_type == "vector" ? (uint32_t)input_spec["channel"] : 0;
-
-                for (auto &l: labels) {
-                    if(register_type == "vector"){
-                        working_addresses.push_back(input_spec["reg_n"]);
-                        working_channels.push_back(channel_progressive);
-                    }else{
-                        working_addresses.push_back((uint32_t) input_spec["reg_n"] + channel_progressive);
-                        working_channels.push_back(input_spec["channel"]);
-                    }
-                    channel_progressive++;
-                }
-            } else {
-                is_vect = false;
-                working_addresses.push_back( (uint32_t) input_spec["reg_n"]);
-                working_channels.push_back(input_spec["channel"]);
-            }
-
-            factory.new_input(name, is_vect);
-            factory.set_labels(labels);
-            factory.set_type(name, type.substr(0,1));
-            factory.set_target_address(name, working_addresses);
-            factory.set_target_channel(name, working_channels);
-            if(input_spec["source"]["type"] == "constant"){
-                if(type=="float") {
-                    factory.set_data(name,(float) input_spec["source"]["value"]);
-                } else {
-                    factory.set_data_int(name, input_spec["source"]["value"]);
-                }
-
-            } else if(input_spec["source"]["type"] == "file"){
-                if(input_spec["source"]["value"].is_array()){
-                    factory.set_data((std::vector<std::string>) input_spec["source"]["value"]);
-                } else {
-                    std::string raw_name = input_spec["source"]["value"];
-                    std::string series_name  = raw_name.substr(raw_name.find('.')+1, raw_name.length()-raw_name.find('.'));
-                    factory.set_data(name,(std::string) series_name);
-                }
-            }
-            factory.finalize_object();
-
-        }
-        return factory.get_map();
-    }
-
-    std::vector<emulator_output_t> emulator_manager:: load_output_specs(nlohmann::json &core) {
-        std::vector<emulator_output_t> out_specs;
-        for(auto &item: core["outputs"]){
-            emulator_output_t out;
-            std::string type = item["type"];
-            if(type =="float"){
-                out.type = type_float;
-            } else if(type=="integer"){
-                out.type = type_uint32;
-            }
-            if(item["register_type"] == "vector"){
-                uint32_t register_progressive = 0;
-                for(int o:item["reg_n"]){
-                    out.reg_n = o;
-                    std::string out_name = item["name"];
-                    out.name = out_name + "["+ std::to_string(register_progressive) + "]";
-                    out_specs.push_back(out);
-                    bus_map.add_entry(core["id"], "standalone_output", o, out_name);
-                    register_progressive++;
-                }
-            } else {
-                out.reg_n = item["reg_n"];
-                out.name = item["name"];
-                bus_map.add_entry(core["id"], "standalone_output", item["reg_n"], item["name"]);
-                out_specs.push_back(out);
-            }
-        }
-
-        for(auto &mem: core["memory_init"]){
-
-            if(mem["is_output"]){
-                emulator_output_t out;
-                if(mem["reg_n"].is_array()){
-                    for(uint32_t  i = 0; i< mem["reg_n"].size();i++){
-                        out.type = type_float;
-                        int addr = mem["reg_n"];
-                        std::string name = mem["name"];
-                        out.reg_n = addr;
-                        out.name = name + "[" + std::to_string(addr) + "]";
-                        bus_map.add_entry(core["id"], "memory_as_output", addr,mem["name"]);
-                        out_specs.push_back(out);
-                    }
-                } else {
-                    out.type = type_float;
-                    out.reg_n = mem["reg_n"];
-                    out.name = mem["name"];
-                    bus_map.add_entry(core["id"], "memory_as_output", mem["reg_n"],mem["name"]);
-                    out_specs.push_back(out);
-                }
-            }
-
-        }
-        return out_specs;
-    }
-
-    std::unordered_map<unsigned int, uint32_t> emulator_manager::load_memory_init(nlohmann::json &mem_init) {
-
-        std::unordered_map<unsigned int, uint32_t> init_map;
-
-        for(auto &mem:mem_init){
-            if(mem["reg_n"].is_array()){
-                for(uint32_t i = 0; i< mem["reg_n"].size();i++){
-                    if(mem["type"] == "float") {
-                        init_map[mem["reg_n"][i]] = emulator_backend::float_to_uint32(mem["value"][i]);
-                    } else {
-                        init_map[mem["reg_n"][i]] = mem["value"][i];
-                    }
-                }
-            } else {
-                if(mem["type"] == "float") {
-                    init_map[mem["reg_n"]] = emulator_backend::float_to_uint32(mem["value"]);
-                } else {
-                    init_map[mem["reg_n"]] = mem["value"];
-                }
-            }
-
-        }
-
-        return init_map;
-
-    }
-
-
 
     std::string emulator_manager::get_results() {
         nlohmann::json res;
@@ -496,19 +345,25 @@ namespace fcore {
     }
 
     std::unordered_map<unsigned int, uint32_t>
-    emulator_manager::io_remap_memory_init(std::unordered_map<unsigned int, uint32_t> &map,
+    emulator_manager::io_remap_memory_init(std::vector<emulator::emulator_memory_specs> &mem,
                                                   std::set<io_map_entry> &io_set) {
         std::unordered_map<unsigned int, uint32_t> ret;
 
-        for(auto &item:map){
-            uint32_t io_address = item.first;
+        for(auto &item: mem){
+            uint32_t io_address = item.address[0];
             uint32_t core_address;
             if(auto a = io_map_entry::get_io_map_entry_by_io_addr(io_set, io_address)){
                 core_address = a->core_addr;
             } else {
                 throw std::runtime_error("unable to find input address in the core io map during memory initialization phase");
             }
-            ret[core_address] = item.second;
+            if(item.data_type == emulator::type_float){
+                auto values = std::get<std::vector<float>>(item.value);
+                ret[core_address] = emulator_backend::float_to_uint32(values[0]);
+            } else {
+                auto values = std::get<std::vector<uint32_t>>(item.value);
+                ret[core_address] = values[0];
+            }
         }
 
         return ret;
@@ -530,7 +385,8 @@ namespace fcore {
             }
             emulators_memory[item.name] = pool;
 
-            auto mem = io_remap_memory_init(item.mem_init, item.io);
+
+            auto mem = io_remap_memory_init(item.memories, item.io);
 
             for(auto &init_val: mem){
                 // TODO: Add support for per channel initialization

@@ -81,6 +81,14 @@ namespace fcore::emulator {
         std::vector<uint32_t> channel;
     };
 
+    struct emulator_memory_specs {
+        std::string name;
+        register_data_type data_type;
+        bool is_output;
+        std::vector<uint32_t> address;
+        std::variant<std::vector<float>, std::vector<uint32_t>> value;
+    };
+
     struct emulator_core {
         std::string id;
         uint16_t channels;
@@ -88,8 +96,10 @@ namespace fcore::emulator {
         uint32_t sampling_frequency;
         std::map<std::string, std::string> options;
         program_data program;
+
         std::vector<emulator_output_specs> outputs;
         std::unordered_map<std::string, emulator_input_specs> inputs;
+        std::vector<emulator_memory_specs> memories;
     };
 
 

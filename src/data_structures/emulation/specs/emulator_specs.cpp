@@ -48,7 +48,7 @@ namespace fcore::emulator {
         throw std::runtime_error("core with ID: " + id + " not found");
     }
 
-    emulator_output_specs emulator_specs::process_outputs(const nlohmann::json &o) {
+    emulator_output_specs emulator_specs::process_output(const nlohmann::json &o) {
         emulator_output_specs out;
         out.type = endpoint_type_map[o["register_type"]];
         out.data_type = data_type_map[o["type"]];
@@ -62,7 +62,7 @@ namespace fcore::emulator {
         return out;
     }
 
-    emulator_input_specs emulator_specs::process_inputs(const nlohmann::json &i, const nlohmann::json &in_data) {
+    emulator_input_specs emulator_specs::process_input(const nlohmann::json &i, const nlohmann::json &in_data) {
         emulator_input_specs in;
 
 
@@ -133,12 +133,27 @@ namespace fcore::emulator {
         }
 
         for(auto &o: core_obj["outputs"]){
-            c.outputs.push_back(process_outputs(o));
+            c.outputs.push_back(process_output(o));
         }
 
-        for(auto &i: core_obj["inputs"]){
-            c.inputs[i["name"]]= process_inputs(i, core_obj["input_data"]);
+        for(auto &m: core_obj["memory_init"]){
+            auto mem = process_memory(m);
+            c.memories.push_back(mem);
+            if(mem.is_output){
+                emulator_output_specs os;
+                os.name = mem.name;
+                os.type = scalar_endpoint;
+                os.address = mem.address;
+                os.data_type = mem.data_type;
+                c.outputs.push_back(os);
+            }
         }
+
+
+        for(auto &i: core_obj["inputs"]){
+            c.inputs[i["name"]]= process_input(i, core_obj["input_data"]);
+        }
+
         return c;
     }
 
@@ -195,5 +210,38 @@ namespace fcore::emulator {
             interconnect.channels.push_back(ch);
         }
         return interconnect;
+    }
+
+    emulator_memory_specs emulator_specs::process_memory(const nlohmann::json &m) {
+        emulator_memory_specs mem;
+
+        mem.name = m["name"];
+        mem.data_type = data_type_map[m["type"]];
+        mem.is_output = m["is_output"];
+        if(m["reg_n"].is_array()){
+            mem.address = static_cast<std::vector<uint32_t>>(m["reg_n"]);
+        } else{
+            mem.address = {m["reg_n"]};
+        }
+
+        if(mem.data_type == type_float){
+            std::vector<float> value;
+            if(m["value"].is_array()){
+                value = static_cast<std::vector<float>>(m["value"]);
+            } else {
+                value = {m["value"]};
+            }
+            mem.value = value;
+        } else {
+            std::vector<uint32_t> value;
+            if(m["value"].is_array()){
+                value = static_cast<std::vector<uint32_t>>(m["value"]);
+            } else {
+                value = {m["value"]};
+            }
+            mem.value = value;
+        }
+
+        return mem;
     }
 } // fcore

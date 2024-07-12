@@ -96,8 +96,6 @@ set(FCORE_DIS_SRCS
 
 set(FCORE_EMU_SRCS
         frontend/schema_validators/schema_validator_base.cpp
-        data_structures/emulation/emulator_input.cpp
-        data_structures/emulation/emulator_input_factory.cpp
         data_structures/emulation/hil_bus_map.cpp
         data_structures/emulation/emulator_output.cpp
         data_structures/emulation/specs/emulator_specs.cpp

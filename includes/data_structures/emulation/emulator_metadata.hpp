@@ -23,7 +23,6 @@
 #include <memory>
 #include <set>
 #include "data_structures/common/io_map_entry.hpp"
-#include "data_structures/emulation/emulator_input_factory.hpp"
 
 namespace fcore{
 
@@ -31,17 +30,6 @@ namespace fcore{
     class emulator_backend;
 
     typedef std::unordered_map<uint32_t , std::shared_ptr<std::vector<uint32_t>>> core_memory_pool_t;
-
-    typedef enum {
-        type_uint32 = 1,
-        type_float = 2,
-    } emulator_types_t;
-
-    typedef struct {
-        int reg_n;
-        emulator_types_t type;
-        std::string name;
-    } emulator_output_t;
 
     typedef struct{
         unsigned int channel;
@@ -53,8 +41,6 @@ namespace fcore{
         std::string destination;
         std::vector<std::pair<register_spec_t, register_spec_t>> connections;
     }interconnect_t;
-
-
 
     typedef enum {
         efi_none = 0,
@@ -69,22 +55,6 @@ namespace fcore{
     } comparator_type_t;
 
 
-    class emulator_metadata {
-    public:
-        emulator_metadata() = default;
-        std::unordered_map<std::string, emulator_input> input;
-        std::unordered_map<uint32_t, uint32_t> memory_init;
-        std::vector<uint32_t > program;
-        uint32_t execution_order;
-        int active_channels;
-        std::set<io_map_entry> io_map;
-        efi_implementation_t efi_selector;
-        comparator_type_t comparator_type;
-    };
-
-
-
-    typedef  enum {explicit_ordering=1,implicit_ordering=2,no_ordering=0}cores_ordering_t;
 
 }
 

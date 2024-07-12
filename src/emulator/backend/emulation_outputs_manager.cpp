@@ -17,7 +17,7 @@
 #include "emulator/backend/emulation_outputs_manager.hpp"
 
 
-void fcore::emulation_outputs_manager::add_specs(const std::string& id, const std::vector<emulator_output_t>& specs, uint32_t active_channels) {
+void fcore::emulation_outputs_manager::add_specs(const std::string& id, const std::vector<emulator::emulator_output_specs>& specs, uint32_t active_channels) {
     for(const auto &spec:specs){
        output_specs[id][spec.name]= spec;
        auto data = emulator_output(spec.name,active_channels);
@@ -41,7 +41,7 @@ void fcore::emulation_outputs_manager::process_outputs(
         }
     } else {
         for(auto &out: data_section[core_id]){
-            uint16_t io_address = output_specs[core_id][out.first].reg_n;
+            uint16_t io_address = output_specs[core_id][out.first].address[0];
 
             uint32_t core_address;
             if(auto a = io_map_entry::get_io_map_entry_by_io_addr(io_map, io_address)){
@@ -81,9 +81,9 @@ nlohmann::json fcore::emulation_outputs_manager::get_emulation_output(const std:
     for(auto &s: output_specs[core_id]){
         auto out_data = data_section[core_id].at(s.second.name);
         nlohmann::json output_obj;
-        if(s.second.type == type_uint32){
+        if(s.second.data_type == emulator::type_uint){
             res[s.second.name] = out_data.get_integer_data();
-        } else if(s.second.type == type_float){
+        } else if(s.second.data_type == emulator::type_float){
 
             res[s.second.name] = out_data.get_float_data();
         }

@@ -22,6 +22,7 @@
 #include <string>
 #include <nlohmann/json.hpp>
 
+#include "data_structures/emulation/specs/emulator_specs.hpp"
 #include "data_structures/emulation/emulator_output.hpp"
 #include "data_structures/emulation/emulator_metadata.hpp"
 #include "emulator/backend/emulator_backend.hpp"
@@ -30,7 +31,7 @@ namespace fcore{
 
     class emulation_outputs_manager {
     public:
-        void add_specs(const std::string& id, const std::vector<emulator_output_t>& specs, uint32_t active_channels);
+        void add_specs(const std::string& id, const std::vector<emulator::emulator_output_specs>& specs, uint32_t active_channels);
         void process_outputs(const std::string& core_id,
                             fcore::core_memory_pool_t &pool,
                              bool running,
@@ -42,7 +43,7 @@ namespace fcore{
         std::vector<double> get_timebase();
     private:
         std::unordered_map<std::string,std::unordered_map<std::string, emulator_output>> data_section;
-        std::unordered_map<std::string, std::unordered_map<std::string, emulator_output_t>> output_specs;
+        std::unordered_map<std::string, std::unordered_map<std::string, emulator::emulator_output_specs>> output_specs;
     };
 }
 

@@ -48,6 +48,12 @@
         }
       ],
       "outputs": [
+        {
+          "reg_n":4,
+          "type":"integer",
+          "name":"out",
+          "register_type": "scalar"
+        }
       ],
       "program":{
         "content": "void main(){float input_1,input_2; float c = input_1 + input_2; float test_out = test_out + c;}",
