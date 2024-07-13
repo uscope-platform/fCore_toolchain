@@ -123,13 +123,13 @@ namespace fcore::emulator {
         c.options = core_obj["options"];
         c.program.content = core_obj["program"]["content"];
         for(auto &s:core_obj["program"]["build_settings"]["io"]["inputs"]){
-            c.program.io.inputs.push_back(s);
+            c.program.io.inputs.insert(s);
         }
         for(auto &s:core_obj["program"]["build_settings"]["io"]["outputs"]){
-            c.program.io.outputs.push_back(s);
+            c.program.io.outputs.insert(s);
         }
         for(auto &s:core_obj["program"]["build_settings"]["io"]["memories"]){
-            c.program.io.memories.push_back(s);
+            c.program.io.memories.insert(s);
         }
 
         for(auto &o: core_obj["outputs"]){

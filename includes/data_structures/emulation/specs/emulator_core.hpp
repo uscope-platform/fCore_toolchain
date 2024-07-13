@@ -17,21 +17,22 @@
 
 #include <nlohmann/json.hpp>
 #include <string>
+#include <variant>
 #include <cstdint>
-
-#include "emulator/emulator_builder.hpp"
+#include <set>
 
 namespace fcore::emulator {
 
     struct core_io {
-        std::vector<std::string> inputs;
-        std::vector<std::string> outputs;
-        std::vector<std::string> memories;
+        std::set<std::string> inputs;
+        std::set<std::string> outputs;
+        std::set<std::string> memories;
     };
 
     struct program_data {
         std::string content;
         core_io io;
+        std::vector<std::string> headers;
     };
 
     typedef enum {

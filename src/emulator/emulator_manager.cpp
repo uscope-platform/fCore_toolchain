@@ -100,14 +100,13 @@ namespace fcore {
                     std::string destination = ic["destination"];
                     if(id == destination) dst.push_back(ic);
                 }
-                b.program = e_b.compile_program(item, dst, src, b.io);
+                b.program = e_b.compile_program(item, emu_spec.get_core_by_id(id), dst, src, b.io);
                 b.program_length = e_b.get_program_info();
 
             } catch(std::runtime_error &e){
                 errors[id] = e.what();
             }
 
-            e_b.clear_dma_io();
 
             res.push_back(b);
         }

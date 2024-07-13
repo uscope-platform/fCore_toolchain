@@ -18,11 +18,13 @@ fcore::emulator_builder::emulator_builder(bool dbg) {
     debug_autogen = dbg;
 }
 
-void fcore::emulator_builder::process_interconnects(
+nlohmann::json fcore::emulator_builder::process_interconnects(
         const std::vector<nlohmann::json> &input_connections,
         const std::vector<nlohmann::json> &output_connections,
         std::set<std::string> memories
 ) {
+    nlohmann::json result;
+
     for(auto  &conn:input_connections){
         if(conn.contains("channels")){
             for(auto &item:conn["channels"]){
@@ -46,7 +48,7 @@ void fcore::emulator_builder::process_interconnects(
                     addrs.push_back(addr_base+i);
                 }
                 spec["address"]  = addrs;
-                dma_io[item["destination_input"]] = spec;
+                result[item["destination_input"]] = spec;
             }
         }
     }
@@ -78,20 +80,22 @@ void fcore::emulator_builder::process_interconnects(
                     addrs.push_back(addr_base+i);
                 }
                 spec["address"]  = addrs;
-                dma_io[output_name] = spec;
+                result[output_name] = spec;
             }
         }
     }
-
+    return result;
 }
 
-void fcore::emulator_builder::process_ioms(
+nlohmann::json fcore::emulator_builder::process_ioms(
+        const nlohmann::json &interconnect_io,
         const nlohmann::json &inputs,
         const nlohmann::json &outputs,
         const nlohmann::json &memory_init_specs,
         std::set<std::string> memories
         ) {
 
+    nlohmann::json result = interconnect_io;
     for(auto &item: inputs){
         nlohmann::json spec;
         spec["type"] = "input";
@@ -108,13 +112,13 @@ void fcore::emulator_builder::process_ioms(
         spec["address"]  = addrs;
 
         assigned_inputs.insert(addrs.begin(), addrs.end());
-        dma_io[item["name"]] = spec;
+        result[item["name"]] = spec;
     }
 
 
     for(auto &item: memory_init_specs){
         std::string memory_name= item["name"];
-        if(!dma_io.contains(memory_name)){
+        if(!result.contains(memory_name)){
             nlohmann::json spec;
             spec["type"] = "memory";
             std::vector<uint32_t> addrs;
@@ -125,7 +129,7 @@ void fcore::emulator_builder::process_ioms(
             }
             spec["address"]  = addrs;
             assigned_inputs.insert(addrs.begin(), addrs.end());
-            dma_io[item["name"]] = spec;
+            result[item["name"]] = spec;
         }
     }
 
@@ -134,13 +138,13 @@ void fcore::emulator_builder::process_ioms(
     while(assigned_outputs.contains(mem_progressive)|| assigned_inputs.contains(mem_progressive)) mem_progressive--;
 
     for(auto &item:memories){
-        if(!dma_io.contains(item)){
+        if(!result.contains(item)){
             nlohmann::json spec;
             spec["type"] = "memory";
             std::vector<uint32_t> addrs = {mem_progressive};
             assigned_outputs.insert(mem_progressive);
             spec["address"]  = addrs;
-            dma_io[item] = spec;
+            result[item] = spec;
             memory_names.insert(item);
             while(assigned_outputs.contains(mem_progressive)|| assigned_inputs.contains(mem_progressive)) mem_progressive--;
         }
@@ -160,33 +164,36 @@ void fcore::emulator_builder::process_ioms(
         if(!assigned_outputs.contains(addrs[0])){
             spec["address"]  = addrs;
             if(!memory_names.contains(item["name"])){
-                dma_io[item["name"]] = spec;
+                result[item["name"]] = spec;
             } else{
-                dma_io[item["name"]]["address"] = addrs;
+                result[item["name"]]["address"] = addrs;
             }
         }
     }
 
+    auto dbg_res = result.dump();
+
+    return result;
 }
 
 
-std::vector<uint32_t> fcore::emulator_builder::compile_program(const nlohmann::json &core_info,
-                                        const std::vector<nlohmann::json> &input_connections,
-                                        const std::vector<nlohmann::json> &output_connections,
-                                        std::set<io_map_entry> &am
+std::vector<uint32_t> fcore::emulator_builder::compile_program(
+        const nlohmann::json &core_info,
+        const emulator::emulator_core& core_spec,
+        const std::vector<nlohmann::json> &input_connections,
+        const std::vector<nlohmann::json> &output_connections,
+        std::set<io_map_entry> &am
 ) {
 
-    std::set<std::string> memories = core_info["program"]["build_settings"]["io"]["memories"];
+    std::set<std::string> memories = core_spec.program.io.memories;
 
-    process_interconnects(input_connections, output_connections, memories);
-    process_ioms(core_info["inputs"], core_info["outputs"],core_info["memory_init"], memories);
+    auto interconnect_io = process_interconnects(input_connections, output_connections, memories);
 
-    std::vector<std::string> content = {core_info["program"]["content"]};
-    std::vector<std::string> headers;
-    if(core_info["program"].contains("headers")){
-        headers = core_info["program"]["headers"];
-    }
+    nlohmann::json dma_io = process_ioms(interconnect_io, core_info["inputs"], core_info["outputs"],core_info["memory_init"], memories);
 
+    std::vector<std::string> content = {core_spec.program.content};
+
+    auto headers = core_spec.program.headers;
 
     fcore_cc compiler(content, headers);
     compiler.set_dma_map(dma_io);
@@ -202,8 +209,8 @@ std::vector<uint32_t> fcore::emulator_builder::compile_program(const nlohmann::j
     if(debug_autogen){
         if(!std::filesystem::exists("autogen")) std::filesystem::create_directories("autogen");
 
-        std::string program_content = core_info["program"]["content"];
-        std::string core_name = core_info["id"];
+        std::string program_content = core_spec.program.content;
+        std::string core_name = core_spec.id;
         std::ofstream ofs("autogen/" + core_name + "_dma_io.json");
         ofs<<dma_io;
 
@@ -222,9 +229,6 @@ std::vector<uint32_t> fcore::emulator_builder::compile_program(const nlohmann::j
     return program;
 }
 
-void fcore::emulator_builder::clear_dma_io() {
-    dma_io.clear();
-}
 
 fcore::efi_implementation_t fcore::emulator_builder::get_efi_implementation(const std::string &s) {
     efi_implementation_t val;

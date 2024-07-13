@@ -20,6 +20,7 @@
 #include <cstdint>
 #include <memory>
 
+#include "data_structures/emulation/specs/emulator_core.hpp"
 #include <nlohmann/json.hpp>
 #include "data_structures/emulation/emulator_metadata.hpp"
 #include "frontend/binary_loader.hpp"
@@ -32,10 +33,9 @@ namespace fcore {
     public:
         emulator_builder(bool dbg);
 
-        void clear_dma_io();
-
         std::vector<uint32_t>  compile_program(
                 const nlohmann::json &core_info,
+                const emulator::emulator_core& core_spec,
                 const std::vector<nlohmann::json> &input_connections,
                 const std::vector<nlohmann::json> &output_connections,
                 std::set<io_map_entry> &am
@@ -51,21 +51,20 @@ namespace fcore {
         comparator_type_t get_comparator_type(const std::string &s);
     private:
 
-        void process_interconnects(
+        nlohmann::json process_interconnects(
                 const std::vector<nlohmann::json> &input_connections,
                 const std::vector<nlohmann::json> &output_connections,
                 std::set<std::string> memories
         );
 
-        void process_ioms(
+        nlohmann::json process_ioms(
+                const nlohmann::json &interconnect_io,
                 const nlohmann::json &inputs,
                 const nlohmann::json &outputs,
                 const nlohmann::json &memory_init_specs,
                 const std::set<std::string> memories
         );
 
-
-        nlohmann::json dma_io;
         std::set<uint32_t> assigned_inputs;
         std::set<uint32_t> assigned_outputs;
         std::set<std::string> memory_names;
