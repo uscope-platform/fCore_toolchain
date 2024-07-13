@@ -85,11 +85,11 @@ namespace fcore {
             b.name = id;
             b.input = emu_spec.get_core_by_id(id).inputs;
             b.memories = emu_spec.get_core_by_id(id).memories;
-            b.sampling_frequency = item["sampling_frequency"];
-            b.execution_order = item["order"];
-            b.active_channels = item["channels"];
-            b.efi_selector = e_b.get_efi_implementation(item["options"]["efi_implementation"]);
-            b.comparator_type = e_b.get_comparator_type(item["options"]["comparators"]);
+            b.sampling_frequency = emu_spec.get_core_by_id(id).sampling_frequency;
+            b.execution_order = emu_spec.get_core_by_id(id).order;
+            b.active_channels = emu_spec.get_core_by_id(id).channels;
+            b.efi_selector = e_b.get_efi_implementation(emu_spec.get_core_by_id(id).options["efi_implementation"]);
+            b.comparator_type = e_b.get_comparator_type(emu_spec.get_core_by_id(id).options["comparators"]);
 
             try{
                 std::vector<nlohmann::json> src = {};
@@ -159,7 +159,7 @@ namespace fcore {
         if(info.running){
             for(auto &in:prog.input){
                 uint32_t core_reg = 0;
-                auto io_addr = in.second.address[0];
+                auto io_addr = in.address[0];
 
                 if(auto core_addr = io_map_entry::get_io_map_entry_by_io_addr(prog.io, io_addr)){
                     core_reg = core_addr->core_addr;
@@ -168,15 +168,15 @@ namespace fcore {
                 }
 
                 if(core_reg != 0){
-                    if(in.second.data_type==emulator::type_float){
-                        std::vector<float> in_vect = std::get<std::vector<float>>(in.second.data[0]);
+                    if(in.data_type==emulator::type_float){
+                        std::vector<float> in_vect = std::get<std::vector<float>>(in.data[0]);
                         uint32_t init_val = emulator_backend::float_to_uint32(in_vect[info.step_n]);
-                        emulators_memory[info.id][in.second.channel[0]]->at(core_reg) = init_val;
+                        emulators_memory[info.id][in.channel[0]]->at(core_reg) = init_val;
                     } else {
 
-                        std::vector<uint32_t> in_vect = std::get<std::vector<uint32_t>>(in.second.data[0]);
+                        std::vector<uint32_t> in_vect = std::get<std::vector<uint32_t>>(in.data[0]);
                         uint32_t init_val = in_vect[info.step_n];
-                        emulators_memory[info.id][in.second.channel[0]]->at(core_reg) = init_val;
+                        emulators_memory[info.id][in.channel[0]]->at(core_reg) = init_val;
                     }
                 }
             }

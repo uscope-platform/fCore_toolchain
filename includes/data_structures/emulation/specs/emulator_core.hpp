@@ -99,7 +99,7 @@ namespace fcore::emulator {
         program_data program;
 
         std::vector<emulator_output_specs> outputs;
-        std::unordered_map<std::string, emulator_input_specs> inputs;
+        std::vector<emulator_input_specs> inputs;
         std::vector<emulator_memory_specs> memories;
     };
 

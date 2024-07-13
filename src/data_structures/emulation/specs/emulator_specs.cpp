@@ -151,7 +151,7 @@ namespace fcore::emulator {
 
 
         for(auto &i: core_obj["inputs"]){
-            c.inputs[i["name"]]= process_input(i, core_obj["input_data"]);
+            c.inputs.push_back(process_input(i, core_obj["input_data"]));
         }
 
         return c;

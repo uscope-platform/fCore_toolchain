@@ -43,7 +43,7 @@ namespace fcore{
             std::vector<uint32_t> program;
             std::set<io_map_entry> io;
             std::vector<emulator::emulator_memory_specs> memories;
-            std::unordered_map<std::string, emulator::emulator_input_specs> input;
+            std::vector<emulator::emulator_input_specs> input;
             uint32_t sampling_frequency;
             uint32_t execution_order;
             struct program_info program_length;
