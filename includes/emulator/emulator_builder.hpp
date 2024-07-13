@@ -21,6 +21,7 @@
 #include <memory>
 
 #include "data_structures/emulation/specs/emulator_core.hpp"
+#include "data_structures/emulation/specs/emulator_interconnect.hpp"
 #include <nlohmann/json.hpp>
 #include "data_structures/emulation/emulator_metadata.hpp"
 #include "frontend/binary_loader.hpp"
@@ -35,8 +36,8 @@ namespace fcore {
 
         std::vector<uint32_t>  compile_program(
                 const emulator::emulator_core& core_spec,
-                const std::vector<nlohmann::json> &input_connections,
-                const std::vector<nlohmann::json> &output_connections,
+                const std::vector<emulator::emulator_interconnect> &input_connections,
+                const std::vector<emulator::emulator_interconnect> &output_connections,
                 std::set<io_map_entry> &am
         );
         struct program_info get_program_info() const {return length_info;};
@@ -51,8 +52,8 @@ namespace fcore {
     private:
 
         nlohmann::json process_interconnects(
-                const std::vector<nlohmann::json> &input_connections,
-                const std::vector<nlohmann::json> &output_connections,
+                const std::vector<emulator::emulator_interconnect> &input_connections,
+                const std::vector<emulator::emulator_interconnect> &output_connections,
                 std::set<std::string> memories
         );
 

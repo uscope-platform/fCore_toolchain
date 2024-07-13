@@ -19,69 +19,57 @@ fcore::emulator_builder::emulator_builder(bool dbg) {
 }
 
 nlohmann::json fcore::emulator_builder::process_interconnects(
-        const std::vector<nlohmann::json> &input_connections,
-        const std::vector<nlohmann::json> &output_connections,
+        const std::vector<emulator::emulator_interconnect> &input_connections,
+        const std::vector<emulator::emulator_interconnect> &output_connections,
         std::set<std::string> memories
 ) {
     nlohmann::json result;
 
     for(auto  &conn:input_connections){
-        if(conn.contains("channels")){
-            for(auto &item:conn["channels"]){
-                std::string  dma_name = item["destination_input"];
-                nlohmann::json spec;
-                spec["type"] = "input";
-                std::vector<uint32_t> addrs;
-                int transfer_length = 1;
-                if(item.contains("length")){
-                    std::string transfer_type = item["type"];
-                    if(transfer_type == "2d_vector_transfer"){
-                        transfer_length = item["stride"];
-                    } else if(transfer_type == "scatter_transfer"){
-                        transfer_length = item["length"];
-                    }
-                }
+        for(auto &item:conn.channels){
+            std::string  dma_name = item.destination.io_name;
+            nlohmann::json spec;
+            spec["type"] = "input";
+            std::vector<uint32_t> addrs;
+            uint32_t transfer_length = item.length;
 
-                uint32_t addr_base = item["destination"]["register"];
-                for(int i = 0; i< transfer_length; i++){
-                    assigned_inputs.insert(addr_base+i);
-                    addrs.push_back(addr_base+i);
-                }
-                spec["address"]  = addrs;
-                result[item["destination_input"]] = spec;
+            if(item.type == emulator::dma_link_2d_vector){
+                transfer_length = item.stride;
             }
+
+            uint32_t addr_base = item.destination.address[0];
+            for(int i = 0; i< transfer_length; i++){
+                assigned_inputs.insert(addr_base+i);
+                addrs.push_back(addr_base+i);
+            }
+            spec["address"]  = addrs;
+            result[item.destination.io_name] = spec;
         }
     }
 
     for(auto &conn:output_connections){
-        if(conn.contains("channels")){
-            for(auto &item:conn["channels"]){
-                nlohmann::json spec;
-                std::string output_name = item["source_output"];
-                if(memories.contains(output_name)){
-                    spec["type"] = "memory";
-                    memory_names.insert(output_name);
-                } else {
-                    spec["type"] = "output";
-                }
-                std::vector<uint32_t> addrs;
-                int transfer_length = 1;
-                if(item.contains("length")){
-                    std::string transfer_type = item["type"];
-                    if(transfer_type == "2d_vector_transfer"){
-                        transfer_length = item["stride"];
-                    } else if(transfer_type == "gather_transfer"){
-                        transfer_length = item["length"];
-                    }
-                }
-                uint32_t addr_base = item["source"]["register"];
-                for(int i = 0; i< transfer_length; i++){
-                    assigned_outputs.insert(addr_base+i);
-                    addrs.push_back(addr_base+i);
-                }
-                spec["address"]  = addrs;
-                result[output_name] = spec;
+        for(auto &item:conn.channels){
+            nlohmann::json spec;
+            std::string output_name = item.source.io_name;
+            if(memories.contains(output_name)){
+                spec["type"] = "memory";
+                memory_names.insert(output_name);
+            } else {
+                spec["type"] = "output";
             }
+            std::vector<uint32_t> addrs;
+            uint32_t transfer_length = item.length;
+            if(item.type == emulator::dma_link_2d_vector){
+                transfer_length = item.stride;
+            }
+
+            uint32_t addr_base = item.source.address[0];
+            for(int i = 0; i< transfer_length; i++){
+                assigned_outputs.insert(addr_base+i);
+                addrs.push_back(addr_base+i);
+            }
+            spec["address"]  = addrs;
+            result[output_name] = spec;
         }
     }
     return result;
@@ -154,8 +142,8 @@ nlohmann::json fcore::emulator_builder::process_ioms(
 
 std::vector<uint32_t> fcore::emulator_builder::compile_program(
         const emulator::emulator_core& core_spec,
-        const std::vector<nlohmann::json> &input_connections,
-        const std::vector<nlohmann::json> &output_connections,
+        const std::vector<emulator::emulator_interconnect> &input_connections,
+        const std::vector<emulator::emulator_interconnect> &output_connections,
         std::set<io_map_entry> &am
 ) {
 

@@ -63,7 +63,7 @@ namespace fcore{
         std::shared_ptr<std::vector<uint32_t>> get_memory_snapshot(const std::string &core_id, int channel);
         std::string get_results();
         std::vector<program_bundle> get_programs();
-        std::vector<interconnect_t> load_interconnects(nlohmann::json &interconnects);
+        std::vector<interconnect_t> load_interconnects(const std::vector<emulator::emulator_interconnect>& itc);
     private:
         void check_bus_duplicates();
         std::unordered_map<unsigned int, uint32_t> io_remap_memory_init(std::vector<emulator::emulator_memory_specs> &mem,
@@ -88,9 +88,6 @@ namespace fcore{
         int emu_length;
         std::unordered_map<std::string, std::string> errors;
         bool debug_autogen;
-
-        nlohmann::json spec_file;
-        std::string schema_file;
 
         hil_bus_map bus_map;
 

@@ -48,6 +48,7 @@ namespace fcore::emulator {
     };
 
     struct dma_channel{
+        std::string name;
         endpoint_specs source;
         endpoint_specs destination;
         uint32_t length=1;

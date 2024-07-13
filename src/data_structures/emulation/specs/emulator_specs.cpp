@@ -166,6 +166,7 @@ namespace fcore::emulator {
 
         for(auto &ch_obj:ic["channels"]){
             dma_channel ch;
+            ch.name = ch_obj["name"];
             ch.source.io_name = ch_obj["source_output"];
             ch.destination.io_name = ch_obj["destination_input"];
 

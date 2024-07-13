@@ -22,10 +22,6 @@ namespace fcore {
     emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, const std::string& s_f) : emu_spec(spec, s_f + "/emulator_spec_schema.json"){
         debug_autogen = dbg;
 
-        spec_file = spec;
-
-        schema_file = s_f + "/emulator_spec_schema.json";
-
         emu_length = 1;
 
     }
@@ -35,12 +31,6 @@ namespace fcore {
 
         emulator_builder e_b(debug_autogen);
 
-        try{
-            schema_validator_base validator(schema_file);
-            validator.validate(spec_file);
-        } catch(std::invalid_argument &ex){
-            throw std::runtime_error("Failed to validate emulator schema");
-        }
 
         if(emu_spec.cores.empty()){
             throw std::runtime_error("No cores section found in the emulator specification file");
@@ -63,7 +53,7 @@ namespace fcore {
 
         }
 
-        interconnects = load_interconnects(spec_file["interconnect"]);
+        interconnects = load_interconnects(emu_spec.interconnects);
         sequencer.setup_run(emu_spec.emulation_time);
 
         check_bus_duplicates();
@@ -76,7 +66,7 @@ namespace fcore {
 
         // I do not need to load all this stuff, however since these functions run the duplication check it is worth doing
         // as the performance hit is not too bad.
-        interconnects = load_interconnects(spec_file["interconnect"]);
+        interconnects = load_interconnects(emu_spec.interconnects);
 
         for(auto &core:emu_spec.cores){
 
@@ -91,13 +81,11 @@ namespace fcore {
             b.comparator_type = e_b.get_comparator_type(core.options["comparators"]);
 
             try{
-                std::vector<nlohmann::json> src = {};
-                std::vector<nlohmann::json> dst = {};
-                for(auto &ic:spec_file["interconnect"]){
-                    std::string source = ic["source"];
-                    if(core.id == source) src.push_back(ic);
-                    std::string destination = ic["destination"];
-                    if(core.id == destination) dst.push_back(ic);
+                std::vector<emulator::emulator_interconnect> src = {};
+                std::vector<emulator::emulator_interconnect> dst = {};
+                for(auto &ic:emu_spec.interconnects){
+                    if(core.id == ic.source_core_id) src.push_back(ic);
+                    if(core.id == ic.destination_core_id) dst.push_back(ic);
                 }
                 b.program = e_b.compile_program(core, dst, src, b.io);
                 b.program_length = e_b.get_program_info();
@@ -187,9 +175,7 @@ namespace fcore {
 
         for(int j = 0; j<prog.active_channels; ++j){
             if(info.running){
-
-                spdlog::trace("RUNNING ROUND " + std::to_string(info.step_n+1) + " of " + std::to_string(emu_length) +
-                              ": core ID = " + info.id + " (CH " + std::to_string(j) + ")");
+                // TODO: implement progress tracing
 
                 backend.set_core_name(info.id);
                 backend.set_program(emulator_builder::sanitize_program(prog.program));
@@ -256,80 +242,73 @@ namespace fcore {
     }
 
 
-    std::vector<interconnect_t> emulator_manager::load_interconnects(nlohmann::json &itc) {
+    std::vector<interconnect_t> emulator_manager::load_interconnects(const std::vector<emulator::emulator_interconnect>& itc) {
         std::vector<interconnect_t> res;
         for(auto &item:itc){
             interconnect_t i;
-            i.source = item["source"];
-            i.destination = item["destination"];
-            nlohmann::json channels = item["channels"];
-            for(auto &ch: channels){
+            i.source = item.source_core_id;
+            i.destination = item.destination_core_id;
+            for(auto &ch: item.channels){
                 register_spec_t rs_s;
                 register_spec_t rs_d;
-                std::string transfer_type;
-                uint32_t transfer_length = 0;
-                if(!ch.contains("type")){
-                    transfer_type = "regular_transfer";
-                } else {
-                    transfer_type = ch["type"];
-                    if(transfer_type != "regular_transfer" && transfer_type != "scalar_transfer"){
-                        transfer_length = ch["length"];
-                    }
-                }
 
+                uint32_t source_ch = ch.source.channel[0];
+                uint32_t source_addr= ch.source.address[0];
+                uint32_t dest_ch = ch.destination.channel[0];
+                uint32_t dest_addr = ch.destination.address[0];
 
-                uint32_t source_ch = ch["source"]["channel"];
-                uint32_t source_addr= ch["source"]["register"];
-                uint32_t dest_ch = ch["destination"]["channel"];
-                uint32_t dest_addr = ch["destination"]["register"];
-
-                if(transfer_type == "scatter_transfer"){
-                    for(uint32_t j = 0; j<transfer_length; j++){
-                        rs_s.channel = source_ch+j;
+                switch (ch.type) {
+                    case emulator::dma_link_scatter:
+                        for(uint32_t j = 0; j<ch.length; j++){
+                            rs_s.channel = source_ch+j;
+                            rs_s.address = source_addr;
+                            rs_d.channel = dest_ch;
+                            rs_d.address = dest_addr+j;
+                            bus_map.add_entry(item.source_core_id, "interconnect", dest_addr, ch.name);
+                            i.connections.emplace_back(rs_s,rs_d);
+                        }
+                        break;
+                    case emulator::dma_link_vector:
+                        for(uint32_t j = 0; j<ch.length; j++){
+                            rs_s.channel = source_ch+j;
+                            rs_s.address = source_addr;
+                            rs_d.channel = dest_ch+j;
+                            rs_d.address = dest_addr;
+                            bus_map.add_entry(item.source_core_id, "interconnect", dest_addr, ch.name);
+                            i.connections.emplace_back(rs_s,rs_d);
+                        }
+                        break;
+                    case emulator::dma_link_scalar:
+                        rs_s.channel = source_ch;
                         rs_s.address = source_addr;
                         rs_d.channel = dest_ch;
-                        rs_d.address = dest_addr+j;
-                        bus_map.add_entry(item["source"], "interconnect", dest_addr, ch["name"]);
-                        i.connections.emplace_back(rs_s,rs_d);
-                    }
-                } else if(transfer_type == "vector_transfer"){
-                    for(uint32_t j = 0; j<transfer_length; j++){
-                        rs_s.channel = source_ch+j;
-                        rs_s.address = source_addr;
-                        rs_d.channel = dest_ch+j;
                         rs_d.address = dest_addr;
-                        bus_map.add_entry(item["source"], "interconnect", dest_addr, ch["name"]);
+                        bus_map.add_entry(item.source_core_id, "interconnect", dest_addr, ch.name);
                         i.connections.emplace_back(rs_s,rs_d);
-                    }
-                } else if(transfer_type == "gather_transfer"){
-                    for(uint32_t  j = 0; j<transfer_length; j++){
-                        rs_s.channel = source_ch;
-                        rs_s.address = source_addr+j;
-                        rs_d.channel = dest_ch+j;
-                        rs_d.address = dest_addr;
-                        bus_map.add_entry(item["source"], "interconnect", dest_addr, ch["name"]);
-                        i.connections.emplace_back(rs_s,rs_d);
-                    }
-                } else if(transfer_type == "regular_transfer" || transfer_type == "scalar_transfer" ){
-                    rs_s.channel = source_ch;
-                    rs_s.address = source_addr;
-                    rs_d.channel = dest_ch;
-                    rs_d.address = dest_addr;
-                    bus_map.add_entry(item["source"], "interconnect", dest_addr, ch["name"]);
-                    i.connections.emplace_back(rs_s,rs_d);
-                } else if(transfer_type == "2d_vector_transfer"){
-
-                    uint32_t transfer_stride = ch["stride"];
-                    for (uint32_t  k = 0; k < transfer_stride; k++) {
-                        for(uint32_t  j = 0; j<transfer_length; j++) {
-                            rs_s.channel = source_ch + j;
-                            rs_s.address = source_addr + k;
-                            rs_d.channel = dest_ch + j;
-                            rs_d.address = dest_addr + k;
-                            bus_map.add_entry(item["source"], "interconnect", dest_addr + k, ch["name"]);
-                            i.connections.emplace_back(rs_s, rs_d);
+                        break;
+                    case emulator::dma_link_gather:
+                        for(uint32_t  j = 0; j<ch.length; j++){
+                            rs_s.channel = source_ch;
+                            rs_s.address = source_addr+j;
+                            rs_d.channel = dest_ch+j;
+                            rs_d.address = dest_addr;
+                            bus_map.add_entry(item.source_core_id, "interconnect", dest_addr, ch.name);
+                            i.connections.emplace_back(rs_s,rs_d);
                         }
-                    }
+                        break;
+                    case emulator::dma_link_2d_vector:
+                        uint32_t transfer_stride = ch.stride;
+                        for (uint32_t  k = 0; k < transfer_stride; k++) {
+                            for(uint32_t  j = 0; j<ch.length; j++) {
+                                rs_s.channel = source_ch + j;
+                                rs_s.address = source_addr + k;
+                                rs_d.channel = dest_ch + j;
+                                rs_d.address = dest_addr + k;
+                                bus_map.add_entry(item.source_core_id, "interconnect", dest_addr + k, ch.name);
+                                i.connections.emplace_back(rs_s, rs_d);
+                            }
+                        }
+                        break;
                 }
 
             }
