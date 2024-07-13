@@ -42,29 +42,29 @@ namespace fcore {
             throw std::runtime_error("Failed to validate emulator schema");
         }
 
-        if(!spec_file.contains("cores")){
+        if(emu_spec.cores.empty()){
             throw std::runtime_error("No cores section found in the emulator specification file");
         }
         // Parse specification file;
 
         programs = get_programs();
+
         for(auto &e: errors){
             if(!e.second.empty()){
                 throw std::runtime_error("CORE " + e.first + ": " + e.second);
             }
         }
 
-        for(auto &item:spec_file["cores"]){
-            std::string id = item["id"];
+        for(auto &core:emu_spec.cores){
 
-            outputs_manager.add_specs(id,  emu_spec.get_core_by_id(id).outputs, get_bundle_by_name(id).active_channels);
+            outputs_manager.add_specs(core.id,  core.outputs, get_bundle_by_name(core.id).active_channels);
 
-            sequencer.add_core(id, item["sampling_frequency"], item["order"]);
+            sequencer.add_core(core.id, core.sampling_frequency, core.order);
 
         }
 
         interconnects = load_interconnects(spec_file["interconnect"]);
-        sequencer.setup_run(spec_file["emulation_time"]);
+        sequencer.setup_run(emu_spec.emulation_time);
 
         check_bus_duplicates();
     }
@@ -78,33 +78,32 @@ namespace fcore {
         // as the performance hit is not too bad.
         interconnects = load_interconnects(spec_file["interconnect"]);
 
-        for(auto &item:spec_file["cores"]){
-            std::string id = item["id"];
+        for(auto &core:emu_spec.cores){
 
             program_bundle b;
-            b.name = id;
-            b.input = emu_spec.get_core_by_id(id).inputs;
-            b.memories = emu_spec.get_core_by_id(id).memories;
-            b.sampling_frequency = emu_spec.get_core_by_id(id).sampling_frequency;
-            b.execution_order = emu_spec.get_core_by_id(id).order;
-            b.active_channels = emu_spec.get_core_by_id(id).channels;
-            b.efi_selector = e_b.get_efi_implementation(emu_spec.get_core_by_id(id).options["efi_implementation"]);
-            b.comparator_type = e_b.get_comparator_type(emu_spec.get_core_by_id(id).options["comparators"]);
+            b.name = core.id;
+            b.input = core.inputs;
+            b.memories = core.memories;
+            b.sampling_frequency = core.sampling_frequency;
+            b.execution_order = core.order;
+            b.active_channels = core.channels;
+            b.efi_selector = e_b.get_efi_implementation(core.options["efi_implementation"]);
+            b.comparator_type = e_b.get_comparator_type(core.options["comparators"]);
 
             try{
                 std::vector<nlohmann::json> src = {};
                 std::vector<nlohmann::json> dst = {};
                 for(auto &ic:spec_file["interconnect"]){
                     std::string source = ic["source"];
-                    if(id == source) src.push_back(ic);
+                    if(core.id == source) src.push_back(ic);
                     std::string destination = ic["destination"];
-                    if(id == destination) dst.push_back(ic);
+                    if(core.id == destination) dst.push_back(ic);
                 }
-                b.program = e_b.compile_program(emu_spec.get_core_by_id(id), dst, src, b.io);
+                b.program = e_b.compile_program(core, dst, src, b.io);
                 b.program_length = e_b.get_program_info();
 
             } catch(std::runtime_error &e){
-                errors[id] = e.what();
+                errors[core.id] = e.what();
             }
 
 

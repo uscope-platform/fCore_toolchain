@@ -42,7 +42,7 @@ namespace fcore {
     class emulation_sequencer {
     public:
         void add_core(const std::string &core_id, uint32_t frequency, uint32_t order);
-        void setup_run(float sim_l);
+        void setup_run(double sim_l);
         void calculate_sequence();
 
         uint32_t get_simulation_frequency(){ return simulation_frequency;};

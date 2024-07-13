@@ -84,6 +84,6 @@ std::vector<fcore::core_step_metadata> fcore::emulation_sequencer::get_running_c
     return ret;
 }
 
-void fcore::emulation_sequencer::setup_run(float sim_l) {
+void fcore::emulation_sequencer::setup_run(double sim_l) {
     sim_length = sim_l;
 }
