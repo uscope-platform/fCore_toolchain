@@ -19,7 +19,8 @@
 namespace fcore {
 
 
-    emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, const std::string& s_f) : emu_spec(spec, s_f + "/emulator_spec_schema.json"){
+    emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg, const std::string& s_f) :
+    emu_spec(spec, s_f + "/emulator_spec_schema.json"){
         debug_autogen = dbg;
 
         emu_length = 1;

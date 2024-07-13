@@ -51,14 +51,14 @@ namespace fcore {
         comparator_type_t get_comparator_type(const std::string &s);
     private:
 
-        nlohmann::json process_interconnects(
+        std::unordered_map<std::string, core_iom> process_interconnects(
                 const std::vector<emulator::emulator_interconnect> &input_connections,
                 const std::vector<emulator::emulator_interconnect> &output_connections,
                 std::set<std::string> memories
         );
 
-        nlohmann::json process_ioms(
-                const nlohmann::json &interconnect_io,
+        std::unordered_map<std::string, core_iom> process_ioms(
+                const std::unordered_map<std::string, fcore::core_iom> &interconnect_io,
                 std::vector<emulator::emulator_input_specs> inputs,
                 std::vector<emulator::emulator_output_specs> outputs,
                 std::vector<emulator::emulator_memory_specs> memory_init_specs,

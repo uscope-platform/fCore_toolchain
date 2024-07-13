@@ -68,7 +68,8 @@ int main(int argc, char **argv) {
     fcore::fcore_cc cc_engine(input_file, include_files, false, dump_ast_level);
 
     if(spec.contains("dma_io")){
-        cc_engine.set_dma_map(spec["dma_io"]);
+        auto map = fcore::fcore_cc::load_iom_map(spec["dma_io"]);
+        cc_engine.set_dma_map(map);
     }
     bool compilation_result = cc_engine.compile();
 

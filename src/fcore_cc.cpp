@@ -111,7 +111,7 @@ void fcore::fcore_cc::parse(std::unordered_map<std::string, variable_class_t> dm
     hl_ast = target_parser.AST;
 }
 
-void fcore::fcore_cc::optimize(std::unordered_map<std::string, std::vector<int>> &dma_map) {
+void fcore::fcore_cc::optimize(std::unordered_map<std::string, std::vector<uint32_t>> &dma_map) {
     std::string ep = "main";
     hl_manager = create_hl_pass_manager(ep, dump_ast_level);
     hl_manager.run_morphing_passes(hl_ast);
@@ -150,30 +150,23 @@ void fcore::fcore_cc::optimize(std::unordered_map<std::string, std::vector<int>>
 }
 
 void fcore::fcore_cc::parse_dma_spec() {
-    for(auto &item:dma_spec.items()){
-        std::shared_ptr<variable> v = std::make_shared<variable>(item.key());
-        if(item.value()["type"] =="input"){
-            v->set_variable_class(variable_input_type);
-            dma_io_spec[item.key()] = variable_input_type;
-        } else if(item.value()["type"]=="output"){
-            v->set_variable_class(variable_output_type);
-            dma_io_spec[item.key()] = variable_output_type;
-        } else if(item.value()["type"]=="memory"){
-            v->set_variable_class(variable_memory_type);
-            dma_io_spec[item.key()] = variable_memory_type;
-        } else{
-            const std::string& var_name = item.key();
-            throw std::runtime_error("Unrecognized DMA IO variable: "+ var_name);
+    for(auto &item:dma_spec){
+        std::shared_ptr<variable> v = std::make_shared<variable>(item.first);
+        switch (item.second.type) {
+            case core_iom_input:
+                v->set_variable_class(variable_input_type);
+                dma_io_spec[item.first] = variable_input_type;
+                break;
+            case core_iom_output:
+                v->set_variable_class(variable_output_type);
+                dma_io_spec[item.first] = variable_output_type;
+                break;
+            case core_iom_memory:
+                v->set_variable_class(variable_memory_type);
+                dma_io_spec[item.first] = variable_memory_type;
+                break;
         }
-        if(item.value()["address"].is_array()){
-            std::vector<int> bound_reg = item.value()["address"];
-            dma_io_map[item.key()] = bound_reg;
-
-        } else {
-            int bound_reg = item.value()["address"];
-            dma_io_map[item.key()] = {bound_reg};
-
-        }
+        dma_io_map[item.first] = item.second.address;
 
     }
 
@@ -223,4 +216,37 @@ void fcore::fcore_cc::analyze_program_length(std::shared_ptr<struct instruction_
 
     length_info.fixed_portion = c->stop * info.stop_duration +
             info.fixed_core_overhead + c->load*info.load_overhead;
+}
+
+nlohmann::json fcore::fcore_cc::dump_iom_map(std::unordered_map<std::string, core_iom> &map) {
+    nlohmann::json ret;
+    for(auto &item:map){
+        ret[item.first] = nlohmann::json();
+        switch (item.second.type) {
+            case core_iom_output:
+                ret[item.first]["type"] = "output";
+                break;
+            case core_iom_input:
+                ret[item.first]["type"] = "input";
+                break;
+            case core_iom_memory:
+                ret[item.first]["type"]= "memory";
+                break;
+        }
+        ret[item.first]["address"] = item.second.address;
+    }
+    return ret;
+}
+
+std::unordered_map<std::string, fcore::core_iom> fcore::fcore_cc::load_iom_map(const nlohmann::json &raw_map) {
+    std::unordered_map<std::string, fcore::core_iom> ret;
+
+    for(auto &item:raw_map.items()){
+        fcore::core_iom iom;
+        std::vector<uint32_t> addr =  raw_map["address"];
+        iom.address = addr;
+        iom.type = core_iom_type_translator[raw_map["type"]];
+    }
+
+    return ret;
 }

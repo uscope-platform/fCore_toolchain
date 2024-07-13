@@ -32,15 +32,12 @@ TEST(EndToEndC, fcore_cc) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"type": "output","address":10}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_output, {10}};
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result = compiler.get_executable();
 
@@ -61,16 +58,12 @@ TEST(EndToEndC, end_to_end_intrinsics) {
 
     std::vector<std::string> includes;
 
-
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"type": "output","address":10}
-                }})"
-    );
-
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_output, {10}};
+    
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result = compiler.get_executable();
 
@@ -94,16 +87,13 @@ TEST(EndToEndC, exceptionHandling) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "v_cells":{"type": "input","address":59},
-                    "v_arms":{"type": "output","address":[60,61]}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["v_cells"] = {core_iom_input, {59}};
+    dma_map["v_arms"] = {core_iom_output, {60,61}};
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::string result = compiler.get_errors();
 
@@ -125,15 +115,12 @@ TEST(EndToEndC, json_writing) {
 
     std::string test_json = "/tmp/e2e_c_json_test.json";
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"type": "output","address":10}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_output, {10}};
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     compiler.write_json(test_json);
 
@@ -167,20 +154,17 @@ TEST(EndToEndC, iom) {
     )""""};
 
     std::vector<std::string> includes;
+    
 
-
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"type": "memory","address":1},
-                    "b":{"type": "input","address":2},
-                    "c":{"type": "memory","address":4},
-                    "test":{"type": "output","address":10}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_memory, {1}};
+    dma_map["b"] = {core_iom_input, {2}};
+    dma_map["c"] = {core_iom_memory, {4}};
+    dma_map["test"] = {core_iom_output, {10}};
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -207,15 +191,13 @@ TEST(EndToEndC, conditional) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "test":{"type": "output","address":7}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["test"] = {core_iom_output, {7}};
 
+    
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -250,16 +232,15 @@ TEST(EndToEndC, loop) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "h":{"type": "input","address":[1,2,3,4]},
-                    "k":{"type": "input","address":[5,6,7,8]},
-                    "b":{"type": "output","address":[9,10,11,12]}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["h"] = {core_iom_input, {1,2,3,4}};
+    dma_map["k"] = {core_iom_input, {5,6,7,8}};
+    dma_map["b"] = {core_iom_output, {9,10,11,12}};
+
+
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -290,16 +271,15 @@ TEST(EndToEndC, nested_loop) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "h":{"type": "input","address":[1,2,3,4]},
-                    "a":{"type": "input","address":[5,6,7,8]},
-                    "c":{"type": "output","address":[9,10,11,12]}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["h"] = {core_iom_input, {1,2,3,4}};
+    dma_map["a"] = {core_iom_input, {5,6,7,8}};
+    dma_map["c"] = {core_iom_output, {9,10,11,12}};
+
+
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -332,14 +312,13 @@ TEST(EndToEndC, array_initialization) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "c":{"type": "output","address":7}
-                }})"
-    );
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["c"] = {core_iom_output, {7}};
+
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -367,14 +346,12 @@ TEST(EndToEndC, array_initialization_through_function) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "c":{"type": "output","address":18}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["c"] = {core_iom_output, {18}};
+
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -409,14 +386,12 @@ TEST(EndToEndC, constant_argument_inlining) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "c":{"type": "output","address":18}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["c"] = {core_iom_output, {18}};
+
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -443,17 +418,15 @@ TEST(EndToEndC, array_io_definition) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"type": "input","address":[4,7]},
-                    "b":{"type": "output","address":3},
-                    "c":{"type": "output","address":[8,9]},
-                    "d":{"type": "memory","address":[10,11]}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_input, {4,7}};
+    dma_map["b"] = {core_iom_output, {3}};
+    dma_map["c"] = {core_iom_output, {8,9}};
+    dma_map["d"] = {core_iom_memory, {10,11}};
+
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -485,16 +458,16 @@ TEST(EndToEndC, multidimensional_array_io_definition) {
     }
     )""""};
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"type": "input","address":[4,7]},
-                    "c":{"type": "output","address":[8,9,10,11]},
-                    "d":{"type": "memory","address":[12,13,16,18]}
-                }})"
-    );
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_input, {4,7}};
+    dma_map["c"] = {core_iom_output, {8,9,10,11}};
+    dma_map["d"] = {core_iom_memory, {12,13,16,18}};
+
+
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -517,15 +490,14 @@ TEST(EndToEndC, iom_initialization){
     }
     )""""};
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "c":{"type": "output","address":[8,9,10,11]},
-                    "b":{"type": "output","address":20}
-                }})"
-    );
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["c"] = {core_iom_output, {8,9,10,11}};
+    dma_map["b"] = {core_iom_output, {20}};
+
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -547,16 +519,14 @@ TEST(EndToEndC, test_move){
     }
     )""""};
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"type": "input","address":1},
-                    "test":{"type": "output","address":10}
-                }})"
-    );
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_input, {1}};
+    dma_map["test"] = {core_iom_output, {10}};
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -582,17 +552,15 @@ TEST(EndToEndC, test_complex_normalization){
         }
     )""""};
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"type": "input","address":1},
-                    "b":{"type": "input","address":2},
-                    "test":{"type": "memory","address":10}
-                }})"
-    );
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_input, {1}};
+    dma_map["b"] = {core_iom_input, {2}};
+    dma_map["test"] = {core_iom_memory, {10}};
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -614,16 +582,14 @@ TEST(EndToEndC, register_allocation){
     }
     )""""};
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"type": "input","address":1},
-                    "test":{"type": "memory","address":10}
-                }})"
-    );
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_input, {1}};
+    dma_map["test"] = {core_iom_memory, {10}};
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -655,16 +621,13 @@ TEST(EndToEndC, function_inlining_expression) {
         }
     )""""};
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "test_in":{"type": "input","address":25},
-                    "integ":{"type": "memory","address":6}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["test_in"] = {core_iom_input, {25}};
+    dma_map["integ"] = {core_iom_memory, {6}};
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -699,17 +662,14 @@ TEST(EndToEndC, essential_variable_initialization) {
     }
     )""""};
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "test_in":{"type": "input","address":25},
-                    "test_out":{"type": "output","address":5},
-                    "test_var":{"type": "output","address":7},
-                    "factor_1":{"type": "output","address":6}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["test_in"] = {core_iom_input, {25}};
+    dma_map["test_out"] = {core_iom_output, {5}};
+    dma_map["test_var"] = {core_iom_output, {7}};
+    dma_map["factor_1"] = {core_iom_output, {6}};
 
     fcore_cc compiler(file_content, includes);
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.enable_logging();
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -742,17 +702,15 @@ TEST(EndToEndC, test_constant_propagation) {
     }
     )""""};
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"type": "input","address":5},
-                    "switching_cell":{"type": "memory","address":[17,18]}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_input, {5}};
+    dma_map["switching_cell"] = {core_iom_memory, {17,18}};
+
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -776,18 +734,18 @@ TEST(EndToEndC, negative_leading_sum) {
     }
     )""""};
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"type": "input","address":2},
-                    "b":{"type": "input","address":3},
-                    "c":{"type": "output","address":7}
-                }})"
-            );
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_input, {2}};
+    dma_map["b"] = {core_iom_input, {3}};
+    dma_map["c"] = {core_iom_output, {7}};
+
+
     std::vector<std::string> includes;
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -817,17 +775,16 @@ TEST(EndToEndC, function_vars_mangling) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "b":{"type": "input","address":2},
-                    "a":{"type": "input","address":1},
-                    "c":{"type": "output","address":10}
-                }})"
-    );
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["b"] = {core_iom_input, {2}};
+    dma_map["a"] = {core_iom_input, {1}};
+    dma_map["c"] = {core_iom_output, {10}};
+
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -858,16 +815,14 @@ TEST(EndToEndC, constant_merging) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"type": "input","address":[10,11]},
-                    "b":{"type": "output","address":[12,13]}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_input, {10,11}};
+    dma_map["b"] = {core_iom_output, {12,13}};
+
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -893,16 +848,15 @@ TEST(EndToEndC, zero_assignment_removal) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"type": "input","address":10},
-                    "b":{"type": "output","address":12}
-                }})"
-    );
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_input, {10}};
+    dma_map["b"] = {core_iom_output, {12}};
+
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -934,16 +888,13 @@ TEST(EndToEndC, loop_index_expression) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "v_cells":{"type": "input","address":[40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59]},
-                    "v_arms":{"type": "output","address":[60,61]}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["v_cells"] = {core_iom_input, {40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59}};
+    dma_map["v_arms"] = {core_iom_output, {60,61}};
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -974,16 +925,15 @@ TEST(EndToEndC, loop_index_expression_multidim) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "v_cells":{"type": "input","address":[40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59]},
-                    "v_arms":{"type": "output","address":[60,61]}
-                }})"
-    );
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["v_cells"] = {core_iom_input, {40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59}};
+    dma_map["v_arms"] = {core_iom_output, {60,61}};
+
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -1013,17 +963,15 @@ TEST(EndToEndC, contiguos_array_allocation) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "c":{"type": "input","address":2},
-                    "out_1":{"type": "output","address":7},
-                    "out_2":{"type": "output","address":6}
-                }})"
-    );
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["c"] = {core_iom_input, {2}};
+    dma_map["out_1"] = {core_iom_output, {7}};
+    dma_map["out_2"] = {core_iom_output, {6}};
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -1057,17 +1005,15 @@ TEST(EndToEndC, efi_load_elimination) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "theta":{"type": "input","address":1},
-                    "s_th":{"type": "output","address":15},
-                    "c_th":{"type": "output","address":17}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["theta"] = {core_iom_input, {1}};
+    dma_map["s_th"] = {core_iom_output, {15}};
+    dma_map["c_th"] = {core_iom_output, {17}};
+
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -1119,17 +1065,15 @@ TEST(EndToEndC, efi_load_elimination_in_func) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "theta":{"type": "input","address":1},
-                    "s_th":{"type": "output","address":15},
-                    "c_th":{"type": "output","address":17}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["theta"] = {core_iom_input, {1}};
+    dma_map["s_th"] = {core_iom_output, {15}};
+    dma_map["c_th"] = {core_iom_output, {17}};
+
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -1158,16 +1102,13 @@ TEST(EndToEndC, constant_conversion) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "v_err":{"type": "output","address":2},
-                    "v_err2":{"type": "output","address":3}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["v_err"] = {core_iom_output, {2}};
+    dma_map["v_err2"] = {core_iom_output, {3}};
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -1191,16 +1132,15 @@ TEST(EndToEndC, constant_squaring) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "dt":{"type": "output","address":5},
-                    "dt2":{"type": "output","address":6}
-                }})"
-    );
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["dt"] = {core_iom_output, {5}};
+    dma_map["dt2"] = {core_iom_output, {6}};
+
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -1222,15 +1162,14 @@ TEST(EndToEndC, test_multiple_constant_op) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "angle_test":{"type": "output","address":5}
-                }})"
-    );
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["angle_test"] = {core_iom_output, {5}};
+
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -1256,17 +1195,15 @@ TEST(EndToEndC, test_constant_expression_output) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "v_cap":{"address":[63],"type":"memory"},
-                    "v_cap_s":{"address":[22],"type":"output"},
-                    "v_out":{"address":[20],"type":"output"}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["v_cap"] = {core_iom_memory, {63}};
+    dma_map["v_cap_s"] = {core_iom_output, {22}};
+    dma_map["v_out"] = {core_iom_output, {20}};
+
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
@@ -1290,16 +1227,15 @@ TEST(EndToEndC, test_ternary_operator) {
 
     std::vector<std::string> includes;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"address":3,"type":"input"},
-                    "c":{"address":2,"type":"output"}
-                }})"
-    );
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_input, {3}};
+    dma_map["c"] = {core_iom_output, {2}};
+
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
 
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -1332,17 +1268,16 @@ TEST(EndToEndC, test_include) {
 
     )""""};
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"address":3,"type":"input"},
-                    "b":{"address":4,"type":"input"},
-                    "c":{"address":2,"type":"output"}
-                }})"
-    );
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_input, {3}};
+    dma_map["b"] = {core_iom_input, {4}};
+    dma_map["c"] = {core_iom_output, {2}};
+
 
     fcore_cc compiler(file_content, include_content);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
 
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -1370,16 +1305,13 @@ TEST(EndToEndC, test_ternary_return) {
 
     std::vector<std::string> include_content;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"address":3,"type":"input"},
-                    "b":{"address":4,"type":"output"}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_input, {3}};
+    dma_map["b"] = {core_iom_output, {4}};
 
     fcore_cc compiler(file_content, include_content);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map);
 
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
@@ -1408,17 +1340,14 @@ TEST(EndToEndC, test_ternary_mem_self_assign) {
 
     std::vector<std::string> include_content;
 
-    nlohmann::json dma_map = nlohmann::json::parse(
-            R"({"dma_io":{
-                    "a":{"address":3,"type":"input"},
-                    "b":{"address":4,"type":"input"},
-                    "c":{"address":5,"type":"memory"}
-                }})"
-    );
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_input, {3}};
+    dma_map["b"] = {core_iom_input, {4}};
+    dma_map["c"] = {core_iom_memory, {5}};
 
     fcore_cc compiler(file_content, include_content);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map["dma_io"]);
+    compiler.set_dma_map(dma_map)
 
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();

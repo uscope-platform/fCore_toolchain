@@ -34,7 +34,7 @@ namespace fcore{
         binary_generator() = default;
         void process_stream(
                 const instruction_stream& stream,
-                const std::unordered_map<std::string, std::vector<int>>& dma_map,
+                const std::unordered_map<std::string, std::vector<uint32_t>>& dma_map,
                 const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& allocation_map,
                 bool debug_print);
         void process_stream(const instruction_stream& stream, bool debug_print);

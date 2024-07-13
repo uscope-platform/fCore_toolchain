@@ -18,18 +18,18 @@ fcore::emulator_builder::emulator_builder(bool dbg) {
     debug_autogen = dbg;
 }
 
-nlohmann::json fcore::emulator_builder::process_interconnects(
+std::unordered_map<std::string, fcore::core_iom> fcore::emulator_builder::process_interconnects(
         const std::vector<emulator::emulator_interconnect> &input_connections,
         const std::vector<emulator::emulator_interconnect> &output_connections,
         std::set<std::string> memories
 ) {
-    nlohmann::json result;
+    std::unordered_map<std::string, core_iom> result;
 
     for(auto  &conn:input_connections){
         for(auto &item:conn.channels){
             std::string  dma_name = item.destination.io_name;
-            nlohmann::json spec;
-            spec["type"] = "input";
+            core_iom spec;
+            spec.type = core_iom_input;
             std::vector<uint32_t> addrs;
             uint32_t transfer_length = item.length;
 
@@ -42,20 +42,20 @@ nlohmann::json fcore::emulator_builder::process_interconnects(
                 assigned_inputs.insert(addr_base+i);
                 addrs.push_back(addr_base+i);
             }
-            spec["address"]  = addrs;
+            spec.address  = addrs;
             result[item.destination.io_name] = spec;
         }
     }
 
     for(auto &conn:output_connections){
         for(auto &item:conn.channels){
-            nlohmann::json spec;
+            core_iom spec;
             std::string output_name = item.source.io_name;
             if(memories.contains(output_name)){
-                spec["type"] = "memory";
+                spec.type = core_iom_memory;
                 memory_names.insert(output_name);
             } else {
-                spec["type"] = "output";
+                spec.type = core_iom_output;
             }
             std::vector<uint32_t> addrs;
             uint32_t transfer_length = item.length;
@@ -68,26 +68,26 @@ nlohmann::json fcore::emulator_builder::process_interconnects(
                 assigned_outputs.insert(addr_base+i);
                 addrs.push_back(addr_base+i);
             }
-            spec["address"]  = addrs;
+            spec.address  = addrs;
             result[output_name] = spec;
         }
     }
     return result;
 }
 
-nlohmann::json fcore::emulator_builder::process_ioms(
-        const nlohmann::json &interconnect_io,
+std::unordered_map<std::string, fcore::core_iom> fcore::emulator_builder::process_ioms(
+        const std::unordered_map<std::string, fcore::core_iom> &interconnect_io,
         std::vector<emulator::emulator_input_specs> inputs,
         std::vector<emulator::emulator_output_specs> outputs,
         std::vector<emulator::emulator_memory_specs> memory_init_specs,
         std::set<std::string> memories
         ) {
 
-    nlohmann::json result = interconnect_io;
+    std::unordered_map<std::string, fcore::core_iom> result = interconnect_io;
     for(auto &item: inputs){
-        nlohmann::json spec;
-        spec["type"] = "input";
-        spec["address"]  = item.address;
+        core_iom spec;
+        spec.type = core_iom_input;
+        spec.address  = item.address;
         assigned_inputs.insert(item.address.begin(), item.address.end());
         result[item.name] = spec;
     }
@@ -95,9 +95,9 @@ nlohmann::json fcore::emulator_builder::process_ioms(
 
     for(auto &item: memory_init_specs){
         if(!result.contains(item.name)){
-            nlohmann::json spec;
-            spec["type"] = "memory";
-            spec["address"]  = item.address;
+            core_iom spec;
+            spec.type = core_iom_memory;
+            spec.address  = item.address;
             memory_names.insert(item.name);
             assigned_inputs.insert(item.address.begin(), item.address.end());
             result[item.name] = spec;
@@ -110,11 +110,11 @@ nlohmann::json fcore::emulator_builder::process_ioms(
 
     for(auto &item:memories){
         if(!result.contains(item)){
-            nlohmann::json spec;
-            spec["type"] = "memory";
+            core_iom spec;
+            spec.type = core_iom_memory;
             std::vector<uint32_t> addrs = {mem_progressive};
             assigned_outputs.insert(mem_progressive);
-            spec["address"]  = addrs;
+            spec.address  = addrs;
             result[item] = spec;
             memory_names.insert(item);
             while(assigned_outputs.contains(mem_progressive)|| assigned_inputs.contains(mem_progressive)) mem_progressive--;
@@ -122,20 +122,19 @@ nlohmann::json fcore::emulator_builder::process_ioms(
     }
 
     for(auto &item:outputs){
-        nlohmann::json spec;
-        spec["type"] = "output";
+        core_iom spec;
+        spec.type = core_iom_output;
 
         if(!assigned_outputs.contains(item.address[0])){
-            spec["address"]  = item.address;
+            spec.address  = item.address;
             if(!memory_names.contains(item.name)){
                 result[item.name] = spec;
             } else{
-                result[item.name]["address"] = item.address;
+                result[item.name].address = item.address;
             }
         }
     }
 
-    auto dbg_res = result.dump();
     return result;
 }
 
@@ -151,7 +150,7 @@ std::vector<uint32_t> fcore::emulator_builder::compile_program(
 
     auto interconnect_io = process_interconnects(input_connections, output_connections, memories);
 
-    nlohmann::json dma_io = process_ioms(interconnect_io, core_spec.inputs, core_spec.outputs,core_spec.memories, memories);
+    std::unordered_map<std::string, core_iom> dma_io = process_ioms(interconnect_io, core_spec.inputs, core_spec.outputs,core_spec.memories, memories);
 
     std::vector<std::string> content = {core_spec.program.content};
 
@@ -174,7 +173,7 @@ std::vector<uint32_t> fcore::emulator_builder::compile_program(
         std::string program_content = core_spec.program.content;
         std::string core_name = core_spec.id;
         std::ofstream ofs("autogen/" + core_name + "_dma_io.json");
-        ofs<<dma_io;
+        ofs << fcore_cc::dump_iom_map(dma_io);
 
         std::ofstream ofs2("autogen/" + core_name + "_src.c");
         ofs2<<program_content;

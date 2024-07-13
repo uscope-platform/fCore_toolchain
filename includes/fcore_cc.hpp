@@ -50,6 +50,23 @@ namespace fcore {
         uint32_t per_channel_portion;
     };
 
+    typedef enum {
+        core_iom_input = 0,
+        core_iom_output = 1,
+        core_iom_memory = 2
+    } core_iom_type;
+
+    static std::unordered_map<std::string, core_iom_type> core_iom_type_translator = {
+            {"input", core_iom_input},
+            {"output", core_iom_output},
+            {"memory", core_iom_memory}
+    };
+
+    struct core_iom {
+        core_iom_type type;
+        std::vector<uint32_t> address;
+    };
+
 
     typedef std::unordered_map<std::string, std::vector<io_map_entry>> io_map;
 
@@ -69,16 +86,18 @@ namespace fcore {
         void write_json(const std::string& output_file);
         nlohmann::json get_dump() {return dump;};
 
-        void set_dma_map(nlohmann::json &map){dma_spec = map;};
+        void set_dma_map(std::unordered_map<std::string, core_iom> &map){dma_spec = map;};
         void set_core_info(struct core_info &i) {info = i;};
         struct program_info get_program_info() { return length_info;}
+
+        static nlohmann::json dump_iom_map(std::unordered_map<std::string, core_iom> &map);
+        static std::unordered_map<std::string, core_iom> load_iom_map(const nlohmann::json &raw_map);
     private:
         void merge_includes(const std::vector<std::shared_ptr<hl_ast_node>>& i);
         std::shared_ptr<hl_ast_node>  parse_include(std::istream &file, std::shared_ptr<define_map> def_map);
         void parse(std::unordered_map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map);
-        void optimize(std::unordered_map<std::string, std::vector<int>> &dma_map);
+        void optimize(std::unordered_map<std::string, std::vector<uint32_t >> &dma_map);
         void analyze_program_length(std::shared_ptr<struct instruction_count> c);
-
         std::ifstream input_file_stream;
         std::istringstream input_string_stream;
         std::string type;
@@ -86,7 +105,9 @@ namespace fcore {
         bool include_is_paths;
         bool logging;
         int dump_ast_level;
-        nlohmann::json dma_spec;
+
+        std::unordered_map<std::string, core_iom> dma_spec;
+
         std::shared_ptr<hl_ast_node> hl_ast;
         std::shared_ptr<ll_ast_node> ll_ast;
         binary_generator writer;
@@ -95,7 +116,7 @@ namespace fcore {
         std::string error_code;
         nlohmann::json dump;
 
-        std::unordered_map<std::string, std::vector<int>> dma_io_map;
+        std::unordered_map<std::string, std::vector<uint32_t >> dma_io_map;
         std::unordered_map<std::string, variable_class_t> dma_io_spec;
         std::shared_ptr<io_map> allocation_map;
 

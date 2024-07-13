@@ -17,7 +17,7 @@
 
 void fcore::binary_generator::process_stream(
         const instruction_stream& stream,
-        const std::unordered_map<std::string, std::vector<int>>& dma_map,
+        const std::unordered_map<std::string, std::vector<uint32_t>>& dma_map,
         const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& allocation_map,
         bool debug_print
 ) {
@@ -67,7 +67,7 @@ void fcore::binary_generator::process_stream(
 }
 
 void fcore::binary_generator::process_stream(const instruction_stream &stream, bool debug_print) {
-    auto dma_map = std::unordered_map<std::string, std::vector<int>>();
+    auto dma_map = std::unordered_map<std::string, std::vector<uint32_t>>();
     auto am = std::make_shared<std::unordered_map<std::string, std::vector<io_map_entry>>>();
     process_stream(stream, dma_map, am, debug_print);
 }
