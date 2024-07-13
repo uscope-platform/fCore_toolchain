@@ -34,7 +34,6 @@ namespace fcore {
         emulator_builder(bool dbg);
 
         std::vector<uint32_t>  compile_program(
-                const nlohmann::json &core_info,
                 const emulator::emulator_core& core_spec,
                 const std::vector<nlohmann::json> &input_connections,
                 const std::vector<nlohmann::json> &output_connections,
@@ -59,9 +58,9 @@ namespace fcore {
 
         nlohmann::json process_ioms(
                 const nlohmann::json &interconnect_io,
-                const nlohmann::json &inputs,
-                const nlohmann::json &outputs,
-                const nlohmann::json &memory_init_specs,
+                std::vector<emulator::emulator_input_specs> inputs,
+                std::vector<emulator::emulator_output_specs> outputs,
+                std::vector<emulator::emulator_memory_specs> memory_init_specs,
                 const std::set<std::string> memories
         );
 

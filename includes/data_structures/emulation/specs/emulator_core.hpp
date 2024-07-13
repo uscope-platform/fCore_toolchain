@@ -47,12 +47,14 @@ namespace fcore::emulator {
 
     typedef enum {
         scalar_endpoint = 0,
-        vector_endpoint = 1
+        vector_endpoint = 1,
+        explicit_vector_endpoint = 2
     } endpoint_type;
 
     static std::unordered_map<std::string, endpoint_type > endpoint_type_map = {
             {"scalar", scalar_endpoint},
-            {"vector", vector_endpoint}
+            {"vector", vector_endpoint},
+            {"explicit_vector", explicit_vector_endpoint}
     };
 
     typedef enum {
@@ -80,6 +82,7 @@ namespace fcore::emulator {
         std::vector<std::variant<std::vector<uint32_t>, std::vector<float>>> data;
         std::vector<uint32_t> address;
         std::vector<uint32_t> channel;
+        std::vector<std::string> vector_labels;
     };
 
     struct emulator_memory_specs {

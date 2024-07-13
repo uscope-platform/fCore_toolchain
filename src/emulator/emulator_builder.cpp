@@ -89,9 +89,9 @@ nlohmann::json fcore::emulator_builder::process_interconnects(
 
 nlohmann::json fcore::emulator_builder::process_ioms(
         const nlohmann::json &interconnect_io,
-        const nlohmann::json &inputs,
-        const nlohmann::json &outputs,
-        const nlohmann::json &memory_init_specs,
+        std::vector<emulator::emulator_input_specs> inputs,
+        std::vector<emulator::emulator_output_specs> outputs,
+        std::vector<emulator::emulator_memory_specs> memory_init_specs,
         std::set<std::string> memories
         ) {
 
@@ -99,37 +99,20 @@ nlohmann::json fcore::emulator_builder::process_ioms(
     for(auto &item: inputs){
         nlohmann::json spec;
         spec["type"] = "input";
-        std::vector<uint32_t> addrs;
-        if(item["register_type"] == "explicit_vector"){
-            int base_addr = item["reg_n"];
-            for(uint32_t i = 0; i<item["vector_labels"].size(); i++){
-                addrs.push_back(base_addr + i);
-            }
-        } else {
-            addrs.push_back(item["reg_n"]);
-        }
-
-        spec["address"]  = addrs;
-
-        assigned_inputs.insert(addrs.begin(), addrs.end());
-        result[item["name"]] = spec;
+        spec["address"]  = item.address;
+        assigned_inputs.insert(item.address.begin(), item.address.end());
+        result[item.name] = spec;
     }
 
 
     for(auto &item: memory_init_specs){
-        std::string memory_name= item["name"];
-        if(!result.contains(memory_name)){
+        if(!result.contains(item.name)){
             nlohmann::json spec;
             spec["type"] = "memory";
-            std::vector<uint32_t> addrs;
-            if(item["reg_n"].is_array()) {
-                for(const auto &r_a:item["reg_n"]) addrs.push_back(r_a);
-            } else {
-                addrs.push_back(item["reg_n"]);
-            }
-            spec["address"]  = addrs;
-            assigned_inputs.insert(addrs.begin(), addrs.end());
-            result[item["name"]] = spec;
+            spec["address"]  = item.address;
+            memory_names.insert(item.name);
+            assigned_inputs.insert(item.address.begin(), item.address.end());
+            result[item.name] = spec;
         }
     }
 
@@ -153,32 +136,23 @@ nlohmann::json fcore::emulator_builder::process_ioms(
     for(auto &item:outputs){
         nlohmann::json spec;
         spec["type"] = "output";
-        std::vector<uint32_t> addrs;
-        if(item["reg_n"].is_array()){
-            for(const auto &val:item["reg_n"]) addrs.push_back(val);
-        } else {
-            addrs = {item["reg_n"]};
-        }
 
-        std::string dbg = item.dump();
-        if(!assigned_outputs.contains(addrs[0])){
-            spec["address"]  = addrs;
-            if(!memory_names.contains(item["name"])){
-                result[item["name"]] = spec;
+        if(!assigned_outputs.contains(item.address[0])){
+            spec["address"]  = item.address;
+            if(!memory_names.contains(item.name)){
+                result[item.name] = spec;
             } else{
-                result[item["name"]]["address"] = addrs;
+                result[item.name]["address"] = item.address;
             }
         }
     }
 
     auto dbg_res = result.dump();
-
     return result;
 }
 
 
 std::vector<uint32_t> fcore::emulator_builder::compile_program(
-        const nlohmann::json &core_info,
         const emulator::emulator_core& core_spec,
         const std::vector<nlohmann::json> &input_connections,
         const std::vector<nlohmann::json> &output_connections,
@@ -189,7 +163,7 @@ std::vector<uint32_t> fcore::emulator_builder::compile_program(
 
     auto interconnect_io = process_interconnects(input_connections, output_connections, memories);
 
-    nlohmann::json dma_io = process_ioms(interconnect_io, core_info["inputs"], core_info["outputs"],core_info["memory_init"], memories);
+    nlohmann::json dma_io = process_ioms(interconnect_io, core_spec.inputs, core_spec.outputs,core_spec.memories, memories);
 
     std::vector<std::string> content = {core_spec.program.content};
 
