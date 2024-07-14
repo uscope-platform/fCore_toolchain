@@ -581,3 +581,117 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
     res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"][1];
     ASSERT_FLOAT_EQ(res[0], 60.2);
 }
+
+
+TEST(Emulator, emulator_multichannel_vector_transfer) {
+    nlohmann::json specs = nlohmann::json::parse(
+            R"(
+    {
+        "cores": [
+            {
+                "order": 0,
+                "id": "test_producer",
+                "channels":2,
+                "options":{
+                    "comparators": "full",
+                    "efi_implementation":"none"
+                },
+                "sampling_frequency":1,
+                "input_data":[],
+                "inputs":[],
+                "outputs":[],
+                "memory_init":[],
+                "program": {
+                    "content": "",
+                    "build_settings":{"io":{"inputs":[],"outputs":[],"memories":[]}}
+                }
+            },
+            {
+                "order": 1,
+                "id": "test_consumer",
+                "channels":2,
+                "options":{
+                    "comparators": "full",
+                    "efi_implementation":"none"
+                },
+                "sampling_frequency":1,
+                "input_data":[],
+                "inputs":[],
+                "outputs":[],
+                "memory_init":[],
+                "program": {
+                    "content": "",
+                    "build_settings":{"io":{"inputs":[],"outputs":[],"memories":[]}}
+                }
+            }
+        ],
+        "interconnect": [
+    ],
+        "emulation_time": 1
+    })");
+
+
+    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    manager.process();
+    manager.emulate();
+
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+
+}
+
+
+TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
+    nlohmann::json specs = nlohmann::json::parse(
+            R"(
+    {
+        "cores": [
+            {
+                "order": 0,
+                "id": "test_producer",
+                "channels":2,
+                "options":{
+                    "comparators": "full",
+                    "efi_implementation":"none"
+                },
+                "sampling_frequency":1,
+                "input_data":[],
+                "inputs":[],
+                "outputs":[],
+                "memory_init":[],
+                "program": {
+                    "content": "",
+                    "build_settings":{"io":{"inputs":[],"outputs":[],"memories":[]}}
+                }
+            },
+            {
+                "order": 1,
+                "id": "test_consumer",
+                "channels":2,
+                "options":{
+                    "comparators": "full",
+                    "efi_implementation":"none"
+                },
+                "sampling_frequency":1,
+                "input_data":[],
+                "inputs":[],
+                "outputs":[],
+                "memory_init":[],
+                "program": {
+                    "content": "",
+                    "build_settings":{"io":{"inputs":[],"outputs":[],"memories":[]}}
+                }
+            }
+        ],
+        "interconnect": [
+    ],
+        "emulation_time": 1
+    })");
+
+
+    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    manager.process();
+    manager.emulate();
+
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+
+}
