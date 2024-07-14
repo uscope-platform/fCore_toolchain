@@ -75,12 +75,34 @@
               ],
               "properties": {
                 "channel": {
-                  "type": "integer",
-                  "title": "Channel to push the input to"
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "title": "Channel to push the input to"
+                    },
+                    {
+                      "type": "array",
+                      "title": "Channels to push the input to",
+                      "items": {
+                        "type": "integer"
+                      }
+                    }
+                  ]
                 },
                 "reg_n": {
-                  "type": "integer",
-                  "title": "IO address (or register address if remapping is not active) to push the input to"
+                  "anyOf": [
+                    {
+                      "type": "integer",
+                      "title": "IO address (or register address if remapping is not active) to push the input to"
+                    },
+                    {
+                      "type": "array",
+                      "title": "array of IO addresses (or register addresses if remapping is not active) to push the input to",
+                      "items": {
+                        "type": "integer"
+                      }
+                    }
+                  ]
                 },
                 "type": {
                   "type": "string",
@@ -112,16 +134,49 @@
                       "title": "Type of source"
                     },
                     "value": {
-                      "type": "number",
-                      "title": "Constant to be used as input"
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "title": "Constant to be used as input"
+                        },
+                        {
+                          "type": "array",
+                          "title": "Constants to be used as input",
+                          "items": {
+                            "type": "number"
+                          }
+                        }
+                      ]
                     },
                     "file": {
-                      "type": "string",
-                      "title": "name of the file containing the data series source"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "title": "name of the file containing the data series source"
+                        },
+                        {
+                          "type": "array",
+                          "title": "names of the files containing the data series source (one per channel)",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
                     },
                     "series": {
-                      "type": "string",
-                      "title": "name of the data series chosen"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "title": "name of the data series chosen"
+                        },
+                        {
+                          "type": "array",
+                          "title": "names of the data series chosen (one per channel)",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ]
                     }
                   },
                   "allOf": [

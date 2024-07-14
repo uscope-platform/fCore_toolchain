@@ -122,8 +122,10 @@ namespace fcore {
 
                 auto sel_prog = get_bundle_by_name(core.id);
                 if(!sequencer.is_empty_step()){
-                    inputs_phase(core, sel_prog);
-                    execution_phase(core, sel_prog);
+                    for(int j = 0; j<sel_prog.active_channels; ++j) {
+                        inputs_phase(core, sel_prog, j);
+                        execution_phase(core, sel_prog, j);
+                    }
                     interconnects_phase(core, sequencer.get_enabled_cores());
                 }
 
@@ -141,7 +143,7 @@ namespace fcore {
     }
 
 
-    void emulator_manager::inputs_phase(const core_step_metadata& info, program_bundle &prog) {
+    void emulator_manager::inputs_phase(const core_step_metadata& info, program_bundle &prog, uint32_t  channel) {
 
         // APPLY INPUTS (ONLY WHEN THE EMULATOR IS RUN TO AVOID POTENTIALLY DESTROYING THE OUTPUTS IN MEMORY)
         if(info.running){
@@ -156,25 +158,32 @@ namespace fcore {
                 }
 
                 if(core_reg != 0){
+                    uint32_t input_val;
                     if(in.data_type==emulator::type_float){
-                        std::vector<float> in_vect = std::get<std::vector<float>>(in.data[0]);
-                        uint32_t init_val = emulator_backend::float_to_uint32(in_vect[info.step_n]);
-                        emulators_memory[info.id][in.channel[0]]->at(core_reg) = init_val;
+                        std::vector<float> in_vect = std::get<std::vector<float>>(in.data[channel]);
+                        if(in.source_type == emulator::constant_input){
+                            input_val = emulator_backend::float_to_uint32(in_vect[0]);
+                        } else  {
+                            input_val = emulator_backend::float_to_uint32(in_vect[info.step_n]);
+                        }
                     } else {
 
-                        std::vector<uint32_t> in_vect = std::get<std::vector<uint32_t>>(in.data[0]);
-                        uint32_t init_val = in_vect[info.step_n];
-                        emulators_memory[info.id][in.channel[0]]->at(core_reg) = init_val;
+                        std::vector<uint32_t> in_vect = std::get<std::vector<uint32_t>>(in.data[channel]);
+                        if(in.source_type == emulator::constant_input){
+                            input_val = in_vect[0];
+                        } else  {
+                            input_val = in_vect[info.step_n];
+                        }
                     }
+                    emulators_memory[info.id][in.channel[channel]]->at(core_reg) = input_val;
                 }
             }
         }
 
     }
 
-    void emulator_manager::execution_phase(const core_step_metadata& info, program_bundle &prog) {
+    void emulator_manager::execution_phase(const core_step_metadata& info, program_bundle &prog, uint32_t  channel) {
 
-        for(int j = 0; j<prog.active_channels; ++j){
             if(info.running){
                 // TODO: implement progress tracing
 
@@ -182,9 +191,8 @@ namespace fcore {
                 backend.set_program(emulator_builder::sanitize_program(prog.program));
                 backend.set_efi_selector(prog.efi_selector);
                 backend.set_comparator_type(prog.comparator_type);
-                backend.run_round(emulators_memory[info.id][j]);
+                backend.run_round(emulators_memory[info.id][channel]);
             }
-        }
     }
 
     void emulator_manager::interconnects_phase(const core_step_metadata& info, std::unordered_map<std::string, bool> enabled_cores) {

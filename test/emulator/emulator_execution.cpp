@@ -15,106 +15,12 @@
 
 #include <fstream>
 #include <gtest/gtest.h>
+
+#include "emulator_test_helpers.hpp"
 #include "emulator/emulator_manager.hpp"
 
 using namespace fcore;
 
-struct input_struct{
-    std::string name;
-    float value;
-    std::string type;
-};
-
-
-struct output_struct{
-    std::string name;
-    std::string type;
-};
-
-struct memory_struct{
-    std::string name;
-    float value;
-    std::string type;
-};
-
-
-nlohmann::json prepare_spec(
-        const std::string &content,
-        float emulation_time,
-        std::vector<input_struct>inputs,
-        std::vector<output_struct> outputs,
-        std::vector<memory_struct> memories
-){
-    nlohmann::json spec;
-    spec["cores"] = std::vector<nlohmann::json>();
-    spec["emulation_time"] = emulation_time;
-
-    auto cs = nlohmann::json();
-
-    cs["order"] = 0;
-    cs["id"] = "test";
-
-    cs["program"] = nlohmann::json();
-    cs["program"]["content"] = content;
-    cs["channels"] = 1;
-    cs["options"] = nlohmann::json();
-    cs["options"]["comparators"] = "full";
-    cs["options"]["efi_implementation"] = "none";
-    cs["sampling_frequency"] =1;
-    cs["input_data"] = std::vector<nlohmann::json>();
-    cs["inputs"]= std::vector<nlohmann::json>();
-
-    cs["program"]["build_settings"] = nlohmann::json();
-    cs["program"]["build_settings"]["io"] = nlohmann::json();
-
-    cs["program"]["build_settings"]["io"]["inputs"] = std::vector<std::string>();
-    cs["program"]["build_settings"]["io"]["outputs"] = std::vector<std::string>();
-    cs["program"]["build_settings"]["io"]["memories"] = std::vector<std::string>();
-
-    for(int i = 0; i<inputs.size(); i++){
-        nlohmann::json in_obj;
-        in_obj["name"] = inputs[i].name;
-        in_obj["type"] = inputs[i].type;
-        in_obj["reg_n"] = i;
-        in_obj["register_type"] = "scalar";
-        in_obj["channel"] = 0;
-        in_obj["source"] = nlohmann::json();
-        in_obj["source"]["type"] = "constant";
-        in_obj["source"]["value"] = inputs[i].value;
-        cs["inputs"].push_back(in_obj);
-        cs["program"]["build_settings"]["io"]["inputs"].push_back(inputs[i].name);
-    }
-
-    cs["outputs"]= std::vector<nlohmann::json>();
-    for(int i = 0; i<outputs.size(); i++){
-        nlohmann::json out_obj;
-        out_obj["name"] = outputs[i].name;
-        out_obj["type"] = outputs[i].type;
-        out_obj["reg_n"] = 10+i;
-        out_obj["register_type"] = "scalar";
-        cs["program"]["build_settings"]["io"]["outputs"].push_back(outputs[i].name);
-        cs["outputs"].push_back(out_obj);
-    }
-
-    cs["memory_init"]= std::vector<nlohmann::json>();
-
-    for(int i = 0; i<memories.size(); i++){
-        nlohmann::json mem_obj;
-        mem_obj["name"] = memories[i].name;
-        mem_obj["type"] = memories[i].type;
-        mem_obj["reg_n"] = 20+i;
-        mem_obj["is_output"] = false;
-        mem_obj["value"] = memories[i].value;
-        cs["program"]["build_settings"]["io"]["memories"].push_back(memories[i].name);
-        cs["memory_init"].push_back(mem_obj);
-    }
-
-
-
-    spec["cores"].push_back(cs);
-    spec["interconnect"] = std::vector<nlohmann::json>();
-    return spec;
-}
 
 TEST(Emulator_execution, emulator_load) {
 

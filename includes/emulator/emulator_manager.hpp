@@ -71,8 +71,8 @@ namespace fcore{
         void allocate_memory();
         void run_cores();
 
-        void inputs_phase(const core_step_metadata& info, program_bundle &prog);
-        void execution_phase(const core_step_metadata& info, program_bundle &prog);
+        void inputs_phase(const core_step_metadata& info, program_bundle &prog, uint32_t  channel);
+        void execution_phase(const core_step_metadata& info, program_bundle &prog, uint32_t  channel);
         void interconnects_phase(const core_step_metadata& info, std::unordered_map<std::string, bool> enabled_cores);
 
         program_bundle get_bundle_by_name(const std::string& name){

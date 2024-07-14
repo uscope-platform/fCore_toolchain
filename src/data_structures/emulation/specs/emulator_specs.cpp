@@ -72,28 +72,53 @@ namespace fcore::emulator {
         in.source_type = input_type_map[i["source"]["type"]];
 
         if(in.source_type == time_series_input){
-            for(auto &d : in_data){
-                std::string series = i["source"]["series"];
-                std::string file = i["source"]["file"];
-                if(d["name"] == file){
-                    if(in.data_type== type_float){
-                        std::vector<float> ds = d["data"][series];
-                        in.data = {ds};
-                    } else {
-                        std::vector<uint32_t> ds = d["data"][series];
-                        in.data = {ds};
-                    }
-
+            std::vector<std::string> series;
+            std::vector<std::string> files;
+            if(i["source"]["series"].size() != i["source"]["file"].size()){
+                throw std::runtime_error("source.series and source.file fields need to have the same dimensions for input "+ in.name);
+            }
+            if(i["source"]["series"].is_array()) {
+                series = i["source"]["series"];
+                files = i["source"]["file"];
+            } else {
+                series = {i["source"]["series"]};
+                files = {i["source"]["file"]};
+            }
+            for(int j = 0; j<files.size(); j++){
+                auto sel_series =get_input_series(in_data, files[j], series[j]);
+                auto dbg = sel_series.dump();
+                if(in.data_type== type_float){
+                    std::vector<float> ds = sel_series;
+                    in.data.emplace_back(ds);
+                } else {
+                    std::vector<uint32_t> ds = sel_series;
+                    in.data.emplace_back(ds);
                 }
             }
         } else {
+            std::vector<std::variant<std::vector<unsigned int>, std::vector<float>>> ds;
             if(in.data_type== type_float){
-                std::vector<float> ds = {i["source"]["value"]};
-                in.data = {ds};
+                if(i["source"]["value"].is_array()){
+                    std::vector<float> v = i["source"]["value"];
+                    for(auto &item:v){
+                        ds.emplace_back(std::vector<float>({item}));
+                    }
+                } else {
+                    std::vector<float> v = {i["source"]["value"]};
+                    ds.emplace_back(v);
+                }
             } else {
-                std::vector<uint32_t> ds = {i["source"]["value"]};
-                in.data = {ds};
+                if(i["source"]["value"].is_array()){
+                    std::vector<uint32_t> v = i["source"]["value"];
+                    for(auto &item:v){
+                        ds.emplace_back(std::vector<uint32_t>({item}));
+                    }
+                } else {
+                    std::vector<uint32_t> v = {i["source"]["value"]};
+                    ds.emplace_back(v);
+                }
             }
+            in.data = ds;
         }
 
 
@@ -244,5 +269,16 @@ namespace fcore::emulator {
         }
 
         return mem;
+    }
+
+    nlohmann::json
+    emulator_specs::get_input_series(const nlohmann::json &input_data_obj, const std::string& file, const std::string& series) {
+        for(auto &d : input_data_obj){
+            std::string name = d["name"];
+            if(name == file){
+                return d["data"][series];
+            }
+        }
+        throw std::runtime_error("Data series not found: " + file + "." + series);
     }
 } // fcore

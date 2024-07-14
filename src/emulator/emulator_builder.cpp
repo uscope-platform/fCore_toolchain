@@ -124,7 +124,7 @@ std::unordered_map<std::string, fcore::core_iom> fcore::emulator_builder::proces
     for(auto &item:outputs){
         core_iom spec;
         spec.type = core_iom_output;
-
+        // TODO: ass support for vector outputs on different addresses?
         if(!assigned_outputs.contains(item.address[0])){
             spec.address  = item.address;
             if(!memory_names.contains(item.name)){

@@ -9,9 +9,9 @@ set(TEST_SOURCES
         hl_passes.cpp
         disassembler_testing.cpp
         deep_copy.cpp
-        emulator_testing.cpp
-        emulator_execution.cpp
-        emulator_schema_validation.cpp)
+        emulator/emulator_testing.cpp
+        emulator/emulator_execution.cpp
+        emulator/emulator_schema_validation.cpp)
 
 
 

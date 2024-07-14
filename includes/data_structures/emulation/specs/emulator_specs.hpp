@@ -44,7 +44,7 @@ namespace fcore::emulator{
         emulator_output_specs process_output(const nlohmann::json &o);
         emulator_input_specs process_input(const nlohmann::json &i, const nlohmann::json &in_data);
         emulator_memory_specs process_memory(const nlohmann::json &m);
-
+        nlohmann::json get_input_series(const nlohmann::json &input_data_obj, const std::string& file, const std::string &series);
     };
 
 } // fcore
