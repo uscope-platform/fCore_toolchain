@@ -184,7 +184,9 @@ std::vector<uint32_t> fcore::emulator_builder::compile_program(
         dis_engine.write_disassembled_program("autogen/"+core_name+ ".s");
     }
 
-
+    assigned_inputs.clear();
+    assigned_outputs.clear();
+    memory_names.clear();
     am = compiler.get_io_map();
 
     return program;

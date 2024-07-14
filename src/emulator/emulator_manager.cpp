@@ -65,10 +65,6 @@ namespace fcore {
         emulator_builder e_b(debug_autogen);
         std::vector<program_bundle> res;
 
-        // I do not need to load all this stuff, however since these functions run the duplication check it is worth doing
-        // as the performance hit is not too bad.
-        interconnects = load_interconnects(emu_spec.interconnects);
-
         for(auto &core:emu_spec.cores){
 
             program_bundle b;
