@@ -489,7 +489,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
     manager.emulate();
 
     auto res_obj = nlohmann::json::parse(manager.get_results());
-    auto dbg = res_obj.dump();
+
     std::vector<float> res = res_obj["test_producer"]["outputs"]["out"][0];
     ASSERT_FLOAT_EQ(res[0], 62.4);
     res = (std::vector<float>) res_obj["test_producer"]["outputs"]["out"][1];
@@ -502,4 +502,82 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
 TEST(Emulator, emulator_multichannel_scatter_transfer) {
 
 
+    nlohmann::json specs = nlohmann::json::parse(
+            R"(
+    {
+        "cores": [
+            {
+                "order": 0,
+                "id": "test_producer",
+                "channels":1,
+                "options":{
+                    "comparators": "full",
+                    "efi_implementation":"none"
+                },
+                "sampling_frequency":1,
+                "input_data":[],
+                "inputs":[],
+                "outputs":[ { "name":"out", "type":"float", "reg_n":[5,6], "register_type":"vector"}],
+                "memory_init":[],
+                "program": {
+                    "content": "int main(){float out[2] = {15.6, 17.2};}",
+                    "build_settings":{"io":{"inputs":[],"outputs":["out"],"memories":[]}}
+                }
+            },
+            {
+                "order": 1,
+                "id": "test_consumer",
+                "channels":2,
+                "options":{
+                    "comparators": "full",
+                    "efi_implementation":"none"
+                },
+                "sampling_frequency":1,
+                "input_data":[],
+                "inputs":[],
+                "outputs":[ { "name":"out", "type":"float", "reg_n":5, "register_type":"scalar"}],
+                "memory_init":[],
+                "program": {
+                    "content": "int main(){float input;float out = input*3.5;}",
+                    "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}}
+                }
+            }
+        ],
+        "interconnect": [
+            {
+                "source": "test_producer",
+                "destination": "test_consumer",
+                "channels": [
+                    {
+                        "name": "test_channel",
+                        "type": "scatter_transfer",
+                        "source": {
+                            "channel": 0,
+                            "register": 5
+                        },
+                        "source_output": "out",
+                        "destination": {
+                            "channel": 0,
+                            "register": 1
+                        },
+                        "destination_input": "input",
+                        "length": 2
+                    }
+                ]
+            }
+    ],
+        "emulation_time": 1
+    })");
+
+
+    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    manager.process();
+    manager.emulate();
+
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+
+    auto res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"][0];
+    ASSERT_FLOAT_EQ(res[0], 54.6);
+    res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"][1];
+    ASSERT_FLOAT_EQ(res[0], 60.2);
 }
