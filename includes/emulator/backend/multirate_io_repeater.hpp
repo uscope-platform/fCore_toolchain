@@ -24,13 +24,15 @@
 namespace fcore {
     class multirate_io_repeater {
     public:
-        void add_output(const std::string &core, uint32_t addr, uint32_t value) { working_map[core][addr] = value; };
+        void add_output(const std::string &core, uint32_t addr,uint32_t channel, uint32_t value) { working_map[core][channel][addr] = value; };
 
-        uint32_t get_output(const std::string &core, uint32_t addr) { return working_map[core][addr]; };
+        uint32_t get_output(const std::string &core, uint32_t addr, uint32_t channel) { return working_map[core][channel][addr]; };
 
         void clear() { working_map.clear(); };
     private:
-        std::unordered_map<std::string, std::unordered_map<uint32_t, uint32_t>> working_map;
+        std::unordered_map<std::string,
+            std::unordered_map<uint32_t, std::unordered_map<uint32_t, uint32_t>>
+        > working_map;
 
     };
 }

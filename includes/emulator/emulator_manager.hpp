@@ -85,6 +85,13 @@ namespace fcore{
         void run_2d_vector_transfer(
                 const emulator::dma_channel &c, const std::string &src_core, const std::string &dst_core,bool enabled);
 
+        uint32_t translate_address(const std::string& core_id, uint32_t io_addr, uint32_t offset);
+
+        void transfer_register(const std::string& src_core, const std::string& dst_core,
+                               uint32_t src_addr, uint32_t dst_addr,
+                               uint32_t src_channel, uint32_t dst_channel,
+                               bool src_enabled);
+
         program_bundle get_bundle_by_name(const std::string& name){
             for(const auto & p : programs){
                 if(p.name==name){

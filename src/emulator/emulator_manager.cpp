@@ -300,31 +300,10 @@ namespace fcore {
             bool enabled
     ) {
 
-        uint32_t first_address, second_address;
+        auto src_addr = translate_address(src_core, c.source.address[0], 0);
+        auto dst_addr = translate_address(dst_core, c.destination.address[0], 0);
 
-        auto src_prog =get_bundle_by_name(src_core);
-        auto dst_prog =get_bundle_by_name(dst_core);
-
-
-        if(auto a = io_map_entry::get_io_map_entry_by_io_addr(src_prog.io, c.source.address[0])){
-            first_address = a->core_addr;
-        } else{
-            throw std::runtime_error("Unable to find io address in the source address map");
-        }
-        if(auto a = io_map_entry::get_io_map_entry_by_io_addr(dst_prog.io, c.destination.address[0])){
-            second_address = a->core_addr;
-        } else{
-            throw std::runtime_error("Unable to find io address in the destination address map");
-        }
-
-        if(enabled){
-            auto val = emulators_memory[src_core][c.source.channel[0]]->at(first_address);
-            output_repeater.add_output(src_core, first_address, val);
-            emulators_memory[dst_core][c.destination.channel[0]]->at(second_address) = val;
-        } else {
-            auto val = output_repeater.get_output(src_core, first_address);
-            emulators_memory[dst_core][c.destination.channel[0]]->at(second_address) = val;
-        }
+        transfer_register(src_core, dst_core, src_addr, dst_addr, 0, 0, enabled);
 
     }
 
@@ -335,6 +314,12 @@ namespace fcore {
             bool enabled
             ) {
 
+        for(int i = 0; i<c.length; i++){
+            auto src_addr = translate_address(src_core, c.source.address[0], i);
+            auto dst_addr = translate_address(dst_core, c.destination.address[0], 0);
+
+            transfer_register(src_core, dst_core, src_addr, dst_addr, 0, i, enabled);
+        }
     }
 
     void emulator_manager::run_gather_transfer(
@@ -344,6 +329,13 @@ namespace fcore {
             bool enabled
             ) {
 
+
+        for(int i = 0; i<c.length; i++){
+            auto src_addr = translate_address(src_core, c.source.address[0], 0);
+            auto dst_addr = translate_address(dst_core, c.destination.address[0], i);
+
+            transfer_register(src_core, dst_core, src_addr, dst_addr, i, 0, enabled);
+        }
     }
 
     void emulator_manager::run_vector_transfer(
@@ -352,7 +344,12 @@ namespace fcore {
             const std::string &dst_core,
             bool enabled
             ) {
+        for(int i = 0; i<c.length; i++){
+            auto src_addr = translate_address(src_core, c.source.address[0], i);
+            auto dst_addr = translate_address(src_core, c.destination.address[0], i);
 
+            transfer_register(src_core, dst_core, src_addr, dst_addr, i, i, enabled);
+        }
     }
 
     void emulator_manager::run_2d_vector_transfer(
@@ -362,6 +359,31 @@ namespace fcore {
             bool enabled
             ) {
 
+    }
+
+    void emulator_manager::transfer_register(const std::string& src_core, const std::string& dst_core,
+                                             uint32_t src_addr, uint32_t dst_addr,
+                                             uint32_t src_channel, uint32_t dst_channel,
+                                             bool src_enabled) {
+        if(src_enabled){
+            auto val = emulators_memory[src_core][src_channel]->at(src_addr);
+            output_repeater.add_output(src_core, src_addr,src_channel, val);
+            emulators_memory[dst_core][dst_channel]->at(dst_addr) = val;
+        } else {
+            auto val = output_repeater.get_output(src_core, src_addr, src_channel);
+            emulators_memory[dst_core][dst_channel]->at(dst_addr) = val;
+        }
+    }
+
+    uint32_t emulator_manager::translate_address(const std::string& core_id, uint32_t io_addr, uint32_t offset) {
+
+        auto bundle =get_bundle_by_name(core_id);
+
+        if(auto a = io_map_entry::get_io_map_entry_by_io_addr(bundle.io, io_addr)){
+            return  a->core_addr + offset;
+        } else{
+            throw std::runtime_error("Unable to find io address in the source address map");
+        }
     }
 
 
