@@ -31,17 +31,6 @@ namespace fcore{
 
     typedef std::unordered_map<uint32_t , std::shared_ptr<std::vector<uint32_t>>> core_memory_pool_t;
 
-    typedef struct{
-        unsigned int channel;
-        unsigned int address;
-    } register_spec_t;
-
-    typedef struct{
-        std::string source;
-        std::string destination;
-        std::vector<std::pair<register_spec_t, register_spec_t>> connections;
-    }interconnect_t;
-
     typedef enum {
         efi_none = 0,
         efi_trig = 1,

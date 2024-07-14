@@ -63,7 +63,6 @@ namespace fcore{
         std::shared_ptr<std::vector<uint32_t>> get_memory_snapshot(const std::string &core_id, int channel);
         std::string get_results();
         std::vector<program_bundle> get_programs();
-        std::vector<interconnect_t> load_interconnects(const std::vector<emulator::emulator_interconnect>& itc);
     private:
         void check_bus_duplicates();
         std::unordered_map<unsigned int, uint32_t> io_remap_memory_init(std::vector<emulator::emulator_memory_specs> &mem,
@@ -73,7 +72,18 @@ namespace fcore{
 
         void inputs_phase(const core_step_metadata& info, program_bundle &prog, uint32_t  channel);
         void execution_phase(const core_step_metadata& info, program_bundle &prog, uint32_t  channel);
-        void interconnects_phase(const core_step_metadata& info, std::unordered_map<std::string, bool> enabled_cores);
+        void interconnects_phase(const std::vector<emulator::emulator_interconnect> &specs, const core_step_metadata& info, std::unordered_map<std::string, bool> enabled_cores);
+
+        void run_scalar_transfer(
+                const emulator::dma_channel &c, const std::string &src_core, const std::string &dst_core,bool enabled);
+        void run_scatter_transfer(
+                const emulator::dma_channel &c, const std::string &src_core, const std::string &dst_core,bool enabled);
+        void run_gather_transfer(
+                const emulator::dma_channel &c, const std::string &src_core, const std::string &dst_core,bool enabled);
+        void run_vector_transfer(
+                const emulator::dma_channel &c, const std::string &src_core, const std::string &dst_core,bool enabled);
+        void run_2d_vector_transfer(
+                const emulator::dma_channel &c, const std::string &src_core, const std::string &dst_core,bool enabled);
 
         program_bundle get_bundle_by_name(const std::string& name){
             for(const auto & p : programs){
@@ -84,8 +94,6 @@ namespace fcore{
             throw std::runtime_error("Program bundle with name: " + name + " not found");
         }
 
-        std::vector<interconnect_t> interconnects;
-        int emu_length;
         std::unordered_map<std::string, std::string> errors;
         bool debug_autogen;
 

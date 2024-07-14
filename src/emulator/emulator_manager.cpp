@@ -23,8 +23,6 @@ namespace fcore {
     emu_spec(spec, s_f + "/emulator_spec_schema.json"){
         debug_autogen = dbg;
 
-        emu_length = 1;
-
     }
 
     void emulator_manager::process() {
@@ -54,7 +52,6 @@ namespace fcore {
 
         }
 
-        interconnects = load_interconnects(emu_spec.interconnects);
         sequencer.setup_run(emu_spec.emulation_time);
 
         check_bus_duplicates();
@@ -122,7 +119,7 @@ namespace fcore {
                         inputs_phase(core, sel_prog, j);
                         execution_phase(core, sel_prog, j);
                     }
-                    interconnects_phase(core, sequencer.get_enabled_cores());
+                    interconnects_phase(emu_spec.interconnects, core, sequencer.get_enabled_cores());
                 }
 
                 outputs_manager.process_outputs(
@@ -191,37 +188,29 @@ namespace fcore {
             }
     }
 
-    void emulator_manager::interconnects_phase(const core_step_metadata& info, std::unordered_map<std::string, bool> enabled_cores) {
+    void emulator_manager::interconnects_phase(const std::vector<emulator::emulator_interconnect> &specs, const core_step_metadata& info, std::unordered_map<std::string, bool> enabled_cores) {
 
-        for(auto &conn:interconnects){
-            if(info.id == conn.source){
+        for(auto &conn:specs){
+            if(info.id == conn.source_core_id){
 
-                for(auto &reg:conn.connections){
-                    uint32_t first_address, second_address;
+                for(auto &ch:conn.channels){
 
-                    auto src_prog =get_bundle_by_name(conn.source);
-                    auto dst_prog =get_bundle_by_name(conn.destination);
-
-
-                    if(auto a = io_map_entry::get_io_map_entry_by_io_addr(src_prog.io, reg.first.address)){
-                        first_address = a->core_addr;
-                    } else{
-                        throw std::runtime_error("Unable to find io address in the source address map");
-                    }
-                    if(auto a = io_map_entry::get_io_map_entry_by_io_addr(dst_prog.io, reg.second.address)){
-                        second_address = a->core_addr;
-                    } else{
-                        throw std::runtime_error("Unable to find io address in the destination address map");
-                    }
-
-                    if(enabled_cores[conn.source]){
-
-                        auto val = emulators_memory[conn.source][reg.first.channel]->at(first_address);
-                        output_repeater.add_output(conn.source, first_address, val);
-                        emulators_memory[conn.destination][reg.second.channel]->at(second_address) = val;
-                    } else {
-                        auto val = output_repeater.get_output(conn.source, first_address);
-                        emulators_memory[conn.destination][reg.second.channel]->at(second_address) = val;
+                    switch (ch.type) {
+                        case emulator::dma_link_scalar:
+                            run_scalar_transfer(ch, conn.source_core_id, conn.destination_core_id, enabled_cores[conn.source_core_id]);
+                            break;
+                        case emulator::dma_link_scatter:
+                            run_scatter_transfer(ch, conn.source_core_id, conn.destination_core_id, enabled_cores[conn.source_core_id]);
+                            break;
+                        case emulator::dma_link_gather:
+                            run_gather_transfer(ch, conn.source_core_id, conn.destination_core_id, enabled_cores[conn.source_core_id]);
+                            break;
+                        case emulator::dma_link_vector:
+                            run_vector_transfer(ch, conn.source_core_id, conn.destination_core_id, enabled_cores[conn.source_core_id]);
+                            break;
+                        case emulator::dma_link_2d_vector:
+                            run_2d_vector_transfer(ch, conn.source_core_id, conn.destination_core_id, enabled_cores[conn.source_core_id]);
+                            break;
                     }
                 }
             }
@@ -246,81 +235,6 @@ namespace fcore {
         return res.dump(4);
     }
 
-
-    std::vector<interconnect_t> emulator_manager::load_interconnects(const std::vector<emulator::emulator_interconnect>& itc) {
-        std::vector<interconnect_t> res;
-        for(auto &item:itc){
-            interconnect_t i;
-            i.source = item.source_core_id;
-            i.destination = item.destination_core_id;
-            for(auto &ch: item.channels){
-                register_spec_t rs_s;
-                register_spec_t rs_d;
-
-                uint32_t source_ch = ch.source.channel[0];
-                uint32_t source_addr= ch.source.address[0];
-                uint32_t dest_ch = ch.destination.channel[0];
-                uint32_t dest_addr = ch.destination.address[0];
-
-                switch (ch.type) {
-                    case emulator::dma_link_scatter:
-                        for(uint32_t j = 0; j<ch.length; j++){
-                            rs_s.channel = source_ch+j;
-                            rs_s.address = source_addr;
-                            rs_d.channel = dest_ch;
-                            rs_d.address = dest_addr+j;
-                            bus_map.add_entry(item.source_core_id, "interconnect", dest_addr, ch.name);
-                            i.connections.emplace_back(rs_s,rs_d);
-                        }
-                        break;
-                    case emulator::dma_link_vector:
-                        for(uint32_t j = 0; j<ch.length; j++){
-                            rs_s.channel = source_ch+j;
-                            rs_s.address = source_addr;
-                            rs_d.channel = dest_ch+j;
-                            rs_d.address = dest_addr;
-                            bus_map.add_entry(item.source_core_id, "interconnect", dest_addr, ch.name);
-                            i.connections.emplace_back(rs_s,rs_d);
-                        }
-                        break;
-                    case emulator::dma_link_scalar:
-                        rs_s.channel = source_ch;
-                        rs_s.address = source_addr;
-                        rs_d.channel = dest_ch;
-                        rs_d.address = dest_addr;
-                        bus_map.add_entry(item.source_core_id, "interconnect", dest_addr, ch.name);
-                        i.connections.emplace_back(rs_s,rs_d);
-                        break;
-                    case emulator::dma_link_gather:
-                        for(uint32_t  j = 0; j<ch.length; j++){
-                            rs_s.channel = source_ch;
-                            rs_s.address = source_addr+j;
-                            rs_d.channel = dest_ch+j;
-                            rs_d.address = dest_addr;
-                            bus_map.add_entry(item.source_core_id, "interconnect", dest_addr, ch.name);
-                            i.connections.emplace_back(rs_s,rs_d);
-                        }
-                        break;
-                    case emulator::dma_link_2d_vector:
-                        uint32_t transfer_stride = ch.stride;
-                        for (uint32_t  k = 0; k < transfer_stride; k++) {
-                            for(uint32_t  j = 0; j<ch.length; j++) {
-                                rs_s.channel = source_ch + j;
-                                rs_s.address = source_addr + k;
-                                rs_d.channel = dest_ch + j;
-                                rs_d.address = dest_addr + k;
-                                bus_map.add_entry(item.source_core_id, "interconnect", dest_addr + k, ch.name);
-                                i.connections.emplace_back(rs_s, rs_d);
-                            }
-                        }
-                        break;
-                }
-
-            }
-            res.push_back(i);
-        }
-        return res;
-    }
 
     std::shared_ptr<std::vector<uint32_t>> emulator_manager::get_memory_snapshot(const std::string &core_id, int channel) {
         return emulators_memory[core_id][channel];
@@ -377,6 +291,77 @@ namespace fcore {
                 }
             }
         }
+    }
+
+    void emulator_manager::run_scalar_transfer(
+            const emulator::dma_channel &c,
+            const std::string &src_core,
+            const std::string &dst_core,
+            bool enabled
+    ) {
+
+        uint32_t first_address, second_address;
+
+        auto src_prog =get_bundle_by_name(src_core);
+        auto dst_prog =get_bundle_by_name(dst_core);
+
+
+        if(auto a = io_map_entry::get_io_map_entry_by_io_addr(src_prog.io, c.source.address[0])){
+            first_address = a->core_addr;
+        } else{
+            throw std::runtime_error("Unable to find io address in the source address map");
+        }
+        if(auto a = io_map_entry::get_io_map_entry_by_io_addr(dst_prog.io, c.destination.address[0])){
+            second_address = a->core_addr;
+        } else{
+            throw std::runtime_error("Unable to find io address in the destination address map");
+        }
+
+        if(enabled){
+            auto val = emulators_memory[src_core][c.source.channel[0]]->at(first_address);
+            output_repeater.add_output(src_core, first_address, val);
+            emulators_memory[dst_core][c.destination.channel[0]]->at(second_address) = val;
+        } else {
+            auto val = output_repeater.get_output(src_core, first_address);
+            emulators_memory[dst_core][c.destination.channel[0]]->at(second_address) = val;
+        }
+
+    }
+
+    void emulator_manager::run_scatter_transfer(
+            const emulator::dma_channel &c,
+            const std::string &src_core,
+            const std::string &dst_core,
+            bool enabled
+            ) {
+
+    }
+
+    void emulator_manager::run_gather_transfer(
+            const emulator::dma_channel &c,
+            const std::string &src_core,
+            const std::string &dst_core,
+            bool enabled
+            ) {
+
+    }
+
+    void emulator_manager::run_vector_transfer(
+            const emulator::dma_channel &c,
+            const std::string &src_core,
+            const std::string &dst_core,
+            bool enabled
+            ) {
+
+    }
+
+    void emulator_manager::run_2d_vector_transfer(
+            const emulator::dma_channel &c,
+            const std::string &src_core,
+            const std::string &dst_core,
+            bool enabled
+            ) {
+
     }
 
 
