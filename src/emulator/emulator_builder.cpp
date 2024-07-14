@@ -33,7 +33,7 @@ std::unordered_map<std::string, fcore::core_iom> fcore::emulator_builder::proces
             std::vector<uint32_t> addrs;
             uint32_t transfer_length = item.length;
 
-            if(item.type == emulator::dma_link_scatter){
+            if(item.type == emulator::dma_link_scatter || item.type == emulator::dma_link_vector){
                 transfer_length = 1;
             } else if(item.type == emulator::dma_link_2d_vector){
                 transfer_length = item.stride;
@@ -62,7 +62,7 @@ std::unordered_map<std::string, fcore::core_iom> fcore::emulator_builder::proces
             std::vector<uint32_t> addrs;
             uint32_t transfer_length = item.length;
 
-            if(item.type == emulator::dma_link_gather){
+            if(item.type == emulator::dma_link_gather || item.type == emulator::dma_link_vector){
                 transfer_length = 1;
             } else if(item.type == emulator::dma_link_2d_vector){
                 transfer_length = item.stride;

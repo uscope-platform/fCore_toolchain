@@ -438,7 +438,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
                 "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}}
             }
         },
-{
+        {
             "order": 1,
             "id": "test_reducer",
             "channels":1,
@@ -598,12 +598,29 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
                 },
                 "sampling_frequency":1,
                 "input_data":[],
-                "inputs":[],
+                "inputs":[
+                    {
+                        "name": "input_1",
+                        "type": "float",
+                        "reg_n": 3,
+                        "channel":[0,1],
+                        "register_type": "scalar",
+                        "source":{"type": "constant","value": [31.2, 32.7]}
+                    },
+                    {
+                        "name": "input_2",
+                        "type": "float",
+                        "reg_n": 4,
+                        "channel":[0,1],
+                        "register_type": "scalar",
+                        "source":{"type": "constant","value": [31.2, 32.7]}
+                    }
+                ],
                 "outputs":[],
                 "memory_init":[],
                 "program": {
-                    "content": "",
-                    "build_settings":{"io":{"inputs":[],"outputs":[],"memories":[]}}
+                    "content": "int main(){float input_1; float input_2; float out = input_1 + input_2;}",
+                    "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}}
                 }
             },
             {
@@ -617,16 +634,37 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
                 "sampling_frequency":1,
                 "input_data":[],
                 "inputs":[],
-                "outputs":[],
+                "outputs":[ { "name":"out", "type":"float", "reg_n":7, "register_type":"scalar"}],
                 "memory_init":[],
                 "program": {
-                    "content": "",
-                    "build_settings":{"io":{"inputs":[],"outputs":[],"memories":[]}}
+                    "content": "int main(){float input;float out = input*3.5;}",
+                    "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}}
                 }
             }
         ],
         "interconnect": [
-    ],
+            {
+                "source": "test_producer",
+                "destination": "test_consumer",
+                "channels": [
+                    {
+                        "name": "test_channel",
+                        "type": "vector_transfer",
+                        "source": {
+                            "channel": 0,
+                            "register": 5
+                        },
+                        "source_output": "out",
+                        "destination": {
+                            "channel": 0,
+                            "register": 1
+                        },
+                        "destination_input": "input",
+                        "length": 2
+                    }
+                ]
+            }
+        ],
         "emulation_time": 1
     })");
 
@@ -636,6 +674,12 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
     manager.emulate();
 
     auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto dbg = res_obj.dump();
+
+    auto res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"][0];
+    ASSERT_FLOAT_EQ(res[0], 218.4);
+    res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"][1];
+    ASSERT_FLOAT_EQ(res[0], 228.9);
 
 }
 
