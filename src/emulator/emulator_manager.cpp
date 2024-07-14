@@ -299,7 +299,7 @@ namespace fcore {
             const std::string &dst_core,
             bool enabled
     ) {
-
+        spdlog::trace("SCALAR TRANSFER");
         auto src_addr = translate_address(src_core, c.source.address[0], 0);
         auto dst_addr = translate_address(dst_core, c.destination.address[0], 0);
 
@@ -313,7 +313,7 @@ namespace fcore {
             const std::string &dst_core,
             bool enabled
             ) {
-
+        spdlog::trace("SCATTER TRANSFER");
         for(int i = 0; i<c.length; i++){
             auto src_addr = translate_address(src_core, c.source.address[0], i);
             auto dst_addr = translate_address(dst_core, c.destination.address[0], 0);
@@ -329,7 +329,7 @@ namespace fcore {
             bool enabled
             ) {
 
-
+        spdlog::trace("GATHER TRANSFER");
         for(int i = 0; i<c.length; i++){
             auto src_addr = translate_address(src_core, c.source.address[0], 0);
             auto dst_addr = translate_address(dst_core, c.destination.address[0], i);
@@ -344,6 +344,7 @@ namespace fcore {
             const std::string &dst_core,
             bool enabled
             ) {
+        spdlog::trace("VECTOR TRANSFER");
         for(int i = 0; i<c.length; i++){
             auto src_addr = translate_address(src_core, c.source.address[0], i);
             auto dst_addr = translate_address(src_core, c.destination.address[0], i);
@@ -358,13 +359,15 @@ namespace fcore {
             const std::string &dst_core,
             bool enabled
             ) {
-
+        spdlog::trace("2D VECTOR TRANSFER");
     }
 
     void emulator_manager::transfer_register(const std::string& src_core, const std::string& dst_core,
                                              uint32_t src_addr, uint32_t dst_addr,
                                              uint32_t src_channel, uint32_t dst_channel,
                                              bool src_enabled) {
+
+        spdlog::trace("REGISTER TO REGISTER TRANSFER: source {0} | target {1} | source pair ({2}, {3}) | target pair ({4}, {5})", src_core,dst_core, src_channel,src_addr, dst_channel,dst_addr);
         if(src_enabled){
             auto val = emulators_memory[src_core][src_channel]->at(src_addr);
             output_repeater.add_output(src_core, src_addr,src_channel, val);
@@ -379,8 +382,10 @@ namespace fcore {
 
         auto bundle =get_bundle_by_name(core_id);
 
-        if(auto a = io_map_entry::get_io_map_entry_by_io_addr(bundle.io, io_addr)){
-            return  a->core_addr + offset;
+        if(auto a = io_map_entry::get_io_map_entry_by_io_addr(bundle.io, io_addr + offset)){
+            auto core_addr = a->core_addr;
+            spdlog::trace("ADDRESS TRANSLATION: core {0} | io address {1} | core address {2}", core_id, io_addr + offset, core_addr);
+            return core_addr;
         } else{
             throw std::runtime_error("Unable to find io address in the source address map");
         }
