@@ -143,7 +143,7 @@ void fcore::emulation_outputs_manager::process_vector_output(
                 throw std::runtime_error("unable to find input address in the core io map during output phase");
             }
 
-            data_point.push_back(pool.at(i)->at(core_address));
+            data_point.push_back(pool.at(j)->at(core_address));
         }
         out.add_data_point(data_point, j);
     }
