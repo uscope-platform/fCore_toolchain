@@ -22,29 +22,32 @@
 
 #include "emulator/backend/emulator_backend.hpp"
 
+
 namespace fcore{
+
 
     class emulator_output {
     public:
         emulator_output() = default;
-        emulator_output(const std::string& id, uint32_t size);
+        emulator_output(const std::string& id, uint32_t size, uint32_t n_channels);
         void set_sampling_period(double per){sampling_period = per;};
-        void add_data_point(const std::vector<uint32_t>& dp);
-        void add_data_point(uint32_t dp);
+        void add_data_point(const std::vector<uint32_t>& dp, uint32_t channel);
+        void add_data_point(uint32_t dp, uint32_t channel);
         void repeat_last_data_point();
-        std::vector<std::vector<uint32_t>> get_integer_data() {return data;}
-        std::vector<std::vector<float>> get_float_data();
+        std::map<std::string, std::vector<std::vector<uint32_t>>> get_integer_data();
+        std::map<std::string, std::vector<std::vector<float>>> get_float_data();
         uint64_t get_data_length(){return data[0].size();};
         double get_sampling_period() const{return sampling_period;};
 
     private:
-        std::vector<std::string> id;
+        std::map<uint32_t, std::vector<std::string>> id;
         double sampling_period;
         uint32_t vector_size;
-        std::vector<std::vector<uint32_t>> data;
+        std::map<uint32_t, std::vector<std::vector<uint32_t>>> data;
 
     };
 }
+
 
 
 #endif //FCORE_TOOLCHAIN_EMULATOR_OUTPUT_HPP

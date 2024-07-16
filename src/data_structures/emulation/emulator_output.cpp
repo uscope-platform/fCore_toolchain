@@ -16,54 +16,70 @@
 
 #include "data_structures/emulation/emulator_output.hpp"
 
-fcore::emulator_output::emulator_output(const std::string& i, uint32_t size) {
-    if(size == 1){
-        id = {i};
-        data.emplace_back();
-    } else {
-        for(int n = 0; n<size; n++){
-            id.push_back(i + std::to_string(n));
-            data.emplace_back();
+fcore::emulator_output::emulator_output(const std::string& output_name, uint32_t size, uint32_t n_channels) {
+    for(int i=0; i<n_channels; i++){
+        if(size == 1){
+            id[i] = {output_name};
+            data[i].emplace_back();
+        } else {
+            for(int n = 0; n<size; n++){
+                id[i].push_back(output_name + std::to_string(n));
+                data[i].emplace_back();
+            }
         }
+        vector_size = size;
     }
-    vector_size = size;
 }
 
-void fcore::emulator_output::add_data_point(const std::vector<uint32_t>& dp) {
+void fcore::emulator_output::add_data_point(const std::vector<uint32_t>& dp, uint32_t channel) {
     if(dp.size()!=vector_size){
         auto message = "Wrong dimension for output data point";
         spdlog::critical(message);
         throw std::runtime_error(message);
     }
     for(int n = 0; n<vector_size; n++){
-        data[n].push_back(dp[n]);
+        data[channel][n].push_back(dp[n]);
     }
 }
 
-void fcore::emulator_output::add_data_point(uint32_t dp) {
+void fcore::emulator_output::add_data_point(uint32_t dp, uint32_t channel) {
     if(vector_size!=1){
         auto message = "Attempted to add a single value to an output vector";
         spdlog::critical(message);
         throw std::runtime_error(message);
     }
-    data[0].push_back(dp);
+    data[channel][0].push_back(dp);
 }
 
 void fcore::emulator_output::repeat_last_data_point() {
-    for(int n = 0; n<vector_size; n++){
-        data[n].push_back(data[n].back());
+    for(auto & item : data){
+        for(int n = 0; n<vector_size; n++){
+            item.second[n].push_back(item.second[n].back());
+        }
     }
+
 }
 
-std::vector<std::vector<float>> fcore::emulator_output::get_float_data() {
-    std::vector<std::vector<float>> ret_val;
-
-    for(const auto &vect:data){
-        std::vector<float> ds;
-        for(const auto &item:vect){
-            ds.push_back(emulator_backend::uint32_to_float(item));
+std::map<std::string, std::vector<std::vector<float>>> fcore::emulator_output::get_float_data() {
+    std::map<std::string, std::vector<std::vector<float>>>  ret_val;
+    for(int i = 0; i<data.size(); i++){
+        ret_val[std::to_string(i)] =  std::vector<std::vector<float>>();
+        for(const auto &vect:data[i]){
+            std::vector<float> ds;
+            for(const auto &item:vect){
+                ds.push_back(emulator_backend::uint32_to_float(item));
+            }
+            ret_val[std::to_string(i)].push_back(ds);
         }
-        ret_val.push_back(ds);
+    }
+
+    return ret_val;
+}
+
+std::map<std::string, std::vector<std::vector<uint32_t>>> fcore::emulator_output::get_integer_data() {
+    std::map<std::string, std::vector<std::vector<uint32_t>>>  ret_val;
+    for(int i = 0; i<data.size(); i++){
+        ret_val[std::to_string(i)] = data[i];
     }
     return ret_val;
 }

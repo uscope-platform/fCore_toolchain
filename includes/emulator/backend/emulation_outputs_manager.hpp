@@ -38,6 +38,23 @@ namespace fcore{
                              uint32_t active_channels,
                              std::set<io_map_entry>& io_map
                              );
+
+        void process_scalar_output(
+                emulator_output &out,
+                const emulator::emulator_output_specs &spec,
+                fcore::core_memory_pool_t &pool,
+                uint32_t active_channels,
+                const std::set<io_map_entry>& io_map
+        );
+
+        void process_vector_output(
+                emulator_output &out,
+                const emulator::emulator_output_specs &spec,
+                fcore::core_memory_pool_t &pool,
+                uint32_t active_channels,
+                const std::set<io_map_entry>& io_map
+        );
+
         void set_simulation_frequency(uint32_t freq);
         nlohmann::json get_emulation_output(const std::string& core_id);
         std::vector<double> get_timebase();

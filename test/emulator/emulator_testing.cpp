@@ -30,7 +30,7 @@ TEST(Emulator, emulator_executable_format) {
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
 
-    std::vector<float>  result = std::vector<float>(res_obj["test"]["outputs"]["test_out"][0]);
+    std::vector<float>  result = std::vector<float>(res_obj["test"]["outputs"]["test_out"]["0"][0]);
     std::vector<float> reference = {58.62, 61.6};
     for(int i = 0; i<result.size(); ++i){
         ASSERT_FLOAT_EQ(result[i], reference[i]);
@@ -131,7 +131,7 @@ TEST(Emulator, emulator_outputs) {
     auto res = nlohmann::json::parse(manager.get_results())["test"];
 
     std::vector<float> reference = {58.6199989, 120.220001};
-    std::vector<float> test_out = res["outputs"]["test_out"][0];
+    std::vector<float> test_out = res["outputs"]["test_out"]["0"][0];
     ASSERT_EQ(test_out, reference);
 
 }
@@ -147,7 +147,7 @@ TEST(Emulator, emulator_inteconnect) {
 
     auto s = res.dump();
     std::vector<uint32_t> reference = {0x426a7ae1, 0x42f070a4};
-    ASSERT_EQ(res["outputs"]["consumer_out"][0], reference);
+    ASSERT_EQ(res["outputs"]["consumer_out"]["0"][0], reference);
 
 }
 
@@ -161,7 +161,7 @@ TEST(Emulator, emulator_compilation) {
     auto res = nlohmann::json::parse(manager.get_results())["test"];
 
     std::vector<uint32_t> reference = {59,62};
-    std::vector<uint32_t> result = res["outputs"]["out"][0];
+    std::vector<uint32_t> result = res["outputs"]["out"]["0"][0];
     ASSERT_EQ(result, reference);
 }
 
@@ -175,10 +175,10 @@ TEST(Emulator, emulator_compilation_interconnect) {
     auto res = nlohmann::json::parse(manager.get_results());
 
     std::vector<uint32_t> reference = {59,62};
-    std::vector<uint32_t> result = res["test"]["outputs"]["out"][0];
+    std::vector<uint32_t> result = res["test"]["outputs"]["out"]["0"][0];
     ASSERT_EQ(result, reference);
     reference = {60,63};
-    std::vector<uint32_t> result2 = res["test_move"]["outputs"]["out"][0];
+    std::vector<uint32_t> result2 = res["test_move"]["outputs"]["out"]["0"][0];
     ASSERT_EQ(result2, reference);
 }
 
@@ -193,7 +193,7 @@ TEST(Emulator, emulator_compilation_memory) {
     auto res = nlohmann::json::parse(manager.get_results())["test"];
 
     std::vector<uint32_t> reference = {15,83};
-    std::vector<uint32_t> result = res["outputs"]["out"][0];
+    std::vector<uint32_t> result = res["outputs"]["out"]["0"][0];
     ASSERT_EQ(result, reference);
 }
 
@@ -269,16 +269,16 @@ TEST(Emulator, emulator_multichannel) {
     manager.emulate();
 
     auto res_obj = nlohmann::json::parse(manager.get_results());
-    std::vector<float> res = res_obj["test"]["outputs"]["out"][0];
+    std::vector<float> res = res_obj["test"]["outputs"]["out"]["0"][0];
     ASSERT_FLOAT_EQ(res[0], 35.2);
     ASSERT_FLOAT_EQ(res[1], 35.2);
-    res = (std::vector<float>) res_obj["test"]["outputs"]["out"][1];
+    res = (std::vector<float>) res_obj["test"]["outputs"]["out"]["1"][0];
     ASSERT_FLOAT_EQ(res[0], 34.7);
     ASSERT_FLOAT_EQ(res[1], 34.7);
-    res = (std::vector<float>) res_obj["test"]["outputs"]["out"][2];
+    res = (std::vector<float>) res_obj["test"]["outputs"]["out"]["2"][0];
     ASSERT_FLOAT_EQ(res[0], 68.1);
     ASSERT_FLOAT_EQ(res[1], 68.1);
-    res = (std::vector<float>) res_obj["test"]["outputs"]["out"][3];
+    res = (std::vector<float>) res_obj["test"]["outputs"]["out"]["3"][0];
     ASSERT_FLOAT_EQ(res[0], 76.0);
     ASSERT_FLOAT_EQ(res[1], 76.0);
 }
@@ -379,16 +379,18 @@ TEST(Emulator, emulator_multichannel_input_file) {
     manager.emulate();
 
     auto res_obj = nlohmann::json::parse(manager.get_results());
-    std::vector<float> res = res_obj["test"]["outputs"]["out"][0];
+    auto dbg = res_obj.dump();
+
+    std::vector<float> res = res_obj["test"]["outputs"]["out"]["0"][0];
     ASSERT_FLOAT_EQ(res[0], 35.2);
     ASSERT_FLOAT_EQ(res[1], 35.3);
-    res = (std::vector<float>) res_obj["test"]["outputs"]["out"][1];
+    res = (std::vector<float>) res_obj["test"]["outputs"]["out"]["1"][0];
     ASSERT_FLOAT_EQ(res[0], 34.7);
     ASSERT_FLOAT_EQ(res[1], 34.8);
-    res = (std::vector<float>) res_obj["test"]["outputs"]["out"][2];
+    res = (std::vector<float>) res_obj["test"]["outputs"]["out"]["2"][0];
     ASSERT_FLOAT_EQ(res[0], 68.1);
     ASSERT_FLOAT_EQ(res[1], 68.2);
-    res = (std::vector<float>) res_obj["test"]["outputs"]["out"][3];
+    res = (std::vector<float>) res_obj["test"]["outputs"]["out"]["3"][0];
     ASSERT_FLOAT_EQ(res[0], 76.0);
     ASSERT_FLOAT_EQ(res[1], 76.1);
 }
@@ -489,12 +491,13 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
     manager.emulate();
 
     auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto dbg = res_obj.dump();
 
-    std::vector<float> res = res_obj["test_producer"]["outputs"]["out"][0];
+    std::vector<float> res = res_obj["test_producer"]["outputs"]["out"]["0"][0];
     ASSERT_FLOAT_EQ(res[0], 62.4);
-    res = (std::vector<float>) res_obj["test_producer"]["outputs"]["out"][1];
+    res = (std::vector<float>) res_obj["test_producer"]["outputs"]["out"]["1"][0];
     ASSERT_FLOAT_EQ(res[0], 65.4);
-    res = (std::vector<float>) res_obj["test_reducer"]["outputs"]["out"][0];
+    res = (std::vector<float>) res_obj["test_reducer"]["outputs"]["out"]["0"][0];
     ASSERT_FLOAT_EQ(res[0], 127.8);
 }
 
@@ -576,9 +579,11 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
 
     auto res_obj = nlohmann::json::parse(manager.get_results());
 
-    auto res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"][0];
+    auto res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"]["0"][0];
+    auto dbg = res_obj.dump();
+
     ASSERT_FLOAT_EQ(res[0], 54.6);
-    res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"][1];
+    res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"]["1"][0];
     ASSERT_FLOAT_EQ(res[0], 60.2);
 }
 
@@ -676,9 +681,9 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
     auto res_obj = nlohmann::json::parse(manager.get_results());
     auto dbg = res_obj.dump();
 
-    auto res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"][0];
+    auto res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"]["0"][0];
     ASSERT_FLOAT_EQ(res[0], 218.4);
-    res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"][1];
+    res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"]["1"][0];
     ASSERT_FLOAT_EQ(res[0], 228.9);
 
 }
@@ -703,8 +708,8 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
                 "outputs":[],
                 "memory_init":[],
                 "program": {
-                    "content": "",
-                    "build_settings":{"io":{"inputs":[],"outputs":[],"memories":[]}}
+                    "content": "int main(){float producer_out[2] = {15.6, 17.2};}",
+                    "build_settings":{"io":{"inputs":[],"outputs":["producer_out"],"memories":[]}}
                 }
             },
             {
@@ -718,17 +723,39 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
                 "sampling_frequency":1,
                 "input_data":[],
                 "inputs":[],
-                "outputs":[],
+                "outputs":[ { "name":"consumer_out", "type":"float", "reg_n":[7,8], "register_type":"vector"}],
                 "memory_init":[],
                 "program": {
-                    "content": "",
-                    "build_settings":{"io":{"inputs":[],"outputs":[],"memories":[]}}
+                    "content": "int main(){float input[2]; float consumer_out[2]; consumer_out[0] = input[0]*3.5; consumer_out[1] = input[1]*3.5;}",
+                    "build_settings":{"io":{"inputs":["input"],"outputs":["consumer_out"],"memories":[]}}
                 }
             }
         ],
         "interconnect": [
-    ],
-        "emulation_time": 1
+            {
+                "source": "test_producer",
+                "destination": "test_consumer",
+                "channels": [
+                    {
+                        "name": "test_channel",
+                        "type": "2d_vector_transfer",
+                        "source": {
+                            "channel": 0,
+                            "register": [5,6]
+                        },
+                        "source_output": "producer_out",
+                        "destination": {
+                            "channel": 0,
+                            "register": [1,2]
+                        },
+                        "destination_input": "input",
+                        "length": 2,
+                        "stride": 2
+                    }
+                ]
+            }
+        ],
+        "emulation_time": 2
     })");
 
 
@@ -737,5 +764,20 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
     manager.emulate();
 
     auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto dbg = res_obj.dump();
+    int i = 0;
 
+
+    std::vector<float> res = res_obj["test_consumer"]["outputs"]["consumer_out"]["0"][0];
+    ASSERT_FLOAT_EQ(res[0], 54.6);
+    ASSERT_FLOAT_EQ(res[1], 54.6);
+    std::vector<float> res2 = (std::vector<float>) res_obj["test_consumer"]["outputs"]["consumer_out"]["0"][1];
+    ASSERT_FLOAT_EQ(res2[0], 60.2);
+    ASSERT_FLOAT_EQ(res2[1], 60.2);
+    std::vector<float> res3 = (std::vector<float>) res_obj["test_consumer"]["outputs"]["consumer_out"]["1"][0];
+    ASSERT_FLOAT_EQ(res3[0], 54.6);
+    ASSERT_FLOAT_EQ(res3[1], 54.6);
+    std::vector<float> res4 = (std::vector<float>) res_obj["test_consumer"]["outputs"]["consumer_out"]["1"][1];
+    ASSERT_FLOAT_EQ(res4[0], 60.2);
+    ASSERT_FLOAT_EQ(res4[1], 60.2);
 }

@@ -20,7 +20,7 @@
 void fcore::emulation_outputs_manager::add_specs(const std::string& id, const std::vector<emulator::emulator_output_specs>& specs, uint32_t active_channels) {
     for(const auto &spec:specs){
        output_specs[id][spec.name]= spec;
-       auto data = emulator_output(spec.name,active_channels);
+       auto data = emulator_output(spec.name, spec.address.size(), active_channels);
        data_section[id].insert({spec.name, data});
     }
     output_specs[id];
@@ -37,28 +37,16 @@ void fcore::emulation_outputs_manager::process_outputs(
     if(!running){
         // carry over previous outputs
         for(auto &out: data_section[core_id]){
+
             out.second.repeat_last_data_point();
         }
     } else {
         for(auto &out: data_section[core_id]){
-            uint16_t io_address = output_specs[core_id][out.first].address[0];
-
-            uint32_t core_address;
-            if(auto a = io_map_entry::get_io_map_entry_by_io_addr(io_map, io_address)){
-                core_address = a->core_addr;
+            auto spec = output_specs[core_id][out.first];
+            if(spec.address.size()>1){
+                process_vector_output(out.second, spec, pool ,active_channels, io_map);
             } else {
-                throw std::runtime_error("unable to find input address in the core io map during output phase");
-            }
-
-            if(active_channels==1){
-                auto data_point = pool.at(0)->at(core_address);
-                out.second.add_data_point(data_point);
-            } else {
-                std::vector<uint32_t> data_point;
-                for(int i = 0; i<active_channels; i++){
-                    data_point.push_back(pool.at(i)->at(core_address));
-                }
-                out.second.add_data_point(data_point);
+                process_scalar_output(out.second, spec, pool ,active_channels, io_map);
             }
         }
 
@@ -115,4 +103,50 @@ std::vector<double> fcore::emulation_outputs_manager::get_timebase() {
         result.push_back(ts*i);
     }
     return result;
+}
+
+void fcore::emulation_outputs_manager::process_scalar_output(
+        emulator_output &out,
+        const fcore::emulator::emulator_output_specs &spec,
+        fcore::core_memory_pool_t &pool, uint32_t active_channels,
+        const std::set<io_map_entry> &io_map
+){
+    uint16_t io_address = spec.address[0];
+
+    uint32_t core_address;
+    if(auto a = io_map_entry::get_io_map_entry_by_io_addr(io_map, io_address)){
+        core_address = a->core_addr;
+    } else {
+        throw std::runtime_error("unable to find input address in the core io map during output phase");
+    }
+
+    for(int i = 0; i<active_channels; i++){
+        out.add_data_point(pool.at(i)->at(core_address), i);
+    }
+}
+
+void fcore::emulation_outputs_manager::process_vector_output(
+        emulator_output &out,
+        const fcore::emulator::emulator_output_specs &spec,
+        fcore::core_memory_pool_t &pool, uint32_t active_channels,
+        const std::set<io_map_entry> &io_map
+){
+    for(int  j= 0; j<active_channels; j++){
+        std::vector<uint32_t> data_point;
+        for(int i = 0; i<spec.address.size(); i++){
+            uint16_t io_address = spec.address[i];
+
+            uint32_t core_address;
+            if(auto a = io_map_entry::get_io_map_entry_by_io_addr(io_map, io_address)){
+                core_address = a->core_addr;
+            } else {
+                throw std::runtime_error("unable to find input address in the core io map during output phase");
+            }
+
+            data_point.push_back(pool.at(i)->at(core_address));
+        }
+        out.add_data_point(data_point, j);
+    }
+
+
 }
