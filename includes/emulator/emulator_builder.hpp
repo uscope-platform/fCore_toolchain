@@ -20,8 +20,7 @@
 #include <cstdint>
 #include <memory>
 
-#include "data_structures/emulation/specs/emulator_core.hpp"
-#include "data_structures/emulation/specs/emulator_interconnect.hpp"
+#include "data_structures/emulation/specs/emulator_specs.hpp"
 #include <nlohmann/json.hpp>
 #include "data_structures/emulation/emulator_metadata.hpp"
 #include "frontend/binary_loader.hpp"
@@ -29,21 +28,25 @@
 #include "emulator/backend/emulator_backend.hpp"
 #include "fcore_cc.hpp"
 
+
 namespace fcore {
+
+    struct fcore_program{
+        std::vector<uint32_t> binary;
+        struct program_info program_length;
+    };
+
     class emulator_builder {
     public:
         emulator_builder(bool dbg);
 
-        std::vector<uint32_t>  compile_program(
+        fcore_program compile_program(
                 const emulator::emulator_core& core_spec,
-                const std::vector<emulator::emulator_interconnect> &input_connections,
-                const std::vector<emulator::emulator_interconnect> &output_connections,
+                const std::vector<emulator::emulator_interconnect>& interconnect_spec,
                 std::set<io_map_entry> &am
         );
-        struct program_info get_program_info() const {return length_info;};
 
 
-        static std::set<io_map_entry> read_io_map(const std::vector<uint32_t>&  raw_prog);
         static std::vector<uint32_t> sanitize_program(const std::vector<uint32_t>&  raw_prog);
 
 
@@ -51,25 +54,15 @@ namespace fcore {
         comparator_type_t get_comparator_type(const std::string &s);
     private:
 
-        std::unordered_map<std::string, core_iom> process_interconnects(
-                const std::vector<emulator::emulator_interconnect> &input_connections,
-                const std::vector<emulator::emulator_interconnect> &output_connections,
-                std::set<std::string> memories
-        );
 
         std::unordered_map<std::string, core_iom> process_ioms(
-                const std::unordered_map<std::string, fcore::core_iom> &interconnect_io,
+                const std::vector<emulator::emulator_interconnect> &input_connections,
+                const std::vector<emulator::emulator_interconnect> &output_connections,
                 std::vector<emulator::emulator_input_specs> inputs,
                 std::vector<emulator::emulator_output_specs> outputs,
                 std::vector<emulator::emulator_memory_specs> memory_init_specs,
-                const std::set<std::string> memories
+                const std::set<std::string>& memories
         );
-
-        std::set<uint32_t> assigned_inputs;
-        std::set<uint32_t> assigned_outputs;
-        std::set<std::string> memory_names;
-
-        struct program_info length_info;
 
         bool debug_autogen;
     };

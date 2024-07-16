@@ -37,16 +37,16 @@
 
 namespace fcore{
 
+
     class program_bundle{
         public:
             std::string name;
-            std::vector<uint32_t> program;
+            fcore_program program;
             std::set<io_map_entry> io;
             std::vector<emulator::emulator_memory_specs> memories;
             std::vector<emulator::emulator_input_specs> input;
             uint32_t sampling_frequency;
             uint32_t execution_order;
-            struct program_info program_length;
             uint32_t active_channels;
             efi_implementation_t efi_selector;
             comparator_type_t comparator_type;

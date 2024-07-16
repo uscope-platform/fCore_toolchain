@@ -18,13 +18,26 @@ fcore::emulator_builder::emulator_builder(bool dbg) {
     debug_autogen = dbg;
 }
 
-std::unordered_map<std::string, fcore::core_iom> fcore::emulator_builder::process_interconnects(
+std::unordered_map<std::string, fcore::core_iom> fcore::emulator_builder::process_ioms(
         const std::vector<emulator::emulator_interconnect> &input_connections,
         const std::vector<emulator::emulator_interconnect> &output_connections,
-        std::set<std::string> memories
-) {
-    std::unordered_map<std::string, core_iom> result;
+        std::vector<emulator::emulator_input_specs> inputs,
+        std::vector<emulator::emulator_output_specs> outputs,
+        std::vector<emulator::emulator_memory_specs> memory_init_specs,
+        const std::set<std::string>& memories
+        ) {
 
+
+    std::unordered_map<std::string, fcore::core_iom> result;
+
+    std::set<uint32_t> assigned_inputs;
+    std::set<uint32_t> assigned_outputs;
+    std::set<std::string> memory_names;
+
+
+    //////////////////////////////////////////////////////////////
+    //                        PROCESS INTERCONNECTS
+    /////////////////////////////////////////////////////////////
     for(auto  &conn:input_connections){
         for(auto &item:conn.channels){
             std::string  dma_name = item.destination.io_name;
@@ -77,18 +90,12 @@ std::unordered_map<std::string, fcore::core_iom> fcore::emulator_builder::proces
             result[output_name] = spec;
         }
     }
-    return result;
-}
 
-std::unordered_map<std::string, fcore::core_iom> fcore::emulator_builder::process_ioms(
-        const std::unordered_map<std::string, fcore::core_iom> &interconnect_io,
-        std::vector<emulator::emulator_input_specs> inputs,
-        std::vector<emulator::emulator_output_specs> outputs,
-        std::vector<emulator::emulator_memory_specs> memory_init_specs,
-        std::set<std::string> memories
-        ) {
 
-    std::unordered_map<std::string, fcore::core_iom> result = interconnect_io;
+    //////////////////////////////////////////////////////////////
+    //                        PROCESS INPUTS
+    /////////////////////////////////////////////////////////////
+
     for(auto &item: inputs){
         core_iom spec;
         spec.type = core_iom_input;
@@ -97,6 +104,10 @@ std::unordered_map<std::string, fcore::core_iom> fcore::emulator_builder::proces
         result[item.name] = spec;
     }
 
+
+    //////////////////////////////////////////////////////////////
+    //                        PROCESS MEMORIES
+    /////////////////////////////////////////////////////////////
 
     for(auto &item: memory_init_specs){
         if(!result.contains(item.name)){
@@ -126,6 +137,10 @@ std::unordered_map<std::string, fcore::core_iom> fcore::emulator_builder::proces
         }
     }
 
+    //////////////////////////////////////////////////////////////
+    //                        PROCESS OUTPUTS
+    /////////////////////////////////////////////////////////////
+
     for(auto &item:outputs){
         core_iom spec;
         spec.type = core_iom_output;
@@ -144,18 +159,29 @@ std::unordered_map<std::string, fcore::core_iom> fcore::emulator_builder::proces
 }
 
 
-std::vector<uint32_t> fcore::emulator_builder::compile_program(
+fcore::fcore_program fcore::emulator_builder::compile_program(
         const emulator::emulator_core& core_spec,
-        const std::vector<emulator::emulator_interconnect> &input_connections,
-        const std::vector<emulator::emulator_interconnect> &output_connections,
+        const std::vector<emulator::emulator_interconnect>& interconnect_spec,
         std::set<io_map_entry> &am
 ) {
 
+    std::vector<emulator::emulator_interconnect> src = {};
+    std::vector<emulator::emulator_interconnect> dst = {};
+    for(const auto &ic:interconnect_spec){
+        if(core_spec.id == ic.source_core_id) src.push_back(ic);
+        if(core_spec.id == ic.destination_core_id) dst.push_back(ic);
+    }
+
     std::set<std::string> memories = core_spec.program.io.memories;
 
-    auto interconnect_io = process_interconnects(input_connections, output_connections, memories);
-
-    std::unordered_map<std::string, core_iom> dma_io = process_ioms(interconnect_io, core_spec.inputs, core_spec.outputs,core_spec.memories, memories);
+    std::unordered_map<std::string, core_iom> dma_io = process_ioms(
+            dst,
+            src,
+            core_spec.inputs,
+            core_spec.outputs,
+            core_spec.memories,
+            memories
+    );
 
     std::vector<std::string> content = {core_spec.program.content};
 
@@ -165,7 +191,6 @@ std::vector<uint32_t> fcore::emulator_builder::compile_program(
     compiler.set_dma_map(dma_io);
     bool result = compiler.compile();
 
-    length_info = compiler.get_program_info();
 
     if(!result){
         throw std::runtime_error(compiler.get_errors());
@@ -189,12 +214,13 @@ std::vector<uint32_t> fcore::emulator_builder::compile_program(
         dis_engine.write_disassembled_program("autogen/"+core_name+ ".s");
     }
 
-    assigned_inputs.clear();
-    assigned_outputs.clear();
-    memory_names.clear();
+    fcore_program ret_val;
+    ret_val.binary = program;
+    ret_val.program_length = compiler.get_program_info();
+
     am = compiler.get_io_map();
 
-    return program;
+    return ret_val;
 }
 
 
@@ -239,22 +265,4 @@ std::vector<uint32_t> fcore::emulator_builder::sanitize_program(const std::vecto
         }
     }
     return program;
-}
-
-std::set<fcore::io_map_entry> fcore::emulator_builder::read_io_map(const std::vector<uint32_t> &raw_prog) {
-    std::set<fcore::io_map_entry>ret;
-    int section = 0;
-
-    for(auto &instr:raw_prog){
-        if(section == 1 && instr != fcore::fcore_opcodes["stop"]){
-            auto io_addr = instr  & 0xFFFF;
-            auto core_addr =( instr & 0xFFFF0000) >>16;
-            ret.emplace(io_addr, core_addr, "");
-        }
-        if(instr == fcore::fcore_opcodes["stop"]){
-            section++;
-        }
-        if(section==2) break;
-    }
-    return ret;
 }

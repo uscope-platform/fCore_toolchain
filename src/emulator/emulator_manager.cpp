@@ -75,14 +75,8 @@ namespace fcore {
             b.comparator_type = e_b.get_comparator_type(core.options["comparators"]);
 
             try{
-                std::vector<emulator::emulator_interconnect> src = {};
-                std::vector<emulator::emulator_interconnect> dst = {};
-                for(auto &ic:emu_spec.interconnects){
-                    if(core.id == ic.source_core_id) src.push_back(ic);
-                    if(core.id == ic.destination_core_id) dst.push_back(ic);
-                }
-                b.program = e_b.compile_program(core, dst, src, b.io);
-                b.program_length = e_b.get_program_info();
+
+                b.program = e_b.compile_program(core, emu_spec.interconnects, b.io);
 
             } catch(std::runtime_error &e){
                 errors[core.id] = e.what();
@@ -181,7 +175,7 @@ namespace fcore {
                 // TODO: implement progress tracing
 
                 backend.set_core_name(info.id);
-                backend.set_program(emulator_builder::sanitize_program(prog.program));
+                backend.set_program(emulator_builder::sanitize_program(prog.program.binary));
                 backend.set_efi_selector(prog.efi_selector);
                 backend.set_comparator_type(prog.comparator_type);
                 backend.run_round(emulators_memory[info.id][channel]);
