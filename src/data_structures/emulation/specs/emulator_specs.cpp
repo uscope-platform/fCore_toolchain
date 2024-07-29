@@ -53,12 +53,8 @@ namespace fcore::emulator {
         out.type = endpoint_type_map[o["register_type"]];
         out.data_type = data_type_map[o["type"]];
         out.name = o["name"];
-        if(out.type == vector_endpoint){
-            std::vector<uint32_t> addrs =  o["reg_n"];
-            out.address = addrs;
-        } else {
-            out.address = {o["reg_n"]};
-        }
+        std::vector<uint32_t> addrs =  o["reg_n"];
+        out.address = addrs;
         return out;
     }
 

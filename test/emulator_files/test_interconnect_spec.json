@@ -89,7 +89,7 @@
       "memory_init": [],
       "outputs": [
         {
-          "reg_n":8,
+          "reg_n":[8],
           "type":"integer",
           "name":"consumer_out",
           "register_type": "scalar"

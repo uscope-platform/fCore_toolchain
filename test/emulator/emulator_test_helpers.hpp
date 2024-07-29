@@ -85,7 +85,7 @@ static nlohmann::json prepare_spec(
         nlohmann::json out_obj;
         out_obj["name"] = outputs[i].name;
         out_obj["type"] = outputs[i].type;
-        out_obj["reg_n"] = 10+i;
+        out_obj["reg_n"] = {10 + i};
         out_obj["register_type"] = "scalar";
         cs["program"]["build_settings"]["io"]["outputs"].push_back(outputs[i].name);
         cs["outputs"].push_back(out_obj);

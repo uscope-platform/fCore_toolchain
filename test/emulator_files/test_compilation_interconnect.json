@@ -49,7 +49,7 @@
       ],
       "outputs": [
         {
-          "reg_n":4,
+          "reg_n":[4],
           "type":"integer",
           "name":"out",
           "register_type": "scalar"
@@ -87,7 +87,7 @@
       "input_data": [],
       "outputs": [
         {
-          "reg_n":5,
+          "reg_n":[5],
           "type":"integer",
           "name":"out",
           "register_type": "scalar"

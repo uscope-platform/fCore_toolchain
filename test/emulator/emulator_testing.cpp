@@ -205,58 +205,86 @@ TEST(Emulator, emulator_multichannel) {
             R"({
     "cores": [
         {
-            "order": 0,
             "id": "test",
-            "channels":4,
-            "options":{
-                "comparators": "full",
-                "efi_implementation":"none"
-            },
-            "sampling_frequency":1,
-            "input_data":[],
-            "inputs":[
+            "order": 0,
+            "input_data": [],
+            "inputs": [
                 {
                     "name": "input_1",
                     "type": "float",
-                    "reg_n": 3,
-                    "channel":[0,1,2,3],
-                    "register_type": "scalar",
-                    "source":{
+                    "source": {
                         "type": "constant",
-                        "value": [31.2, 32.7, 62.1, 64.0]
-                    }
+                        "value": [
+                            31.2,
+                            32.7,
+                            62.1,
+                            64
+                        ]
+                    },
+                    "reg_n": 3,
+                    "channel": [
+                        0,
+                        1,
+                        2,
+                        3
+                    ],
+                    "register_type": "scalar"
                 },
                 {
                     "name": "input_2",
                     "type": "float",
-                    "reg_n": 4,
-                    "channel":[0,1,2,3],
-                    "register_type": "scalar",
-                    "source":{
+                    "source": {
                         "type": "constant",
-                        "value": [4.0, 2.0, 6.0, 12.0]
-                    }
+                        "value": [
+                            4,
+                            2,
+                            6,
+                            12
+                        ]
+                    },
+                    "reg_n": 4,
+                    "channel": [
+                        0,
+                        1,
+                        2,
+                        3
+                    ],
+                    "register_type": "scalar"
                 }
             ],
-            "outputs":[
+            "outputs": [
                 {
-                    "name":"out",
-                    "type":"float",
-                    "reg_n":5,
-                    "register_type":"scalar"
+                    "name": "out",
+                    "type": "float",
+                    "reg_n": [
+                        5
+                    ],
+                    "register_type": "scalar"
                 }
             ],
-            "memory_init":[],
+            "memory_init": [],
+            "channels": 4,
+            "options": {
+                "comparators": "reducing",
+                "efi_implementation": "none"
+            },
             "program": {
-                "content": "int main(){float input_1;float input_2;float out = input_1 + input_2;}",
-                "build_settings":{
-                    "io":{
-                        "inputs":["input_1", "input_2"],
-                        "outputs":["out"],
-                        "memories":[]
+                "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = input_1 + input_2;\n}",
+                "build_settings": {
+                    "io": {
+                        "inputs": [
+                            "input_1",
+                            "input_2"
+                        ],
+                        "memories": [],
+                        "outputs": [
+                            "out"
+                        ]
                     }
-                }
-            }
+                },
+                "headers": []
+            },
+            "sampling_frequency": 1
         }
     ],
     "interconnect": [],
@@ -269,6 +297,7 @@ TEST(Emulator, emulator_multichannel) {
     manager.emulate();
 
     auto res_obj = nlohmann::json::parse(manager.get_results());
+
     std::vector<float> res = res_obj["test"]["outputs"]["out"]["0"][0];
     ASSERT_FLOAT_EQ(res[0], 35.2);
     ASSERT_FLOAT_EQ(res[1], 35.2);
@@ -351,7 +380,7 @@ TEST(Emulator, emulator_multichannel_input_file) {
                 {
                     "name":"out",
                     "type":"float",
-                    "reg_n":5,
+                    "reg_n":[5],
                     "register_type":"scalar"
                 }
             ],
@@ -433,7 +462,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 }
             ],
-            "outputs":[ { "name":"out", "type":"float", "reg_n":5, "register_type":"scalar"}],
+            "outputs":[ { "name":"out", "type":"float", "reg_n":[5], "register_type":"scalar"}],
             "memory_init":[],
             "program": {
                 "content": "int main(){float input_1;float input_2;float out = input_1 + input_2;}",
@@ -451,7 +480,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
             "sampling_frequency":1,
             "input_data":[],
             "inputs":[],
-            "outputs":[ { "name":"out", "type":"float", "reg_n":5, "register_type":"scalar"}],
+            "outputs":[ { "name":"out", "type":"float", "reg_n":[5], "register_type":"scalar"}],
             "memory_init":[],
             "program": {
                 "content": "int main(){float input_data[2];float out = input_data[0] + input_data[1];}",
@@ -538,7 +567,7 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
                 "sampling_frequency":1,
                 "input_data":[],
                 "inputs":[],
-                "outputs":[ { "name":"out", "type":"float", "reg_n":5, "register_type":"scalar"}],
+                "outputs":[ { "name":"out", "type":"float", "reg_n":[5], "register_type":"scalar"}],
                 "memory_init":[],
                 "program": {
                     "content": "int main(){float input;float out = input*3.5;}",
@@ -639,7 +668,7 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
                 "sampling_frequency":1,
                 "input_data":[],
                 "inputs":[],
-                "outputs":[ { "name":"out", "type":"float", "reg_n":7, "register_type":"scalar"}],
+                "outputs":[ { "name":"out", "type":"float", "reg_n":[7], "register_type":"scalar"}],
                 "memory_init":[],
                 "program": {
                     "content": "int main(){float input;float out = input*3.5;}",

@@ -37,7 +37,7 @@
       ],
       "outputs": [
         {
-          "reg_n":4,
+          "reg_n":[4],
           "type":"float",
           "name":"out",
           "register_type": "scalar"

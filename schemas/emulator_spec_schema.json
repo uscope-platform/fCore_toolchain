@@ -208,20 +208,12 @@
               ],
               "properties": {
                 "register_type": {"enum": ["scalar", "vector"]},
-                "reg_n": {
-                  "anyOf": [
-                    {
-                      "type": "integer",
-                      "title": "register address of the scalar output variable"
-                    },
-                    {
-                      "type": "array",
-                      "title": "array register address of the vector output variable",
-                      "items": {
-                        "type": "integer"
-                      }
-                    }
-                  ]
+                "reg_n":{
+                  "type": "array",
+                  "title": "array register address of the vector output variable",
+                  "items": {
+                    "type": "integer"
+                  }
                 },
                 "type": {
                   "type": "string",

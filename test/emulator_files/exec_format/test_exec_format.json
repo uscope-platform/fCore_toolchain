@@ -67,7 +67,7 @@
       ],
       "outputs": [
         {
-          "reg_n":42,
+          "reg_n":[42],
           "type":"float",
           "register_type": "scalar",
           "name":"test_out"
