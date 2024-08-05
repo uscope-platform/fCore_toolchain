@@ -143,6 +143,8 @@ namespace fcore::emulator {
         c.channels = core_obj["channels"];
         c.options = core_obj["options"];
         c.program.content = core_obj["program"]["content"];
+        c.program.headers = core_obj["program"]["headers"];
+
         for(auto &s:core_obj["program"]["build_settings"]["io"]["inputs"]){
             c.program.io.inputs.insert(s);
         }

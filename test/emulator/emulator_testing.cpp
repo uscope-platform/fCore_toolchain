@@ -198,6 +198,91 @@ TEST(Emulator, emulator_compilation_memory) {
 }
 
 
+TEST(Emulator, emulator_header) {
+
+
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+    "cores": [
+        {
+            "id": "test",
+            "order": 0,
+            "input_data": [],
+            "inputs": [
+                {
+                    "name": "input_1",
+                    "type": "float",
+                    "source": {
+                        "type": "constant",
+                        "value": [5]
+                    },
+                    "reg_n": 3,
+                    "channel": [0],
+                    "register_type": "scalar"
+                },
+                {
+                    "name": "input_2",
+                    "type": "float",
+                    "source": {
+                        "type": "constant",
+                        "value": [4]
+                    },
+                    "reg_n": 4,
+                    "channel": [0],
+                    "register_type": "scalar"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "type": "float",
+                    "reg_n": [5],
+                    "register_type": "scalar"
+                }
+            ],
+            "memory_init": [],
+            "channels": 1,
+            "options": {
+                "comparators": "reducing",
+                "efi_implementation": "none"
+            },
+            "program": {
+                "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = add(input_1, input_2);\n}",
+                "build_settings": {
+                    "io": {
+                        "inputs": [
+                            "input_1",
+                            "input_2"
+                        ],
+                        "memories": [],
+                        "outputs": [
+                            "out"
+                        ]
+                    }
+                },
+                "headers": ["float add(float input_1, float input_2) {return input_1 + input_2;};"]
+            },
+            "sampling_frequency": 1
+        }
+    ],
+    "interconnect": [],
+    "emulation_time": 1
+})");
+
+
+    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    manager.process();
+    manager.emulate();
+
+    auto res_obj = nlohmann::json::parse(manager.get_results());
+
+    std::vector<float> res = res_obj["test"]["outputs"]["out"]["0"][0];
+    ASSERT_FLOAT_EQ(res[0], 9.0);
+
+}
+
+
+
 TEST(Emulator, emulator_multichannel) {
 
 
