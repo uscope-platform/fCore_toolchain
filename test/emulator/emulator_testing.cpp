@@ -393,7 +393,8 @@ TEST(Emulator, emulator_multichannel_input_file) {
                         "outputs":["out"],
                         "memories":[]
                     }
-                }
+                },
+                "headers": []
             }
         }
     ],
@@ -432,7 +433,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
 
     nlohmann::json specs = nlohmann::json::parse(
             R"(
-{
+    {
     "cores": [
         {
             "order": 0,
@@ -449,7 +450,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
                     "name": "input_1",
                     "type": "float",
                     "reg_n": 3,
-                    "channel":[0,1,2,3],
+                    "channel":[0,1],
                     "register_type": "scalar",
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 },
@@ -457,7 +458,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
                     "name": "input_2",
                     "type": "float",
                     "reg_n": 4,
-                    "channel":[0,1,2,3],
+                    "channel":[0,1],
                     "register_type": "scalar",
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 }
@@ -465,8 +466,9 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
             "outputs":[ { "name":"out", "type":"float", "reg_n":[5], "register_type":"scalar"}],
             "memory_init":[],
             "program": {
-                "content": "int main(){float input_1;float input_2;float out = input_1 + input_2;}",
-                "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}}
+                "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = input_1 + input_2;\n}",
+                "build_settings":{"io":{"inputs":["input_data"],"outputs":["out"],"memories":[]}},
+                "headers": []
             }
         },
         {
@@ -483,8 +485,9 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
             "outputs":[ { "name":"out", "type":"float", "reg_n":[5], "register_type":"scalar"}],
             "memory_init":[],
             "program": {
-                "content": "int main(){float input_data[2];float out = input_data[0] + input_data[1];}",
-                "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}}
+                "content": "int main(){\n    float input_data[2];\n    float out = input_data[0] + input_data[1];\n}\n",
+                "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}},
+                "headers": []
             }
         }
     ],
@@ -552,9 +555,10 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
                 "outputs":[ { "name":"out", "type":"float", "reg_n":[5,6], "register_type":"vector"}],
                 "memory_init":[],
                 "program": {
-                    "content": "int main(){float out[2] = {15.6, 17.2};}",
+                    "content": "int main(){\n  float out[2] = {15.6, 17.2};\n}",
                     "build_settings":{"io":{"inputs":[],"outputs":["out"],"memories":[]}}
-                }
+                },
+                "headers": []
             },
             {
                 "order": 1,
@@ -570,9 +574,10 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
                 "outputs":[ { "name":"out", "type":"float", "reg_n":[5], "register_type":"scalar"}],
                 "memory_init":[],
                 "program": {
-                    "content": "int main(){float input;float out = input*3.5;}",
+                    "content": "int main(){\n  float input;float out = input*3.5;\n}",
                     "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}}
-                }
+                },
+                "headers": []
             }
         ],
         "interconnect": [
@@ -653,8 +658,9 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
                 "outputs":[],
                 "memory_init":[],
                 "program": {
-                    "content": "int main(){float input_1; float input_2; float out = input_1 + input_2;}",
-                    "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}}
+                    "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = input_1 + input_2;\n}",
+                    "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}},
+                    "headers": []
                 }
             },
             {
@@ -671,8 +677,9 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
                 "outputs":[ { "name":"out", "type":"float", "reg_n":[7], "register_type":"scalar"}],
                 "memory_init":[],
                 "program": {
-                    "content": "int main(){float input;float out = input*3.5;}",
-                    "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}}
+                    "content": "int main(){\n  float input;float out = input*3.5;\n}",
+                    "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}},
+                    "headers": []
                 }
             }
         ],
@@ -737,8 +744,9 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
                 "outputs":[],
                 "memory_init":[],
                 "program": {
-                    "content": "int main(){float producer_out[2] = {15.6, 17.2};}",
-                    "build_settings":{"io":{"inputs":[],"outputs":["producer_out"],"memories":[]}}
+                    "content": "int main(){\n  float out[2] = {15.6, 17.2};\n}",
+                    "build_settings":{"io":{"inputs":[],"outputs":["out"],"memories":[]}},
+                "headers": []
                 }
             },
             {
@@ -755,8 +763,9 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
                 "outputs":[ { "name":"consumer_out", "type":"float", "reg_n":[7,8], "register_type":"vector"}],
                 "memory_init":[],
                 "program": {
-                    "content": "int main(){float input[2]; float consumer_out[2]; consumer_out[0] = input[0]*3.5; consumer_out[1] = input[1]*3.5;}",
-                    "build_settings":{"io":{"inputs":["input"],"outputs":["consumer_out"],"memories":[]}}
+                    "content": "int main(){\n  float input[2]; \n  float consumer_out[2]; \n  consumer_out[0] = input[0]*3.5; \n  consumer_out[1] = input[1]*3.5;\n}",
+                    "build_settings":{"io":{"inputs":["input"],"outputs":["consumer_out"],"memories":[]}},
+                "headers": []
                 }
             }
         ],
@@ -772,7 +781,7 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
                             "channel": 0,
                             "register": [5,6]
                         },
-                        "source_output": "producer_out",
+                        "source_output": "out",
                         "destination": {
                             "channel": 0,
                             "register": [1,2]
