@@ -390,7 +390,7 @@ namespace fcore {
             spdlog::trace("ADDRESS TRANSLATION: core {0} | io address {1} | core address {2}", core_id, io_addr + offset, core_addr);
             return core_addr;
         } else{
-            throw std::runtime_error("Unable to find io address in the source address map");
+            throw std::runtime_error("Unable to find io address " + std::to_string(io_addr + offset) + " in the source address map for core: " + core_id);
         }
     }
 
