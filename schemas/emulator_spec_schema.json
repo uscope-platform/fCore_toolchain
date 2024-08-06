@@ -289,13 +289,13 @@
             "type": "object",
             "title": "Description of the program to run on this core",
             "properties": {
-              "type": {
-                "type": "string",
-                "title": "type of the program code file"
-              },
-              "filename": {
-                "type": "string",
-                "title": "path of the program input file"
+              "headers": {
+                "type": "array",
+                "title": "array of strings containing the headers to be included",
+                "items": {
+                  "type": "string",
+                  "title": "single header content"
+                }
               },
               "content": {
                 "type": "string",
@@ -334,6 +334,7 @@
             },
             "required": [
               "content",
+              "headers",
               "build_settings"
             ]
           },

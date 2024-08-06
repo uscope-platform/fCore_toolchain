@@ -641,9 +641,9 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float out[2] = {15.6, 17.2};\n}",
-                    "build_settings":{"io":{"inputs":[],"outputs":["out"],"memories":[]}}
-                },
+                    "build_settings":{"io":{"inputs":[],"outputs":["out"],"memories":[]}},
                 "headers": []
+                }
             },
             {
                 "order": 1,
@@ -660,9 +660,9 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float input;float out = input*3.5;\n}",
-                    "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}}
-                },
+                    "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}},
                 "headers": []
+                }
             }
         ],
         "interconnect": [

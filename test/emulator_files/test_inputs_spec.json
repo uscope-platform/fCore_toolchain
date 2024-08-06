@@ -69,7 +69,8 @@
               "test_out"
             ]
           }
-        }
+        },
+        "headers": []
       },
       "memory_init": [
         {

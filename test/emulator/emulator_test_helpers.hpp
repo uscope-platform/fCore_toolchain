@@ -50,6 +50,7 @@ static nlohmann::json prepare_spec(
     cs["id"] = "test";
 
     cs["program"] = nlohmann::json();
+    cs["program"]["headers"] = std::vector<std::string>();
     cs["program"]["content"] = content;
     cs["channels"] = 1;
     cs["options"] = nlohmann::json();
