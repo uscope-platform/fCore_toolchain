@@ -784,12 +784,14 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
     manager.process();
 
 
-    testing::internal::CaptureStderr();
-    EXPECT_THROW(manager.emulate(), std::runtime_error);
-
-    auto message = testing::internal::GetCapturedStderr();
-    std::string correct_message = "Attempted write to unavailable channel: 1 of core: test_consumer";
-    EXPECT_EQ(message, correct_message);
+    try {
+        manager.emulate();
+        FAIL();
+    } catch( const std::runtime_error& err ) {
+        std::string msg = err.what();
+        // check exception
+        EXPECT_EQ( "Attempted write to unavailable channel: 1 of core: test_consumer",  msg);
+    }
 }
 
 

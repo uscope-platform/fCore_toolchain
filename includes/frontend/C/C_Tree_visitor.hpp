@@ -130,6 +130,7 @@ namespace fcore{
         FRIEND_TEST(cTreeVisitor, function_def);
         FRIEND_TEST(cTreeVisitor, function_call);
         FRIEND_TEST(cTreeVisitor, returnTest);
+        FRIEND_TEST(cTreeVisitor, hex_constant);
 
         template<typename T>
         void processExpression(unsigned int expression_size, const T& operands_array, std::map<std::string, expression_type_t> &expr_map);

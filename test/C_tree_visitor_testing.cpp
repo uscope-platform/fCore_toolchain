@@ -77,18 +77,38 @@ namespace fcore{
         EXPECT_EQ(*res_1, *gs_1);
         if(Test::HasFailure()){
             std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res_1)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_3)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_1)->pretty_print()<< std::endl;
         }
         EXPECT_EQ(*res_2, *gs_2);
         if(Test::HasFailure()){
             std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res_2)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_3)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_2)->pretty_print()<< std::endl;
         }
         EXPECT_EQ(*res_3, *gs_3);
         if(Test::HasFailure()){
             std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res_3)->pretty_print()<< std::endl;
             std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_3)->pretty_print()<< std::endl;
         }
+    }
+
+
+
+    TEST( cTreeVisitor, hex_constant) {
+
+        std::istringstream test_content(R""""(
+            int a = 0xff;
+        )"""");
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+        C_language_parser parser(test_content, result_def);
+        parser.pre_process({});
+
+        parser.parse(std::unordered_map<std::string, variable_class_t>());
+        std::vector<std::shared_ptr<hl_ast_node>> results = parser.visitor.ext_decl;
+
+        auto res = std::static_pointer_cast<hl_ast_operand>(std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer())->get_int_value();
+
+        EXPECT_EQ(res, 0xff);
     }
 
     TEST( cTreeVisitor, multiplicativeExpressions) {

@@ -267,7 +267,18 @@ void fcore::C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::Pri
         } else if(ctx->constant()->IntegerConstant() != nullptr){
 
             std::string constant = ctx->constant()->IntegerConstant()->getText();
-            int const_value = std::stoi(constant);
+            
+            int const_value;
+            if(constant.starts_with("0x")){
+                const_value = std::stoi(constant, nullptr, 16);
+            } else if(constant.starts_with("0b")){
+                const_value = std::stoi(constant, nullptr, 2);
+            } else if(constant.starts_with("0")){
+                const_value = std::stoi(constant, nullptr, 8);
+            } else {
+                const_value = std::stoi(constant, nullptr, 10);
+            }
+
             if(ctx->constant()->Minus() != nullptr){
                 const_value = -const_value;
             }

@@ -75,6 +75,7 @@ namespace fcore{
         FRIEND_TEST(cTreeVisitor, function_def);
         FRIEND_TEST(cTreeVisitor, function_call);
         FRIEND_TEST(cTreeVisitor, returnTest);
+        FRIEND_TEST(cTreeVisitor, hex_constant);
 
         std::string preprocessed_content;
     };
