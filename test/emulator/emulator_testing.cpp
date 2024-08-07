@@ -707,6 +707,94 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
 }
 
 
+TEST(Emulator, emulator_multichannel_transfer_error) {
+
+
+    nlohmann::json specs = nlohmann::json::parse(
+            R"(
+    {
+        "cores": [
+            {
+                "order": 0,
+                "id": "test_producer",
+                "channels":1,
+                "options":{
+                    "comparators": "full",
+                    "efi_implementation":"none"
+                },
+                "sampling_frequency":1,
+                "input_data":[],
+                "inputs":[],
+                "outputs":[ { "name":"out", "type":"float", "reg_n":[5,6], "register_type":"vector"}],
+                "memory_init":[],
+                "program": {
+                    "content": "int main(){\n  float out[2] = {15.6, 17.2};\n}",
+                    "build_settings":{"io":{"inputs":[],"outputs":["out"],"memories":[]}},
+                "headers": []
+                }
+            },
+            {
+                "order": 1,
+                "id": "test_consumer",
+                "channels":1,
+                "options":{
+                    "comparators": "full",
+                    "efi_implementation":"none"
+                },
+                "sampling_frequency":1,
+                "input_data":[],
+                "inputs":[],
+                "outputs":[ { "name":"out", "type":"float", "reg_n":[5], "register_type":"scalar"}],
+                "memory_init":[],
+                "program": {
+                    "content": "int main(){\n  float input;float out = input*3.5;\n}",
+                    "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}},
+                "headers": []
+                }
+            }
+        ],
+        "interconnect": [
+            {
+                "source": "test_producer",
+                "destination": "test_consumer",
+                "channels": [
+                    {
+                        "name": "test_channel",
+                        "type": "scatter_transfer",
+                        "source": {
+                            "channel": 0,
+                            "register": 5
+                        },
+                        "source_output": "out",
+                        "destination": {
+                            "channel": 0,
+                            "register": 1
+                        },
+                        "destination_input": "input",
+                        "length": 2
+                    }
+                ]
+            }
+    ],
+        "emulation_time": 1
+    })");
+
+
+    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    manager.process();
+
+
+    testing::internal::CaptureStderr();
+    EXPECT_THROW(manager.emulate(), std::runtime_error);
+
+    auto message = testing::internal::GetCapturedStderr();
+    std::string correct_message = "Attempted write to unavailable channel: 1 of core: test_consumer";
+    EXPECT_EQ(message, correct_message);
+}
+
+
+
+
 TEST(Emulator, emulator_multichannel_vector_transfer) {
     nlohmann::json specs = nlohmann::json::parse(
             R"(

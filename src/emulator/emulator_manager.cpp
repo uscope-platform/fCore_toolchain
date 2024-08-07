@@ -371,10 +371,17 @@ namespace fcore {
                                              bool src_enabled) {
 
         spdlog::trace("REGISTER TO REGISTER TRANSFER: source {0} | target {1} | source pair ({2}, {3}) | target pair ({4}, {5})", src_core,dst_core, src_channel,src_addr, dst_channel,dst_addr);
+
+        if(dst_channel>=emulators_memory[dst_core].size()){
+            throw std::runtime_error("Attempted write to unavailable channel: " + std::to_string(dst_channel) + " of core: " + dst_core);
+        }
         if(src_enabled){
+            if(src_channel>=emulators_memory[src_core].size()){
+                throw std::runtime_error("Attempted read from unavailable channel: " + std::to_string(src_channel) + " of core: " + src_core);
+            }
             auto val = emulators_memory[src_core][src_channel]->at(src_addr);
             output_repeater.add_output(src_core, src_addr,src_channel, val);
-            emulators_memory[dst_core][dst_channel]->at(dst_addr) = val;
+             emulators_memory[dst_core][dst_channel]->at(dst_addr) = val;
         } else {
             auto val = output_repeater.get_output(src_core, src_addr, src_channel);
             emulators_memory[dst_core][dst_channel]->at(dst_addr) = val;
