@@ -637,7 +637,7 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
                 "sampling_frequency":1,
                 "input_data":[],
                 "inputs":[],
-                "outputs":[ { "name":"out", "type":"float", "reg_n":[5,6], "register_type":"vector"}],
+                "outputs":[],
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float out[2] = {15.6, 17.2};\n}",
