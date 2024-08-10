@@ -32,6 +32,8 @@ namespace fcore{
     class emulation_outputs_manager {
     public:
         void add_specs(const std::string& id, const std::vector<emulator::emulator_output_specs>& specs, uint32_t active_channels);
+        void add_interconnect_outputs(const emulator::emulator_interconnect &spec);
+
         void process_outputs(const std::string& core_id,
                             fcore::core_memory_pool_t &pool,
                              bool running,

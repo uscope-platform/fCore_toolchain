@@ -26,6 +26,29 @@ void fcore::emulation_outputs_manager::add_specs(const std::string& id, const st
     output_specs[id];
 }
 
+void fcore::emulation_outputs_manager::add_interconnect_outputs(const fcore::emulator::emulator_interconnect &spec) {
+    for(auto &c:spec.channels){
+        auto stride = c.stride != 0 ? c.stride : 1;
+        auto length = c.length != 0 ? c.length : 1;
+
+        for(int i = 0; i< stride; i++){
+            for(int j = 0; j< length; j++){
+                emulator::emulator_output_specs out_spec;
+                out_spec.name = c.source.io_name;
+                for(auto val:c.source.address){
+                    out_spec.address.push_back(val);
+                }
+                out_spec.data_type = emulator::type_float; // TODO: HANDLE INTEGER Types
+                out_spec.type = emulator::scalar_endpoint;
+                output_specs[spec.source_core_id][c.source.io_name] =  out_spec;
+                auto data = emulator_output(c.source.io_name, stride, length);
+                data_section[spec.source_core_id].insert({c.source.io_name, data});
+            }
+        }
+    }
+}
+
+
 void fcore::emulation_outputs_manager::process_outputs(
         const std::string& core_id,
         fcore::core_memory_pool_t &pool,

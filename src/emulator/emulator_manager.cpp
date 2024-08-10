@@ -28,9 +28,6 @@ namespace fcore {
     void emulator_manager::process() {
         bus_map.clear();
 
-        emulator_builder e_b(debug_autogen);
-
-
         if(emu_spec.cores.empty()){
             throw std::runtime_error("No cores section found in the emulator specification file");
         }
@@ -50,6 +47,10 @@ namespace fcore {
 
             sequencer.add_core(core.id, core.sampling_frequency, core.order);
 
+        }
+
+        for(auto &ic:emu_spec.interconnects){
+            outputs_manager.add_interconnect_outputs(ic);
         }
 
         sequencer.setup_run(emu_spec.emulation_time);
