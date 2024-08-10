@@ -357,8 +357,8 @@ namespace fcore {
         spdlog::trace("2D VECTOR TRANSFER");
         for(int j = 0; j<c.stride; j++){
             for(int i = 0; i<c.length; i++){
-                auto src_addr = translate_address(src_core, c.source.address[j], 0);
-                auto dst_addr = translate_address(dst_core, c.destination.address[j], 0);
+                auto src_addr = translate_address(src_core, c.source.address[0] + j, 0);
+                auto dst_addr = translate_address(dst_core, c.destination.address[0]+ j, 0);
 
                 transfer_register(src_core, dst_core, src_addr, dst_addr, i, i, enabled);
             }
