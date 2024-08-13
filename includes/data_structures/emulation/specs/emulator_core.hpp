@@ -104,6 +104,9 @@ namespace fcore::emulator {
         std::vector<emulator_output_specs> outputs;
         std::vector<emulator_input_specs> inputs;
         std::vector<emulator_memory_specs> memories;
+
+        uint64_t rom_address;
+        uint64_t control_address;
     };
 
 

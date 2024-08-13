@@ -111,7 +111,6 @@ TEST(Emulator, emulator_inputs) {
     spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_2");
     spec["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("out");
 
-
     emulator_manager manager(spec, false,SCHEMAS_FOLDER);
     manager.process();
     manager.emulate();
@@ -262,11 +261,14 @@ TEST(Emulator, emulator_header) {
                 },
                 "headers": ["float add(float input_1, float input_2) {return input_1 + input_2;};"]
             },
-            "sampling_frequency": 1
+            "sampling_frequency": 1,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
         }
     ],
     "interconnect": [],
-    "emulation_time": 1
+    "emulation_time": 1,
+    "deployment_mode": false
 })");
 
 
@@ -369,11 +371,14 @@ TEST(Emulator, emulator_multichannel) {
                 },
                 "headers": []
             },
-            "sampling_frequency": 1
+            "sampling_frequency": 1,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
         }
     ],
     "interconnect": [],
-    "emulation_time": 2
+    "emulation_time": 2,
+    "deployment_mode": false
 })");
 
 
@@ -480,11 +485,14 @@ TEST(Emulator, emulator_multichannel_input_file) {
                     }
                 },
                 "headers": []
-            }
+            },
+            "control_address": 18316525568,
+            "rom_address": 17179869184
         }
     ],
     "interconnect": [],
-    "emulation_time": 2
+    "emulation_time": 2,
+    "deployment_mode": false
 }
 )");
 
@@ -554,7 +562,9 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
                 "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = input_1 + input_2;\n}",
                 "build_settings":{"io":{"inputs":["input_data"],"outputs":["out"],"memories":[]}},
                 "headers": []
-            }
+            },
+            "control_address": 18316525568,
+            "rom_address": 17179869184
         },
         {
             "order": 1,
@@ -573,7 +583,9 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
                 "content": "int main(){\n    float input_data[2];\n    float out = input_data[0] + input_data[1];\n}\n",
                 "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}},
                 "headers": []
-            }
+            },
+            "control_address": 18316525568,
+            "rom_address": 17179869184
         }
     ],
     "interconnect": [
@@ -599,7 +611,8 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
             ]
         }
 ],
-    "emulation_time": 1
+    "emulation_time": 1,
+    "deployment_mode": false
 })");
 
 
@@ -642,8 +655,10 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
                 "program": {
                     "content": "int main(){\n  float out[2] = {15.6, 17.2};\n}",
                     "build_settings":{"io":{"inputs":[],"outputs":["out"],"memories":[]}},
-                "headers": []
-                }
+                    "headers": []
+                },
+                "control_address": 18316525568,
+                "rom_address": 17179869184
             },
             {
                 "order": 1,
@@ -661,8 +676,10 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
                 "program": {
                     "content": "int main(){\n  float input;float out = input*3.5;\n}",
                     "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}},
-                "headers": []
-                }
+                    "headers": []
+                },
+                "control_address": 18316525568,
+                "rom_address": 17179869184
             }
         ],
         "interconnect": [
@@ -688,7 +705,8 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
                 ]
             }
     ],
-        "emulation_time": 1
+        "emulation_time": 1,
+    "deployment_mode": false
     })");
 
 
@@ -730,8 +748,10 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
                 "program": {
                     "content": "int main(){\n  float out[2] = {15.6, 17.2};\n}",
                     "build_settings":{"io":{"inputs":[],"outputs":["out"],"memories":[]}},
-                "headers": []
-                }
+                    "headers": []
+                },
+                "control_address": 18316525568,
+                "rom_address": 17179869184
             },
             {
                 "order": 1,
@@ -749,8 +769,10 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
                 "program": {
                     "content": "int main(){\n  float input;float out = input*3.5;\n}",
                     "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}},
-                "headers": []
-                }
+                    "headers": []
+                },
+                "control_address": 18316525568,
+                "rom_address": 17179869184
             }
         ],
         "interconnect": [
@@ -776,7 +798,8 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
                 ]
             }
     ],
-        "emulation_time": 1
+        "emulation_time": 1,
+    "deployment_mode": false
     })");
 
 
@@ -836,7 +859,9 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
                     "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = input_1 + input_2;\n}",
                     "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}},
                     "headers": []
-                }
+                },
+                "control_address": 18316525568,
+                "rom_address": 17179869184
             },
             {
                 "order": 1,
@@ -855,7 +880,9 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
                     "content": "int main(){\n  float input;float out = input*3.5;\n}",
                     "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}},
                     "headers": []
-                }
+                },
+                "control_address": 18316525568,
+                "rom_address": 17179869184
             }
         ],
         "interconnect": [
@@ -881,7 +908,8 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
                 ]
             }
         ],
-        "emulation_time": 1
+        "emulation_time": 1,
+    "deployment_mode": false
     })");
 
 
@@ -921,8 +949,10 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
                 "program": {
                     "content": "int main(){\n  float out[2] = {15.6, 17.2};\n}",
                     "build_settings":{"io":{"inputs":[],"outputs":["out"],"memories":[]}},
-                "headers": []
-                }
+                    "headers": []
+                },
+                "control_address": 18316525568,
+                "rom_address": 17179869184
             },
             {
                 "order": 1,
@@ -940,8 +970,10 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
                 "program": {
                     "content": "int main(){\n  float input[2]; \n  float consumer_out[2]; \n  consumer_out[0] = input[0]*3.5; \n  consumer_out[1] = input[1]*3.5;\n}",
                     "build_settings":{"io":{"inputs":["input"],"outputs":["consumer_out"],"memories":[]}},
-                "headers": []
-                }
+                    "headers": []
+                },
+                "control_address": 18316525568,
+                "rom_address": 17179869184
             }
         ],
         "interconnect": [
@@ -968,7 +1000,8 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
                 ]
             }
         ],
-        "emulation_time": 2
+        "emulation_time": 2,
+    "deployment_mode": false
     })");
 
 

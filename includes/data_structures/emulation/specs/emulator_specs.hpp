@@ -37,6 +37,7 @@ namespace fcore::emulator{
         std::vector<emulator_core> cores;
         std::vector<emulator_interconnect> interconnects;
         double emulation_time;
+        bool custom_deploy_mode;
     private:
 
         emulator_core process_core(const nlohmann::json &o);

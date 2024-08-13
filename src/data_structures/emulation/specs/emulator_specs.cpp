@@ -38,7 +38,7 @@ namespace fcore::emulator {
 
 
         emulation_time = spec_obj["emulation_time"];
-        int i = 0;
+        custom_deploy_mode = spec_obj["deployment_mode"];
     }
 
     emulator_core emulator::emulator_specs::get_core_by_id(const std::string &id) {
@@ -176,6 +176,9 @@ namespace fcore::emulator {
         for(auto &i: core_obj["inputs"]){
             c.inputs.push_back(process_input(i, core_obj["input_data"]));
         }
+
+        c.control_address =  core_obj["control_address"];
+        c.rom_address = core_obj["rom_address"];
 
         return c;
     }

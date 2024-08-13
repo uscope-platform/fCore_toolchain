@@ -57,6 +57,8 @@ static nlohmann::json prepare_spec(
     cs["options"]["comparators"] = "full";
     cs["options"]["efi_implementation"] = "none";
     cs["sampling_frequency"] =1;
+    cs["control_address"] =18316525568;
+    cs["rom_address"] =17179869184;
     cs["input_data"] = std::vector<nlohmann::json>();
     cs["inputs"]= std::vector<nlohmann::json>();
 
@@ -109,5 +111,6 @@ static nlohmann::json prepare_spec(
 
     spec["cores"].push_back(cs);
     spec["interconnect"] = std::vector<nlohmann::json>();
+    spec["deployment_mode"] = false;
     return spec;
 }

@@ -363,7 +363,6 @@ namespace fcore {
                 transfer_register(src_core, dst_core, src_addr, dst_addr, i, i, enabled);
             }
         }
-        int i = 0;
     }
 
     void emulator_manager::transfer_register(const std::string& src_core, const std::string& dst_core,

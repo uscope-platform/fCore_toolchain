@@ -36,7 +36,6 @@
               52378.6
             ]
           }
-
         }
       ],
       "inputs": [
@@ -46,7 +45,7 @@
           "register_type": "scalar",
           "reg_n": 15,
           "source": {
-            "type":"file",
+            "type": "file",
             "series": "input_1",
             "file": "file_a"
           },
@@ -58,7 +57,7 @@
           "reg_n": 38,
           "register_type": "scalar",
           "source": {
-            "type":"file",
+            "type": "file",
             "series": "input_2",
             "file": "file_a"
           },
@@ -67,14 +66,16 @@
       ],
       "outputs": [
         {
-          "reg_n":[42],
-          "type":"float",
+          "reg_n": [
+            42
+          ],
+          "type": "float",
           "register_type": "scalar",
-          "name":"test_out"
+          "name": "test_out"
         }
       ],
       "memory_init": [],
-      "program":{
+      "program": {
         "content": "int main() {float input_1;float input_2;float test_out;test_out = input_1 + input_2;}",
         "build_settings": {
           "io": {
@@ -91,16 +92,19 @@
         "headers": []
       },
       "order": 0,
-      "options":{
-        "comparators":"reducing",
-        "efi_implementation":"efi_sort"
+      "options": {
+        "comparators": "reducing",
+        "efi_implementation": "efi_sort"
       },
-      "channels":1,
-      "sampling_frequency": 1
+      "channels": 1,
+      "sampling_frequency": 1,
+      "control_address": 18316525568,
+      "rom_address": 17179869184
     }
   ],
   "interconnect": [],
-  "emulation_time": 2
+  "emulation_time": 2,
+  "deployment_mode": false
 }
 
 

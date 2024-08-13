@@ -5,7 +5,8 @@
   "required": [
     "cores",
     "interconnect",
-    "emulation_time"
+    "emulation_time",
+    "deployment_mode"
   ],
   "properties": {
     "cores": {
@@ -21,9 +22,12 @@
           "channels",
           "options",
           "sampling_frequency",
-          "input_data"
+          "input_data",
+          "control_address",
+          "rom_address"
         ],
         "properties": {
+
           "id": {
             "type": "string",
             "title": "Identification string of the core"
@@ -352,7 +356,14 @@
                 "type": "object"
               }
             }
-          }
+          },
+          "control_address": {
+            "type": "integer",
+            "title": "Address of the target core complex control bus"
+          },
+          "rom_address":{
+            "type": "integer",
+            "title": "Address of the target core complex ROM bus"}
         }
       }
     },
@@ -467,6 +478,10 @@
     "emulation_time": {
       "type": "number",
       "title": "Length of time to emulate"
+    },
+    "deployment_mode": {
+      "type": "boolean",
+      "title": "Enable custom image deployment mode"
     }
   }
 }
