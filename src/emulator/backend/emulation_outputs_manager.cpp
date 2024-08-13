@@ -31,20 +31,25 @@ void fcore::emulation_outputs_manager::add_interconnect_outputs(const fcore::emu
         auto stride = c.stride != 0 ? c.stride : 1;
         auto length = c.length != 0 ? c.length : 1;
 
-        for(int i = 0; i< stride; i++){
-            for(int j = 0; j< length; j++){
-                emulator::emulator_output_specs out_spec;
-                out_spec.name = c.source.io_name;
-                for(auto val:c.source.address){
-                    out_spec.address.push_back(val);
-                }
-                out_spec.data_type = emulator::type_float; // TODO: HANDLE INTEGER Types
-                out_spec.type = emulator::scalar_endpoint;
-                output_specs[spec.source_core_id][c.source.io_name] =  out_spec;
-                auto data = emulator_output(c.source.io_name, stride, length);
-                data_section[spec.source_core_id].insert({c.source.io_name, data});
+        emulator::emulator_output_specs out_spec;
+        out_spec.name = c.source.io_name;
+
+        if(c.type == emulator::dma_link_scalar || c.type == emulator::dma_link_gather || c.type == emulator::dma_link_vector){
+
+            out_spec.address.push_back(c.source.address[0]);
+            out_spec.data_type = emulator::type_float; // TODO: HANDLE INTEGER Types
+
+            out_spec.type = emulator::scalar_endpoint;
+        } else {
+            out_spec.type = emulator::vector_endpoint;
+            for(int i = 0; i< stride; i++){
+                out_spec.address.push_back(c.source.address[0] + i);
             }
         }
+
+        output_specs[spec.source_core_id][c.source.io_name] =  out_spec;
+        auto data = emulator_output(c.source.io_name, stride, length);
+        data_section[spec.source_core_id].insert({c.source.io_name, data});
     }
 }
 
@@ -140,7 +145,8 @@ void fcore::emulation_outputs_manager::process_scalar_output(
     if(auto a = io_map_entry::get_io_map_entry_by_io_addr(io_map, io_address)){
         core_address = a->core_addr;
     } else {
-        throw std::runtime_error("unable to find input address in the core io map during output phase");
+        std::string msg = "unable to find address for output: " + spec.name  + " in the io map of associated core during scalar output phase";
+        throw std::runtime_error(msg);
     }
 
     for(int i = 0; i<active_channels; i++){
@@ -163,7 +169,7 @@ void fcore::emulation_outputs_manager::process_vector_output(
             if(auto a = io_map_entry::get_io_map_entry_by_io_addr(io_map, io_address)){
                 core_address = a->core_addr;
             } else {
-                throw std::runtime_error("unable to find input address in the core io map during output phase");
+                throw std::runtime_error("unable to find input address in the core io map during vector output phase");
             }
 
             data_point.push_back(pool.at(j)->at(core_address));
