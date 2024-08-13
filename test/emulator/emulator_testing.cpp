@@ -262,8 +262,11 @@ TEST(Emulator, emulator_header) {
                 "headers": ["float add(float input_1, float input_2) {return input_1 + input_2;};"]
             },
             "sampling_frequency": 1,
-            "control_address": 18316525568,
-            "rom_address": 17179869184
+            "deployment": {
+                "has_reciprocal": false,
+                "control_address": 18316525568,
+                "rom_address": 17179869184
+            }
         }
     ],
     "interconnect": [],
@@ -372,8 +375,11 @@ TEST(Emulator, emulator_multichannel) {
                 "headers": []
             },
             "sampling_frequency": 1,
-            "control_address": 18316525568,
-            "rom_address": 17179869184
+            "deployment": {
+                "has_reciprocal": false,
+                "control_address": 18316525568,
+                "rom_address": 17179869184
+            }
         }
     ],
     "interconnect": [],
@@ -486,8 +492,11 @@ TEST(Emulator, emulator_multichannel_input_file) {
                 },
                 "headers": []
             },
-            "control_address": 18316525568,
-            "rom_address": 17179869184
+            "deployment": {
+                "has_reciprocal": false,
+                "control_address": 18316525568,
+                "rom_address": 17179869184
+            }
         }
     ],
     "interconnect": [],
@@ -563,8 +572,11 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
                 "build_settings":{"io":{"inputs":["input_data"],"outputs":["out"],"memories":[]}},
                 "headers": []
             },
-            "control_address": 18316525568,
-            "rom_address": 17179869184
+            "deployment": {
+                "has_reciprocal": false,
+                "control_address": 18316525568,
+                "rom_address": 17179869184
+            }
         },
         {
             "order": 1,
@@ -584,8 +596,11 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
                 "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}},
                 "headers": []
             },
-            "control_address": 18316525568,
-            "rom_address": 17179869184
+            "deployment": {
+                "has_reciprocal": false,
+                "control_address": 18316525568,
+                "rom_address": 17179869184
+            }
         }
     ],
     "interconnect": [
@@ -657,8 +672,11 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
                     "build_settings":{"io":{"inputs":[],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
-                "control_address": 18316525568,
-                "rom_address": 17179869184
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
             },
             {
                 "order": 1,
@@ -678,8 +696,11 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
                     "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
-                "control_address": 18316525568,
-                "rom_address": 17179869184
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
             }
         ],
         "interconnect": [
@@ -750,8 +771,11 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
                     "build_settings":{"io":{"inputs":[],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
-                "control_address": 18316525568,
-                "rom_address": 17179869184
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
             },
             {
                 "order": 1,
@@ -771,8 +795,11 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
                     "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
-                "control_address": 18316525568,
-                "rom_address": 17179869184
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
             }
         ],
         "interconnect": [
@@ -860,8 +887,11 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
                     "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
-                "control_address": 18316525568,
-                "rom_address": 17179869184
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
             },
             {
                 "order": 1,
@@ -881,8 +911,11 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
                     "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
-                "control_address": 18316525568,
-                "rom_address": 17179869184
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
             }
         ],
         "interconnect": [
@@ -951,8 +984,11 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
                     "build_settings":{"io":{"inputs":[],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
-                "control_address": 18316525568,
-                "rom_address": 17179869184
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
             },
             {
                 "order": 1,
@@ -972,8 +1008,11 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
                     "build_settings":{"io":{"inputs":["input"],"outputs":["consumer_out"],"memories":[]}},
                     "headers": []
                 },
-                "control_address": 18316525568,
-                "rom_address": 17179869184
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
             }
         ],
         "interconnect": [

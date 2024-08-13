@@ -93,6 +93,12 @@ namespace fcore::emulator {
         std::variant<std::vector<float>, std::vector<uint32_t>> value;
     };
 
+    struct deployment_options {
+        uint64_t rom_address;
+        uint64_t control_address;
+        bool has_reciprocal;
+    };
+
     struct emulator_core {
         std::string id;
         uint16_t channels;
@@ -105,8 +111,7 @@ namespace fcore::emulator {
         std::vector<emulator_input_specs> inputs;
         std::vector<emulator_memory_specs> memories;
 
-        uint64_t rom_address;
-        uint64_t control_address;
+        deployment_options deployment;
     };
 
 

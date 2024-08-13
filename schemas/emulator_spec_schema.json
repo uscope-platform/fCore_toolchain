@@ -23,8 +23,7 @@
           "options",
           "sampling_frequency",
           "input_data",
-          "control_address",
-          "rom_address"
+          "deployment"
         ],
         "properties": {
 
@@ -357,13 +356,29 @@
               }
             }
           },
-          "control_address": {
-            "type": "integer",
-            "title": "Address of the target core complex control bus"
-          },
-          "rom_address":{
-            "type": "integer",
-            "title": "Address of the target core complex ROM bus"}
+          "deployment": {
+            "title": "options for custom deployment",
+            "type": "object",
+            "properties": {
+              "rom_address":{
+                "type": "integer",
+                "title": "Address of the target core complex ROM bus"
+              },
+              "control_address": {
+                "type": "integer",
+                "title": "Address of the target core complex control bus"
+              },
+              "has_reciprocal": {
+                "type": "boolean",
+                "title": "Flag indicating the implementation of reciprocal operation in correspondent core"
+              }
+            },
+            "required": [
+              "control_address",
+              "rom_address",
+              "has_reciprocal"
+            ]
+          }
         }
       }
     },

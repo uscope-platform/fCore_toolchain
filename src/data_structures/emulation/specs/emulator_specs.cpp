@@ -177,8 +177,9 @@ namespace fcore::emulator {
             c.inputs.push_back(process_input(i, core_obj["input_data"]));
         }
 
-        c.control_address =  core_obj["control_address"];
-        c.rom_address = core_obj["rom_address"];
+        c.deployment.rom_address = core_obj["deployment"]["rom_address"];
+        c.deployment.control_address = core_obj["deployment"]["control_address"];
+        c.deployment.has_reciprocal =  core_obj["deployment"]["has_reciprocal"];
 
         return c;
     }
