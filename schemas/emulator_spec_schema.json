@@ -148,6 +148,10 @@
                           "items": {
                             "type": "number"
                           }
+                        },
+                        {
+                          "type": "string",
+                          "value": ""
                         }
                       ]
                     },
