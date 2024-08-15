@@ -43,7 +43,6 @@
         {
           "name": "input_1",
           "type": "float",
-          "register_type": "scalar",
           "reg_n": 15,
           "source": {
             "type":"file",
@@ -56,7 +55,6 @@
           "name": "input_2",
           "type": "float",
           "reg_n": 38,
-          "register_type": "scalar",
           "source": {
             "type":"file",
             "series": "input_2",
@@ -69,8 +67,7 @@
         {
           "reg_n":[42],
           "type":"float",
-          "name":"test_out",
-          "register_type": "scalar"
+          "name":"test_out"
         }
       ],
       "memory_init": [],

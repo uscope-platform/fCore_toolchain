@@ -73,8 +73,7 @@
                 "channel",
                 "type",
                 "source",
-                "name",
-                "register_type"
+                "name"
               ],
               "properties": {
                 "channel": {
@@ -110,15 +109,6 @@
                 "type": {
                   "type": "string",
                   "title": "Type for the input"
-                },
-                "register_type": {
-                  "type": "string",
-                  "title": "Type of the target register (scalar or vector)",
-                  "enum": [
-                    "scalar",
-                    "vector",
-                    "explicit_vector"
-                  ]
                 },
                 "name": {
                   "type": "string",
@@ -210,11 +200,9 @@
               "required": [
                 "reg_n",
                 "type",
-                "name",
-                "register_type"
+                "name"
               ],
               "properties": {
-                "register_type": {"enum": ["scalar", "vector"]},
                 "reg_n":{
                   "type": "array",
                   "title": "array register address of the vector output variable",

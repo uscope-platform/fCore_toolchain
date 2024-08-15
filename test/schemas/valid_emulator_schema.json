@@ -26,7 +26,6 @@
           "name": "input_1",
           "type": "float",
           "reg_n": 1,
-          "register_type": "scalar",
           "source": {
             "type":"file",
             "file":"data_file",
@@ -38,7 +37,6 @@
           "name": "input_2",
           "type": "float",
           "reg_n": 2,
-          "register_type": "scalar",
           "source": {
             "type":"file",
             "file":"data_file",
@@ -97,8 +95,7 @@
         {
           "reg_n":[8],
           "type":"integer",
-          "name":"consumer_out",
-          "register_type": "scalar"
+          "name":"consumer_out"
         }
       ],
       "order": 1,

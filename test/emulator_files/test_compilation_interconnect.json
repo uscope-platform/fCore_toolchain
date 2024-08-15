@@ -26,7 +26,6 @@
           "name": "input_1",
           "type": "float",
           "reg_n": 1,
-          "register_type": "scalar",
           "source": {
             "type":"file",
             "file": "file_1",
@@ -42,7 +41,6 @@
             "file": "file_1",
             "series": "input_2"
           },
-          "register_type": "scalar",
           "reg_n": 2,
           "channel": 0
         }
@@ -51,8 +49,7 @@
         {
           "reg_n":[4],
           "type":"integer",
-          "name":"out",
-          "register_type": "scalar"
+          "name":"out"
         }
       ],
       "memory_init": [],
@@ -95,8 +92,7 @@
         {
           "reg_n":[5],
           "type":"integer",
-          "name":"out",
-          "register_type": "scalar"
+          "name":"out"
         }
       ],
       "memory_init": [],
