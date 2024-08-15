@@ -59,12 +59,14 @@ namespace fcore::emulator {
 
     typedef enum {
         constant_input = 0,
-        time_series_input = 1
+        time_series_input = 1,
+        external_input = 2
     } input_type;
 
     static std::unordered_map<std::string, input_type > input_type_map = {
             {"constant", constant_input},
-            {"file", time_series_input}
+            {"file", time_series_input},
+            {"external", external_input},
     };
 
     struct emulator_output_specs {

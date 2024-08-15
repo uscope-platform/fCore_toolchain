@@ -66,7 +66,6 @@ namespace fcore::emulator {
         in.type = endpoint_type_map[i["register_type"]];
         in.data_type = data_type_map[i["type"]];
         in.source_type = input_type_map[i["source"]["type"]];
-
         if(in.source_type == time_series_input){
             std::vector<std::string> series;
             std::vector<std::string> files;

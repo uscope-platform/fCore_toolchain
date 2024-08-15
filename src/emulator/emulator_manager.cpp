@@ -144,6 +144,7 @@ namespace fcore {
                 } else {
                     throw std::runtime_error("unable to find input address in the core io map during input phase");
                 }
+                if(in.source_type == emulator::external_input) continue;
 
                 if(core_reg != 0){
                     uint32_t input_val;
