@@ -70,7 +70,6 @@ namespace fcore::emulator {
     struct emulator_output_specs {
         std::string name;
         register_data_type data_type;
-        endpoint_type type;
         std::vector<uint32_t> address;
     };
 

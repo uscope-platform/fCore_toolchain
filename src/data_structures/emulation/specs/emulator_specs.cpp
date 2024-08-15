@@ -50,7 +50,6 @@ namespace fcore::emulator {
 
     emulator_output_specs emulator_specs::process_output(const nlohmann::json &o) {
         emulator_output_specs out;
-        out.type = endpoint_type_map[o["register_type"]];
         out.data_type = data_type_map[o["type"]];
         out.name = o["name"];
         std::vector<uint32_t> addrs =  o["reg_n"];
@@ -166,7 +165,6 @@ namespace fcore::emulator {
             if(mem.is_output){
                 emulator_output_specs os;
                 os.name = mem.name;
-                os.type = scalar_endpoint;
                 os.address = mem.address;
                 os.data_type = mem.data_type;
                 c.outputs.push_back(os);

@@ -39,9 +39,7 @@ void fcore::emulation_outputs_manager::add_interconnect_outputs(const fcore::emu
             out_spec.address.push_back(c.source.address[0]);
             out_spec.data_type = emulator::type_float; // TODO: HANDLE INTEGER Types
 
-            out_spec.type = emulator::scalar_endpoint;
         } else {
-            out_spec.type = emulator::vector_endpoint;
             for(int i = 0; i< stride; i++){
                 out_spec.address.push_back(c.source.address[0] + i);
             }
