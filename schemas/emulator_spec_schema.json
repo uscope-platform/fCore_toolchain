@@ -133,7 +133,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": ["constant", "file"],
+                      "enum": ["constant", "file", "external"],
                       "title": "Type of source"
                     },
                     "value": {
