@@ -225,7 +225,7 @@ TEST(Emulator, emulator_header) {
                         "value": [4]
                     },
                     "reg_n": 4,
-                    "channel": [0],
+                    "channel": [0]
                 }
             ],
             "outputs": [

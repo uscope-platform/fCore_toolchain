@@ -62,7 +62,6 @@ namespace fcore::emulator {
 
 
         in.name = i["name"];
-        in.type = endpoint_type_map[i["register_type"]];
         in.data_type = data_type_map[i["type"]];
         in.source_type = input_type_map[i["source"]["type"]];
         if(in.source_type == external_input) {

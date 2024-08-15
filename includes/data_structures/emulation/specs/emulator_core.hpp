@@ -75,7 +75,6 @@ namespace fcore::emulator {
 
     struct emulator_input_specs {
         std::string name;
-        endpoint_type type;
         register_data_type data_type;
         input_type source_type;
         std::vector<std::variant<std::vector<uint32_t>, std::vector<float>>> data;
