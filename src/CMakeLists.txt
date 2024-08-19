@@ -109,9 +109,7 @@ set(FCORE_EMU_SRCS
         emulator/backend/multirate_io_repeater.cpp
         )
 
-set(FCORE_DEVTOOLS_SRCS
-        dev_server/rest_handler.cpp
-        )
+
 
 set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_DIS_SRCS} ${FCORE_EMU_SRCS} PARENT_SCOPE)
 
@@ -214,18 +212,3 @@ install(TARGETS fCore_has DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(TARGETS fCore_cc DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(TARGETS fCore_dis DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(TARGETS fCore_emu DESTINATION ${CMAKE_INSTALL_BINDIR})
-
-
-if(${INCLUDE_DEVTOOLS})
-    add_executable(fCore_dev_server  ${FCORE_CC_SRCS} ${FCORE_DEVTOOLS_SRCS} ${C_PARSER_SRCS} fCore_dev_server.cpp)
-    target_link_libraries(fCore_dev_server PRIVATE
-            cpprestsdk::cpprest
-            spdlog::spdlog
-            CLI11::CLI11
-            crypto
-            antlr4_static
-            common_srcs
-            )
-
-endif(${INCLUDE_DEVTOOLS})
-

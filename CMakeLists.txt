@@ -7,7 +7,7 @@ include(GNUInstallDirs)
 option(BUILD_TESTS "Build test programs" OFF)
 option(INCLUDE_EMULATOR "Include the emulator in the build" OFF)
 option(INCLUDE_COVERAGE "Build with support for code coverage" OFF)
-option(INCLUDE_DEVTOOLS "Include compiler development tools in the build" OFF)
+
 option(USE_CONAN "Use the conan package manager for dependency management" OFF)
 
 set(ANTLR_VERSION 4.13.1)
@@ -56,10 +56,6 @@ find_package(antlr4-runtime CONFIG REQUIRED)
 
 add_subdirectory(includes/asm_parser)
 add_subdirectory(includes/C_parser)
-
-if(${INCLUDE_DEVTOOLS})
-    find_package(cpprestsdk REQUIRED)
-endif(${INCLUDE_DEVTOOLS})
 
 add_subdirectory(src)
 
