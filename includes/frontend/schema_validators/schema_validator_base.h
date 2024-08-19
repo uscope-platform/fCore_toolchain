@@ -29,10 +29,19 @@
 #include <valijson/schema_parser.hpp>
 #include <valijson/validator.hpp>
 
+#include "schemas/compiler_schema.hpp"
+#include "schemas/emulator_schema.hpp"
+
 namespace fcore{
+
+    typedef enum{
+        emulator_input=1,
+        compiler_input=2
+    }json_type;
+
     class schema_validator_base {
     public:
-        schema_validator_base(const std::string& schema_file);
+        schema_validator_base(const json_type& schema_file);
         void validate(const nlohmann::json &spec_file);
     private:
         valijson::Schema schema;

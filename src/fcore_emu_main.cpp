@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
     profiling_data["start"] = std::chrono::high_resolution_clock::now();
 
     try{
-        fcore::emulator_manager emu_manager(specs, debug_autogen, SCHEMAS_FOLDER);
+        fcore::emulator_manager emu_manager(specs, debug_autogen);
         emu_manager.process();
         profiling_data["built"] = std::chrono::high_resolution_clock::now();
         emu_manager.emulate();

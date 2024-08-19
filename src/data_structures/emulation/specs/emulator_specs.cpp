@@ -17,10 +17,10 @@
 #include "data_structures/emulation/specs/emulator_specs.hpp"
 
 namespace fcore::emulator {
-    emulator_specs::emulator_specs(const nlohmann::json &spec_obj, const std::string& schema_path) {
+    emulator_specs::emulator_specs(const nlohmann::json &spec_obj) {
 
         try{
-            fcore::schema_validator_base validator(schema_path);
+            fcore::schema_validator_base validator(emulator_input);
             validator.validate(spec_obj);
         } catch(std::invalid_argument &ex){
             throw std::runtime_error("Failed to validate emulator schema");

@@ -76,7 +76,6 @@ static nlohmann::json prepare_spec(
         in_obj["name"] = inputs[i].name;
         in_obj["type"] = inputs[i].type;
         in_obj["reg_n"] = i;
-        in_obj["register_type"] = "scalar";
         in_obj["channel"] = 0;
         in_obj["source"] = nlohmann::json();
         in_obj["source"]["type"] = "constant";
@@ -91,7 +90,6 @@ static nlohmann::json prepare_spec(
         out_obj["name"] = outputs[i].name;
         out_obj["type"] = outputs[i].type;
         out_obj["reg_n"] = {10 + i};
-        out_obj["register_type"] = "scalar";
         cs["program"]["build_settings"]["io"]["outputs"].push_back(outputs[i].name);
         cs["outputs"].push_back(out_obj);
     }

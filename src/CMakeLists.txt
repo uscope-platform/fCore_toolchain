@@ -183,7 +183,6 @@ if(${INCLUDE_EMULATOR})
             spdlog::spdlog
             CLI11::CLI11
     )
-    target_compile_definitions(fCore_emu_gp PRIVATE SCHEMAS_FOLDER="${schema_folder}")
 
     target_link_libraries(fcore_emu_lib PUBLIC
             Ip_floating_point_v7_1_bitacc_cmodel
@@ -206,11 +205,6 @@ target_link_libraries(fCore_emu
         spdlog::spdlog
         CLI11::CLI11
 )
-
-target_compile_definitions(fcore_cc_lib PRIVATE SCHEMAS_FOLDER="${schema_folder}")
-target_compile_definitions(fcore_emu_lib PRIVATE SCHEMAS_FOLDER="${schema_folder}")
-target_compile_definitions(fCore_emu PRIVATE SCHEMAS_FOLDER="${schema_folder}")
-target_compile_definitions(fCore_cc PRIVATE SCHEMAS_FOLDER="${schema_folder}")
 
 add_custom_target(toolchain)
 add_dependencies(toolchain fCore_has fCore_cc fCore_dis fCore_emu)

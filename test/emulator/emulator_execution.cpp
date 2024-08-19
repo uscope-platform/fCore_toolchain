@@ -28,7 +28,7 @@ TEST(Emulator_execution, emulator_load) {
 
     auto spec = prepare_spec(program, 1,
                              {}, {{"test", "float"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -43,7 +43,7 @@ TEST(Emulator_execution, emulator_add) {
 
     auto spec = prepare_spec(program, 1,
      {{"a", 2.3,"float"},{"b", 1.5, "float"}}, {{"test", "float"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -58,7 +58,7 @@ TEST(Emulator_execution, emulator_sub) {
 
     auto spec = prepare_spec(program, 1,
                              {{"a", 2.3,"float"},{"b", 1.5, "float"}}, {{"test", "float"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -71,7 +71,7 @@ TEST(Emulator_execution, emulator_mul) {
 
     auto spec = prepare_spec(program, 1,
                              {{"a", 2.3,"float"},{"b", 1.5, "float"}}, {{"test", "float"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -85,7 +85,7 @@ TEST(Emulator_execution, emulator_rec) {
 
     auto spec = prepare_spec(program, 1,
                              {{"a", 2,"float"}}, {{"test", "float"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -98,7 +98,7 @@ TEST(Emulator_execution, emulator_itf) {
 
     auto spec = prepare_spec(program, 1,
                              {{"a", 2,"integer"}}, {{"test", "float"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -112,7 +112,7 @@ TEST(Emulator_execution, emulator_fti) {
 
     auto spec = prepare_spec(program, 1,
                              {{"a", 2.3,"float"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -126,7 +126,7 @@ TEST(Emulator_execution, emulator_and) {
 
     auto spec = prepare_spec(program, 1,
                              {{"a", 0x5,"integer"}, {"b", 0xd,"integer"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -140,7 +140,7 @@ TEST(Emulator_execution, emulator_or) {
 
     auto spec = prepare_spec(program, 1,
                              {{"a", 0x5,"integer"}, {"b", 0xA,"integer"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -154,7 +154,7 @@ TEST(Emulator_execution, emulator_not) {
 
     auto spec = prepare_spec(program, 1,
                              {{"a", 0x210C,"integer"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -170,7 +170,7 @@ TEST(Emulator_execution, emulator_satn) {
 
     auto spec = prepare_spec(program, 1,
                              {{"a", -10,"float"}}, {{"test", "float"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -179,7 +179,7 @@ TEST(Emulator_execution, emulator_satn) {
 
     spec = prepare_spec(program, 1,
                              {{"a", -3,"float"}}, {{"test", "float"}}, {});
-    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
     res_obj = nlohmann::json::parse(manager.get_results());
@@ -194,7 +194,7 @@ TEST(Emulator_execution, emulator_satp) {
 
     auto spec = prepare_spec(program, 1,
                              {{"a", 10,"float"}}, {{"test", "float"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -202,7 +202,7 @@ TEST(Emulator_execution, emulator_satp) {
     EXPECT_NEAR(result, 5, 1e-6);
     spec = prepare_spec(program, 1,
                         {{"a", 3,"float"}}, {{"test", "float"}}, {});
-    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
     res_obj = nlohmann::json::parse(manager.get_results());
@@ -216,7 +216,7 @@ TEST(Emulator_execution, emulator_beq) {
 
     auto spec = prepare_spec(program, 1,
                              {{"a", 10.0,"float"}, {"b", 10.0,"float"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -225,7 +225,7 @@ TEST(Emulator_execution, emulator_beq) {
 
     spec = prepare_spec(program, 1,
                         {{"a", 10.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
-    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
     res_obj = nlohmann::json::parse(manager.get_results());
@@ -241,7 +241,7 @@ TEST(Emulator_execution, emulator_bne) {
 
     auto spec = prepare_spec(program, 1,
                              {{"a", 15.0,"float"}, {"b", 10.0,"float"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -250,7 +250,7 @@ TEST(Emulator_execution, emulator_bne) {
 
     spec = prepare_spec(program, 1,
                         {{"a", 5.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
-    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
     res_obj = nlohmann::json::parse(manager.get_results());
@@ -266,7 +266,7 @@ TEST(Emulator_execution, emulator_bgt) {
 
     auto spec = prepare_spec(program, 1,
                              {{"a", 15.0,"float"}, {"b", 10.0,"float"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -275,7 +275,7 @@ TEST(Emulator_execution, emulator_bgt) {
 
     spec = prepare_spec(program, 1,
                         {{"a", 5.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
-    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
     res_obj = nlohmann::json::parse(manager.get_results());
@@ -290,7 +290,7 @@ TEST(Emulator_execution, emulator_ble) {
 
     auto spec = prepare_spec(program, 1,
                              {{"a", 5.0,"float"}, {"b", 10.0,"float"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -299,7 +299,7 @@ TEST(Emulator_execution, emulator_ble) {
 
     spec = prepare_spec(program, 1,
                         {{"a", 5.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
-    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
     res_obj = nlohmann::json::parse(manager.get_results());
@@ -308,7 +308,7 @@ TEST(Emulator_execution, emulator_ble) {
 
     spec = prepare_spec(program, 1,
                         {{"a", 15.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
-    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
     res_obj = nlohmann::json::parse(manager.get_results());
@@ -331,14 +331,13 @@ TEST(Emulator_execution, emulator_efi) {
     out_obj["name"] = "sort_output";
     out_obj["type"] = "float";
     out_obj["reg_n"] = {5, 6, 7};
-    out_obj["register_type"] = "vector";
     spec["cores"][0]["program"]["build_settings"]["io"]["outputs"].push_back("sort_output");
     spec["cores"][0]["outputs"].push_back(out_obj);
 
     spec["cores"][0]["options"]["efi_implementation"] = "efi_sort";
 
     std::string dbg = spec.dump();
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto result = manager.get_memory_snapshot("test", 0);
@@ -353,7 +352,7 @@ TEST(Emulator_execution, emulator_bset) {
 
     auto spec = prepare_spec(program, 1,
                              {{"a", 5,"integer"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -364,7 +363,7 @@ TEST(Emulator_execution, emulator_bset) {
 
     spec = prepare_spec(program, 1,
                              {{"a", 5,"integer"}}, {{"test", "integer"}}, {});
-    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
     res_obj = nlohmann::json::parse(manager.get_results());
@@ -380,7 +379,7 @@ TEST(Emulator_execution, emulator_csel) {
     auto spec = prepare_spec(program, 1,
                              {{"a", 2,"float"}}, {{"test", "float"}}, {});
 
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -389,7 +388,7 @@ TEST(Emulator_execution, emulator_csel) {
 
     spec = prepare_spec(program, 1,
                         {{"a", -1,"float"}}, {{"test", "float"}}, {});
-    manager = emulator_manager(spec, false,SCHEMAS_FOLDER);
+    manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
     res_obj = nlohmann::json::parse(manager.get_results());

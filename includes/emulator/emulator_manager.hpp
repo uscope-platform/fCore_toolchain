@@ -56,7 +56,7 @@ namespace fcore{
 
     class emulator_manager {
     public:
-        emulator_manager(nlohmann::json &spec_file, bool dbg, const std::string& s_f);
+        emulator_manager(nlohmann::json &spec_file, bool dbg);
         void process();
         void emulate();
 

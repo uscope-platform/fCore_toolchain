@@ -31,8 +31,7 @@ int main(int argc, char **argv) {
     std::ifstream ifs(input_file);
     nlohmann::json spec = nlohmann::json::parse(ifs);
     try{
-        std::string s_f = SCHEMAS_FOLDER;
-        fcore::schema_validator_base validator(  s_f + "/compiler_spec_schema.json");
+        fcore::schema_validator_base validator(fcore::compiler_input);
         validator.validate(spec);
     } catch(std::invalid_argument &ex){
         exit(-1);

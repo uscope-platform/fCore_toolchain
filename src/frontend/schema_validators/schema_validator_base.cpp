@@ -15,16 +15,18 @@
 
 #include "frontend/schema_validators/schema_validator_base.h"
 
-fcore::schema_validator_base::schema_validator_base(const std::string& schema_file) {
-    if(!std::filesystem::exists(schema_file)){
-        std::string err_msg = "JSON schema file not found: " + schema_file;
-        spdlog::critical(err_msg);
-        throw std::invalid_argument(err_msg);
-    }
+fcore::schema_validator_base::schema_validator_base(const json_type& schema_type) {
 
     nlohmann::json chosen_schema_doc;
-    if (!valijson::utils::loadDocument(schema_file, chosen_schema_doc)) {
-        throw std::runtime_error("Failed to load schema document");
+
+    switch (schema_type) {
+        case compiler_input:
+            chosen_schema_doc = nlohmann::json::parse(compiler_schema);
+            break;
+        case emulator_input:
+            chosen_schema_doc = nlohmann::json::parse(emulator_schema);
+            break;
+
     }
 
     valijson::SchemaParser parser;

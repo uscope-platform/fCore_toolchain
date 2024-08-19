@@ -32,8 +32,6 @@ target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES}
         )
 
 
-target_compile_definitions(test_target PRIVATE SCHEMAS_FOLDER="${schema_folder}")
-
 
 include(GoogleTest)
 gtest_discover_tests(test_target)

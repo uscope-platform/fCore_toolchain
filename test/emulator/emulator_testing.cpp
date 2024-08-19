@@ -25,7 +25,7 @@ TEST(Emulator, emulator_executable_format) {
 
     std::ifstream ifs("emu/test_exec_format.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager(specs, false, SCHEMAS_FOLDER);
+    emulator_manager manager(specs, false);
     manager.process();
     manager.emulate();
     auto res_obj = nlohmann::json::parse(manager.get_results());
@@ -45,7 +45,7 @@ TEST(Emulator, emulator_compile_error) {
 
     EXPECT_THROW({
         try{
-            emulator_manager manager(specs, false, SCHEMAS_FOLDER);
+            emulator_manager manager(specs, false);
             manager.process();
         }
         catch( const std::runtime_error& e ) {
@@ -110,7 +110,7 @@ TEST(Emulator, emulator_inputs) {
     spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_2");
     spec["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("out");
 
-    emulator_manager manager(spec, false,SCHEMAS_FOLDER);
+    emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
     auto result = manager.get_memory_snapshot("test", 0);
@@ -123,7 +123,7 @@ TEST(Emulator, emulator_outputs) {
 
     std::ifstream ifs("emu/test_inputs_spec.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    emulator_manager manager(specs, false);
     manager.process();
     manager.emulate();
     auto res = nlohmann::json::parse(manager.get_results())["test"];
@@ -138,7 +138,7 @@ TEST(Emulator, emulator_inteconnect) {
 
     std::ifstream ifs("emu/test_interconnect_spec.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    emulator_manager manager(specs, false);
     manager.process();
     manager.emulate();
     auto res = nlohmann::json::parse(manager.get_results())["test_consumer"];
@@ -153,7 +153,7 @@ TEST(Emulator, emulator_compilation) {
 
     std::ifstream ifs("emu/test_compilation.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    emulator_manager manager(specs, false);
     manager.process();
     manager.emulate();
     auto res = nlohmann::json::parse(manager.get_results())["test"];
@@ -167,7 +167,7 @@ TEST(Emulator, emulator_compilation_interconnect) {
 
     std::ifstream ifs("emu/test_compilation_interconnect.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    emulator_manager manager(specs, false);
     manager.process();
     manager.emulate();
     auto res = nlohmann::json::parse(manager.get_results());
@@ -185,7 +185,7 @@ TEST(Emulator, emulator_compilation_memory) {
 
     std::ifstream ifs("emu/test_compilation_memory.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    emulator_manager manager(specs, false);
     manager.process();
     manager.emulate();
     auto res = nlohmann::json::parse(manager.get_results())["test"];
@@ -271,7 +271,7 @@ TEST(Emulator, emulator_header) {
 })");
 
 
-    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    emulator_manager manager(specs, false);
     manager.process();
     manager.emulate();
 
@@ -381,7 +381,7 @@ TEST(Emulator, emulator_multichannel) {
 })");
 
 
-    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    emulator_manager manager(specs, false);
     manager.process();
     manager.emulate();
 
@@ -496,7 +496,7 @@ TEST(Emulator, emulator_multichannel_input_file) {
 )");
 
 
-    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    emulator_manager manager(specs, false);
     manager.process();
     manager.emulate();
 
@@ -619,7 +619,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
 })");
 
 
-    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    emulator_manager manager(specs, false);
     manager.process();
     manager.emulate();
 
@@ -719,7 +719,7 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
     })");
 
 
-    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    emulator_manager manager(specs, false);
     manager.process();
     manager.emulate();
 
@@ -818,7 +818,7 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
     })");
 
 
-    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    emulator_manager manager(specs, false);
     manager.process();
 
 
@@ -932,7 +932,7 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
     })");
 
 
-    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    emulator_manager manager(specs, false);
     manager.process();
     manager.emulate();
 
@@ -1030,7 +1030,7 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
     })");
 
 
-    emulator_manager manager(specs, false,SCHEMAS_FOLDER);
+    emulator_manager manager(specs, false);
     manager.process();
     manager.emulate();
 
