@@ -24,7 +24,11 @@
       "inputs": [
         {
           "name": "input_1",
-          "type": "float",
+          "metadata": {
+            "type": "float",
+            "width": 32,
+            "signed": false
+          },
           "source": {
             "type":"file",
             "file": "file_1",
@@ -37,7 +41,11 @@
       "outputs": [
         {
           "reg_n":[4],
-          "type":"float",
+          "metadata": {
+            "type": "float",
+            "width": 32,
+            "signed": false
+          },
           "name":"out"
         }
       ],

@@ -80,7 +80,11 @@ TEST(Emulator, emulator_inputs) {
 
     auto in = nlohmann::json();
     in["name"] = "input_1";
-    in["type"] = "float";
+
+    in["metadata"] = nlohmann::json();
+    in["metadata"]["type"] = "float";
+    in["metadata"]["width"] = 12;
+    in["metadata"]["signed"] = true;
     in["reg_n"] = 1;
     in["source"] = nlohmann::json();
     in["source"]["type"] = "file";
@@ -99,7 +103,9 @@ TEST(Emulator, emulator_inputs) {
 
     auto MEM = nlohmann::json();
     in["name"] = "out";
-    in["type"] = "float";
+    in["metadata"]["type"] = "float";
+    in["metadata"]["width"] = 12;
+    in["metadata"]["signed"] = true;
     in["reg_n"] = 4;
     in["is_output"] = true;
     in["value"] = 0;
@@ -209,7 +215,11 @@ TEST(Emulator, emulator_header) {
             "inputs": [
                 {
                     "name": "input_1",
-                    "type": "float",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false
+                    },
                     "source": {
                         "type": "constant",
                         "value": [5]
@@ -219,7 +229,11 @@ TEST(Emulator, emulator_header) {
                 },
                 {
                     "name": "input_2",
-                    "type": "float",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false
+                    },
                     "source": {
                         "type": "constant",
                         "value": [4]
@@ -231,7 +245,11 @@ TEST(Emulator, emulator_header) {
             "outputs": [
                 {
                     "name": "out",
-                    "type": "float",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false
+                    },
                     "reg_n": [5]
                 }
             ],
@@ -297,7 +315,11 @@ TEST(Emulator, emulator_multichannel) {
             "inputs": [
                 {
                     "name": "input_1",
-                    "type": "float",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false
+                    },
                     "source": {
                         "type": "constant",
                         "value": [
@@ -317,7 +339,11 @@ TEST(Emulator, emulator_multichannel) {
                 },
                 {
                     "name": "input_2",
-                    "type": "float",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false
+                    },
                     "source": {
                         "type": "constant",
                         "value": [
@@ -339,7 +365,11 @@ TEST(Emulator, emulator_multichannel) {
             "outputs": [
                 {
                     "name": "out",
-                    "type": "float",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false
+                    },
                     "reg_n": [
                         5
                     ]
@@ -443,7 +473,11 @@ TEST(Emulator, emulator_multichannel_input_file) {
             "inputs":[
                 {
                     "name": "input_1",
-                    "type": "float",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false
+                    },
                     "reg_n": 3,
                     "channel":[0,1,2,3],
                     "source":{
@@ -454,7 +488,11 @@ TEST(Emulator, emulator_multichannel_input_file) {
                 },
                 {
                     "name": "input_2",
-                    "type": "float",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false
+                    },
                     "reg_n": 4,
                     "channel":[0,1,2,3],
                     "source":{
@@ -466,7 +504,11 @@ TEST(Emulator, emulator_multichannel_input_file) {
             "outputs":[
                 {
                     "name":"out",
-                    "type":"float",
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false
+                    },
                     "reg_n":[5]
                 }
             ],
@@ -540,20 +582,38 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
             "inputs":[
                 {
                     "name": "input_1",
-                    "type": "float",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false
+                    },
                     "reg_n": 3,
                     "channel":[0,1],
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 },
                 {
                     "name": "input_2",
-                    "type": "float",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false
+                    },
                     "reg_n": 4,
                     "channel":[0,1],
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 }
             ],
-            "outputs":[ { "name":"out", "type":"float", "reg_n":[5]}],
+            "outputs":[
+                {
+                    "name":"out",
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false
+                    },
+                    "reg_n":[5]
+                }
+            ],
             "memory_init":[],
             "program": {
                 "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = input_1 + input_2;\n}",
@@ -577,7 +637,17 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
             "sampling_frequency":1,
             "input_data":[],
             "inputs":[],
-            "outputs":[ { "name":"out", "type":"float", "reg_n":[5]}],
+            "outputs":[
+                {
+                    "name":"out",
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false
+                    },
+                    "reg_n":[5]
+                }
+            ],
             "memory_init":[],
             "program": {
                 "content": "int main(){\n    float input_data[2];\n    float out = input_data[0] + input_data[1];\n}\n",
@@ -677,7 +747,17 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
                 "sampling_frequency":1,
                 "input_data":[],
                 "inputs":[],
-                "outputs":[ { "name":"out", "type":"float", "reg_n":[5]}],
+                "outputs":[
+                    {
+                        "name":"out",
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": false
+                        },
+                        "reg_n":[5]
+                    }
+                ],
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float input;float out = input*3.5;\n}",
@@ -752,7 +832,17 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
                 "sampling_frequency":1,
                 "input_data":[],
                 "inputs":[],
-                "outputs":[ { "name":"out", "type":"float", "reg_n":[5,6]}],
+                "outputs":[
+                    {
+                        "name":"out",
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": false
+                        },
+                        "reg_n":[5,6]
+                    }
+                ],
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float out[2] = {15.6, 17.2};\n}",
@@ -776,7 +866,17 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
                 "sampling_frequency":1,
                 "input_data":[],
                 "inputs":[],
-                "outputs":[ { "name":"out", "type":"float", "reg_n":[5]}],
+                "outputs":[
+                    {
+                        "name":"out",
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": false
+                        },
+                        "reg_n":[5]
+                    }
+                ],
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float input;float out = input*3.5;\n}",
@@ -853,14 +953,22 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
                 "inputs":[
                     {
                         "name": "input_1",
-                        "type": "float",
+                        "metadata":{
+                            "type": "float",
+                            "width": 24,
+                            "signed":false
+                        },
                         "reg_n": 3,
                         "channel":[0,1],
                         "source":{"type": "constant","value": [31.2, 32.7]}
                     },
                     {
                         "name": "input_2",
-                        "type": "float",
+                        "metadata":{
+                            "type": "float",
+                            "width": 24,
+                            "signed":false
+                        },
                         "reg_n": 4,
                         "channel":[0,1],
                         "source":{"type": "constant","value": [31.2, 32.7]}
@@ -890,7 +998,17 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
                 "sampling_frequency":1,
                 "input_data":[],
                 "inputs":[],
-                "outputs":[ { "name":"out", "type":"float", "reg_n":[7]}],
+                "outputs":[
+                    {
+                        "name":"out",
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": false
+                        },
+                        "reg_n":[7]
+                    }
+                ],
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float input;float out = input*3.5;\n}",
@@ -987,7 +1105,17 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
                 "sampling_frequency":1,
                 "input_data":[],
                 "inputs":[],
-                "outputs":[ { "name":"consumer_out", "type":"float", "reg_n":[7,8]}],
+                "outputs":[
+                    {
+                        "name":"consumer_out",
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": false
+                        },
+                        "reg_n":[7,8]
+                    }
+                ],
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float input[2]; \n  float consumer_out[2]; \n  consumer_out[0] = input[0]*3.5; \n  consumer_out[1] = input[1]*3.5;\n}",

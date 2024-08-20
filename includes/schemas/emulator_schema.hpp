@@ -95,7 +95,7 @@ const std::string emulator_schema = R"~(
               "required": [
                 "reg_n",
                 "channel",
-                "type",
+                "metadata",
                 "source",
                 "name"
               ],
@@ -130,9 +130,32 @@ const std::string emulator_schema = R"~(
                     }
                   ]
                 },
-                "type": {
-                  "type": "string",
-                  "title": "Type for the input"
+                "metadata": {
+                  "type": "object",
+                  "title": "Object describing the raw data format on the wire",
+                  "required": [
+                    "type",
+                    "width",
+                    "signed"
+                  ],
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "float",
+                        "integer"
+                      ],
+                      "title": "type to use for the output"
+                    },
+                    "width": {
+                      "type": "integer",
+                      "title": "Size of the data on the wire"
+                    },
+                    "signed": {
+                      "type": "boolean",
+                      "title": "flag indicating whether the data is signed"
+                    }
+                  }
                 },
                 "name": {
                   "type": "string",
@@ -223,7 +246,7 @@ const std::string emulator_schema = R"~(
               "title": "Object describing a single emulation output",
               "required": [
                 "reg_n",
-                "type",
+                "metadata",
                 "name"
               ],
               "properties": {
@@ -234,13 +257,32 @@ const std::string emulator_schema = R"~(
                     "type": "integer"
                   }
                 },
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "float",
-                    "integer"
+                "metadata": {
+                  "type": "object",
+                  "title": "Object describing the raw data format on the wire",
+                  "required": [
+                    "type",
+                    "width",
+                    "signed"
                   ],
-                  "title": "type to use for the output"
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "float",
+                        "integer"
+                      ],
+                      "title": "type to use for the output"
+                    },
+                    "width": {
+                      "type": "integer",
+                      "title": "Size of the data on the wire"
+                    },
+                    "signed": {
+                      "type": "boolean",
+                      "title": "flag indicating whether the data is signed"
+                    }
+                  }
                 },
                 "name": {
                   "type": "string",
@@ -259,7 +301,7 @@ const std::string emulator_schema = R"~(
               "required": [
                 "reg_n",
                 "value",
-                "type",
+                "metadata",
                 "name"
               ],
               "properties": {
@@ -293,9 +335,32 @@ const std::string emulator_schema = R"~(
                     }
                   ]
                 },
-                "type": {
-                  "type": "string",
-                  "title": "Type of the value to use for initialization"
+                "metadata": {
+                  "type": "object",
+                  "title": "Object describing the raw data format on the wire",
+                  "required": [
+                    "type",
+                    "width",
+                    "signed"
+                  ],
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "float",
+                        "integer"
+                      ],
+                      "title": "type to use for the output"
+                    },
+                    "width": {
+                      "type": "integer",
+                      "title": "Size of the data on the wire"
+                    },
+                    "signed": {
+                      "type": "boolean",
+                      "title": "flag indicating whether the data is signed"
+                    }
+                  }
                 },
                 "name": {
                   "type": "string",

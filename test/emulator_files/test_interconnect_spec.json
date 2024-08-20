@@ -24,7 +24,11 @@
       "inputs": [
         {
           "name": "input_1",
-          "type": "float",
+          "metadata": {
+            "type": "float",
+            "width": 32,
+            "signed": false
+          },
           "reg_n": 1,
           "source": {
             "type":"file",
@@ -35,7 +39,11 @@
         },
         {
           "name": "input_2",
-          "type": "float",
+          "metadata": {
+            "type": "float",
+            "width": 32,
+            "signed": false
+          },
           "reg_n": 2,
           "source": {
             "type":"file",
@@ -68,7 +76,11 @@
       "memory_init": [
         {
           "name": "producer_out",
-          "type": "float",
+          "metadata": {
+            "type": "float",
+            "width": 32,
+            "signed": false
+          },
           "is_output": true,
           "reg_n": 4,
           "value": 0
@@ -94,7 +106,11 @@
       "outputs": [
         {
           "reg_n":[8],
-          "type":"integer",
+          "metadata": {
+            "type": "integer",
+            "width": 32,
+            "signed": false
+          },
           "name":"consumer_out"
         }
       ],

@@ -24,7 +24,11 @@
       "inputs": [
         {
           "name": "input_1",
-          "type": "float",
+          "metadata": {
+            "type": "float",
+            "width": 32,
+            "signed": false
+          },
           "reg_n": 1,
           "source": {
             "type":"file",
@@ -35,7 +39,11 @@
         },
         {
           "name": "input_2",
-          "type": "float",
+          "metadata": {
+            "type": "float",
+            "width": 32,
+            "signed": false
+          },
           "source": {
             "type":"file",
             "file": "file_1",
@@ -48,7 +56,11 @@
       "outputs": [
         {
           "reg_n":[4],
-          "type":"integer",
+          "metadata": {
+            "type": "integer",
+            "width": 24,
+            "signed": false
+          },
           "name":"out"
         }
       ],
@@ -91,7 +103,11 @@
       "outputs": [
         {
           "reg_n":[5],
-          "type":"integer",
+          "metadata": {
+            "type": "integer",
+            "width": 15,
+            "signed": false
+          },
           "name":"out"
         }
       ],

@@ -35,10 +35,17 @@ namespace fcore::emulator {
         std::vector<std::string> headers;
     };
 
+
     typedef enum {
         type_float=0,
         type_uint=1
     } register_data_type;
+
+    struct iom_metadata {
+        register_data_type type;
+        uint16_t width;
+        bool is_signed;
+    };
 
     static std::unordered_map<std::string, register_data_type > data_type_map = {
             {"float", type_float},
@@ -69,13 +76,13 @@ namespace fcore::emulator {
 
     struct emulator_output_specs {
         std::string name;
-        register_data_type data_type;
+        iom_metadata metadata;
         std::vector<uint32_t> address;
     };
 
     struct emulator_input_specs {
         std::string name;
-        register_data_type data_type;
+        iom_metadata metadata;
         input_type source_type;
         std::vector<std::variant<std::vector<uint32_t>, std::vector<float>>> data;
         std::vector<uint32_t> address;
@@ -85,7 +92,7 @@ namespace fcore::emulator {
 
     struct emulator_memory_specs {
         std::string name;
-        register_data_type data_type;
+        iom_metadata metadata;
         bool is_output;
         std::vector<uint32_t> address;
         std::variant<std::vector<float>, std::vector<uint32_t>> value;

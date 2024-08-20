@@ -41,7 +41,11 @@
       "inputs": [
         {
           "name": "input_1",
-          "type": "float",
+          "metadata": {
+            "type": "float",
+            "width": 32,
+            "signed": false
+          },
           "reg_n": 15,
           "source": {
             "type": "file",
@@ -52,7 +56,11 @@
         },
         {
           "name": "input_2",
-          "type": "float",
+          "metadata": {
+            "type": "float",
+            "width": 32,
+            "signed": false
+          },
           "reg_n": 38,
           "source": {
             "type": "file",
@@ -67,7 +75,11 @@
           "reg_n": [
             42
           ],
-          "type": "float",
+          "metadata": {
+            "type": "float",
+            "width": 32,
+            "signed": false
+          },
           "name": "test_out"
         }
       ],

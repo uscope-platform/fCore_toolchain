@@ -50,7 +50,9 @@ namespace fcore::emulator {
 
     emulator_output_specs emulator_specs::process_output(const nlohmann::json &o) {
         emulator_output_specs out;
-        out.data_type = data_type_map[o["type"]];
+        out.metadata.type = data_type_map[o["metadata"]["type"]];
+        out.metadata.width = o["metadata"]["width"];
+        out.metadata.is_signed = o["metadata"]["signed"];
         out.name = o["name"];
         std::vector<uint32_t> addrs =  o["reg_n"];
         out.address = addrs;
@@ -62,7 +64,9 @@ namespace fcore::emulator {
 
 
         in.name = i["name"];
-        in.data_type = data_type_map[i["type"]];
+        in.metadata.type = data_type_map[i["metadata"]["type"]];
+        in.metadata.width = i["metadata"]["width"];
+        in.metadata.is_signed = i["metadata"]["signed"];
         in.source_type = input_type_map[i["source"]["type"]];
         if(in.source_type == external_input) {
             in.data = {};
@@ -82,7 +86,7 @@ namespace fcore::emulator {
             for(int j = 0; j<files.size(); j++){
                 auto sel_series =get_input_series(in_data, files[j], series[j]);
                 auto dbg = sel_series.dump();
-                if(in.data_type== type_float){
+                if(in.metadata.type== type_float){
                     std::vector<float> ds = sel_series;
                     in.data.emplace_back(ds);
                 } else {
@@ -92,7 +96,7 @@ namespace fcore::emulator {
             }
         } else {
             std::vector<std::variant<std::vector<unsigned int>, std::vector<float>>> ds;
-            if(in.data_type== type_float){
+            if(in.metadata.type== type_float){
                 if(i["source"]["value"].is_array()){
                     std::vector<float> v = i["source"]["value"];
                     for(auto &item:v){
@@ -165,7 +169,7 @@ namespace fcore::emulator {
                 emulator_output_specs os;
                 os.name = mem.name;
                 os.address = mem.address;
-                os.data_type = mem.data_type;
+                os.metadata = mem.metadata;
                 c.outputs.push_back(os);
             }
         }
@@ -242,7 +246,11 @@ namespace fcore::emulator {
         emulator_memory_specs mem;
 
         mem.name = m["name"];
-        mem.data_type = data_type_map[m["type"]];
+
+        mem.metadata.type = data_type_map[m["metadata"]["type"]];
+        mem.metadata.width = m["metadata"]["width"];
+        mem.metadata.is_signed = m["metadata"]["signed"];
+
         mem.is_output = m["is_output"];
         if(m["reg_n"].is_array()){
             mem.address = static_cast<std::vector<uint32_t>>(m["reg_n"]);
@@ -250,7 +258,7 @@ namespace fcore::emulator {
             mem.address = {m["reg_n"]};
         }
 
-        if(mem.data_type == type_float){
+        if(mem.metadata.type == type_float){
             std::vector<float> value;
             if(m["value"].is_array()){
                 value = static_cast<std::vector<float>>(m["value"]);

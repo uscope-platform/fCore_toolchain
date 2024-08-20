@@ -74,7 +74,10 @@ static nlohmann::json prepare_spec(
     for(int i = 0; i<inputs.size(); i++){
         nlohmann::json in_obj;
         in_obj["name"] = inputs[i].name;
-        in_obj["type"] = inputs[i].type;
+        in_obj["metadata"] = nlohmann::json();
+        in_obj["metadata"]["type"] = inputs[i].type;
+        in_obj["metadata"]["width"] = 32;
+        in_obj["metadata"]["signed"] = true;
         in_obj["reg_n"] = i;
         in_obj["channel"] = 0;
         in_obj["source"] = nlohmann::json();
@@ -88,7 +91,10 @@ static nlohmann::json prepare_spec(
     for(int i = 0; i<outputs.size(); i++){
         nlohmann::json out_obj;
         out_obj["name"] = outputs[i].name;
-        out_obj["type"] = outputs[i].type;
+        out_obj["metadata"] = nlohmann::json();
+        out_obj["metadata"]["type"] = outputs[i].type;
+        out_obj["metadata"]["width"] = 32;
+        out_obj["metadata"]["signed"] = true;
         out_obj["reg_n"] = {10 + i};
         cs["program"]["build_settings"]["io"]["outputs"].push_back(outputs[i].name);
         cs["outputs"].push_back(out_obj);
@@ -99,7 +105,10 @@ static nlohmann::json prepare_spec(
     for(int i = 0; i<memories.size(); i++){
         nlohmann::json mem_obj;
         mem_obj["name"] = memories[i].name;
-        mem_obj["type"] = memories[i].type;
+        mem_obj["metadata"] = nlohmann::json();
+        mem_obj["metadata"]["type"] = memories[i].type;
+        mem_obj["metadata"]["width"] = 32;
+        mem_obj["metadata"]["signed"] = true;
         mem_obj["reg_n"] = 20+i;
         mem_obj["is_output"] = false;
         mem_obj["value"] = memories[i].value;

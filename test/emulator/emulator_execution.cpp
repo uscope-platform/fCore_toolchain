@@ -330,6 +330,10 @@ TEST(Emulator_execution, emulator_efi) {
     nlohmann::json out_obj;
     out_obj["name"] = "sort_output";
     out_obj["type"] = "float";
+    out_obj["metadata"] = nlohmann::json();
+    out_obj["metadata"]["type"] = "float";
+    out_obj["metadata"]["width"] = 12;
+    out_obj["metadata"]["signed"] = true;
     out_obj["reg_n"] = {5, 6, 7};
     spec["cores"][0]["program"]["build_settings"]["io"]["outputs"].push_back("sort_output");
     spec["cores"][0]["outputs"].push_back(out_obj);

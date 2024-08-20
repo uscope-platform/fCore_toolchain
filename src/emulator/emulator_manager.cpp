@@ -148,7 +148,7 @@ namespace fcore {
 
                 if(core_reg != 0){
                     uint32_t input_val;
-                    if(in.data_type==emulator::type_float){
+                    if(in.metadata.type==emulator::type_float){
                         std::vector<float> in_vect = std::get<std::vector<float>>(in.data[channel]);
                         if(in.source_type == emulator::constant_input){
                             input_val = emulator_backend::float_to_uint32(in_vect[0]);
@@ -249,7 +249,7 @@ namespace fcore {
             } else {
                 throw std::runtime_error("unable to find input address in the core io map during memory initialization phase");
             }
-            if(item.data_type == emulator::type_float){
+            if(item.metadata.type == emulator::type_float){
                 auto values = std::get<std::vector<float>>(item.value);
                 ret[core_address] = emulator_backend::float_to_uint32(values[0]);
             } else {

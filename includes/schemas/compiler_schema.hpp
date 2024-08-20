@@ -21,7 +21,7 @@
 #include <string>
 
 
-constexpr std::string_view compiler_schema = R"(
+constexpr std::string_view compiler_schema = R"~(
 {
     "$schema": "https://json-schema.org/draft/2019-09/schema",
     "type": "object",
@@ -101,7 +101,7 @@ constexpr std::string_view compiler_schema = R"(
         }
     }
 }
-)";
+)~";
 
 
 #endif //FCORE_TOOLCHAIN_COMPILER_SCHEMA_CPP_HPP
