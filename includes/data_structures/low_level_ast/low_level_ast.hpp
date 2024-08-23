@@ -23,7 +23,6 @@
 #include "ll_independent_instr_node.hpp"
 #include "ll_conversion_instr_node.hpp"
 #include "ll_pseudo_instr_node.hpp"
-#include "ll_ast_pragma.hpp"
 #include "ll_ternary_instr_node.hpp"
 
 #endif //FCORE_TOOLCHAIN_LOW_LEVEL_AST_HPP

@@ -9,7 +9,6 @@ set(FCORE_COMMON_SRCS_I
         data_structures/low_level_ast/ll_intercalated_const_instr_node.cpp
         data_structures/low_level_ast/ll_load_constant_instr_node.cpp
         data_structures/low_level_ast/ll_pseudo_instr_node.cpp
-        data_structures/low_level_ast/ll_ast_pragma.cpp
         data_structures/low_level_ast/ll_ast_node.cpp
         data_structures/low_level_ast/ll_ternary_instr_node.cpp
         data_structures/instruction_stream.cpp

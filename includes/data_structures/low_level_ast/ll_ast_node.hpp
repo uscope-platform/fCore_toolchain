@@ -29,7 +29,6 @@ namespace fcore{
     typedef enum {
         ll_type_instr = 1,
         ll_type_program_head = 5,
-        ll_type_pragma = 6,
         ll_type_code_block = 7,
     } ll_ast_node_type_t;
 
@@ -37,7 +36,6 @@ namespace fcore{
         switch (i) {
             case ll_type_instr:return "ll_type_instr";
             case ll_type_program_head: return "ll_type_program_head";
-            case ll_type_pragma: return "ll_type_pragma";
             case ll_type_code_block: return "ll_type_code_block";
         }
         return "";

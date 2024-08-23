@@ -51,7 +51,7 @@ TEST(llPassesTest, pseudo_inst_pass) {
 
 
 TEST(llPassesTest, deep_copy_element) {
-    
+
     //TODO: Test a more realistic case
     std::shared_ptr<ll_independent_inst_node> level_2 = std::make_shared<ll_independent_inst_node>("nop");;
 
