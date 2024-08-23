@@ -1,11 +1,12 @@
-// Copyright 2021 University of Nottingham Ningbo China
-// Author: Filippo Savi <filssavi@gmail.com>
+
+
+//  Copyright 2024 Filippo Savi <filssavi@gmail.com>
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,15 +14,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "passes/low_level/pseudo_instructions_pass.hpp"
+#include "passes/instruction_stream/virtual_operations_implementation.hpp"
 
 
-fcore::pseudo_instructions_pass::pseudo_instructions_pass() : pass_base<ll_ast_node>("pseudo instruction implementation pass"){
+namespace fcore{
+virtual_operations_implementation::virtual_operations_implementation() : stream_pass_base("virtual operations implementation pass", 1) {
 
 }
 
-std::shared_ptr<fcore::ll_ast_node> fcore::pseudo_instructions_pass::process_leaf(std::shared_ptr<ll_ast_node> element) {
-    std::shared_ptr<ll_ast_node> ret_val = element;
+std::shared_ptr<ll_instruction_node>virtual_operations_implementation::apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) {
+
+    std::shared_ptr<ll_instruction_node> ret_val = element;
     if(element->type == ll_type_instr){
         std::shared_ptr<ll_instruction_node> node = std::static_pointer_cast<ll_instruction_node>(element);
         if (node->is_pseudo()){
@@ -53,9 +56,16 @@ std::shared_ptr<fcore::ll_ast_node> fcore::pseudo_instructions_pass::process_lea
                 case isa_load_constant_instruction:
                     ret_val = std::make_shared<ll_load_constant_instr_node>(new_opcode, arguments[0], arguments[1]);
                     break;
+                default:
+                    break;
             }
         }
     }
 
     return ret_val;
+
+
+
+}
+
 }

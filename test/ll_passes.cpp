@@ -21,6 +21,8 @@
 #include "backend/binary_generator.hpp"
 #include "tools/instruction_stream_builder.hpp"
 #include "data_structures/instruction_stream.hpp"
+#include "passes/instruction_stream/stream_pass_manager.hpp"
+#include "fcore_cc.hpp"
 
 using namespace fcore;
 
@@ -42,6 +44,13 @@ TEST(llPassesTest, pseudo_inst_pass) {
     binary_generator writer;
 
     instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
+
+    auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
+    std::shared_ptr<io_map> allocation_map;
+
+    stream_pass_manager sman(0, bindings_map, allocation_map);
+    program_stream = sman.process_stream(program_stream);
+
     writer.process_stream(program_stream, false);
 
     std::vector<uint32_t> result = writer.get_code();

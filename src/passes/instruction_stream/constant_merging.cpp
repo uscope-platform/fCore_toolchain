@@ -15,7 +15,6 @@
 
 #include "passes/instruction_stream/constant_merging.hpp"
 
-#include <utility>
 
 fcore::constant_merging::constant_merging(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam) :
 stream_pass_base("constant merging pass", 1){

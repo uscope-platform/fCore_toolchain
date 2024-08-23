@@ -21,9 +21,9 @@
 namespace fcore{
     class stream_pass_base {
     public:
-        explicit stream_pass_base(std::string n, uint32_t ns) {
-            name = std::move(n);
-            n_scans = ns;
+        explicit stream_pass_base(std::string name, uint32_t n_scans) {
+            this->name = std::move(name);
+            this->n_scans = n_scans;
         };
 
         virtual void setup() {};

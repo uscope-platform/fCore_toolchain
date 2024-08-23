@@ -17,8 +17,10 @@
 #define FCORE_TOOLCHAIN_CONSTANT_MERGING_H
 
 #include "stream_pass_base.hpp"
+
 #include <unordered_map>
 #include <set>
+#include <utility>
 
 namespace fcore{
     class constant_merging : public stream_pass_base {

@@ -32,6 +32,7 @@
 #include "passes/instruction_stream/io_constant_tracking.hpp"
 #include "passes/instruction_stream/ternary_reduction.hpp"
 #include "passes/instruction_stream/instruction_counting_pass.hpp"
+#include "passes/instruction_stream/virtual_operations_implementation.hpp"
 #include "data_structures/common/memory_tracker.hpp"
 
 namespace fcore{

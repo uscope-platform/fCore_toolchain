@@ -41,6 +41,7 @@ fcore::stream_pass_manager::constructs_pass_manager(int dal,
     dump_ast_level = dal;
     std::shared_ptr<variable_map> var_map = std::make_shared<variable_map>();
     auto  io_assignment_map = std::make_shared<std::unordered_map<std::string, std::pair<int, int>>>();
+    passes.push_back(std::make_shared<virtual_operations_implementation>());
     passes.push_back(std::make_shared<ternary_reduction>());
     passes.push_back(std::make_shared<io_constant_tracking>(io_assignment_map));
     passes.push_back(std::make_shared<constant_merging>(io_assignment_map));
@@ -51,7 +52,7 @@ fcore::stream_pass_manager::constructs_pass_manager(int dal,
     passes.push_back(std::make_shared<bound_register_mapping_pass>());
     passes.push_back(std::make_shared<instruction_counting_pass>(ic));
 
-    enabled_passes = {true, true, true, true, true, true, true, false, true};
+    enabled_passes = {true, true, true, true, true, true, true, true, false, true};
 
 
 }
