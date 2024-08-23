@@ -151,52 +151,6 @@ void fcore::AsmTree_visitor::exitLoad_instr(asm_parser::asm_grammarParser::Load_
 
 }
 
-void fcore::AsmTree_visitor::enterFor_block(asm_parser::asm_grammarParser::For_blockContext *ctx) {
-
-    parent_elements.push(current_element);
-    current_element = std::make_shared<ll_ast_node>(ll_type_for_block);
-
-}
-void fcore::AsmTree_visitor::exitFor_block(asm_parser::asm_grammarParser::For_blockContext *ctx) {
-    //Process loop initialization
-    std::shared_ptr<ll_loop_node> loop = std::make_shared<ll_loop_node>();
-
-    loop_start_t start;
-    start.variable = ctx->for_decl()->Identifier()->getText();
-    start.starting_value = std::stoi(ctx->for_decl()->Integer()->getText(), nullptr, 0);
-
-    loop->set_loop_start(start);
-
-    //Process advancement expression
-    asm_parser::asm_grammarParser::For_incrContext *for_incr = ctx->for_incr();
-    loop_advance_t adv;
-    adv.loop_increment = 1;
-    adv.direction = for_incr != nullptr; // variable increment -> direction true; variable decrement -> direction false;
-
-    loop->set_advance(adv);
-
-    //Process end condition
-    loop_end_t end;
-    end.condition = ctx->for_end()->for_end_comp_type()->getText();
-    end.end_count =std::stoi(ctx->for_end()->Integer()->getText(), nullptr, 0);
-
-    loop->set_loop_end(end);
-
-    loop->set_loop_start(start);
-    loop->set_loop_end(end);
-    loop->set_advance(adv);
-
-    loop->set_content(current_element->get_content());
-
-    //add current element to the  AST
-    std::shared_ptr<ll_ast_node> tmp_parent = parent_elements.top();
-    parent_elements.pop();
-
-    current_element = tmp_parent;
-    current_element->add_content(loop);
-}
-
-
 void fcore::AsmTree_visitor::enterProgram(asm_parser::asm_grammarParser::ProgramContext *ctx) {
     current_element = std::make_shared<ll_ast_node>(ll_type_program_head);
 }
@@ -207,11 +161,6 @@ void fcore::AsmTree_visitor::exitProgram(asm_parser::asm_grammarParser::ProgramC
 
 std::shared_ptr<fcore::ll_ast_node> fcore::AsmTree_visitor::get_program() {
     return program_head;
-}
-
-void fcore::AsmTree_visitor::exitPragma(asm_parser::asm_grammarParser::PragmaContext *ctx) {
-    std::shared_ptr<ll_ast_pragma> node = std::make_shared<ll_ast_pragma>(ctx->Identifier()->getText());
-    current_element->add_content(node);
 }
 
 void fcore::AsmTree_visitor::exitConstant_decl(asm_parser::asm_grammarParser::Constant_declContext *ctx) {

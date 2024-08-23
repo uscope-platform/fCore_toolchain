@@ -41,11 +41,8 @@ namespace fcore{
         void exitBranch_instr(asm_parser::asm_grammarParser::Branch_instrContext * ctx) override;
         void exitConv_instr(asm_parser::asm_grammarParser::Conv_instrContext *ctx) override;
         void exitLoad_instr(asm_parser::asm_grammarParser::Load_instrContext *ctx) override;
-        void enterFor_block(asm_parser::asm_grammarParser::For_blockContext * ctx) override;
-        void exitFor_block(asm_parser::asm_grammarParser::For_blockContext * ctx) override;
         void exitProgram(asm_parser::asm_grammarParser::ProgramContext * ctx) override;
         void enterProgram(asm_parser::asm_grammarParser::ProgramContext *ctx) override;
-        void exitPragma(asm_parser::asm_grammarParser::PragmaContext *ctx) override;
         void exitConstant_decl(asm_parser::asm_grammarParser::Constant_declContext *ctx) override;
         void exitVariable_decl(asm_parser::asm_grammarParser::Variable_declContext *ctx) override;
         void exitInput_decl(asm_parser::asm_grammarParser::Input_declContext *ctx) override;

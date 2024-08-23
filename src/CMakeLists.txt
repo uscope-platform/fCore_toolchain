@@ -9,7 +9,6 @@ set(FCORE_COMMON_SRCS_I
         data_structures/low_level_ast/ll_intercalated_const_instr_node.cpp
         data_structures/low_level_ast/ll_load_constant_instr_node.cpp
         data_structures/low_level_ast/ll_pseudo_instr_node.cpp
-        data_structures/low_level_ast/ll_loop_node.cpp
         data_structures/low_level_ast/ll_ast_pragma.cpp
         data_structures/low_level_ast/ll_ast_node.cpp
         data_structures/low_level_ast/ll_ternary_instr_node.cpp
@@ -23,7 +22,6 @@ set(FCORE_COMMON_SRCS_I
         tools/define_map.cpp
         tools/array_linearizer.cpp
         passes/low_level/ll_pass_manager.cpp
-        passes/low_level/loop_implementation_pass.cpp
         passes/low_level/pseudo_instructions_pass.cpp
         passes/instruction_stream/instruction_counting_pass.cpp
         passes/low_level/load_intercalation_pass.cpp

@@ -78,21 +78,6 @@ TEST( EndToEndAsm, simple_file ) {
 
 }
 
-TEST( EndToEndAsm, for_file ) {
-    std::string input_file = "asm/test_for.s";
-
-    std::string include_dir;
-    std::vector<std::string> include_files = {};
-
-    std::ifstream stream(input_file);
-    fcore_has uut(stream,include_files,include_dir, 0, false);
-
-    std::vector<uint32_t> result = uut.get_executable();
-
-    std::vector<uint32_t> gold_standard = {0x100001,0xc, 0xc, 0x86, 0x42c80000, 0xa6, 0x43480000, 0xc2881, 0x86, 0x42c80000, 0xc2881, 0x0000, 0x0000, 0x86, 0x42c80000, 0xc2881, 0x0000, 0x0000, 0xc};
-    ASSERT_EQ( result, gold_standard);
-}
-
 TEST( EndToEndAsm, branch_file ) {
     std::string input_file = "asm/test_branch.s";
 

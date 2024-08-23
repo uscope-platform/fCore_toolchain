@@ -17,7 +17,6 @@
 #define FCORE_TOOLCHAIN_LOW_LEVEL_AST_HPP
 
 #include "ll_register_instr_node.hpp"
-#include "ll_loop_node.hpp"
 #include "ll_load_constant_instr_node.hpp"
 #include "ll_intercalated_const_instr_node.hpp"
 #include "ll_instruction_node.hpp"

@@ -18,7 +18,6 @@
 
 #include "pass_manager_base.hpp"
 // LL passes
-#include "passes/low_level/loop_implementation_pass.hpp"
 #include "passes/low_level/pseudo_instructions_pass.hpp"
 #include "passes/low_level/load_intercalation_pass.hpp"
 
@@ -30,7 +29,6 @@
 namespace fcore{
     static ll_pass_manager create_ll_pass_manager(int dump_ast_level){
         ll_pass_manager manager(dump_ast_level);
-        manager.add_morphing_pass("Loop Implementation", std::make_shared<loop_implementation_pass>());
         manager.add_morphing_pass("Pseudo Instruction Implementation", std::make_shared<pseudo_instructions_pass>());
         manager.add_morphing_pass("Load Intercalation", std::make_shared<load_intercalation_pass>());
         return manager;

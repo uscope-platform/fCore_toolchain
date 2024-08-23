@@ -14,7 +14,6 @@
 // limitations under the License.
 
 #include "data_structures/low_level_ast/ll_ast_node.hpp"
-#include "data_structures/low_level_ast/ll_loop_node.hpp"
 #include "data_structures/low_level_ast/ll_ast_pragma.hpp"
 #include "data_structures/low_level_ast/ll_instruction_node.hpp"
 
@@ -36,15 +35,7 @@ bool fcore::ll_ast_node::is_terminal() {
 std::shared_ptr<fcore::ll_ast_node> fcore::ll_ast_node::deep_copy_element(const std::shared_ptr<ll_ast_node> &element) {
     std::shared_ptr<ll_ast_node> result;
 
-    if(element->type == ll_type_for_block) {
-        std::shared_ptr<ll_loop_node> loop_elem = std::static_pointer_cast<ll_loop_node>(element);
-        std::shared_ptr<ll_loop_node> loop_res = std::make_shared<ll_loop_node>();
-
-        loop_res->set_loop_start(loop_elem->get_loop_start());
-        loop_res->set_advance(loop_elem->get_advance());
-        loop_res->set_loop_end(loop_elem->get_loop_end());
-        result = std::static_pointer_cast<ll_ast_node>(loop_res);
-    } else if(element->type == ll_type_pragma){
+    if(element->type == ll_type_pragma){
         std::shared_ptr<ll_ast_pragma> pragma_elem = std::static_pointer_cast<ll_ast_pragma>(element);
         std::shared_ptr<ll_ast_pragma> pragma_res = std::make_shared<ll_ast_pragma>(pragma_elem->get_directive());
         result = std::static_pointer_cast<ll_ast_node>(pragma_res);
@@ -81,8 +72,6 @@ fcore::ll_ast_node::compare_content_by_type(const std::shared_ptr<ll_ast_node> &
             return *lhs == *rhs;
         case ll_type_pragma:
             return *std::static_pointer_cast<ll_ast_pragma>(lhs) == *std::static_pointer_cast<ll_ast_pragma>(rhs);
-        case ll_type_for_block:
-            return *std::static_pointer_cast<ll_loop_node>(lhs) == *std::static_pointer_cast<ll_loop_node>(rhs);
         case ll_type_instr:
             return *std::static_pointer_cast<ll_instruction_node>(lhs) == *std::static_pointer_cast<ll_instruction_node>(rhs);
         default:
@@ -108,7 +97,6 @@ std::vector<nlohmann::json> fcore::ll_ast_node::dump_array(const std::vector<std
 
 nlohmann::json fcore::ll_ast_node::dump_by_type(const std::shared_ptr<ll_ast_node>& node) {
     switch (node->type) {
-        case ll_type_for_block: return std::static_pointer_cast<ll_loop_node>(node)->dump();
         case ll_type_instr: return ll_instruction_node::dump_instruction_by_type(std::static_pointer_cast<ll_instruction_node>(node));
         case ll_type_program_head: return node->dump();
         case ll_type_pragma: return std::static_pointer_cast<ll_ast_pragma>(node)->dump();
