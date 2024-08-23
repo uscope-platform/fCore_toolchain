@@ -43,7 +43,7 @@ configure_file(asm_files/test_add.s ${ASM_TEST_FILES_DIR} COPYONLY)
 configure_file(asm_files/test_for.s ${ASM_TEST_FILES_DIR} COPYONLY)
 configure_file(asm_files/test_global.s ${ASM_TEST_FILES_DIR} COPYONLY)
 configure_file(asm_files/test_variables.s ${ASM_TEST_FILES_DIR} COPYONLY)
-configure_file(asm_files/test_branch.s ${ASM_TEST_FILES_DIR} COPYONLY)
+configure_file(asm_files/compare_file.s ${ASM_TEST_FILES_DIR} COPYONLY)
 configure_file(asm_files/test_ldc.s ${ASM_TEST_FILES_DIR} COPYONLY)
 configure_file(asm_files/test_ldc_int.s ${ASM_TEST_FILES_DIR} COPYONLY)
 

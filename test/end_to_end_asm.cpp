@@ -78,8 +78,8 @@ TEST( EndToEndAsm, simple_file ) {
 
 }
 
-TEST( EndToEndAsm, branch_file ) {
-    std::string input_file = "asm/test_branch.s";
+TEST( EndToEndAsm, compare_file ) {
+    std::string input_file = "asm/compare_file.s";
 
     std::string include_dir;
     std::vector<std::string> include_files = {};
