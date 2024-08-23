@@ -21,7 +21,7 @@
 
 
 fcore::fcore_cc::fcore_cc(std::vector<std::string> &contents, std::vector<std::string> &inc) :
-        input_string_stream(contents[0]), hl_manager(0), ll_manager(0){
+        input_string_stream(contents[0]), hl_manager(0){
     type = "string";
     includes = inc;
     include_is_paths = false;
@@ -30,7 +30,7 @@ fcore::fcore_cc::fcore_cc(std::vector<std::string> &contents, std::vector<std::s
 }
 
 fcore::fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl) :
-input_file_stream(path), hl_manager(dump_lvl), ll_manager(dump_lvl){
+input_file_stream(path), hl_manager(dump_lvl){
     type = "file";
     include_is_paths = true;
     includes = inc;
@@ -122,11 +122,6 @@ void fcore::fcore_cc::optimize(std::unordered_map<std::string, std::vector<uint3
     translator.translate();
     ll_ast = translator.get_output_ast();
 
-
-    ll_manager = create_ll_pass_manager(dump_ast_level);
-    ll_manager.run_morphing_passes(ll_ast);
-
-    if(dump_ast_level>0) dump["low_level"] = ll_manager.get_dump();
 
     instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
 

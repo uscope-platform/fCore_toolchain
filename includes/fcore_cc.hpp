@@ -27,9 +27,7 @@
 #include "frontend/C/C_language_parser.hpp"
 #include "backend/binary_generator.hpp"
 #include "passes/hl_passes.hpp"
-#include "passes/ll_passes.hpp"
 #include "passes/high_level/hl_pass_manager.hpp"
-#include "passes/low_level/ll_pass_manager.hpp"
 #include "tools/high_level_ast_lowering.hpp"
 #include "data_structures/instruction_stream.hpp"
 #include "tools/instruction_stream_builder.hpp"
@@ -112,7 +110,6 @@ namespace fcore {
         std::shared_ptr<ll_ast_node> ll_ast;
         binary_generator writer;
         hl_pass_manager  hl_manager;
-        ll_pass_manager ll_manager;
         std::string error_code;
         nlohmann::json dump;
 

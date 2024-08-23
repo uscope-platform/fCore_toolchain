@@ -20,7 +20,6 @@ set(FCORE_COMMON_SRCS_I
         tools/variable_map.cpp
         tools/define_map.cpp
         tools/array_linearizer.cpp
-        passes/low_level/ll_pass_manager.cpp
         passes/instruction_stream/instruction_counting_pass.cpp
         passes/instruction_stream/io_constant_tracking.cpp
         passes/instruction_stream/stream_pass_manager.cpp

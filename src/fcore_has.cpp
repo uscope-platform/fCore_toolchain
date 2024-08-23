@@ -36,11 +36,11 @@ void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size, boo
 }
 
 
-fcore::fcore_has::fcore_has(std::istream &input, std::vector<std::istream *> &includes, int dump_ast_level,bool print_debug) : manager(dump_ast_level) {
+fcore::fcore_has::fcore_has(std::istream &input, std::vector<std::istream *> &includes, int dump_ast_level,bool print_debug) {
     construct_assembler(input, includes, dump_ast_level,print_debug);
 }
 
-fcore::fcore_has::fcore_has(std::istream &input, const std::vector<std::string>& include_files, const std::string& include_directory, int dump_ast_level,bool print_debug): manager(dump_ast_level){
+fcore::fcore_has::fcore_has(std::istream &input, const std::vector<std::string>& include_files, const std::string& include_directory, int dump_ast_level,bool print_debug){
 
     std::vector<std::istream*> includes = process_includes(include_files, include_directory);
 
@@ -71,11 +71,6 @@ void fcore::fcore_has::construct_assembler(std::istream &input, std::vector<std:
         //merge the two together (right now just concatenate them)
         if(includes_ast != nullptr)
             AST->prepend_content(includes_ast->get_content());
-
-        manager = create_ll_pass_manager(dump_ast_level);
-        manager.run_morphing_passes(AST);
-
-        if(dump_ast_level>0) dump["low_level"] = manager.get_dump();
 
         instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
 
@@ -112,14 +107,6 @@ fcore::fcore_has::process_includes(const std::vector<std::string> &include_files
 
 std::vector<uint32_t> fcore::fcore_has::get_hexfile(bool endian_swap) {
     return writer.generate_hex(endian_swap);
-}
-
-uint32_t fcore::fcore_has::get_inst_count() {
-    int program_lenght = manager.analysis_passes["instruction_counting"]->get_analysis_result()[0];
-    float program_runtime = (float) program_lenght*0.01f;
-    std::cout << "The compiled program is " << program_lenght << "instructions long"<< std::endl;
-    std::cout << "Runtime at the standard frequency of 100 MHz will be of " << program_runtime << " µS"<< std::endl;
-    return 0;
 }
 
 void fcore::fcore_has::write_hexfile(const std::string& ouput_file) {

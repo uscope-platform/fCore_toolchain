@@ -24,8 +24,6 @@
 #include "tools/variable_map.hpp"
 #include "frontend/asm/asm_language_parser.hpp"
 #include "backend/binary_generator.hpp"
-#include "passes/ll_passes.hpp"
-#include "passes/low_level/ll_pass_manager.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "data_structures/instruction_stream.hpp"
 #include "tools/instruction_stream_builder.hpp"
@@ -58,7 +56,6 @@ namespace fcore{
     private:
         std::shared_ptr<ll_ast_node> AST;
         binary_generator writer;
-        ll_pass_manager manager;
         std::string error_code;
         nlohmann::json dump;
     };

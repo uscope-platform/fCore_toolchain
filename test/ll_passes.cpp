@@ -17,7 +17,6 @@
 #include <gtest/gtest.h>
 
 #include "data_structures/low_level_ast/low_level_ast.hpp"
-#include "passes/ll_passes.hpp"
 #include "backend/binary_generator.hpp"
 #include "tools/instruction_stream_builder.hpp"
 #include "data_structures/instruction_stream.hpp"
@@ -37,9 +36,6 @@ TEST(llPassesTest, pseudo_inst_pass) {
     std::shared_ptr<ll_pseudo_instr_node> instr = std::make_shared<ll_pseudo_instr_node>("mov", args);
     AST->add_content(instr);
 
-
-    ll_pass_manager manager = create_ll_pass_manager(0);
-    manager.run_morphing_passes(AST);
 
     binary_generator writer;
 
