@@ -57,7 +57,7 @@ int fcore::ll_load_constant_instr_node::get_constant_i() {
 }
 
 std::string fcore::ll_load_constant_instr_node::disassemble() {
-    return opcode + " " + destination->get_name() + ", " + std::to_string(constant->get_const_f());
+    return opcode + " " + destination->get_name() + ", ";
 }
 
 nlohmann::json fcore::ll_load_constant_instr_node::dump() {

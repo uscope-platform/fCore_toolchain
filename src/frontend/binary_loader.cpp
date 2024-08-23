@@ -22,7 +22,7 @@ fcore::binary_loader::binary_loader(std::istream &stream, bin_loader_input_type_
     if(in_type == bin_loader_hex_input){
         uint32_t instr = 0;
         while(stream.read(reinterpret_cast<char*>(&instr), sizeof(uint32_t))){
-            file_content.push_back(to_littleEndiann(instr));
+            file_content.push_back(to_littleEndian(instr));
         }
     } else if(in_type == bin_loader_mem_input){
         while (std::getline(stream, line)) {
@@ -52,27 +52,26 @@ void fcore::binary_loader::construct_ast(const std::vector<uint32_t> &program) {
     for(auto it = std::begin(program); it != std::end(program); it++){
         uint32_t instruction = *it;
         uint32_t opcode = instruction & (1<<fcore_opcode_width)-1;
-        std::shared_ptr<ll_ast_node> instr_node;
         if (fcore_opcodes_reverse.count(opcode)==0){
             throw std::runtime_error("unknown opcode: " + std::to_string(opcode));
         }
         switch (fcore_op_types[fcore_opcodes_reverse[opcode]]) {
             case isa_independent_instruction:
-                instr_node = process_independent_instruction(instruction);
+                ast_root->add_content(process_independent_instruction(instruction));
                 break;
             case isa_register_instruction:
-                instr_node = process_register_instr(instruction);
+                ast_root->add_content(process_register_instr(instruction));
                 break;
             case isa_conversion_instruction:
-                instr_node = process_conversion_instr(instruction);
+                ast_root->add_content(process_conversion_instr(instruction));
                 break;
             case isa_load_constant_instruction:{
-                instr_node = process_load_constant(instruction,*(it + 1));
+                ast_root->add_content(process_load_constant(instruction,*(it + 1)));
                 ++it;
                 break;
             }
             case isa_ternary_instruction:{
-                instr_node = process_ternary_instr(instruction);
+                ast_root->add_content(process_ternary_instr(instruction));
                 break;
             }
             // Pseudo instructions and intercalated constants are either not present in the stream, or dont have an opcode
@@ -82,7 +81,6 @@ void fcore::binary_loader::construct_ast(const std::vector<uint32_t> &program) {
                 break;
         }
 
-        ast_root->add_content(instr_node);
     }
 }
 
@@ -146,7 +144,7 @@ std::shared_ptr<fcore::ll_ast_node> fcore::binary_loader::process_conversion_ins
     return std::make_shared<ll_conversion_instr_node>(fcore_opcodes_reverse[opcode], source_var, dest_var);
 }
 
-uint32_t fcore::binary_loader::to_littleEndiann(uint32_t in_num) {
+uint32_t fcore::binary_loader::to_littleEndian(uint32_t in_num) {
     uint8_t in_bytes[4];
 
     in_bytes[0] = (in_num & 0x000000ff);

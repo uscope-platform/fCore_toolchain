@@ -24,6 +24,7 @@ namespace fcore{
         explicit ll_intercalated_const_instr_node(uint32_t constant);
         uint32_t emit() override;
         void print() override;
+        std::string disassemble() override;
         int instruction_count() override;
 
         friend bool operator==(const ll_intercalated_const_instr_node& lhs, const ll_intercalated_const_instr_node& rhs){

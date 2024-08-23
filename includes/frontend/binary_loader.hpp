@@ -40,7 +40,7 @@ namespace fcore{
         static std::shared_ptr<ll_ast_node> process_independent_instruction(uint32_t instruction);
         static std::shared_ptr<ll_ast_node> process_load_constant(uint32_t instruction, uint32_t raw_constant);
         static std::shared_ptr<ll_ast_node> process_conversion_instr(uint32_t instruction);
-        static uint32_t to_littleEndiann(uint32_t in_num);
+        static uint32_t to_littleEndian(uint32_t in_num);
         std::unordered_map<uint16_t, uint16_t> get_io_mapping();
         std::set<io_map_entry> get_io_mapping_set();
     private:

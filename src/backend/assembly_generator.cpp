@@ -19,7 +19,12 @@ fcore::assembly_generator::assembly_generator(const instruction_stream &stream) 
     std::ostringstream disassembled_program;
 
     for(const auto& item:stream){
-        disassembled_program << item->disassemble() << std::endl;
+        auto val = item->disassemble();
+        if(val.starts_with("ldc")){
+            disassembled_program << val;
+        } else {
+            disassembled_program << val << std::endl;
+        }
     }
     program = disassembled_program.str();
 }

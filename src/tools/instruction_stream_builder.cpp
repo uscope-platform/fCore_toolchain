@@ -19,8 +19,24 @@ fcore::instruction_stream fcore::instruction_stream_builder::build_stream(const 
     instruction_stream stream;
     std::vector<std::shared_ptr<ll_ast_node>> content = tree->get_content();
     for(auto &item:content){
+
         if(item->type == ll_type_instr){
-            stream.push_back(std::static_pointer_cast<ll_instruction_node>(item));
+            auto node = std::static_pointer_cast<ll_instruction_node>(item);
+
+            stream.push_back(node);
+            if(node->get_opcode() == "ldc"){
+                std::shared_ptr<ll_load_constant_instr_node> load_instr = std::static_pointer_cast<ll_load_constant_instr_node>(node);
+                std::shared_ptr<ll_intercalated_const_instr_node> constant;
+                if(load_instr->is_float()){
+                    float desired_constant = load_instr->get_constant_f();
+                    constant = std::make_shared<ll_intercalated_const_instr_node>(desired_constant);
+                } else {
+                    uint32_t desired_constant = load_instr->get_constant_i();
+                    constant = std::make_shared<ll_intercalated_const_instr_node>(desired_constant);
+                }
+                stream.push_back(constant);
+            }
+
         } else if(item->type == ll_type_code_block){
             instruction_stream substeam = build_stream(item);
             stream.push_back(substeam);

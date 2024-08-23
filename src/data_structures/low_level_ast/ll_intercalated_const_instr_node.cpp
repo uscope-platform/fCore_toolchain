@@ -52,3 +52,8 @@ nlohmann::json fcore::ll_intercalated_const_instr_node::dump() {
     retval["intercalated_constant"] = float_const;
     return retval;
 }
+
+std::string fcore::ll_intercalated_const_instr_node::disassemble() {
+    if(is_float) return std::to_string(float_const);
+    else return  std::to_string(int_const);
+}

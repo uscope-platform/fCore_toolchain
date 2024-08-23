@@ -30,7 +30,6 @@ namespace fcore{
     static ll_pass_manager create_ll_pass_manager(int dump_ast_level){
         ll_pass_manager manager(dump_ast_level);
         manager.add_morphing_pass("Pseudo Instruction Implementation", std::make_shared<pseudo_instructions_pass>());
-        manager.add_morphing_pass("Load Intercalation", std::make_shared<load_intercalation_pass>());
         return manager;
     }
 }
