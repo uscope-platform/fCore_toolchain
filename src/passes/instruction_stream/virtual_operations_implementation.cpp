@@ -25,43 +25,40 @@ virtual_operations_implementation::virtual_operations_implementation() : stream_
 std::shared_ptr<ll_instruction_node>virtual_operations_implementation::apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) {
 
     std::shared_ptr<ll_instruction_node> ret_val = element;
-    if(element->type == ll_type_instr){
-        std::shared_ptr<ll_instruction_node> node = std::static_pointer_cast<ll_instruction_node>(element);
-        if (node->is_pseudo()){
-            std::shared_ptr<ll_pseudo_instr_node> pseudo_instr = std::static_pointer_cast<ll_pseudo_instr_node>(node);
-            std::string opcode = node->get_opcode();
-            auto arguments = pseudo_instr->get_arguments();
-            if(opcode ==  "mov"){
-                arguments.push_back(arguments[1]);
-                variable zero("r0");
-                arguments[1] = std::make_shared<variable>(zero);
-            } else if(opcode == "neg"){
-                variable zero("r0");
-                arguments.insert(arguments.begin(), std::make_shared<variable>(zero));
-                arguments.push_back(arguments[1]);
+    std::shared_ptr<ll_instruction_node> node = std::static_pointer_cast<ll_instruction_node>(element);
+    if (node->is_pseudo()){
+        std::shared_ptr<ll_pseudo_instr_node> pseudo_instr = std::static_pointer_cast<ll_pseudo_instr_node>(node);
+        std::string opcode = node->get_opcode();
+        auto arguments = pseudo_instr->get_arguments();
+        if(opcode ==  "mov"){
+            arguments.push_back(arguments[1]);
+            variable zero("r0");
+            arguments[1] = std::make_shared<variable>(zero);
+        } else if(opcode == "neg"){
+            variable zero("r0");
+            arguments.insert(arguments.begin(), std::make_shared<variable>(zero));
+            arguments.push_back(arguments[1]);
 
-            }
+        }
 
-            std::string new_opcode = fcore_pseudo_op[node->get_opcode()];
-            switch (fcore_op_types[new_opcode]) {
-                case isa_register_instruction:
-                    ret_val = std::make_shared<ll_register_instr_node>(new_opcode, arguments[0], arguments[1], arguments[2]);
-                    break;
-                case isa_independent_instruction:
-                    ret_val = std::make_shared<ll_independent_inst_node>(new_opcode);
-                    break;
-                case isa_conversion_instruction:
-                    ret_val = std::make_shared<ll_conversion_instr_node>(new_opcode, arguments[0], arguments[1]);
-                    break;
-                case isa_load_constant_instruction:
-                    ret_val = std::make_shared<ll_load_constant_instr_node>(new_opcode, arguments[0], arguments[1]);
-                    break;
-                default:
-                    break;
-            }
+        std::string new_opcode = fcore_pseudo_op[node->get_opcode()];
+        switch (fcore_op_types[new_opcode]) {
+            case isa_register_instruction:
+                ret_val = std::make_shared<ll_register_instr_node>(new_opcode, arguments[0], arguments[1], arguments[2]);
+                break;
+            case isa_independent_instruction:
+                ret_val = std::make_shared<ll_independent_inst_node>(new_opcode);
+                break;
+            case isa_conversion_instruction:
+                ret_val = std::make_shared<ll_conversion_instr_node>(new_opcode, arguments[0], arguments[1]);
+                break;
+            case isa_load_constant_instruction:
+                ret_val = std::make_shared<ll_load_constant_instr_node>(new_opcode, arguments[0], arguments[1]);
+                break;
+            default:
+                break;
         }
     }
-
     return ret_val;
 
 

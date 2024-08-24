@@ -59,21 +59,18 @@ fcore::instruction_stream fcore::high_level_ast_lowering::translate() {
     for(const auto &i:input_ast->get_content()){
         std::shared_ptr<ll_instruction_node> lowered_instr = translate_node(i);
         if(lowered_instr != nullptr){
-            if(lowered_instr->type == ll_type_instr){
-
-                out.push_back(lowered_instr);
-                if(lowered_instr->get_opcode() == "ldc"){
-                    std::shared_ptr<ll_load_constant_instr_node> load_instr = std::static_pointer_cast<ll_load_constant_instr_node>(lowered_instr);
-                    std::shared_ptr<ll_intercalated_const_instr_node> constant;
-                    if(load_instr->is_float()){
-                        float desired_constant = load_instr->get_constant_f();
-                        constant = std::make_shared<ll_intercalated_const_instr_node>(desired_constant);
-                    } else {
-                        uint32_t desired_constant = load_instr->get_constant_i();
-                        constant = std::make_shared<ll_intercalated_const_instr_node>(desired_constant);
-                    }
-                    out.push_back(constant);
+            out.push_back(lowered_instr);
+            if(lowered_instr->get_opcode() == "ldc"){
+                std::shared_ptr<ll_load_constant_instr_node> load_instr = std::static_pointer_cast<ll_load_constant_instr_node>(lowered_instr);
+                std::shared_ptr<ll_intercalated_const_instr_node> constant;
+                if(load_instr->is_float()){
+                    float desired_constant = load_instr->get_constant_f();
+                    constant = std::make_shared<ll_intercalated_const_instr_node>(desired_constant);
+                } else {
+                    uint32_t desired_constant = load_instr->get_constant_i();
+                    constant = std::make_shared<ll_intercalated_const_instr_node>(desired_constant);
                 }
+                out.push_back(constant);
             }
         }
     }

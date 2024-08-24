@@ -35,7 +35,7 @@ namespace fcore{
         std::vector<std::shared_ptr<variable>> get_arguments() override {return {source, destination};};
         void set_arguments(const std::vector<std::shared_ptr<variable>> &a) override;
 
-        nlohmann::json dump() override;
+        nlohmann::json dump();
         friend bool operator==(const ll_conversion_instr_node& lhs, const ll_conversion_instr_node& rhs){
             bool retval = true;
 

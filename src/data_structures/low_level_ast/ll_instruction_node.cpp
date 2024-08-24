@@ -23,7 +23,7 @@
 #include "data_structures/low_level_ast/ll_pseudo_instr_node.hpp"
 #include "data_structures/low_level_ast/ll_intercalated_const_instr_node.hpp"
 
-fcore::ll_instruction_node::ll_instruction_node(isa_instruction_type t) : ll_ast_node(ll_type_instr) {
+fcore::ll_instruction_node::ll_instruction_node(isa_instruction_type t)  {
     instruction_type = t;
 }
 
@@ -63,7 +63,7 @@ fcore::ll_instruction_node::compare_content_by_type(const std::shared_ptr<ll_ins
 }
 
 nlohmann::json fcore::ll_instruction_node::dump() {
-    nlohmann::json retval = ll_ast_node::dump();
+    nlohmann::json retval;
     retval["opcode"] = opcode;
     retval["instruction_type"] = isa_instr_type_to_string(instruction_type);
     return retval;

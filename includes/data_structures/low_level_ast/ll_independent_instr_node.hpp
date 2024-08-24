@@ -28,7 +28,7 @@ namespace fcore{
         void print() override;
         int instruction_count() override;
 
-        nlohmann::json dump() override;
+        nlohmann::json dump();
 
         friend bool operator==(const ll_independent_inst_node& lhs, const ll_independent_inst_node& rhs){
             return rhs.opcode == lhs.opcode;

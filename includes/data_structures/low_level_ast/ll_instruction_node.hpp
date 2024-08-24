@@ -24,12 +24,11 @@
 #include <cmath>
 #include <iomanip>
 
-#include "data_structures/low_level_ast/ll_ast_node.hpp"
 #include "data_structures/common/variable.hpp"
 #include "fCore_isa.hpp"
 
 namespace fcore{
-    class ll_instruction_node : public ll_ast_node{
+    class ll_instruction_node {
 
     public:
         explicit ll_instruction_node(isa_instruction_type t);
@@ -43,7 +42,7 @@ namespace fcore{
         virtual std::string disassemble() {return "";};
         virtual int instruction_count() { return 0;};
 
-        bool is_terminal() override;
+        bool is_terminal();
 
         friend bool operator==(const ll_instruction_node& lhs, const ll_instruction_node& rhs){
             bool retval = true;
@@ -59,7 +58,7 @@ namespace fcore{
         virtual std::vector<std::shared_ptr<variable>> get_arguments() {return {};};
         virtual void set_arguments(const std::vector<std::shared_ptr<variable>> &) {};
 
-        nlohmann::json dump() override;
+        nlohmann::json dump();
         static nlohmann::json dump_instruction_by_type(const std::shared_ptr<ll_instruction_node> &node);
 
     protected:

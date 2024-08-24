@@ -21,38 +21,26 @@ void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size, boo
     std::ifstream stream;
     stream.open(path);
     std::vector<std::string> include_files;
-    auto *iss = new std::istringstream(REGISTER_DEFINITION_STRING);
-    std::vector<std::istream*> includes = {iss};
     // parse target file
 
-    fcore::fcore_has assembler(stream,includes, 0, print_debug);
+    fcore::fcore_has assembler(stream, 0, print_debug);
     std::vector<uint32_t> data = assembler.get_hexfile(false);
     unsigned int int_size = assembler.get_program_size();
     memcpy(hex_size, &int_size, sizeof(int));
     for(int i = 0; i < assembler.get_program_size(); i++){
         hex[i] = data[i];
     }
-    delete iss;
 }
 
 
-fcore::fcore_has::fcore_has(std::istream &input, std::vector<std::istream *> &includes, int dump_ast_level,bool print_debug) {
-    construct_assembler(input, includes, dump_ast_level,print_debug);
-}
-
-fcore::fcore_has::fcore_has(std::istream &input, const std::vector<std::string>& include_files, const std::string& include_directory, int dump_ast_level,bool print_debug){
-
-    std::vector<std::istream*> includes = process_includes(include_files, include_directory);
-
-    construct_assembler(input, includes, dump_ast_level,print_debug);
+fcore::fcore_has::fcore_has(std::istream &input, int dump_ast_level,bool print_debug) {
+    construct_assembler(input, dump_ast_level,print_debug);
 }
 
 
-void fcore::fcore_has::construct_assembler(std::istream &input, std::vector<std::istream*> &includes, int dump_ast_level, bool print_debug) {
+void fcore::fcore_has::construct_assembler(std::istream &input, int dump_ast_level, bool print_debug) {
     variable_map tmp_map;
     std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>(tmp_map);
-    // Parse includes files
-    std::shared_ptr<ll_ast_node> includes_ast;
 
     try{
         asm_language_parser target_parser(input, variables_map);

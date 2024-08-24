@@ -47,7 +47,6 @@ namespace fcore{
         std::vector<std::string> generate_mem();
         std::set<io_map_entry> get_io_mapping(){return io_mapping;};
     private:
-        std::shared_ptr<ll_ast_node> program;
         std::set<io_map_entry> io_mapping;
         std::set<uint16_t, uint16_t> allocated_mapping;
         int progress_counter = 0;

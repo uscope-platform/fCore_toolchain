@@ -31,10 +31,8 @@ static inline uint32_t Reverse32(uint32_t value)
 TEST( EndToEndAsm, simple_file ) {
     std::string input_file = "asm/test_add.s";
 
-    std::string include_dir;
-    std::vector<std::string> include_files = {};
     std::ifstream stream(input_file);
-    fcore_has uut(stream,include_files,include_dir, 0, false);
+    fcore_has uut(stream, 0, false);
 
     std::vector<uint32_t> gold_standard = {0x60001, 0xc, 0xc, 0x86, 0x42c80000, 0xa6, 0x43480000, 0xc2b01, 0xc};
 
@@ -81,11 +79,8 @@ TEST( EndToEndAsm, simple_file ) {
 TEST( EndToEndAsm, compare_file ) {
     std::string input_file = "asm/compare_file.s";
 
-    std::string include_dir;
-    std::vector<std::string> include_files = {};
-
     std::ifstream stream(input_file);
-    fcore_has uut(stream,include_files,include_dir, 0, false);
+    fcore_has uut(stream, 0, false);
 
     std::vector<uint32_t> result = uut.get_executable();
 
@@ -96,11 +91,8 @@ TEST( EndToEndAsm, compare_file ) {
 TEST(EndToEndAsm, variables_file) {
     std::string input_file = "asm/test_variables.s";
 
-    std::string include_dir;
-    std::vector<std::string> include_files = {};
-
     std::ifstream stream(input_file);
-    fcore_has uut(stream,include_files,include_dir, 0, false);
+    fcore_has uut(stream, 0, false);
 
     std::vector<uint32_t> result = uut.get_executable();
     std::vector<uint32_t> gold_standard = {0xe0001,0xc, 0xc,0x26,0x42c80000, 0x46, 0x43480000, 0xA6, 0x43480000, 0xc2881, 0xe4821,0xe4841,0x26,0x42c80000,0xe4821, 0x50b2, 0xc};
@@ -110,11 +102,9 @@ TEST(EndToEndAsm, variables_file) {
 TEST(EndToEndAsm, load_constant_file) {
     std::string input_file = "asm/test_ldc.s";
 
-    std::string include_dir;
-    std::vector<std::string> include_files = {};
 
     std::ifstream stream(input_file);
-    fcore_has uut(stream,include_files,include_dir, 0, false);
+    fcore_has uut(stream, 0, false);
 
     std::vector<uint32_t> result = uut.get_executable();
 
@@ -142,11 +132,8 @@ TEST(EndToEndAsm, embeddable_wrapper_pass) {
 TEST(EndToEndAsm, load_integer_constant) {
     std::string input_file = "asm/test_ldc_int.s";
 
-    std::string include_dir;
-    std::vector<std::string> include_files = {};
-
     std::ifstream stream(input_file);
-    fcore_has uut(stream,include_files,include_dir, 0, true);
+    fcore_has uut(stream, 0, true);
 
     std::vector<uint32_t> result = uut.get_executable();
 
@@ -159,11 +146,9 @@ TEST(EndToEndAsm, json_writing) {
     std::string input_file = "asm/test_ldc.s";
 
     std::string test_json = "/tmp/e2e_asm_json_test.json";
-    std::string include_dir;
-    std::vector<std::string> include_files = {};
 
     std::ifstream stream(input_file);
-    fcore_has uut(stream,include_files,include_dir, 0, false);
+    fcore_has uut(stream, 0, false);
 
     uut.write_json(test_json);
 
@@ -189,11 +174,8 @@ TEST(EndToEndAsm, conditional_select) {
                              "csel r1, r5, r4\n"
                              "stop";
 
-    std::string include_dir;
-    std::vector<std::string> include_files = {};
-
     std::istringstream stream(input_string);
-    fcore_has uut(stream,include_files,include_dir, 0, true);
+    fcore_has uut(stream, 0, true);
 
     std::vector<uint32_t> result = uut.get_executable();
 

@@ -23,26 +23,24 @@ stream_pass_base("io_constant_tracking", 1) {
 
 std::shared_ptr<fcore::ll_instruction_node>
 fcore::instruction_counting_pass::apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) {
-    if(element->type == ll_type_instr){
-        std::shared_ptr<ll_instruction_node> node = std::static_pointer_cast<ll_instruction_node>(element);
-        auto type = node->get_type();
-        if(type==isa_load_constant_instruction){
-            count->load++;
-        } else if(type==isa_register_instruction) {
-            if (node->get_opcode() == "efi") {
-                count->efi++;
-            } else {
-                count->regular++;
-            }
-        }else if(type  == isa_independent_instruction){
-            if (node->get_opcode() == "stop") {
-                count->stop++;
-            } else {
-                count->regular++;
-            }
-        } else if(type != isa_intercalated_constant) {
+    std::shared_ptr<ll_instruction_node> node = std::static_pointer_cast<ll_instruction_node>(element);
+    auto type = node->get_type();
+    if(type==isa_load_constant_instruction){
+        count->load++;
+    } else if(type==isa_register_instruction) {
+        if (node->get_opcode() == "efi") {
+            count->efi++;
+        } else {
             count->regular++;
         }
+    }else if(type  == isa_independent_instruction){
+        if (node->get_opcode() == "stop") {
+            count->stop++;
+        } else {
+            count->regular++;
+        }
+    } else if(type != isa_intercalated_constant) {
+        count->regular++;
     }
     return element;
 }

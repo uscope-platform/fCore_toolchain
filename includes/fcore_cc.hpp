@@ -106,7 +106,6 @@ namespace fcore {
         std::unordered_map<std::string, core_iom> dma_spec;
 
         std::shared_ptr<hl_ast_node> hl_ast;
-        std::shared_ptr<ll_ast_node> ll_ast;
         binary_generator writer;
         hl_pass_manager  hl_manager;
         std::string error_code;

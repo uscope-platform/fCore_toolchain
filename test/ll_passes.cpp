@@ -51,14 +51,3 @@ TEST(llPassesTest, pseudo_inst_pass) {
     std::vector<uint32_t> gold_standard = {0x8006E};
     ASSERT_EQ(result, gold_standard);
 }
-
-
-TEST(llPassesTest, deep_copy_element) {
-
-    //TODO: Test a more realistic case
-    std::shared_ptr<ll_independent_inst_node> level_2 = std::make_shared<ll_independent_inst_node>("nop");;
-
-    std::shared_ptr<ll_ast_node> result = ll_ast_node::deep_copy_element(level_2);
-
-    ASSERT_EQ(*result, *level_2);
-}
