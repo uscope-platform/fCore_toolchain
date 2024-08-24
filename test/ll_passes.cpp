@@ -27,19 +27,18 @@ using namespace fcore;
 
 TEST(llPassesTest, pseudo_inst_pass) {
 
-    std::shared_ptr<ll_ast_node> AST = std::make_shared<ll_ast_node>(ll_type_program_head);
 
     std::shared_ptr<variable> op_a = std::make_shared<variable>("r3");
     std::shared_ptr<variable> op_b = std::make_shared<variable>("r4");
     std::vector<std::shared_ptr<variable>> args = {op_a, op_b};
 
     std::shared_ptr<ll_pseudo_instr_node> instr = std::make_shared<ll_pseudo_instr_node>("mov", args);
-    AST->add_content(instr);
 
 
     binary_generator writer;
 
-    instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
+    instruction_stream program_stream;
+    program_stream.push_back(instr);
 
     auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
     std::shared_ptr<io_map> allocation_map;

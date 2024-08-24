@@ -111,9 +111,9 @@ namespace fcore{
         static nlohmann::json dump_by_type(const std::shared_ptr<hl_ast_node>& node);
         static std::vector<nlohmann::json> dump_array(const std::vector<std::shared_ptr<hl_ast_node>>& vect);
         static std::shared_ptr<hl_ast_node> deep_copy(const std::shared_ptr<hl_ast_node> &node);
-        hl_ast_node_type_t node_type;
         static bool compare_vectors(const std::vector<std::shared_ptr<hl_ast_node>>& lhs, const std::vector<std::shared_ptr<hl_ast_node>>& rhs);
 
+        hl_ast_node_type_t node_type;
     private:
         static std::shared_ptr<hl_ast_node> deep_copy_expr(const std::shared_ptr<hl_ast_node> &node);
         static std::shared_ptr<hl_ast_node> deep_copy_def(const std::shared_ptr<hl_ast_node> &node);

@@ -49,7 +49,6 @@ namespace fcore{
 
         virtual bool is_terminal();
         static std::shared_ptr<ll_ast_node> deep_copy_element(const std::shared_ptr<ll_ast_node>& element);
-        bool compare_content_by_type(const std::shared_ptr<ll_ast_node> &lhs, const std::shared_ptr<ll_ast_node> &rhs);
         ll_ast_node_type_t type;
 
         virtual nlohmann::json dump();

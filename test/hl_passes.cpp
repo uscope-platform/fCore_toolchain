@@ -494,8 +494,8 @@ TEST(HlPassesTest, hl_ast_lowering) {
     high_level_ast_lowering tranlator;
 
     tranlator.set_input_ast(normalized_ast);
-    tranlator.translate();
-    std::shared_ptr<ll_ast_node> result = tranlator.get_output_ast();
+    instruction_stream result = tranlator.translate();
+
 
 
     std::shared_ptr<variable> op_a = std::make_shared<variable>("constant", 4);
@@ -510,11 +510,9 @@ TEST(HlPassesTest, hl_ast_lowering) {
     dest = std::make_shared<variable>("a");
 
     std::shared_ptr<ll_register_instr_node> op_2 = std::make_shared<ll_register_instr_node>( "add", op_a, op_b, dest);
-
-    std::shared_ptr<ll_ast_node> golden_standard = std::make_shared<ll_ast_node>(ll_type_program_head);
-    golden_standard->set_content({op_1, op_2});
-
-    ASSERT_EQ(*golden_standard, *result);
+    ASSERT_EQ(result.size(), 2);
+    ASSERT_EQ(*result.get(0), *op_1);
+    ASSERT_EQ(*result.get(1), *op_2);
 }
 
 

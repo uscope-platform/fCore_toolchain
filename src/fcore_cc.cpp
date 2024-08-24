@@ -119,11 +119,8 @@ void fcore::fcore_cc::optimize(std::unordered_map<std::string, std::vector<uint3
 
     high_level_ast_lowering translator;
     translator.set_input_ast(hl_ast);
-    translator.translate();
-    ll_ast = translator.get_output_ast();
+    instruction_stream program_stream  = translator.translate();
 
-
-    instruction_stream program_stream = instruction_stream_builder::build_stream(ll_ast);
 
     allocation_map = std::make_shared<io_map>();
 

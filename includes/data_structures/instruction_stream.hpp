@@ -30,6 +30,7 @@ namespace fcore{
         unsigned long size();
 
         std::shared_ptr<ll_instruction_node> last() {return stream_store.back();};
+        std::shared_ptr<ll_instruction_node> get(ssize_t i) {return stream_store[i];};
 
         nlohmann::json dump();
 
@@ -41,6 +42,8 @@ namespace fcore{
 
         auto begin() const {return stream_store.begin();};
         auto end() const {return stream_store.end();};
+
+
 
         friend bool operator==(const instruction_stream& lhs, const instruction_stream& rhs){
             bool retval = true;

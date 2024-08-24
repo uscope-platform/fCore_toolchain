@@ -16,7 +16,7 @@
 #include "tools/high_level_ast_lowering.hpp"
 
 fcore::high_level_ast_lowering::high_level_ast_lowering() {
-    output_ast = std::make_shared<ll_ast_node>(ll_type_program_head);
+
     expr_instruction_mapping = {
             {expr_add, "add"},
             {expr_sub, "sub"},
@@ -54,25 +54,40 @@ fcore::high_level_ast_lowering::high_level_ast_lowering() {
 
 
 
-void fcore::high_level_ast_lowering::translate() {
+fcore::instruction_stream fcore::high_level_ast_lowering::translate() {
+    instruction_stream out;
     for(const auto &i:input_ast->get_content()){
-        std::shared_ptr<ll_ast_node> lowered_instr = translate_node(i);
+        std::shared_ptr<ll_instruction_node> lowered_instr = translate_node(i);
         if(lowered_instr != nullptr){
-            output_ast->add_content(lowered_instr);
+            if(lowered_instr->type == ll_type_instr){
+
+                out.push_back(lowered_instr);
+                if(lowered_instr->get_opcode() == "ldc"){
+                    std::shared_ptr<ll_load_constant_instr_node> load_instr = std::static_pointer_cast<ll_load_constant_instr_node>(lowered_instr);
+                    std::shared_ptr<ll_intercalated_const_instr_node> constant;
+                    if(load_instr->is_float()){
+                        float desired_constant = load_instr->get_constant_f();
+                        constant = std::make_shared<ll_intercalated_const_instr_node>(desired_constant);
+                    } else {
+                        uint32_t desired_constant = load_instr->get_constant_i();
+                        constant = std::make_shared<ll_intercalated_const_instr_node>(desired_constant);
+                    }
+                    out.push_back(constant);
+                }
+            }
         }
     }
 
+    return out;
 }
 
-std::shared_ptr<fcore::ll_ast_node> fcore::high_level_ast_lowering::translate_node(const std::shared_ptr<hl_ast_node>& input) {
+std::shared_ptr<fcore::ll_instruction_node> fcore::high_level_ast_lowering::translate_node(const std::shared_ptr<hl_ast_node>& input) {
     switch (input->node_type) {
         case hl_ast_node_type_definition:{
             std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(input);
             std::shared_ptr<variable> dest = node->get_variable();
             return translate_node(node, dest);
         }
-        case hl_ast_node_type_operand:
-            throw std::runtime_error("standalone operands nodes should not reach the ast lowering stage");
         case hl_ast_node_type_expr:{
             std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(input);
             if(node->get_type() == expr_assign){
@@ -94,23 +109,20 @@ std::shared_ptr<fcore::ll_ast_node> fcore::high_level_ast_lowering::translate_no
                 throw std::runtime_error("Invalid expression detected at the lowering stage");
             }
         }
+        case hl_ast_node_type_operand:
         case hl_ast_node_type_program_root:
-            throw std::runtime_error("program_root nodes should not reach the ast lowering stage");
         case hl_ast_node_type_loop:
-            throw std::runtime_error("loop nodes should not reach the ast lowering stage");
         case hl_ast_node_type_conditional:
-            throw std::runtime_error("conditional nodes should not reach the ast lowering stage");
-        case hl_ast_node_type_function_call:
-            throw std::runtime_error("function call nodes should not reach the ast lowering stage");
         case hl_ast_node_type_function_def:
-            throw std::runtime_error("function definition nodes should not reach the ast lowering stage");
+        case hl_ast_node_type_function_call:
+            throw std::runtime_error("Encountered unexpected " + std::string(hl_ast_node_to_string(input->node_type))  + " node during translation");
         default:
-            throw std::runtime_error("unknown type nodes should not reach the ast lowering stage");
+            throw std::runtime_error("Encountered unknown node during translation");
     }
 
 }
 
-std::shared_ptr<fcore::ll_ast_node> fcore::high_level_ast_lowering::translate_node(const std::shared_ptr<hl_expression_node>& input, const std::shared_ptr<variable>& dest) {
+std::shared_ptr<fcore::ll_instruction_node> fcore::high_level_ast_lowering::translate_node(const std::shared_ptr<hl_expression_node>& input, const std::shared_ptr<variable>& dest) {
     if(input->is_immediate()){
         return process_immediate_expression(input);
     }else if(input->is_unary()) {
@@ -122,7 +134,7 @@ std::shared_ptr<fcore::ll_ast_node> fcore::high_level_ast_lowering::translate_no
     }
 }
 
-std::shared_ptr<fcore::ll_ast_node> fcore::high_level_ast_lowering::translate_node(const std::shared_ptr<hl_definition_node>& input, const std::shared_ptr<variable>& dest) {
+std::shared_ptr<fcore::ll_instruction_node> fcore::high_level_ast_lowering::translate_node(const std::shared_ptr<hl_definition_node>& input, const std::shared_ptr<variable>& dest) {
     if(input->is_initialized()){
         if(input->get_scalar_initializer()->node_type == hl_ast_node_type_expr){
             return translate_node(std::static_pointer_cast<hl_expression_node>(input->get_scalar_initializer()), dest);
@@ -136,10 +148,10 @@ std::shared_ptr<fcore::ll_ast_node> fcore::high_level_ast_lowering::translate_no
     }
 }
 
-std::shared_ptr<fcore::ll_ast_node>
+std::shared_ptr<fcore::ll_instruction_node>
 fcore::high_level_ast_lowering::process_unary_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest) {
 
-    std::shared_ptr<ll_ast_node> retval;
+    std::shared_ptr<ll_instruction_node> retval;
     expression_type_t op_type = input->get_type();
     std::string opcode = expr_instruction_mapping[op_type];
     if(!fcore_implemented_operations[op_type]){
@@ -152,10 +164,10 @@ fcore::high_level_ast_lowering::process_unary_expression(std::shared_ptr<hl_expr
     return retval;
 }
 
-std::shared_ptr<fcore::ll_ast_node>
+std::shared_ptr<fcore::ll_instruction_node>
 fcore::high_level_ast_lowering::process_regular_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest) {
 
-    std::shared_ptr<ll_ast_node> retval;
+    std::shared_ptr<ll_instruction_node> retval;
     expression_type_t op_type = input->get_type();
     std::string opcode = expr_instruction_mapping[op_type];
     if(!fcore_implemented_operations[op_type]) {
@@ -170,11 +182,11 @@ fcore::high_level_ast_lowering::process_regular_expression(std::shared_ptr<hl_ex
 
 }
 
-std::shared_ptr<fcore::ll_ast_node>
+std::shared_ptr<fcore::ll_instruction_node>
 fcore::high_level_ast_lowering::process_ternary_expression(std::shared_ptr<hl_expression_node> input,
                                                            std::shared_ptr<variable> dest) {
 
-    std::shared_ptr<ll_ast_node> retval;
+    std::shared_ptr<ll_instruction_node> retval;
     expression_type_t op_type = input->get_type();
     std::string opcode = expr_instruction_mapping[op_type];
     if(!fcore_implemented_operations[op_type]) {
@@ -189,11 +201,11 @@ fcore::high_level_ast_lowering::process_ternary_expression(std::shared_ptr<hl_ex
     return retval;
 }
 
-std::shared_ptr<fcore::ll_ast_node>
+std::shared_ptr<fcore::ll_instruction_node>
 fcore::high_level_ast_lowering::translate_node(const std::shared_ptr<hl_ast_operand>& input, std::shared_ptr<variable> dest) {
 
 
-    std::shared_ptr<ll_ast_node> retval;
+    std::shared_ptr<ll_instruction_node> retval;
     std::shared_ptr<variable> var;
     if(input->get_type() == var_type_int_const){
         var = std::make_shared<variable>("constant", input->get_int_value());
@@ -217,9 +229,9 @@ fcore::high_level_ast_lowering::translate_node(const std::shared_ptr<hl_ast_oper
 
 }
 
-std::shared_ptr<fcore::ll_ast_node>
+std::shared_ptr<fcore::ll_instruction_node>
 fcore::high_level_ast_lowering::create_ast_node(isa_instruction_type t, std::vector<std::shared_ptr<variable>> args, const std::string& op) {
-    std::shared_ptr<ll_ast_node> retval;
+    std::shared_ptr<ll_instruction_node> retval;
 
     switch (t) {
         case isa_register_instruction:
@@ -244,10 +256,10 @@ fcore::high_level_ast_lowering::create_ast_node(isa_instruction_type t, std::vec
     return retval;
 }
 
-std::shared_ptr<fcore::ll_ast_node>
+std::shared_ptr<fcore::ll_instruction_node>
 fcore::high_level_ast_lowering::process_immediate_expression(std::shared_ptr<hl_expression_node> input) {
 
-    std::shared_ptr<ll_ast_node> retval;
+    std::shared_ptr<ll_instruction_node> retval;
     expression_type_t op_type = input->get_type();
     std::string opcode = expr_instruction_mapping[op_type];
     if(!fcore_implemented_operations[op_type]){
