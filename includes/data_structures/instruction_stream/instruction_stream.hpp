@@ -25,6 +25,7 @@
 #include "conversion_instruction.hpp"
 #include "pseudo_instruction.hpp"
 #include "ternary_instruction.hpp"
+#include "instruction_variant.hpp"
 
 namespace fcore{
     class instruction_stream {

@@ -39,9 +39,6 @@ namespace fcore{
         return instruction_type;
     }
 
-    bool instruction::is_terminal() {
-        return true;
-    }
 
     bool
     instruction::compare_content_by_type(const std::shared_ptr<instruction> &lhs, const std::shared_ptr<instruction> &rhs) {

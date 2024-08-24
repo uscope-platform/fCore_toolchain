@@ -20,6 +20,7 @@
 #include "data_structures/common/variable.hpp"
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 
+
 using namespace fcore;
 
 TEST(InstructionClasses, register_instruction) {
@@ -62,3 +63,18 @@ TEST(InstructionClasses, independent_instruction ) {
 
 }
 
+
+TEST(InstructionClasses, variant_instruction_emit) {
+
+    std::shared_ptr<variable> op_a = std::make_shared<variable>("r2");
+    std::shared_ptr<variable> op_b = std::make_shared<variable>("r3");
+    std::shared_ptr<variable> dest = std::make_shared<variable>("r4");
+
+    register_instruction instr("add", op_a, op_b, dest);
+
+    instruction_variant var(instr);
+
+    ASSERT_EQ(var.emit(), 0x81841);
+
+
+}

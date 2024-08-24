@@ -41,7 +41,6 @@ namespace fcore{
         virtual std::string disassemble() {return "";};
         virtual int instruction_count() { return 0;};
 
-        bool is_terminal();
 
         friend bool operator==(const instruction& lhs, const instruction& rhs){
             return lhs.instruction_type == rhs.instruction_type;
