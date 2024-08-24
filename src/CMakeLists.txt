@@ -9,6 +9,7 @@ set(FCORE_COMMON_SRCS_I
         data_structures/low_level_ast/intercalated_constant.cpp
         data_structures/low_level_ast/load_constant_instruction.cpp
         data_structures/low_level_ast/pseudo_instruction.cpp
+        data_structures/low_level_ast/instruction_variant.cpp
         data_structures/low_level_ast/ternary_instruction.cpp
         data_structures/instruction_stream.cpp
         data_structures/common/memory_tracker.cpp

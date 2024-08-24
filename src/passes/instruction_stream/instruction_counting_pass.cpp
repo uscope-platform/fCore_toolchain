@@ -30,13 +30,15 @@ namespace fcore{
         if(type==isa_load_constant_instruction){
             count->load++;
         } else if(type==isa_register_instruction) {
-            if (node->get_opcode() == "efi") {
+            auto instr = std::static_pointer_cast<register_instruction>(node);
+            if (instr->get_opcode() == "efi") {
                 count->efi++;
             } else {
                 count->regular++;
             }
         }else if(type  == isa_independent_instruction){
-            if (node->get_opcode() == "stop") {
+            auto instr = std::static_pointer_cast<independent_instruction>(node);
+            if (instr->get_opcode() == "stop") {
                 count->stop++;
             } else {
                 count->regular++;

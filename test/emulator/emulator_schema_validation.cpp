@@ -16,7 +16,7 @@
 #include <fstream>
 #include "frontend/schema_validators/schema_validator_base.h"
 
-using namespace fcore
+using namespace fcore;
 
 TEST(emulator_schema, validation_success) {
     std::ifstream ifs("emu/schemas/valid_emulator_schema.json");

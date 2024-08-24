@@ -62,7 +62,7 @@ namespace fcore{
             std::shared_ptr<instruction> lowered_instr = translate_node(i);
             if(lowered_instr != nullptr){
                 out.push_back(lowered_instr);
-                if(lowered_instr->get_opcode() == "ldc"){
+                if(lowered_instr->get_type() == isa_load_constant_instruction) {
                     std::shared_ptr<load_constant_instruction> load_instr = std::static_pointer_cast<load_constant_instruction>(lowered_instr);
                     std::shared_ptr<intercalated_constant> constant;
                     if(load_instr->is_float()){

@@ -50,8 +50,11 @@ namespace fcore{
             }
             return retval;
         };
+
+        std::string get_opcode(){return opcode;};
     private:
         std::vector<std::shared_ptr<variable>> arguments;
+        std::string opcode;
     };
 }
 

@@ -29,7 +29,7 @@ namespace fcore{
         std::shared_ptr<instruction> node = std::static_pointer_cast<instruction>(element);
         if (node->is_pseudo()){
             std::shared_ptr<pseudo_instruction> pseudo_instr = std::static_pointer_cast<pseudo_instruction>(node);
-            std::string opcode = node->get_opcode();
+            std::string opcode = pseudo_instr->get_opcode();
             auto arguments = pseudo_instr->get_arguments();
             if(opcode ==  "mov"){
                 arguments.push_back(arguments[1]);
@@ -42,7 +42,7 @@ namespace fcore{
 
             }
 
-            std::string new_opcode = fcore_pseudo_op[node->get_opcode()];
+            std::string new_opcode = fcore_pseudo_op[pseudo_instr->get_opcode()];
             switch (fcore_op_types[new_opcode]) {
                 case isa_register_instruction:
                     ret_val = std::make_shared<register_instruction>(new_opcode, arguments[0], arguments[1], arguments[2]);

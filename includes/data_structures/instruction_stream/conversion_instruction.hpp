@@ -44,9 +44,12 @@ namespace fcore{
             retval &= rhs.opcode == lhs.opcode;
             return retval;
         };
+
+        std::string get_opcode(){return opcode;};
     private:
         std::shared_ptr<variable> source;
         std::shared_ptr<variable> destination;
+        std::string opcode;
     };
 }
 

@@ -40,10 +40,13 @@ namespace fcore{
 
         nlohmann::json dump();
 
+        std::string get_opcode(){return opcode;};
+
     private:
         float float_const;
         uint32_t int_const;
         bool is_float;
+        std::string opcode;
     };
 }
 

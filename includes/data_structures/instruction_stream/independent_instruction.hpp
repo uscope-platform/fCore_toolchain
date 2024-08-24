@@ -33,8 +33,12 @@ namespace fcore{
         friend bool operator==(const independent_instruction& lhs, const independent_instruction& rhs){
             return rhs.opcode == lhs.opcode;
         };
+
+        std::string get_opcode(){return opcode;};
+
     private:
 
+        std::string opcode;
     };
 }
 

@@ -34,7 +34,6 @@ namespace fcore{
         explicit instruction(isa_instruction_type t);
         instruction(const instruction &old_obj);
 
-        bool is_stop();
 
 
         virtual uint32_t emit() { return 0;};
@@ -45,16 +44,12 @@ namespace fcore{
         bool is_terminal();
 
         friend bool operator==(const instruction& lhs, const instruction& rhs){
-            bool retval = true;
-
-            retval &= lhs.opcode == rhs.opcode;
-            return retval;
+            return lhs.instruction_type == rhs.instruction_type;
         };
         static bool compare_content_by_type(const std::shared_ptr<instruction> &lhs, const std::shared_ptr<instruction> &rhs);
         [[nodiscard]] bool is_pseudo() const { return instruction_type == isa_pseudo_instruction;};
 
         isa_instruction_type get_type();
-        std::string get_opcode(){return opcode;};
         virtual std::vector<std::shared_ptr<variable>> get_arguments() {return {};};
         virtual void set_arguments(const std::vector<std::shared_ptr<variable>> &) {};
 
@@ -65,7 +60,6 @@ namespace fcore{
 
         isa_instruction_type instruction_type;
 
-        std::string opcode;
 
 
     };

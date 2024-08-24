@@ -33,7 +33,6 @@ namespace fcore{
     instruction::instruction(const instruction &old_obj) {
 
         instruction_type = old_obj.instruction_type;
-        opcode = old_obj.opcode;
     }
 
     isa_instruction_type instruction::get_type() {
@@ -67,7 +66,6 @@ namespace fcore{
 
     nlohmann::json instruction::dump() {
         nlohmann::json retval;
-        retval["opcode"] = opcode;
         retval["instruction_type"] = isa_instr_type_to_string(instruction_type);
         return retval;
     }
@@ -85,8 +83,5 @@ namespace fcore{
         }
     }
 
-    bool instruction::is_stop() {
-        return opcode == "stop";
-    }
 }
 

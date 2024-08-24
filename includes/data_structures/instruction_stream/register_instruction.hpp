@@ -49,10 +49,15 @@ namespace fcore{
         void set_destination(std::shared_ptr<variable>d) {destination = std::move(d);};
         std::vector<std::shared_ptr<variable>> get_arguments() override {return {operand_a, operand_b, destination};};
         void set_arguments(const std::vector<std::shared_ptr<variable>> &a) override;
+
+        std::string get_opcode(){return opcode;};
+
     private:
         std::shared_ptr<variable> operand_a;
         std::shared_ptr<variable> operand_b;
         std::shared_ptr<variable> destination;
+
+        std::string opcode;
     };
 }
 
