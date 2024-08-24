@@ -18,7 +18,7 @@
 
 #include <utility>
 
-#include "data_structures/low_level_ast/ll_instruction_node.hpp"
+#include "data_structures/instruction_stream/ll_instruction_node.hpp"
 namespace fcore{
     class ll_independent_inst_node: public ll_instruction_node {
     public:

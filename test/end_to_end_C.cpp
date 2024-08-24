@@ -17,7 +17,7 @@
 
 #include <gtest/gtest.h>
 #include "fcore_cc.hpp"
-#include "data_structures/instruction_stream.hpp"
+#include "data_structures/instruction_stream/instruction_stream.hpp"
 
 using namespace fcore;
 

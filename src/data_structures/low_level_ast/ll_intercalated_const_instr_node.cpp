@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "data_structures/low_level_ast/ll_intercalated_const_instr_node.hpp"
+#include "data_structures/instruction_stream/ll_intercalated_const_instr_node.hpp"
 
 fcore::ll_intercalated_const_instr_node::ll_intercalated_const_instr_node(float constant) : ll_instruction_node(isa_intercalated_constant){
     float_const = constant;

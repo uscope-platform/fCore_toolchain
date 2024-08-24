@@ -13,48 +13,43 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FCORE_TOOLCHAIN_LL_LOAD_CONSTANT_INSTR_NODE_HPP
-#define FCORE_TOOLCHAIN_LL_LOAD_CONSTANT_INSTR_NODE_HPP
-
-#include "data_structures/low_level_ast/ll_instruction_node.hpp"
+#ifndef FCORE_TOOLCHAIN_LL_CONVERSION_INSTR_NODE_HPP
+#define FCORE_TOOLCHAIN_LL_CONVERSION_INSTR_NODE_HPP
 
 #include <utility>
-namespace fcore{
 
-    class ll_load_constant_instr_node: public ll_instruction_node {
+#include "data_structures/instruction_stream/ll_instruction_node.hpp"
+#include <utility>
+namespace fcore{
+    class ll_conversion_instr_node: public ll_instruction_node {
     public:
-        ll_load_constant_instr_node(std::string op, std::shared_ptr<variable> dest, std::shared_ptr<variable> c);
+        ll_conversion_instr_node(std::string op, std::shared_ptr<variable> s, std::shared_ptr<variable> d);
         uint32_t emit() override;
         void print() override;
         std::string disassemble() override;
-
         int instruction_count() override;
-        float get_constant_f();
-        int get_constant_i();
-        bool is_float();
-        std::shared_ptr<variable> get_constant_variable() {return constant;};
+
+        std::shared_ptr<variable> get_source() {return source;};
         std::shared_ptr<variable> get_destination() {return destination;};
         void set_destination(std::shared_ptr<variable> v){destination = v;};
-        std::vector<std::shared_ptr<variable>> get_arguments() override {return {destination, constant};};
+        std::vector<std::shared_ptr<variable>> get_arguments() override {return {source, destination};};
         void set_arguments(const std::vector<std::shared_ptr<variable>> &a) override;
 
         nlohmann::json dump();
-
-        friend bool operator==(const ll_load_constant_instr_node& lhs, const ll_load_constant_instr_node& rhs){
+        friend bool operator==(const ll_conversion_instr_node& lhs, const ll_conversion_instr_node& rhs){
             bool retval = true;
 
-            retval &= *lhs.constant == *rhs.constant;
+            retval &= *lhs.source == *rhs.source;
             retval &= *lhs.destination == *rhs.destination;
             retval &= rhs.opcode == lhs.opcode;
             return retval;
         };
-
     private:
+        std::shared_ptr<variable> source;
         std::shared_ptr<variable> destination;
-        std::shared_ptr<variable> constant;
-
     };
 }
 
 
-#endif //FCORE_TOOLCHAIN_LL_LOAD_CONSTANT_INSTR_NODE_HPP
+
+#endif //FCORE_TOOLCHAIN_LL_CONVERSION_INSTR_NODE_HPP

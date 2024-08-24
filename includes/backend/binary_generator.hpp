@@ -24,8 +24,7 @@
 #include <memory>
 
 #include "data_structures/executable.hpp"
-#include "data_structures/instruction_stream.hpp"
-#include "data_structures/low_level_ast/low_level_ast.hpp"
+#include "data_structures/instruction_stream/instruction_stream.hpp"
 
 namespace fcore{
     class binary_generator {

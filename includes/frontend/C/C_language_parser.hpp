@@ -24,7 +24,7 @@
 #include <regex>
 #include <gtest/gtest_prod.h>
 
-#include "data_structures/low_level_ast/low_level_ast.hpp"
+#include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "C_Tree_visitor.hpp"
 #include "C_ErrorHandling.hpp"
 #include "C_pre_processor.hpp"

@@ -14,7 +14,7 @@
 // limitations under the License.
 
 
-#include "data_structures/low_level_ast/ll_register_instr_node.hpp"
+#include "data_structures/instruction_stream/ll_register_instr_node.hpp"
 
 #include <utility>
 

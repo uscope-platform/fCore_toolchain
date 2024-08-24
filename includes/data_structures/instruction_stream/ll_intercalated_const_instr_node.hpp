@@ -16,7 +16,8 @@
 #ifndef FCORE_TOOLCHAIN_LL_INTERCALATED_CONST_INSTR_NODE_HPP
 #define FCORE_TOOLCHAIN_LL_INTERCALATED_CONST_INSTR_NODE_HPP
 
-#include "data_structures/low_level_ast/low_level_ast.hpp"
+#include "data_structures/instruction_stream/ll_instruction_node.hpp"
+
 namespace fcore{
     class ll_intercalated_const_instr_node : public ll_instruction_node {
     public:

@@ -16,7 +16,7 @@
 #ifndef FCORE_TOOLCHAIN_STREAM_PASS_BASE_HPP
 #define FCORE_TOOLCHAIN_STREAM_PASS_BASE_HPP
 
-#include "data_structures/low_level_ast/low_level_ast.hpp"
+#include "data_structures/instruction_stream/instruction_stream.hpp"
 
 namespace fcore{
     class stream_pass_base {

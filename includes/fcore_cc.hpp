@@ -29,7 +29,7 @@
 #include "passes/hl_passes.hpp"
 #include "passes/high_level/hl_pass_manager.hpp"
 #include "tools/high_level_ast_lowering.hpp"
-#include "data_structures/instruction_stream.hpp"
+#include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 
 namespace fcore {

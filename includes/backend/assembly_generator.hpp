@@ -18,7 +18,7 @@
 
 #include <fstream>
 
-#include "data_structures/instruction_stream.hpp"
+#include "data_structures/instruction_stream/instruction_stream.hpp"
 
 namespace fcore{
     class assembly_generator {

@@ -18,7 +18,7 @@
 #include <memory>
 
 #include "data_structures/common/variable.hpp"
-#include "data_structures/low_level_ast/low_level_ast.hpp"
+#include "data_structures/instruction_stream/instruction_stream.hpp"
 
 using namespace fcore;
 

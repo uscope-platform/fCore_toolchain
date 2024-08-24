@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "data_structures/instruction_stream.hpp"
+#include "data_structures/instruction_stream/instruction_stream.hpp"
 
 void fcore::instruction_stream::push_back(const std::shared_ptr<ll_instruction_node>& item) {
  stream_store.push_back(item);

@@ -16,9 +16,8 @@
 
 #include <gtest/gtest.h>
 
-#include "data_structures/low_level_ast/low_level_ast.hpp"
 #include "backend/binary_generator.hpp"
-#include "data_structures/instruction_stream.hpp"
+#include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "fcore_cc.hpp"
 

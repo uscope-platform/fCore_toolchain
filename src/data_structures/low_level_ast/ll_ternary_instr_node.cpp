@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "data_structures/low_level_ast/ll_ternary_instr_node.hpp"
+#include "data_structures/instruction_stream/ll_ternary_instr_node.hpp"
 
 fcore::ll_ternary_instr_node::ll_ternary_instr_node(std::string op, std::shared_ptr<variable> op_a,
                                                     std::shared_ptr<variable> op_b, std::shared_ptr<variable> op_c,

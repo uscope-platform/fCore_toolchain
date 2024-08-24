@@ -14,14 +14,14 @@
 // limitations under the License.
 
 
-#include "data_structures/low_level_ast/ll_instruction_node.hpp"
+#include "data_structures/instruction_stream/ll_instruction_node.hpp"
 
-#include "data_structures/low_level_ast/ll_register_instr_node.hpp"
-#include "data_structures/low_level_ast/ll_conversion_instr_node.hpp"
-#include "data_structures/low_level_ast/ll_independent_instr_node.hpp"
-#include "data_structures/low_level_ast/ll_load_constant_instr_node.hpp"
-#include "data_structures/low_level_ast/ll_pseudo_instr_node.hpp"
-#include "data_structures/low_level_ast/ll_intercalated_const_instr_node.hpp"
+#include "data_structures/instruction_stream/ll_register_instr_node.hpp"
+#include "data_structures/instruction_stream/ll_conversion_instr_node.hpp"
+#include "data_structures/instruction_stream/ll_independent_instr_node.hpp"
+#include "data_structures/instruction_stream/ll_load_constant_instr_node.hpp"
+#include "data_structures/instruction_stream/ll_pseudo_instr_node.hpp"
+#include "data_structures/instruction_stream/ll_intercalated_const_instr_node.hpp"
 
 fcore::ll_instruction_node::ll_instruction_node(isa_instruction_type t)  {
     instruction_type = t;

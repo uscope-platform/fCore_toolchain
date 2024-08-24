@@ -20,12 +20,11 @@
 #include <utility>
 #include <stdexcept>
 
-#include "data_structures/instruction_stream.hpp"
+#include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "tools/variable_map.hpp"
 #include "data_structures/high_level_ast/hl_ast_node.hpp"
 #include "data_structures/high_level_ast/hl_expression_node.hpp"
 #include "data_structures/high_level_ast/hl_definition_node.hpp"
-#include "data_structures/low_level_ast/low_level_ast.hpp"
 
 namespace fcore {
     class high_level_ast_lowering {
