@@ -3,13 +3,13 @@ set(FCORE_COMMON_SRCS_I
         backend/binary_generator.cpp
         data_structures/executable.cpp
         data_structures/low_level_ast/ll_instruction_node.cpp
-        data_structures/low_level_ast/ll_register_instr_node.cpp
-        data_structures/low_level_ast/ll_conversion_instr_node.cpp
-        data_structures/low_level_ast/ll_independent_instr_node.cpp
-        data_structures/low_level_ast/ll_intercalated_const_instr_node.cpp
-        data_structures/low_level_ast/ll_load_constant_instr_node.cpp
-        data_structures/low_level_ast/ll_pseudo_instr_node.cpp
-        data_structures/low_level_ast/ll_ternary_instr_node.cpp
+        data_structures/low_level_ast/register_instruction.cpp
+        data_structures/low_level_ast/conversion_instruction.cpp
+        data_structures/low_level_ast/independent_instruction.cpp
+        data_structures/low_level_ast/intercalated_constant.cpp
+        data_structures/low_level_ast/load_constant_instruction.cpp
+        data_structures/low_level_ast/pseudo_instruction.cpp
+        data_structures/low_level_ast/ternary_instruction.cpp
         data_structures/instruction_stream.cpp
         data_structures/common/memory_tracker.cpp
         tools/define.cpp

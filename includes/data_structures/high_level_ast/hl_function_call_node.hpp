@@ -34,12 +34,12 @@ namespace fcore{
         std::vector<std::shared_ptr<hl_ast_node>> get_arguments() { return arguments;};
         void set_arguments(std::vector<std::shared_ptr<hl_ast_node>> args) {arguments = std::move(args);};
 
-        friend bool operator==(const fcore::hl_function_call_node& lhs, const fcore::hl_function_call_node& rhs){
+        friend bool operator==(const hl_function_call_node& lhs, const hl_function_call_node& rhs){
             bool ret_val = true;
 
             ret_val &= lhs.name == rhs.name;
 
-            ret_val &= fcore::hl_ast_node::compare_vectors(lhs.arguments, rhs.arguments);
+            ret_val &= hl_ast_node::compare_vectors(lhs.arguments, rhs.arguments);
 
             return ret_val;
         };

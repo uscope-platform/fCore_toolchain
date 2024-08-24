@@ -14,42 +14,45 @@
 
 #include "data_structures/common/memory_tracker.hpp"
 
-fcore::memory_tracker::memory_tracker(const std::pair<uint32_t, uint32_t> r){
-    free_memory.push_back(r);
-}
+namespace fcore{
 
-fcore::memory_range_t fcore::memory_tracker::get_free_memory_range(uint32_t size){
-
-    for(auto & i : free_memory){
-        if(i.second-i.first>=size){
-            memory_range_t ret = {i.first, i.first+size};
-            i = {i.first+size, i.second};
-            return ret;
-        }
+    memory_tracker::memory_tracker(const std::pair<uint32_t, uint32_t> r){
+        free_memory.push_back(r);
     }
 
-    throw std::runtime_error("No free memory range of size "+ std::to_string(size) + " found, manual memory management needed.");
+    memory_range_t memory_tracker::get_free_memory_range(uint32_t size){
 
-};
+        for(auto & i : free_memory){
+            if(i.second-i.first>=size){
+                memory_range_t ret = {i.first, i.first+size};
+                i = {i.first+size, i.second};
+                return ret;
+            }
+        }
 
-uint32_t fcore::memory_tracker::get_free_memory_cell(){
-    memory_range_t r = get_free_memory_range(1);
-    return r.first;
-}
+        throw std::runtime_error("No free memory range of size "+ std::to_string(size) + " found, manual memory management needed.");
 
-void fcore::memory_tracker::reserve_register(uint32_t r) {
-    for(int i = 0;i<free_memory.size();i++){
-        if(r>=free_memory[i].first && r<free_memory[i].second){
+    };
 
-            if(r==free_memory[i].first){
-                free_memory[i] = {free_memory[i].first+1, free_memory[i].second};
-            } else if(r==free_memory[i].second){
-                free_memory[i] = {free_memory[i].first, free_memory[i].second-1};
-            } else{
-                uint32_t second_range_end = free_memory[i].second;
-                free_memory[i] = {free_memory[i].first, r-1};
-                free_memory.insert(free_memory.begin()+i+1,{r+1, second_range_end});
+    uint32_t memory_tracker::get_free_memory_cell(){
+        memory_range_t r = get_free_memory_range(1);
+        return r.first;
+    }
+
+    void memory_tracker::reserve_register(uint32_t r) {
+        for(int i = 0;i<free_memory.size();i++){
+            if(r>=free_memory[i].first && r<free_memory[i].second){
+
+                if(r==free_memory[i].first){
+                    free_memory[i] = {free_memory[i].first+1, free_memory[i].second};
+                } else if(r==free_memory[i].second){
+                    free_memory[i] = {free_memory[i].first, free_memory[i].second-1};
+                } else{
+                    uint32_t second_range_end = free_memory[i].second;
+                    free_memory[i] = {free_memory[i].first, r-1};
+                    free_memory.insert(free_memory.begin()+i+1,{r+1, second_range_end});
+                }
             }
         }
     }
-};
+}

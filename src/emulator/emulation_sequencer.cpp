@@ -17,73 +17,77 @@
 #include <cmath>
 
 
-void fcore::emulation_sequencer::add_core(const std::string& core_id, uint32_t frequency, uint32_t order) {
-    core_metadata s;
-    s.id = core_id;
-    s.freq = frequency;
-    s.current_step = 0;
-    s.exec_order = order;
-    cores.push_back(s);
-}
+namespace fcore{
 
-void fcore::emulation_sequencer::calculate_sequence() {
-    std::vector<uint32_t> frequencies;
-    for(auto &i: cores){
-        frequencies.push_back(i.freq);
+    void emulation_sequencer::add_core(const std::string& core_id, uint32_t frequency, uint32_t order) {
+        core_metadata s;
+        s.id = core_id;
+        s.freq = frequency;
+        s.current_step = 0;
+        s.exec_order = order;
+        cores.push_back(s);
     }
 
-
-    if ( !std::equal(frequencies.begin() + 1, frequencies.end(), frequencies.begin()) ) {
-
-        simulation_frequency = std::accumulate(frequencies.begin(), frequencies.end(), 1,[](uint32_t a, uint32_t b){
-            return std::lcm(a,b);
-        });
-
+    void emulation_sequencer::calculate_sequence() {
+        std::vector<uint32_t> frequencies;
         for(auto &i: cores){
-            i.n_skips = simulation_frequency/i.freq - 1;
+            frequencies.push_back(i.freq);
         }
 
-    } else {
-        simulation_frequency = frequencies[0];
-        for(auto &i: cores){
-            i.n_skips = 0;
-        }
-    }
 
-    progress =  (uint64_t) std::round(sim_length*(float)simulation_frequency);
+        if ( !std::equal(frequencies.begin() + 1, frequencies.end(), frequencies.begin()) ) {
 
-    std::sort(cores.begin(), cores.end(), [](core_metadata const& lhs, core_metadata const &rhs)-> bool {return lhs.exec_order<rhs.exec_order;});
+            simulation_frequency = std::accumulate(frequencies.begin(), frequencies.end(), 1,[](uint32_t a, uint32_t b){
+                return std::lcm(a,b);
+            });
 
-}
+            for(auto &i: cores){
+                i.n_skips = simulation_frequency/i.freq - 1;
+            }
 
-std::vector<fcore::core_step_metadata> fcore::emulation_sequencer::get_running_cores() {
-    std::vector<core_step_metadata> ret;
-    progress--;
-    empty_step = true;
-    for(auto &i: cores){
-        bool executing = false;
-        if(i.current_step == 0 || i.n_skips == 0){
-            empty_step = false;
-            ++i.current_step;
-            executing = true;
-        } else if(i.current_step == i.n_skips){
-            i.current_step = 0;
         } else {
-            ++i.current_step;
+            simulation_frequency = frequencies[0];
+            for(auto &i: cores){
+                i.n_skips = 0;
+            }
         }
 
-        core_step_metadata m;
-        m.id = i.id;
-        m.running = executing;
-        enabled_cores_map[i.id] = executing;
-        m.order = i.exec_order;
-        m.step_n = get_current_step()-1;
+        progress =  (uint64_t) std::round(sim_length*(float)simulation_frequency);
 
-        ret.push_back(m);
+        std::sort(cores.begin(), cores.end(), [](core_metadata const& lhs, core_metadata const &rhs)-> bool {return lhs.exec_order<rhs.exec_order;});
+
     }
-    return ret;
+
+    std::vector<core_step_metadata> emulation_sequencer::get_running_cores() {
+        std::vector<core_step_metadata> ret;
+        progress--;
+        empty_step = true;
+        for(auto &i: cores){
+            bool executing = false;
+            if(i.current_step == 0 || i.n_skips == 0){
+                empty_step = false;
+                ++i.current_step;
+                executing = true;
+            } else if(i.current_step == i.n_skips){
+                i.current_step = 0;
+            } else {
+                ++i.current_step;
+            }
+
+            core_step_metadata m;
+            m.id = i.id;
+            m.running = executing;
+            enabled_cores_map[i.id] = executing;
+            m.order = i.exec_order;
+            m.step_n = get_current_step()-1;
+
+            ret.push_back(m);
+        }
+        return ret;
+    }
+
+    void emulation_sequencer::setup_run(double sim_l) {
+        sim_length = sim_l;
+    }
 }
 
-void fcore::emulation_sequencer::setup_run(double sim_l) {
-    sim_length = sim_l;
-}

@@ -30,7 +30,7 @@ TEST(llPassesTest, pseudo_inst_pass) {
     std::shared_ptr<variable> op_b = std::make_shared<variable>("r4");
     std::vector<std::shared_ptr<variable>> args = {op_a, op_b};
 
-    std::shared_ptr<ll_pseudo_instr_node> instr = std::make_shared<ll_pseudo_instr_node>("mov", args);
+    std::shared_ptr<pseudo_instruction> instr = std::make_shared<pseudo_instruction>("mov", args);
 
 
     binary_generator writer;

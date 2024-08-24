@@ -28,11 +28,11 @@
 #include "fCore_isa.hpp"
 
 namespace fcore{
-    class ll_instruction_node {
+    class instruction {
 
     public:
-        explicit ll_instruction_node(isa_instruction_type t);
-        ll_instruction_node(const ll_instruction_node &old_obj);
+        explicit instruction(isa_instruction_type t);
+        instruction(const instruction &old_obj);
 
         bool is_stop();
 
@@ -44,13 +44,13 @@ namespace fcore{
 
         bool is_terminal();
 
-        friend bool operator==(const ll_instruction_node& lhs, const ll_instruction_node& rhs){
+        friend bool operator==(const instruction& lhs, const instruction& rhs){
             bool retval = true;
 
             retval &= lhs.opcode == rhs.opcode;
             return retval;
         };
-        static bool compare_content_by_type(const std::shared_ptr<ll_instruction_node> &lhs, const std::shared_ptr<ll_instruction_node> &rhs);
+        static bool compare_content_by_type(const std::shared_ptr<instruction> &lhs, const std::shared_ptr<instruction> &rhs);
         [[nodiscard]] bool is_pseudo() const { return instruction_type == isa_pseudo_instruction;};
 
         isa_instruction_type get_type();
@@ -59,7 +59,7 @@ namespace fcore{
         virtual void set_arguments(const std::vector<std::shared_ptr<variable>> &) {};
 
         nlohmann::json dump();
-        static nlohmann::json dump_instruction_by_type(const std::shared_ptr<ll_instruction_node> &node);
+        static nlohmann::json dump_instruction_by_type(const std::shared_ptr<instruction> &node);
 
     protected:
 

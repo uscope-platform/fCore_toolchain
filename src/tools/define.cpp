@@ -16,10 +16,11 @@
 
 #include "tools/define.hpp"
 
+namespace fcore{
+    define::define(int l, std::string n, std::string c) {
+        line = l;
+        name = std::move(n);
+        content = std::move(c);
+    }
 
-
-fcore::define::define(int l, std::string n, std::string c) {
-line = l;
-name = std::move(n);
-content = std::move(c);
 }

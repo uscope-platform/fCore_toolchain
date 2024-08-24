@@ -170,7 +170,7 @@ namespace fcore{
             return true;
         }
 
-        friend bool operator==(const fcore::hl_expression_node& lhs, const fcore::hl_expression_node& rhs);
+        friend bool operator==(const hl_expression_node& lhs, const hl_expression_node& rhs);
 
     private:
         expression_type_t expr_type;

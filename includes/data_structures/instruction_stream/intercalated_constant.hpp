@@ -13,22 +13,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FCORE_TOOLCHAIN_LL_INTERCALATED_CONST_INSTR_NODE_HPP
-#define FCORE_TOOLCHAIN_LL_INTERCALATED_CONST_INSTR_NODE_HPP
+#ifndef FCORE_TOOLCHAIN_INTERCALATED_CONSTANT_HPP
+#define FCORE_TOOLCHAIN_INTERCALATED_CONSTANT_HPP
 
 #include "data_structures/instruction_stream/ll_instruction_node.hpp"
 
 namespace fcore{
-    class ll_intercalated_const_instr_node : public ll_instruction_node {
+    class intercalated_constant : public instruction {
     public:
-        explicit ll_intercalated_const_instr_node(float constant);
-        explicit ll_intercalated_const_instr_node(uint32_t constant);
+        explicit intercalated_constant(float constant);
+        explicit intercalated_constant(uint32_t constant);
         uint32_t emit() override;
         void print() override;
         std::string disassemble() override;
         int instruction_count() override;
 
-        friend bool operator==(const ll_intercalated_const_instr_node& lhs, const ll_intercalated_const_instr_node& rhs){
+        friend bool operator==(const intercalated_constant& lhs, const intercalated_constant& rhs){
             {
                 bool retval = true;
 
@@ -48,4 +48,4 @@ namespace fcore{
 }
 
 
-#endif //FCORE_TOOLCHAIN_LL_INTERCALATED_CONST_INSTR_NODE_HPP
+#endif //FCORE_TOOLCHAIN_INTERCALATED_CONSTANT_HPP

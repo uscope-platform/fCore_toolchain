@@ -33,6 +33,7 @@ extern "C"{
     std::tuple<std::vector<uint32_t>, int> fCore_has_embeddable_s(const std::string& content);
     void fCore_has_embeddable_f(const char * filename, uint32_t *hex, int *hex_size, bool print_debug);
 };
+
 namespace fcore{
     class fcore_has {
     public:

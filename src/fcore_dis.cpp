@@ -15,62 +15,65 @@
 
 #include "fcore_dis.hpp"
 
-fcore::fcore_dis::fcore_dis(std::istream &input, bin_loader_input_type_t in_type) {
-    error_code = "";
-    try{
-        binary_loader dis(input, in_type);
-        process_stream(dis.get_program_stream());
-        gen->set_io_map(dis.get_io_mapping());
-    } catch(std::runtime_error &e){
-        error_code = e.what();
+namespace fcore{
+
+    fcore_dis::fcore_dis(std::istream &input, bin_loader_input_type_t in_type) {
+        error_code = "";
+        try{
+            binary_loader dis(input, in_type);
+            process_stream(dis.get_program_stream());
+            gen->set_io_map(dis.get_io_mapping());
+        } catch(std::runtime_error &e){
+            error_code = e.what();
+        }
     }
-}
 
 
-fcore::fcore_dis::fcore_dis(const std::vector<uint32_t> &mem) {
-    error_code = "";
-    try{
-        binary_loader dis(mem);
-        process_stream(dis.get_program_stream());
-        gen->set_io_map(dis.get_io_mapping());
-    } catch(std::runtime_error &e){
-        error_code = e.what();
+    fcore_dis::fcore_dis(const std::vector<uint32_t> &mem) {
+        error_code = "";
+        try{
+            binary_loader dis(mem);
+            process_stream(dis.get_program_stream());
+            gen->set_io_map(dis.get_io_mapping());
+        } catch(std::runtime_error &e){
+            error_code = e.what();
+        }
     }
-}
 
-std::string fcore::fcore_dis::get_errors() {
-    return error_code;
-}
-
-void fcore::fcore_dis::write_json(const std::string &output_file) {
-    nlohmann::json j;
-    j["error_code"] = error_code;
-    if(error_code.empty()){
-        j["disassembled_program"] = gen->get_program();
-    } else{
-        j["disassembled_program"] = "";
+    std::string fcore_dis::get_errors() {
+        return error_code;
     }
-    std::string str = j.dump();
-    std::ofstream ss(output_file);
-    ss<<str;
-    ss.close();
-}
 
-std::string fcore::fcore_dis::get_disassenbled_program() {
-    return gen->get_program();
-}
+    void fcore_dis::write_json(const std::string &output_file) {
+        nlohmann::json j;
+        j["error_code"] = error_code;
+        if(error_code.empty()){
+            j["disassembled_program"] = gen->get_program();
+        } else{
+            j["disassembled_program"] = "";
+        }
+        std::string str = j.dump();
+        std::ofstream ss(output_file);
+        ss<<str;
+        ss.close();
+    }
 
-void fcore::fcore_dis::write_disassembled_program(const std::string &output_file) {
-    gen->write_program(output_file);
-}
+    std::string fcore_dis::get_disassenbled_program() {
+        return gen->get_program();
+    }
 
-void fcore::fcore_dis::process_stream(instruction_stream program_stream) {
-    std::vector<int> io_res;
+    void fcore_dis::write_disassembled_program(const std::string &output_file) {
+        gen->write_program(output_file);
+    }
 
-    stream_pass_manager sman(io_res,0);
-    program_stream = sman.process_stream(program_stream);
-    gen = std::make_unique<assembly_generator>(program_stream);
+    void fcore_dis::process_stream(instruction_stream program_stream) {
+        std::vector<int> io_res;
 
+        stream_pass_manager sman(io_res,0);
+        program_stream = sman.process_stream(program_stream);
+        gen = std::make_unique<assembly_generator>(program_stream);
+
+    }
 }
 
 

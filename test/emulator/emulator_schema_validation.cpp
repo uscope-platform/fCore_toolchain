@@ -16,18 +16,19 @@
 #include <fstream>
 #include "frontend/schema_validators/schema_validator_base.h"
 
+using namespace fcore
 
 TEST(emulator_schema, validation_success) {
     std::ifstream ifs("emu/schemas/valid_emulator_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    fcore::schema_validator_base validator(fcore::emulator_input);
+    schema_validator_base validator(emulator_input);
     EXPECT_NO_THROW(validator.validate(spec));
 }
 
 TEST(emulator_schema, validation_fail_no_cores) {
     std::ifstream ifs("emu/schemas/valid_emulator_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    fcore::schema_validator_base validator(fcore::emulator_input);
+    schema_validator_base validator(emulator_input);
     spec.erase("cores");
     testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(spec), std::invalid_argument);
@@ -40,7 +41,7 @@ TEST(emulator_schema, validation_fail_no_cores) {
 TEST(emulator_schema, validation_fail_no_program) {
     std::ifstream ifs("emu/schemas/valid_emulator_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    fcore::schema_validator_base validator(fcore::emulator_input);
+    schema_validator_base validator(emulator_input);
     spec["cores"][0].erase("program");
     testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(spec), std::invalid_argument);
@@ -54,7 +55,7 @@ TEST(emulator_schema, validation_fail_no_program) {
 TEST(compiler_schema, validation_success) {
     std::ifstream ifs("emu/schemas/valid_compiler_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    fcore::schema_validator_base validator(fcore::compiler_input);
+    schema_validator_base validator(compiler_input);
     EXPECT_NO_THROW(validator.validate(spec));
 
 }
@@ -63,7 +64,7 @@ TEST(compiler_schema, validation_success) {
 TEST(compiler_schema, validation_fail_no_input) {
     std::ifstream ifs("emu/schemas/valid_compiler_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    fcore::schema_validator_base validator(fcore::compiler_input);
+    schema_validator_base validator(compiler_input);
     spec.erase("input_file");
     testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(spec), std::invalid_argument);

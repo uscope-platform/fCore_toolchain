@@ -50,13 +50,10 @@ int main(int argc, char **argv) {
         }
     }
 
-    std::string include_dir = "/home/fils/git/fCore_has/";
-    std::vector<std::string> include_files = {};
-
     std::ifstream stream;
     stream.open(input_file);
 
-    fcore::fcore_has has_engine(stream,include_files, include_dir, dump_ast_level, false);
+    fcore::fcore_has has_engine(stream, dump_ast_level, false);
 
     if(output_hex){
         has_engine.write_hexfile(output_file);

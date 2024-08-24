@@ -20,9 +20,9 @@
 
 #include "data_structures/instruction_stream/ll_instruction_node.hpp"
 namespace fcore{
-    class ll_independent_inst_node: public ll_instruction_node {
+    class independent_instruction: public instruction {
     public:
-        explicit ll_independent_inst_node(std::string opcode);
+        explicit independent_instruction(std::string opcode);
         uint32_t emit() override;
         std::string disassemble() override;
         void print() override;
@@ -30,7 +30,7 @@ namespace fcore{
 
         nlohmann::json dump();
 
-        friend bool operator==(const ll_independent_inst_node& lhs, const ll_independent_inst_node& rhs){
+        friend bool operator==(const independent_instruction& lhs, const independent_instruction& rhs){
             return rhs.opcode == lhs.opcode;
         };
     private:

@@ -19,32 +19,34 @@
 
 using namespace antlr4;
 
+namespace fcore{
 
-fcore::asm_language_parser::asm_language_parser(std::istream &stream) {
-    variable_map varmap;
+    asm_language_parser::asm_language_parser(std::istream &stream) {
+        variable_map varmap;
 
-    construct_parser(stream, std::make_shared<variable_map>(varmap));
-}
+        construct_parser(stream, std::make_shared<variable_map>(varmap));
+    }
 
-fcore::asm_language_parser::asm_language_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap) {
+    asm_language_parser::asm_language_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap) {
 
-    construct_parser(stream, std::move(existing_varmap));
-}
+        construct_parser(stream, std::move(existing_varmap));
+    }
 
-void fcore::asm_language_parser::construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap){
+    void asm_language_parser::construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap){
 
 
-    ANTLRInputStream input(stream);
-    asm_parser::asm_grammarLexer lexer(&input);
-    CommonTokenStream tokens(&lexer);
+        ANTLRInputStream input(stream);
+        asm_parser::asm_grammarLexer lexer(&input);
+        CommonTokenStream tokens(&lexer);
 
-    tokens.fill();
-    asm_parser::asm_grammarParser parser(&tokens);
-    AsmErrorHandling handler;
-    parser.addErrorListener(&handler);
-    tree::ParseTree *Tree = parser.program();
-    AsmTree_visitor visitor(std::move(existing_varmap));
-    tree::ParseTreeWalker::DEFAULT.walk(&visitor, Tree);
-    program = visitor.get_program();
+        tokens.fill();
+        asm_parser::asm_grammarParser parser(&tokens);
+        AsmErrorHandling handler;
+        parser.addErrorListener(&handler);
+        tree::ParseTree *Tree = parser.program();
+        AsmTree_visitor visitor(std::move(existing_varmap));
+        tree::ParseTreeWalker::DEFAULT.walk(&visitor, Tree);
+        program = visitor.get_program();
 
+    }
 }

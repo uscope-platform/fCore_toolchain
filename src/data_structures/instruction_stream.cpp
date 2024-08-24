@@ -15,39 +15,43 @@
 
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 
-void fcore::instruction_stream::push_back(const std::shared_ptr<ll_instruction_node>& item) {
- stream_store.push_back(item);
-}
+namespace fcore{
 
-void fcore::instruction_stream::push_back(const instruction_stream &stream_in) {
-    stream_store.insert(stream_store.end(), stream_in.begin(), stream_in.end());
-}
-
-bool fcore::instruction_stream::empty(instruction_stream &store) {
-    return store.empty();
-}
-
-unsigned long fcore::instruction_stream::size(instruction_stream &store) {
-    return store.size();
-}
-
-bool fcore::instruction_stream::empty() {
-    return stream_store.empty();
-}
-
-unsigned long fcore::instruction_stream::size() {
-    return stream_store.size();
-}
-
-nlohmann::json fcore::instruction_stream::dump() {
-    nlohmann::json retval;
-    std::vector<nlohmann::json> stream;
-    for(const auto &i:stream_store){
-        stream.push_back(ll_instruction_node::dump_instruction_by_type(i));
+    void instruction_stream::push_back(const std::shared_ptr<instruction>& item) {
+        stream_store.push_back(item);
     }
-    retval["type"] = "stream_ast";
-    retval["content"] = stream;
-    return retval;
-}
 
+    void instruction_stream::push_back(const instruction_stream &stream_in) {
+        stream_store.insert(stream_store.end(), stream_in.begin(), stream_in.end());
+    }
+
+    bool instruction_stream::empty(instruction_stream &store) {
+        return store.empty();
+    }
+
+    unsigned long instruction_stream::size(instruction_stream &store) {
+        return store.size();
+    }
+
+    bool instruction_stream::empty() {
+        return stream_store.empty();
+    }
+
+    unsigned long instruction_stream::size() {
+        return stream_store.size();
+    }
+
+    nlohmann::json instruction_stream::dump() {
+        nlohmann::json retval;
+        std::vector<nlohmann::json> stream;
+        for(const auto &i:stream_store){
+            stream.push_back(instruction::dump_instruction_by_type(i));
+        }
+        retval["type"] = "stream_ast";
+        retval["content"] = stream;
+        return retval;
+    }
+
+
+}
 

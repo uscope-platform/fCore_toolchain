@@ -35,7 +35,7 @@ namespace fcore{
         void add_interconnect_outputs(const emulator::emulator_interconnect &spec);
 
         void process_outputs(const std::string& core_id,
-                            fcore::core_memory_pool_t &pool,
+                             core_memory_pool_t &pool,
                              bool running,
                              uint32_t active_channels,
                              std::set<io_map_entry>& io_map
@@ -44,7 +44,7 @@ namespace fcore{
         void process_scalar_output(
                 emulator_output &out,
                 const emulator::emulator_output_specs &spec,
-                fcore::core_memory_pool_t &pool,
+                core_memory_pool_t &pool,
                 uint32_t active_channels,
                 const std::set<io_map_entry>& io_map
         );
@@ -52,7 +52,7 @@ namespace fcore{
         void process_vector_output(
                 emulator_output &out,
                 const emulator::emulator_output_specs &spec,
-                fcore::core_memory_pool_t &pool,
+                core_memory_pool_t &pool,
                 uint32_t active_channels,
                 const std::set<io_map_entry>& io_map
         );

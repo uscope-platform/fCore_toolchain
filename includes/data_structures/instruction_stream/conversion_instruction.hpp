@@ -13,17 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FCORE_TOOLCHAIN_LL_CONVERSION_INSTR_NODE_HPP
-#define FCORE_TOOLCHAIN_LL_CONVERSION_INSTR_NODE_HPP
+#ifndef FCORE_TOOLCHAIN_CONVERSION_INSTRUCTION_HPP
+#define FCORE_TOOLCHAIN_CONVERSION_INSTRUCTION_HPP
 
 #include <utility>
 
 #include "data_structures/instruction_stream/ll_instruction_node.hpp"
 #include <utility>
 namespace fcore{
-    class ll_conversion_instr_node: public ll_instruction_node {
+    class conversion_instruction: public instruction {
     public:
-        ll_conversion_instr_node(std::string op, std::shared_ptr<variable> s, std::shared_ptr<variable> d);
+        conversion_instruction(std::string op, std::shared_ptr<variable> s, std::shared_ptr<variable> d);
         uint32_t emit() override;
         void print() override;
         std::string disassemble() override;
@@ -36,7 +36,7 @@ namespace fcore{
         void set_arguments(const std::vector<std::shared_ptr<variable>> &a) override;
 
         nlohmann::json dump();
-        friend bool operator==(const ll_conversion_instr_node& lhs, const ll_conversion_instr_node& rhs){
+        friend bool operator==(const conversion_instruction& lhs, const conversion_instruction& rhs){
             bool retval = true;
 
             retval &= *lhs.source == *rhs.source;
@@ -52,4 +52,4 @@ namespace fcore{
 
 
 
-#endif //FCORE_TOOLCHAIN_LL_CONVERSION_INSTR_NODE_HPP
+#endif //FCORE_TOOLCHAIN_CONVERSION_INSTRUCTION_HPP

@@ -22,17 +22,17 @@ namespace fcore{
     class ternary_reduction : public stream_pass_base{
     public:
         ternary_reduction();
-        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) override;
+        std::shared_ptr<instruction> apply_pass(std::shared_ptr<instruction> element, uint32_t n) override;
 
     private:
-        void map_ternaries(std::shared_ptr<ll_instruction_node> element);
-        void map_conditions_source(std::shared_ptr<ll_instruction_node> element);
+        void map_ternaries(std::shared_ptr<instruction> element);
+        void map_conditions_source(std::shared_ptr<instruction> element);
         void update_conditions_map(std::string s);
-        std::shared_ptr<fcore::ll_instruction_node> reduce(std::shared_ptr<ll_instruction_node> element);
-        std::shared_ptr<fcore::ll_instruction_node> reduce_register_instr(std::shared_ptr<ll_register_instr_node> element);
-        std::shared_ptr<fcore::ll_instruction_node> reduce_conversion_instr(std::shared_ptr<ll_conversion_instr_node>);
-        std::shared_ptr<fcore::ll_instruction_node> reduce_load_instr(std::shared_ptr<ll_load_constant_instr_node> node);
-        std::shared_ptr<fcore::ll_instruction_node> reduce_ternary_instr(std::shared_ptr<ll_ternary_instr_node> node);
+        std::shared_ptr<instruction> reduce(std::shared_ptr<instruction> element);
+        std::shared_ptr<instruction> reduce_register_instr(std::shared_ptr<register_instruction> element);
+        std::shared_ptr<instruction> reduce_conversion_instr(std::shared_ptr<conversion_instruction>);
+        std::shared_ptr<instruction> reduce_load_instr(std::shared_ptr<load_constant_instruction> node);
+        std::shared_ptr<instruction> reduce_ternary_instr(std::shared_ptr<ternary_instruction> node);
 
 
         uint32_t instr_ctr;

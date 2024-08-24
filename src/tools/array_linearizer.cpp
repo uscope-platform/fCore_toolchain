@@ -16,36 +16,39 @@
 
 #include "tools/array_linearizer.hpp"
 
-int fcore::linearize_array(std::vector<int> shape, std::vector<int> indices){
+namespace fcore{
 
-    int linearized_idx = indices.back();
-    for(int i = indices.size()-2; i>=0; --i){
-        int interm_factor = 1;
-        for(int j = shape.size()-1; j>i; --j){
-            interm_factor *= indices[i]*shape[j];
+    int linearize_array(std::vector<int> shape, std::vector<int> indices){
+
+        int linearized_idx = indices.back();
+        for(int i = indices.size()-2; i>=0; --i){
+            int interm_factor = 1;
+            for(int j = shape.size()-1; j>i; --j){
+                interm_factor *= indices[i]*shape[j];
+            }
+            linearized_idx += interm_factor;
         }
-        linearized_idx += interm_factor;
-    }
-    return linearized_idx;
-}
-
-
-
-std::vector<int> fcore::array_delinearize(const std::vector<int>& shape, int index){
-    std::vector<int> multidim_index;
-
-    if(shape.size()==1) return {index};
-
-    std::vector<int>strides;
-    for(int i = 1; i<shape.size(); ++i){
-        strides.push_back(std::accumulate(shape.begin()+i, shape.end(), 1,  std::multiplies<>()));
+        return linearized_idx;
     }
 
-    multidim_index.push_back(index/strides[0]);
-    for(int i = 1; i<strides.size(); ++i){
-        multidim_index.push_back(index/strides[i]%shape[i]);
-    }
-    multidim_index.push_back(index%shape.back());
 
-    return multidim_index;
+
+    std::vector<int> array_delinearize(const std::vector<int>& shape, int index){
+        std::vector<int> multidim_index;
+
+        if(shape.size()==1) return {index};
+
+        std::vector<int>strides;
+        for(int i = 1; i<shape.size(); ++i){
+            strides.push_back(std::accumulate(shape.begin()+i, shape.end(), 1,  std::multiplies<>()));
+        }
+
+        multidim_index.push_back(index/strides[0]);
+        for(int i = 1; i<strides.size(); ++i){
+            multidim_index.push_back(index/strides[i]%shape[i]);
+        }
+        multidim_index.push_back(index%shape.back());
+
+        return multidim_index;
+    }
 }

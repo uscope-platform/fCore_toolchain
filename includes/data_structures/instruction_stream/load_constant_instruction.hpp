@@ -13,17 +13,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FCORE_TOOLCHAIN_LL_LOAD_CONSTANT_INSTR_NODE_HPP
-#define FCORE_TOOLCHAIN_LL_LOAD_CONSTANT_INSTR_NODE_HPP
+#ifndef FCORE_TOOLCHAIN_LOAD_CONSTANT_INSTRUCTION_HPP
+#define FCORE_TOOLCHAIN_LOAD_CONSTANT_INSTRUCTION_HPP
 
 #include "data_structures/instruction_stream/ll_instruction_node.hpp"
 
 #include <utility>
 namespace fcore{
 
-    class ll_load_constant_instr_node: public ll_instruction_node {
+    class load_constant_instruction: public instruction {
     public:
-        ll_load_constant_instr_node(std::string op, std::shared_ptr<variable> dest, std::shared_ptr<variable> c);
+        load_constant_instruction(std::string op, std::shared_ptr<variable> dest, std::shared_ptr<variable> c);
         uint32_t emit() override;
         void print() override;
         std::string disassemble() override;
@@ -40,7 +40,7 @@ namespace fcore{
 
         nlohmann::json dump();
 
-        friend bool operator==(const ll_load_constant_instr_node& lhs, const ll_load_constant_instr_node& rhs){
+        friend bool operator==(const load_constant_instruction& lhs, const load_constant_instruction& rhs){
             bool retval = true;
 
             retval &= *lhs.constant == *rhs.constant;
@@ -57,4 +57,4 @@ namespace fcore{
 }
 
 
-#endif //FCORE_TOOLCHAIN_LL_LOAD_CONSTANT_INSTR_NODE_HPP
+#endif //FCORE_TOOLCHAIN_LOAD_CONSTANT_INSTRUCTION_HPP

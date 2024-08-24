@@ -17,27 +17,27 @@
 
 #include <vector>
 
-#include "ll_register_instr_node.hpp"
-#include "ll_load_constant_instr_node.hpp"
-#include "ll_intercalated_const_instr_node.hpp"
+#include "register_instruction.hpp"
+#include "load_constant_instruction.hpp"
+#include "intercalated_constant.hpp"
 #include "ll_instruction_node.hpp"
-#include "ll_independent_instr_node.hpp"
-#include "ll_conversion_instr_node.hpp"
-#include "ll_pseudo_instr_node.hpp"
-#include "ll_ternary_instr_node.hpp"
+#include "independent_instruction.hpp"
+#include "conversion_instruction.hpp"
+#include "pseudo_instruction.hpp"
+#include "ternary_instruction.hpp"
 
 namespace fcore{
     class instruction_stream {
     public:
-        void push_back(const std::shared_ptr<ll_instruction_node>& item);
+        void push_back(const std::shared_ptr<instruction>& item);
         void push_back(const instruction_stream &vector);
         bool empty(instruction_stream &stream);
         unsigned long size(instruction_stream & stream);
         bool empty();
         unsigned long size();
 
-        std::shared_ptr<ll_instruction_node> last() {return stream_store.back();};
-        std::shared_ptr<ll_instruction_node> get(ssize_t i) {return stream_store[i];};
+        std::shared_ptr<instruction> last() {return stream_store.back();};
+        std::shared_ptr<instruction> get(ssize_t i) {return stream_store[i];};
 
         nlohmann::json dump();
 
@@ -59,7 +59,7 @@ namespace fcore{
                 retval = false;
             } else{
                 for(unsigned long i = 0; i<lhs.stream_store.size();++i){
-                    retval &= ll_instruction_node::compare_content_by_type(lhs.stream_store[i],rhs.stream_store[i]);
+                    retval &= instruction::compare_content_by_type(lhs.stream_store[i],rhs.stream_store[i]);
                 }
             }
             return retval;
@@ -67,7 +67,7 @@ namespace fcore{
 
     private:
 
-        std::vector<std::shared_ptr<ll_instruction_node>> stream_store;
+        std::vector<std::shared_ptr<instruction>> stream_store;
 
     };
 }

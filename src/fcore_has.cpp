@@ -32,90 +32,93 @@ void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size, boo
     }
 }
 
+namespace fcore{
 
-fcore::fcore_has::fcore_has(std::istream &input, int dump_ast_level,bool print_debug) {
-    construct_assembler(input, dump_ast_level,print_debug);
-}
-
-
-void fcore::fcore_has::construct_assembler(std::istream &input, int dump_ast_level, bool print_debug) {
-    variable_map tmp_map;
-    std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>(tmp_map);
-
-    try{
-        asm_language_parser target_parser(input, variables_map);
-
-
-        std::vector<int> io_res;
-        stream_pass_manager sman(io_res, dump_ast_level);
-        sman.set_enabled_passes({true, false, false, false, true, true, true, false ,false}); // do not mess with constants in assembly
-        
-        instruction_stream program_stream = sman.process_stream(target_parser.program);
-
-        if(dump_ast_level>0) dump["stream"] = sman.get_dump();
-
-        writer.process_stream(program_stream, print_debug);
-
-    } catch(std::runtime_error &e){
-        error_code = e.what();
+    fcore_has::fcore_has(std::istream &input, int dump_ast_level,bool print_debug) {
+        construct_assembler(input, dump_ast_level,print_debug);
     }
 
-}
+
+    void fcore_has::construct_assembler(std::istream &input, int dump_ast_level, bool print_debug) {
+        variable_map tmp_map;
+        std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>(tmp_map);
+
+        try{
+            asm_language_parser target_parser(input, variables_map);
 
 
-std::vector<std::istream*>
-fcore::fcore_has::process_includes(const std::vector<std::string> &include_files, const std::string &include_directory) {
-    std::vector<std::istream*> input_streams;
+            std::vector<int> io_res;
+            stream_pass_manager sman(io_res, dump_ast_level);
+            sman.set_enabled_passes({true, false, false, false, true, true, true, false ,false}); // do not mess with constants in assembly
 
-    for(auto const &item:include_files){
-        std::string name = include_directory;
-        name += item;
-        auto *ifstr = new std::ifstream(name);
-        input_streams.push_back(ifstr);
+            instruction_stream program_stream = sman.process_stream(target_parser.program);
+
+            if(dump_ast_level>0) dump["stream"] = sman.get_dump();
+
+            writer.process_stream(program_stream, print_debug);
+
+        } catch(std::runtime_error &e){
+            error_code = e.what();
+        }
+
     }
 
-    return input_streams;
-}
 
-std::vector<uint32_t> fcore::fcore_has::get_hexfile(bool endian_swap) {
-    return writer.generate_hex(endian_swap);
-}
+    std::vector<std::istream*>
+    fcore_has::process_includes(const std::vector<std::string> &include_files, const std::string &include_directory) {
+        std::vector<std::istream*> input_streams;
 
-void fcore::fcore_has::write_hexfile(const std::string& ouput_file) {
-    writer.write_hex_file(ouput_file);
-}
+        for(auto const &item:include_files){
+            std::string name = include_directory;
+            name += item;
+            auto *ifstr = new std::ifstream(name);
+            input_streams.push_back(ifstr);
+        }
 
-void fcore::fcore_has::write_verilog_memfile(const std::string& ouput_file) {
-    writer.write_mem_file(ouput_file);
-}
-
-
-uint32_t fcore::fcore_has::get_program_size() {
-    return writer.get_program_size();
-}
-
-std::string fcore::fcore_has::get_errors() {
-    return  error_code;
-}
-
-void fcore::fcore_has::write_json(const std::string &output_file) {
-    nlohmann::json j;
-    j["error_code"] = error_code;
-    if(error_code.empty()){
-        j["compiled_program"] = writer.generate_hex(false);
-    } else{
-        j["compiled_program"] = {};
+        return input_streams;
     }
-    std::string str = j.dump();
-    std::ofstream ss(output_file);
-    ss<<str;
-    ss.close();
-}
 
-std::vector<uint32_t> fcore::fcore_has::get_raw_code() {
-    return writer.get_code();
-}
+    std::vector<uint32_t> fcore_has::get_hexfile(bool endian_swap) {
+        return writer.generate_hex(endian_swap);
+    }
 
-std::vector<uint32_t> fcore::fcore_has::get_executable() {
-    return writer.get_executable();
+    void fcore_has::write_hexfile(const std::string& ouput_file) {
+        writer.write_hex_file(ouput_file);
+    }
+
+    void fcore_has::write_verilog_memfile(const std::string& ouput_file) {
+        writer.write_mem_file(ouput_file);
+    }
+
+
+    uint32_t fcore_has::get_program_size() {
+        return writer.get_program_size();
+    }
+
+    std::string fcore_has::get_errors() {
+        return  error_code;
+    }
+
+    void fcore_has::write_json(const std::string &output_file) {
+        nlohmann::json j;
+        j["error_code"] = error_code;
+        if(error_code.empty()){
+            j["compiled_program"] = writer.generate_hex(false);
+        } else{
+            j["compiled_program"] = {};
+        }
+        std::string str = j.dump();
+        std::ofstream ss(output_file);
+        ss<<str;
+        ss.close();
+    }
+
+    std::vector<uint32_t> fcore_has::get_raw_code() {
+        return writer.get_code();
+    }
+
+    std::vector<uint32_t> fcore_has::get_executable() {
+        return writer.get_executable();
+    }
+
 }

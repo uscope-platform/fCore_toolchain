@@ -15,25 +15,28 @@
 
 #include "frontend/C/C_ErrorHandling.hpp"
 
-void fcore::C_ErrorHandling::syntaxError(antlr4::Recognizer *, antlr4::Token *, size_t ,
-                                size_t , const std::string &msg, std::exception_ptr ) {
-    throw std::runtime_error(msg);
-}
+namespace fcore{
 
-void fcore::C_ErrorHandling::reportAmbiguity(antlr4::Parser *, const antlr4::dfa::DFA &, size_t ,
-                                    size_t , bool , const antlrcpp::BitSet &,
-                                    antlr4::atn::ATNConfigSet *) {
+    void C_ErrorHandling::syntaxError(antlr4::Recognizer *, antlr4::Token *, size_t ,
+                                             size_t , const std::string &msg, std::exception_ptr ) {
+        throw std::runtime_error(msg);
+    }
 
-}
+    void C_ErrorHandling::reportAmbiguity(antlr4::Parser *, const antlr4::dfa::DFA &, size_t ,
+                                                 size_t , bool , const antlrcpp::BitSet &,
+                                                 antlr4::atn::ATNConfigSet *) {
 
-void
-fcore::C_ErrorHandling::reportAttemptingFullContext(antlr4::Parser *, const antlr4::dfa::DFA &, size_t ,
-                                           size_t , const antlrcpp::BitSet &,
-                                           antlr4::atn::ATNConfigSet *) {
+    }
 
-}
+    void C_ErrorHandling::reportAttemptingFullContext(antlr4::Parser *, const antlr4::dfa::DFA &, size_t ,
+                                                        size_t , const antlrcpp::BitSet &,
+                                                        antlr4::atn::ATNConfigSet *) {
 
-void fcore::C_ErrorHandling::reportContextSensitivity(antlr4::Parser *, const antlr4::dfa::DFA &, size_t ,
-                                             size_t , size_t , antlr4::atn::ATNConfigSet *) {
+    }
+
+    void C_ErrorHandling::reportContextSensitivity(antlr4::Parser *, const antlr4::dfa::DFA &, size_t ,
+                                                          size_t , size_t , antlr4::atn::ATNConfigSet *) {
+
+    }
 
 }

@@ -15,75 +15,77 @@
 #include "data_structures/executable.hpp"
 
 
+namespace fcore{
 
-fcore::executable::executable() {
-    sections["metadata"] = std::vector<uint32_t>();
-    sections["io_remapping"] = std::vector<uint32_t>();
-    sections["code"] = std::vector<uint32_t>();
-}
-
-fcore::executable::executable(std::vector<uint32_t> exec) {
-    std::vector<uint32_t> executable = std::move(exec);
-    sections["metadata"].push_back(executable[0]);
-
-    uint16_t metadata[2];
-    split_word(executable[0], metadata);
-
-    executable.erase(executable.begin(), executable.begin()+2);
-    for(int i = 0; i< metadata[0]-1; i++){
-        sections["io_remapping"].push_back(executable[i]);
+    executable::executable() {
+        sections["metadata"] = std::vector<uint32_t>();
+        sections["io_remapping"] = std::vector<uint32_t>();
+        sections["code"] = std::vector<uint32_t>();
     }
-    executable.erase(executable.begin(), executable.begin()+metadata[0]);
 
-    sections["code"].insert(sections["code"].end(),executable.begin(), executable.end());
-}
+    executable::executable(std::vector<uint32_t> exec) {
+        std::vector<uint32_t> executable = std::move(exec);
+        sections["metadata"].push_back(executable[0]);
 
+        uint16_t metadata[2];
+        split_word(executable[0], metadata);
 
-void fcore::executable::add_code_section(std::vector<uint32_t> code) {
-    sections["code"] = std::move(code);
-}
-
-void fcore::executable::add_io_mapping(const std::set<io_map_entry>&  mapping) {
-    std::set<uint32_t>maps;
-    for(const auto& pair:mapping){
-        uint32_t raw_mapping = pair.io_addr+ (pair.core_addr<<16);
-        if(!maps.contains(raw_mapping)){
-            maps.insert(raw_mapping);
-            sections["io_remapping"].push_back(raw_mapping);
+        executable.erase(executable.begin(), executable.begin()+2);
+        for(int i = 0; i< metadata[0]-1; i++){
+            sections["io_remapping"].push_back(executable[i]);
         }
+        executable.erase(executable.begin(), executable.begin()+metadata[0]);
+
+        sections["code"].insert(sections["code"].end(),executable.begin(), executable.end());
     }
-    sections["io_remapping"].push_back(0xC);
-}
-
-void fcore::executable::generate_metadata() {
-    sections["metadata"].push_back(sections["io_remapping"].size() + (sections["code"].size()<<16));
-    sections["metadata"].push_back(0xC);
-}
 
 
-std::vector<uint32_t> fcore::executable::get_executable() {
-    std::vector<uint32_t> ret_exec;
-    auto metadata_sect = sections["metadata"];
-    auto io_remap_sect = sections["io_remapping"];
-    auto code_sect = sections["code"];
-    std::move(metadata_sect.begin(), metadata_sect.end(), std::back_inserter(ret_exec));
-    std::move(io_remap_sect.begin(), io_remap_sect.end(), std::back_inserter(ret_exec));
-    std::move(code_sect.begin(), code_sect.end(), std::back_inserter(ret_exec));
-    return ret_exec;
-}
-
-std::vector<uint32_t> fcore::executable::get_code() {
-    return sections["code"];
-}
-
-std::set<std::pair<uint16_t, uint16_t>> fcore::executable::get_io_mapping() {
-    std::set<std::pair<uint16_t, uint16_t>> ret_val;
-    for(auto &item:sections["io_remapping"]){
-        uint16_t pair[2];
-        split_word(item, pair);
-        ret_val.insert({pair[0], pair[1]});
+    void executable::add_code_section(std::vector<uint32_t> code) {
+        sections["code"] = std::move(code);
     }
-    return ret_val;
+
+    void executable::add_io_mapping(const std::set<io_map_entry>&  mapping) {
+        std::set<uint32_t>maps;
+        for(const auto& pair:mapping){
+            uint32_t raw_mapping = pair.io_addr+ (pair.core_addr<<16);
+            if(!maps.contains(raw_mapping)){
+                maps.insert(raw_mapping);
+                sections["io_remapping"].push_back(raw_mapping);
+            }
+        }
+        sections["io_remapping"].push_back(0xC);
+    }
+
+    void executable::generate_metadata() {
+        sections["metadata"].push_back(sections["io_remapping"].size() + (sections["code"].size()<<16));
+        sections["metadata"].push_back(0xC);
+    }
+
+
+    std::vector<uint32_t> executable::get_executable() {
+        std::vector<uint32_t> ret_exec;
+        auto metadata_sect = sections["metadata"];
+        auto io_remap_sect = sections["io_remapping"];
+        auto code_sect = sections["code"];
+        std::move(metadata_sect.begin(), metadata_sect.end(), std::back_inserter(ret_exec));
+        std::move(io_remap_sect.begin(), io_remap_sect.end(), std::back_inserter(ret_exec));
+        std::move(code_sect.begin(), code_sect.end(), std::back_inserter(ret_exec));
+        return ret_exec;
+    }
+
+    std::vector<uint32_t> executable::get_code() {
+        return sections["code"];
+    }
+
+    std::set<std::pair<uint16_t, uint16_t>> executable::get_io_mapping() {
+        std::set<std::pair<uint16_t, uint16_t>> ret_val;
+        for(auto &item:sections["io_remapping"]){
+            uint16_t pair[2];
+            split_word(item, pair);
+            ret_val.insert({pair[0], pair[1]});
+        }
+        return ret_val;
+    }
 }
 
 

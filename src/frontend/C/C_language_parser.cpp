@@ -21,42 +21,45 @@
 
 using namespace antlr4;
 
-fcore::C_language_parser::C_language_parser(){
-    dmap = std::make_shared<define_map>();
-}
+namespace fcore{
 
-fcore::C_language_parser::C_language_parser(std::istream &file, std::shared_ptr<define_map> def_map) {
-    dmap = std::move(def_map);
-    preproc = std::make_unique<C_pre_processor>(file,dmap);
-}
+    C_language_parser::C_language_parser(){
+        dmap = std::make_shared<define_map>();
+    }
 
-fcore::C_language_parser::C_language_parser(const std::string &path, std::shared_ptr<define_map> def_map) {
-    dmap = std::move(def_map);
-    preproc = std::make_unique<C_pre_processor>(path,dmap);
-}
+    C_language_parser::C_language_parser(std::istream &file, std::shared_ptr<define_map> def_map) {
+        dmap = std::move(def_map);
+        preproc = std::make_unique<C_pre_processor>(file,dmap);
+    }
+
+    C_language_parser::C_language_parser(const std::string &path, std::shared_ptr<define_map> def_map) {
+        dmap = std::move(def_map);
+        preproc = std::make_unique<C_pre_processor>(path,dmap);
+    }
 
 
-void fcore::C_language_parser::pre_process(const std::vector<std::string> &abs_includes) {
-    preproc->set_absolute_includes(abs_includes);
-    preproc->process_file();
-    preproc->substitute_defines();
-    preprocessed_content = preproc->get_preprocessed_file();
-}
+    void C_language_parser::pre_process(const std::vector<std::string> &abs_includes) {
+        preproc->set_absolute_includes(abs_includes);
+        preproc->process_file();
+        preproc->substitute_defines();
+        preprocessed_content = preproc->get_preprocessed_file();
+    }
 
-void fcore::C_language_parser::parse(std::unordered_map<std::string, variable_class_t> dma_specs) {
+    void C_language_parser::parse(std::unordered_map<std::string, variable_class_t> dma_specs) {
 
-    std::istringstream ss(preprocessed_content);
-    ANTLRInputStream input(ss);
+        std::istringstream ss(preprocessed_content);
+        ANTLRInputStream input(ss);
 
-    C_parser::C_grammarLexer lexer(&input);
-    CommonTokenStream tokens(&lexer);
+        C_parser::C_grammarLexer lexer(&input);
+        CommonTokenStream tokens(&lexer);
 
-    tokens.fill();
-    C_parser::C_grammarParser parser(&tokens);
-    C_ErrorHandling handler;
-    parser.addErrorListener(&handler);
-    tree::ParseTree *Tree = parser.compilationUnit();
-    visitor.set_dma_specs(std::move(dma_specs));
-    tree::ParseTreeWalker::DEFAULT.walk(&visitor, Tree);
-    AST = visitor.get_ast();
+        tokens.fill();
+        C_parser::C_grammarParser parser(&tokens);
+        C_ErrorHandling handler;
+        parser.addErrorListener(&handler);
+        tree::ParseTree *Tree = parser.compilationUnit();
+        visitor.set_dma_specs(std::move(dma_specs));
+        tree::ParseTreeWalker::DEFAULT.walk(&visitor, Tree);
+        AST = visitor.get_ast();
+    }
 }

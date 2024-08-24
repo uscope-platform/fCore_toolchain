@@ -12,25 +12,30 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 
+#include "data_structures/instruction_stream/pseudo_instruction.hpp"
 
-#include "passes/high_level/constant_folding_pass.hpp"
 
 namespace fcore{
-
-    constant_folding_pass::constant_folding_pass() : pass_base<hl_ast_node>("Constant folding pass"){
-
+    pseudo_instruction::pseudo_instruction(std::string op, std::vector<std::shared_ptr<variable>> args)
+    : instruction(isa_pseudo_instruction){
+            opcode = std::move(op);
+            arguments = std::move(args);
     }
 
-    std::shared_ptr<hl_ast_node> constant_folding_pass::process_leaf(std::shared_ptr<hl_ast_node> element) {
-        std::shared_ptr<hl_ast_node> ret_val = element;
-        if(element->node_type==hl_ast_node_type_expr){
-            std::shared_ptr<hl_expression_node> expression = std::static_pointer_cast<hl_expression_node>(element);
-            if(expression_evaluator::is_constant_expression(expression)){
-                ret_val =  expression_evaluator::evaluate_expression(expression);
-            }
+    int pseudo_instruction::instruction_count() {
+        return 1;
+    }
+
+    nlohmann::json pseudo_instruction::dump() {
+        nlohmann::json retval = instruction::dump();
+
+        std::vector<nlohmann::json> args_dump;
+        for(auto &i:arguments){
+            args_dump.push_back(i->dump());
         }
-        return ret_val;
+        retval["arguments"] = args_dump;
+        return retval;
     }
+
 }

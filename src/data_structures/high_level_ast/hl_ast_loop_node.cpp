@@ -16,33 +16,37 @@
 
 #include "data_structures/high_level_ast/hl_ast_loop_node.h"
 
-fcore::hl_ast_loop_node::hl_ast_loop_node() : hl_ast_node(hl_ast_node_type_loop){
+namespace fcore{
 
-}
+    hl_ast_loop_node::hl_ast_loop_node() : hl_ast_node(hl_ast_node_type_loop){
 
-std::string fcore::hl_ast_loop_node::pretty_print() {
-
-    std::ostringstream ss;
-
-    ss << "for (" << init_statement->pretty_print()<< "; ";
-    ss << condition->pretty_print() << "; ";
-    ss << iteration_expr->pretty_print() << ") {"<< std::endl;
-
-    if(!loop_content.empty()){
-        for(const auto& item:loop_content){
-            ss << item->pretty_print() << ";" << std::endl;
-        }
     }
-    ss<< "}";
-    return ss.str();
-}
 
-nlohmann::json fcore::hl_ast_loop_node::dump() {
-    nlohmann::json retval = hl_ast_node::dump();
-    retval["loop_content"] = hl_ast_node::dump_array(loop_content);
-    retval["iteration_expr"] = iteration_expr->dump();
-    retval["condition"] = condition->dump();
-    retval["init_statement"] = init_statement->dump();
+    std::string hl_ast_loop_node::pretty_print() {
 
-    return retval;
+        std::ostringstream ss;
+
+        ss << "for (" << init_statement->pretty_print()<< "; ";
+        ss << condition->pretty_print() << "; ";
+        ss << iteration_expr->pretty_print() << ") {"<< std::endl;
+
+        if(!loop_content.empty()){
+            for(const auto& item:loop_content){
+                ss << item->pretty_print() << ";" << std::endl;
+            }
+        }
+        ss<< "}";
+        return ss.str();
+    }
+
+    nlohmann::json hl_ast_loop_node::dump() {
+        nlohmann::json retval = hl_ast_node::dump();
+        retval["loop_content"] = hl_ast_node::dump_array(loop_content);
+        retval["iteration_expr"] = iteration_expr->dump();
+        retval["condition"] = condition->dump();
+        retval["init_statement"] = init_statement->dump();
+
+        return retval;
+    }
+
 }

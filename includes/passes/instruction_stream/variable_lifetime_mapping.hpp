@@ -24,14 +24,14 @@ namespace fcore{
     class variable_lifetime_mapping : public stream_pass_base{
     public:
         explicit variable_lifetime_mapping(std::shared_ptr<variable_map> &v);
-        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) override;
+        std::shared_ptr<instruction> apply_pass(std::shared_ptr<instruction> element, uint32_t n) override;
 
     private:
         std::shared_ptr<variable> update_variable_lifetime(const std::shared_ptr<variable>& var) const;
-        void map_register_inst(const std::shared_ptr<ll_register_instr_node>& instr);
-        void map_conv_instr(const std::shared_ptr<ll_conversion_instr_node>& instr);
-        void map_load_const_instr(const std::shared_ptr<ll_load_constant_instr_node>& instr);
-        void map_ternary_instr(const std::shared_ptr<ll_ternary_instr_node>& instr);
+        void map_register_inst(const std::shared_ptr<register_instruction>& instr);
+        void map_conv_instr(const std::shared_ptr<conversion_instruction>& instr);
+        void map_load_const_instr(const std::shared_ptr<load_constant_instruction>& instr);
+        void map_ternary_instr(const std::shared_ptr<ternary_instruction>& instr);
 
         std::shared_ptr<variable_map> vmap;
         unsigned int instr_cntr;

@@ -27,7 +27,7 @@ namespace fcore{
         };
 
         virtual void setup() {};
-        virtual std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) {
+        virtual std::shared_ptr<instruction> apply_pass(std::shared_ptr<instruction> element, uint32_t n) {
             return element;
         };
         std::string get_name() {return name;};

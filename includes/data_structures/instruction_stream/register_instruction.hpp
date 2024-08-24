@@ -23,9 +23,9 @@
 
 namespace fcore{
 
-    class ll_register_instr_node: public ll_instruction_node {
+    class register_instruction: public instruction {
     public:
-        ll_register_instr_node(std::string op, std::shared_ptr<variable> op_a, std::shared_ptr<variable> op_b, std::shared_ptr<variable> dest);
+        register_instruction(std::string op, std::shared_ptr<variable> op_a, std::shared_ptr<variable> op_b, std::shared_ptr<variable> dest);
         uint32_t emit() override;
         std::string disassemble() override;
         void print() override;
@@ -33,7 +33,7 @@ namespace fcore{
 
         nlohmann::json dump();
 
-        friend bool operator==(const ll_register_instr_node& lhs, const ll_register_instr_node& rhs){
+        friend bool operator==(const register_instruction& lhs, const register_instruction& rhs){
             bool retval = true;
 
             retval &= *lhs.operand_a == *rhs.operand_a;

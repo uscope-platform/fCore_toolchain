@@ -15,35 +15,38 @@
 
 #include "backend/assembly_generator.hpp"
 
-fcore::assembly_generator::assembly_generator(const instruction_stream &stream) {
-    std::ostringstream disassembled_program;
+namespace fcore{
 
-    for(const auto& item:stream){
-        auto val = item->disassemble();
-        if(val.starts_with("ldc")){
-            disassembled_program << val;
-        } else {
-            disassembled_program << val << std::endl;
+    assembly_generator::assembly_generator(const instruction_stream &stream) {
+        std::ostringstream disassembled_program;
+
+        for(const auto& item:stream){
+            auto val = item->disassemble();
+            if(val.starts_with("ldc")){
+                disassembled_program << val;
+            } else {
+                disassembled_program << val << std::endl;
+            }
         }
-    }
-    program = disassembled_program.str();
-}
-
-void fcore::assembly_generator::write_program(const std::string &filename) {
-    std::ofstream output(filename);
-
-    if(!io_map.empty()){
-        output<<"///////////////////////////////////////////"<<std::endl;
-        output<<"//               IO MAPPING              //"<<std::endl;
-        output<<"//    io address <---> core address      //"<<std::endl;
-        output<<"///////////////////////////////////////////"<<std::endl;
-        for(auto &pair:io_map){
-            output<<"//    " << pair.first <<"  <--->  "<< pair.second<<"      //"<<std::endl;
-        }
-        output<<"///////////////////////////////////////////"<<std::endl;
+        program = disassembled_program.str();
     }
 
-    for(auto &instr:program){
-        output << instr;
+    void assembly_generator::write_program(const std::string &filename) {
+        std::ofstream output(filename);
+
+        if(!io_map.empty()){
+            output<<"///////////////////////////////////////////"<<std::endl;
+            output<<"//               IO MAPPING              //"<<std::endl;
+            output<<"//    io address <---> core address      //"<<std::endl;
+            output<<"///////////////////////////////////////////"<<std::endl;
+            for(auto &pair:io_map){
+                output<<"//    " << pair.first <<"  <--->  "<< pair.second<<"      //"<<std::endl;
+            }
+            output<<"///////////////////////////////////////////"<<std::endl;
+        }
+
+        for(auto &instr:program){
+            output << instr;
+        }
     }
 }

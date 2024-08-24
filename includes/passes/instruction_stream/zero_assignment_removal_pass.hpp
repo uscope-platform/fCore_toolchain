@@ -24,7 +24,7 @@ namespace fcore{
     class zero_assignment_removal_pass : public stream_pass_base{
     public:
         zero_assignment_removal_pass();
-        std::shared_ptr<ll_instruction_node> apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) override;
+        std::shared_ptr<instruction> apply_pass(std::shared_ptr<instruction> element, uint32_t n) override;
     private:
         bool delete_intercalated_const;
     };

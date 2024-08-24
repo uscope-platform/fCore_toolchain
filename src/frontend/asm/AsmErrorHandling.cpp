@@ -15,28 +15,32 @@
 
 #include "frontend/asm/AsmErrorHandling.hpp"
 
-void fcore::AsmErrorHandling::syntaxError(antlr4::Recognizer *recognizer, antlr4::Token *offendingSymbol, size_t line,
-                                size_t charPositionInLine, const std::string &msg, std::exception_ptr e) {
-    throw std::runtime_error(msg);
+namespace fcore{
+
+    void AsmErrorHandling::syntaxError(antlr4::Recognizer *recognizer, antlr4::Token *offendingSymbol, size_t line,
+                                              size_t charPositionInLine, const std::string &msg, std::exception_ptr e) {
+        throw std::runtime_error(msg);
+    }
+
+    void AsmErrorHandling::reportAmbiguity(antlr4::Parser *recognizer, const antlr4::dfa::DFA &dfa, size_t startIndex,
+                                                  size_t stopIndex, bool exact, const antlrcpp::BitSet &ambigAlts,
+                                                  antlr4::atn::ATNConfigSet *configs) {
+        int i = 0;
+        i++;
+    }
+
+    void
+    AsmErrorHandling::reportAttemptingFullContext(antlr4::Parser *recognizer, const antlr4::dfa::DFA &dfa, size_t startIndex,
+                                                         size_t stopIndex, const antlrcpp::BitSet &conflictingAlts,
+                                                         antlr4::atn::ATNConfigSet *configs) {
+        int i = 0;
+        i++;
+    }
+
+    void AsmErrorHandling::reportContextSensitivity(antlr4::Parser *recognizer, const antlr4::dfa::DFA &dfa, size_t startIndex,
+                                                           size_t stopIndex, size_t prediction, antlr4::atn::ATNConfigSet *configs) {
+        int i = 0;
+        i++;
+    }
 }
 
-void fcore::AsmErrorHandling::reportAmbiguity(antlr4::Parser *recognizer, const antlr4::dfa::DFA &dfa, size_t startIndex,
-                                    size_t stopIndex, bool exact, const antlrcpp::BitSet &ambigAlts,
-                                    antlr4::atn::ATNConfigSet *configs) {
-    int i = 0;
-    i++;
-}
-
-void
-fcore::AsmErrorHandling::reportAttemptingFullContext(antlr4::Parser *recognizer, const antlr4::dfa::DFA &dfa, size_t startIndex,
-                                           size_t stopIndex, const antlrcpp::BitSet &conflictingAlts,
-                                           antlr4::atn::ATNConfigSet *configs) {
-    int i = 0;
-    i++;
-}
-
-void fcore::AsmErrorHandling::reportContextSensitivity(antlr4::Parser *recognizer, const antlr4::dfa::DFA &dfa, size_t startIndex,
-                                             size_t stopIndex, size_t prediction, antlr4::atn::ATNConfigSet *configs) {
-    int i = 0;
-    i++;
-}

@@ -15,65 +15,66 @@
 
 #include "tools/register_map.hpp"
 
-
-fcore::register_map::register_map() {
-    for(int i = 0; i<N_REGISTERS; i++){
-        std::vector<range_t> reg_range;
-        reg_map.push_back(reg_range);
+namespace fcore{
+    register_map::register_map() {
+        for(int i = 0; i<N_REGISTERS; i++){
+            std::vector<range_t> reg_range;
+            reg_map.push_back(reg_range);
+        }
     }
-}
 
 
 
-bool fcore::register_map::is_used(int reg, int from_inst, int to_inst) {
-    if(reg==0)
-        return true;
-    std::vector<range_t> current_ranges = reg_map[reg];
-    range_t req_range = {from_inst, to_inst};
-    for(auto item:current_ranges){
-        bool ranges_overlap = (item.start <= req_range.end) && (req_range.start <= item.end);
-        if(ranges_overlap)
+    bool register_map::is_used(int reg, int from_inst, int to_inst) {
+        if(reg==0)
             return true;
-    }
-    return false;
-}
-
-bool fcore::register_map::is_used(std::pair<int,int> array, int from_inst, int to_inst) {
-    bool retval = false;
-    if(array.first==0)
-        retval = true;
-    for(int i =array.first; i<array.first+array.second; i++){
-        retval |= is_used(i, from_inst, to_inst);
-    }
-    return retval;
-}
-
-void fcore::register_map::insert(std::shared_ptr<variable> var,int reg, int from_inst, int to_inst) {
-    range_t req_range = {from_inst, to_inst};
-    reg_map[reg].push_back(req_range);
-    identifiers_map[var->get_identifier()] = std::make_shared<variable>("r"+std::to_string(reg));
-}
-
-
-
-void fcore::register_map::insert(std::shared_ptr<variable> var, std::pair<int, int> reg, int from_inst, int to_inst) {
-    range_t req_range = {from_inst, to_inst};
-
-    for(int i=0; i<reg.second; i++){
-        reg_map[reg.first+i].push_back(req_range);
-        auto idx = array_delinearize(var->get_array_shape(), i);
-        identifiers_map[var->get_identifier(idx)] = std::make_shared<variable>("r"+std::to_string(reg.first+i));
+        std::vector<range_t> current_ranges = reg_map[reg];
+        range_t req_range = {from_inst, to_inst};
+        for(auto item:current_ranges){
+            bool ranges_overlap = (item.start <= req_range.end) && (req_range.start <= item.end);
+            if(ranges_overlap)
+                return true;
+        }
+        return false;
     }
 
-}
+    bool register_map::is_used(std::pair<int,int> array, int from_inst, int to_inst) {
+        bool retval = false;
+        if(array.first==0)
+            retval = true;
+        for(int i =array.first; i<array.first+array.second; i++){
+            retval |= is_used(i, from_inst, to_inst);
+        }
+        return retval;
+    }
 
-void fcore::register_map::add_bound_identifier(const std::shared_ptr<variable> & var, int reg) {
-    identifiers_map[var->get_identifier()] = std::make_shared<variable>("r"+std::to_string(reg));
-}
+    void register_map::insert(std::shared_ptr<variable> var,int reg, int from_inst, int to_inst) {
+        range_t req_range = {from_inst, to_inst};
+        reg_map[reg].push_back(req_range);
+        identifiers_map[var->get_identifier()] = std::make_shared<variable>("r"+std::to_string(reg));
+    }
 
-std::shared_ptr<fcore::variable> fcore::register_map::get_identifier(const std::shared_ptr<variable> &var) {
-    auto id = var->get_identifier();
-    return identifiers_map[id];
-}
 
+
+    void register_map::insert(std::shared_ptr<variable> var, std::pair<int, int> reg, int from_inst, int to_inst) {
+        range_t req_range = {from_inst, to_inst};
+
+        for(int i=0; i<reg.second; i++){
+            reg_map[reg.first+i].push_back(req_range);
+            auto idx = array_delinearize(var->get_array_shape(), i);
+            identifiers_map[var->get_identifier(idx)] = std::make_shared<variable>("r"+std::to_string(reg.first+i));
+        }
+
+    }
+
+    void register_map::add_bound_identifier(const std::shared_ptr<variable> & var, int reg) {
+        identifiers_map[var->get_identifier()] = std::make_shared<variable>("r"+std::to_string(reg));
+    }
+
+    std::shared_ptr<variable> register_map::get_identifier(const std::shared_ptr<variable> &var) {
+        auto id = var->get_identifier();
+        return identifiers_map[id];
+    }
+    
+}
 

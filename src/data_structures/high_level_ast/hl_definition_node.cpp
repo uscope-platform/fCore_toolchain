@@ -16,82 +16,85 @@
 
 #include "data_structures/high_level_ast/hl_definition_node.hpp"
 
+namespace fcore {
 
-fcore::hl_definition_node::hl_definition_node(std::string n, c_types_t ct, std::shared_ptr<variable> v) : hl_ast_node(hl_ast_node_type_definition) {
-    name = std::move(n);
-    type = ct;
-    constant = false;
-    inner_variable = std::move(v);
-}
+    hl_definition_node::hl_definition_node(std::string n, c_types_t ct, std::shared_ptr<variable> v) : hl_ast_node(hl_ast_node_type_definition) {
+        name = std::move(n);
+        type = ct;
+        constant = false;
+        inner_variable = std::move(v);
+    }
 
-bool fcore::hl_definition_node::is_initialized() {
-    return !initializer.empty();
-}
+    bool hl_definition_node::is_initialized() {
+        return !initializer.empty();
+    }
 
-void fcore::hl_definition_node::set_scalar_initializer(const std::shared_ptr<hl_ast_node>& init) {
-    initializer.clear();
-    initializer.push_back(init);
-
-}
-
-void fcore::hl_definition_node::set_constant(bool c) {
-    constant = c;
-}
-
-bool fcore::hl_definition_node::is_constant() const {
-    return constant;
-}
-
-std::shared_ptr<fcore::hl_ast_node> fcore::hl_definition_node::get_scalar_initializer() {
-    return initializer[0];
-}
-
-void fcore::hl_definition_node::set_scalar_initializer(const std::shared_ptr<hl_ast_node> &init, uint32_t idx) {
-    if(initializer.size()<idx) throw std::runtime_error("Error: Attempt to set undefined initializer");
-    initializer[idx] = init;
-}
-
-std::string fcore::hl_definition_node::pretty_print() {
-
-
-    std::ostringstream ss;
-    if(constant) ss << "const ";
-    ss << hl_ast_node::type_to_string(type) << " " << name;
-
-    if(!initializer.empty()){
-        ss << " = ";
-        if(initializer[0]->node_type == hl_ast_node_type_function_call){
-            ss << std::static_pointer_cast<hl_function_call_node>(initializer[0])->pretty_print();
-        } else{
-            ss << std::static_pointer_cast<hl_expression_node>(initializer[0])->pretty_print();
-        }
+    void hl_definition_node::set_scalar_initializer(const std::shared_ptr<hl_ast_node>& init) {
+        initializer.clear();
+        initializer.push_back(init);
 
     }
 
+    void hl_definition_node::set_constant(bool c) {
+        constant = c;
+    }
 
-    std::string ret = ss.str();
-    return ret;
+    bool hl_definition_node::is_constant() const {
+        return constant;
+    }
 
-}
+    std::shared_ptr<hl_ast_node> hl_definition_node::get_scalar_initializer() {
+        return initializer[0];
+    }
 
-void fcore::hl_definition_node::set_name(std::string n) {
-    name = std::move(n);
-}
+    void hl_definition_node::set_scalar_initializer(const std::shared_ptr<hl_ast_node> &init, uint32_t idx) {
+        if(initializer.size()<idx) throw std::runtime_error("Error: Attempt to set undefined initializer");
+        initializer[idx] = init;
+    }
 
-bool fcore::hl_definition_node::is_scalar() {
-    return inner_variable->get_type() != var_type_array;
-}
+    std::string hl_definition_node::pretty_print() {
 
 
-nlohmann::json fcore::hl_definition_node::dump() {
-    nlohmann::json retval = hl_ast_node::dump();
+        std::ostringstream ss;
+        if(constant) ss << "const ";
+        ss << hl_ast_node::type_to_string(type) << " " << name;
 
-    retval["array_index"] = hl_ast_node::dump_array(array_index);
-    retval["initializer"] = hl_ast_node::dump_array(initializer);
-    retval["inner_variable"] = inner_variable->dump();
-    retval["name"] = name;
-    retval["constant"] = constant;
-    retval["type"] = c_types_to_string(type);
+        if(!initializer.empty()){
+            ss << " = ";
+            if(initializer[0]->node_type == hl_ast_node_type_function_call){
+                ss << std::static_pointer_cast<hl_function_call_node>(initializer[0])->pretty_print();
+            } else{
+                ss << std::static_pointer_cast<hl_expression_node>(initializer[0])->pretty_print();
+            }
 
-    return retval;
+        }
+
+
+        std::string ret = ss.str();
+        return ret;
+
+    }
+
+    void hl_definition_node::set_name(std::string n) {
+        name = std::move(n);
+    }
+
+    bool hl_definition_node::is_scalar() {
+        return inner_variable->get_type() != var_type_array;
+    }
+
+
+    nlohmann::json hl_definition_node::dump() {
+        nlohmann::json retval = hl_ast_node::dump();
+
+        retval["array_index"] = hl_ast_node::dump_array(array_index);
+        retval["initializer"] = hl_ast_node::dump_array(initializer);
+        retval["inner_variable"] = inner_variable->dump();
+        retval["name"] = name;
+        retval["constant"] = constant;
+        retval["type"] = c_types_to_string(type);
+
+        return retval;
+    }
+
 }

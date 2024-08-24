@@ -15,91 +15,95 @@
 
 #include "passes/instruction_stream/variable_lifetime_mapping.hpp"
 
-fcore::variable_lifetime_mapping::variable_lifetime_mapping(std::shared_ptr<variable_map> &v) :
-stream_pass_base("Variable lifetime mapping", 1) {
-    vmap = v;
-    instr_cntr = 0;
-}
+namespace fcore{
 
-std::shared_ptr<fcore::ll_instruction_node>
-fcore::variable_lifetime_mapping::apply_pass(std::shared_ptr<ll_instruction_node> element, uint32_t n) {
-    switch (element->get_type()) {
-        case isa_register_instruction:
-            map_register_inst(std::static_pointer_cast<ll_register_instr_node>(element));
-            break;
-        case isa_conversion_instruction:
-            map_conv_instr(std::static_pointer_cast<ll_conversion_instr_node>(element));
-            break;
-        case isa_independent_instruction:
-        case isa_intercalated_constant:
-            // INDEPENDENT INSTRUCTIONS AND INTERCALATED CONSTANTS DO NOT USE VARIABLES
-            break;
-        case isa_load_constant_instruction:
-            map_load_const_instr(std::static_pointer_cast<ll_load_constant_instr_node>(element));
-            break;
-        case isa_ternary_instruction:
-            map_ternary_instr(std::static_pointer_cast<ll_ternary_instr_node>(element));
-            break;
-        default:
-            throw std::runtime_error("Invalid instruction type reached variable mapping stage");
+    variable_lifetime_mapping::variable_lifetime_mapping(std::shared_ptr<variable_map> &v) :
+            stream_pass_base("Variable lifetime mapping", 1) {
+        vmap = v;
+        instr_cntr = 0;
     }
 
-    ++instr_cntr;
-    return element;
-}
-
-void fcore::variable_lifetime_mapping::map_register_inst(const std::shared_ptr<ll_register_instr_node> &instr) {
-    std::shared_ptr<variable> op_a = vmap->at(instr->get_operand_a()->get_linear_identifier());
-    vmap->insert(op_a->get_linear_identifier(), update_variable_lifetime(op_a));
-
-    std::shared_ptr<variable> op_b = vmap->at(instr->get_operand_b()->get_linear_identifier());
-    vmap->insert(op_b->get_linear_identifier(), update_variable_lifetime(op_b));
-
-    std::shared_ptr<variable> dest = vmap->at(instr->get_destination()->get_linear_identifier());
-    vmap->insert(dest->get_linear_identifier(), update_variable_lifetime(dest));
-
-}
-
-void fcore::variable_lifetime_mapping::map_conv_instr(const std::shared_ptr<ll_conversion_instr_node> &instr) {
-    std::shared_ptr<variable> src = vmap->at(instr->get_source()->get_linear_identifier());
-    vmap->insert(src->get_linear_identifier(), update_variable_lifetime(src));
-
-    std::shared_ptr<variable> dest = vmap->at(instr->get_destination()->get_linear_identifier());
-    vmap->insert(dest->get_linear_identifier(), update_variable_lifetime(dest));
-
-}
-
-void fcore::variable_lifetime_mapping::map_load_const_instr(const std::shared_ptr<ll_load_constant_instr_node> &instr) {
-    std::shared_ptr<variable> dest = vmap->at(instr->get_destination()->get_linear_identifier());
-    vmap->insert(dest->get_linear_identifier(), update_variable_lifetime(dest));
-}
-
-std::shared_ptr<fcore::variable> fcore::variable_lifetime_mapping::update_variable_lifetime(const std::shared_ptr<variable>& var) const {
-   std::shared_ptr<variable> retval = var;
-    if(!var->is_constant()){
-        if(var->get_variable_class()==variable_input_type){
-            retval->set_first_occurrence(0);
-        } else{
-            if(instr_cntr <= retval->get_first_occurrence())
-                retval->set_first_occurrence(instr_cntr);
+    std::shared_ptr<instruction>
+    variable_lifetime_mapping::apply_pass(std::shared_ptr<instruction> element, uint32_t n) {
+        switch (element->get_type()) {
+            case isa_register_instruction:
+                map_register_inst(std::static_pointer_cast<register_instruction>(element));
+                break;
+            case isa_conversion_instruction:
+                map_conv_instr(std::static_pointer_cast<conversion_instruction>(element));
+                break;
+            case isa_independent_instruction:
+            case isa_intercalated_constant:
+                // INDEPENDENT INSTRUCTIONS AND INTERCALATED CONSTANTS DO NOT USE VARIABLES
+                break;
+            case isa_load_constant_instruction:
+                map_load_const_instr(std::static_pointer_cast<load_constant_instruction>(element));
+                break;
+            case isa_ternary_instruction:
+                map_ternary_instr(std::static_pointer_cast<ternary_instruction>(element));
+                break;
+            default:
+                throw std::runtime_error("Invalid instruction type reached variable mapping stage");
         }
 
-        if(instr_cntr >= retval->get_last_occurrence())
-            retval->set_last_occurrence(instr_cntr);
+        ++instr_cntr;
+        return element;
     }
-    return retval;
-}
 
-void fcore::variable_lifetime_mapping::map_ternary_instr(const std::shared_ptr<ll_ternary_instr_node> &instr) {
-    std::shared_ptr<variable> op_a = vmap->at(instr->get_operand_a()->get_linear_identifier());
-    vmap->insert(op_a->get_linear_identifier(), update_variable_lifetime(op_a));
+    void variable_lifetime_mapping::map_register_inst(const std::shared_ptr<register_instruction> &instr) {
+        std::shared_ptr<variable> op_a = vmap->at(instr->get_operand_a()->get_linear_identifier());
+        vmap->insert(op_a->get_linear_identifier(), update_variable_lifetime(op_a));
 
-    std::shared_ptr<variable> op_b = vmap->at(instr->get_operand_b()->get_linear_identifier());
-    vmap->insert(op_b->get_linear_identifier(), update_variable_lifetime(op_b));
+        std::shared_ptr<variable> op_b = vmap->at(instr->get_operand_b()->get_linear_identifier());
+        vmap->insert(op_b->get_linear_identifier(), update_variable_lifetime(op_b));
 
-    std::shared_ptr<variable> op_c = vmap->at(instr->get_operand_c()->get_linear_identifier());
-    vmap->insert(op_c->get_linear_identifier(), update_variable_lifetime(op_b));
+        std::shared_ptr<variable> dest = vmap->at(instr->get_destination()->get_linear_identifier());
+        vmap->insert(dest->get_linear_identifier(), update_variable_lifetime(dest));
 
-    std::shared_ptr<variable> dest = vmap->at(instr->get_destination()->get_linear_identifier());
-    vmap->insert(dest->get_linear_identifier(), update_variable_lifetime(dest));
+    }
+
+    void variable_lifetime_mapping::map_conv_instr(const std::shared_ptr<conversion_instruction> &instr) {
+        std::shared_ptr<variable> src = vmap->at(instr->get_source()->get_linear_identifier());
+        vmap->insert(src->get_linear_identifier(), update_variable_lifetime(src));
+
+        std::shared_ptr<variable> dest = vmap->at(instr->get_destination()->get_linear_identifier());
+        vmap->insert(dest->get_linear_identifier(), update_variable_lifetime(dest));
+
+    }
+
+    void variable_lifetime_mapping::map_load_const_instr(const std::shared_ptr<load_constant_instruction> &instr) {
+        std::shared_ptr<variable> dest = vmap->at(instr->get_destination()->get_linear_identifier());
+        vmap->insert(dest->get_linear_identifier(), update_variable_lifetime(dest));
+    }
+
+    std::shared_ptr<variable> variable_lifetime_mapping::update_variable_lifetime(const std::shared_ptr<variable>& var) const {
+        std::shared_ptr<variable> retval = var;
+        if(!var->is_constant()){
+            if(var->get_variable_class()==variable_input_type){
+                retval->set_first_occurrence(0);
+            } else{
+                if(instr_cntr <= retval->get_first_occurrence())
+                    retval->set_first_occurrence(instr_cntr);
+            }
+
+            if(instr_cntr >= retval->get_last_occurrence())
+                retval->set_last_occurrence(instr_cntr);
+        }
+        return retval;
+    }
+
+    void variable_lifetime_mapping::map_ternary_instr(const std::shared_ptr<ternary_instruction> &instr) {
+        std::shared_ptr<variable> op_a = vmap->at(instr->get_operand_a()->get_linear_identifier());
+        vmap->insert(op_a->get_linear_identifier(), update_variable_lifetime(op_a));
+
+        std::shared_ptr<variable> op_b = vmap->at(instr->get_operand_b()->get_linear_identifier());
+        vmap->insert(op_b->get_linear_identifier(), update_variable_lifetime(op_b));
+
+        std::shared_ptr<variable> op_c = vmap->at(instr->get_operand_c()->get_linear_identifier());
+        vmap->insert(op_c->get_linear_identifier(), update_variable_lifetime(op_b));
+
+        std::shared_ptr<variable> dest = vmap->at(instr->get_destination()->get_linear_identifier());
+        vmap->insert(dest->get_linear_identifier(), update_variable_lifetime(dest));
+    }
+
 }

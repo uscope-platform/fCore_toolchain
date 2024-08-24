@@ -13,18 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FCORE_TOOLCHAIN_LL_PSEUDO_INSTR_NODE_HPP
-#define FCORE_TOOLCHAIN_LL_PSEUDO_INSTR_NODE_HPP
+#ifndef FCORE_TOOLCHAIN_PSEUDO_INSTRUCTION_HPP
+#define FCORE_TOOLCHAIN_PSEUDO_INSTRUCTION_HPP
 
 #include <utility>
 
 #include "data_structures/instruction_stream/ll_instruction_node.hpp"
 #include "data_structures/common/variable.hpp"
+
 namespace fcore{
 
-    class ll_pseudo_instr_node :public ll_instruction_node {
+    class pseudo_instruction :public instruction {
     public:
-        ll_pseudo_instr_node(std::string op, std::vector<std::shared_ptr<variable>> args);
+        pseudo_instruction(std::string op, std::vector<std::shared_ptr<variable>> args);
 
         std::vector<std::shared_ptr<variable>> get_arguments() {return arguments;};
         void set_arguments(std::vector<std::shared_ptr<variable>> a) {arguments = std::move(a);};
@@ -32,7 +33,7 @@ namespace fcore{
 
         nlohmann::json dump();
 
-        friend bool operator==(const ll_pseudo_instr_node& lhs, const ll_pseudo_instr_node& rhs){
+        friend bool operator==(const pseudo_instruction& lhs, const pseudo_instruction& rhs){
             bool retval = true;
 
             if(lhs.arguments.empty() && rhs.arguments.empty()){
@@ -55,4 +56,4 @@ namespace fcore{
 }
 
 
-#endif //FCORE_TOOLCHAIN_LL_PSEUDO_INSTR_NODE_HPP
+#endif //FCORE_TOOLCHAIN_PSEUDO_INSTRUCTION_HPP

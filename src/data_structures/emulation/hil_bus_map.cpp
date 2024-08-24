@@ -16,12 +16,12 @@
 
 #include "data_structures/emulation/hil_bus_map.hpp"
 
+namespace fcore{
 
+    bool hil_bus_map::check_duplicates() {
+        std::map<uint32_t, hil_bus_map_entry> working_set;
 
-bool fcore::hil_bus_map::check_duplicates() {
-    std::map<uint32_t, hil_bus_map_entry> working_set;
-
-    for(auto &entry:data_struct){
+        for(auto &entry:data_struct){
             if(working_set.contains(entry.address)){
                 if(entry.source != working_set[entry.address].source){
                     duplicates.emplace_back(entry, working_set[entry.address]);
@@ -29,12 +29,14 @@ bool fcore::hil_bus_map::check_duplicates() {
             } else {
                 working_set[entry.address] = entry;
             }
+        }
+        return !duplicates.empty();
     }
-    return !duplicates.empty();
+
+    nlohmann::json hil_bus_map::get_duplicates() {
+        nlohmann::json ret;
+        ret["duplicates"] = duplicates;
+        return ret;
+    }
 }
 
-nlohmann::json fcore::hil_bus_map::get_duplicates() {
-    nlohmann::json ret;
-    ret["duplicates"] = duplicates;
-    return ret;
-}

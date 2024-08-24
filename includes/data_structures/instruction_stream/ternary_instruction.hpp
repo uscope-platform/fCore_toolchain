@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FCORE_TOOLCHAIN_LL_TERNARY_INSTR_NODE_HPP
-#define FCORE_TOOLCHAIN_LL_TERNARY_INSTR_NODE_HPP
+#ifndef FCORE_TOOLCHAIN_TERNARY_INSTRUCTION_HPP
+#define FCORE_TOOLCHAIN_TERNARY_INSTRUCTION_HPP
 
 #include <utility>
 
@@ -22,9 +22,9 @@
 
 
 namespace fcore{
-    class ll_ternary_instr_node : public ll_instruction_node {
+    class ternary_instruction : public instruction {
     public:
-        ll_ternary_instr_node(std::string op, std::shared_ptr<variable> op_a, std::shared_ptr<variable> op_b,  std::shared_ptr<variable> op_c, std::shared_ptr<variable> dest);
+        ternary_instruction(std::string op, std::shared_ptr<variable> op_a, std::shared_ptr<variable> op_b, std::shared_ptr<variable> op_c, std::shared_ptr<variable> dest);
         uint32_t emit() override;
         std::string disassemble() override;
         void print() override;
@@ -32,7 +32,7 @@ namespace fcore{
 
         nlohmann::json dump();
 
-        friend bool operator==(const ll_ternary_instr_node& lhs, const ll_ternary_instr_node& rhs){
+        friend bool operator==(const ternary_instruction& lhs, const ternary_instruction& rhs){
             bool retval = true;
 
             retval &= *lhs.operand_a == *rhs.operand_a;
@@ -62,4 +62,4 @@ namespace fcore{
 }
 
 
-#endif //FCORE_TOOLCHAIN_LL_TERNARY_INSTR_NODE_HPP
+#endif //FCORE_TOOLCHAIN_TERNARY_INSTRUCTION_HPP

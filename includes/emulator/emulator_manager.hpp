@@ -66,7 +66,7 @@ namespace fcore{
     private:
         void check_bus_duplicates();
         std::unordered_map<unsigned int, uint32_t> io_remap_memory_init(std::vector<emulator::emulator_memory_specs> &mem,
-                                                                        std::set<fcore::io_map_entry> &io_map);
+                                                                        std::set<io_map_entry> &io_map);
         void allocate_memory();
         void run_cores();
 
