@@ -19,7 +19,7 @@ fcore::fcore_dis::fcore_dis(std::istream &input, bin_loader_input_type_t in_type
     error_code = "";
     try{
         binary_loader dis(input, in_type);
-        process_ast(dis.get_ast());
+        process_stream(dis.get_program_stream());
         gen->set_io_map(dis.get_io_mapping());
     } catch(std::runtime_error &e){
         error_code = e.what();
@@ -31,7 +31,7 @@ fcore::fcore_dis::fcore_dis(const std::vector<uint32_t> &mem) {
     error_code = "";
     try{
         binary_loader dis(mem);
-        process_ast(dis.get_ast());
+        process_stream(dis.get_program_stream());
         gen->set_io_map(dis.get_io_mapping());
     } catch(std::runtime_error &e){
         error_code = e.what();
@@ -64,8 +64,7 @@ void fcore::fcore_dis::write_disassembled_program(const std::string &output_file
     gen->write_program(output_file);
 }
 
-void fcore::fcore_dis::process_ast(std::shared_ptr<ll_ast_node> ast) {
-    instruction_stream program_stream = instruction_stream_builder::build_stream(ast);
+void fcore::fcore_dis::process_stream(instruction_stream program_stream) {
     std::vector<int> io_res;
 
     stream_pass_manager sman(io_res,0);

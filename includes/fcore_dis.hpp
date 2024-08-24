@@ -23,7 +23,6 @@
 #include "data_structures/low_level_ast/ll_ast_node.hpp"
 #include "frontend/binary_loader.hpp"
 #include "data_structures/instruction_stream.hpp"
-#include "tools/instruction_stream_builder.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "backend/assembly_generator.hpp"
 
@@ -37,7 +36,7 @@ namespace fcore{
         std::string get_disassenbled_program();
         void write_disassembled_program(const std::string& output_file);
     private:
-        void process_ast(std::shared_ptr<ll_ast_node> ast);
+        void process_stream(instruction_stream program_stream);
         std::shared_ptr<ll_ast_node> ll_ast;
         std::unordered_map<uint16_t, uint16_t> io_map;
         std::unique_ptr<assembly_generator> gen;

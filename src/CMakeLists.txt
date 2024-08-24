@@ -13,7 +13,6 @@ set(FCORE_COMMON_SRCS_I
         data_structures/low_level_ast/ll_ternary_instr_node.cpp
         data_structures/instruction_stream.cpp
         data_structures/common/memory_tracker.cpp
-        tools/instruction_stream_builder.cpp
         tools/define.cpp
         tools/register_map.cpp
         data_structures/common/variable.cpp

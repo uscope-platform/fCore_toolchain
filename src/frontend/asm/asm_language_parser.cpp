@@ -45,6 +45,6 @@ void fcore::asm_language_parser::construct_parser(std::istream &stream, std::sha
     tree::ParseTree *Tree = parser.program();
     AsmTree_visitor visitor(std::move(existing_varmap));
     tree::ParseTreeWalker::DEFAULT.walk(&visitor, Tree);
-    AST = visitor.get_program();
+    program = visitor.get_program();
 
 }

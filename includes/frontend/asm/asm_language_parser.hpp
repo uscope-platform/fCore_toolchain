@@ -22,6 +22,7 @@
 #include <utility>
 
 #include "data_structures/low_level_ast/low_level_ast.hpp"
+#include "data_structures/instruction_stream.hpp"
 #include "AsmTree_visitor.hpp"
 #include "AsmErrorHandling.hpp"
 
@@ -40,7 +41,7 @@ namespace fcore{
         unsigned int n_outputs() const {return n_outputs_;};
         unsigned int n_variables() const {return n_variables_;};
 
-        std::shared_ptr<ll_ast_node> AST;
+        instruction_stream program;
         varmap_t var_map;
 
         std::string error;

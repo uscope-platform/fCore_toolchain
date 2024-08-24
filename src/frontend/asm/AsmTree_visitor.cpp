@@ -51,7 +51,7 @@ void fcore::AsmTree_visitor::exitReg_instr(asm_parser::asm_grammarParser::Reg_in
 
 
     std::shared_ptr<ll_register_instr_node> node = std::make_shared<ll_register_instr_node>(opcode, op_a, op_b, dest);
-    current_element->add_content(node);
+    program.push_back(node);
 }
 
 void fcore::AsmTree_visitor::exitConv_instr(asm_parser::asm_grammarParser::Conv_instrContext *ctx) {
@@ -62,7 +62,7 @@ void fcore::AsmTree_visitor::exitConv_instr(asm_parser::asm_grammarParser::Conv_
     std::shared_ptr<variable> op_b = std::make_shared<variable>(ctx->operand(1)->getText());
 
     std::shared_ptr<ll_conversion_instr_node> node = std::make_shared<ll_conversion_instr_node>(opcode, op_a, op_b);
-    current_element->add_content(node);
+    program.push_back(node);
 }
 
 void fcore::AsmTree_visitor::exitBranch_instr(asm_parser::asm_grammarParser::Branch_instrContext *ctx) {
@@ -75,7 +75,7 @@ void fcore::AsmTree_visitor::exitBranch_instr(asm_parser::asm_grammarParser::Bra
     std::shared_ptr<variable> dest = std::make_shared<variable>(ctx->operand(2)->getText());
 
     std::shared_ptr<ll_register_instr_node> node = std::make_shared<ll_register_instr_node>(opcode, op_a, op_b, dest);
-    current_element->add_content(node);
+    program.push_back(node);
 
 }
 
@@ -114,7 +114,7 @@ void fcore::AsmTree_visitor::exitPseudo_instr(asm_parser::asm_grammarParser::Pse
     }
 
     std::shared_ptr<ll_pseudo_instr_node> node = std::make_shared<ll_pseudo_instr_node>(opcode, arguments);
-    current_element->add_content(node);
+    program.push_back(node);
 
 }
 
@@ -123,7 +123,7 @@ void fcore::AsmTree_visitor::exitIndep_instr(asm_parser::asm_grammarParser::Inde
 
 
     std::shared_ptr<ll_independent_inst_node> node = std::make_shared<ll_independent_inst_node>(opcode);
-    current_element->add_content(node);
+    program.push_back(node);
 
 }
 
@@ -137,30 +137,26 @@ void fcore::AsmTree_visitor::exitLoad_instr(asm_parser::asm_grammarParser::Load_
 
     std::shared_ptr<variable> dest = std::make_shared<variable>(dest_str);
     std::shared_ptr<variable> immediate;
+
+    std::shared_ptr<ll_intercalated_const_instr_node> constant_node;
     if(ctx->FloatingPointLiteral() != nullptr){
         immediate = std::make_shared<variable>("constant", std::stof(ctx->FloatingPointLiteral()->getText()));
+        constant_node = std::make_shared<ll_intercalated_const_instr_node>(immediate->get_const_f());
     } else if(ctx->integer_const() != nullptr){
         uint32_t const_val =  std::stoul(ctx->integer_const()->getText(), nullptr, 0);
         immediate = std::make_shared<variable>("constant",*(int*)&const_val);
+        constant_node = std::make_shared<ll_intercalated_const_instr_node>(const_val);
     }
 
+    std::shared_ptr<ll_load_constant_instr_node> instruction_node = std::make_shared<ll_load_constant_instr_node>("ldc", dest, immediate);
 
-
-    std::shared_ptr<ll_load_constant_instr_node> node = std::make_shared<ll_load_constant_instr_node>("ldc", dest, immediate);
-    current_element->add_content(node);
+    program.push_back(instruction_node);
+    program.push_back(constant_node);
 
 }
 
-void fcore::AsmTree_visitor::enterProgram(asm_parser::asm_grammarParser::ProgramContext *ctx) {
-    current_element = std::make_shared<ll_ast_node>(ll_type_program_head);
-}
-
-void fcore::AsmTree_visitor::exitProgram(asm_parser::asm_grammarParser::ProgramContext *ctx) {
-    program_head = current_element;
-}
-
-std::shared_ptr<fcore::ll_ast_node> fcore::AsmTree_visitor::get_program() {
-    return program_head;
+fcore::instruction_stream fcore::AsmTree_visitor::get_program() {
+    return program;
 }
 
 void fcore::AsmTree_visitor::exitConstant_decl(asm_parser::asm_grammarParser::Constant_declContext *ctx) {

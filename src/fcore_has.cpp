@@ -32,7 +32,7 @@ void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size, boo
     for(int i = 0; i < assembler.get_program_size(); i++){
         hex[i] = data[i];
     }
-
+    delete iss;
 }
 
 
@@ -54,31 +54,15 @@ void fcore::fcore_has::construct_assembler(std::istream &input, std::vector<std:
     // Parse includes files
     std::shared_ptr<ll_ast_node> includes_ast;
 
-    for(auto &item:includes){
-        asm_language_parser include_parser(*item, variables_map);
-        std::shared_ptr<ll_ast_node> tmp_ast = include_parser.AST;
-        if(includes_ast != nullptr){
-            includes_ast->append_content(tmp_ast->get_content());
-        } else{
-            includes_ast = tmp_ast;
-        }
-        delete item;
-    }
-
     try{
         asm_language_parser target_parser(input, variables_map);
-        AST = target_parser.AST;
-        //merge the two together (right now just concatenate them)
-        if(includes_ast != nullptr)
-            AST->prepend_content(includes_ast->get_content());
 
-        instruction_stream program_stream = instruction_stream_builder::build_stream(AST);
 
         std::vector<int> io_res;
         stream_pass_manager sman(io_res, dump_ast_level);
         sman.set_enabled_passes({true, false, false, false, true, true, true, false ,false}); // do not mess with constants in assembly
         
-        program_stream = sman.process_stream(program_stream);
+        instruction_stream program_stream = sman.process_stream(target_parser.program);
 
         if(dump_ast_level>0) dump["stream"] = sman.get_dump();
 

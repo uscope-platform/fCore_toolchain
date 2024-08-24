@@ -47,7 +47,7 @@ void fcore::binary_loader::load_program(const std::vector<uint32_t> &file_conten
 
 
 void fcore::binary_loader::construct_ast(const std::vector<uint32_t> &program) {
-    ast_root = std::make_shared<ll_ast_node>(ll_type_program_head);
+
 
     for(auto it = std::begin(program); it != std::end(program); it++){
         uint32_t instruction = *it;
@@ -57,21 +57,23 @@ void fcore::binary_loader::construct_ast(const std::vector<uint32_t> &program) {
         }
         switch (fcore_op_types[fcore_opcodes_reverse[opcode]]) {
             case isa_independent_instruction:
-                ast_root->add_content(process_independent_instruction(instruction));
+                program_stream.push_back(process_independent_instruction(instruction));
                 break;
             case isa_register_instruction:
-                ast_root->add_content(process_register_instr(instruction));
+                program_stream.push_back(process_register_instr(instruction));
                 break;
             case isa_conversion_instruction:
-                ast_root->add_content(process_conversion_instr(instruction));
+                program_stream.push_back(process_conversion_instr(instruction));
                 break;
             case isa_load_constant_instruction:{
-                ast_root->add_content(process_load_constant(instruction,*(it + 1)));
+                auto pair =process_load_constant(instruction,*(it + 1));
+                program_stream.push_back(pair.first);
+                program_stream.push_back(pair.second);
                 ++it;
                 break;
             }
             case isa_ternary_instruction:{
-                ast_root->add_content(process_ternary_instr(instruction));
+                program_stream.push_back(process_ternary_instr(instruction));
                 break;
             }
             // Pseudo instructions and intercalated constants are either not present in the stream, or dont have an opcode
@@ -84,7 +86,7 @@ void fcore::binary_loader::construct_ast(const std::vector<uint32_t> &program) {
     }
 }
 
-std::shared_ptr<fcore::ll_ast_node> fcore::binary_loader::process_register_instr(uint32_t instruction) {
+std::shared_ptr<fcore::ll_instruction_node> fcore::binary_loader::process_register_instr(uint32_t instruction) {
     uint32_t opcode = instruction & (1<<fcore_opcode_width)-1;
 
     uint32_t operand_a = (instruction >> fcore_opcode_width) & (1<<fcore_register_address_width)-1;
@@ -98,7 +100,7 @@ std::shared_ptr<fcore::ll_ast_node> fcore::binary_loader::process_register_instr
     return std::make_shared<ll_register_instr_node>(fcore_opcodes_reverse[opcode], op_a_var, op_b_var, dest_var);
 }
 
-std::shared_ptr<fcore::ll_ast_node> fcore::binary_loader::process_ternary_instr(uint32_t instruction) {
+std::shared_ptr<fcore::ll_instruction_node> fcore::binary_loader::process_ternary_instr(uint32_t instruction) {
     uint32_t opcode = instruction & (1<<fcore_opcode_width)-1;
 
     uint32_t operand_a = (instruction >> fcore_opcode_width) & (1<<fcore_register_address_width)-1;
@@ -114,13 +116,14 @@ std::shared_ptr<fcore::ll_ast_node> fcore::binary_loader::process_ternary_instr(
 }
 
 
-std::shared_ptr<fcore::ll_ast_node> fcore::binary_loader::process_independent_instruction(uint32_t instruction) {
+std::shared_ptr<fcore::ll_instruction_node> fcore::binary_loader::process_independent_instruction(uint32_t instruction) {
     uint32_t opcode = instruction & (1<<fcore_opcode_width)-1;
 
     return std::make_shared<ll_independent_inst_node>(fcore_opcodes_reverse[opcode]);;
 }
 
-std::shared_ptr<fcore::ll_ast_node> fcore::binary_loader::process_load_constant(uint32_t instruction, uint32_t raw_constant) {
+std::pair<std::shared_ptr<fcore::ll_instruction_node>,std::shared_ptr<fcore::ll_instruction_node>>
+fcore::binary_loader::process_load_constant(uint32_t instruction, uint32_t raw_constant) {
     float constant;
     std::memcpy(&constant, &raw_constant, sizeof(float));
 
@@ -130,10 +133,14 @@ std::shared_ptr<fcore::ll_ast_node> fcore::binary_loader::process_load_constant(
     std::shared_ptr<variable> dest_var  = std::make_shared<variable>("r" + std::to_string(destination));
     std::shared_ptr<variable> f_const  = std::make_shared<variable>("constant", constant);
 
-    return std::make_shared<ll_load_constant_instr_node>(fcore_opcodes_reverse[opcode],dest_var, f_const);
+    auto instr = std::make_shared<ll_load_constant_instr_node>(fcore_opcodes_reverse[opcode],dest_var, f_const);
+
+    std::shared_ptr<ll_intercalated_const_instr_node> c = std::make_shared<ll_intercalated_const_instr_node>(constant);
+
+    return {instr, c};
 }
 
-std::shared_ptr<fcore::ll_ast_node> fcore::binary_loader::process_conversion_instr(uint32_t instruction) {
+std::shared_ptr<fcore::ll_instruction_node> fcore::binary_loader::process_conversion_instr(uint32_t instruction) {
     uint32_t opcode = instruction & (1<<fcore_opcode_width)-1;
     uint32_t source = (instruction >> fcore_opcode_width) & (1<<fcore_register_address_width)-1;
     uint32_t destination = (instruction >> (fcore_opcode_width+fcore_register_address_width)) & (1<<fcore_register_address_width)-1;

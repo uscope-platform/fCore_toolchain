@@ -19,6 +19,7 @@
 #include <istream>
 
 #include "data_structures/low_level_ast/low_level_ast.hpp"
+#include "data_structures/instruction_stream.hpp"
 #include "data_structures/executable.hpp"
 #include "fCore_isa.hpp"
 namespace fcore{
@@ -33,18 +34,18 @@ namespace fcore{
         binary_loader(std::istream &stream, bin_loader_input_type_t in_type);
         explicit binary_loader(const std::vector<uint32_t> &file_content);
         void load_program(const std::vector<uint32_t> &file_content);
-        std::shared_ptr<ll_ast_node> get_ast() {return ast_root;};
+        instruction_stream get_program_stream() {return program_stream;};
         void construct_ast(const std::vector<uint32_t> &program);
-        static std::shared_ptr<ll_ast_node> process_register_instr(uint32_t instruction);
-        static std::shared_ptr<ll_ast_node> process_ternary_instr(uint32_t instruction);
-        static std::shared_ptr<ll_ast_node> process_independent_instruction(uint32_t instruction);
-        static std::shared_ptr<ll_ast_node> process_load_constant(uint32_t instruction, uint32_t raw_constant);
-        static std::shared_ptr<ll_ast_node> process_conversion_instr(uint32_t instruction);
+        static std::shared_ptr<ll_instruction_node> process_register_instr(uint32_t instruction);
+        static std::shared_ptr<ll_instruction_node> process_ternary_instr(uint32_t instruction);
+        static std::shared_ptr<ll_instruction_node> process_independent_instruction(uint32_t instruction);
+        std::pair<std::shared_ptr<fcore::ll_instruction_node>,std::shared_ptr<fcore::ll_instruction_node>> process_load_constant(uint32_t instruction, uint32_t raw_constant);
+        static std::shared_ptr<ll_instruction_node> process_conversion_instr(uint32_t instruction);
         static uint32_t to_littleEndian(uint32_t in_num);
         std::unordered_map<uint16_t, uint16_t> get_io_mapping();
         std::set<io_map_entry> get_io_mapping_set();
     private:
-        std::shared_ptr<ll_ast_node> ast_root;
+        instruction_stream program_stream;
         std::set<std::pair<uint16_t , uint16_t>> io_mapping;
     };
 }

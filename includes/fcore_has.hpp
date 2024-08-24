@@ -26,7 +26,6 @@
 #include "backend/binary_generator.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "data_structures/instruction_stream.hpp"
-#include "tools/instruction_stream_builder.hpp"
 
 #define REGISTER_DEFINITION_STRING "const r0\nlet r1\nlet r2\nlet r3\nlet r4\nlet r5\nlet r6\nlet r7\nlet r8\nlet r9\nlet r10\nlet r11\nlet r12\nlet r13\nlet r14\nlet r15"
 
@@ -54,7 +53,6 @@ namespace fcore{
         uint32_t get_inst_count();
         nlohmann::json get_dump() {return dump;};
     private:
-        std::shared_ptr<ll_ast_node> AST;
         binary_generator writer;
         std::string error_code;
         nlohmann::json dump;

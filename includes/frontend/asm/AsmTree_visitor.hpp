@@ -20,6 +20,7 @@
 #include "asm_parser/asm_grammarParser.h"
 #include "fCore_isa.hpp"
 #include "data_structures/low_level_ast/low_level_ast.hpp"
+#include "data_structures/instruction_stream.hpp"
 #include "data_structures/common/variable.hpp"
 #include "tools/variable_map.hpp"
 #include <iostream>
@@ -41,20 +42,16 @@ namespace fcore{
         void exitBranch_instr(asm_parser::asm_grammarParser::Branch_instrContext * ctx) override;
         void exitConv_instr(asm_parser::asm_grammarParser::Conv_instrContext *ctx) override;
         void exitLoad_instr(asm_parser::asm_grammarParser::Load_instrContext *ctx) override;
-        void exitProgram(asm_parser::asm_grammarParser::ProgramContext * ctx) override;
-        void enterProgram(asm_parser::asm_grammarParser::ProgramContext *ctx) override;
         void exitConstant_decl(asm_parser::asm_grammarParser::Constant_declContext *ctx) override;
         void exitVariable_decl(asm_parser::asm_grammarParser::Variable_declContext *ctx) override;
         void exitInput_decl(asm_parser::asm_grammarParser::Input_declContext *ctx) override;
         void exitOutput_decl(asm_parser::asm_grammarParser::Output_declContext *ctx) override;
         void exitImmediate(asm_parser::asm_grammarParser::ImmediateContext *ctx) override;
         void exitFloat_const(asm_parser::asm_grammarParser::Float_constContext *ctx) override;
-        std::shared_ptr<ll_ast_node> get_program();
+        instruction_stream get_program();
 
     private:
-        std::shared_ptr<ll_ast_node> program_head{};
-        std::shared_ptr<ll_ast_node> current_element{};
-        std::stack<std::shared_ptr<ll_ast_node>> parent_elements;
+        instruction_stream program;
         std::shared_ptr<variable_map> varmap;
     };
 }
