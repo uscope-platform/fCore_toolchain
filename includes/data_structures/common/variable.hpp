@@ -47,8 +47,8 @@ namespace fcore{
     public:
         variable();
         explicit variable(std::string n);
-        variable(std::string n, float value);
-        variable(std::string n, int value);
+        variable(const std::string &n, float value);
+        variable(const std::string &n, int value);
 
         std::string get_identifier();
         std::string get_identifier(const std::vector<int>& idx);

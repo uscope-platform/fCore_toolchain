@@ -1,12 +1,12 @@
 set(TEST_SOURCES
         Instruction_classes.cpp
-        ll_passes.cpp
+        passes/instruction_stream_pass.cpp
         end_to_end_asm.cpp
         testing_main.cpp
         end_to_end_C.cpp
         C_preprocessor.cpp
         C_tree_visitor_testing.cpp
-        hl_passes.cpp
+        passes/hl_passes.cpp
         disassembler_testing.cpp
         deep_copy.cpp
         emulator/emulator_testing.cpp

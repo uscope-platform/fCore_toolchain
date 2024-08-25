@@ -59,7 +59,6 @@ namespace fcore{
 
         std::vector<std::shared_ptr<variable>> get_arguments();
         std::vector<std::shared_ptr<variable>> get_arguments() const;
-        void set_arguments(const std::vector<std::shared_ptr<variable>> &args);
 
         nlohmann::json dump();
         static nlohmann::json dump_instruction(instruction_variant &node);

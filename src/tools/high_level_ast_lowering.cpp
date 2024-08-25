@@ -240,7 +240,7 @@ namespace fcore{
             case isa_intercalated_constant:
                 return {};
         }
-
+        return {};
     }
 
     std::optional<instruction_variant>

@@ -54,30 +54,6 @@ namespace fcore{
         }, content);
     }
 
-    void instruction_variant::set_arguments(const std::vector<std::shared_ptr<variable>> &args) {
-
-        if(std::holds_alternative<register_instruction>(content)){
-           auto instr = std::get<register_instruction>(content);
-            instr.set_arguments(args);
-        } else if(std::holds_alternative<conversion_instruction>(content)){
-            auto instr = std::get<conversion_instruction>(content);
-            instr.set_arguments(args);
-        } else if(std::holds_alternative<independent_instruction>(content)){
-            auto instr = std::get<independent_instruction>(content);
-            instr.set_arguments(args);
-        } else if(std::holds_alternative<intercalated_constant>(content)){
-            auto instr = std::get<intercalated_constant>(content);
-            instr.set_arguments(args);
-        } else if(std::holds_alternative<pseudo_instruction>(content)){
-            auto instr = std::get<pseudo_instruction>(content);
-            instr.set_arguments(args);
-        } else if(std::holds_alternative<ternary_instruction>(content)){
-            auto instr = std::get<ternary_instruction>(content);
-            instr.set_arguments(args);
-        }
-
-    }
-
     nlohmann::json instruction_variant::dump() {
         return std::visit([](auto &var) -> nlohmann::json {
             return var.dump();

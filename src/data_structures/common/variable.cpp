@@ -28,8 +28,8 @@ namespace fcore{
         contiguity = false;
     }
 
-    variable::variable(std::string n, float value) {
-        name = std::move(n);
+    variable::variable(const std::string &n, float value) {
+        name = n;
         const_f = value;
         variable_type = var_type_float_const;
 
@@ -42,8 +42,8 @@ namespace fcore{
         contiguity = false;
     }
 
-    variable::variable(std::string n, int value) {
-        name = std::move(n);
+    variable::variable(const std::string &n, int value) {
+        name = n;
         const_i = value;
         variable_type = var_type_int_const;
         used = {false};

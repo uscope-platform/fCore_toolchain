@@ -17,6 +17,10 @@
 
 namespace fcore{
 
+
+    template<class... Ts>
+    struct overloads : Ts... { using Ts::operator()...; };
+
     register_allocation::register_allocation(
             std::shared_ptr<variable_map> vmap,
             std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm,
@@ -114,9 +118,19 @@ namespace fcore{
                 }
             }
         }
-        element.set_arguments(arguments);
 
-        return instruction_variant(element);
+        auto instr = element.get_content();
+
+        return std::visit(overloads{
+            overloads{[&arguments](register_instruction &i){ i.set_arguments(arguments); return instruction_variant(i);}},
+            overloads{[&arguments](conversion_instruction &i){ i.set_arguments(arguments); return instruction_variant(i);}},
+            overloads{[&arguments](independent_instruction &i){ i.set_arguments(arguments); return instruction_variant(i);}},
+            overloads{[&arguments](intercalated_constant &i){ i.set_arguments(arguments); return instruction_variant(i);}},
+            overloads{[&arguments](pseudo_instruction &i){ i.set_arguments(arguments); return instruction_variant(i);}},
+            overloads{[&arguments](ternary_instruction &i){ i.set_arguments(arguments); return instruction_variant(i);}},
+            overloads{[&arguments](load_constant_instruction &i){ i.set_arguments(arguments); return instruction_variant(i);}}
+        }, instr);
+
     }
 
 

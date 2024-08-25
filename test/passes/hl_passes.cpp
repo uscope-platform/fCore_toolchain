@@ -496,17 +496,17 @@ TEST(HlPassesTest, hl_ast_lowering) {
     tranlator.set_input_ast(normalized_ast);
     instruction_stream result = tranlator.translate();
 
+    std::string name = "constant";
 
-
-    std::shared_ptr<variable> op_a = std::make_shared<variable>("constant", 4);
-    std::shared_ptr<variable> op_b = std::make_shared<variable>("constant", 5);
+    auto op_a = std::make_shared<variable>(name, 4.0f);
+    std::shared_ptr<variable> op_b = std::make_shared<variable>(name, 5.0f);
     std::shared_ptr<variable> dest = std::make_shared<variable>("intermediate_expression_0");
 
     auto op_1 = instruction_variant(register_instruction("mul", op_a, op_b, dest));
 
 
     op_a = std::make_shared<variable>("intermediate_expression_0");
-    op_b = std::make_shared<variable>("constant", 6);
+    op_b = std::make_shared<variable>(name, 6.0f);
     dest = std::make_shared<variable>("a");
 
     auto op_2 = instruction_variant(register_instruction("add", op_a, op_b, dest));

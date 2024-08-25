@@ -23,7 +23,34 @@
 
 using namespace fcore;
 
-TEST(llPassesTest, pseudo_inst_pass) {
+TEST(virtual_instructions, virtual_instruction_implementation) {
+
+
+    std::shared_ptr<variable> op_a = std::make_shared<variable>("r3");
+    std::shared_ptr<variable> op_b = std::make_shared<variable>("r4");
+    std::vector<std::shared_ptr<variable>> args = {op_a, op_b};
+
+
+    binary_generator writer;
+
+    instruction_stream program_stream;
+    program_stream.push_back(instruction_variant(pseudo_instruction("mov", args)));
+
+    auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
+    std::shared_ptr<io_map> allocation_map;
+
+    stream_pass_manager sman(0, bindings_map, allocation_map);
+    program_stream = sman.process_stream(program_stream);
+
+    writer.process_stream(program_stream, false);
+
+    std::vector<uint32_t> result = writer.get_code();
+    std::vector<uint32_t> gold_standard = {0x8006E};
+    ASSERT_EQ(result, gold_standard);
+}
+
+
+TEST(virtual_instructions, ternary_reduction) {
 
 
     std::shared_ptr<variable> op_a = std::make_shared<variable>("r3");
