@@ -11,7 +11,8 @@ set(TEST_SOURCES
         deep_copy.cpp
         emulator/emulator_testing.cpp
         emulator/emulator_execution.cpp
-        emulator/emulator_schema_validation.cpp)
+        emulator/emulator_schema_validation.cpp
+        length_analysis.cpp)
 
 
 
