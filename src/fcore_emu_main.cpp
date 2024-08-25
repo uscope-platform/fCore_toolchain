@@ -22,7 +22,9 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <CLI/CLI.hpp>
+
 #include "emulator/emulator_manager.hpp"
+#include "instrumentation/instrumentation_core.hpp"
 
 int main(int argc, char **argv) {
     CLI::App app{"fCore Emulator"};
@@ -69,17 +71,21 @@ int main(int argc, char **argv) {
     std::ifstream spec_stream(spec_file);
     spec_stream >> specs;
 
-    std::string results;
+    nlohmann::json results;
 
-    profiling_data["start"] = std::chrono::high_resolution_clock::now();
+    std::shared_ptr<fcore::instrumentation_core> profiler = std::make_shared<fcore::instrumentation_core>();
+
 
     try{
         fcore::emulator_manager emu_manager(specs, debug_autogen);
+        emu_manager.set_profiler(profiler);
         emu_manager.process();
-        profiling_data["built"] = std::chrono::high_resolution_clock::now();
+        profiler->set_phase("emulation");
+        profiler->start_event("execution", true);
         emu_manager.emulate();
-        profiling_data["emulated"] = std::chrono::high_resolution_clock::now();
+        profiler->end_event("execution");
         results = emu_manager.get_results();
+        results["profiling"] = profiler->dump();
     } catch (std::runtime_error &err) {
         spdlog::critical(err.what());
         exit(-1);
@@ -92,15 +98,9 @@ int main(int argc, char **argv) {
     }
 
 
-    profiling_data["done"] = std::chrono::high_resolution_clock::now();
     std::ofstream ss(output_file);
-    ss<< results;
+    ss<< results.dump(4);
     ss.close();
-
-
-    std::cout << "BUILD PHASE duration:" << std::chrono::duration_cast<std::chrono::milliseconds>(profiling_data["built"]-profiling_data["start"]) << std::endl;
-    std::cout << "EMULATION PHASE duration:" << std::chrono::duration_cast<std::chrono::milliseconds>(profiling_data["emulated"]-profiling_data["built"])<< std::endl;
-    std::cout << "OUTPUT PHASE duration:"<< std::chrono::duration_cast<std::chrono::milliseconds>(profiling_data["done"]-profiling_data["emulated"]) << std::endl;
 
 
     return 0;

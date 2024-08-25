@@ -30,7 +30,8 @@ set(FCORE_COMMON_SRCS_I
         passes/instruction_stream/bound_register_mapping.cpp
         passes/instruction_stream/ternary_reduction.cpp
         passes/instruction_stream/virtual_operations_implementation.cpp
-        )
+        instrumentation/instrumentation_core.cpp
+)
 
 
 

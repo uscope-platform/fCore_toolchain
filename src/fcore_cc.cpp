@@ -41,7 +41,11 @@ namespace fcore{
 
     bool fcore_cc::compile() {
         auto def_map = std::make_shared<define_map>();
+
+        profiling_core->set_phase("parsing");
+
         std::vector<std::shared_ptr<hl_ast_node>> includes_ASTs;
+        profiling_core->start_event("parse headers", false);
         if(!includes.empty()){
             for(auto &i:includes){
                 if(include_is_paths){
@@ -53,7 +57,7 @@ namespace fcore{
                 }
             }
         }
-
+        profiling_core->end_event("parse headers");
         try{
             parse_dma_spec();
             parse(dma_io_spec, def_map);
@@ -107,14 +111,19 @@ namespace fcore{
         } else{
             target_parser = C_language_parser(input_file_stream, def_map);
         }
+
+        profiling_core->start_event("program_parsing", false);
         target_parser.pre_process({});
         target_parser.parse(std::move(dma_specs));
         hl_ast = target_parser.AST;
+        profiling_core->end_event("program_parsing");
     }
 
     void fcore_cc::optimize(std::unordered_map<std::string, std::vector<uint32_t>> &dma_map) {
         std::string ep = "main";
         hl_manager = create_hl_pass_manager(ep, dump_ast_level);
+        hl_manager.set_profiler(profiling_core);
+        profiling_core->set_phase("AST processing");
         hl_manager.run_morphing_passes(hl_ast);
         if(dump_ast_level>0) dump["high_level"] = hl_manager.get_dump();
 
@@ -126,7 +135,7 @@ namespace fcore{
         allocation_map = std::make_shared<io_map>();
 
         auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
-        stream_pass_manager sman(dump_ast_level, bindings_map, allocation_map);
+        stream_pass_manager sman(dump_ast_level, bindings_map, allocation_map, profiling_core);
         program_stream = sman.process_stream(program_stream);
 
         analyze_program_length(sman.get_instruction_count());

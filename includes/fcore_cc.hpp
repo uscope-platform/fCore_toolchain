@@ -31,6 +31,7 @@
 #include "tools/high_level_ast_lowering.hpp"
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
+#include "instrumentation/instrumentation_core.hpp"
 
 namespace fcore {
 
@@ -71,6 +72,7 @@ namespace fcore {
     public:
         fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl);
         explicit fcore_cc(std::vector<std::string> &contents, std::vector<std::string> &inc);
+        void set_profiler(const std::shared_ptr<instrumentation_core> &ic){profiling_core = ic;};
         void enable_logging(){logging = true;};
         void parse_dma_spec();
         bool compile();
@@ -117,6 +119,8 @@ namespace fcore {
 
         struct core_info info;
         struct program_info length_info;
+
+        std::shared_ptr<instrumentation_core> profiling_core;
 
     };
 }

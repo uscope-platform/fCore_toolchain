@@ -61,9 +61,12 @@ namespace fcore {
     std::vector<program_bundle> emulator_manager::get_programs() {
         bus_map.clear();
         emulator_builder e_b(debug_autogen);
+        e_b.set_profiler(profiler);
         std::vector<program_bundle> res;
 
         for(auto &core:emu_spec.cores){
+
+            profiler->set_active_program(core.id);
 
             program_bundle b;
             b.name = core.id;
@@ -215,7 +218,7 @@ namespace fcore {
 
 
 
-    std::string emulator_manager::get_results() {
+    nlohmann::json emulator_manager::get_results() {
         nlohmann::json res;
         for(auto &item:programs){
             nlohmann::json j;
@@ -228,7 +231,7 @@ namespace fcore {
 
 
         res["timebase"] = outputs_manager.get_timebase();
-        return res.dump(4);
+        return res;
     }
 
 

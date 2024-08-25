@@ -22,9 +22,10 @@
 #include <utility>
 #include <string>
 #include <unordered_map>
-#include "pass_base.hpp"
-
 #include <nlohmann/json.hpp>
+
+#include "pass_base.hpp"
+#include "instrumentation/instrumentation_core.hpp"
 
 namespace fcore{
 
@@ -52,9 +53,15 @@ namespace fcore{
         void disable_pass(const std::string& name);
         nlohmann::json get_dump();
 
+        void set_profiler(std::shared_ptr<instrumentation_core> &p){
+            this->ic = p;
+        };
+
         std::vector<std::vector<int>> run_analysis_passes(const std::shared_ptr<E>& AST);
         void analyze_tree(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass);
         std::unordered_map<std::string, std::shared_ptr<pass_base<E>>> analysis_passes;
+
+    private:
     protected:
 
         struct opt_pass {
@@ -64,6 +71,7 @@ namespace fcore{
             bool enabled = true;
         };
 
+        std::shared_ptr<instrumentation_core> ic;
 
         std::vector<opt_pass> passes;
 
@@ -73,6 +81,7 @@ namespace fcore{
         nlohmann::json post_opt_dump;
         int dump_ast_level = 0;
     };
+
 
     template<class E>
     void pass_manager_base<E>::disable_pass(const std::string &name) {
@@ -124,7 +133,10 @@ namespace fcore{
             if(p.type == single_pass){
                 if(p.enabled){
                     std::shared_ptr<pass_base<E>> pass = p.pass[0];
+
+                    ic->start_event(pass->get_name(), false);
                     run_single_pass(AST, pass);
+                    ic->end_event(pass->get_name());
                     if(dump_ast_level>1){
                         nlohmann::json ast_dump;
                         ast_dump["pass_name"] = pass->get_name();

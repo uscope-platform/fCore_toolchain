@@ -34,22 +34,27 @@
 #include "passes/instruction_stream/virtual_operations_implementation.hpp"
 #include "data_structures/common/memory_tracker.hpp"
 
+#include "instrumentation/instrumentation_core.hpp"
+
 namespace fcore{
     class stream_pass_manager {
     public:
         stream_pass_manager(
                 int dal,
                 std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
-                const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
+                const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map,
+                std::shared_ptr<instrumentation_core> &prof
         );
         stream_pass_manager(
                 std::vector<int> &io_res,
-                int dal
+                int dal,
+                std::shared_ptr<instrumentation_core> &prof
         );
         void constructs_pass_manager(
                 int dal,
                 std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
-                const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
+                const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map,
+                std::shared_ptr<instrumentation_core> &prof
         );
 
         instruction_stream process_stream(instruction_stream stream);
@@ -65,6 +70,7 @@ namespace fcore{
         std::vector<nlohmann::json> in_opt_dump;
         nlohmann::json post_opt_dump;
         std::shared_ptr<struct instruction_count> ic;
+        std::shared_ptr<instrumentation_core> profiler;
     };
 }
 

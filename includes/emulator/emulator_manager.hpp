@@ -57,11 +57,12 @@ namespace fcore{
     class emulator_manager {
     public:
         emulator_manager(nlohmann::json &spec_file, bool dbg);
+        void set_profiler(const std::shared_ptr<instrumentation_core> &prof){ this->profiler = prof;};
         void process();
         void emulate();
 
         std::shared_ptr<std::vector<uint32_t>> get_memory_snapshot(const std::string &core_id, int channel);
-        std::string get_results();
+        nlohmann::json get_results();
         std::vector<program_bundle> get_programs();
     private:
         void check_bus_duplicates();
@@ -115,6 +116,7 @@ namespace fcore{
         std::vector<program_bundle> programs;
         std::unordered_map<std::string, core_memory_pool_t> emulators_memory;
 
+        std::shared_ptr<instrumentation_core> profiler;
 
         emulator::emulator_specs emu_spec;
 

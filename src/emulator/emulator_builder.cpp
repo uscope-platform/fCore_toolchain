@@ -190,6 +190,7 @@ namespace fcore{
         auto headers = core_spec.program.headers;
 
         fcore_cc compiler(content, headers);
+        compiler.set_profiler(profiler);
         compiler.set_dma_map(dma_io);
         bool result = compiler.compile();
 
@@ -214,6 +215,8 @@ namespace fcore{
 
             fcore_dis dis_engine(compiler.get_executable());
             dis_engine.write_disassembled_program("autogen/"+core_name+ ".s");
+            std::ofstream ofs3("autogen/" + core_name + "_profiling.json");
+            ofs3<<profiler->dump();
         }
 
         fcore_program ret_val;

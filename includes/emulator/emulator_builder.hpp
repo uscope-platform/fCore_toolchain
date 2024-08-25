@@ -39,7 +39,7 @@ namespace fcore {
     class emulator_builder {
     public:
         emulator_builder(bool dbg);
-
+        void set_profiler(const std::shared_ptr<instrumentation_core> &prof) {profiler = prof;};
         fcore_program compile_program(
                 const emulator::emulator_core& core_spec,
                 const std::vector<emulator::emulator_interconnect>& interconnect_spec,
@@ -54,6 +54,7 @@ namespace fcore {
         comparator_type_t get_comparator_type(const std::string &s);
     private:
 
+        std::shared_ptr<instrumentation_core> profiler = std::make_shared<instrumentation_core>();
 
         std::unordered_map<std::string, core_iom> process_ioms(
                 const std::vector<emulator::emulator_interconnect> &input_connections,

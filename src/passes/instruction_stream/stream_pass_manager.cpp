@@ -19,23 +19,25 @@ namespace fcore{
 
     stream_pass_manager::stream_pass_manager(int dal,
                                                     std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
-                                                    const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
+                                                    const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map,
+                                                    std::shared_ptr<instrumentation_core> &prof
     ) {
-        constructs_pass_manager(dal, bm, all_map);
+        constructs_pass_manager(dal, bm, all_map, prof);
     }
 
-    stream_pass_manager::stream_pass_manager(std::vector<int> &io_res, int dal) {
+    stream_pass_manager::stream_pass_manager(std::vector<int> &io_res, int dal, std::shared_ptr<instrumentation_core> &prof) {
 
         auto bm = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
         auto am = std::make_shared<std::unordered_map<std::string, std::vector<io_map_entry>>>();
-        constructs_pass_manager( dal, bm, am);
+        constructs_pass_manager( dal, bm, am, prof);
     }
 
 
     void
     stream_pass_manager::constructs_pass_manager(int dal,
                                                         std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
-                                                        const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
+                                                        const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map,
+                                                 std::shared_ptr<instrumentation_core> &prof
     ) {
 
         ic = std::make_shared<struct instruction_count>();
@@ -54,8 +56,8 @@ namespace fcore{
         passes.push_back(std::make_shared<instruction_counting_pass>(ic));
 
         enabled_passes = {true, true, true, true, true, true, true, true, false, true};
-
-
+        profiler = prof;
+        if(profiler != nullptr) profiler->set_phase("stream processing");
     }
 
 
@@ -65,7 +67,9 @@ namespace fcore{
         instruction_stream ret_val = std::move(stream);
         for(auto &pass:passes){
             if(enabled_passes[pass_n]){
+                if(profiler != nullptr)  profiler->start_event(pass->get_name(), false);
                 ret_val = apply_pass(ret_val, pass);
+                if(profiler != nullptr) profiler->end_event(pass->get_name());
                 if(dump_ast_level>1){
                     nlohmann::json ast_dump;
                     ast_dump["pass_name"] = pass->get_name();

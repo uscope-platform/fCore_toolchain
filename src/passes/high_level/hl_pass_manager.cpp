@@ -15,13 +15,14 @@
 //
 
 #include "passes/high_level/hl_pass_manager.hpp"
+
 #include "passes/pass_base.hpp"
 
 namespace fcore{
 
 
     hl_pass_manager::hl_pass_manager(int dal) {
-        dump_ast_level = dal;
+        this->dump_ast_level = dal;
     }
 
     std::vector<nlohmann::json> hl_pass_manager::run_repeating_pass_group(std::shared_ptr<hl_ast_node> &subtree,
@@ -35,7 +36,10 @@ namespace fcore{
         do{
             old_tree = hl_ast_node::deep_copy(subtree);
             for(auto &pass:group){
+
+                if(ic != nullptr) ic->start_event(pass->get_name(), false);
                 run_single_pass(subtree, pass);
+                if(ic != nullptr) ic->end_event(pass->get_name());
                 if(dal>1){
                     nlohmann::json ast_dump;
                     ast_dump["pass_name"] =  pass->get_name()+ " #" + std::to_string(run_number);
@@ -55,7 +59,10 @@ namespace fcore{
         std::vector<nlohmann::json> ret_val;
 
         for(auto &pass:group){
+
+            if(ic != nullptr) ic->start_event(pass->get_name(), false);
             run_single_pass(subtree, pass);
+            if(ic != nullptr) ic->end_event(pass->get_name());
             if(dal>1){
                 nlohmann::json ast_dump;
                 ast_dump["pass_name"] =  pass->get_name();
