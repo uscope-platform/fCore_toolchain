@@ -31,7 +31,7 @@ namespace fcore{
             map_conv_instr(std::get<conversion_instruction>(var));
         } else if(std::holds_alternative<load_constant_instruction>(var)){
             map_load_const_instr(std::get<load_constant_instruction>(var));
-        } else if(std::holds_alternative<load_constant_instruction>(var)){
+        } else if(std::holds_alternative<ternary_instruction>(var)){
             map_ternary_instr(std::get<ternary_instruction>(var));
         }
 
@@ -89,7 +89,7 @@ namespace fcore{
         vmap->insert(op_b->get_linear_identifier(), update_variable_lifetime(op_b));
 
         std::shared_ptr<variable> op_c = vmap->at(instr.get_operand_c()->get_linear_identifier());
-        vmap->insert(op_c->get_linear_identifier(), update_variable_lifetime(op_b));
+        vmap->insert(op_c->get_linear_identifier(), update_variable_lifetime(op_c));
 
         std::shared_ptr<variable> dest = vmap->at(instr.get_destination()->get_linear_identifier());
         vmap->insert(dest->get_linear_identifier(), update_variable_lifetime(dest));
