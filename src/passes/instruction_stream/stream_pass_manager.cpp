@@ -80,14 +80,18 @@ namespace fcore{
     }
 
     instruction_stream
-    stream_pass_manager::apply_pass(const instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass) {
+    stream_pass_manager::apply_pass(instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass) {
         instruction_stream retval;
         pass->setup();
         for(int i = 0; i<pass->n_scans;i++){
             for(auto &instr:in_stream){
-                auto proc_val = pass->apply_pass(instr, i);
-                if(proc_val!= nullptr)
-                    retval.push_back(proc_val);
+                if(pass->is_mutable){
+                    if(auto proc_val = pass->apply_mutable_pass(instr, i))
+                        retval.push_back(proc_val.value());
+                } else {
+                    if(auto proc_val = pass->apply_pass(instr, i))
+                        retval.push_back(proc_val.value());
+                }
             }
         }
         return retval;

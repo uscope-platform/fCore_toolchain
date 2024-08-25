@@ -19,7 +19,7 @@ namespace fcore{
 
     ternary_instruction::ternary_instruction(std::string op, std::shared_ptr<variable> op_a,
                                                     std::shared_ptr<variable> op_b, std::shared_ptr<variable> op_c,
-                                                    std::shared_ptr<variable> dest) : instruction(isa_ternary_instruction) {
+                                                    std::shared_ptr<variable> dest){
         operand_a = std::move(op_a);
         operand_b = std::move(op_b);
         operand_c = std::move(op_c);
@@ -27,7 +27,7 @@ namespace fcore{
         opcode = std::move(op);
     }
 
-    uint32_t ternary_instruction::emit() {
+    uint32_t ternary_instruction::emit() const{
         if(*operand_a != *destination){
             throw std::runtime_error("ERROR: for ternary instructions operand a and destinations need to be equal");
         }
@@ -44,23 +44,24 @@ namespace fcore{
 
     }
 
-    std::string ternary_instruction::disassemble() {
+    std::string ternary_instruction::disassemble() const{
         return opcode + " " + operand_a->get_name() + ", " + operand_b->get_name() +
                ", " + operand_c->get_name()  + ", " + destination->get_name();
     }
 
-    int ternary_instruction::instruction_count() {
+    int ternary_instruction::instruction_count() const{
         return 1;
     }
 
-    void ternary_instruction::print() {
+    void ternary_instruction::print() const{
         std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << opcode <<
                   " OPERAND A: " << operand_a->to_str() << " OPERAND B: " << operand_b->to_str() <<
                   " OPERAND C: " << operand_c->to_str() << " DESTINATION: " << destination->to_str() <<std::endl;
     }
 
-    nlohmann::json ternary_instruction::dump() {
-        nlohmann::json retval = instruction::dump();
+    nlohmann::json ternary_instruction::dump() const{
+        nlohmann::json retval;
+        retval["instruction_type"] = "isa_ternary_instruction";
         retval["operand_a"] = operand_a->dump();
         retval["operand_b"] = operand_b->dump();
         retval["operand_c"] = operand_c->dump();

@@ -16,21 +16,21 @@
 #include "data_structures/instruction_stream/intercalated_constant.hpp"
 
 namespace fcore {
-    intercalated_constant::intercalated_constant(float constant) : instruction(isa_intercalated_constant){
+    intercalated_constant::intercalated_constant(float constant) {
         float_const = constant;
         int_const = 0;
         is_float = true;
     }
 
 
-    intercalated_constant::intercalated_constant(uint32_t constant): instruction(isa_intercalated_constant) {
+    intercalated_constant::intercalated_constant(uint32_t constant) {
         int_const = constant;
         float_const = 0;
         is_float = false;
     }
 
 
-    uint32_t intercalated_constant::emit() {
+    uint32_t intercalated_constant::emit()const {
         uint32_t  raw_instr = 0;
         if(is_float){
             memcpy(&raw_instr, &float_const, sizeof(raw_instr));
@@ -40,21 +40,22 @@ namespace fcore {
         return raw_instr;
     }
 
-    void intercalated_constant::print() {
+    void intercalated_constant::print() const{
     }
 
-    int intercalated_constant::instruction_count() {
+    int intercalated_constant::instruction_count()const {
         return 1;
     }
 
 
-    nlohmann::json intercalated_constant::dump() {
-        nlohmann::json retval = instruction::dump();
+    nlohmann::json intercalated_constant::dump()const {
+        nlohmann::json retval;
+        retval["instruction_type"] = "isa_intercalated_constant";
         retval["intercalated_constant"] = float_const;
         return retval;
     }
 
-    std::string intercalated_constant::disassemble() {
+    std::string intercalated_constant::disassemble()const {
         if(is_float) return std::to_string(float_const);
         else return  std::to_string(int_const);
     }

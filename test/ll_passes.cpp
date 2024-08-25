@@ -30,13 +30,11 @@ TEST(llPassesTest, pseudo_inst_pass) {
     std::shared_ptr<variable> op_b = std::make_shared<variable>("r4");
     std::vector<std::shared_ptr<variable>> args = {op_a, op_b};
 
-    std::shared_ptr<pseudo_instruction> instr = std::make_shared<pseudo_instruction>("mov", args);
-
 
     binary_generator writer;
 
     instruction_stream program_stream;
-    program_stream.push_back(instr);
+    program_stream.push_back(instruction_variant(pseudo_instruction("mov", args)));
 
     auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
     std::shared_ptr<io_map> allocation_map;

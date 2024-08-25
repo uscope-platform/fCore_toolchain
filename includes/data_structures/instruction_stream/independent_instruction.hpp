@@ -20,15 +20,18 @@
 
 #include "data_structures/instruction_stream/ll_instruction_node.hpp"
 namespace fcore{
-    class independent_instruction: public instruction {
+    class independent_instruction {
     public:
         explicit independent_instruction(std::string opcode);
-        uint32_t emit() override;
-        std::string disassemble() override;
-        void print() override;
-        int instruction_count() override;
+        uint32_t emit() const;
+        std::string disassemble() const;
+        void print() const;
+        int instruction_count() const;
 
-        nlohmann::json dump();
+        void set_arguments(const std::vector<std::shared_ptr<variable>> &) {};
+        std::vector<std::shared_ptr<variable>> get_arguments() const {return {};};
+
+        nlohmann::json dump()const;
 
         friend bool operator==(const independent_instruction& lhs, const independent_instruction& rhs){
             return rhs.opcode == lhs.opcode;

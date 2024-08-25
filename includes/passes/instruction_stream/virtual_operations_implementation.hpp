@@ -25,7 +25,7 @@ namespace fcore {
     public:
         explicit virtual_operations_implementation();
 
-        std::shared_ptr<instruction> apply_pass(std::shared_ptr<instruction> element, uint32_t n) override;
+        std::optional<instruction_variant> apply_pass(const instruction_variant &element, uint32_t n) override;
     };
 }
 

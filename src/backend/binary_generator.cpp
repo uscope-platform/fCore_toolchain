@@ -25,11 +25,11 @@ namespace fcore{
     ) {
         auto code_sect = std::vector<uint32_t>();
         for(const auto& item:stream){
-            code_sect.push_back(item->emit());
+            code_sect.push_back(item.emit());
             progress_counter++;
             if(debug_print) {
                 std::cout << progress_counter << std::endl;
-                item->print();
+                item.print();
             }
         }
         ex.add_code_section(code_sect);

@@ -50,9 +50,7 @@ namespace fcore{
         op_b->set_used(true);
         std::shared_ptr<variable> dest = std::make_shared<variable>(dest_str);
 
-
-        std::shared_ptr<register_instruction> node = std::make_shared<register_instruction>(opcode, op_a, op_b, dest);
-        program.push_back(node);
+        program.push_back(instruction_variant(register_instruction(opcode, op_a, op_b, dest)));
     }
 
     void AsmTree_visitor::exitConv_instr(asm_parser::asm_grammarParser::Conv_instrContext *ctx) {
@@ -62,8 +60,7 @@ namespace fcore{
         op_a->set_used(true);
         std::shared_ptr<variable> op_b = std::make_shared<variable>(ctx->operand(1)->getText());
 
-        std::shared_ptr<conversion_instruction> node = std::make_shared<conversion_instruction>(opcode, op_a, op_b);
-        program.push_back(node);
+        program.push_back(instruction_variant(conversion_instruction(opcode, op_a, op_b)));
     }
 
     void AsmTree_visitor::exitBranch_instr(asm_parser::asm_grammarParser::Branch_instrContext *ctx) {
@@ -75,9 +72,7 @@ namespace fcore{
         op_b->set_used(true);
         std::shared_ptr<variable> dest = std::make_shared<variable>(ctx->operand(2)->getText());
 
-        std::shared_ptr<register_instruction> node = std::make_shared<register_instruction>(opcode, op_a, op_b, dest);
-        program.push_back(node);
-
+        program.push_back(instruction_variant(register_instruction(opcode, op_a, op_b, dest)));
     }
 
     void AsmTree_visitor::exitPseudo_instr(asm_parser::asm_grammarParser::Pseudo_instrContext *ctx) {
@@ -114,8 +109,7 @@ namespace fcore{
             arguments.push_back(dest);
         }
 
-        std::shared_ptr<pseudo_instruction> node = std::make_shared<pseudo_instruction>(opcode, arguments);
-        program.push_back(node);
+        program.push_back(instruction_variant(pseudo_instruction(opcode,arguments)));
 
     }
 
@@ -123,9 +117,7 @@ namespace fcore{
         std::string opcode = ctx->getText();
 
 
-        std::shared_ptr<independent_instruction> node = std::make_shared<independent_instruction>(opcode);
-        program.push_back(node);
-
+        program.push_back(instruction_variant(independent_instruction(opcode)));
     }
 
     void AsmTree_visitor::exitLoad_instr(asm_parser::asm_grammarParser::Load_instrContext *ctx) {
@@ -142,17 +134,14 @@ namespace fcore{
         std::shared_ptr<intercalated_constant> constant_node;
         if(ctx->FloatingPointLiteral() != nullptr){
             immediate = std::make_shared<variable>("constant", std::stof(ctx->FloatingPointLiteral()->getText()));
-            constant_node = std::make_shared<intercalated_constant>(immediate->get_const_f());
+            program.push_back(instruction_variant(load_constant_instruction("ldc", dest, immediate)));
+            program.push_back(instruction_variant(intercalated_constant(immediate->get_const_f())));
         } else if(ctx->integer_const() != nullptr){
             uint32_t const_val =  std::stoul(ctx->integer_const()->getText(), nullptr, 0);
             immediate = std::make_shared<variable>("constant",*(int*)&const_val);
-            constant_node = std::make_shared<intercalated_constant>(const_val);
+            program.push_back(instruction_variant(load_constant_instruction("ldc", dest, immediate)));
+            program.push_back(instruction_variant(intercalated_constant(const_val)));
         }
-
-        std::shared_ptr<load_constant_instruction> instruction_node = std::make_shared<load_constant_instruction>("ldc", dest, immediate);
-
-        program.push_back(instruction_node);
-        program.push_back(constant_node);
 
     }
 

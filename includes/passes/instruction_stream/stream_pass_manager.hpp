@@ -53,7 +53,7 @@ namespace fcore{
         );
 
         instruction_stream process_stream(instruction_stream stream);
-        instruction_stream apply_pass(const instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass);
+        instruction_stream apply_pass(instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass);
         nlohmann::json get_dump();
         void set_enabled_passes(std::vector<bool> ep) {enabled_passes = std::move(ep);};
         std::shared_ptr<struct instruction_count> get_instruction_count() {return ic;};

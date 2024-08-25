@@ -18,33 +18,33 @@
 
 namespace fcore{
 
-    independent_instruction::independent_instruction(std::string op) : instruction(isa_independent_instruction) {
+    independent_instruction::independent_instruction(std::string op) {
         opcode = std::move(op);
     }
 
 
-    uint32_t independent_instruction::emit() {
+    uint32_t independent_instruction::emit()const {
         uint32_t raw_instr = 0;
         uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
         raw_instr += fcore_opcodes[opcode] & opcode_mask;
         return raw_instr;
     }
 
-    void independent_instruction::print() {
+    void independent_instruction::print() const {
         std::cout << std::setfill('0') << std::setw(4) << std::hex << emit() << " -> OPCODE: " << opcode << std::endl;
     }
 
-    int  independent_instruction::instruction_count() {
+    int  independent_instruction::instruction_count() const{
         return 1;
     }
 
-    std::string independent_instruction::disassemble() {
+    std::string independent_instruction::disassemble() const {
         return opcode;
     }
 
-    nlohmann::json  independent_instruction::dump() {
-        nlohmann::json retval = instruction::dump();
+    nlohmann::json  independent_instruction::dump() const{
+        nlohmann::json retval;
+        retval["instruction_type"] = "isa_independent_instruction";
         return retval;
     }
 }
-

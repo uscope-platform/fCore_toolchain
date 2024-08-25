@@ -26,19 +26,19 @@ namespace fcore{
     class constant_merging : public stream_pass_base {
     public:
         constant_merging(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam);
-        std::shared_ptr<instruction> apply_pass(std::shared_ptr<instruction> element, uint32_t n) override;
+        std::optional<instruction_variant> apply_pass(const instruction_variant &element, uint32_t n) override;
 
     private:
         std::set<std::string> processed_constants;
         std::unordered_map<float, std::shared_ptr<variable>> float_const_map;
         std::unordered_map<uint32_t, std::shared_ptr<variable>> int_const_map;
         std::unordered_map<std::string, std::shared_ptr<variable>> reassignments_map;
-        void map_exclusions(std::shared_ptr<instruction> element);
-        std::shared_ptr<instruction> merge_register_inst(const std::shared_ptr<register_instruction>& instr);
-        std::shared_ptr<instruction> merge_ternary_inst(const std::shared_ptr<ternary_instruction>& instr);
-        std::shared_ptr<instruction> merge_conv_instr(const std::shared_ptr<conversion_instruction>& instr);
-        std::shared_ptr<instruction> merge_load_const_instr(const std::shared_ptr<load_constant_instruction>& instr);
-        std::shared_ptr<instruction> merge_interc_const(const std::shared_ptr<intercalated_constant>& instr);
+        void map_exclusions(const instruction_variant &element);
+        instruction_variant merge_register_inst(register_instruction& instr);
+        instruction_variant merge_ternary_inst(ternary_instruction& instr);
+        instruction_variant merge_conv_instr(conversion_instruction& instr);
+        std::optional<instruction_variant> merge_load_const_instr(load_constant_instruction& instr);
+        std::optional<instruction_variant> merge_interc_const(intercalated_constant& instr);
         std::shared_ptr<variable> get_merged_constant(std::shared_ptr<variable> v);
         bool is_last_io_assignment(const std::shared_ptr<variable> &dest);
         bool delete_intercalated_const;

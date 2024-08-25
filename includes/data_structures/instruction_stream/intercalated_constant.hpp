@@ -19,14 +19,14 @@
 #include "data_structures/instruction_stream/ll_instruction_node.hpp"
 
 namespace fcore{
-    class intercalated_constant : public instruction {
+    class intercalated_constant {
     public:
         explicit intercalated_constant(float constant);
         explicit intercalated_constant(uint32_t constant);
-        uint32_t emit() override;
-        void print() override;
-        std::string disassemble() override;
-        int instruction_count() override;
+        uint32_t emit() const;
+        void print() const;
+        std::string disassemble() const;
+        int instruction_count() const;
 
         friend bool operator==(const intercalated_constant& lhs, const intercalated_constant& rhs){
             {
@@ -38,7 +38,11 @@ namespace fcore{
             }
         };
 
-        nlohmann::json dump();
+        void set_arguments(const std::vector<std::shared_ptr<variable>> &) {};
+        std::vector<std::shared_ptr<variable>> get_arguments() const {return {};};
+
+
+        nlohmann::json dump() const;
 
         std::string get_opcode(){return opcode;};
 

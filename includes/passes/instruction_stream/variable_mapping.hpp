@@ -25,12 +25,12 @@ namespace fcore{
     class variable_mapping : public stream_pass_base {
     public:
         explicit variable_mapping(std::shared_ptr<variable_map> &v);
-        std::shared_ptr<instruction> apply_pass(std::shared_ptr<instruction> element, uint32_t n) override;
+        std::optional<instruction_variant> apply_pass(const instruction_variant &element, uint32_t n)  override;
 
-        void map_register_inst(const std::shared_ptr<register_instruction>& instr);
-        void map_conv_instr(const std::shared_ptr<conversion_instruction>& instr);
-        void map_load_const_instr(const std::shared_ptr<load_constant_instruction>& instr);
-        void map_ternary_instr(const std::shared_ptr<ternary_instruction>& instr);
+        void map_register_inst(const register_instruction& instr);
+        void map_conv_instr(const conversion_instruction& instr);
+        void map_load_const_instr(const load_constant_instruction& instr);
+        void map_ternary_instr(const ternary_instruction& instr);
 
     private:
         std::shared_ptr<variable_map> vmap;

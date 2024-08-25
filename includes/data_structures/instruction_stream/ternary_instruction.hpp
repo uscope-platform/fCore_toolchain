@@ -22,15 +22,15 @@
 
 
 namespace fcore{
-    class ternary_instruction : public instruction {
+    class ternary_instruction {
     public:
         ternary_instruction(std::string op, std::shared_ptr<variable> op_a, std::shared_ptr<variable> op_b, std::shared_ptr<variable> op_c, std::shared_ptr<variable> dest);
-        uint32_t emit() override;
-        std::string disassemble() override;
-        void print() override;
-        int instruction_count() override;
+        uint32_t emit() const;
+        std::string disassemble() const;
+        void print() const;
+        int instruction_count() const;
 
-        nlohmann::json dump();
+        nlohmann::json dump()const;
 
         friend bool operator==(const ternary_instruction& lhs, const ternary_instruction& rhs){
             bool retval = true;
@@ -43,15 +43,15 @@ namespace fcore{
             return retval;
         };
 
-        std::shared_ptr<variable> get_operand_a() {return operand_a;};
-        std::shared_ptr<variable> get_operand_b() {return operand_b;};
-        std::shared_ptr<variable> get_operand_c() {return operand_c;};
+        std::shared_ptr<variable> get_operand_a() const {return operand_a;};
+        std::shared_ptr<variable> get_operand_b() const {return operand_b;};
+        std::shared_ptr<variable> get_operand_c() const {return operand_c;};
 
-        std::shared_ptr<variable> get_destination() {return destination;};
+        std::shared_ptr<variable> get_destination() const {return destination;};
         void set_operand_a(std::shared_ptr<variable> v){ operand_a = std::move(v);};
         void set_destination(std::shared_ptr<variable> v){ destination = std::move(v);};
-        std::vector<std::shared_ptr<variable>> get_arguments() override {return {operand_a, operand_b, operand_c, destination};};
-        void set_arguments(const std::vector<std::shared_ptr<variable>> &a) override;
+        std::vector<std::shared_ptr<variable>> get_arguments() const {return {operand_a, operand_b, operand_c, destination};};
+        void set_arguments(const std::vector<std::shared_ptr<variable>> &a);
 
         std::string get_opcode(){return opcode;};
 

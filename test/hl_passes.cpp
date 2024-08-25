@@ -502,17 +502,18 @@ TEST(HlPassesTest, hl_ast_lowering) {
     std::shared_ptr<variable> op_b = std::make_shared<variable>("constant", 5);
     std::shared_ptr<variable> dest = std::make_shared<variable>("intermediate_expression_0");
 
-    std::shared_ptr<register_instruction> op_1 = std::make_shared<register_instruction>("mul", op_a, op_b, dest);
+    auto op_1 = instruction_variant(register_instruction("mul", op_a, op_b, dest));
 
 
     op_a = std::make_shared<variable>("intermediate_expression_0");
     op_b = std::make_shared<variable>("constant", 6);
     dest = std::make_shared<variable>("a");
 
-    std::shared_ptr<register_instruction> op_2 = std::make_shared<register_instruction>( "add", op_a, op_b, dest);
+    auto op_2 = instruction_variant(register_instruction("add", op_a, op_b, dest));
+
     ASSERT_EQ(result.size(), 2);
-    ASSERT_EQ(*result.get(0), *op_1);
-    ASSERT_EQ(*result.get(1), *op_2);
+    ASSERT_EQ(result.get(0), op_1);
+    ASSERT_EQ(result.get(1), op_2);
 }
 
 

@@ -30,15 +30,15 @@
 namespace fcore{
     class instruction_stream {
     public:
-        void push_back(const std::shared_ptr<instruction>& item);
+        void push_back(const instruction_variant& item);
         void push_back(const instruction_stream &vector);
         bool empty(instruction_stream &stream);
         unsigned long size(instruction_stream & stream);
         bool empty();
         unsigned long size();
 
-        std::shared_ptr<instruction> last() {return stream_store.back();};
-        std::shared_ptr<instruction> get(ssize_t i) {return stream_store[i];};
+        instruction_variant last() {return stream_store.back();};
+        instruction_variant get(ssize_t i) {return stream_store[i];};
 
         nlohmann::json dump();
 
@@ -60,7 +60,7 @@ namespace fcore{
                 retval = false;
             } else{
                 for(unsigned long i = 0; i<lhs.stream_store.size();++i){
-                    retval &= instruction::compare_content_by_type(lhs.stream_store[i],rhs.stream_store[i]);
+                    retval &= lhs.stream_store[i] == rhs.stream_store[i];
                 }
             }
             return retval;
@@ -68,7 +68,7 @@ namespace fcore{
 
     private:
 
-        std::vector<std::shared_ptr<instruction>> stream_store;
+        std::vector<instruction_variant> stream_store;
 
     };
 }

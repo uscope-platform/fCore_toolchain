@@ -17,19 +17,19 @@
 
 
 namespace fcore{
-    pseudo_instruction::pseudo_instruction(std::string op, std::vector<std::shared_ptr<variable>> args)
-    : instruction(isa_pseudo_instruction){
+    pseudo_instruction::pseudo_instruction(std::string op, std::vector<std::shared_ptr<variable>> args){
             opcode = std::move(op);
             arguments = std::move(args);
     }
 
-    int pseudo_instruction::instruction_count() {
+    int pseudo_instruction::instruction_count() const {
         return 1;
     }
 
-    nlohmann::json pseudo_instruction::dump() {
-        nlohmann::json retval = instruction::dump();
+    nlohmann::json pseudo_instruction::dump()const {
+        nlohmann::json retval;
 
+        retval["instruction_type"] = "isa_pseudo_instruction";
         std::vector<nlohmann::json> args_dump;
         for(auto &i:arguments){
             args_dump.push_back(i->dump());

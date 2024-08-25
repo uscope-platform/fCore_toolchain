@@ -16,13 +16,13 @@
 #include "data_structures/instruction_stream/conversion_instruction.hpp"
 
 namespace fcore{
-    conversion_instruction::conversion_instruction(std::string op, std::shared_ptr<variable> s, std::shared_ptr<variable> d) : instruction(isa_conversion_instruction){
+    conversion_instruction::conversion_instruction(std::string op, std::shared_ptr<variable> s, std::shared_ptr<variable> d) {
         source = std::move(s);
         destination = std::move(d);
         opcode = std::move(op);
     }
 
-    uint32_t conversion_instruction::emit() {
+    uint32_t conversion_instruction::emit() const {
         uint32_t raw_instr = 0;
         uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
         uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
@@ -32,12 +32,12 @@ namespace fcore{
         return raw_instr;
     }
 
-    void conversion_instruction::print() {
+    void conversion_instruction::print() const {
         std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << opcode <<
                   " SOURCE: " << source->to_str() << " DESTINATION: " << destination->to_str()<<std::endl;
     }
 
-    int conversion_instruction::instruction_count() {
+    int conversion_instruction::instruction_count() const{
         return 1;
     }
 
@@ -46,12 +46,14 @@ namespace fcore{
         destination = a[1];
     }
 
-    std::string conversion_instruction::disassemble() {
+    std::string conversion_instruction::disassemble() const {
         return opcode + " " + source->get_name() + ", " + destination->get_name();
     }
 
-    nlohmann::json conversion_instruction::dump() {
-        nlohmann::json retval = instruction::dump();
+
+    nlohmann::json conversion_instruction::dump() const{
+        nlohmann::json retval;
+        retval["instruction_type"] = "isa_conversion_instruction";
         retval["source"] = source->dump();
         retval["destination"] = destination->dump();
         return retval;

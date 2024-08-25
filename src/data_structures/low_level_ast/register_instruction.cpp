@@ -20,14 +20,14 @@
 namespace fcore{
 
     register_instruction::register_instruction(std::string op, std::shared_ptr<variable> op_a, std::shared_ptr<variable> op_b,
-                                                          std::shared_ptr<variable> dest) : instruction(isa_register_instruction) {
+                                                          std::shared_ptr<variable> dest) {
         operand_a = std::move(op_a);
         operand_b = std::move(op_b);
         destination = std::move(dest);
         opcode = std::move(op);
     }
 
-    uint32_t register_instruction::emit() {
+    uint32_t register_instruction::emit()const {
         uint32_t raw_instr = 0;
         uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
         uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
@@ -39,13 +39,13 @@ namespace fcore{
         return raw_instr;
     }
 
-    void register_instruction::print() {
+    void register_instruction::print() const{
         std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << opcode <<
                   " OPERAND A: " << operand_a->to_str() << " OPERAND B: " << operand_b->to_str() <<
                   " DESTINATION: " << destination->to_str() <<std::endl;
     }
 
-    int register_instruction::instruction_count() {
+    int register_instruction::instruction_count()const {
         return 1;
     }
 
@@ -55,12 +55,13 @@ namespace fcore{
         destination = a[2];
     }
 
-    std::string register_instruction::disassemble() {
+    std::string register_instruction::disassemble()const {
         return opcode + " " + operand_a->get_name() + ", " + operand_b->get_name() + ", " + destination->get_name();
     }
 
-    nlohmann::json register_instruction::dump() {
-        nlohmann::json retval = instruction::dump();
+    nlohmann::json register_instruction::dump() const{
+        nlohmann::json retval;
+        retval["instruction_type"] = "isa_register_instruction";
         retval["operand_a"] = operand_a->dump();
         retval["operand_b"] = operand_b->dump();
         retval["destination"] = destination->dump();

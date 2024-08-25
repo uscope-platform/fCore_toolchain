@@ -22,17 +22,16 @@ namespace fcore{
     class ternary_reduction : public stream_pass_base{
     public:
         ternary_reduction();
-        std::shared_ptr<instruction> apply_pass(std::shared_ptr<instruction> element, uint32_t n) override;
-
+        std::optional<instruction_variant> apply_mutable_pass(instruction_variant &element, uint32_t n) override;
     private:
-        void map_ternaries(std::shared_ptr<instruction> element);
-        void map_conditions_source(std::shared_ptr<instruction> element);
+        void map_ternaries(const instruction_variant &element);
+        void map_conditions_source(const instruction_variant &element);
         void update_conditions_map(std::string s);
-        std::shared_ptr<instruction> reduce(std::shared_ptr<instruction> element);
-        std::shared_ptr<instruction> reduce_register_instr(std::shared_ptr<register_instruction> element);
-        std::shared_ptr<instruction> reduce_conversion_instr(std::shared_ptr<conversion_instruction>);
-        std::shared_ptr<instruction> reduce_load_instr(std::shared_ptr<load_constant_instruction> node);
-        std::shared_ptr<instruction> reduce_ternary_instr(std::shared_ptr<ternary_instruction> node);
+        std::optional<instruction_variant> reduce(instruction_variant &element);
+        std::optional<instruction_variant> reduce_register_instr(register_instruction &element);
+        std::optional<instruction_variant> reduce_conversion_instr(conversion_instruction &node);
+        std::optional<instruction_variant> reduce_load_instr(load_constant_instruction &node);
+        std::optional<instruction_variant> reduce_ternary_instr(ternary_instruction &node);
 
 
         uint32_t instr_ctr;

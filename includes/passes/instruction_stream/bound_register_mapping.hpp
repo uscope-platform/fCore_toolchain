@@ -24,12 +24,12 @@ namespace fcore{
     class bound_register_mapping_pass : public stream_pass_base{
     public:
         bound_register_mapping_pass();
-        std::shared_ptr<instruction> apply_pass(std::shared_ptr<instruction> element, uint32_t n) override;
+        std::optional<instruction_variant> apply_pass(const instruction_variant &element, uint32_t n) override;
     private:
-        std::shared_ptr<instruction> process_reg_instr(std::shared_ptr<register_instruction> node);
-        std::shared_ptr<instruction> process_conv_instr(std::shared_ptr<conversion_instruction> node);
-        std::shared_ptr<instruction> process_load_instr(std::shared_ptr<load_constant_instruction> node);
-        std::shared_ptr<instruction> process_ternary_instr(const std::shared_ptr<ternary_instruction>& node);
+        std::optional<instruction_variant> process_reg_instr(const register_instruction &node);
+        std::optional<instruction_variant> process_conv_instr(const conversion_instruction &node);
+        std::optional<instruction_variant> process_load_instr(const load_constant_instruction &node);
+        std::optional<instruction_variant> process_ternary_instr(const ternary_instruction& node);
     };
 }
 

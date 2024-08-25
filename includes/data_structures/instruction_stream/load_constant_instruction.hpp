@@ -21,24 +21,24 @@
 #include <utility>
 namespace fcore{
 
-    class load_constant_instruction: public instruction {
+    class load_constant_instruction {
     public:
         load_constant_instruction(std::string op, std::shared_ptr<variable> dest, std::shared_ptr<variable> c);
-        uint32_t emit() override;
-        void print() override;
-        std::string disassemble() override;
+        uint32_t emit() const;
+        void print() const;
+        std::string disassemble() const;
 
-        int instruction_count() override;
+        int instruction_count() const;
         float get_constant_f();
         int get_constant_i();
         bool is_float();
         std::shared_ptr<variable> get_constant_variable() {return constant;};
-        std::shared_ptr<variable> get_destination() {return destination;};
+        std::shared_ptr<variable> get_destination() const {return destination;};
         void set_destination(std::shared_ptr<variable> v){destination = v;};
-        std::vector<std::shared_ptr<variable>> get_arguments() override {return {destination, constant};};
-        void set_arguments(const std::vector<std::shared_ptr<variable>> &a) override;
+        std::vector<std::shared_ptr<variable>> get_arguments() const {return {destination, constant};};
+        void set_arguments(const std::vector<std::shared_ptr<variable>> &a);
 
-        nlohmann::json dump();
+        nlohmann::json dump()const;
 
         friend bool operator==(const load_constant_instruction& lhs, const load_constant_instruction& rhs){
             bool retval = true;

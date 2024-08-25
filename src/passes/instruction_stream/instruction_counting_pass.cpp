@@ -18,36 +18,36 @@
 namespace fcore{
 
     instruction_counting_pass::instruction_counting_pass(std::shared_ptr<struct instruction_count> &c):
-            stream_pass_base("io_constant_tracking", 1) {
+            stream_pass_base("io_constant_tracking", 1, false) {
         count = c;
     }
 
+    std::optional<instruction_variant> instruction_counting_pass::apply_pass(const instruction_variant &element, uint32_t n) {
+        auto var = element.get_content();
 
-    std::shared_ptr<instruction>
-    instruction_counting_pass::apply_pass(std::shared_ptr<instruction> element, uint32_t n) {
-        std::shared_ptr<instruction> node = std::static_pointer_cast<instruction>(element);
-        auto type = node->get_type();
-        if(type==isa_load_constant_instruction){
-            count->load++;
-        } else if(type==isa_register_instruction) {
-            auto instr = std::static_pointer_cast<register_instruction>(node);
-            if (instr->get_opcode() == "efi") {
+        if(std::holds_alternative<register_instruction>(var)) {
+            auto instr = std::get<register_instruction>(var);
+            if (instr.get_opcode() == "efi") {
                 count->efi++;
             } else {
                 count->regular++;
             }
-        }else if(type  == isa_independent_instruction){
-            auto instr = std::static_pointer_cast<independent_instruction>(node);
-            if (instr->get_opcode() == "stop") {
+        } else if(std::holds_alternative<load_constant_instruction>(var)){
+            count->load++;
+        } else if(std::holds_alternative<independent_instruction>(var)){
+            auto instr = std::get<independent_instruction>(var);
+            if (instr.get_opcode() == "stop") {
                 count->stop++;
             } else {
                 count->regular++;
             }
-        } else if(type != isa_intercalated_constant) {
+        } else if(std::holds_alternative<intercalated_constant>(var)){
             count->regular++;
         }
+
         return element;
     }
+
 }
 
 

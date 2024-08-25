@@ -23,15 +23,18 @@
 
 namespace fcore{
 
-    class pseudo_instruction :public instruction {
+    class pseudo_instruction {
     public:
         pseudo_instruction(std::string op, std::vector<std::shared_ptr<variable>> args);
 
-        std::vector<std::shared_ptr<variable>> get_arguments() {return arguments;};
+        std::vector<std::shared_ptr<variable>> get_arguments() const {return arguments;};
         void set_arguments(std::vector<std::shared_ptr<variable>> a) {arguments = std::move(a);};
-        int instruction_count() override;
+        int instruction_count() const;
 
-        nlohmann::json dump();
+        uint32_t emit() const{ return 0;};
+        void print() const {};
+        std::string disassemble() const{return "";};
+        nlohmann::json dump()const;
 
         friend bool operator==(const pseudo_instruction& lhs, const pseudo_instruction& rhs){
             bool retval = true;

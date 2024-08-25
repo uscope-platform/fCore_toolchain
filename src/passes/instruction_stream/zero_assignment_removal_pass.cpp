@@ -19,29 +19,30 @@
 namespace fcore{
 
     zero_assignment_removal_pass::zero_assignment_removal_pass() :
-            stream_pass_base("Zero assignment removal", 1){
+            stream_pass_base("Zero assignment removal", 1, false){
         delete_intercalated_const = false;
     }
 
-    std::shared_ptr<instruction>
-    zero_assignment_removal_pass::apply_pass(std::shared_ptr<instruction> element, uint32_t n) {
-        if(element->get_type() == isa_load_constant_instruction){
-            std::shared_ptr<load_constant_instruction> node = std::static_pointer_cast<load_constant_instruction>(element);
-            if(node->get_destination()->get_name() == "r0"){
+    std::optional<instruction_variant> zero_assignment_removal_pass::apply_pass(const instruction_variant &element, uint32_t n) {
+        auto var = element.get_content();
+        if(std::holds_alternative<load_constant_instruction>(var)) {
+            auto instr = std::get<load_constant_instruction>(var);
+            if(instr.get_destination()->get_name() == "r0"){
                 delete_intercalated_const = true;
-                return nullptr;
+                return {};
             } else {
                 return element;
             }
-        } else if(element->get_type() == isa_intercalated_constant){
+        } else if(std::holds_alternative<intercalated_constant>(var)){
             if(delete_intercalated_const){
                 delete_intercalated_const = false;
-                return nullptr;
+                return {};
             } else {
                 return element;
             }
-        } else{
+        }  else {
             return element;
         }
+
     }
 }

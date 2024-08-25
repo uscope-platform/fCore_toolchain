@@ -17,12 +17,12 @@
 namespace fcore{
 
     ternary_reduction::ternary_reduction() :
-            stream_pass_base("Ternary reduction", 3) {
+            stream_pass_base("Ternary reduction", 3, true) {
         last_pass = 999;
     }
 
-    std::shared_ptr<instruction>
-    ternary_reduction::apply_pass(std::shared_ptr<instruction> element, uint32_t n) {
+
+    std::optional<instruction_variant> ternary_reduction::apply_mutable_pass(instruction_variant &element, uint32_t n) {
         if(last_pass != n)
             instr_ctr = 0;
         else {
@@ -31,101 +31,92 @@ namespace fcore{
         last_pass = n;
         if(n == 0){
             map_ternaries(element);
-            return nullptr;
+            return {};
         } else if(n == 1){
             map_conditions_source(element);
-            return nullptr;
+            return {};
         } else {
             return reduce(element);
         }
     }
 
-    void ternary_reduction::map_ternaries(std::shared_ptr<instruction> element) {
-        if(element->get_type() == isa_ternary_instruction){
-            auto t = std::static_pointer_cast<ternary_instruction>(element);
-            auto t_name = t->get_operand_a()->get_name();
+    void ternary_reduction::map_ternaries(const instruction_variant &element) {
+        if(std::holds_alternative<ternary_instruction>(element.get_content())){
+            auto t = std::get<ternary_instruction>(element.get_content());
+            auto t_name = t.get_operand_a()->get_name();
             ternaries_map[t_name] = instr_ctr;
-            substitution_map[t_name] = t->get_destination();
+            substitution_map[t_name] = t.get_destination();
         }
     }
 
-    std::shared_ptr<instruction>
-    ternary_reduction::reduce(std::shared_ptr<instruction> element) {
-
-
-        switch (element->get_type()) {
-            case isa_conversion_instruction:
-                return reduce_conversion_instr(std::static_pointer_cast<conversion_instruction>(element));
-            case isa_register_instruction:
-                return reduce_register_instr(std::static_pointer_cast<register_instruction>(element));
-            case isa_load_constant_instruction:
-                return reduce_load_instr(std::static_pointer_cast<load_constant_instruction>(element));
-            case isa_ternary_instruction:
-                return reduce_ternary_instr(std::static_pointer_cast<ternary_instruction>(element));
-            default:
-                return  element;
+    std::optional<instruction_variant> ternary_reduction::reduce(instruction_variant &element) {
+        auto var = element.get_content();
+        if(std::holds_alternative<conversion_instruction>(var)) {
+            return reduce_conversion_instr(std::get<conversion_instruction>(var));
+        } else if(std::holds_alternative<register_instruction>(var)){
+            return reduce_register_instr(std::get<register_instruction>(var));
+        } else if(std::holds_alternative<load_constant_instruction>(var)){
+            return reduce_load_instr(std::get<load_constant_instruction>(var));
+        } else if(std::holds_alternative<ternary_instruction>(var)){
+            return reduce_ternary_instr(std::get<ternary_instruction>(var));
+        }  else {
+            return element;
         }
-
     }
 
-
-    void ternary_reduction::map_conditions_source(std::shared_ptr<instruction> element) {
-        auto type = element->get_type();
-        if(type == isa_conversion_instruction){
-            auto instr = std::static_pointer_cast<conversion_instruction>(element);
-            update_conditions_map(instr->get_destination()->get_name());
-        } else if(type == isa_register_instruction) {
-            auto instr = std::static_pointer_cast<register_instruction>(element);
-            update_conditions_map(instr->get_destination()->get_name());
-        } else if(type == isa_load_constant_instruction) {
-            auto instr = std::static_pointer_cast<load_constant_instruction>(element);
-            update_conditions_map(instr->get_destination()->get_name());
-        } else if(type == isa_ternary_instruction) {
-            auto instr = std::static_pointer_cast<ternary_instruction>(element);
-            update_conditions_map(instr->get_destination()->get_name());
+    void ternary_reduction::map_conditions_source(const instruction_variant &element) {
+        auto var = element.get_content();
+        if(std::holds_alternative<conversion_instruction>(var)) {
+            update_conditions_map(std::get<conversion_instruction>(var).get_destination()->get_name());
+        } else if(std::holds_alternative<register_instruction>(var)){
+            update_conditions_map(std::get<register_instruction>(var).get_destination()->get_name());
+        } else if(std::holds_alternative<load_constant_instruction>(var)){
+            update_conditions_map(std::get<load_constant_instruction>(var).get_destination()->get_name());
+        } else if(std::holds_alternative<ternary_instruction>(var)){
+            update_conditions_map(std::get<ternary_instruction>(var).get_destination()->get_name());
         }
     }
 
 
-    std::shared_ptr<instruction>
-    ternary_reduction::reduce_register_instr(std::shared_ptr<register_instruction> node) {
-        if(conditions_map.contains(node->get_destination()->get_name())){
-            if(conditions_map[node->get_destination()->get_name()] == instr_ctr){
-                node->set_destination(substitution_map[node->get_destination()->get_name()]);
+    std::optional<instruction_variant>
+    ternary_reduction::reduce_register_instr(register_instruction &element) {
+        if(conditions_map.contains(element.get_destination()->get_name())){
+            if(conditions_map[element.get_destination()->get_name()] == instr_ctr){
+                element.set_destination(substitution_map[element.get_destination()->get_name()]);
             }
         }
-        return node;
+        return instruction_variant(element);
     }
 
-    std::shared_ptr<instruction>
-    ternary_reduction::reduce_conversion_instr(std::shared_ptr<conversion_instruction> node) {
-        if(conditions_map.contains(node->get_destination()->get_name())){
-            if(conditions_map[node->get_destination()->get_name()] == instr_ctr){
-                node->set_destination(substitution_map[node->get_destination()->get_name()]);
+    std::optional<instruction_variant>
+    ternary_reduction::reduce_conversion_instr(conversion_instruction &element) {
+        if(conditions_map.contains(element.get_destination()->get_name())){
+            if(conditions_map[element.get_destination()->get_name()] == instr_ctr){
+                element.set_destination(substitution_map[element.get_destination()->get_name()]);
             }
         }
-        return node;
+        return instruction_variant(element);
     }
 
-    std::shared_ptr<instruction>
-    ternary_reduction::reduce_load_instr(std::shared_ptr<load_constant_instruction> node) {
-        if(conditions_map.contains(node->get_destination()->get_name())){
-            if(conditions_map[node->get_destination()->get_name()] == instr_ctr){
-                node->set_destination(substitution_map[node->get_destination()->get_name()]);
+    std::optional<instruction_variant>
+    ternary_reduction::reduce_load_instr(load_constant_instruction &element) {
+        if(conditions_map.contains(element.get_destination()->get_name())){
+            if(conditions_map[element.get_destination()->get_name()] == instr_ctr){
+                element.set_destination(substitution_map[element.get_destination()->get_name()]);
             }
         }
-        return node;
+        return instruction_variant(element);
     }
 
-    std::shared_ptr<instruction>
-    ternary_reduction::reduce_ternary_instr(std::shared_ptr<ternary_instruction> node) {
-        if(conditions_map.contains(node->get_destination()->get_name())){
-            if(conditions_map[node->get_destination()->get_name()] == instr_ctr){
-                node->set_destination(substitution_map[node->get_destination()->get_name()]);
+    std::optional<instruction_variant>
+    ternary_reduction::reduce_ternary_instr(ternary_instruction &element) {
+        if(conditions_map.contains(element.get_destination()->get_name())){
+            if(conditions_map[element.get_destination()->get_name()] == instr_ctr){
+                element.set_destination(substitution_map[element.get_destination()->get_name()]);
             }
         }
-        node->set_operand_a(node->get_destination());
-        return node;
+        element.set_operand_a(element.get_destination());
+        return instruction_variant(element);
     }
 
     void ternary_reduction::update_conditions_map(std::string s){
@@ -135,5 +126,6 @@ namespace fcore{
             }
         }
     }
+
 
 }

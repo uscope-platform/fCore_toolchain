@@ -18,95 +18,91 @@
 
 namespace fcore{
 
-    bound_register_mapping_pass::bound_register_mapping_pass() : stream_pass_base("Bound register mapping" , 1){
+    bound_register_mapping_pass::bound_register_mapping_pass() : stream_pass_base("Bound register mapping" , 1, false){
 
     }
 
-    std::shared_ptr<instruction>
-    bound_register_mapping_pass::apply_pass(std::shared_ptr<instruction> element, uint32_t n) {
+    std::optional<instruction_variant> bound_register_mapping_pass::apply_pass(const instruction_variant &element, uint32_t n) {
 
-        switch (element->get_type()) {
-            case isa_intercalated_constant:
-            case isa_independent_instruction:
-            case isa_pseudo_instruction:
-                return element;
-            case isa_register_instruction:
-                return process_reg_instr(std::static_pointer_cast<register_instruction>(element));
-            case isa_conversion_instruction:
-                return process_conv_instr(std::static_pointer_cast<conversion_instruction>(element));
-            case isa_load_constant_instruction:
-                return process_load_instr(std::static_pointer_cast<load_constant_instruction>(element));
-            case isa_ternary_instruction:
-                return process_ternary_instr(std::static_pointer_cast<ternary_instruction>(element));
-            default:
-                throw std::runtime_error("ERROR: unknown instruction type");
+        auto var = element.get_content();
+        if(std::holds_alternative<register_instruction>(var)) {
+            return process_reg_instr(std::get<register_instruction>(var));
+        } else if(std::holds_alternative<conversion_instruction>(var)){
+            return process_conv_instr(std::get<conversion_instruction>(var));
+        } else if(std::holds_alternative<load_constant_instruction>(var)){
+            return process_load_instr(std::get<load_constant_instruction>(var));
+        } else if(std::holds_alternative<ternary_instruction>(var)){
+            return process_ternary_instr(std::get<ternary_instruction>(var));
+        } else if( std::holds_alternative<intercalated_constant>(var) || std::holds_alternative<independent_instruction>(var) || std::holds_alternative<pseudo_instruction>(var)){
+            return element;
+        } else {
+            throw std::runtime_error("ERROR: unknown instruction type");
         }
 
-        return element;
     }
 
-    std::shared_ptr<instruction>
-    bound_register_mapping_pass::process_reg_instr(std::shared_ptr<register_instruction> node) {
+    std::optional<instruction_variant>
+    bound_register_mapping_pass::process_reg_instr(const register_instruction &element) {
 
-        std::string raw_dest = node->get_destination()->get_name();
+        std::string raw_dest = element.get_destination()->get_name();
         int dest = std::stoi(raw_dest.substr(1, raw_dest.size()-1));
-        node->get_destination()->set_bound_reg(dest);
+        element.get_destination()->set_bound_reg(dest);
 
-        std::string raw_op_a = node->get_operand_a()->get_name();
+        std::string raw_op_a = element.get_operand_a()->get_name();
         int op_a = std::stoi(raw_op_a.substr(1, raw_op_a.size()-1));
-        node->get_operand_a()->set_bound_reg(op_a);
+        element.get_operand_a()->set_bound_reg(op_a);
 
-        std::string raw_op_b = node->get_operand_b()->get_name();
+        std::string raw_op_b = element.get_operand_b()->get_name();
         int op_b = std::stoi(raw_op_b.substr(1, raw_op_b.size()-1));
-        node->get_operand_b()->set_bound_reg(op_b);
+        element.get_operand_b()->set_bound_reg(op_b);
 
-
-        return node;
+        return instruction_variant(element);
     }
 
-    std::shared_ptr<instruction>
-    bound_register_mapping_pass::process_conv_instr(std::shared_ptr<conversion_instruction> node) {
-        std::string raw_dest = node->get_destination()->get_name();
+    std::optional<instruction_variant>
+    bound_register_mapping_pass::process_conv_instr(const conversion_instruction &element) {
+        std::string raw_dest = element.get_destination()->get_name();
         int dest = std::stoi(raw_dest.substr(1, raw_dest.size()-1));
-        node->get_destination()->set_bound_reg(dest);
+        element.get_destination()->set_bound_reg(dest);
 
-        std::string raw_src = node->get_source()->get_name();
+        std::string raw_src = element.get_source()->get_name();
         int src = std::stoi(raw_src.substr(1, raw_src.size()-1));
-        node->get_source()->set_bound_reg(src);
+        element.get_source()->set_bound_reg(src);
 
-        return node;
+        return instruction_variant(element);
     }
 
-    std::shared_ptr<instruction>
-    bound_register_mapping_pass::process_load_instr(std::shared_ptr<load_constant_instruction> node) {
+    std::optional<instruction_variant>
+    bound_register_mapping_pass::process_load_instr(const load_constant_instruction &element) {
 
-        std::string raw_dest = node->get_destination()->get_name();
+        std::string raw_dest = element.get_destination()->get_name();
         int dest = std::stoi(raw_dest.substr(1, raw_dest.size()-1));
-        node->get_destination()->set_bound_reg(dest);
+        element.get_destination()->set_bound_reg(dest);
 
-        return node;
+        return instruction_variant(element);
     }
 
-    std::shared_ptr<instruction>
-    bound_register_mapping_pass::process_ternary_instr(const std::shared_ptr<ternary_instruction>& node) {
+    std::optional<instruction_variant>
+    bound_register_mapping_pass::process_ternary_instr(const ternary_instruction& element) {
 
-        std::string raw_dest = node->get_destination()->get_name();
+        std::string raw_dest = element.get_destination()->get_name();
         int dest = std::stoi(raw_dest.substr(1, raw_dest.size()-1));
-        node->get_destination()->set_bound_reg(dest);
+        element.get_destination()->set_bound_reg(dest);
 
-        std::string raw_op_a = node->get_operand_a()->get_name();
+        std::string raw_op_a = element.get_operand_a()->get_name();
         int op_a = std::stoi(raw_op_a.substr(1, raw_op_a.size()-1));
-        node->get_operand_a()->set_bound_reg(op_a);
+        element.get_operand_a()->set_bound_reg(op_a);
 
-        std::string raw_op_b = node->get_operand_b()->get_name();
+        std::string raw_op_b = element.get_operand_b()->get_name();
         int op_b = std::stoi(raw_op_b.substr(1, raw_op_b.size()-1));
-        node->get_operand_b()->set_bound_reg(op_b);
+        element.get_operand_b()->set_bound_reg(op_b);
 
 
-        std::string raw_op_c = node->get_operand_c()->get_name();
+        std::string raw_op_c = element.get_operand_c()->get_name();
         int op_c = std::stoi(raw_op_c.substr(1, raw_op_c.size()-1));
-        node->get_operand_c()->set_bound_reg(op_c);
-        return node;
+        element.get_operand_c()->set_bound_reg(op_c);
+
+        return instruction_variant(element);
     }
 }
 

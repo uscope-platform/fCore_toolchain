@@ -18,179 +18,169 @@
 namespace fcore{
 
     constant_merging::constant_merging(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam) :
-            stream_pass_base("constant merging pass", 1){
+            stream_pass_base("constant merging pass", 1, false){
         delete_intercalated_const = false;
         assignments_map = std::move(lam);
         idx = 0;
     }
 
-    std::shared_ptr<instruction>
-    constant_merging::apply_pass(std::shared_ptr<instruction> element, uint32_t n) {
+    std::optional<instruction_variant> constant_merging::apply_pass(const instruction_variant &element, uint32_t n) {
         map_exclusions(element);
-        std::shared_ptr<instruction> ret_val;
-        switch (element->get_type()) {
-            case isa_register_instruction:
-                ret_val =  merge_register_inst(std::static_pointer_cast<register_instruction>(element));
-                break;
-            case isa_conversion_instruction:
-                ret_val =  merge_conv_instr(std::static_pointer_cast<conversion_instruction>(element));
-                break;
-            case isa_independent_instruction:
-                ret_val = element;
-                break;
-            case isa_intercalated_constant:
-                ret_val =  merge_interc_const(std::static_pointer_cast<intercalated_constant>(element));
-                break;
-            case isa_load_constant_instruction:
-                ret_val =  merge_load_const_instr(std::static_pointer_cast<load_constant_instruction>(element));
-                break;
-            case isa_ternary_instruction:
-                ret_val = merge_ternary_inst(std::static_pointer_cast<ternary_instruction>(element));
-                break;
-            default:
-                throw std::runtime_error("Invalid instruction type reached variable mapping stage");
-        }
 
+        std::shared_ptr<variable> dest;
         idx++;
-        return ret_val;
 
+        auto var = element.get_content();
+        if(std::holds_alternative<register_instruction>(var)) {
+            return merge_register_inst(std::get<register_instruction>(var));
+        } else if(std::holds_alternative<conversion_instruction>(var)){
+            return merge_conv_instr(std::get<conversion_instruction>(var));
+        } else if(std::holds_alternative<load_constant_instruction>(var)){
+            return merge_load_const_instr(std::get<load_constant_instruction>(var));
+        } else if(std::holds_alternative<ternary_instruction>(var)){
+            return merge_ternary_inst(std::get<ternary_instruction>(var));
+        } else if(std::holds_alternative<intercalated_constant>(var)){
+            return merge_interc_const(std::get<intercalated_constant>(var));
+        } else if(std::holds_alternative<independent_instruction>(var)){
+            return element;
+        } else if(std::holds_alternative<pseudo_instruction>(var)){
+            return element;
+        } else {
+            throw std::runtime_error("Invalid instruction type reached variable mapping stage");
+        }
     }
 
-    void constant_merging::map_exclusions(std::shared_ptr<instruction> element) {
+
+    void constant_merging::map_exclusions(const instruction_variant &element) {
+
         std::shared_ptr<variable> dest;
-        switch (element->get_type()) {
-            case isa_register_instruction:
-                dest = std::static_pointer_cast<register_instruction>(element)->get_destination();
-                break;
-            case isa_conversion_instruction:
-                dest = std::static_pointer_cast<conversion_instruction>(element)->get_destination();
-                break;
-            case isa_load_constant_instruction:
-                dest = std::static_pointer_cast<load_constant_instruction>(element)->get_destination();
-                break;
-            case isa_ternary_instruction:
-                dest = std::static_pointer_cast<ternary_instruction>(element)->get_destination();
-                break;
-            case isa_intercalated_constant:
-            case isa_independent_instruction:
-            case isa_pseudo_instruction:
-                return;
-            default:
-                throw std::runtime_error("Invalid instruction type reached variable mapping stage");
+        auto var = element.get_content();
+        if(std::holds_alternative<register_instruction>(var)) {
+            dest = std::get<register_instruction>(var).get_destination();
+        } else if(std::holds_alternative<conversion_instruction>(var)){
+            dest = std::get<conversion_instruction>(var).get_destination();
+        } else if(std::holds_alternative<load_constant_instruction>(var)){
+            dest = std::get<load_constant_instruction>(var).get_destination();
+        } else if(std::holds_alternative<ternary_instruction>(var)){
+            dest = std::get<ternary_instruction>(var).get_destination();
+        } else if(std::holds_alternative<independent_instruction>(var) || std::holds_alternative<intercalated_constant>(var) || std::holds_alternative<pseudo_instruction>(var) ) {
+            return;
+        } else {
+            throw std::runtime_error("Invalid instruction type reached variable mapping stage");
         }
+
         if(processed_constants.contains(dest->get_identifier())){
             processed_constants.erase(dest->get_identifier());
         }
 
     }
 
-    std::shared_ptr<instruction> constant_merging::merge_register_inst(const std::shared_ptr<register_instruction> &instr) {
+    instruction_variant constant_merging::merge_register_inst(register_instruction&instr) {
         std::vector<std::shared_ptr<variable>> new_args;
 
 
-        auto op = instr->get_operand_a();
+        auto op = instr.get_operand_a();
         if(op->is_constant() || processed_constants.contains(op->get_identifier())){
             new_args.push_back(get_merged_constant(op));
         } else{
             new_args.push_back(op);
         }
 
-        op = instr->get_operand_b();
-        if(instr->get_operand_b()->is_constant() || processed_constants.contains(op->get_identifier())){
+        op = instr.get_operand_b();
+        if(instr.get_operand_b()->is_constant() || processed_constants.contains(op->get_identifier())){
             new_args.push_back(get_merged_constant(op));
         } else{
             new_args.push_back(op);
         }
-        new_args.push_back(instr->get_destination());
-        instr->set_arguments(new_args);
-        return instr;
+        new_args.push_back(instr.get_destination());
+        instr.set_arguments(new_args);
+        return instruction_variant(instr);
     }
 
-    std::shared_ptr<instruction>
-    constant_merging::merge_ternary_inst(const std::shared_ptr<ternary_instruction> &instr) {
+    instruction_variant constant_merging::merge_ternary_inst(ternary_instruction &instr) {
         std::vector<std::shared_ptr<variable>> new_args;
 
-        auto op = instr->get_operand_a();
+        auto op = instr.get_operand_a();
         if(op->is_constant() || processed_constants.contains(op->get_identifier())){
             new_args.push_back(get_merged_constant(op));
         } else{
             new_args.push_back(op);
         }
 
-        op = instr->get_operand_b();
-        if(instr->get_operand_b()->is_constant() || processed_constants.contains(op->get_identifier())){
+        op = instr.get_operand_b();
+        if(instr.get_operand_b()->is_constant() || processed_constants.contains(op->get_identifier())){
             new_args.push_back(get_merged_constant(op));
         } else{
             new_args.push_back(op);
         }
 
-        op = instr->get_operand_c();
-        if(instr->get_operand_c()->is_constant() || processed_constants.contains(op->get_identifier())){
+        op = instr.get_operand_c();
+        if(instr.get_operand_c()->is_constant() || processed_constants.contains(op->get_identifier())){
             new_args.push_back(get_merged_constant(op));
         } else{
             new_args.push_back(op);
         }
 
 
-        new_args.push_back(instr->get_destination());
-        instr->set_arguments(new_args);
-        return instr;
+        new_args.push_back(instr.get_destination());
+        instr.set_arguments(new_args);
+        return instruction_variant(instr);
     }
 
-    std::shared_ptr<instruction> constant_merging::merge_conv_instr(const std::shared_ptr<conversion_instruction> &instr) {
+    instruction_variant constant_merging::merge_conv_instr(conversion_instruction &instr) {
         std::vector<std::shared_ptr<variable>> new_args;
-        if(is_last_io_assignment(instr->get_destination())){
-            return instr;
+        if(is_last_io_assignment(instr.get_destination())){
+            return instruction_variant(instr);
         }
 
-        auto op = instr->get_source();
+        auto op = instr.get_source();
         if(op->is_constant() || processed_constants.contains(op->get_identifier())){
             new_args.push_back(get_merged_constant(op));
         } else{
             new_args.push_back(op);
         }
-        new_args.push_back(instr->get_destination());
-        instr->set_arguments(new_args);
-        return instr;
+        new_args.push_back(instr.get_destination());
+        instr.set_arguments(new_args);
+        return instruction_variant(instr);
     }
 
-    std::shared_ptr<instruction> constant_merging::merge_load_const_instr(const std::shared_ptr<load_constant_instruction> &instr) {
-        std::shared_ptr<instruction> ret;
-        if(is_last_io_assignment(instr->get_destination())){
-            return instr;
+    std::optional<instruction_variant>  constant_merging::merge_load_const_instr(load_constant_instruction &instr) {
+        if(is_last_io_assignment(instr.get_destination())){
+            return instruction_variant(instr);
         }
 
-        if(instr->is_float()){
-            if(float_const_map.contains(instr->get_constant_f())){
-                ret = nullptr;
-                reassignments_map[instr->get_destination()->get_identifier()] = float_const_map[instr->get_constant_f()];
+        processed_constants.insert(instr.get_destination()->get_identifier());
+
+        if(instr.is_float()){
+            if(float_const_map.contains(instr.get_constant_f())){
+
+                reassignments_map[instr.get_destination()->get_identifier()] = float_const_map[instr.get_constant_f()];
                 delete_intercalated_const = true;
+                return {};
             } else {
-                float_const_map[instr->get_constant_f()] = instr->get_destination();
-                reassignments_map[instr->get_destination()->get_identifier()] = instr->get_destination();
-                ret = instr;
+                float_const_map[instr.get_constant_f()] = instr.get_destination();
+                reassignments_map[instr.get_destination()->get_identifier()] = instr.get_destination();
+                return instruction_variant(instr);
             }
         } else{
-            if(int_const_map.contains(instr->get_constant_i())){
-                ret = nullptr;
-                reassignments_map[instr->get_destination()->get_identifier()] = int_const_map[instr->get_constant_i()];
+            if(int_const_map.contains(instr.get_constant_i())){
+                reassignments_map[instr.get_destination()->get_identifier()] = int_const_map[instr.get_constant_i()];
                 delete_intercalated_const = true;
+                return {};
             } else {
-                int_const_map[instr->get_constant_i()] = instr->get_destination();
-                reassignments_map[instr->get_destination()->get_identifier()] = instr->get_destination();
-                ret = instr;
+                int_const_map[instr.get_constant_i()] = instr.get_destination();
+                reassignments_map[instr.get_destination()->get_identifier()] = instr.get_destination();
+                return instruction_variant(instr);
             }
         }
-        processed_constants.insert(instr->get_destination()->get_identifier());
-        return ret;
     }
 
-    std::shared_ptr<instruction> constant_merging::merge_interc_const(const std::shared_ptr<intercalated_constant> &instr) {
+    std::optional<instruction_variant> constant_merging::merge_interc_const(intercalated_constant &instr) {
         if(!delete_intercalated_const){
-            return instr;
+            return instruction_variant(instr);
         } else {
             delete_intercalated_const = false;
-            return nullptr;
+            return {};
         }
 
     }
@@ -223,4 +213,5 @@ namespace fcore{
         }
         return false;
     }
+
 }

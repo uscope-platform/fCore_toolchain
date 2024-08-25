@@ -86,7 +86,7 @@ namespace fcore{
         }
     }
 
-    std::shared_ptr<instruction> binary_loader::process_register_instr(uint32_t instruction) {
+    instruction_variant binary_loader::process_register_instr(uint32_t instruction) {
         uint32_t opcode = instruction & (1<<fcore_opcode_width)-1;
 
         uint32_t operand_a = (instruction >> fcore_opcode_width) & (1<<fcore_register_address_width)-1;
@@ -97,10 +97,10 @@ namespace fcore{
         std::shared_ptr<variable> op_b_var  = std::make_shared<variable>("r" + std::to_string(operand_b));
         std::shared_ptr<variable> dest_var  = std::make_shared<variable>("r" + std::to_string(destination));
 
-        return std::make_shared<register_instruction>(fcore_opcodes_reverse[opcode], op_a_var, op_b_var, dest_var);
+        return instruction_variant(register_instruction(fcore_opcodes_reverse[opcode], op_a_var, op_b_var, dest_var));
     }
 
-    std::shared_ptr<instruction> binary_loader::process_ternary_instr(uint32_t instruction) {
+    instruction_variant binary_loader::process_ternary_instr(uint32_t instruction) {
         uint32_t opcode = instruction & (1<<fcore_opcode_width)-1;
 
         uint32_t operand_a = (instruction >> fcore_opcode_width) & (1<<fcore_register_address_width)-1;
@@ -112,17 +112,18 @@ namespace fcore{
         std::shared_ptr<variable> op_c_var  = std::make_shared<variable>("r" + std::to_string(operand_c));
         std::shared_ptr<variable> dest_var  = std::make_shared<variable>("r" + std::to_string(operand_a));
 
-        return std::make_shared<ternary_instruction>(fcore_opcodes_reverse[opcode], op_a_var, op_b_var, op_c_var, dest_var);
+
+        return instruction_variant(ternary_instruction(fcore_opcodes_reverse[opcode], op_a_var, op_b_var, op_c_var, dest_var));
     }
 
 
-    std::shared_ptr<instruction> binary_loader::process_independent_instruction(uint32_t instruction) {
+    instruction_variant binary_loader::process_independent_instruction(uint32_t instruction) {
         uint32_t opcode = instruction & (1<<fcore_opcode_width)-1;
 
-        return std::make_shared<independent_instruction>(fcore_opcodes_reverse[opcode]);;
+        return instruction_variant(independent_instruction(fcore_opcodes_reverse[opcode]));
     }
 
-    std::pair<std::shared_ptr<instruction>,std::shared_ptr<instruction>>
+    std::pair<instruction_variant, instruction_variant>
     binary_loader::process_load_constant(uint32_t instruction, uint32_t raw_constant) {
         float constant;
         std::memcpy(&constant, &raw_constant, sizeof(float));
@@ -133,14 +134,13 @@ namespace fcore{
         std::shared_ptr<variable> dest_var  = std::make_shared<variable>("r" + std::to_string(destination));
         std::shared_ptr<variable> f_const  = std::make_shared<variable>("constant", constant);
 
-        auto instr = std::make_shared<load_constant_instruction>(fcore_opcodes_reverse[opcode],dest_var, f_const);
+        auto instr =instruction_variant(load_constant_instruction(fcore_opcodes_reverse[opcode],dest_var, f_const));
 
-        std::shared_ptr<intercalated_constant> c = std::make_shared<intercalated_constant>(constant);
 
-        return {instr, c};
+        return {instr, instruction_variant(intercalated_constant(constant))};
     }
 
-    std::shared_ptr<instruction> binary_loader::process_conversion_instr(uint32_t instruction) {
+    instruction_variant binary_loader::process_conversion_instr(uint32_t instruction) {
         uint32_t opcode = instruction & (1<<fcore_opcode_width)-1;
         uint32_t source = (instruction >> fcore_opcode_width) & (1<<fcore_register_address_width)-1;
         uint32_t destination = (instruction >> (fcore_opcode_width+fcore_register_address_width)) & (1<<fcore_register_address_width)-1;
@@ -148,7 +148,7 @@ namespace fcore{
         std::shared_ptr<variable> source_var = std::make_shared<variable>("r" + std::to_string(source));
         std::shared_ptr<variable> dest_var  = std::make_shared<variable>("r" + std::to_string(destination));
 
-        return std::make_shared<conversion_instruction>(fcore_opcodes_reverse[opcode], source_var, dest_var);
+        return instruction_variant(conversion_instruction(fcore_opcodes_reverse[opcode], source_var, dest_var));
     }
 
     uint32_t binary_loader::to_littleEndian(uint32_t in_num) {

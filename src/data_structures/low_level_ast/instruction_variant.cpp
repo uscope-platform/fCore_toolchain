@@ -18,25 +18,26 @@
 
 namespace fcore{
 
-    uint32_t fcore::instruction_variant::emit() {
-        return std::visit([](auto &var) -> uint32_t {
+    uint32_t fcore::instruction_variant::emit() const {
+        return std::visit([this](auto &var) -> uint32_t {
             return var.emit();
         }, content);
+
     }
 
-    void fcore::instruction_variant::print() {
+    void fcore::instruction_variant::print() const{
         std::visit([](auto &var) -> void {
             var.print();
         }, content);
     }
 
-    std::string fcore::instruction_variant::disassemble() {
+    std::string fcore::instruction_variant::disassemble() const {
         return std::visit([](auto &var) -> std::string {
             return var.disassemble();
         }, content);
     }
 
-    int fcore::instruction_variant::instruction_count() {
+    int fcore::instruction_variant::instruction_count() const{
         return std::visit([](auto &var) -> int {
             return var.instruction_count();
         }, content);
@@ -47,11 +48,34 @@ namespace fcore{
             return var.get_arguments();
         }, content);
     }
+    std::vector<std::shared_ptr<variable>> instruction_variant::get_arguments() const {
+        return std::visit([](auto &var) -> std::vector<std::shared_ptr<variable>> {
+            return var.get_arguments();
+        }, content);
+    }
 
     void instruction_variant::set_arguments(const std::vector<std::shared_ptr<variable>> &args) {
-        std::visit([&args](auto &var) -> void {
-            var.set_arguments(args);
-        }, content);
+
+        if(std::holds_alternative<register_instruction>(content)){
+           auto instr = std::get<register_instruction>(content);
+            instr.set_arguments(args);
+        } else if(std::holds_alternative<conversion_instruction>(content)){
+            auto instr = std::get<conversion_instruction>(content);
+            instr.set_arguments(args);
+        } else if(std::holds_alternative<independent_instruction>(content)){
+            auto instr = std::get<independent_instruction>(content);
+            instr.set_arguments(args);
+        } else if(std::holds_alternative<intercalated_constant>(content)){
+            auto instr = std::get<intercalated_constant>(content);
+            instr.set_arguments(args);
+        } else if(std::holds_alternative<pseudo_instruction>(content)){
+            auto instr = std::get<pseudo_instruction>(content);
+            instr.set_arguments(args);
+        } else if(std::holds_alternative<ternary_instruction>(content)){
+            auto instr = std::get<ternary_instruction>(content);
+            instr.set_arguments(args);
+        }
+
     }
 
     nlohmann::json instruction_variant::dump() {
@@ -60,11 +84,12 @@ namespace fcore{
         }, content);
     }
 
-    nlohmann::json instruction_variant::dump_instruction(const std::shared_ptr<instruction_variant> &node) {
+    nlohmann::json instruction_variant::dump_instruction(instruction_variant &node) {
         return std::visit([](auto &var) -> nlohmann::json {
             return var.dump();
-        }, node->content);
+        }, node.content);
     }
+
 
 
 }

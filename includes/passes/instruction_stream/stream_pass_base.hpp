@@ -21,18 +21,24 @@
 namespace fcore{
     class stream_pass_base {
     public:
-        explicit stream_pass_base(std::string name, uint32_t n_scans) {
+        explicit stream_pass_base(std::string name, uint32_t n_scans, bool is_mutable) {
             this->name = std::move(name);
             this->n_scans = n_scans;
+            this->is_mutable = is_mutable;
         };
 
         virtual void setup() {};
-        virtual std::shared_ptr<instruction> apply_pass(std::shared_ptr<instruction> element, uint32_t n) {
+
+        virtual std::optional<instruction_variant> apply_mutable_pass(instruction_variant &element, uint32_t n) {
+            return element;
+        };
+        virtual std::optional<instruction_variant> apply_pass(const instruction_variant &element, uint32_t n) {
             return element;
         };
         std::string get_name() {return name;};
 
         uint32_t n_scans;
+        bool is_mutable;
     private:
         std::string name;
     };

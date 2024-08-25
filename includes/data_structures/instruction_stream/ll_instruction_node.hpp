@@ -45,7 +45,6 @@ namespace fcore{
         friend bool operator==(const instruction& lhs, const instruction& rhs){
             return lhs.instruction_type == rhs.instruction_type;
         };
-        static bool compare_content_by_type(const std::shared_ptr<instruction> &lhs, const std::shared_ptr<instruction> &rhs);
         [[nodiscard]] bool is_pseudo() const { return instruction_type == isa_pseudo_instruction;};
 
         isa_instruction_type get_type();
@@ -53,7 +52,6 @@ namespace fcore{
         virtual void set_arguments(const std::vector<std::shared_ptr<variable>> &) {};
 
         nlohmann::json dump();
-        static nlohmann::json dump_instruction_by_type(const std::shared_ptr<instruction> &node);
 
     protected:
 

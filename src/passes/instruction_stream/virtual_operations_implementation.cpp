@@ -19,18 +19,16 @@
 
 namespace fcore{
 
-    virtual_operations_implementation::virtual_operations_implementation() : stream_pass_base("virtual operations implementation pass", 1) {
+    virtual_operations_implementation::virtual_operations_implementation() : stream_pass_base("virtual operations implementation pass", 1,  false) {
 
     }
 
-    std::shared_ptr<instruction>virtual_operations_implementation::apply_pass(std::shared_ptr<instruction> element, uint32_t n) {
-
-        std::shared_ptr<instruction> ret_val = element;
-        std::shared_ptr<instruction> node = std::static_pointer_cast<instruction>(element);
-        if (node->is_pseudo()){
-            std::shared_ptr<pseudo_instruction> pseudo_instr = std::static_pointer_cast<pseudo_instruction>(node);
-            std::string opcode = pseudo_instr->get_opcode();
-            auto arguments = pseudo_instr->get_arguments();
+    std::optional<instruction_variant> virtual_operations_implementation::apply_pass(const instruction_variant &element, uint32_t n) {
+        auto var = element.get_content();
+        if(std::holds_alternative<pseudo_instruction>(var)) {
+            auto instr = std::get<pseudo_instruction>(var);
+            std::string opcode = instr.get_opcode();
+            auto arguments = instr.get_arguments();
             if(opcode ==  "mov"){
                 arguments.push_back(arguments[1]);
                 variable zero("r0");
@@ -42,27 +40,22 @@ namespace fcore{
 
             }
 
-            std::string new_opcode = fcore_pseudo_op[pseudo_instr->get_opcode()];
+            std::string new_opcode = fcore_pseudo_op[instr.get_opcode()];
             switch (fcore_op_types[new_opcode]) {
                 case isa_register_instruction:
-                    ret_val = std::make_shared<register_instruction>(new_opcode, arguments[0], arguments[1], arguments[2]);
-                    break;
+                    return instruction_variant(register_instruction(new_opcode, arguments[0], arguments[1], arguments[2]));
                 case isa_independent_instruction:
-                    ret_val = std::make_shared<independent_instruction>(new_opcode);
-                    break;
+                    return instruction_variant(independent_instruction(new_opcode));
                 case isa_conversion_instruction:
-                    ret_val = std::make_shared<conversion_instruction>(new_opcode, arguments[0], arguments[1]);
-                    break;
+                    return instruction_variant(conversion_instruction(new_opcode, arguments[0], arguments[1]));
                 case isa_load_constant_instruction:
-                    ret_val = std::make_shared<load_constant_instruction>(new_opcode, arguments[0], arguments[1]);
-                    break;
+                    return instruction_variant(load_constant_instruction(new_opcode, arguments[0], arguments[1]));
                 default:
-                    break;
+                    return {};
             }
+        } else {
+            return element;
         }
-        return ret_val;
-
-
 
     }
 

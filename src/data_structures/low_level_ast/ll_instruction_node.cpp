@@ -40,44 +40,10 @@ namespace fcore{
     }
 
 
-    bool
-    instruction::compare_content_by_type(const std::shared_ptr<instruction> &lhs, const std::shared_ptr<instruction> &rhs) {
-        if(lhs->get_type() != rhs->get_type()) return false;
-
-        switch (lhs->instruction_type) {
-            case isa_register_instruction:
-                return *std::static_pointer_cast<register_instruction>(lhs) == *std::static_pointer_cast<register_instruction>(rhs);
-            case isa_independent_instruction:
-                return *std::static_pointer_cast<independent_instruction>(lhs) == *std::static_pointer_cast<independent_instruction>(rhs);
-            case isa_pseudo_instruction:
-                return *std::static_pointer_cast<pseudo_instruction>(lhs) == *std::static_pointer_cast<pseudo_instruction>(rhs);
-            case isa_conversion_instruction:
-                return *std::static_pointer_cast<conversion_instruction>(lhs) == *std::static_pointer_cast<conversion_instruction>(rhs);
-            case isa_load_constant_instruction:
-                return *std::static_pointer_cast<load_constant_instruction>(lhs) == *std::static_pointer_cast<load_constant_instruction>(rhs);
-            case isa_intercalated_constant:
-                return *std::static_pointer_cast<intercalated_constant>(lhs) == *std::static_pointer_cast<intercalated_constant>(rhs);
-        }
-        return false;
-    }
-
     nlohmann::json instruction::dump() {
         nlohmann::json retval;
         retval["instruction_type"] = isa_instr_type_to_string(instruction_type);
         return retval;
-    }
-
-    nlohmann::json instruction::dump_instruction_by_type(const std::shared_ptr<instruction> &node) {
-        switch (node->get_type()) {
-            case isa_independent_instruction: return std::static_pointer_cast<independent_instruction>(node)->dump();
-            case isa_register_instruction: return std::static_pointer_cast<register_instruction>(node)->dump();
-            case isa_pseudo_instruction: return std::static_pointer_cast<pseudo_instruction>(node)->dump();
-            case isa_conversion_instruction: return std::static_pointer_cast<conversion_instruction>(node)->dump();
-            case isa_load_constant_instruction: return std::static_pointer_cast<load_constant_instruction>(node)->dump();
-            case isa_intercalated_constant: return std::static_pointer_cast<intercalated_constant>(node)->dump();
-            default:
-                throw std::runtime_error("Unknown instruction node type has been dumped");
-        }
     }
 
 }

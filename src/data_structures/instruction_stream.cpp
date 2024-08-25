@@ -17,12 +17,14 @@
 
 namespace fcore{
 
-    void instruction_stream::push_back(const std::shared_ptr<instruction>& item) {
+    void instruction_stream::push_back(const instruction_variant& item) {
         stream_store.push_back(item);
     }
 
     void instruction_stream::push_back(const instruction_stream &stream_in) {
-        stream_store.insert(stream_store.end(), stream_in.begin(), stream_in.end());
+        for(auto &v:stream_in){
+            stream_store.push_back(v);
+        }
     }
 
     bool instruction_stream::empty(instruction_stream &store) {
@@ -44,8 +46,8 @@ namespace fcore{
     nlohmann::json instruction_stream::dump() {
         nlohmann::json retval;
         std::vector<nlohmann::json> stream;
-        for(const auto &i:stream_store){
-            stream.push_back(instruction::dump_instruction_by_type(i));
+        for(auto &i:stream_store){
+            stream.push_back(instruction_variant::dump_instruction(i));
         }
         retval["type"] = "stream_ast";
         retval["content"] = stream;

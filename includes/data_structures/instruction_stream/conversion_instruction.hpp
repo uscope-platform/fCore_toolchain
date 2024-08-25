@@ -21,21 +21,21 @@
 #include "data_structures/instruction_stream/ll_instruction_node.hpp"
 #include <utility>
 namespace fcore{
-    class conversion_instruction: public instruction {
+    class conversion_instruction {
     public:
         conversion_instruction(std::string op, std::shared_ptr<variable> s, std::shared_ptr<variable> d);
-        uint32_t emit() override;
-        void print() override;
-        std::string disassemble() override;
-        int instruction_count() override;
+        uint32_t emit() const;
+        void print() const;
+        std::string disassemble() const;
+        int instruction_count() const;
 
-        std::shared_ptr<variable> get_source() {return source;};
-        std::shared_ptr<variable> get_destination() {return destination;};
+        std::shared_ptr<variable> get_source() const {return source;};
+        std::shared_ptr<variable> get_destination() const {return destination;};
         void set_destination(std::shared_ptr<variable> v){destination = v;};
-        std::vector<std::shared_ptr<variable>> get_arguments() override {return {source, destination};};
-        void set_arguments(const std::vector<std::shared_ptr<variable>> &a) override;
+        std::vector<std::shared_ptr<variable>> get_arguments() const {return {source, destination};};
+        void set_arguments(const std::vector<std::shared_ptr<variable>> &a);
 
-        nlohmann::json dump();
+        nlohmann::json dump() const;
         friend bool operator==(const conversion_instruction& lhs, const conversion_instruction& rhs){
             bool retval = true;
 

@@ -33,17 +33,17 @@ namespace fcore {
         void set_input_ast(std::shared_ptr<hl_ast_node> i) {input_ast = std::move(i);};
         instruction_stream translate();
     private:
-        std::shared_ptr<instruction> translate_node(const std::shared_ptr<hl_ast_node>& input);
-        std::shared_ptr<instruction> translate_node(const std::shared_ptr<hl_expression_node>& input, const std::shared_ptr<variable>& dest);
-        std::shared_ptr<instruction> translate_node(const std::shared_ptr<hl_ast_operand>& input, std::shared_ptr<variable> dest);
-        std::shared_ptr<instruction> translate_node(const std::shared_ptr<hl_definition_node>& input, const std::shared_ptr<variable>& dest);
-        std::shared_ptr<instruction> process_unary_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest);
-        std::shared_ptr<instruction> process_ternary_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest);
-        std::shared_ptr<instruction> process_immediate_expression(std::shared_ptr<hl_expression_node> input);
-        std::shared_ptr<instruction> process_regular_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest);
+        std::optional<instruction_variant> translate_node(const std::shared_ptr<hl_ast_node>& input);
+        std::optional<instruction_variant> translate_node(const std::shared_ptr<hl_expression_node>& input, const std::shared_ptr<variable>& dest);
+        std::optional<instruction_variant> translate_node(const std::shared_ptr<hl_ast_operand>& input, std::shared_ptr<variable> dest);
+        std::optional<instruction_variant> translate_node(const std::shared_ptr<hl_definition_node>& input, const std::shared_ptr<variable>& dest);
+        std::optional<instruction_variant> process_unary_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest);
+        std::optional<instruction_variant> process_ternary_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest);
+        std::optional<instruction_variant> process_immediate_expression(std::shared_ptr<hl_expression_node> input);
+        std::optional<instruction_variant> process_regular_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest);
         std::shared_ptr<hl_ast_node> input_ast;
 
-        std::shared_ptr<instruction> create_ast_node(isa_instruction_type t, std::vector<std::shared_ptr<variable>> args, const std::string& op);
+        std::optional<instruction_variant> create_ast_node(isa_instruction_type t, std::vector<std::shared_ptr<variable>> args, const std::string& op);
         std::map<expression_type_t, std::string> expr_instruction_mapping;
 
     };

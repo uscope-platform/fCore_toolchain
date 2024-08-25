@@ -134,16 +134,17 @@ namespace fcore{
         if(dump_ast_level>0) dump["stream"] = sman.get_dump();
 
         if(program_stream.empty()){
-            program_stream.push_back(std::make_shared<independent_instruction>("stop"));
+            program_stream.push_back(instruction_variant(independent_instruction("stop")));
         }
-        if(program_stream.last()->get_type() == isa_independent_instruction){
-            auto instr = std::static_pointer_cast<independent_instruction>(program_stream.last());
-            if(instr->get_opcode() != "stop"){
-                program_stream.push_back(std::make_shared<independent_instruction>("stop"));
+        if(std::holds_alternative<independent_instruction>(program_stream.last().get_content())){
+            auto instr = std::get<independent_instruction>(program_stream.last().get_content());
+            if(instr.get_opcode() != "stop"){
+                program_stream.push_back(instruction_variant(independent_instruction("stop")));
             }
-        }else {
-            program_stream.push_back(std::make_shared<independent_instruction>("stop"));
+        } else {
+            program_stream.push_back(instruction_variant(independent_instruction("stop")));
         }
+
         writer.process_stream(program_stream,dma_map,allocation_map, logging);
     }
 

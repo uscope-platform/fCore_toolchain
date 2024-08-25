@@ -21,7 +21,7 @@ namespace fcore{
             std::shared_ptr<variable_map> vmap,
             std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm,
             const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
-    ) : stream_pass_base("register allocation", 1) {
+    ) : stream_pass_base("register allocation", 1, true) {
 
         allocation_map = all_map;
         var_map = std::move(vmap);
@@ -67,12 +67,10 @@ namespace fcore{
     }
 
 
+    std::optional<instruction_variant> register_allocation::apply_mutable_pass(instruction_variant &element, uint32_t n) {
 
-    std::shared_ptr<instruction>
-    register_allocation::apply_pass(std::shared_ptr<instruction> element, uint32_t n) {
-        std::shared_ptr<instruction> ret_val = element;
+        auto arguments = element.get_arguments();
 
-        auto arguments = element->get_arguments();
         for(auto &item:arguments){
             std::regex re("r(\\d\\d?)");
             std::smatch m;
@@ -116,11 +114,12 @@ namespace fcore{
                 }
             }
         }
-        ret_val->set_arguments(arguments);
-        ret_val = element;
+        element.set_arguments(arguments);
 
-        return ret_val;
+        return instruction_variant(element);
     }
+
+
 
     void register_allocation::allocate_register(std::shared_ptr<variable> &var, int reg_addr) {
         reg_map.insert(var, reg_addr, var->get_first_occurrence(), var->get_last_occurrence());

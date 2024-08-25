@@ -21,7 +21,7 @@ namespace fcore{
         std::ostringstream disassembled_program;
 
         for(const auto& item:stream){
-            auto val = item->disassemble();
+            auto val = item.disassemble();
             if(val.starts_with("ldc")){
                 disassembled_program << val;
             } else {

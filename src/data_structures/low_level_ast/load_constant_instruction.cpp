@@ -18,14 +18,13 @@
 
 namespace fcore {
 
-    load_constant_instruction::load_constant_instruction(std::string op, std::shared_ptr<variable> dest, std::shared_ptr<variable> c)
-            : instruction(isa_load_constant_instruction){
+    load_constant_instruction::load_constant_instruction(std::string op, std::shared_ptr<variable> dest, std::shared_ptr<variable> c){
         destination = std::move(dest);
         constant = std::move(c);
         opcode = std::move(op);
     }
 
-    uint32_t load_constant_instruction::emit() {
+    uint32_t load_constant_instruction::emit() const{
         uint32_t raw_instr = 0;
         uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
         uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
@@ -34,12 +33,12 @@ namespace fcore {
         return raw_instr;
     }
 
-    void load_constant_instruction::print() {
+    void load_constant_instruction::print() const {
         std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << opcode <<
                   " DESTINATION: " << destination->to_str() << " CONSTANT(NEXT INSTRUCTION): " << constant->to_str()<<std::endl;
     }
 
-    int load_constant_instruction::instruction_count() {
+    int load_constant_instruction::instruction_count() const {
         return 1;
     }
 
@@ -57,12 +56,14 @@ namespace fcore {
         return constant->get_const_i();
     }
 
-    std::string load_constant_instruction::disassemble() {
+    std::string load_constant_instruction::disassemble() const{
         return opcode + " " + destination->get_name() + ", ";
     }
 
-    nlohmann::json load_constant_instruction::dump() {
-        nlohmann::json retval = instruction::dump();
+    nlohmann::json load_constant_instruction::dump() const{
+        nlohmann::json retval;
+
+        retval["instruction_type"] = "isa_load_constant_instruction";
         retval["destination"] = destination->dump();
         retval["constant"] = constant->dump();
         return retval;

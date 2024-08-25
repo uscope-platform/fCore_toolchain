@@ -20,29 +20,28 @@
 namespace fcore{
 
     io_constant_tracking::io_constant_tracking(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam) :
-            stream_pass_base("io_constant_tracking", 1){
+            stream_pass_base("io_constant_tracking", 1, false){
         index = 0;
         last_assignment_map = std::move(lam);
     }
 
-    std::shared_ptr<instruction>
-    io_constant_tracking::apply_pass(std::shared_ptr<instruction> element, uint32_t n) {
-        if(element->get_type() == isa_register_instruction){
-            auto dest = std::static_pointer_cast<register_instruction>(element)->get_destination();
-            if(dest->get_variable_class() ==variable_output_type ||dest->get_variable_class() ==variable_input_type){
-                add_assignment(dest->get_identifier());
-            }
-        } else if(element->get_type() == isa_conversion_instruction) {
-            auto dest = std::static_pointer_cast<conversion_instruction>(element)->get_destination();
-            if(dest->get_variable_class() ==variable_output_type ||dest->get_variable_class() ==variable_input_type){
-                add_assignment(dest->get_identifier());
-            }
-        } else if(element->get_type() == isa_load_constant_instruction) {
-            auto dest = std::static_pointer_cast<load_constant_instruction>(element)->get_destination();
-            if(dest->get_variable_class() ==variable_output_type ||dest->get_variable_class() ==variable_input_type){
-                add_assignment(dest->get_identifier());
-            }
+    std::optional<instruction_variant> io_constant_tracking::apply_pass(const instruction_variant &element, uint32_t n) {
+        auto var = element.get_content();
+        std::shared_ptr<variable> dest;
+        if(std::holds_alternative<register_instruction>(var)) {
+            dest = std::get<register_instruction>(var).get_destination();
+        } else if(std::holds_alternative<conversion_instruction>(var)) {
+            dest = std::get<conversion_instruction>(var).get_destination();
+        } else if(std::holds_alternative<load_constant_instruction>(var)) {
+            dest = std::get<load_constant_instruction>(var).get_destination();
+        } else {
+            return element;
         }
+
+        if(dest->get_variable_class() ==variable_output_type ||dest->get_variable_class() ==variable_input_type){
+            add_assignment(dest->get_identifier());
+        }
+
         index++;
         return element;
     }

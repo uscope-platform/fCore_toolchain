@@ -30,7 +30,7 @@ namespace fcore{
     class instruction_counting_pass : public stream_pass_base {
     public:
         explicit instruction_counting_pass(std::shared_ptr<struct instruction_count> &c);
-        std::shared_ptr<instruction> apply_pass(std::shared_ptr<instruction> element, uint32_t n) override;
+        std::optional<instruction_variant> apply_pass(const instruction_variant &element, uint32_t n) override;
     private:
         std::shared_ptr<struct instruction_count> count;
     };
