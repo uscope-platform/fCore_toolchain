@@ -66,7 +66,7 @@ namespace fcore {
 
         for(auto &core:emu_spec.cores){
 
-            profiler->set_active_program(core.id);
+            if (profiler != nullptr) profiler->set_active_program(core.id);
 
             program_bundle b;
             b.name = core.id;

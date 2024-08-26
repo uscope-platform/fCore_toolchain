@@ -76,12 +76,11 @@ namespace fcore{
         auto arguments = element.get_arguments();
 
         for(auto &item:arguments){
-            std::regex re("r(\\d\\d?)");
-            std::smatch m;
+
             std::string var_name = item->to_str();
-            std::regex_match(var_name, m, re);
 
             auto bound_reg = item->get_bound_reg();
+
 
             if(bound_reg != -1){
                 reg_map.add_bound_identifier(item, bound_reg);
@@ -92,7 +91,7 @@ namespace fcore{
             } else{
                 if(reg_map.is_allocated(item)){
                     item = reg_map.get_identifier(item);
-                }else if(m.empty() && !item->is_constant()){
+                }else if(!variable::is_explicit_register(var_name) && !item->is_constant()){
                     bool found = false;
                     for(int i = 0; i<pow(2, fcore_register_address_width);i++){
                         if(!item->get_array_shape().empty() && item->is_contiguous()){

@@ -39,7 +39,8 @@ TEST(virtual_instructions, virtual_instruction_implementation) {
     auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
     std::shared_ptr<io_map> allocation_map;
 
-    stream_pass_manager sman(0, bindings_map, allocation_map);
+    auto ic =  std::make_shared<instrumentation_core>();
+    stream_pass_manager sman(0, bindings_map, allocation_map, ic);
     program_stream = sman.process_stream(program_stream);
 
     writer.process_stream(program_stream, false);
@@ -66,7 +67,9 @@ TEST(virtual_instructions, ternary_reduction) {
     auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
     std::shared_ptr<io_map> allocation_map;
 
-    stream_pass_manager sman(0, bindings_map, allocation_map);
+    auto ic =  std::make_shared<instrumentation_core>();
+
+    stream_pass_manager sman(0, bindings_map, allocation_map, ic);
     program_stream = sman.process_stream(program_stream);
 
     writer.process_stream(program_stream, false);

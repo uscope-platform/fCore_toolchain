@@ -80,11 +80,12 @@ namespace fcore{
 
     uint32_t variable::get_value() const {
 
-        std::regex re("r(\\d\\d?)");
-        std::smatch m;
-
-        if(std::regex_match(name, m, re)) {
-            return std::stoi(m[1]);
+        if(name.starts_with("r")){
+            auto rest = name;
+            rest.erase(0,1);
+            if(!rest.empty() && std::find_if(rest.begin(), rest.end(), [](unsigned char c) { return !std::isdigit(c); }) == rest.end()){
+                return std::stoi(rest);
+            };
         }
 
         if(is_constant()){
@@ -238,6 +239,16 @@ namespace fcore{
             shape *= dim;
         }
         return shape;
+    }
+
+    bool variable::is_explicit_register(std::string s) {
+        bool is_register_handle = false;
+        if(s.starts_with("r")){
+            s.erase(0,1);
+            is_register_handle =  !s.empty() && std::find_if(s.begin(),
+                                                                s.end(), [](unsigned char c) { return !std::isdigit(c); }) == s.end();
+        }
+        return is_register_handle;
     }
 
 }

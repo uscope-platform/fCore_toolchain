@@ -31,7 +31,7 @@ TEST(Emulator_execution, emulator_load) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 5.0, 1e-6);
 }
@@ -46,7 +46,7 @@ TEST(Emulator_execution, emulator_add) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 3.8, 1e-6);
 
@@ -61,7 +61,7 @@ TEST(Emulator_execution, emulator_sub) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 0.8, 1e-6);
 }
@@ -74,7 +74,7 @@ TEST(Emulator_execution, emulator_mul) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 3.45, 1e-6);
 }
@@ -88,7 +88,7 @@ TEST(Emulator_execution, emulator_rec) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 0.5, 1e-6);
 }
@@ -101,7 +101,7 @@ TEST(Emulator_execution, emulator_itf) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 2, 1e-6);
 }
@@ -115,7 +115,7 @@ TEST(Emulator_execution, emulator_fti) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 2, 1e-6);
 }
@@ -129,7 +129,7 @@ TEST(Emulator_execution, emulator_and) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     int result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 5);
 }
@@ -143,7 +143,7 @@ TEST(Emulator_execution, emulator_or) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     int result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 15);
 }
@@ -157,7 +157,7 @@ TEST(Emulator_execution, emulator_not) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     int result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0xFFFFDEF3);
 }
@@ -173,7 +173,7 @@ TEST(Emulator_execution, emulator_satn) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, -5, 1e-6);
 
@@ -182,7 +182,7 @@ TEST(Emulator_execution, emulator_satn) {
     manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
-    res_obj = nlohmann::json::parse(manager.get_results());
+    res_obj = manager.get_results();
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, -3, 1e-6);
 }
@@ -197,7 +197,7 @@ TEST(Emulator_execution, emulator_satp) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 5, 1e-6);
     spec = prepare_spec(program, 1,
@@ -205,7 +205,7 @@ TEST(Emulator_execution, emulator_satp) {
     manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
-    res_obj = nlohmann::json::parse(manager.get_results());
+    res_obj = manager.get_results();
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 3, 1e-6);
 }
@@ -219,7 +219,7 @@ TEST(Emulator_execution, emulator_beq) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     uint32_t result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0xffffffff);
 
@@ -228,7 +228,7 @@ TEST(Emulator_execution, emulator_beq) {
     manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
-    res_obj = nlohmann::json::parse(manager.get_results());
+    res_obj = manager.get_results();
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0);
 
@@ -244,7 +244,7 @@ TEST(Emulator_execution, emulator_bne) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     uint32_t result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0xffffffff);
 
@@ -253,7 +253,7 @@ TEST(Emulator_execution, emulator_bne) {
     manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
-    res_obj = nlohmann::json::parse(manager.get_results());
+    res_obj = manager.get_results();
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0);
 
@@ -269,7 +269,7 @@ TEST(Emulator_execution, emulator_bgt) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     uint32_t result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0xffffffff);
 
@@ -278,7 +278,7 @@ TEST(Emulator_execution, emulator_bgt) {
     manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
-    res_obj = nlohmann::json::parse(manager.get_results());
+    res_obj = manager.get_results();
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0);
 
@@ -293,7 +293,7 @@ TEST(Emulator_execution, emulator_ble) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     uint32_t result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0xffffffff);
 
@@ -302,7 +302,7 @@ TEST(Emulator_execution, emulator_ble) {
     manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
-    res_obj = nlohmann::json::parse(manager.get_results());
+    res_obj = manager.get_results();
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0xffffffff);
 
@@ -311,7 +311,7 @@ TEST(Emulator_execution, emulator_ble) {
     manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
-    res_obj = nlohmann::json::parse(manager.get_results());
+    res_obj = manager.get_results();
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0);
 
@@ -359,7 +359,7 @@ TEST(Emulator_execution, emulator_bset) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     uint32_t result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0xd);
 
@@ -370,7 +370,7 @@ TEST(Emulator_execution, emulator_bset) {
     manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
-    res_obj = nlohmann::json::parse(manager.get_results());
+    res_obj = manager.get_results();
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0x1);
 }
@@ -386,7 +386,7 @@ TEST(Emulator_execution, emulator_csel) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto res_obj = nlohmann::json::parse(manager.get_results());
+    auto res_obj = manager.get_results();
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 150.0, 1e-6);
 
@@ -395,7 +395,7 @@ TEST(Emulator_execution, emulator_csel) {
     manager = emulator_manager(spec, false);
     manager.process();
     manager.emulate();
-    res_obj = nlohmann::json::parse(manager.get_results());
+    res_obj = manager.get_results();
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 200.0, 1e-6);
 }

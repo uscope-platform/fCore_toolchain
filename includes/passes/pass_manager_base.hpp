@@ -134,9 +134,9 @@ namespace fcore{
                 if(p.enabled){
                     std::shared_ptr<pass_base<E>> pass = p.pass[0];
 
-                    ic->start_event(pass->get_name(), false);
+                    if (ic != nullptr) ic->start_event(pass->get_name(), false);
                     run_single_pass(AST, pass);
-                    ic->end_event(pass->get_name());
+                    if (ic != nullptr) ic->end_event(pass->get_name());
                     if(dump_ast_level>1){
                         nlohmann::json ast_dump;
                         ast_dump["pass_name"] = pass->get_name();

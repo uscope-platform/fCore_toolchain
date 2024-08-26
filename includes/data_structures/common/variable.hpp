@@ -72,6 +72,7 @@ namespace fcore{
 
         [[nodiscard]] std::string to_str();
 
+        static bool is_explicit_register(std::string s);
         static bool is_terminal() { return true;};
 
         void set_used(bool status);

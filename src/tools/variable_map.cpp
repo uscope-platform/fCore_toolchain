@@ -30,8 +30,6 @@ namespace fcore{
     }
 
     void variable_map::insert(const std::string& key, std::shared_ptr<variable>item) {
-        std::regex re("r(\\d\\d?)");
-        std::smatch m;
         if(map.count(key)>0) return;
         switch (item->get_variable_class()) {
             case variable_input_type:
@@ -39,8 +37,7 @@ namespace fcore{
                 break;
             case variable_memory_type:
             case variable_regular_type:
-                std::regex_match(key, m, re);
-                if(m.empty())
+                if(!variable::is_explicit_register(key))
                     n_variables_++;
                 break;
             case variable_output_type:

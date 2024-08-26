@@ -46,9 +46,10 @@ namespace fcore{
         try{
             asm_language_parser target_parser(input, variables_map);
 
+            std::shared_ptr<instrumentation_core> ic = nullptr;
 
             std::vector<int> io_res;
-            stream_pass_manager sman(io_res, dump_ast_level);
+            stream_pass_manager sman(io_res, dump_ast_level, ic);
             sman.set_enabled_passes({true, false, false, false, true, true, true, false ,false}); // do not mess with constants in assembly
 
             instruction_stream program_stream = sman.process_stream(target_parser.program);
