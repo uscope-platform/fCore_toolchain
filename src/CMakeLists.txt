@@ -2,15 +2,15 @@ set(FCORE_COMMON_SRCS_I
         frontend/binary_loader.cpp
         backend/binary_generator.cpp
         data_structures/executable.cpp
-        data_structures/low_level_ast/ll_instruction_node.cpp
-        data_structures/low_level_ast/register_instruction.cpp
-        data_structures/low_level_ast/conversion_instruction.cpp
-        data_structures/low_level_ast/independent_instruction.cpp
-        data_structures/low_level_ast/intercalated_constant.cpp
-        data_structures/low_level_ast/load_constant_instruction.cpp
-        data_structures/low_level_ast/pseudo_instruction.cpp
-        data_structures/low_level_ast/instruction_variant.cpp
-        data_structures/low_level_ast/ternary_instruction.cpp
+        data_structures/instruction_stream/ll_instruction_node.cpp
+        data_structures/instruction_stream/register_instruction.cpp
+        data_structures/instruction_stream/conversion_instruction.cpp
+        data_structures/instruction_stream/independent_instruction.cpp
+        data_structures/instruction_stream/intercalated_constant.cpp
+        data_structures/instruction_stream/load_constant_instruction.cpp
+        data_structures/instruction_stream/pseudo_instruction.cpp
+        data_structures/instruction_stream/instruction_variant.cpp
+        data_structures/instruction_stream/ternary_instruction.cpp
         data_structures/instruction_stream.cpp
         data_structures/common/memory_tracker.cpp
         tools/define.cpp
