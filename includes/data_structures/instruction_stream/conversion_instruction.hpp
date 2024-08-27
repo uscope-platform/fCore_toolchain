@@ -16,10 +16,17 @@
 #ifndef FCORE_TOOLCHAIN_CONVERSION_INSTRUCTION_HPP
 #define FCORE_TOOLCHAIN_CONVERSION_INSTRUCTION_HPP
 
-#include <utility>
 
-#include "data_structures/instruction_stream/ll_instruction_node.hpp"
+
+#include <cstdint>
+#include <string>
 #include <utility>
+#include <memory>
+#include <vector>
+
+#include "data_structures/common/variable.hpp"
+#include "fCore_isa.hpp"
+
 namespace fcore{
     class conversion_instruction {
     public:

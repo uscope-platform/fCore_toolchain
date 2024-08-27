@@ -2,7 +2,6 @@ set(FCORE_COMMON_SRCS_I
         frontend/binary_loader.cpp
         backend/binary_generator.cpp
         data_structures/executable.cpp
-        data_structures/instruction_stream/ll_instruction_node.cpp
         data_structures/instruction_stream/register_instruction.cpp
         data_structures/instruction_stream/conversion_instruction.cpp
         data_structures/instruction_stream/independent_instruction.cpp

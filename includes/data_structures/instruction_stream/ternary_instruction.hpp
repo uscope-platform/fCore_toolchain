@@ -17,8 +17,8 @@
 
 #include <utility>
 
-#include "data_structures/instruction_stream/ll_instruction_node.hpp"
 #include "data_structures/common/variable.hpp"
+#include "fCore_isa.hpp"
 
 
 namespace fcore{

@@ -16,9 +16,15 @@
 #ifndef FCORE_TOOLCHAIN_LOAD_CONSTANT_INSTRUCTION_HPP
 #define FCORE_TOOLCHAIN_LOAD_CONSTANT_INSTRUCTION_HPP
 
-#include "data_structures/instruction_stream/ll_instruction_node.hpp"
-
 #include <utility>
+#include <cstdint>
+#include <string>
+#include <memory>
+#include <vector>
+
+#include "data_structures/common/variable.hpp"
+#include "fCore_isa.hpp"
+
 namespace fcore{
 
     class load_constant_instruction {

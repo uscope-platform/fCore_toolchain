@@ -17,8 +17,14 @@
 #define FCORE_TOOLCHAIN_LL_INDEPENDENT_INST_NODE_HPP
 
 #include <utility>
+#include <cstdint>
+#include <string>
+#include <memory>
+#include <vector>
 
-#include "data_structures/instruction_stream/ll_instruction_node.hpp"
+#include "data_structures/common/variable.hpp"
+#include "fCore_isa.hpp"
+
 namespace fcore{
     class independent_instruction {
     public:
