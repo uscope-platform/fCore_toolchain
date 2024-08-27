@@ -52,7 +52,7 @@ TEST(HlPassesTest, divisionImplementation) {
 
     input_root->add_content(define);
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
     manager.enable_pass("Division Implementation");
     manager.run_morphing_passes(input_root);
@@ -125,7 +125,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
     std::string ep = "main";
 
-    hl_pass_manager manager = create_hl_pass_manager(ep, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
     manager.enable_pass("Intrinsics Implementation");
 
@@ -202,7 +202,7 @@ TEST(HlPassesTest, test_operating_assignments_implementation) {
 
     std::string ep = "main";
 
-    hl_pass_manager manager = create_hl_pass_manager(ep, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
     manager.enable_pass("Operating Assignment Implementation");
     manager.run_morphing_passes(input_root);
@@ -326,7 +326,7 @@ TEST(HlPassesTest, function_inlining) {
 
     std::string ep = "main";
 
-    hl_pass_manager manager = create_hl_pass_manager(ep, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
     manager.enable_pass("Function Mangling");
     manager.enable_pass("Function Inlining");
@@ -407,7 +407,7 @@ TEST(HlPassesTest, simple_normalization) {
 
     std::string ep = "main";
 
-    hl_pass_manager manager = create_hl_pass_manager(ep, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
     manager.enable_pass("Inlined Function Elimination");
     manager.enable_pass("Normalization");
@@ -482,7 +482,7 @@ TEST(HlPassesTest, hl_ast_lowering) {
 
     std::string ep = "main";
 
-    hl_pass_manager manager = create_hl_pass_manager(ep, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
     manager.enable_pass("Inlined Function Elimination");
     manager.enable_pass("Normalization");
@@ -540,7 +540,7 @@ TEST(HlPassesTest, loop_unrolling_array) {
 
     std::string ep = "main";
 
-    hl_pass_manager manager = create_hl_pass_manager(ep, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
     manager.enable_pass("Inlined Function Elimination");
     manager.enable_pass("Loop Unrolling");
@@ -611,7 +611,7 @@ TEST(HlPassesTest, test_matrix_scalarization) {
 
     std::string ep = "main";
 
-    hl_pass_manager manager = create_hl_pass_manager(ep, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
     manager.enable_pass("Inlined Function Elimination");
     manager.enable_pass("Loop Unrolling");
@@ -729,7 +729,7 @@ TEST(HlPassesTest, function_inlining_array) {
 
     std::string ep = "main";
 
-    hl_pass_manager manager = create_hl_pass_manager(ep, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
 
     manager.enable_pass("Function Mangling");
@@ -790,7 +790,7 @@ TEST(HlPassesTest, function_return_inlining) {
     parser.parse(io_spec);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -862,7 +862,7 @@ TEST(HlPassesTest, complex_normalization) {
     input_root->add_content(expr_2);
     std::string ep = "main";
 
-    hl_pass_manager manager = create_hl_pass_manager(ep, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
     manager.enable_pass("Normalization");
 
@@ -922,7 +922,7 @@ TEST(HlPassesTest, dead_load_elimination) {
 
     std::string ep = "main";
 
-    hl_pass_manager manager = create_hl_pass_manager(ep, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
     manager.enable_pass("Dead Load elimination");
 
@@ -971,7 +971,7 @@ TEST(HlPassesTest, nested_function_inlining) {
     parser.parse(io_spec);
 
     std::string ep = "main";
-    hl_pass_manager manager = create_hl_pass_manager(ep, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
@@ -1071,7 +1071,7 @@ TEST(HlPassesTest, complex_division_implementation) {
 
     std::string ep = "main";
 
-    hl_pass_manager manager = create_hl_pass_manager(ep, 0);
+    hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
     manager.enable_pass("Division Implementation");
 

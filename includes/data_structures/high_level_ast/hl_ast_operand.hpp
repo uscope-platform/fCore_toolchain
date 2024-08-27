@@ -52,7 +52,6 @@ namespace fcore{
         void set_variable(std::shared_ptr<variable> v);
         std::shared_ptr<variable> get_variable();
 
-        nlohmann::json dump() override;
 
         bool is_terminal() override {return true;}
         bool is_scalar() {return  inner_variable->get_type()!=var_type_array;};

@@ -47,13 +47,4 @@ namespace fcore{
     }
 
 
-    nlohmann::json hl_function_call_node::dump() {
-        nlohmann::json retval = hl_ast_node::dump();
-
-        retval["name"] = name;
-        retval["arguments"] = hl_ast_node::dump_array(arguments);
-
-        return retval;
-    }
-
 }

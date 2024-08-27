@@ -48,10 +48,9 @@
 
 namespace fcore{
     static hl_pass_manager create_hl_pass_manager(
-            std::string& entry_point,
-            int dump_ast_level
+            std::string& entry_point
     ){
-        hl_pass_manager manager(dump_ast_level);
+        hl_pass_manager manager;
 
         manager.add_morphing_pass("Division Implementation", std::make_shared<division_implementation_pass>()); // pass #1
         manager.add_morphing_pass("Intrinsics Implementation", std::make_shared<intrinsics_implementation_pass>()); // pass #2

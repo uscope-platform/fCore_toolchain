@@ -45,8 +45,8 @@ namespace fcore{
         void run_morphing_passes(std::shared_ptr<E> AST);
 
         virtual void run_single_pass(std::shared_ptr<E> &, const std::shared_ptr<pass_base<E>>& ) {};
-        virtual std::vector<nlohmann::json> run_repeating_pass_group(std::shared_ptr<E> &, const std::vector<std::shared_ptr<pass_base<E>>>& , int ) {return nlohmann::json();};
-        virtual std::vector<nlohmann::json> run_unique_pass_group(std::shared_ptr<E> &, const std::vector<std::shared_ptr<pass_base<E>>>& , int ) {return nlohmann::json();};
+        virtual std::vector<nlohmann::json> run_repeating_pass_group(std::shared_ptr<E> &, const std::vector<std::shared_ptr<pass_base<E>>>&) {return nlohmann::json();};
+        virtual std::vector<nlohmann::json> run_unique_pass_group(std::shared_ptr<E> &, const std::vector<std::shared_ptr<pass_base<E>>>&) {return nlohmann::json();};
 
         void disable_all();
         void enable_pass(const std::string& name);
@@ -79,7 +79,6 @@ namespace fcore{
         nlohmann::json pre_opt_dump;
         std::vector<nlohmann::json> in_opt_dump;
         nlohmann::json post_opt_dump;
-        int dump_ast_level = 0;
     };
 
 
@@ -126,9 +125,6 @@ namespace fcore{
 
     template<class E>
     void pass_manager_base<E>::run_morphing_passes(std::shared_ptr<E> AST) {
-        if(dump_ast_level>0) {
-            pre_opt_dump = AST->dump();
-        }
         for(auto& p:passes){
             if(p.type == single_pass){
                 if(p.enabled){
@@ -137,21 +133,15 @@ namespace fcore{
                     if (ic != nullptr) ic->start_event(pass->get_name(), false);
                     run_single_pass(AST, pass);
                     if (ic != nullptr) ic->end_event(pass->get_name());
-                    if(dump_ast_level>1){
-                        nlohmann::json ast_dump;
-                        ast_dump["pass_name"] = pass->get_name();
-                        ast_dump["ast"]= AST->dump();
-                        in_opt_dump.push_back(ast_dump);
-                    }
                 }
             } else if(p.type == repeating_pass_group) {
                 if (p.enabled) {
-                    std::vector<nlohmann::json> result = run_repeating_pass_group(AST, p.pass, dump_ast_level);
+                    std::vector<nlohmann::json> result = run_repeating_pass_group(AST, p.pass);
                     in_opt_dump.insert(in_opt_dump.end(), result.begin(), result.end());
                 }
             } else if(p.type == unique_pass_group) {
                 if(p.enabled){
-                    std::vector<nlohmann::json> result = run_unique_pass_group(AST, p.pass, dump_ast_level);
+                    std::vector<nlohmann::json> result = run_unique_pass_group(AST, p.pass);
                     in_opt_dump.insert(in_opt_dump.end(), result.begin(), result.end());
                 }
             } else {
@@ -160,7 +150,6 @@ namespace fcore{
 
 
         }
-        if(dump_ast_level>0)  post_opt_dump = AST->dump();
     }
 
     template<class E>

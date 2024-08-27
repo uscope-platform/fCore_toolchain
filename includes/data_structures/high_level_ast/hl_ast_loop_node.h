@@ -36,7 +36,6 @@ namespace fcore{
         std::shared_ptr<hl_expression_node> get_iteration_expr() {return iteration_expr;};
         void set_iteration_expr(std::shared_ptr<hl_expression_node> i) {iteration_expr = std::move(i);};
         std::string pretty_print() override;
-        nlohmann::json dump() override;
         friend bool operator==(const hl_ast_loop_node& lhs, const hl_ast_loop_node& rhs){
             bool ret_val = true;
 

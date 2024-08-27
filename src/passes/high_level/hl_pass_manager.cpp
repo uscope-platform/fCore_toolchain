@@ -21,12 +21,9 @@
 namespace fcore{
 
 
-    hl_pass_manager::hl_pass_manager(int dal) {
-        this->dump_ast_level = dal;
-    }
 
     std::vector<nlohmann::json> hl_pass_manager::run_repeating_pass_group(std::shared_ptr<hl_ast_node> &subtree,
-                                                                                 const std::vector<std::shared_ptr<pass_base<hl_ast_node>>> &group, int dal) {
+                                                                                 const std::vector<std::shared_ptr<pass_base<hl_ast_node>>> &group) {
 
         std::vector<nlohmann::json> ret_val;
 
@@ -40,12 +37,7 @@ namespace fcore{
                 if(ic != nullptr) ic->start_event(pass->get_name(), false);
                 run_single_pass(subtree, pass);
                 if(ic != nullptr) ic->end_event(pass->get_name());
-                if(dal>1){
-                    nlohmann::json ast_dump;
-                    ast_dump["pass_name"] =  pass->get_name()+ " #" + std::to_string(run_number);
-                    ast_dump["ast"]= subtree->dump();
-                    in_opt_dump.push_back(ast_dump);
-                }
+
             }
             ++run_number;
         } while (!(*old_tree == *subtree));
@@ -54,7 +46,7 @@ namespace fcore{
     }
 
     std::vector<nlohmann::json> hl_pass_manager::run_unique_pass_group(std::shared_ptr<hl_ast_node> &subtree,
-                                                                              const std::vector<std::shared_ptr<pass_base<hl_ast_node>>> &group, int dal) {
+                                                                              const std::vector<std::shared_ptr<pass_base<hl_ast_node>>> &group) {
 
         std::vector<nlohmann::json> ret_val;
 
@@ -63,12 +55,6 @@ namespace fcore{
             if(ic != nullptr) ic->start_event(pass->get_name(), false);
             run_single_pass(subtree, pass);
             if(ic != nullptr) ic->end_event(pass->get_name());
-            if(dal>1){
-                nlohmann::json ast_dump;
-                ast_dump["pass_name"] =  pass->get_name();
-                ast_dump["ast"]= subtree->dump();
-                in_opt_dump.push_back(ast_dump);
-            }
         }
         return ret_val;
     }

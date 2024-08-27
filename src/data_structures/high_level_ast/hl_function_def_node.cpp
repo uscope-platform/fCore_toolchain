@@ -52,8 +52,9 @@ namespace fcore{
 
         ss << hl_ast_node::type_to_string(return_type) << " " << name << "(";
         if(!parameters_list.empty()){
-            for(const auto& item: parameters_list){
-                ss<< item->pretty_print() << ", ";
+            for(int i = 0; i<parameters_list.size(); i++){
+                ss << parameters_list[i]->pretty_print();
+                if(i!=parameters_list.size()-1) ss << ", ";
             }
         }
         ss << ") {" << std::endl;
@@ -79,22 +80,4 @@ namespace fcore{
         return name;
     }
 
-    nlohmann::json hl_function_def_node::dump() {
-        nlohmann::json retval = hl_ast_node::dump();
-
-        std::vector<nlohmann::json> parameters_list_dump;
-        for(auto &i:parameters_list){
-            parameters_list_dump.push_back(i->dump());
-        }
-
-        retval["name"] = name;
-        retval["function_body"] = hl_ast_node::dump_array(function_body);
-        if(return_expression != nullptr){
-            retval["return_expression"] = return_expression->dump();
-        }
-        retval["return_type"] = c_types_to_string(return_type);
-        retval["parameters_list"] = parameters_list_dump;
-
-        return retval;
-    }
 }

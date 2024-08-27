@@ -22,7 +22,7 @@
 namespace fcore{
 
     fcore_cc::fcore_cc(std::vector<std::string> &contents, std::vector<std::string> &inc) :
-            input_string_stream(contents[0]), hl_manager(0){
+            input_string_stream(contents[0]){
         type = "string";
         includes = inc;
         include_is_paths = false;
@@ -31,7 +31,7 @@ namespace fcore{
     }
 
     fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl) :
-            input_file_stream(path), hl_manager(dump_lvl){
+            input_file_stream(path){
         type = "file";
         include_is_paths = true;
         includes = inc;
@@ -121,7 +121,7 @@ namespace fcore{
 
     void fcore_cc::optimize(std::unordered_map<std::string, std::vector<uint32_t>> &dma_map) {
         std::string ep = "main";
-        hl_manager = create_hl_pass_manager(ep, dump_ast_level);
+        hl_manager = create_hl_pass_manager(ep);
         hl_manager.set_profiler(profiling_core);
         if (profiling_core != nullptr) profiling_core->set_phase("AST processing");
         hl_manager.run_morphing_passes(hl_ast);

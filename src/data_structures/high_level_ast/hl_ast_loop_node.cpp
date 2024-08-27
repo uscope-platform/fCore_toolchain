@@ -39,14 +39,4 @@ namespace fcore{
         return ss.str();
     }
 
-    nlohmann::json hl_ast_loop_node::dump() {
-        nlohmann::json retval = hl_ast_node::dump();
-        retval["loop_content"] = hl_ast_node::dump_array(loop_content);
-        retval["iteration_expr"] = iteration_expr->dump();
-        retval["condition"] = condition->dump();
-        retval["init_statement"] = init_statement->dump();
-
-        return retval;
-    }
-
 }

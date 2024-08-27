@@ -48,7 +48,6 @@ namespace fcore{
             return false;
         }
 
-        nlohmann::json dump() override;
 
         bool has_else() {return !else_block.empty();};
     private:

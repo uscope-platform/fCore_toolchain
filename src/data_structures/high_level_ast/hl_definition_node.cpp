@@ -61,11 +61,25 @@ namespace fcore {
 
         if(!initializer.empty()){
             ss << " = ";
-            if(initializer[0]->node_type == hl_ast_node_type_function_call){
-                ss << std::static_pointer_cast<hl_function_call_node>(initializer[0])->pretty_print();
-            } else{
-                ss << std::static_pointer_cast<hl_expression_node>(initializer[0])->pretty_print();
+            if(is_scalar()){
+                if(initializer[0]->node_type == hl_ast_node_type_function_call){
+                    ss << std::static_pointer_cast<hl_function_call_node>(initializer[0])->pretty_print();
+                } else{
+                    ss << std::static_pointer_cast<hl_expression_node>(initializer[0])->pretty_print();
+                }
+            } else {
+                ss << "{";
+                for(int i = 0; i< initializer.size(); i++){
+                    if(initializer[i]->node_type == hl_ast_node_type_function_call){
+                        ss << std::static_pointer_cast<hl_function_call_node>(initializer[i])->pretty_print();
+                    } else{
+                        ss << std::static_pointer_cast<hl_expression_node>(initializer[i])->pretty_print();
+                    }
+                    if(i != initializer.size()-1) ss << ", ";
+                }
+                ss << "}";
             }
+
 
         }
 
@@ -81,20 +95,6 @@ namespace fcore {
 
     bool hl_definition_node::is_scalar() {
         return inner_variable->get_type() != var_type_array;
-    }
-
-
-    nlohmann::json hl_definition_node::dump() {
-        nlohmann::json retval = hl_ast_node::dump();
-
-        retval["array_index"] = hl_ast_node::dump_array(array_index);
-        retval["initializer"] = hl_ast_node::dump_array(initializer);
-        retval["inner_variable"] = inner_variable->dump();
-        retval["name"] = name;
-        retval["constant"] = constant;
-        retval["type"] = c_types_to_string(type);
-
-        return retval;
     }
 
 }

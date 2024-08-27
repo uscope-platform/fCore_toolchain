@@ -40,7 +40,6 @@ namespace fcore{
         bool has_return(){ return return_expression != nullptr;};
         std::vector<std::shared_ptr<hl_ast_node>> get_body();
         std::string pretty_print() override;
-        nlohmann::json dump() override;
         friend bool operator==(const hl_function_def_node& lhs, const hl_function_def_node& rhs){
             bool ret_val = true;
 

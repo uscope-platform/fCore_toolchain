@@ -8,6 +8,7 @@ set(TEST_SOURCES
         C_tree_visitor_testing.cpp
         passes/hl_passes.cpp
         disassembler_testing.cpp
+        hl_pretty_print.cpp
         deep_copy.cpp
         emulator/emulator_testing.cpp
         emulator/emulator_execution.cpp

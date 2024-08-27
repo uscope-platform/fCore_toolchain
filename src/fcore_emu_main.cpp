@@ -84,8 +84,8 @@ int main(int argc, char **argv) {
         profiler->start_event("execution", true);
         emu_manager.emulate();
         profiler->end_event("execution");
-        results = emu_manager.get_results();
-        results["profiling"] = profiler->dump();
+        //results = emu_manager.get_results();
+        results = profiler->dump();
     } catch (std::runtime_error &err) {
         spdlog::critical(err.what());
         exit(-1);

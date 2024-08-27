@@ -44,7 +44,6 @@ namespace fcore{
             return ret_val;
         };
 
-        nlohmann::json dump() override;
         bool is_terminal() override {
             return true;
         }

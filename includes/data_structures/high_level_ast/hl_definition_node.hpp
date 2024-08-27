@@ -52,7 +52,6 @@ namespace fcore{
         void set_array_shape(std::vector<int> &shape){inner_variable->set_array_shape(shape);};
         std::vector<int> get_array_shape(){return inner_variable->get_array_shape();};
 
-        nlohmann::json dump() override;
 
         std::string pretty_print() override;
         bool is_terminal() override {

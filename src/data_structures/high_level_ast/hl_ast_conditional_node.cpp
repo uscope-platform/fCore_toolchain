@@ -64,12 +64,4 @@ namespace fcore{
         return condition;
     }
 
-    nlohmann::json hl_ast_conditional_node::dump() {
-        nlohmann::json retval = hl_ast_node::dump();
-        retval["if_block"] = hl_ast_node::dump_array(if_block);
-        retval["else_block"] = hl_ast_node::dump_array(else_block);
-        retval["condition"] = hl_ast_node::dump_by_type(condition);
-        return retval;
-    }
-
 }

@@ -125,21 +125,6 @@ namespace fcore{
         return res;
     }
 
-    nlohmann::json hl_expression_node::dump() {
-        nlohmann::json retval = hl_ast_node::dump();
-
-        if(!is_unary()){
-            retval["lhs"] = hl_ast_node::dump_by_type(lhs);
-        }
-        if(is_ternary()){
-            retval["ths"] = hl_ast_node::dump_by_type(ths);
-        }
-        retval["rhs"] = hl_ast_node::dump_by_type(rhs);
-        retval["expr_type"] = expression_type_to_string(expr_type);
-        retval["assignment_type"] = assignment_type_to_string(assignment_type);
-        return retval;
-    }
-
 
 
     bool operator==(const hl_expression_node &lhs, const hl_expression_node &rhs){

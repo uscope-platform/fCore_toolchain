@@ -164,7 +164,6 @@ namespace fcore{
         bool is_unary();
         bool is_ternary();
         bool is_immediate();
-        nlohmann::json dump() override;
 
         bool is_terminal() override {
             return true;
