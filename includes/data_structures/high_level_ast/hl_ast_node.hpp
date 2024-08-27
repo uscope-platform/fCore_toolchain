@@ -20,7 +20,6 @@
 #include <string>
 #include <stdexcept>
 
-#include "data_structures/ast_node_base.hpp"
 #include <nlohmann/json.hpp>
 
 namespace fcore{
@@ -73,7 +72,7 @@ namespace fcore{
         }
     }
 
-    class hl_ast_node : public ast_node_base<hl_ast_node>{
+    class hl_ast_node {
 
     public:
         explicit hl_ast_node(hl_ast_node_type_t t);
@@ -111,7 +110,16 @@ namespace fcore{
         static bool compare_vectors(const std::vector<std::shared_ptr<hl_ast_node>>& lhs, const std::vector<std::shared_ptr<hl_ast_node>>& rhs);
 
         hl_ast_node_type_t node_type;
+        // CONTENT MANIPULATION
+        void add_content(const std::shared_ptr<hl_ast_node>& element){content.push_back(element);};
+        void set_content(const std::vector<std::shared_ptr<hl_ast_node>>& c){content = c;};
+
+        // CONTENT ACCESS
+        std::vector<std::shared_ptr<hl_ast_node>> get_content(){return content;};
+
     private:
+        std::vector<std::shared_ptr<hl_ast_node>> content;
+
         static std::shared_ptr<hl_ast_node> deep_copy_expr(const std::shared_ptr<hl_ast_node> &node);
         static std::shared_ptr<hl_ast_node> deep_copy_def(const std::shared_ptr<hl_ast_node> &node);
         static std::shared_ptr<hl_ast_node> deep_copy_conditional(const std::shared_ptr<hl_ast_node> &node);

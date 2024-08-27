@@ -30,14 +30,7 @@
 #include "data_structures/common/variable.hpp"
 
 
-#include "data_structures/high_level_ast/hl_function_def_node.hpp"
-#include "data_structures/high_level_ast/hl_ast_node.hpp"
-#include "data_structures/high_level_ast/hl_expression_node.hpp"
-#include "data_structures/high_level_ast/hl_ast_operand.hpp"
-#include "data_structures/high_level_ast/hl_definition_node.hpp"
-#include "data_structures/high_level_ast/hl_function_call_node.hpp"
-#include "data_structures/high_level_ast/hl_ast_conditional_node.hpp"
-#include "data_structures/high_level_ast/hl_ast_loop_node.h"
+#include "data_structures/high_level_ast/high_level_ast.hpp"
 
 #include <gtest/gtest_prod.h>
 
@@ -109,7 +102,7 @@ namespace fcore{
         void exitCompilationUnit(C_parser::C_grammarParser::CompilationUnitContext *ctx) override;
 
         void set_dma_specs(std::unordered_map<std::string, variable_class_t> ds) {dma_specs = std::move(ds);};
-        std::shared_ptr<hl_ast_node> get_ast(){
+        std::shared_ptr<hl_ast_root> get_ast(){
             return root;
         };
 
@@ -160,7 +153,7 @@ namespace fcore{
         std::shared_ptr<hl_ast_loop_node> loop;
         std::vector<std::shared_ptr<hl_ast_node>> loop_body;
 
-        std::shared_ptr<hl_ast_node> root;
+        std::shared_ptr<hl_ast_root> root;
 
         std::stack<std::shared_ptr<hl_ast_node>> outer_block_nodes;
         std::stack<std::vector<std::shared_ptr<hl_ast_node>>> outer_block_contents;

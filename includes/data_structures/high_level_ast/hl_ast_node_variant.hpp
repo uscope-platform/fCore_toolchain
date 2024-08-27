@@ -23,12 +23,24 @@
 #include "high_level_ast.hpp"
 
 namespace fcore{
-    class hl_ast_node_variant {
 
+    class hl_ast_node_variant {
     public:
 
+        virtual bool is_terminal();
+
+        virtual std::string pretty_print();
+
+        // CONTENT MANIPULATION
+        void add_child(const hl_ast_node_variant& element);
+        void set_children(const std::vector<hl_ast_node_variant>& c);
+
+        // CONTENT ACCESS
+        std::vector<hl_ast_node_variant> get_children();
+
     private:
-        std::vector<std::variant<
+        std::vector<hl_ast_node_variant> children;
+        std::variant<
                 hl_ast_conditional_node,
                 hl_ast_loop_node,
                 hl_ast_operand,
@@ -36,7 +48,7 @@ namespace fcore{
                 hl_expression_node,
                 hl_function_call_node,
                 hl_function_def_node
-        >> content;
+        > content;
     };
 }
 

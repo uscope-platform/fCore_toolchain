@@ -30,6 +30,7 @@ set(FCORE_COMMON_SRCS_I
         passes/instruction_stream/ternary_reduction.cpp
         passes/instruction_stream/virtual_operations_implementation.cpp
         instrumentation/instrumentation_core.cpp
+        data_structures/high_level_ast/hl_ast_root.cpp
 )
 
 

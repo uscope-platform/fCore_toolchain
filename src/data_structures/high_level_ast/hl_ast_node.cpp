@@ -23,6 +23,7 @@
 #include "data_structures/high_level_ast/hl_function_def_node.hpp"
 #include "data_structures/high_level_ast/hl_ast_conditional_node.hpp"
 #include "data_structures/high_level_ast/hl_ast_loop_node.h"
+
 namespace fcore{
 
     bool hl_ast_node::is_terminal() {
@@ -129,7 +130,6 @@ namespace fcore{
 
         copied_obj->set_assignment_type(orig->get_assignment_type());
 
-        copied_obj->set_content(orig->get_content());
         return copied_obj;
     }
 
@@ -224,7 +224,6 @@ namespace fcore{
         }
         copied_obj->set_body(body);
 
-        copied_obj->set_content(orig->get_content());
         return copied_obj;
     }
 
@@ -251,7 +250,7 @@ namespace fcore{
         }
 
         std::shared_ptr<hl_function_call_node> copied_obj = std::make_shared<hl_function_call_node>(orig->get_name(), args);
-        copied_obj->set_content(orig->get_content());
+
         return copied_obj;
     }
 
@@ -302,12 +301,7 @@ namespace fcore{
     }
 
     std::string hl_ast_node::pretty_print() {
-        std::ostringstream ss;
-
-        for(auto &item:content){
-            ss << item->pretty_print()<<std::endl;
-        }
-        return ss.str();
+        return "";
     }
 
 

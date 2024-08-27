@@ -534,7 +534,7 @@ namespace fcore{
     }
 
     void C_Tree_visitor::exitCompilationUnit(C_parser::C_grammarParser::CompilationUnitContext *) {
-        root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+        root = std::make_shared<hl_ast_root>();
 
         root->set_content(functions);
 
