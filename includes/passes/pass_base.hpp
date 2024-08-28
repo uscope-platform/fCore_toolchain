@@ -23,7 +23,6 @@
 #include <unordered_map>
 
 #define NONE_PASS 0
-#define NODE_PASS 1
 #define LEAF_PASS 2
 #define GLOBAL_PASS 3
 #define ANALYSIS_PASS 4

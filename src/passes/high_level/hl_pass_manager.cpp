@@ -66,10 +66,6 @@ namespace fcore{
                                                   const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
 
         switch (pass->get_pass_type()) {
-            case NODE_PASS:{
-                process_nodes(subtree, pass);
-                break;
-            }
             case LEAF_PASS:{
                 process_leaves(subtree, pass);
                 break;
@@ -152,27 +148,6 @@ namespace fcore{
             result = process_terminal_by_type(subtree, pass);
         }
         return result;
-    }
-
-    std::vector<std::shared_ptr<hl_ast_node>> hl_pass_manager::process_nodes(const std::shared_ptr<hl_ast_node> &subtree,
-                                                                                           const std::shared_ptr<pass_base<hl_ast_node>> &pass) {
-
-        std::shared_ptr<hl_ast_node> result;
-        std::vector<std::shared_ptr<hl_ast_node>> content = subtree->get_content();
-        std::vector<std::shared_ptr<hl_ast_node>> result_vector = content;
-        for (uint32_t i = 0; i< content.size(); i++) {
-            if(content[i]->is_terminal()) continue;
-            std::vector<std::shared_ptr<hl_ast_node>> tmp_result;
-            tmp_result = process_nodes(content[i], pass);
-            result_vector.insert(result_vector.begin()+i, tmp_result.begin(), tmp_result.end());
-
-            result_vector.erase(result_vector.begin()+i+tmp_result.size());
-        }
-        subtree->set_content(result_vector);
-        std::vector<std::shared_ptr<hl_ast_node>> ret_val = pass->process_node(subtree);
-        return ret_val;
-
-
     }
 
     std::shared_ptr<hl_ast_node>
