@@ -171,6 +171,8 @@ namespace fcore{
 
         friend bool operator==(const hl_expression_node& lhs, const hl_expression_node& rhs);
 
+        static std::shared_ptr<hl_expression_node> deep_copy (const std::shared_ptr<hl_expression_node> &node);
+
     private:
         expression_type_t expr_type;
         assignment_type_t assignment_type;

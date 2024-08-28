@@ -21,4 +21,16 @@ namespace fcore{
     hl_ast_root::hl_ast_root() : hl_ast_node(hl_ast_node_type_program_root) {
 
     }
+
+    std::shared_ptr<hl_ast_root> hl_ast_root::deep_copy(const std::shared_ptr<hl_ast_root> &orig) {
+        std::shared_ptr<hl_ast_root> copied_obj = std::make_shared<hl_ast_root>();
+
+        std::vector<std::shared_ptr<hl_ast_node>> args;
+        for(const auto &i :orig->get_content()){
+            args.push_back(hl_ast_node::deep_copy(i));
+        }
+
+        copied_obj->set_content(args);
+        return copied_obj;
+    }
 }

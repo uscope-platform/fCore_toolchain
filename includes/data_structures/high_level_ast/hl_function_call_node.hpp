@@ -47,6 +47,9 @@ namespace fcore{
         bool is_terminal() override {
             return true;
         }
+
+        static std::shared_ptr<hl_function_call_node> deep_copy(const std::shared_ptr<hl_function_call_node> &node);
+
     protected:
         std::string name;
         std::vector<std::shared_ptr<hl_ast_node>> arguments;

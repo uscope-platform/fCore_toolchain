@@ -47,6 +47,7 @@ namespace fcore{
 
             return ret_val;
         };
+        static std::shared_ptr<hl_ast_loop_node> deep_copy(const std::shared_ptr<hl_ast_loop_node> &node);
     private:
         std::vector<std::shared_ptr<hl_ast_node>> loop_content;
         std::shared_ptr<hl_expression_node> condition;

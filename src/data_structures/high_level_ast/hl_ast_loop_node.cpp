@@ -39,4 +39,20 @@ namespace fcore{
         return ss.str();
     }
 
+    std::shared_ptr<hl_ast_loop_node> hl_ast_loop_node::deep_copy(const std::shared_ptr<hl_ast_loop_node> &orig) {
+        std::shared_ptr<hl_ast_loop_node> copied_obj = std::make_shared<hl_ast_loop_node>();
+
+        copied_obj->set_condition(std::static_pointer_cast<hl_expression_node>(hl_ast_node::deep_copy(orig->get_condition())));
+        copied_obj->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(hl_ast_node::deep_copy(orig->get_iteration_expr())));
+        copied_obj->set_init_statement(std::static_pointer_cast<hl_definition_node>(hl_ast_node::deep_copy(orig->get_init_statement())));
+
+        std::vector<std::shared_ptr<hl_ast_node>> block;
+        for(const auto& i:orig->get_loop_content()){
+            block.push_back(hl_ast_node::deep_copy(i));
+        }
+        copied_obj->set_loop_content(block);
+
+        return copied_obj;
+    }
+
 }

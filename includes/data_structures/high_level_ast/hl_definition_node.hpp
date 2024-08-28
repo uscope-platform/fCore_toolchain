@@ -76,6 +76,7 @@ namespace fcore{
             return ret_val;
         };
 
+        static std::shared_ptr<hl_definition_node> deep_copy(const std::shared_ptr<hl_definition_node> &node);
     protected:
         bool constant;
         std::string name;

@@ -46,5 +46,17 @@ namespace fcore{
         return ret;
     }
 
+    std::shared_ptr<hl_function_call_node>
+    hl_function_call_node::deep_copy(const std::shared_ptr<hl_function_call_node> &orig) {
+        std::vector<std::shared_ptr<hl_ast_node>> args;
+        for(const auto &i :orig->get_arguments()){
+            args.push_back(hl_ast_node::deep_copy(i));
+        }
+
+        std::shared_ptr<hl_function_call_node> copied_obj = std::make_shared<hl_function_call_node>(orig->get_name(), args);
+
+        return copied_obj;
+    }
+
 
 }

@@ -51,6 +51,7 @@ namespace fcore{
 
         bool has_else() {return !else_block.empty();};
 
+        static std::shared_ptr<hl_ast_conditional_node> deep_copy(const std::shared_ptr<hl_ast_conditional_node> &node);
     private:
 
         std::vector<std::shared_ptr<hl_ast_node>> if_block;

@@ -74,6 +74,8 @@ namespace fcore{
         bool is_terminal() override {
             return false;
         }
+
+        static std::shared_ptr<hl_function_def_node> deep_copy(const std::shared_ptr<hl_function_def_node> &node);
     protected:
         c_types_t return_type;
         std::string name;

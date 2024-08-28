@@ -194,4 +194,20 @@ namespace fcore{
 
         return ret_val;
     }
+
+    std::shared_ptr<hl_expression_node> hl_expression_node::deep_copy(const std::shared_ptr<hl_expression_node> &orig) {
+        std::shared_ptr<hl_expression_node> copied_obj = std::make_shared<hl_expression_node>(orig->get_type());
+
+        std::shared_ptr<hl_ast_node> lhs = hl_ast_node::deep_copy(orig->get_lhs());
+        std::shared_ptr<hl_ast_node> rhs = hl_ast_node::deep_copy(orig->get_rhs());
+        std::shared_ptr<hl_ast_node> ths = hl_ast_node::deep_copy(orig->get_ths());
+
+        copied_obj->set_lhs(lhs);
+        copied_obj->set_rhs(rhs);
+        copied_obj->set_ths(ths);
+
+        copied_obj->set_assignment_type(orig->get_assignment_type());
+
+        return copied_obj;
+    }
 }

@@ -97,4 +97,30 @@ namespace fcore {
         return inner_variable->get_type() != var_type_array;
     }
 
+    std::shared_ptr<hl_definition_node> hl_definition_node::deep_copy(const std::shared_ptr<hl_definition_node> &orig) {
+        std::shared_ptr<variable> new_var = variable::deep_copy(orig->get_variable());
+        std::shared_ptr<hl_definition_node> copied_obj = std::make_shared<hl_definition_node>(orig->get_name(), orig->get_type(), new_var);
+        copied_obj->set_constant(orig->is_constant());
+        if(orig->is_initialized()){
+            std::vector<std::shared_ptr<hl_ast_node>> old_initializer = orig->get_array_initializer();
+            std::vector<std::shared_ptr<hl_ast_node>> new_initializer;
+            for(auto &item:old_initializer){
+                new_initializer.push_back(hl_ast_node::deep_copy(item));
+            }
+            copied_obj->set_array_initializer(new_initializer);
+        }
+
+
+        std::vector<std::shared_ptr<hl_ast_node>> index;
+        for(const auto& i:orig->get_array_index()){
+            index.push_back(hl_ast_node::deep_copy(i));
+        }
+        copied_obj->set_array_index(index);
+
+        std::vector<int> shape = orig->get_array_shape();
+        copied_obj->set_array_shape(shape);
+
+        return copied_obj;
+    }
+
 }

@@ -80,4 +80,28 @@ namespace fcore{
         return name;
     }
 
+    std::shared_ptr<hl_function_def_node>
+    hl_function_def_node::deep_copy(const std::shared_ptr<hl_function_def_node> &orig) {
+        std::shared_ptr<hl_function_def_node> copied_obj = std::make_shared<hl_function_def_node>();
+
+        copied_obj->set_return_type(orig->get_return_type());
+        copied_obj->set_name(orig->get_name());
+        std::shared_ptr<hl_ast_node> ret_expr = hl_ast_node::deep_copy(orig->get_return());
+        copied_obj->set_return(ret_expr);
+
+        std::vector<std::shared_ptr<hl_definition_node>> params;
+        for(const auto& i:orig->get_parameters_list()){
+            params.push_back(std::static_pointer_cast<hl_definition_node>(hl_ast_node::deep_copy(i)));
+        }
+        copied_obj->set_parameters_list(params);
+
+        std::vector<std::shared_ptr<hl_ast_node>> body;
+        for(const auto& i:orig->get_body()){
+            body.push_back(hl_ast_node::deep_copy(i));
+        }
+        copied_obj->set_body(body);
+
+        return copied_obj;
+    }
+
 }

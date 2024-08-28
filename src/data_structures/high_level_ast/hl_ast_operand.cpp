@@ -95,5 +95,18 @@ namespace fcore{
         return inner_variable;
     }
 
+    std::shared_ptr<hl_ast_operand> hl_ast_operand::deep_copy(const std::shared_ptr<hl_ast_operand> &orig) {
+        std::shared_ptr<variable> new_var = variable::deep_copy(orig->get_variable());
+        std::shared_ptr<hl_ast_operand> copied_obj = std::make_shared<hl_ast_operand>(new_var);
+
+        std::vector<std::shared_ptr<hl_ast_node>> new_array_idx;
+        for(auto &item:orig->get_array_index()){
+            new_array_idx.push_back(hl_ast_node::deep_copy(item));
+        }
+        copied_obj->set_array_index(new_array_idx);
+
+        return copied_obj;
+    }
+
 
 }

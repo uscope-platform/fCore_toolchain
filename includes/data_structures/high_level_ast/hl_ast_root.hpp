@@ -48,6 +48,7 @@ namespace fcore{
             return ret_val;
         };
 
+        static std::shared_ptr<hl_ast_root> deep_copy(const std::shared_ptr<hl_ast_root> &node);
     private:
         std::vector<std::shared_ptr<hl_ast_node>> content;
 

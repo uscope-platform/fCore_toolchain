@@ -16,6 +16,22 @@
 
 #include "data_structures/high_level_ast/hl_code_block.hpp"
 
-fcore::hl_code_block::hl_code_block() : hl_ast_node(hl_ast_node_type_code_block){
+namespace fcore{
 
+    hl_code_block::hl_code_block() : hl_ast_node(hl_ast_node_type_code_block){
+
+    }
+
+    std::shared_ptr<hl_code_block> hl_code_block::deep_copy(const std::shared_ptr<hl_code_block> &node) {
+        std::shared_ptr<hl_code_block> copied_obj = std::make_shared<hl_code_block>();
+
+        std::vector<std::shared_ptr<hl_ast_node>> args;
+        for(const auto &i :node->get_content()){
+            args.push_back(hl_ast_node::deep_copy(i));
+        }
+
+        copied_obj->set_content(args);
+        return copied_obj;
+    }
 }
+

@@ -96,190 +96,27 @@ namespace fcore{
         if(node == nullptr){
             return nullptr;
         } else if(node->node_type == hl_ast_node_type_expr){
-            return deep_copy_expr(node);
+            return hl_expression_node::deep_copy(std::static_pointer_cast<hl_expression_node>(node));
         } else if(node->node_type == hl_ast_node_type_definition){
-            return deep_copy_def(node);
+            return hl_definition_node::deep_copy(std::static_pointer_cast<hl_definition_node>(node));
         } else if(node->node_type == hl_ast_node_type_conditional){
-            return deep_copy_conditional(node);
+            return hl_ast_conditional_node::deep_copy(std::static_pointer_cast<hl_ast_conditional_node>(node));
         } else if(node->node_type == hl_ast_node_type_loop){
-            return deep_copy_loop(node);
+            return hl_ast_loop_node::deep_copy(std::static_pointer_cast<hl_ast_loop_node>(node));
         } else if(node->node_type == hl_ast_node_type_function_def){
-            return deep_copy_function_def(node);
+            return hl_function_def_node::deep_copy(std::static_pointer_cast<hl_function_def_node>(node));
         } else if(node->node_type == hl_ast_node_type_operand){
-            return deep_copy_operands(node);
+            return hl_ast_operand::deep_copy(std::static_pointer_cast<hl_ast_operand>(node));
         } else if(node->node_type == hl_ast_node_type_function_call){
-            return deep_copy_function_call(node);
+            return hl_function_call_node::deep_copy(std::static_pointer_cast<hl_function_call_node>(node));
         } else if(node->node_type == hl_ast_node_type_program_root) {
-            return deep_copy_program_root(node);
+            return hl_ast_root::deep_copy(std::static_pointer_cast<hl_ast_root>(node));
         } else if(node->node_type == hl_ast_node_type_code_block){
-            return deep_copy_code_block(node);
+            return hl_code_block::deep_copy(std::static_pointer_cast<hl_code_block>(node));
         } else {
             throw std::runtime_error("HL ast node with unknown type");
         }
 
-    }
-
-    std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_expr(const std::shared_ptr<hl_ast_node> &node) {
-        std::shared_ptr<hl_expression_node> orig = std::static_pointer_cast<hl_expression_node>(node);
-        std::shared_ptr<hl_expression_node> copied_obj = std::make_shared<hl_expression_node>(orig->get_type());
-
-        std::shared_ptr<hl_ast_node> lhs = deep_copy(orig->get_lhs());
-        std::shared_ptr<hl_ast_node> rhs = deep_copy(orig->get_rhs());
-        std::shared_ptr<hl_ast_node> ths = deep_copy(orig->get_ths());
-
-        copied_obj->set_lhs(lhs);
-        copied_obj->set_rhs(rhs);
-        copied_obj->set_ths(ths);
-
-        copied_obj->set_assignment_type(orig->get_assignment_type());
-
-        return copied_obj;
-    }
-
-    std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_def(const std::shared_ptr<hl_ast_node> &node) {
-        std::shared_ptr<hl_definition_node> orig = std::static_pointer_cast<hl_definition_node>(node);
-        std::shared_ptr<variable> new_var = variable::deep_copy(orig->get_variable());
-        std::shared_ptr<hl_definition_node> copied_obj = std::make_shared<hl_definition_node>(orig->get_name(), orig->get_type(), new_var);
-        copied_obj->set_constant(orig->is_constant());
-        if(orig->is_initialized()){
-            std::vector<std::shared_ptr<hl_ast_node>> old_initializer = orig->get_array_initializer();
-            std::vector<std::shared_ptr<hl_ast_node>> new_initializer;
-            for(auto &item:old_initializer){
-                new_initializer.push_back(deep_copy(item));
-            }
-            copied_obj->set_array_initializer(new_initializer);
-        }
-
-
-        std::vector<std::shared_ptr<hl_ast_node>> index;
-        for(const auto& i:orig->get_array_index()){
-            index.push_back(deep_copy(i));
-        }
-        copied_obj->set_array_index(index);
-
-        std::vector<int> shape = orig->get_array_shape();
-        copied_obj->set_array_shape(shape);
-
-        return copied_obj;
-    }
-
-    std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_conditional(const std::shared_ptr<hl_ast_node> &node) {
-        std::shared_ptr<hl_ast_conditional_node> orig = std::static_pointer_cast<hl_ast_conditional_node>(node);
-        std::shared_ptr<hl_ast_conditional_node> copied_obj = std::make_shared<hl_ast_conditional_node>();
-
-
-        std::shared_ptr<hl_ast_node> cond = deep_copy(orig->get_condition());
-        copied_obj->set_condition(cond);
-
-
-        std::vector<std::shared_ptr<hl_ast_node>> block;
-        for(const auto& i:orig->get_if_block()){
-            block.push_back(deep_copy(i));
-        }
-        copied_obj->set_if_block(block);
-
-        block.clear();
-        for(const auto& i:orig->get_else_block()){
-            block.push_back(deep_copy(i));
-        }
-        copied_obj->set_else_block(block);
-
-        copied_obj->set_ternary(orig->is_ternary());
-
-        return copied_obj;
-    }
-
-    std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_loop(const std::shared_ptr<hl_ast_node> &node) {
-        std::shared_ptr<hl_ast_loop_node> orig = std::static_pointer_cast<hl_ast_loop_node>(node);
-        std::shared_ptr<hl_ast_loop_node> copied_obj = std::make_shared<hl_ast_loop_node>();
-
-        copied_obj->set_condition(std::static_pointer_cast<hl_expression_node>(deep_copy(orig->get_condition())));
-        copied_obj->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(deep_copy(orig->get_iteration_expr())));
-        copied_obj->set_init_statement(std::static_pointer_cast<hl_definition_node>(deep_copy(orig->get_init_statement())));
-
-        std::vector<std::shared_ptr<hl_ast_node>> block;
-        for(const auto& i:orig->get_loop_content()){
-            block.push_back(deep_copy(i));
-        }
-        copied_obj->set_loop_content(block);
-
-        return copied_obj;
-    }
-
-    std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_function_def(const std::shared_ptr<hl_ast_node> &node) {
-        std::shared_ptr<hl_function_def_node> orig = std::static_pointer_cast<hl_function_def_node>(node);
-        std::shared_ptr<hl_function_def_node> copied_obj = std::make_shared<hl_function_def_node>();
-
-        copied_obj->set_return_type(orig->get_return_type());
-        copied_obj->set_name(orig->get_name());
-        std::shared_ptr<hl_ast_node> ret_expr = deep_copy(orig->get_return());
-        copied_obj->set_return(ret_expr);
-
-        std::vector<std::shared_ptr<hl_definition_node>> params;
-        for(const auto& i:orig->get_parameters_list()){
-            params.push_back(std::static_pointer_cast<hl_definition_node>(deep_copy_def(i)));
-        }
-        copied_obj->set_parameters_list(params);
-
-        std::vector<std::shared_ptr<hl_ast_node>> body;
-        for(const auto& i:orig->get_body()){
-            body.push_back(deep_copy(i));
-        }
-        copied_obj->set_body(body);
-
-        return copied_obj;
-    }
-
-    std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_operands(const std::shared_ptr<hl_ast_node> &node) {
-        std::shared_ptr<hl_ast_operand> orig = std::static_pointer_cast<hl_ast_operand>(node);
-
-        std::shared_ptr<variable> new_var = variable::deep_copy(orig->get_variable());
-        std::shared_ptr<hl_ast_operand> copied_obj = std::make_shared<hl_ast_operand>(new_var);
-
-        std::vector<std::shared_ptr<hl_ast_node>> new_array_idx;
-        for(auto &item:orig->get_array_index()){
-            new_array_idx.push_back(deep_copy(item));
-        }
-        copied_obj->set_array_index(new_array_idx);
-
-        return copied_obj;
-    }
-
-    std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_function_call(const std::shared_ptr<hl_ast_node> &node) {
-        std::shared_ptr<hl_function_call_node> orig = std::static_pointer_cast<hl_function_call_node>(node);
-        std::vector<std::shared_ptr<hl_ast_node>> args;
-        for(const auto &i :orig->get_arguments()){
-            args.push_back(deep_copy(i));
-        }
-
-        std::shared_ptr<hl_function_call_node> copied_obj = std::make_shared<hl_function_call_node>(orig->get_name(), args);
-
-        return copied_obj;
-    }
-
-
-    std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_program_root(const std::shared_ptr<hl_ast_node> &node) {
-        std::shared_ptr<hl_ast_node> copied_obj = std::make_shared<hl_ast_root>();
-
-        std::vector<std::shared_ptr<hl_ast_node>> args;
-        for(const auto &i :node->get_content()){
-            args.push_back(deep_copy(i));
-        }
-
-        copied_obj->set_content(args);
-        return copied_obj;
-    }
-
-    std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_code_block(const std::shared_ptr<hl_ast_node> &node) {
-        std::shared_ptr<hl_code_block> copied_obj = std::make_shared<hl_code_block>();
-
-        std::vector<std::shared_ptr<hl_ast_node>> args;
-        for(const auto &i :node->get_content()){
-            args.push_back(deep_copy(i));
-        }
-
-        copied_obj->set_content(args);
-        return copied_obj;
     }
 
 

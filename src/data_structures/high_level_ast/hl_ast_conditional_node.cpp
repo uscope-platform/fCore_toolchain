@@ -64,4 +64,30 @@ namespace fcore{
         return condition;
     }
 
+    std::shared_ptr<hl_ast_conditional_node>
+    hl_ast_conditional_node::deep_copy(const std::shared_ptr<hl_ast_conditional_node> &orig) {
+        std::shared_ptr<hl_ast_conditional_node> copied_obj = std::make_shared<hl_ast_conditional_node>();
+
+
+        std::shared_ptr<hl_ast_node> cond = hl_ast_node::deep_copy(orig->get_condition());
+        copied_obj->set_condition(cond);
+
+
+        std::vector<std::shared_ptr<hl_ast_node>> block;
+        for(const auto& i:orig->get_if_block()){
+            block.push_back(hl_ast_node::deep_copy(i));
+        }
+        copied_obj->set_if_block(block);
+
+        block.clear();
+        for(const auto& i:orig->get_else_block()){
+            block.push_back(hl_ast_node::deep_copy(i));
+        }
+        copied_obj->set_else_block(block);
+
+        copied_obj->set_ternary(orig->is_ternary());
+
+        return copied_obj;
+    }
+
 }
