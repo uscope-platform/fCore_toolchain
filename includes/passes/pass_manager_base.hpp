@@ -44,12 +44,11 @@ namespace fcore{
         void run_morphing_passes(std::shared_ptr<E> AST);
 
         virtual void run_single_pass(std::shared_ptr<E> &, const std::shared_ptr<pass_base<E>>& ) {};
-        virtual std::vector<nlohmann::json> run_repeating_pass_group(std::shared_ptr<E> &, const std::vector<std::shared_ptr<pass_base<E>>>&) {return nlohmann::json();};
-        virtual std::vector<nlohmann::json> run_unique_pass_group(std::shared_ptr<E> &, const std::vector<std::shared_ptr<pass_base<E>>>&) {return nlohmann::json();};
+        virtual void run_repeating_pass_group(std::shared_ptr<E> &, const std::vector<std::shared_ptr<pass_base<E>>>&) {};
+        virtual void run_unique_pass_group(std::shared_ptr<E> &, const std::vector<std::shared_ptr<pass_base<E>>>&) {};
 
         void disable_all();
         void enable_pass(const std::string& name);
-        nlohmann::json get_dump();
 
         void set_profiler(std::shared_ptr<instrumentation_core> &p){
             this->ic = p;
@@ -72,10 +71,6 @@ namespace fcore{
 
         std::vector<opt_pass> passes;
 
-        // DUMP DATA STRUCTURES
-        nlohmann::json pre_opt_dump;
-        std::vector<nlohmann::json> in_opt_dump;
-        nlohmann::json post_opt_dump;
     };
 
 
@@ -122,13 +117,11 @@ namespace fcore{
                 }
             } else if(p.type == repeating_pass_group) {
                 if (p.enabled) {
-                    std::vector<nlohmann::json> result = run_repeating_pass_group(AST, p.pass);
-                    in_opt_dump.insert(in_opt_dump.end(), result.begin(), result.end());
+                    run_repeating_pass_group(AST, p.pass);
                 }
             } else if(p.type == unique_pass_group) {
                 if(p.enabled){
-                    std::vector<nlohmann::json> result = run_unique_pass_group(AST, p.pass);
-                    in_opt_dump.insert(in_opt_dump.end(), result.begin(), result.end());
+                    run_unique_pass_group(AST, p.pass);
                 }
             } else {
                 throw std::runtime_error("ERROR: unexpected pass type");
@@ -157,16 +150,6 @@ namespace fcore{
         passes.push_back(p);
     }
 
-    template<class E>
-    nlohmann::json pass_manager_base<E>::get_dump() {
-        nlohmann::json retval;
-
-        retval["pre-opt"] = pre_opt_dump;
-        retval["in-opt"] = in_opt_dump;
-        retval["post-opt"] = post_opt_dump;
-
-        return retval;
-    }
 }
 
 

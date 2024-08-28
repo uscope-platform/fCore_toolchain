@@ -22,10 +22,9 @@ namespace fcore{
 
 
 
-    std::vector<nlohmann::json> hl_pass_manager::run_repeating_pass_group(std::shared_ptr<hl_ast_node> &subtree,
+    void hl_pass_manager::run_repeating_pass_group(std::shared_ptr<hl_ast_node> &subtree,
                                                                                  const std::vector<std::shared_ptr<pass_base<hl_ast_node>>> &group) {
 
-        std::vector<nlohmann::json> ret_val;
 
         int run_number = 1;
 
@@ -42,13 +41,11 @@ namespace fcore{
             ++run_number;
         } while (!(*old_tree == *subtree));
 
-        return ret_val;
     }
 
-    std::vector<nlohmann::json> hl_pass_manager::run_unique_pass_group(std::shared_ptr<hl_ast_node> &subtree,
+    void hl_pass_manager::run_unique_pass_group(std::shared_ptr<hl_ast_node> &subtree,
                                                                               const std::vector<std::shared_ptr<pass_base<hl_ast_node>>> &group) {
 
-        std::vector<nlohmann::json> ret_val;
 
         for(auto &pass:group){
 
@@ -56,7 +53,6 @@ namespace fcore{
             run_single_pass(subtree, pass);
             if(ic != nullptr) ic->end_event(pass->get_name());
         }
-        return ret_val;
     }
 
 
