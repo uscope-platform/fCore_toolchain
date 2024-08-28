@@ -27,6 +27,11 @@ namespace fcore{
     class hl_pass_manager : public pass_manager_base<hl_ast_node> {
     public:
 
+        void add_morphing_pass(const std::string& name, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
+        void add_morphing_pass_group(const std::string& name, const std::vector<std::shared_ptr<pass_base<hl_ast_node>>>& group);
+        void run_morphing_passes(std::shared_ptr<hl_ast_node> AST);
+
+
         void run_single_pass( std::shared_ptr<hl_ast_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass) override;
         void run_repeating_pass_group(std::shared_ptr<hl_ast_node> &subtree, const std::vector<std::shared_ptr<pass_base<hl_ast_node>>>& group) override;
         void run_unique_pass_group(std::shared_ptr<hl_ast_node> &subtree, const std::vector<std::shared_ptr<pass_base<hl_ast_node>>>& group) override;

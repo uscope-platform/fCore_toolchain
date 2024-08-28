@@ -39,9 +39,6 @@ namespace fcore{
     class pass_manager_base {
     public:
         // API FOR MORPHING PASSES
-        void add_morphing_pass(const std::string& name, const std::shared_ptr<pass_base<E>>& pass);
-        void add_morphing_pass_group(const std::string& name, const std::vector<std::shared_ptr<pass_base<E>>>& group);
-        void run_morphing_passes(std::shared_ptr<E> AST);
 
         virtual void run_single_pass(std::shared_ptr<E> &, const std::shared_ptr<pass_base<E>>& ) {};
         virtual void run_repeating_pass_group(std::shared_ptr<E> &, const std::vector<std::shared_ptr<pass_base<E>>>&) {};
@@ -94,44 +91,6 @@ namespace fcore{
 
 
     template<class E>
-    void pass_manager_base<E>::add_morphing_pass(const std::string& name, const std::shared_ptr<pass_base<E>>& pass) {
-        opt_pass p;
-        p.pass = {pass};
-        p.type = single_pass;
-        p.name = name;
-        p.enabled = true;
-        passes.push_back(p);
-    }
-
-
-    template<class E>
-    void pass_manager_base<E>::run_morphing_passes(std::shared_ptr<E> AST) {
-        for(auto& p:passes){
-            if(p.type == single_pass){
-                if(p.enabled){
-                    std::shared_ptr<pass_base<E>> pass = p.pass[0];
-
-                    if (ic != nullptr) ic->start_event(pass->get_name(), false);
-                    run_single_pass(AST, pass);
-                    if (ic != nullptr) ic->end_event(pass->get_name());
-                }
-            } else if(p.type == repeating_pass_group) {
-                if (p.enabled) {
-                    run_repeating_pass_group(AST, p.pass);
-                }
-            } else if(p.type == unique_pass_group) {
-                if(p.enabled){
-                    run_unique_pass_group(AST, p.pass);
-                }
-            } else {
-                throw std::runtime_error("ERROR: unexpected pass type");
-            }
-
-
-        }
-    }
-
-    template<class E>
     void
     pass_manager_base<E>::analyze_tree(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>> &pass) {
         for(auto &i : subtree->get_content()){
@@ -140,15 +99,6 @@ namespace fcore{
         pass->analyze_element(subtree);
     }
 
-    template<class E>
-    void pass_manager_base<E>::add_morphing_pass_group(const std::string& name, const std::vector<std::shared_ptr<pass_base<E>>> &group) {
-        opt_pass p;
-        p.pass = group;
-        p.type = repeating_pass_group;
-        p.name = name;
-        p.enabled = true;
-        passes.push_back(p);
-    }
 
 }
 

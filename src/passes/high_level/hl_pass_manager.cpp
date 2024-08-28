@@ -258,5 +258,49 @@ namespace fcore{
         };
         return res;
     }
-    
+
+    void hl_pass_manager::add_morphing_pass(const std::string& name, const std::shared_ptr<pass_base<hl_ast_node>>& pass){
+        opt_pass p;
+        p.pass = {pass};
+        p.type = single_pass;
+        p.name = name;
+        p.enabled = true;
+        passes.push_back(p);
+    }
+
+    void hl_pass_manager::add_morphing_pass_group(const std::string& name, const std::vector<std::shared_ptr<pass_base<hl_ast_node>>>& group){
+        opt_pass p;
+        p.pass = group;
+        p.type = repeating_pass_group;
+        p.name = name;
+        p.enabled = true;
+        passes.push_back(p);
+    }
+
+    void hl_pass_manager::run_morphing_passes(std::shared_ptr<hl_ast_node> AST) {
+        for(auto& p:passes){
+            if(p.type == single_pass){
+                if(p.enabled){
+                    std::shared_ptr<pass_base<hl_ast_node>> pass = p.pass[0];
+
+                    if (ic != nullptr) ic->start_event(pass->get_name(), false);
+                    run_single_pass(AST, pass);
+                    if (ic != nullptr) ic->end_event(pass->get_name());
+                }
+            } else if(p.type == repeating_pass_group) {
+                if (p.enabled) {
+                    run_repeating_pass_group(AST, p.pass);
+                }
+            } else if(p.type == unique_pass_group) {
+                if(p.enabled){
+                    run_unique_pass_group(AST, p.pass);
+                }
+            } else {
+                throw std::runtime_error("ERROR: unexpected pass type");
+            }
+
+
+        }
+    }
+
 }
