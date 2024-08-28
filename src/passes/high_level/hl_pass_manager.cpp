@@ -303,4 +303,20 @@ namespace fcore{
         }
     }
 
+    void hl_pass_manager::enable_pass(const std::string &name) {
+        for(auto& p:passes) {
+            if(p.name == name) {
+                p.enabled = true;
+                return;
+            }
+        }
+        throw std::runtime_error("Required pass not found");
+    }
+
+    void hl_pass_manager::disable_all() {
+        for(auto& p:passes) {
+            p.enabled = false;
+        }
+    }
+
 }

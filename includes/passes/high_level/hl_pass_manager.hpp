@@ -16,15 +16,30 @@
 #ifndef FCORE_TOOLCHAIN_HL_PASS_MANAGER_HPP
 #define FCORE_TOOLCHAIN_HL_PASS_MANAGER_HPP
 
-#include <gtest/gtest_prod.h>
 
 #include "data_structures/high_level_ast/high_level_ast.hpp"
+#include "instrumentation/instrumentation_core.hpp"
 
-#include "passes/pass_manager_base.hpp"
 #include "passes/pass_base.hpp"
 
 namespace fcore{
-    class hl_pass_manager : public pass_manager_base<hl_ast_node> {
+
+    enum pass_type {
+        single_pass=0,
+        repeating_pass_group = 1,
+        unique_pass_group = 2
+    };
+
+
+    struct opt_pass {
+        std::vector<std::shared_ptr<pass_base<hl_ast_node>>> pass;
+        pass_type type = single_pass;
+        std::string name;
+        bool enabled = true;
+    };
+
+
+    class hl_pass_manager {
     public:
 
         void add_morphing_pass(const std::string& name, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
@@ -32,16 +47,22 @@ namespace fcore{
         void run_morphing_passes(std::shared_ptr<hl_ast_node> AST);
 
 
-        void run_single_pass( std::shared_ptr<hl_ast_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass) override;
-        void run_repeating_pass_group(std::shared_ptr<hl_ast_node> &subtree, const std::vector<std::shared_ptr<pass_base<hl_ast_node>>>& group) override;
-        void run_unique_pass_group(std::shared_ptr<hl_ast_node> &subtree, const std::vector<std::shared_ptr<pass_base<hl_ast_node>>>& group) override;
+        void run_single_pass( std::shared_ptr<hl_ast_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
+        void run_repeating_pass_group(std::shared_ptr<hl_ast_node> &subtree, const std::vector<std::shared_ptr<pass_base<hl_ast_node>>>& group);
+        void run_unique_pass_group(std::shared_ptr<hl_ast_node> &subtree, const std::vector<std::shared_ptr<pass_base<hl_ast_node>>>& group);
 
         std::shared_ptr<hl_ast_node> run_global_pass(const std::shared_ptr<hl_ast_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
 
         std::shared_ptr<hl_ast_node> process_leaves(const std::shared_ptr<hl_ast_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
 
+        void disable_all();
+        void enable_pass(const std::string& name);
+
+        void set_profiler(std::shared_ptr<instrumentation_core> &p){
+            this->ic = p;
+        };
+
     private:
-        FRIEND_TEST(HlPassesTest, functionMapping);
         std::shared_ptr<hl_ast_node> process_terminal_by_type(const std::shared_ptr<hl_ast_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
         std::shared_ptr<hl_ast_node> process_expression(const std::shared_ptr<hl_expression_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
         static std::shared_ptr<hl_ast_operand> process_operand(const std::shared_ptr<hl_ast_operand> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
@@ -49,6 +70,10 @@ namespace fcore{
         std::shared_ptr<hl_definition_node> process_definition(const std::shared_ptr<hl_definition_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
         std::shared_ptr<hl_ast_loop_node> process_loop(const std::shared_ptr<hl_ast_loop_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
         std::shared_ptr<hl_ast_conditional_node> process_conditional(const std::shared_ptr<hl_ast_conditional_node> &subtree, const std::shared_ptr<pass_base<hl_ast_node>>& pass);
+
+
+        std::shared_ptr<instrumentation_core> ic;
+        std::vector<opt_pass> passes;
     };
 }
 

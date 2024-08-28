@@ -16,7 +16,6 @@
 #ifndef FCORE_TOOLCHAINLCHAIN_HL_PASSES_HPP
 #define FCORE_TOOLCHAINLCHAIN_HL_PASSES_HPP
 
-#include "pass_manager_base.hpp"
 #include "passes/high_level/hl_pass_manager.hpp"
 //HL PASSES
 #include "passes/high_level/function_inlining_pass.hpp"
