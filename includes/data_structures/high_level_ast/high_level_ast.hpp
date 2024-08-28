@@ -25,5 +25,6 @@
 #include "data_structures/high_level_ast/hl_expression_node.hpp"
 #include "data_structures/high_level_ast/hl_function_call_node.hpp"
 #include "data_structures/high_level_ast/hl_function_def_node.hpp"
+#include "data_structures/high_level_ast/hl_code_block.hpp"
 
 #endif //FCORE_TOOLCHAIN_HIGH_LEVEL_AST_HPP

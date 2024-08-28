@@ -224,7 +224,7 @@ namespace fcore{
 
         }
 
-        std::shared_ptr<hl_ast_node> inlined_code = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
+        std::shared_ptr<hl_code_block> inlined_code = std::make_shared<hl_code_block>();
 
         // SUBSTITUTE THE ARGUMENTS OF THE CALL WITHIN THE FUNCTION BODY
         std::vector<std::shared_ptr<hl_ast_node>> body;
@@ -369,7 +369,7 @@ namespace fcore{
     function_inlining_pass::substitute_code_block(const std::shared_ptr<hl_ast_node> &statement,
                                                          std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
 
-        std::shared_ptr<hl_ast_node> ret_code_block = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
+        std::shared_ptr<hl_code_block> ret_code_block = std::make_shared<hl_code_block>();
 
         std::vector<std::shared_ptr<hl_ast_node>> new_content;
 

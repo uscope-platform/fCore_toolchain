@@ -22,7 +22,9 @@
 #include "data_structures/high_level_ast/hl_function_call_node.hpp"
 #include "data_structures/high_level_ast/hl_function_def_node.hpp"
 #include "data_structures/high_level_ast/hl_ast_conditional_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_root.hpp"
 #include "data_structures/high_level_ast/hl_ast_loop_node.h"
+#include "data_structures/high_level_ast/hl_code_block.hpp"
 
 namespace fcore{
 
@@ -54,8 +56,9 @@ namespace fcore{
 
         switch (lhs->node_type) {
             case hl_ast_node_type_program_root:
+                return *std::static_pointer_cast<hl_ast_root>(lhs) == *std::static_pointer_cast<hl_ast_root>(rhs);
             case hl_ast_node_type_code_block:
-                return *lhs == *rhs;
+                return *std::static_pointer_cast<hl_code_block>(lhs) == *std::static_pointer_cast<hl_code_block>(rhs);
             case hl_ast_node_type_loop:
                 return *std::static_pointer_cast<hl_ast_loop_node>(lhs) == *std::static_pointer_cast<hl_ast_loop_node>(rhs);
             case hl_ast_node_type_conditional:
@@ -256,7 +259,7 @@ namespace fcore{
 
 
     std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_program_root(const std::shared_ptr<hl_ast_node> &node) {
-        std::shared_ptr<hl_ast_node> copied_obj = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+        std::shared_ptr<hl_ast_node> copied_obj = std::make_shared<hl_ast_root>();
 
         std::vector<std::shared_ptr<hl_ast_node>> args;
         for(const auto &i :node->get_content()){
@@ -268,7 +271,7 @@ namespace fcore{
     }
 
     std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy_code_block(const std::shared_ptr<hl_ast_node> &node) {
-        std::shared_ptr<hl_ast_node> copied_obj = std::make_shared<hl_ast_node>(hl_ast_node_type_code_block);
+        std::shared_ptr<hl_code_block> copied_obj = std::make_shared<hl_code_block>();
 
         std::vector<std::shared_ptr<hl_ast_node>> args;
         for(const auto &i :node->get_content()){

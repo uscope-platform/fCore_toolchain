@@ -14,21 +14,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FCORE_TOOLCHAIN_HL_AST_ROOT_HPP
-#define FCORE_TOOLCHAIN_HL_AST_ROOT_HPP
+#ifndef FCORE_TOOLCHAIN_HL_CODE_BLOCK_HPP
+#define FCORE_TOOLCHAIN_HL_CODE_BLOCK_HPP
+
 
 #include "hl_ast_node.hpp"
-#include <cstdint>
-#include <memory>
-#include <vector>
 
 namespace fcore{
-
-    class hl_ast_root : public hl_ast_node{
+    class hl_code_block : public hl_ast_node {
     public:
-        hl_ast_root();
+        hl_code_block();
 
-        friend bool operator==(const hl_ast_root& lhs, const hl_ast_root& rhs){
+        friend bool operator==(const hl_code_block& lhs, const hl_code_block& rhs){
             bool ret_val = true;
 
             if(lhs.content.empty() && rhs.content.empty()){
@@ -54,5 +51,4 @@ namespace fcore{
     };
 }
 
-
-#endif //FCORE_TOOLCHAIN_HL_AST_ROOT_HPP
+#endif //FCORE_TOOLCHAIN_HL_CODE_BLOCK_HPP

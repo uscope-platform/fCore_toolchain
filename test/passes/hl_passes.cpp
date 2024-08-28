@@ -34,7 +34,7 @@ using namespace fcore;
 TEST(HlPassesTest, divisionImplementation) {
 
 
-    std::shared_ptr<hl_ast_node> input_root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> input_root = std::make_shared<hl_ast_root>();
 
     std::shared_ptr<variable> var = std::make_shared<variable>("a");
 
@@ -78,7 +78,7 @@ TEST(HlPassesTest, divisionImplementation) {
     mult_def->set_scalar_initializer(mult_exp);
 
 
-    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
     gold_standard->add_content(mult_def);
 
     EXPECT_EQ( *gold_standard, *result);
@@ -91,7 +91,7 @@ TEST(HlPassesTest, divisionImplementation) {
 TEST(HlPassesTest, intrinsics_implementation) {
 
 
-    std::shared_ptr<hl_ast_node> input_root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> input_root = std::make_shared<hl_ast_root>();
     std::vector<std::shared_ptr<hl_ast_node>> function_body;
     std::shared_ptr<hl_function_def_node> main_fcn = std::make_shared<hl_function_def_node>();
     main_fcn->set_name("main");
@@ -162,7 +162,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
     def_4->set_scalar_initializer(ex_1);
 
     std::vector<std::shared_ptr<hl_ast_node>> arguments = {};
-    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 
     main_fcn->set_body({def_3, def_4});
     gold_standard->add_content(main_fcn);
@@ -177,7 +177,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
 TEST(HlPassesTest, test_operating_assignments_implementation) {
 
-    std::shared_ptr<hl_ast_node> input_root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> input_root = std::make_shared<hl_ast_root>();
     std::vector<std::shared_ptr<hl_ast_node>> function_body;
     std::shared_ptr<hl_function_def_node> main_fcn = std::make_shared<hl_function_def_node>();
     main_fcn->set_name("main");
@@ -209,7 +209,7 @@ TEST(HlPassesTest, test_operating_assignments_implementation) {
 
     const std::shared_ptr<hl_ast_node>& result = input_root;
 
-    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 
     var = std::make_shared<variable>("c");
     std::shared_ptr<hl_expression_node> exadd = std::make_shared<hl_expression_node>(expr_add);
@@ -240,7 +240,7 @@ TEST(HlPassesTest, test_operating_assignments_implementation) {
 
 TEST(HlPassesTest, function_inlining) {
 
-    std::shared_ptr<hl_ast_node> input_root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> input_root = std::make_shared<hl_ast_root>();
     std::vector<std::shared_ptr<hl_ast_node>> function_body;
 
     std::shared_ptr<hl_function_def_node> function = std::make_shared<hl_function_def_node>();
@@ -337,7 +337,7 @@ TEST(HlPassesTest, function_inlining) {
 
     const std::shared_ptr<hl_ast_node>& res = input_root;
 
-    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 
     // CALL BODY
     var = std::make_shared<variable>("_fcmglr_function_add_1_c");
@@ -453,7 +453,7 @@ TEST(HlPassesTest, simple_normalization) {
     def_2->set_scalar_initializer(ex_1);
 
     std::vector<std::shared_ptr<hl_ast_node>> arguments = {};
-    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
     gold_standard->set_content({def_1, def_2});
 
     EXPECT_EQ( *gold_standard, *raw_result);
@@ -550,7 +550,7 @@ TEST(HlPassesTest, loop_unrolling_array) {
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
 
-    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 
     for(int i = 5; i<7; ++i){
         //assignment
@@ -621,7 +621,7 @@ TEST(HlPassesTest, test_matrix_scalarization) {
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
 
-    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 
     //A VECTOR DEFINITION
     std::shared_ptr<variable> var = std::make_shared<variable>("a");
@@ -795,7 +795,7 @@ TEST(HlPassesTest, function_return_inlining) {
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
 
-    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 
     std::shared_ptr<variable> var = std::make_shared<variable>("inlined_variable_0");
     std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("inlined_variable_0", c_type_float, var);
@@ -856,7 +856,7 @@ TEST(HlPassesTest, complex_normalization) {
     expr_2->set_lhs(integ_op);
 
 
-    std::shared_ptr<hl_ast_node> input_root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> input_root = std::make_shared<hl_ast_root>();
 
 
     input_root->add_content(expr_2);
@@ -894,8 +894,8 @@ TEST(HlPassesTest, complex_normalization) {
     std::shared_ptr<hl_expression_node> expr_as = std::make_shared<hl_expression_node>(expr_assign);
     expr_as->set_rhs(expr);
     expr_as->set_lhs(integ_op);
-
-    std::shared_ptr<hl_ast_node> gold_standard= std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    
+    std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
     gold_standard->add_content(ie0_def);
     gold_standard->add_content(ie1_def);
     gold_standard->add_content(expr_as);
@@ -906,7 +906,7 @@ TEST(HlPassesTest, complex_normalization) {
 
 TEST(HlPassesTest, dead_load_elimination) {
 
-    std::shared_ptr<hl_ast_node> input_root = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> input_root = std::make_shared<hl_ast_root>();
 
     std::shared_ptr<variable> ts_var = std::make_shared<variable>("Ts", 15.7f);
     std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("Ts", c_type_float, ts_var);
@@ -929,7 +929,7 @@ TEST(HlPassesTest, dead_load_elimination) {
     manager.run_morphing_passes(input_root);
 
 
-    std::shared_ptr<hl_ast_node> gold_standard= std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
     gold_standard->add_content(exp);
     ASSERT_EQ(*gold_standard, *input_root);
 }
@@ -976,7 +976,7 @@ TEST(HlPassesTest, nested_function_inlining) {
 
     std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
 
-    std::shared_ptr<hl_ast_node> gold_standard = std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 
     ///////////////////////////////////////////////////////////////////////////
     ///                                  ADD                                ///
@@ -1079,7 +1079,7 @@ TEST(HlPassesTest, complex_division_implementation) {
 
     auto result = parser.AST;
 
-    std::shared_ptr<hl_ast_node> gold_standard= std::make_shared<hl_ast_node>(hl_ast_node_type_program_root);
+    std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 
     std::shared_ptr<hl_function_def_node> main = std::make_shared<hl_function_def_node>();
     main->set_name("main");
