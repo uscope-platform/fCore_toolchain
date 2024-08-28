@@ -24,12 +24,13 @@ namespace fcore{
     class operating_assignment_implementation_pass : public pass_base<hl_ast_node> {
     public:
         operating_assignment_implementation_pass();
-        std::shared_ptr<hl_ast_node> process_leaf(std::shared_ptr<hl_ast_node> element) override;
-        int get_pass_type() override { return LEAF_PASS;};
+        std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
+        std::shared_ptr<hl_ast_node> process_node_by_type(std::shared_ptr<hl_ast_node> element);
+        std::shared_ptr<hl_ast_node> process_terminal(std::shared_ptr<hl_ast_node> element);
+        int get_pass_type() override { return GLOBAL_PASS;};
     private:
         static std::shared_ptr<hl_expression_node> create_top_expression(assignment_type_t a);
     };
 }
-
 
 #endif //FCORE_TOOLCHAIN_OPERATING_ASSIGNMENT_IMPLEMENTATION_PASS_H

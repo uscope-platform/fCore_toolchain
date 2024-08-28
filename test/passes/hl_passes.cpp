@@ -236,6 +236,10 @@ TEST(HlPassesTest, test_operating_assignments_implementation) {
     gold_standard->add_content(main_fcn);
 
     ASSERT_EQ(*result, *gold_standard);
+    if(Test::HasFailure()){
+        std::cout << "TEST RESULT: " << result->pretty_print()<< std::endl;
+        std::cout << "GOLD STANDARD: " << gold_standard->pretty_print()<< std::endl;
+    }
 }
 
 TEST(HlPassesTest, function_inlining) {
