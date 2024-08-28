@@ -21,7 +21,6 @@
 //HL PASSES
 #include "passes/high_level/function_inlining_pass.hpp"
 #include "passes/high_level/division_implementation_pass.hpp"
-#include "passes/high_level/function_mapping.hpp"
 #include "passes/high_level/inlined_function_elimination.hpp"
 #include "passes/high_level/normalization_pass.hpp"
 #include "passes/high_level/hl_variable_mapping.hpp"

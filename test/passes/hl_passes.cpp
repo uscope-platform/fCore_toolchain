@@ -21,7 +21,6 @@
 #include "data_structures/common/variable.hpp"
 #include "frontend/C/C_language_parser.hpp"
 #include "passes/hl_passes.hpp"
-#include "passes/high_level/function_mapping.hpp"
 #include "passes/high_level/hl_pass_manager.hpp"
 #include "passes/high_level/normalization_pass.hpp"
 #include "tools/high_level_ast_lowering.hpp"
