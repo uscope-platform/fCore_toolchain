@@ -44,11 +44,7 @@ int main(int argc, char **argv) {
     bool output_force = spec["force"];
 
     std::string output_file = spec["output"]["file"];
-    int dump_ast_level = 0;
 
-    if(spec.contains("dump_ast")){
-        dump_ast_level = spec["dump_ast"];
-    }
 
     input_file = spec["input_file"];
 
@@ -64,7 +60,7 @@ int main(int argc, char **argv) {
         include_files = spec["headers"];
     }
 
-    fcore::fcore_cc cc_engine(input_file, include_files, false, dump_ast_level);
+    fcore::fcore_cc cc_engine(input_file, include_files, false);
 
     if(spec.contains("dma_io")){
         auto map = fcore::fcore_cc::load_iom_map(spec["dma_io"]);
@@ -87,13 +83,6 @@ int main(int argc, char **argv) {
 
     if(output_json){
         cc_engine.write_json(output_file);
-    }
-
-    if(dump_ast_level>0){
-        std::string str = cc_engine.get_dump().dump();
-        std::ofstream ss(output_file+"_dump.json");
-        ss<<str;
-        ss.close();
     }
 
     return 0;

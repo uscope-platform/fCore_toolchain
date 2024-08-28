@@ -27,16 +27,14 @@ namespace fcore{
         includes = inc;
         include_is_paths = false;
         logging = false;
-        dump_ast_level = 0;
     }
 
-    fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl) :
+    fcore_cc::fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug) :
             input_file_stream(path){
         type = "file";
         include_is_paths = true;
         includes = inc;
         logging = print_debug;
-        dump_ast_level = dump_lvl;
     }
 
     bool fcore_cc::compile() {
@@ -125,7 +123,6 @@ namespace fcore{
         hl_manager.set_profiler(profiling_core);
         if (profiling_core != nullptr) profiling_core->set_phase("AST processing");
         hl_manager.run_morphing_passes(hl_ast);
-        if(dump_ast_level>0) dump["high_level"] = hl_manager.get_dump();
 
         high_level_ast_lowering translator;
         translator.set_input_ast(hl_ast);
@@ -135,12 +132,11 @@ namespace fcore{
         allocation_map = std::make_shared<io_map>();
 
         auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
-        stream_pass_manager sman(dump_ast_level, bindings_map, allocation_map, profiling_core);
+        stream_pass_manager sman( bindings_map, allocation_map, profiling_core);
         program_stream = sman.process_stream(program_stream);
 
         analyze_program_length(sman.get_instruction_count());
 
-        if(dump_ast_level>0) dump["stream"] = sman.get_dump();
 
         if(program_stream.empty()){
             program_stream.push_back(instruction_variant(independent_instruction("stop")));

@@ -40,7 +40,7 @@ TEST(virtual_instructions, virtual_instruction_implementation) {
     std::shared_ptr<io_map> allocation_map;
 
     auto ic =  std::make_shared<instrumentation_core>();
-    stream_pass_manager sman(0, bindings_map, allocation_map, ic);
+    stream_pass_manager sman(bindings_map, allocation_map, ic);
     program_stream = sman.process_stream(program_stream);
 
     writer.process_stream(program_stream, false);
@@ -69,7 +69,7 @@ TEST(virtual_instructions, ternary_reduction) {
 
     auto ic =  std::make_shared<instrumentation_core>();
 
-    stream_pass_manager sman(0, bindings_map, allocation_map, ic);
+    stream_pass_manager sman( bindings_map, allocation_map, ic);
     program_stream = sman.process_stream(program_stream);
 
     writer.process_stream(program_stream, false);

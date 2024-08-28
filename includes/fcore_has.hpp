@@ -37,8 +37,8 @@ extern "C"{
 namespace fcore{
     class fcore_has {
     public:
-        fcore_has(std::istream &input, int dump_ast_level, bool print_debug);
-        void construct_assembler(std::istream &input, int dump_ast_level, bool print_debug);
+        fcore_has(std::istream &input, bool print_debug);
+        void construct_assembler(std::istream &input, bool print_debug);
 
         static std::vector<std::istream*> process_includes(const std::vector<std::string>& include_files, const std::string& include_directory);
 
@@ -51,7 +51,6 @@ namespace fcore{
         void write_json(const std::string& output_file);
         uint32_t get_program_size();
         uint32_t get_inst_count();
-        nlohmann::json get_dump() {return dump;};
     private:
         binary_generator writer;
         std::string error_code;

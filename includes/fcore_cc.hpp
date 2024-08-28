@@ -70,7 +70,7 @@ namespace fcore {
 
     class fcore_cc {
     public:
-        fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug, int dump_lvl);
+        fcore_cc(std::string &path, std::vector<std::string> &inc, bool print_debug);
         explicit fcore_cc(std::vector<std::string> &contents, std::vector<std::string> &inc);
         void set_profiler(const std::shared_ptr<instrumentation_core> &ic){profiling_core = ic;};
         void enable_logging(){logging = true;};
@@ -103,7 +103,6 @@ namespace fcore {
         std::vector<std::string> includes;
         bool include_is_paths;
         bool logging;
-        int dump_ast_level;
 
         std::unordered_map<std::string, core_iom> dma_spec;
 

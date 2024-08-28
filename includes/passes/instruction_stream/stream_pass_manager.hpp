@@ -40,18 +40,15 @@ namespace fcore{
     class stream_pass_manager {
     public:
         stream_pass_manager(
-                int dal,
                 std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
                 const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map,
                 std::shared_ptr<instrumentation_core> &prof
         );
         stream_pass_manager(
                 std::vector<int> &io_res,
-                int dal,
                 std::shared_ptr<instrumentation_core> &prof
         );
         void constructs_pass_manager(
-                int dal,
                 std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
                 const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map,
                 std::shared_ptr<instrumentation_core> &prof
@@ -59,16 +56,11 @@ namespace fcore{
 
         instruction_stream process_stream(instruction_stream stream);
         instruction_stream apply_pass(instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass);
-        nlohmann::json get_dump();
         void set_enabled_passes(std::vector<bool> ep) {enabled_passes = std::move(ep);};
         std::shared_ptr<struct instruction_count> get_instruction_count() {return ic;};
     private:
         std::vector<std::shared_ptr<stream_pass_base>> passes;
         std::vector<bool> enabled_passes;
-        int dump_ast_level;
-        nlohmann::json pre_opt_dump;
-        std::vector<nlohmann::json> in_opt_dump;
-        nlohmann::json post_opt_dump;
         std::shared_ptr<struct instruction_count> ic;
         std::shared_ptr<instrumentation_core> profiler;
     };

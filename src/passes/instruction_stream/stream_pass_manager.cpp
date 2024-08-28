@@ -17,31 +17,28 @@
 
 namespace fcore{
 
-    stream_pass_manager::stream_pass_manager(int dal,
-                                                    std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
+    stream_pass_manager::stream_pass_manager(std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
                                                     const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map,
                                                     std::shared_ptr<instrumentation_core> &prof
     ) {
-        constructs_pass_manager(dal, bm, all_map, prof);
+        constructs_pass_manager(bm, all_map, prof);
     }
 
-    stream_pass_manager::stream_pass_manager(std::vector<int> &io_res, int dal, std::shared_ptr<instrumentation_core> &prof) {
+    stream_pass_manager::stream_pass_manager(std::vector<int> &io_res, std::shared_ptr<instrumentation_core> &prof) {
 
         auto bm = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
         auto am = std::make_shared<std::unordered_map<std::string, std::vector<io_map_entry>>>();
-        constructs_pass_manager( dal, bm, am, prof);
+        constructs_pass_manager( bm, am, prof);
     }
 
 
     void
-    stream_pass_manager::constructs_pass_manager(int dal,
-                                                        std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
+    stream_pass_manager::constructs_pass_manager(std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
                                                         const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map,
                                                  std::shared_ptr<instrumentation_core> &prof
     ) {
 
         ic = std::make_shared<struct instruction_count>();
-        dump_ast_level = dal;
         std::shared_ptr<variable_map> var_map = std::make_shared<variable_map>();
         auto  io_assignment_map = std::make_shared<std::unordered_map<std::string, std::pair<int, int>>>();
         passes.push_back(std::make_shared<virtual_operations_implementation>());
@@ -63,23 +60,15 @@ namespace fcore{
 
     instruction_stream stream_pass_manager::process_stream(instruction_stream stream) {
         int pass_n = 0;
-        if(dump_ast_level>0) pre_opt_dump = stream.dump();
         instruction_stream ret_val = std::move(stream);
         for(auto &pass:passes){
             if(enabled_passes[pass_n]){
                 if(profiler != nullptr)  profiler->start_event(pass->get_name(), false);
                 ret_val = apply_pass(ret_val, pass);
                 if(profiler != nullptr) profiler->end_event(pass->get_name());
-                if(dump_ast_level>1){
-                    nlohmann::json ast_dump;
-                    ast_dump["pass_name"] = pass->get_name();
-                    ast_dump["ast"]= ret_val.dump();
-                    in_opt_dump.push_back(ast_dump);
-                }
             }
             pass_n++;
         }
-        if(dump_ast_level>0) post_opt_dump = ret_val.dump();
         return ret_val;
     }
 
@@ -101,14 +90,6 @@ namespace fcore{
         return retval;
     }
 
-    nlohmann::json stream_pass_manager::get_dump() {
-        nlohmann::json retval;
 
-        retval["pre-opt"] = pre_opt_dump;
-        retval["in-opt"] = in_opt_dump;
-        retval["post-opt"] = post_opt_dump;
-
-        return retval;
-    }
 }
 

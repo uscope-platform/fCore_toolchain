@@ -23,7 +23,7 @@ void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size, boo
     std::vector<std::string> include_files;
     // parse target file
 
-    fcore::fcore_has assembler(stream, 0, print_debug);
+    fcore::fcore_has assembler(stream, print_debug);
     std::vector<uint32_t> data = assembler.get_hexfile(false);
     unsigned int int_size = assembler.get_program_size();
     memcpy(hex_size, &int_size, sizeof(int));
@@ -34,12 +34,12 @@ void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size, boo
 
 namespace fcore{
 
-    fcore_has::fcore_has(std::istream &input, int dump_ast_level,bool print_debug) {
-        construct_assembler(input, dump_ast_level,print_debug);
+    fcore_has::fcore_has(std::istream &input,bool print_debug) {
+        construct_assembler(input,print_debug);
     }
 
 
-    void fcore_has::construct_assembler(std::istream &input, int dump_ast_level, bool print_debug) {
+    void fcore_has::construct_assembler(std::istream &input, bool print_debug) {
         variable_map tmp_map;
         std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>(tmp_map);
 
@@ -49,12 +49,11 @@ namespace fcore{
             std::shared_ptr<instrumentation_core> ic = nullptr;
 
             std::vector<int> io_res;
-            stream_pass_manager sman(io_res, dump_ast_level, ic);
+            stream_pass_manager sman(io_res, ic);
             sman.set_enabled_passes({true, false, false, false, true, true, true, false ,false}); // do not mess with constants in assembly
 
             instruction_stream program_stream = sman.process_stream(target_parser.program);
 
-            if(dump_ast_level>0) dump["stream"] = sman.get_dump();
 
             writer.process_stream(program_stream, print_debug);
 

@@ -32,7 +32,7 @@ TEST( EndToEndAsm, simple_file ) {
     std::string input_file = "asm/test_add.s";
 
     std::ifstream stream(input_file);
-    fcore_has uut(stream, 0, false);
+    fcore_has uut(stream, false);
 
     std::vector<uint32_t> gold_standard = {0x60001, 0xc, 0xc, 0x86, 0x42c80000, 0xa6, 0x43480000, 0xc2b01, 0xc};
 
@@ -80,7 +80,7 @@ TEST( EndToEndAsm, compare_file ) {
     std::string input_file = "asm/compare_file.s";
 
     std::ifstream stream(input_file);
-    fcore_has uut(stream, 0, false);
+    fcore_has uut(stream, false);
 
     std::vector<uint32_t> result = uut.get_executable();
 
@@ -92,7 +92,7 @@ TEST(EndToEndAsm, variables_file) {
     std::string input_file = "asm/test_variables.s";
 
     std::ifstream stream(input_file);
-    fcore_has uut(stream, 0, false);
+    fcore_has uut(stream, false);
 
     std::vector<uint32_t> result = uut.get_executable();
     std::vector<uint32_t> gold_standard = {0xe0001,0xc, 0xc,0x26,0x42c80000, 0x46, 0x43480000, 0xA6, 0x43480000, 0xc2881, 0xe4821,0xe4841,0x26,0x42c80000,0xe4821, 0x50b2, 0xc};
@@ -104,7 +104,7 @@ TEST(EndToEndAsm, load_constant_file) {
 
 
     std::ifstream stream(input_file);
-    fcore_has uut(stream, 0, false);
+    fcore_has uut(stream, false);
 
     std::vector<uint32_t> result = uut.get_executable();
 
@@ -133,7 +133,7 @@ TEST(EndToEndAsm, load_integer_constant) {
     std::string input_file = "asm/test_ldc_int.s";
 
     std::ifstream stream(input_file);
-    fcore_has uut(stream, 0, true);
+    fcore_has uut(stream, true);
 
     std::vector<uint32_t> result = uut.get_executable();
 
@@ -148,7 +148,7 @@ TEST(EndToEndAsm, json_writing) {
     std::string test_json = "/tmp/e2e_asm_json_test.json";
 
     std::ifstream stream(input_file);
-    fcore_has uut(stream, 0, false);
+    fcore_has uut(stream, false);
 
     uut.write_json(test_json);
 
@@ -175,7 +175,7 @@ TEST(EndToEndAsm, conditional_select) {
                              "stop";
 
     std::istringstream stream(input_string);
-    fcore_has uut(stream, 0, true);
+    fcore_has uut(stream, true);
 
     std::vector<uint32_t> result = uut.get_executable();
 

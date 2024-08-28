@@ -32,11 +32,7 @@ namespace fcore{
     class pass_base {
     public:
         pass_base(std::string n) {name = std::move(n);};
-        virtual std::vector<std::shared_ptr<E>>process_node(std::shared_ptr<E> element){
-            std::vector<std::shared_ptr<E>> elem;
-            elem.push_back(element);
-            return elem;
-        };
+
         virtual std::shared_ptr<E> process_global(std::shared_ptr<E> element) {
             return element;
         };

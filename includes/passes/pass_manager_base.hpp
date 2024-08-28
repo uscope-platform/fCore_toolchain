@@ -41,7 +41,6 @@ namespace fcore{
         // API FOR MORPHING PASSES
         void add_morphing_pass(const std::string& name, const std::shared_ptr<pass_base<E>>& pass);
         void add_morphing_pass_group(const std::string& name, const std::vector<std::shared_ptr<pass_base<E>>>& group);
-        void add_unique_pass_group(const std::string &name, const std::vector<std::shared_ptr<pass_base<E>>>& group);
         void run_morphing_passes(std::shared_ptr<E> AST);
 
         virtual void run_single_pass(std::shared_ptr<E> &, const std::shared_ptr<pass_base<E>>& ) {};
@@ -50,14 +49,12 @@ namespace fcore{
 
         void disable_all();
         void enable_pass(const std::string& name);
-        void disable_pass(const std::string& name);
         nlohmann::json get_dump();
 
         void set_profiler(std::shared_ptr<instrumentation_core> &p){
             this->ic = p;
         };
 
-        std::vector<std::vector<int>> run_analysis_passes(const std::shared_ptr<E>& AST);
         void analyze_tree(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>>& pass);
         std::unordered_map<std::string, std::shared_ptr<pass_base<E>>> analysis_passes;
 
@@ -81,17 +78,6 @@ namespace fcore{
         nlohmann::json post_opt_dump;
     };
 
-
-    template<class E>
-    void pass_manager_base<E>::disable_pass(const std::string &name) {
-        for(auto& p:passes) {
-            if(p.name == name) {
-                p.enabled = false;
-                return;
-            }
-        }
-        throw std::runtime_error("Required pass not found");
-    }
 
     template<class E>
     void pass_manager_base<E>::enable_pass(const std::string& name) {
@@ -153,35 +139,12 @@ namespace fcore{
     }
 
     template<class E>
-    std::vector<std::vector<int>> pass_manager_base<E>::run_analysis_passes(const std::shared_ptr<E>& AST) {
-        std::vector<std::vector<int>> results;
-        for( auto& p:passes){
-            if(p.pass[0]->get_pass_type() == ANALYSIS_PASS){
-                analyze_tree(AST, p.pass[0]);
-                results.push_back(p.pass[0]->get_analysis_result());
-            }
-        }
-        return results;
-    }
-
-
-    template<class E>
     void
     pass_manager_base<E>::analyze_tree(const std::shared_ptr<E> &subtree, const std::shared_ptr<pass_base<E>> &pass) {
         for(auto &i : subtree->get_content()){
             analyze_tree(i,pass);
         }
         pass->analyze_element(subtree);
-    }
-
-    template<class E>
-    void pass_manager_base<E>::add_unique_pass_group(const std::string& name, const std::vector<std::shared_ptr<pass_base<E>>> &group) {
-        opt_pass p;
-        p.pass = group;
-        p.type = unique_pass_group;
-        p.name = name;
-        p.enabled = true;
-        passes.push_back(p);
     }
 
     template<class E>

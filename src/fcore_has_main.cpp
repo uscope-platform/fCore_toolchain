@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
     std::ifstream stream;
     stream.open(input_file);
 
-    fcore::fcore_has has_engine(stream, dump_ast_level, false);
+    fcore::fcore_has has_engine(stream, false);
 
     if(output_hex){
         has_engine.write_hexfile(output_file);
@@ -67,12 +67,6 @@ int main(int argc, char **argv) {
         has_engine.write_json(output_file);
     }
 
-    if(dump_ast_level>0){
-        std::string str = has_engine.get_dump().dump();
-        std::ofstream ss(output_file+"_dump.json");
-        ss<<str;
-        ss.close();
-    }
 
     if(!has_engine.get_errors().empty()){
         spdlog::critical(has_engine.get_errors());
