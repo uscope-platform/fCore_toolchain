@@ -107,9 +107,6 @@ namespace fcore{
                     i = process_node_by_type(i);
                 }
                 node->set_body(body);
-                if(node->get_return() != nullptr){
-                    node->set_return(process_node_by_type(node->get_return()));
-                }
 
                 return node;
             }else if (item->node_type == hl_ast_node_type_conditional){
@@ -127,7 +124,6 @@ namespace fcore{
                     new_block_content.push_back(process_node_by_type(i));
                 }
                 node->set_else_block(new_block_content);
-                node->set_condition(process_node_by_type(node->get_condition()));
                 return node;
             }else if (item->node_type == hl_ast_node_type_loop){
                 std::shared_ptr<hl_ast_loop_node> node = std::static_pointer_cast<hl_ast_loop_node>(item);
@@ -138,9 +134,6 @@ namespace fcore{
                 }
                 node->set_loop_content(new_block_content);
 
-                node->set_condition(std::static_pointer_cast<hl_expression_node>(process_node_by_type(node->get_condition())));
-                node->set_init_statement(std::static_pointer_cast<hl_definition_node>(process_node_by_type(node->get_init_statement())));
-                node->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(process_node_by_type(node->get_iteration_expr())));
                 return node;
             } else{
                 std::vector<std::shared_ptr<hl_ast_node>> content =  item->get_content();
