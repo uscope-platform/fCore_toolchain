@@ -141,7 +141,12 @@ namespace fcore{
     }
 
     std::string hl_ast_node::pretty_print() {
-        return "";
+
+        std::string ret;
+        for(auto &item:content){
+            ret += item->pretty_print();
+        }
+        return ret;
     }
 
 
