@@ -26,10 +26,19 @@ namespace fcore{
     class intrinsics_implementation_pass : public  pass_base<hl_ast_node> {
     public:
         intrinsics_implementation_pass();
-        std::shared_ptr<hl_ast_node> process_leaf(std::shared_ptr<hl_ast_node> element) override;
+        std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
         std::shared_ptr<hl_ast_node> process_node_by_type(const std::shared_ptr<hl_ast_node>& element);
+
+        std::shared_ptr<hl_ast_node> process_conditional(const std::shared_ptr<hl_ast_conditional_node>& element);
+
+        std::shared_ptr<hl_ast_node> process_definition(const std::shared_ptr<hl_definition_node>& element);
+
+        std::shared_ptr<hl_ast_node> process_operand(const std::shared_ptr<hl_ast_operand>& element);
+        std::shared_ptr<hl_ast_node> process_expression(const std::shared_ptr<hl_expression_node>& element);
         std::shared_ptr<hl_ast_node> process_function_call(const std::shared_ptr<hl_function_call_node>& element);
-        int get_pass_type() override { return LEAF_PASS;};
+
+
+        int get_pass_type() override { return GLOBAL_PASS;};
     private:
         std::map<std::string, expression_type_t> substitutions;
         std::map<std::string, int> n_arguments;
