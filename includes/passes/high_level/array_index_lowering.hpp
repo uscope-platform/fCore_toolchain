@@ -22,8 +22,15 @@ namespace fcore{
     class array_index_lowering : public  pass_base<hl_ast_node> {
     public:
         array_index_lowering();
-        std::shared_ptr<hl_ast_node> process_leaf(std::shared_ptr<hl_ast_node> element) override;
-        int get_pass_type() override { return LEAF_PASS;};
+        std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
+        int get_pass_type() override { return GLOBAL_PASS;};
+    private:
+        std::shared_ptr<hl_ast_node> process_node_by_type(std::shared_ptr<hl_ast_node> element);
+        std::shared_ptr<hl_ast_node> process_terminal(std::shared_ptr<hl_ast_node> element);
+        std::shared_ptr<hl_ast_node> process_expression(std::shared_ptr<hl_expression_node> exp);
+        std::shared_ptr<hl_ast_node> process_operand(const std::shared_ptr<hl_ast_operand> &op);
+        std::shared_ptr<hl_ast_node> process_definition(std::shared_ptr<hl_definition_node> exp);
+        std::shared_ptr<hl_ast_node> process_f_call(std::shared_ptr<hl_function_call_node> f_call);
     };
 }
 

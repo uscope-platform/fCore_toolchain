@@ -24,11 +24,11 @@ namespace fcore{
     public:
         division_implementation_pass();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
-        std::shared_ptr<hl_ast_node> process_node_by_type(std::shared_ptr<hl_ast_node> element);
-        std::shared_ptr<hl_ast_node> process_terminal(std::shared_ptr<hl_ast_node> element);
 
         int get_pass_type() override { return GLOBAL_PASS;};
     private:
+        std::shared_ptr<hl_ast_node> process_node_by_type(std::shared_ptr<hl_ast_node> element);
+        std::shared_ptr<hl_ast_node> process_terminal(std::shared_ptr<hl_ast_node> element);
         std::shared_ptr<hl_ast_node> process_expression(std::shared_ptr<hl_expression_node> exp);
         std::shared_ptr<hl_ast_node> process_definition(std::shared_ptr<hl_definition_node> exp);
         std::shared_ptr<hl_ast_node> process_f_call(std::shared_ptr<hl_function_call_node> f_call);

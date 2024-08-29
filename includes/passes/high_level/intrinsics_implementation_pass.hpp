@@ -29,11 +29,8 @@ namespace fcore{
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
         std::shared_ptr<hl_ast_node> process_node_by_type(const std::shared_ptr<hl_ast_node>& element);
 
-        std::shared_ptr<hl_ast_node> process_conditional(const std::shared_ptr<hl_ast_conditional_node>& element);
-
         std::shared_ptr<hl_ast_node> process_definition(const std::shared_ptr<hl_definition_node>& element);
 
-        std::shared_ptr<hl_ast_node> process_operand(const std::shared_ptr<hl_ast_operand>& element);
         std::shared_ptr<hl_ast_node> process_expression(const std::shared_ptr<hl_expression_node>& element);
         std::shared_ptr<hl_ast_node> process_function_call(const std::shared_ptr<hl_function_call_node>& element);
 
