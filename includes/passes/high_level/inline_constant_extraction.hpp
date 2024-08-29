@@ -19,7 +19,7 @@
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
 namespace fcore{
-    class inline_constant_extraction : public pass_base<hl_ast_node> {
+    class inline_constant_extraction : public pass_base {
     public:
         inline_constant_extraction();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;

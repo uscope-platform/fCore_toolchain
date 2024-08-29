@@ -23,7 +23,7 @@
 #include "tools/expression_evaluator.hpp"
 
 namespace fcore{
-    class conditional_implementation_pass : public pass_base<hl_ast_node> {
+    class conditional_implementation_pass : public pass_base {
     public:
         conditional_implementation_pass();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;

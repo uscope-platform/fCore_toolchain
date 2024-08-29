@@ -18,7 +18,7 @@
 
 namespace fcore{
 
-    operating_assignment_implementation_pass::operating_assignment_implementation_pass() : pass_base<hl_ast_node>("operating assignments implementation pass"){
+    operating_assignment_implementation_pass::operating_assignment_implementation_pass() : pass_base("operating assignments implementation pass"){
 
     }
 

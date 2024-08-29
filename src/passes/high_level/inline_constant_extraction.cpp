@@ -17,7 +17,7 @@
 #include "passes/high_level/inline_constant_extraction.hpp"
 namespace fcore{
 
-    inline_constant_extraction::inline_constant_extraction() : pass_base<hl_ast_node>("inline constant extraction pass"){
+    inline_constant_extraction::inline_constant_extraction() : pass_base("inline constant extraction pass"){
         n_var = 0;
     }
 

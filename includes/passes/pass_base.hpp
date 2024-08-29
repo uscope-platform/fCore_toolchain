@@ -22,19 +22,14 @@
 #include <string>
 #include <unordered_map>
 
-#define NONE_PASS 0
-#define GLOBAL_PASS 3
+#include "data_structures/high_level_ast/hl_ast_node.hpp"
 
 namespace fcore{
-    template<class E>
     class pass_base {
     public:
         pass_base(std::string n) {name = std::move(n);};
 
-        virtual std::shared_ptr<E> process_global(std::shared_ptr<E> element) {
-            return element;
-        };
-        virtual std::shared_ptr<E> process_leaf(std::shared_ptr<E> element){
+        virtual std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) {
             return element;
         };
         std::string get_name() {return name;};

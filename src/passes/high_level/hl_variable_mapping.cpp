@@ -17,7 +17,7 @@
 
 namespace fcore{
 
-    hl_variable_mapping::hl_variable_mapping(std::shared_ptr<variable_map> &v) : pass_base<hl_ast_node>("high level variable mapping"){
+    hl_variable_mapping::hl_variable_mapping(std::shared_ptr<variable_map> &v) : pass_base("high level variable mapping"){
         var_map = v;
     }
 

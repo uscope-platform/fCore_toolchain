@@ -17,7 +17,7 @@
 
 namespace fcore{
 
-    code_block_inlining_pass::code_block_inlining_pass() : pass_base<hl_ast_node>("code block inlining pass"){
+    code_block_inlining_pass::code_block_inlining_pass() : pass_base("code block inlining pass"){
 
     }
 

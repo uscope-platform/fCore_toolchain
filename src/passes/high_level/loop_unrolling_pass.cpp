@@ -18,7 +18,7 @@
 
 namespace fcore{
 
-    loop_unrolling_pass::loop_unrolling_pass() : pass_base<hl_ast_node>("C loop unrolling pass"){
+    loop_unrolling_pass::loop_unrolling_pass() : pass_base("C loop unrolling pass"){
         current_loop_iteration = 0;
     }
 

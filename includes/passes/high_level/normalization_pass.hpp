@@ -24,7 +24,7 @@ namespace fcore{
 
     typedef std::pair<std::shared_ptr<hl_ast_node>, std::vector<std::shared_ptr<hl_ast_node>>> norm_pair_t;
 
-    class normalization_pass : public pass_base<hl_ast_node> {
+    class normalization_pass : public pass_base {
     public:
         normalization_pass();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;

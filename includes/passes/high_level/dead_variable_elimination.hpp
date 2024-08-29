@@ -23,7 +23,7 @@
 #include "tools/variable_map.hpp"
 
 namespace fcore{
-    class dead_variable_elimination : public pass_base<hl_ast_node>{
+    class dead_variable_elimination : public pass_base{
     public:
         explicit dead_variable_elimination();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;

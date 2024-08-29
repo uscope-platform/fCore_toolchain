@@ -19,7 +19,7 @@
 
 namespace fcore{
 
-    fuction_mangling_pass::fuction_mangling_pass() : pass_base<hl_ast_node>("Function Mangling pass") {
+    fuction_mangling_pass::fuction_mangling_pass() : pass_base("Function Mangling pass") {
 
     }
 

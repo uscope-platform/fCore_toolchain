@@ -19,7 +19,7 @@
 #include "passes/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 namespace fcore{
-    class array_index_lowering : public  pass_base<hl_ast_node> {
+    class array_index_lowering : public  pass_base {
     public:
         array_index_lowering();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;

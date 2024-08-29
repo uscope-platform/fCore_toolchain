@@ -18,7 +18,7 @@
 
 namespace fcore{
 
-    dead_load_elimination::dead_load_elimination() : pass_base<hl_ast_node>("dead_load_elimination") {
+    dead_load_elimination::dead_load_elimination() : pass_base("dead_load_elimination") {
         efi_mode = false;
     }
 

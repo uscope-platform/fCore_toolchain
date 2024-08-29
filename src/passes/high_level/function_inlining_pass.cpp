@@ -18,7 +18,7 @@
 
 namespace fcore{
 
-    function_inlining_pass::function_inlining_pass() : pass_base<hl_ast_node>("function inlining pass"){
+    function_inlining_pass::function_inlining_pass() : pass_base("function inlining pass"){
 
     }
 

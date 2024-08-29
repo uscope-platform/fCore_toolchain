@@ -16,7 +16,7 @@
 #include "passes/high_level/contiguous_array_identification.hpp"
 namespace fcore{
 
-    contiguous_array_identification::contiguous_array_identification() : pass_base<hl_ast_node>("contiguous_array_identification"){
+    contiguous_array_identification::contiguous_array_identification() : pass_base("contiguous_array_identification"){
     }
 
     std::shared_ptr<hl_ast_node> contiguous_array_identification::process_global(std::shared_ptr<hl_ast_node> element) {

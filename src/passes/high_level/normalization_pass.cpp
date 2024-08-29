@@ -18,7 +18,7 @@
 
 namespace fcore{
 
-    normalization_pass::normalization_pass() : pass_base<hl_ast_node>("normalization pass"){
+    normalization_pass::normalization_pass() : pass_base("normalization pass"){
     }
 
 

@@ -26,7 +26,7 @@
 #include "data_structures/common/variable.hpp"
 
 namespace fcore{
-    class loop_unrolling_pass : public pass_base<hl_ast_node> {
+    class loop_unrolling_pass : public pass_base {
     public:
         loop_unrolling_pass();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;

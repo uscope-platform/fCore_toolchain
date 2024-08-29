@@ -19,7 +19,7 @@
 
 namespace fcore{
 
-    constant_folding_pass::constant_folding_pass() : pass_base<hl_ast_node>("Constant folding pass"){
+    constant_folding_pass::constant_folding_pass() : pass_base("Constant folding pass"){
 
     }
 

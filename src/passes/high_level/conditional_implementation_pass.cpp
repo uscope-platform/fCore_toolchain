@@ -18,7 +18,7 @@
 
 namespace fcore{
 
-    conditional_implementation_pass::conditional_implementation_pass() : pass_base<hl_ast_node>("Conditional Implementation pass"){
+    conditional_implementation_pass::conditional_implementation_pass() : pass_base("Conditional Implementation pass"){
 
     }
 

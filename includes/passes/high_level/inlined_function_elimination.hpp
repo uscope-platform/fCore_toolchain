@@ -22,7 +22,7 @@
 #include "passes/pass_base.hpp"
 
 namespace fcore{
-    class inlined_function_elimination : public  pass_base<hl_ast_node>{
+    class inlined_function_elimination : public  pass_base{
     public:
         explicit inlined_function_elimination(std::string entry_point_name);
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;

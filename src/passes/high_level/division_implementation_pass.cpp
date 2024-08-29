@@ -18,7 +18,7 @@
 
 namespace fcore{
 
-    division_implementation_pass::division_implementation_pass() : pass_base<hl_ast_node>("division implementation pass"){
+    division_implementation_pass::division_implementation_pass() : pass_base("division implementation pass"){
 
     }
 

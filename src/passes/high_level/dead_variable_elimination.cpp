@@ -18,7 +18,7 @@
 #include "passes/high_level/dead_variable_elimination.hpp"
 namespace fcore{
 
-    dead_variable_elimination::dead_variable_elimination() : pass_base<hl_ast_node>("dead variable elimination"){
+    dead_variable_elimination::dead_variable_elimination() : pass_base("dead variable elimination"){
 
     }
 

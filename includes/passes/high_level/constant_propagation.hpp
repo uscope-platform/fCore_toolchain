@@ -27,7 +27,7 @@
 #include "tools/array_linearizer.hpp"
 
 namespace fcore{
-    class constant_propagation :public pass_base<hl_ast_node> {
+    class constant_propagation :public pass_base {
     public:
         explicit constant_propagation();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;

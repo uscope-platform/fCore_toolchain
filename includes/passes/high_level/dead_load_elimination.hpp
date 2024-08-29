@@ -27,7 +27,7 @@ namespace fcore{
         int first_usage;
     };
 
-    class dead_load_elimination : public pass_base<hl_ast_node>{
+    class dead_load_elimination : public pass_base{
     public:
         explicit dead_load_elimination();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;

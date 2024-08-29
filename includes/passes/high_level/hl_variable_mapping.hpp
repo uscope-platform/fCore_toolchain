@@ -22,7 +22,7 @@
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
 namespace fcore{
-    class hl_variable_mapping : public pass_base<hl_ast_node> {
+    class hl_variable_mapping : public pass_base {
     public:
         explicit hl_variable_mapping(std::shared_ptr<variable_map>  &v);
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;

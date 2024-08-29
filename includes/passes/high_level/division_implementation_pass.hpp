@@ -20,7 +20,7 @@
 #include "passes/pass_base.hpp"
 
 namespace fcore{
-    class division_implementation_pass :public pass_base<hl_ast_node> {
+    class division_implementation_pass :public pass_base {
     public:
         division_implementation_pass();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;

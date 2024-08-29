@@ -17,7 +17,7 @@
 
 namespace fcore {
 
-    intrinsics_implementation_pass::intrinsics_implementation_pass() : pass_base<hl_ast_node>(
+    intrinsics_implementation_pass::intrinsics_implementation_pass() : pass_base(
             "intrinsics implementation pass") {
         substitutions = {
                 std::make_pair("itf", expr_itf),

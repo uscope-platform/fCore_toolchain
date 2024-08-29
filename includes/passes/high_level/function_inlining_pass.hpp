@@ -22,7 +22,7 @@
 #include <utility>
 
 namespace fcore{
-    class function_inlining_pass :public pass_base<hl_ast_node>{
+    class function_inlining_pass :public pass_base{
     public:
         function_inlining_pass();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;

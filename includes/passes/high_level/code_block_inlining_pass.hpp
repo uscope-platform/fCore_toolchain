@@ -20,7 +20,7 @@
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
 namespace fcore{
-    class code_block_inlining_pass : public pass_base<hl_ast_node>{
+    class code_block_inlining_pass : public pass_base{
     public:
         code_block_inlining_pass();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;

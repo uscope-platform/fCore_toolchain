@@ -17,7 +17,7 @@
 
 namespace fcore{
 
-    array_index_lowering::array_index_lowering() : pass_base<hl_ast_node>("array index lowering"){
+    array_index_lowering::array_index_lowering() : pass_base("array index lowering"){
 
     }
 

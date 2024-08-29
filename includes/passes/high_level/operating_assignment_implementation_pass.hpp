@@ -21,7 +21,7 @@
 #include "passes/pass_base.hpp"
 
 namespace fcore{
-    class operating_assignment_implementation_pass : public pass_base<hl_ast_node> {
+    class operating_assignment_implementation_pass : public pass_base {
     public:
         operating_assignment_implementation_pass();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;

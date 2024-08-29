@@ -18,7 +18,7 @@
 
 namespace fcore{
 
-    constant_propagation::constant_propagation() : pass_base<hl_ast_node>("Constant Propagation Pass"){
+    constant_propagation::constant_propagation() : pass_base("Constant Propagation Pass"){
     }
 
     std::shared_ptr<hl_ast_node> constant_propagation::process_global(std::shared_ptr<hl_ast_node> element) {

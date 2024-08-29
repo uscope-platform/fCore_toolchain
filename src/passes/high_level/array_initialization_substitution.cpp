@@ -17,7 +17,7 @@
 
 namespace fcore{
 
-    array_initialization_substitution::array_initialization_substitution() : pass_base<hl_ast_node>("array_initialization_substitution"){
+    array_initialization_substitution::array_initialization_substitution() : pass_base("array_initialization_substitution"){
 
     }
 
