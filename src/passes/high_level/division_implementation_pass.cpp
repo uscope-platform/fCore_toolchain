@@ -22,6 +22,16 @@ namespace fcore{
 
     }
 
+    std::shared_ptr<hl_ast_node> division_implementation_pass::process_global(std::shared_ptr<hl_ast_node> element) {
+        std::shared_ptr<hl_ast_root> ret_val = std::make_shared<hl_ast_root>();
+        std::vector<std::shared_ptr<hl_ast_node>> new_content;
+        for(auto &item:element->get_content()){
+            new_content.push_back(process_node_by_type(item));
+        }
+        ret_val->set_content(new_content);
+        return ret_val;
+    }
+
     std::shared_ptr<hl_ast_node> division_implementation_pass::process_expression(std::shared_ptr<hl_expression_node> exp) {
         if(exp->get_type() == expr_div){
             std::shared_ptr<hl_ast_node> lhs = exp->get_lhs();
@@ -45,16 +55,6 @@ namespace fcore{
         }
         f_call->set_arguments(args);
         return f_call;
-    }
-
-    std::shared_ptr<hl_ast_node> division_implementation_pass::process_global(std::shared_ptr<hl_ast_node> element) {
-        std::shared_ptr<hl_ast_root> ret_val = std::make_shared<hl_ast_root>();
-        std::vector<std::shared_ptr<hl_ast_node>> new_content;
-        for(auto &item:element->get_content()){
-            new_content.push_back(process_node_by_type(item));
-        }
-        ret_val->set_content(new_content);
-        return ret_val;
     }
 
     std::shared_ptr<hl_ast_node>
