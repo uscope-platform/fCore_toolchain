@@ -22,24 +22,26 @@ namespace fcore{
 
 
 
-    void hl_pass_manager::run_repeating_pass_group(std::shared_ptr<hl_ast_node> &subtree,
+    std::shared_ptr<hl_ast_node>  hl_pass_manager::run_repeating_pass_group(std::shared_ptr<hl_ast_node> &subtree,
                                                                                  const std::vector<std::shared_ptr<pass_base>> &group) {
 
+
+        auto working_tree =  hl_ast_node::deep_copy(subtree);
         int run_number = 1;
 
         std::shared_ptr<hl_ast_node> old_tree;
         do{
-            old_tree = hl_ast_node::deep_copy(subtree);
+            old_tree = hl_ast_node::deep_copy(working_tree);
             for(auto &pass:group){
 
                 if(ic != nullptr) ic->start_event(pass->get_name(), false);
-                *subtree =  *pass->process_global(subtree);
+                *working_tree =  *pass->process_global(subtree);
                 if(ic != nullptr) ic->end_event(pass->get_name());
 
             }
             ++run_number;
-        } while (!(*old_tree == *subtree));
-
+        } while (!(*old_tree == *working_tree));
+        return working_tree;
     }
 
 
@@ -73,7 +75,7 @@ namespace fcore{
                 }
             } else if(p.type == repeating_pass_group) {
                 if (p.enabled) {
-                    run_repeating_pass_group(AST, p.pass);
+                    *AST = *run_repeating_pass_group(AST, p.pass);
                 }
             } else if(p.type == unique_pass_group) {
                 if(p.enabled){
