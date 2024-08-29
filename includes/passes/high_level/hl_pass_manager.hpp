@@ -44,9 +44,9 @@ namespace fcore{
 
         void add_morphing_pass(const std::string& name, const std::shared_ptr<pass_base>& pass);
         void add_morphing_pass_group(const std::string& name, const std::vector<std::shared_ptr<pass_base>>& group);
-        void run_morphing_passes(std::shared_ptr<hl_ast_node> AST);
+        [[nodiscard]] std::shared_ptr<hl_ast_root> run_morphing_passes(std::shared_ptr<hl_ast_root> AST);
 
-        std::shared_ptr<hl_ast_node> run_repeating_pass_group(std::shared_ptr<hl_ast_node> &subtree, const std::vector<std::shared_ptr<pass_base>>& group);
+        std::shared_ptr<hl_ast_root> run_repeating_pass_group(std::shared_ptr<hl_ast_root> &subtree, const std::vector<std::shared_ptr<pass_base>>& group);
 
         void disable_all();
         void enable_pass(const std::string& name);

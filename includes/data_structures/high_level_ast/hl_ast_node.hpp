@@ -110,15 +110,19 @@ namespace fcore{
         static bool compare_vectors(const std::vector<std::shared_ptr<hl_ast_node>>& lhs, const std::vector<std::shared_ptr<hl_ast_node>>& rhs);
 
         hl_ast_node_type_t node_type;
+
         // CONTENT MANIPULATION
-        void add_content(const std::shared_ptr<hl_ast_node>& element){content.push_back(element);};
-        void set_content(const std::vector<std::shared_ptr<hl_ast_node>>& c){content = c;};
+        virtual void add_content(const std::shared_ptr<hl_ast_node>& element) { content.push_back(element);};
+        virtual void set_content(const std::vector<std::shared_ptr<hl_ast_node>>& c) {content = c;};
 
         // CONTENT ACCESS
-        std::vector<std::shared_ptr<hl_ast_node>> get_content(){return content;};
+        virtual std::vector<std::shared_ptr<hl_ast_node>> get_content() {return content;};
 
-    private:
+    protected:
+
+
         std::vector<std::shared_ptr<hl_ast_node>> content;
+
 
     };
 }

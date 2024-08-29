@@ -50,6 +50,13 @@ namespace fcore{
 
         static std::shared_ptr<hl_function_call_node> deep_copy(const std::shared_ptr<hl_function_call_node> &node);
 
+        // CONTENT MANIPULATION
+        void add_content(const std::shared_ptr<hl_ast_node>& element) override { content.push_back(element);};
+        void set_content(const std::vector<std::shared_ptr<hl_ast_node>>& c) override {content = c;};
+
+        // CONTENT ACCESS
+        virtual std::vector<std::shared_ptr<hl_ast_node>> get_content() override {return content;};
+
     protected:
         std::string name;
         std::vector<std::shared_ptr<hl_ast_node>> arguments;

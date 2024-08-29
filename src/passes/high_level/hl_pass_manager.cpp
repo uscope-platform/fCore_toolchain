@@ -21,10 +21,10 @@
 namespace fcore{
 
 
-    std::shared_ptr<hl_ast_node>  hl_pass_manager::run_repeating_pass_group(std::shared_ptr<hl_ast_node> &subtree,
+    std::shared_ptr<hl_ast_root>  hl_pass_manager::run_repeating_pass_group(std::shared_ptr<hl_ast_root> &subtree,
                                                                                  const std::vector<std::shared_ptr<pass_base>> &group) {
 
-        auto working_tree =  hl_ast_node::deep_copy(subtree);
+        auto working_tree =  std::static_pointer_cast<hl_ast_root>(hl_ast_node::deep_copy(subtree));
         int run_number = 1;
 
         std::shared_ptr<hl_ast_node> old_tree;
@@ -33,7 +33,8 @@ namespace fcore{
             for(auto &pass:group){
 
                 if(ic != nullptr) ic->start_event(pass->get_name(), false);
-                *working_tree =  *pass->process_global(std::static_pointer_cast<hl_ast_root>(subtree));
+                auto pass_res = pass->process_global(std::static_pointer_cast<hl_ast_root>(subtree));
+                working_tree =  pass_res;
                 if(ic != nullptr) ic->end_event(pass->get_name());
 
             }
@@ -61,26 +62,29 @@ namespace fcore{
         passes.push_back(p);
     }
 
-    void hl_pass_manager::run_morphing_passes(std::shared_ptr<hl_ast_node> AST) {
+    std::shared_ptr<hl_ast_root> hl_pass_manager::run_morphing_passes(std::shared_ptr<hl_ast_root> AST) {
+        auto working_ast = std::static_pointer_cast<hl_ast_root>(hl_ast_node::deep_copy(AST));
+
         for(auto& p:passes){
             if(p.type == single_pass){
                 if(p.enabled){
                     std::shared_ptr<pass_base> pass = p.pass[0];
 
                     if (ic != nullptr) ic->start_event(pass->get_name(), false);
-                    *AST =  *pass->process_global(std::static_pointer_cast<hl_ast_root>(AST));
+                    auto pass_res = pass->process_global(std::static_pointer_cast<hl_ast_root>(working_ast));
+                    working_ast =  pass_res;
                     if (ic != nullptr) ic->end_event(pass->get_name());
                 }
             } else if(p.type == repeating_pass_group) {
                 if (p.enabled) {
-                    *AST = *run_repeating_pass_group(AST, p.pass);
+                    working_ast = run_repeating_pass_group(working_ast, p.pass);
                 }
             } else if(p.type == unique_pass_group) {
                 if(p.enabled){
                     for(auto &pass:p.pass){
 
                         if(ic != nullptr) ic->start_event(pass->get_name(), false);
-                        *AST =  *pass->process_global(std::static_pointer_cast<hl_ast_root>(AST));
+                        working_ast =  pass->process_global(std::static_pointer_cast<hl_ast_root>(working_ast));
                         if(ic != nullptr) ic->end_event(pass->get_name());
                     }
                 }
@@ -90,6 +94,7 @@ namespace fcore{
 
 
         }
+        return working_ast;
     }
 
     void hl_pass_manager::enable_pass(const std::string &name) {

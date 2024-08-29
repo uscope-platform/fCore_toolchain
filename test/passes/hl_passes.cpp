@@ -54,9 +54,9 @@ TEST(HlPassesTest, divisionImplementation) {
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
     manager.enable_pass("Division Implementation");
-    manager.run_morphing_passes(input_root);
 
-    std::shared_ptr<hl_ast_node> result =  input_root;
+
+    std::shared_ptr<hl_ast_node> result =  manager.run_morphing_passes(input_root);
 
     std::shared_ptr<hl_expression_node> mult_exp = std::make_shared<hl_expression_node>(expr_mult);
 
@@ -128,9 +128,9 @@ TEST(HlPassesTest, intrinsics_implementation) {
     manager.disable_all();
     manager.enable_pass("Intrinsics Implementation");
 
-    manager.run_morphing_passes(input_root);
 
-    std::shared_ptr<hl_ast_node> result = input_root;
+
+    std::shared_ptr<hl_ast_node> result =  manager.run_morphing_passes(input_root);;
 
     var = std::make_shared<variable>("b");
     std::shared_ptr<hl_definition_node> def_3 = std::make_shared<hl_definition_node>("b", c_type_float, var);
@@ -204,9 +204,9 @@ TEST(HlPassesTest, test_operating_assignments_implementation) {
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
     manager.enable_pass("Operating Assignment Implementation");
-    manager.run_morphing_passes(input_root);
 
-    const std::shared_ptr<hl_ast_node>& result = input_root;
+
+    const std::shared_ptr<hl_ast_node>& result = manager.run_morphing_passes(input_root);;
 
     std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 
@@ -336,9 +336,8 @@ TEST(HlPassesTest, function_inlining) {
     manager.enable_pass("Inlined Function Elimination");
     manager.enable_pass("Code Block Expansion");
 
-    manager.run_morphing_passes(input_root);
 
-    const std::shared_ptr<hl_ast_node>& res = input_root;
+    const std::shared_ptr<hl_ast_node>& res = manager.run_morphing_passes(input_root);;
 
     std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 
@@ -415,10 +414,10 @@ TEST(HlPassesTest, simple_normalization) {
     manager.enable_pass("Inlined Function Elimination");
     manager.enable_pass("Normalization");
 
-    manager.run_morphing_passes(parser.AST);
+    auto opt_result = manager.run_morphing_passes(parser.AST);
 
     normalization_pass p;
-    std::shared_ptr<hl_ast_node> raw_result = p.process_global(parser.AST);
+    std::shared_ptr<hl_ast_node> raw_result = p.process_global(opt_result);
 
     std::shared_ptr<variable> var = std::make_shared<variable>("intermediate_expression_0");
     std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expression_0", c_type_float, var);
@@ -490,9 +489,9 @@ TEST(HlPassesTest, hl_ast_lowering) {
     manager.enable_pass("Inlined Function Elimination");
     manager.enable_pass("Normalization");
 
-    manager.run_morphing_passes(parser.AST);
 
-    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
+
+    std::shared_ptr<hl_ast_root> normalized_ast = manager.run_morphing_passes(parser.AST);
 
     high_level_ast_lowering tranlator;
 
@@ -549,9 +548,9 @@ TEST(HlPassesTest, loop_unrolling_array) {
     manager.enable_pass("Loop Unrolling");
     manager.enable_pass("Normalization");
 
-    manager.run_morphing_passes(parser.AST);
 
-    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
+
+    std::shared_ptr<hl_ast_root> normalized_ast = manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 
@@ -620,9 +619,9 @@ TEST(HlPassesTest, test_matrix_scalarization) {
     manager.enable_pass("Loop Unrolling");
     manager.enable_pass("Array Flattening");
 
-    manager.run_morphing_passes(parser.AST);
 
-    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
+
+    std::shared_ptr<hl_ast_node> normalized_ast = manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 
@@ -740,9 +739,9 @@ TEST(HlPassesTest, function_inlining_array) {
     manager.enable_pass("Inlined Function Elimination");
     manager.enable_pass("Code Block Expansion");
     manager.enable_pass("Loop Unrolling");
-    manager.run_morphing_passes(parser.AST);
+    auto result_ast = manager.run_morphing_passes(parser.AST);
 
-    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST->get_content()[5];
+    std::shared_ptr<hl_ast_node> normalized_ast = result_ast->get_content()[5];
 
     std::shared_ptr<hl_expression_node> gold_standard = std::make_shared<hl_expression_node>(expr_assign);
 
@@ -794,9 +793,9 @@ TEST(HlPassesTest, function_return_inlining) {
 
     std::string ep = "main";
     hl_pass_manager manager = create_hl_pass_manager(ep);
-    manager.run_morphing_passes(parser.AST);
 
-    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
+
+    std::shared_ptr<hl_ast_node> normalized_ast = manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 
@@ -869,7 +868,7 @@ TEST(HlPassesTest, complex_normalization) {
     manager.disable_all();
     manager.enable_pass("Normalization");
 
-    manager.run_morphing_passes(input_root);
+    input_root = manager.run_morphing_passes(input_root);
 
 
     var = std::make_shared<variable>("intermediate_expression_0");
@@ -929,7 +928,7 @@ TEST(HlPassesTest, dead_load_elimination) {
     manager.disable_all();
     manager.enable_pass("Dead Load elimination");
 
-    manager.run_morphing_passes(input_root);
+    input_root= manager.run_morphing_passes(input_root);
 
 
     std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
@@ -975,9 +974,9 @@ TEST(HlPassesTest, nested_function_inlining) {
 
     std::string ep = "main";
     hl_pass_manager manager = create_hl_pass_manager(ep);
-    manager.run_morphing_passes(parser.AST);
 
-    std::shared_ptr<hl_ast_node> normalized_ast = parser.AST;
+
+    std::shared_ptr<hl_ast_node> normalized_ast =  manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 
@@ -1077,10 +1076,9 @@ TEST(HlPassesTest, complex_division_implementation) {
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
     manager.enable_pass("Division Implementation");
+    
 
-    manager.run_morphing_passes(parser.AST);
-
-    auto result = parser.AST;
+    auto result = manager.run_morphing_passes(parser.AST);
 
     std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 

@@ -48,6 +48,14 @@ namespace fcore{
             return ret_val;
         };
         static std::shared_ptr<hl_ast_loop_node> deep_copy(const std::shared_ptr<hl_ast_loop_node> &node);
+
+        // CONTENT MANIPULATION
+        void add_content(const std::shared_ptr<hl_ast_node>& element) override { content.push_back(element);};
+        void set_content(const std::vector<std::shared_ptr<hl_ast_node>>& c) override {content = c;};
+
+        // CONTENT ACCESS
+        virtual std::vector<std::shared_ptr<hl_ast_node>> get_content() override {return content;};
+
     private:
         std::vector<std::shared_ptr<hl_ast_node>> loop_content;
         std::shared_ptr<hl_expression_node> condition;
