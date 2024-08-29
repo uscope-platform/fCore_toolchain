@@ -77,12 +77,8 @@ namespace fcore{
                 node->set_init_statement(std::static_pointer_cast<hl_definition_node>(process_node_by_type(node->get_init_statement())));
                 node->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(process_node_by_type(node->get_iteration_expr())));
                 return node;
-            } else{
-                std::vector<std::shared_ptr<hl_ast_node>> content =  item->get_content();
-                for(auto &i :content){
-                    i = process_node_by_type(i);
-                }
-                item->set_content(content);
+            } else {
+
                 return item;
             }
 

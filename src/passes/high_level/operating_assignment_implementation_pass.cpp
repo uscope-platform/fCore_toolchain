@@ -135,12 +135,8 @@ namespace fcore{
                 node->set_loop_content(new_block_content);
 
                 return node;
-            } else{
-                std::vector<std::shared_ptr<hl_ast_node>> content =  item->get_content();
-                for(auto &i :content){
-                    i = process_node_by_type(i);
-                }
-                item->set_content(content);
+            } else {
+
                 return item;
             }
 
