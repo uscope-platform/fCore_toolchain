@@ -23,7 +23,7 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<hl_ast_node> fuction_mangling_pass::process_global(std::shared_ptr<hl_ast_node> element) {
+    std::shared_ptr<hl_ast_root> fuction_mangling_pass::process_global(std::shared_ptr<hl_ast_root> element) {
         std::shared_ptr<hl_ast_root> ret_val = std::make_shared<hl_ast_root>();
 
         std::vector<std::shared_ptr<hl_ast_node>> body;

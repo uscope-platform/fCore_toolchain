@@ -26,7 +26,7 @@ namespace fcore{
     class conditional_implementation_pass : public pass_base {
     public:
         conditional_implementation_pass();
-        std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
+        std::shared_ptr<hl_ast_root> process_global(std::shared_ptr<hl_ast_root> element) override;
 
     private:
         std::shared_ptr<hl_ast_operand> find_variable_definition(const std::shared_ptr<hl_ast_node>& subexpr, const std::shared_ptr<hl_ast_node>& item,

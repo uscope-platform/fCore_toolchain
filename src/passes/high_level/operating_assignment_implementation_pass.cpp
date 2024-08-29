@@ -22,8 +22,8 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<hl_ast_node>
-    operating_assignment_implementation_pass::process_global(std::shared_ptr<hl_ast_node> element) {
+    std::shared_ptr<hl_ast_root>
+    operating_assignment_implementation_pass::process_global(std::shared_ptr<hl_ast_root> element) {
 
 
         std::shared_ptr<hl_ast_root> ret_val = std::make_shared<hl_ast_root>();

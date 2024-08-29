@@ -21,8 +21,8 @@ namespace fcore{
         n_var = 0;
     }
 
-    std::shared_ptr<hl_ast_node>
-    inline_constant_extraction::process_global(std::shared_ptr<hl_ast_node> element) {
+    std::shared_ptr<hl_ast_root>
+    inline_constant_extraction::process_global(std::shared_ptr<hl_ast_root> element) {
         std::shared_ptr<hl_ast_root> retval = std::make_shared<hl_ast_root>();
         std::vector<std::shared_ptr<hl_ast_node>> new_content;
 

@@ -22,7 +22,7 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<hl_ast_node> dead_variable_elimination::process_global(std::shared_ptr<hl_ast_node> element) {
+    std::shared_ptr<hl_ast_root> dead_variable_elimination::process_global(std::shared_ptr<hl_ast_root> element) {
         std::shared_ptr<hl_ast_root> retval =  std::make_shared<hl_ast_root>();
         std::vector<std::shared_ptr<hl_ast_node>> new_body;
 

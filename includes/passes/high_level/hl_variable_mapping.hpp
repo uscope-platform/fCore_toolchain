@@ -25,7 +25,7 @@ namespace fcore{
     class hl_variable_mapping : public pass_base {
     public:
         explicit hl_variable_mapping(std::shared_ptr<variable_map>  &v);
-        std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
+        std::shared_ptr<hl_ast_root> process_global(std::shared_ptr<hl_ast_root> element) override;
         void process_var(std::shared_ptr<hl_ast_node> element);
     private:
         std::shared_ptr<variable_map> var_map;

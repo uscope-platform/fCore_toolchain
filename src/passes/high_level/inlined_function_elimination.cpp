@@ -22,7 +22,7 @@ namespace fcore{
         entry_point = std::move(entry_point_name);
     }
 
-    std::shared_ptr<hl_ast_node> inlined_function_elimination::process_global(std::shared_ptr<hl_ast_node> element) {
+    std::shared_ptr<hl_ast_root> inlined_function_elimination::process_global(std::shared_ptr<hl_ast_root> element) {
         std::shared_ptr<hl_ast_root> new_root = std::make_shared<hl_ast_root>();
         std::vector<std::shared_ptr<hl_ast_node>> new_content;
 

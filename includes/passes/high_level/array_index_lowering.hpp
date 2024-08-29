@@ -22,7 +22,7 @@ namespace fcore{
     class array_index_lowering : public  pass_base {
     public:
         array_index_lowering();
-        std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
+        std::shared_ptr<hl_ast_root> process_global(std::shared_ptr<hl_ast_root> element) override;
     private:
         std::shared_ptr<hl_ast_node> process_node_by_type(std::shared_ptr<hl_ast_node> element);
         std::shared_ptr<hl_ast_node> process_terminal(std::shared_ptr<hl_ast_node> element);

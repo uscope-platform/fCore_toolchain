@@ -19,7 +19,7 @@ namespace fcore{
     contiguous_array_identification::contiguous_array_identification() : pass_base("contiguous_array_identification"){
     }
 
-    std::shared_ptr<hl_ast_node> contiguous_array_identification::process_global(std::shared_ptr<hl_ast_node> element) {
+    std::shared_ptr<hl_ast_root> contiguous_array_identification::process_global(std::shared_ptr<hl_ast_root> element) {
         std::vector<std::shared_ptr<hl_ast_node>> new_loop_content;
         for(auto &item:element->get_content()){
             new_loop_content.push_back(process_element(item));

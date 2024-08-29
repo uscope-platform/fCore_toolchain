@@ -25,7 +25,7 @@ namespace fcore{
     class inlined_function_elimination : public  pass_base{
     public:
         explicit inlined_function_elimination(std::string entry_point_name);
-        std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
+        std::shared_ptr<hl_ast_root> process_global(std::shared_ptr<hl_ast_root> element) override;
     private:
         std::string entry_point;
     };
