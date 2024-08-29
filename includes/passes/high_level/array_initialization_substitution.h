@@ -24,7 +24,6 @@ namespace fcore{
     public:
         array_initialization_substitution();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
-        int get_pass_type() override { return GLOBAL_PASS;};
 
     private:
         std::vector<std::shared_ptr<hl_ast_node>> process_node_by_type(const std::shared_ptr<hl_ast_node>& node);

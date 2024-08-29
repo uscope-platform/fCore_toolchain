@@ -23,7 +23,6 @@
 #include <unordered_map>
 
 #define NONE_PASS 0
-#define LEAF_PASS 2
 #define GLOBAL_PASS 3
 
 namespace fcore{
@@ -39,7 +38,6 @@ namespace fcore{
             return element;
         };
         std::string get_name() {return name;};
-        virtual int get_pass_type() { return NONE_PASS;};
     private:
         std::string name;
     };

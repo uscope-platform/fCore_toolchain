@@ -26,7 +26,6 @@ namespace fcore{
     public:
         contiguous_array_identification();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
-        int get_pass_type() override { return GLOBAL_PASS;};
     private:
         std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_node> element);
         std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_expression_node> element);

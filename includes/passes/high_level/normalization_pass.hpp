@@ -21,11 +21,6 @@
 
 namespace fcore{
 
-    typedef enum {
-        expr_normalized = 0,
-        expr_normalize_lhs = 1,
-        expr_normalize_rhs = 2,
-    } side_to_normalize;
 
     typedef std::pair<std::shared_ptr<hl_ast_node>, std::vector<std::shared_ptr<hl_ast_node>>> norm_pair_t;
 
@@ -40,7 +35,6 @@ namespace fcore{
         norm_pair_t process_node_exp(const std::shared_ptr<hl_expression_node>& n);
 
         c_types_t get_expression_type(std::shared_ptr<hl_expression_node> expr);
-        int get_pass_type() override { return GLOBAL_PASS;};
     private:
         int intermediate_ordinal = 0;
     };

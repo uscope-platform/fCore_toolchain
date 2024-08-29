@@ -27,7 +27,6 @@ namespace fcore{
     public:
         constant_folding_pass();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
-        int get_pass_type() override { return GLOBAL_PASS;};
     private:
         std::shared_ptr<hl_ast_node> process_terminal(std::shared_ptr<hl_ast_node> element);
         std::shared_ptr<hl_ast_node> process_node_by_type(std::shared_ptr<hl_ast_node> element);

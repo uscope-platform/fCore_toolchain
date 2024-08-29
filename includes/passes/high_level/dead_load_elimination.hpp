@@ -31,7 +31,6 @@ namespace fcore{
     public:
         explicit dead_load_elimination();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
-        int get_pass_type() override { return GLOBAL_PASS;};
     private:
         int idx;
         void search_usages(std::shared_ptr<hl_ast_node> element);

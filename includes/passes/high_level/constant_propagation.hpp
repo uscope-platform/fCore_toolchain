@@ -32,7 +32,6 @@ namespace fcore{
         explicit constant_propagation();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
 
-        int get_pass_type() override { return GLOBAL_PASS;};
     private:
         std::shared_ptr<hl_ast_node> propagate_constant(std::shared_ptr<hl_ast_node> element, int instr_idx);
         std::shared_ptr<hl_ast_node> propagate_constant(std::shared_ptr<hl_expression_node> element, int instr_idx);

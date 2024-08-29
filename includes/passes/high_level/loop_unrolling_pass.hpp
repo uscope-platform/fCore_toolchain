@@ -30,7 +30,6 @@ namespace fcore{
     public:
         loop_unrolling_pass();
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
-        int get_pass_type() override { return GLOBAL_PASS;};
     private:
 
         std::shared_ptr<hl_ast_node> process_function_def(const std::shared_ptr<hl_function_def_node> &node);

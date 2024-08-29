@@ -26,7 +26,6 @@ namespace fcore{
     public:
         explicit inlined_function_elimination(std::string entry_point_name);
         std::shared_ptr<hl_ast_node> process_global(std::shared_ptr<hl_ast_node> element) override;
-        int get_pass_type() override { return GLOBAL_PASS;};
     private:
         std::string entry_point;
     };

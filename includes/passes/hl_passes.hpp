@@ -30,7 +30,6 @@
 #include "passes/high_level/inline_constant_extraction.hpp"
 #include "passes/high_level/conditional_implementation_pass.h"
 #include "passes/high_level/loop_unrolling_pass.hpp"
-#include "passes/high_level/array_scalarization_pass.hpp"
 #include "passes/high_level/code_block_inlining_pass.hpp"
 #include "passes/high_level/operating_assignment_implementation_pass.hpp"
 #include "passes/high_level/dead_load_elimination.hpp"

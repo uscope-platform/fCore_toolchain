@@ -45,7 +45,7 @@ namespace fcore{
         std::shared_ptr<hl_ast_node> substitute_operand_arguments(const std::shared_ptr<hl_ast_operand> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
         std::shared_ptr<hl_ast_node> substitute_code_block(const std::shared_ptr<hl_ast_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
         std::shared_ptr<hl_ast_node> substitute_call_arguments(const std::shared_ptr<hl_function_call_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
-        int get_pass_type() override { return GLOBAL_PASS;};
+
     private:
         std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>> functions_map;
     };
