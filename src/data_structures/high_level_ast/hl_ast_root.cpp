@@ -33,4 +33,12 @@ namespace fcore{
         copied_obj->set_content(args);
         return copied_obj;
     }
+
+    std::string hl_ast_root::pretty_print() {
+        std::string ret;
+        for(auto &item:content) {
+            ret += hl_ast_node::pretty_print(item);
+        }
+        return ret;
+    }
 }

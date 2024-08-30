@@ -54,7 +54,7 @@ namespace fcore{
             case hl_ast_node_type_definition:
                 return {process_definition(std::static_pointer_cast<hl_definition_node>(element))};
             case hl_ast_node_type_code_block:
-                return process_code_block(element);
+                return process_code_block(std::static_pointer_cast<hl_code_block>(element));
             case hl_ast_node_type_function_def:
                 return process_function_definition(std::static_pointer_cast<hl_function_def_node>(element));
             default:
@@ -133,7 +133,7 @@ namespace fcore{
     }
 
     std::vector<std::shared_ptr<hl_ast_node>>
-    code_block_inlining_pass::process_code_block(const std::shared_ptr<hl_ast_node>& element) {
+    code_block_inlining_pass::process_code_block(const std::shared_ptr<hl_code_block>& element) {
 
         std::vector<std::shared_ptr<hl_ast_node>> new_content;
 

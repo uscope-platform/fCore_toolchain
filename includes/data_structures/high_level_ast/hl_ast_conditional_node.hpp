@@ -31,7 +31,7 @@ namespace fcore{
         std::vector<std::shared_ptr<hl_ast_node>> get_else_block();
         void set_condition(std::shared_ptr<hl_ast_node> node);
         std::shared_ptr<hl_ast_node> get_condition();
-        std::string pretty_print() override;
+        std::string pretty_print();
         void set_ternary(bool t){ternary_flag = t;};
         bool is_ternary() const{return ternary_flag;};
         friend bool operator==(const hl_ast_conditional_node& lhs, const hl_ast_conditional_node& rhs){
@@ -52,13 +52,6 @@ namespace fcore{
         bool has_else() {return !else_block.empty();};
 
         static std::shared_ptr<hl_ast_conditional_node> deep_copy(const std::shared_ptr<hl_ast_conditional_node> &node);
-
-        // CONTENT MANIPULATION
-        void add_content(const std::shared_ptr<hl_ast_node>& element) override { content.push_back(element);};
-        void set_content(const std::vector<std::shared_ptr<hl_ast_node>>& c) override {content = c;};
-
-        // CONTENT ACCESS
-        virtual std::vector<std::shared_ptr<hl_ast_node>> get_content() override {return content;};
 
     private:
 

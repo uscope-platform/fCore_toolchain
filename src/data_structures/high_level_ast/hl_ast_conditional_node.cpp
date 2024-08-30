@@ -40,16 +40,16 @@ namespace fcore{
 
         std::ostringstream ss;
 
-        ss << "if (" << condition->pretty_print() << ") {" << std::endl;
+        ss << "if (" << hl_ast_node::pretty_print(condition)<< ") {" << std::endl;
         if(!if_block.empty()){
             for(const auto& item:if_block){
-                ss << item->pretty_print() << ";" << std::endl;
+                ss << hl_ast_node::pretty_print(item) << ";" << std::endl;
             }
         }
         if(!else_block.empty()){
             ss << "} else {" << std::endl;
             for(const auto& item:else_block){
-                ss << item->pretty_print() << ";" << std::endl;
+                ss << hl_ast_node::pretty_print(item) << ";" << std::endl;
             }
         }
         ss<< "}";

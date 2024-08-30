@@ -43,7 +43,7 @@ namespace fcore{
         std::shared_ptr<hl_ast_node> substitute_expression_arguments(const std::shared_ptr<hl_expression_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
         std::shared_ptr<hl_ast_node> substitute_definition_arguments(const std::shared_ptr<hl_definition_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
         std::shared_ptr<hl_ast_node> substitute_operand_arguments(const std::shared_ptr<hl_ast_operand> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
-        std::shared_ptr<hl_ast_node> substitute_code_block(const std::shared_ptr<hl_ast_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
+        std::shared_ptr<hl_ast_node> substitute_code_block(const std::shared_ptr<hl_code_block> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
         std::shared_ptr<hl_ast_node> substitute_call_arguments(const std::shared_ptr<hl_function_call_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
 
     private:

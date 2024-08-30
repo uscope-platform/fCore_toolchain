@@ -140,13 +140,28 @@ namespace fcore{
         return ret_val;
     }
 
-    std::string hl_ast_node::pretty_print() {
-
-        std::string ret;
-        for(auto &item:content){
-            ret += item->pretty_print();
+    std::string hl_ast_node::pretty_print(const std::shared_ptr<hl_ast_node> &node) {
+        if(node->node_type == hl_ast_node_type_expr){
+            return std::static_pointer_cast<hl_expression_node>(node)->pretty_print();
+        } else if(node->node_type == hl_ast_node_type_definition){
+            return std::static_pointer_cast<hl_definition_node>(node)->pretty_print();
+        } else if(node->node_type == hl_ast_node_type_conditional){
+            return std::static_pointer_cast<hl_ast_conditional_node>(node)->pretty_print();
+        } else if(node->node_type == hl_ast_node_type_loop){
+            return std::static_pointer_cast<hl_ast_loop_node>(node)->pretty_print();
+        } else if(node->node_type == hl_ast_node_type_function_def){
+            return std::static_pointer_cast<hl_function_def_node>(node)->pretty_print();
+        } else if(node->node_type == hl_ast_node_type_operand){
+            return std::static_pointer_cast<hl_ast_operand>(node)->pretty_print();
+        } else if(node->node_type == hl_ast_node_type_function_call){
+            return std::static_pointer_cast<hl_function_call_node>(node)->pretty_print();
+        } else if(node->node_type == hl_ast_node_type_program_root) {
+            return std::static_pointer_cast<hl_ast_root>(node)->pretty_print();
+        } else if(node->node_type == hl_ast_node_type_code_block){
+            return std::static_pointer_cast<hl_code_block>(node)->pretty_print();
+        } else {
+            throw std::runtime_error("HL ast node with unknown type");
         }
-        return ret;
     }
 
 

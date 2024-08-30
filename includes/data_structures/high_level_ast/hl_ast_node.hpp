@@ -81,25 +81,12 @@ namespace fcore{
 
         virtual bool is_terminal();
 
-        virtual std::string pretty_print();
+        virtual std::string pretty_print(const std::shared_ptr<hl_ast_node> &node);
 
         friend bool operator==(const hl_ast_node& lhs, const hl_ast_node& rhs){
             bool ret_val = true;
             ret_val &= lhs.node_type == rhs.node_type;
 
-            if(lhs.content.empty() && rhs.content.empty()){
-                ret_val &= true;
-            } else if(lhs.content.empty() || rhs.content.empty()){
-                ret_val = false;
-            } else{
-                bool body_equal = true;
-                if(lhs.content.size() != rhs.content.size()) return false;
-
-                for(uint32_t i = 0; i<lhs.content.size(); i++){
-                    body_equal &=  hl_ast_node::compare_content_by_type(lhs.content[i], rhs.content[i]);
-                }
-                ret_val &= body_equal;
-            }
 
             return ret_val;
         };
@@ -111,18 +98,7 @@ namespace fcore{
 
         hl_ast_node_type_t node_type;
 
-        // CONTENT MANIPULATION
-        virtual void add_content(const std::shared_ptr<hl_ast_node>& element) { content.push_back(element);};
-        virtual void set_content(const std::vector<std::shared_ptr<hl_ast_node>>& c) {content = c;};
-
-        // CONTENT ACCESS
-        virtual std::vector<std::shared_ptr<hl_ast_node>> get_content() {return content;};
-
     protected:
-
-
-        std::vector<std::shared_ptr<hl_ast_node>> content;
-
 
     };
 }

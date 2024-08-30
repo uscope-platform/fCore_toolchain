@@ -62,19 +62,11 @@ namespace fcore {
         if(!initializer.empty()){
             ss << " = ";
             if(is_scalar()){
-                if(initializer[0]->node_type == hl_ast_node_type_function_call){
-                    ss << std::static_pointer_cast<hl_function_call_node>(initializer[0])->pretty_print();
-                } else{
-                    ss << std::static_pointer_cast<hl_expression_node>(initializer[0])->pretty_print();
-                }
+                ss << hl_ast_node::pretty_print(initializer[0]);
             } else {
                 ss << "{";
                 for(int i = 0; i< initializer.size(); i++){
-                    if(initializer[i]->node_type == hl_ast_node_type_function_call){
-                        ss << std::static_pointer_cast<hl_function_call_node>(initializer[i])->pretty_print();
-                    } else{
-                        ss << std::static_pointer_cast<hl_expression_node>(initializer[i])->pretty_print();
-                    }
+                    ss << hl_ast_node::pretty_print(initializer[i]);
                     if(i != initializer.size()-1) ss << ", ";
                 }
                 ss << "}";

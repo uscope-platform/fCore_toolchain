@@ -32,7 +32,7 @@ namespace fcore{
 
         if(!loop_content.empty()){
             for(const auto& item:loop_content){
-                ss << item->pretty_print() << ";" << std::endl;
+                ss << hl_ast_node::pretty_print(item) << ";" << std::endl;
             }
         }
         ss<< "}";

@@ -39,7 +39,7 @@ namespace fcore{
         std::shared_ptr<hl_ast_node> get_return();
         bool has_return(){ return return_expression != nullptr;};
         std::vector<std::shared_ptr<hl_ast_node>> get_body();
-        std::string pretty_print() override;
+        std::string pretty_print();
         friend bool operator==(const hl_function_def_node& lhs, const hl_function_def_node& rhs){
             bool ret_val = true;
 
@@ -76,13 +76,6 @@ namespace fcore{
         }
 
         static std::shared_ptr<hl_function_def_node> deep_copy(const std::shared_ptr<hl_function_def_node> &node);
-
-        // CONTENT MANIPULATION
-        void add_content(const std::shared_ptr<hl_ast_node>& element) override { content.push_back(element);};
-        void set_content(const std::vector<std::shared_ptr<hl_ast_node>>& c) override {content = c;};
-
-        // CONTENT ACCESS
-        virtual std::vector<std::shared_ptr<hl_ast_node>> get_content() override {return content;};
 
     protected:
         c_types_t return_type;

@@ -71,7 +71,7 @@ namespace fcore{
             case var_type_array:{
                 ret_val = inner_variable->get_name();
                 for(auto &item:array_index){
-                    ret_val += '[' + item->pretty_print() + ']';
+                    ret_val += '[' + hl_ast_node::pretty_print(item) + ']';
                 }
             }
 

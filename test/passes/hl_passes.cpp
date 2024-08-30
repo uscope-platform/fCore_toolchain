@@ -56,7 +56,7 @@ TEST(HlPassesTest, divisionImplementation) {
     manager.enable_pass("Division Implementation");
 
 
-    std::shared_ptr<hl_ast_node> result =  manager.run_morphing_passes(input_root);
+    std::shared_ptr<hl_ast_root> result =  manager.run_morphing_passes(input_root);
 
     std::shared_ptr<hl_expression_node> mult_exp = std::make_shared<hl_expression_node>(expr_mult);
 
@@ -130,7 +130,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
 
 
-    std::shared_ptr<hl_ast_node> result =  manager.run_morphing_passes(input_root);;
+    std::shared_ptr<hl_ast_root> result =  manager.run_morphing_passes(input_root);;
 
     var = std::make_shared<variable>("b");
     std::shared_ptr<hl_definition_node> def_3 = std::make_shared<hl_definition_node>("b", c_type_float, var);
@@ -206,7 +206,7 @@ TEST(HlPassesTest, test_operating_assignments_implementation) {
     manager.enable_pass("Operating Assignment Implementation");
 
 
-    const std::shared_ptr<hl_ast_node>& result = manager.run_morphing_passes(input_root);;
+    const std::shared_ptr<hl_ast_root>& result = manager.run_morphing_passes(input_root);;
 
     std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 
@@ -337,7 +337,7 @@ TEST(HlPassesTest, function_inlining) {
     manager.enable_pass("Code Block Expansion");
 
 
-    const std::shared_ptr<hl_ast_node>& res = manager.run_morphing_passes(input_root);;
+    const std::shared_ptr<hl_ast_root>& res = manager.run_morphing_passes(input_root);;
 
     std::shared_ptr<hl_ast_root> gold_standard= std::make_shared<hl_ast_root>();
 

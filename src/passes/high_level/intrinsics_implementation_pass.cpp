@@ -110,15 +110,16 @@ namespace fcore {
                 node->set_iteration_expr(
                         std::static_pointer_cast<hl_expression_node>(process_node_by_type(node->get_iteration_expr())));
                 return node;
-            } else {
-                std::vector<std::shared_ptr<hl_ast_node>> content = element->get_content();
+            } else if (element->node_type == hl_ast_node_type_code_block) {
+                auto ret_val = std::make_shared<hl_code_block>();
+                std::vector<std::shared_ptr<hl_ast_node>> content = std::static_pointer_cast<hl_code_block>(element)->get_content();
                 for (auto &i: content) {
                     i = process_node_by_type(i);
                 }
-                element->set_content(content);
+                ret_val->set_content(content);
                 return element;
             }
-
+            return element;
         } else {
 
             switch (element->node_type) {

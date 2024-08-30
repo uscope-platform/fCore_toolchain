@@ -39,7 +39,7 @@ namespace fcore{
 
             }
             ++run_number;
-        } while (!(*old_tree == *working_tree));
+        } while (!hl_ast_node::compare_content_by_type(old_tree, working_tree));
         return working_tree;
     }
 

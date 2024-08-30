@@ -55,7 +55,7 @@ namespace fcore{
 
         bool is_terminal() override {return true;}
         bool is_scalar() {return  inner_variable->get_type()!=var_type_array;};
-        std::string pretty_print() override;
+        std::string pretty_print();
         operator std::string();
         friend bool operator==(const hl_ast_operand& lhs, const hl_ast_operand& rhs){
             bool ret_val = true;
@@ -71,13 +71,6 @@ namespace fcore{
         };
 
         static std::shared_ptr<hl_ast_operand> deep_copy(const std::shared_ptr<hl_ast_operand> &node);
-
-        // CONTENT MANIPULATION
-        void add_content(const std::shared_ptr<hl_ast_node>& element) override { content.push_back(element);};
-        void set_content(const std::vector<std::shared_ptr<hl_ast_node>>& c) override {content = c;};
-
-        // CONTENT ACCESS
-        virtual std::vector<std::shared_ptr<hl_ast_node>> get_content() override {return content;};
 
     private:
 

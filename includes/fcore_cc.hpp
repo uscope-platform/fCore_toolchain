@@ -92,8 +92,8 @@ namespace fcore {
         static nlohmann::json dump_iom_map(std::unordered_map<std::string, core_iom> &map);
         static std::unordered_map<std::string, core_iom> load_iom_map(const nlohmann::json &raw_map);
     private:
-        void merge_includes(const std::vector<std::shared_ptr<hl_ast_node>>& i);
-        std::shared_ptr<hl_ast_node>  parse_include(std::istream &file, std::shared_ptr<define_map> def_map);
+        void merge_includes(const std::vector<std::shared_ptr<hl_ast_root>>& i);
+        std::shared_ptr<hl_ast_root>  parse_include(std::istream &file, std::shared_ptr<define_map> def_map);
         void parse(std::unordered_map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map);
         void optimize(std::unordered_map<std::string, std::vector<uint32_t >> &dma_map);
         void analyze_program_length(std::shared_ptr<struct instruction_count> c);

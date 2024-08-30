@@ -260,7 +260,7 @@ namespace fcore{
         } else if(statement->node_type == hl_ast_node_type_loop){
             return substitute_loop_arguments(std::static_pointer_cast<hl_ast_loop_node>(statement), parameters);
         } else if(statement->node_type == hl_ast_node_type_code_block){
-            return substitute_code_block(statement, parameters);
+            return substitute_code_block(std::static_pointer_cast<hl_code_block>(statement), parameters);
         } else if(statement->node_type == hl_ast_node_type_function_call){
             return substitute_call_arguments(std::static_pointer_cast<hl_function_call_node>(statement), parameters);
         }
@@ -366,7 +366,7 @@ namespace fcore{
         return statement;
     }
     std::shared_ptr<hl_ast_node>
-    function_inlining_pass::substitute_code_block(const std::shared_ptr<hl_ast_node> &statement,
+    function_inlining_pass::substitute_code_block(const std::shared_ptr<hl_code_block> &statement,
                                                          std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters) {
 
         std::shared_ptr<hl_code_block> ret_code_block = std::make_shared<hl_code_block>();

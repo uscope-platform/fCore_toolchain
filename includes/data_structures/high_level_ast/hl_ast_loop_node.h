@@ -35,7 +35,7 @@ namespace fcore{
         void set_init_statement(std::shared_ptr<hl_definition_node> init_s) {init_statement = std::move(init_s);}
         std::shared_ptr<hl_expression_node> get_iteration_expr() {return iteration_expr;};
         void set_iteration_expr(std::shared_ptr<hl_expression_node> i) {iteration_expr = std::move(i);};
-        std::string pretty_print() override;
+        std::string pretty_print();
         friend bool operator==(const hl_ast_loop_node& lhs, const hl_ast_loop_node& rhs){
             bool ret_val = true;
 
@@ -49,12 +49,6 @@ namespace fcore{
         };
         static std::shared_ptr<hl_ast_loop_node> deep_copy(const std::shared_ptr<hl_ast_loop_node> &node);
 
-        // CONTENT MANIPULATION
-        void add_content(const std::shared_ptr<hl_ast_node>& element) override { content.push_back(element);};
-        void set_content(const std::vector<std::shared_ptr<hl_ast_node>>& c) override {content = c;};
-
-        // CONTENT ACCESS
-        virtual std::vector<std::shared_ptr<hl_ast_node>> get_content() override {return content;};
 
     private:
         std::vector<std::shared_ptr<hl_ast_node>> loop_content;
