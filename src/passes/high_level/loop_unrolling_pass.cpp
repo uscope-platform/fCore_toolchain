@@ -22,8 +22,8 @@ namespace fcore{
         current_loop_iteration = 0;
     }
 
-    std::shared_ptr<hl_ast_root> loop_unrolling_pass::process_global(std::shared_ptr<hl_ast_root> element) {
-        std::shared_ptr<hl_ast_root> retval = std::make_shared<hl_ast_root>();
+    std::shared_ptr<hl_code_block> loop_unrolling_pass::process_global(std::shared_ptr<hl_code_block> element) {
+        auto retval = std::make_shared<hl_code_block>();
         std::vector<std::shared_ptr<hl_ast_node>> new_content;
 
         for(const auto& item:element->get_content()){

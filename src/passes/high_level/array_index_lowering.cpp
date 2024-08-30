@@ -22,8 +22,8 @@ namespace fcore{
     }
 
 
-    std::shared_ptr<hl_ast_root> array_index_lowering::process_global(std::shared_ptr<hl_ast_root> element) {
-        std::shared_ptr<hl_ast_root> ret_val = std::make_shared<hl_ast_root>();
+    std::shared_ptr<hl_code_block> array_index_lowering::process_global(std::shared_ptr<hl_code_block> element) {
+        std::shared_ptr<hl_code_block> ret_val = std::make_shared<hl_code_block>();
         std::vector<std::shared_ptr<hl_ast_node>> new_content;
         for(auto &item:element->get_content()){
             new_content.push_back(process_node_by_type(item));

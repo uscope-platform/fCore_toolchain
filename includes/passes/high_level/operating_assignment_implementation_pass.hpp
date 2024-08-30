@@ -24,7 +24,7 @@ namespace fcore{
     class operating_assignment_implementation_pass : public pass_base {
     public:
         operating_assignment_implementation_pass();
-        std::shared_ptr<hl_ast_root> process_global(std::shared_ptr<hl_ast_root> element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
         std::shared_ptr<hl_ast_node> process_node_by_type(std::shared_ptr<hl_ast_node> element);
         std::shared_ptr<hl_ast_node> process_terminal(std::shared_ptr<hl_ast_node> element);
     private:

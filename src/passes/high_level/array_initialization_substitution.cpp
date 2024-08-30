@@ -21,7 +21,7 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<hl_ast_root> array_initialization_substitution::process_global(std::shared_ptr<hl_ast_root> element) {
+    std::shared_ptr<hl_code_block> array_initialization_substitution::process_global(std::shared_ptr<hl_code_block> element) {
         std::vector<std::shared_ptr<hl_ast_node>> new_content;
 
         for(auto &item:element->get_content()){

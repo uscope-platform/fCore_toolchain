@@ -21,7 +21,7 @@ namespace fcore{
         var_map = v;
     }
 
-    std::shared_ptr<hl_ast_root> hl_variable_mapping::process_global(std::shared_ptr<hl_ast_root> element) {
+    std::shared_ptr<hl_code_block> hl_variable_mapping::process_global(std::shared_ptr<hl_code_block> element) {
         for(auto &i:element->get_content()){
             process_var(i);
         }

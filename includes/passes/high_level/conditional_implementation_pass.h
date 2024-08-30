@@ -26,7 +26,7 @@ namespace fcore{
     class conditional_implementation_pass : public pass_base {
     public:
         conditional_implementation_pass();
-        std::shared_ptr<hl_ast_root> process_global(std::shared_ptr<hl_ast_root> element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
 
     private:
         std::shared_ptr<hl_ast_operand> find_variable_definition(const std::shared_ptr<hl_ast_node>& subexpr, const std::shared_ptr<hl_ast_node>& item,
@@ -34,11 +34,11 @@ namespace fcore{
         std::shared_ptr<hl_ast_operand> get_operands(const std::shared_ptr<hl_ast_node>& subexpr, const std::shared_ptr<hl_ast_node>& item,
                                                      const std::vector<std::shared_ptr<hl_ast_node>>& prog_content);
 
-        std::vector<std::shared_ptr<hl_ast_node>> process_block_by_type(const std::shared_ptr<hl_ast_node>& node, const std::shared_ptr<hl_ast_root>& subtree);
-        std::vector<std::shared_ptr<hl_ast_node>> process_conditional(const std::shared_ptr<hl_ast_conditional_node>& node, const std::shared_ptr<hl_ast_root>& subtree);
-        std::vector<std::shared_ptr<hl_ast_node>> process_loop(const std::shared_ptr<hl_ast_loop_node>& node, const std::shared_ptr<hl_ast_root>& subtree);
-        std::vector<std::shared_ptr<hl_ast_node>> process_definition(const std::shared_ptr<hl_definition_node> &node, const std::shared_ptr<hl_ast_root>& subtree);
-        std::vector<std::shared_ptr<hl_ast_node>> process_expression(const std::shared_ptr<hl_expression_node> &node, const std::shared_ptr<hl_ast_root>& subtree);
+        std::vector<std::shared_ptr<hl_ast_node>> process_block_by_type(const std::shared_ptr<hl_ast_node>& node, const std::shared_ptr<hl_code_block>& subtree);
+        std::vector<std::shared_ptr<hl_ast_node>> process_conditional(const std::shared_ptr<hl_ast_conditional_node>& node, const std::shared_ptr<hl_code_block>& subtree);
+        std::vector<std::shared_ptr<hl_ast_node>> process_loop(const std::shared_ptr<hl_ast_loop_node>& node, const std::shared_ptr<hl_code_block>& subtree);
+        std::vector<std::shared_ptr<hl_ast_node>> process_definition(const std::shared_ptr<hl_definition_node> &node, const std::shared_ptr<hl_code_block>& subtree);
+        std::vector<std::shared_ptr<hl_ast_node>> process_expression(const std::shared_ptr<hl_expression_node> &node, const std::shared_ptr<hl_code_block>& subtree);
         std::shared_ptr<hl_ast_node> process_ternary(const std::shared_ptr<hl_ast_conditional_node>& node);
     };
 }

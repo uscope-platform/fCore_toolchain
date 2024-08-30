@@ -42,7 +42,7 @@ namespace fcore{
 
         if (profiling_core != nullptr) profiling_core->set_phase("parsing");
 
-        std::vector<std::shared_ptr<hl_ast_root>> includes_ASTs;
+        std::vector<std::shared_ptr<hl_code_block>> includes_ASTs;
         if (profiling_core != nullptr) profiling_core->start_event("parse headers", false);
         if(!includes.empty()){
             for(auto &i:includes){
@@ -184,7 +184,7 @@ namespace fcore{
         return writer.get_io_mapping();
     }
 
-    std::shared_ptr<hl_ast_root>  fcore_cc::parse_include(std::istream &input, std::shared_ptr<define_map> def_map) {
+    std::shared_ptr<hl_code_block>  fcore_cc::parse_include(std::istream &input, std::shared_ptr<define_map> def_map) {
         std::unordered_map<std::string, variable_class_t> dma_specs;
         C_language_parser target_parser(input, def_map);
         target_parser.pre_process({});
@@ -192,7 +192,7 @@ namespace fcore{
         return target_parser.AST;
     }
 
-    void fcore_cc::merge_includes(const std::vector<std::shared_ptr<hl_ast_root>>& i) {
+    void fcore_cc::merge_includes(const std::vector<std::shared_ptr<hl_code_block>>& i) {
 
         std::set<std::string> target_functions;
         for(auto & node: hl_ast->get_content()){

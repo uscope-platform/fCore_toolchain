@@ -21,8 +21,8 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<hl_ast_root> code_block_inlining_pass::process_global(std::shared_ptr<hl_ast_root> element) {
-        std::shared_ptr<hl_ast_root> ret_val = std::make_shared<hl_ast_root>();
+    std::shared_ptr<hl_code_block> code_block_inlining_pass::process_global(std::shared_ptr<hl_code_block> element) {
+        auto ret_val = std::make_shared<hl_code_block>();
         std::vector<std::shared_ptr<hl_ast_node>> new_content = process_vector(element->get_content());
 
         ret_val->set_content(new_content);

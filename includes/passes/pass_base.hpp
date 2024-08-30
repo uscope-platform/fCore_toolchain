@@ -22,14 +22,14 @@
 #include <string>
 #include <unordered_map>
 
-#include "data_structures/high_level_ast/hl_ast_root.hpp"
+#include "data_structures/high_level_ast/hl_code_block.hpp"
 
 namespace fcore{
     class pass_base {
     public:
         pass_base(std::string n) {name = std::move(n);};
 
-        virtual std::shared_ptr<hl_ast_root> process_global(std::shared_ptr<hl_ast_root> element) {
+        virtual std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) {
             return element;
         };
         std::string get_name() {return name;};

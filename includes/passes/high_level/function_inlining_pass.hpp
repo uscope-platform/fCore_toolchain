@@ -25,7 +25,7 @@ namespace fcore{
     class function_inlining_pass :public pass_base{
     public:
         function_inlining_pass();
-        std::shared_ptr<hl_ast_root> process_global(std::shared_ptr<hl_ast_root> element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
 
         std::vector<std::shared_ptr<hl_ast_node>> process_element(std::shared_ptr<hl_ast_node> element);
         std::shared_ptr<hl_ast_loop_node> process_loop(std::shared_ptr<hl_ast_loop_node> element);

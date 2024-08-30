@@ -22,7 +22,6 @@
 #include "data_structures/high_level_ast/hl_function_call_node.hpp"
 #include "data_structures/high_level_ast/hl_function_def_node.hpp"
 #include "data_structures/high_level_ast/hl_ast_conditional_node.hpp"
-#include "data_structures/high_level_ast/hl_ast_root.hpp"
 #include "data_structures/high_level_ast/hl_ast_loop_node.h"
 #include "data_structures/high_level_ast/hl_code_block.hpp"
 
@@ -55,9 +54,7 @@ namespace fcore{
         if(lhs->node_type != rhs->node_type) return false;
 
         switch (lhs->node_type) {
-            case hl_ast_node_type_program_root:
-                return *std::static_pointer_cast<hl_ast_root>(lhs) == *std::static_pointer_cast<hl_ast_root>(rhs);
-            case hl_ast_node_type_code_block:
+           case hl_ast_node_type_code_block:
                 return *std::static_pointer_cast<hl_code_block>(lhs) == *std::static_pointer_cast<hl_code_block>(rhs);
             case hl_ast_node_type_loop:
                 return *std::static_pointer_cast<hl_ast_loop_node>(lhs) == *std::static_pointer_cast<hl_ast_loop_node>(rhs);
@@ -109,8 +106,6 @@ namespace fcore{
             return hl_ast_operand::deep_copy(std::static_pointer_cast<hl_ast_operand>(node));
         } else if(node->node_type == hl_ast_node_type_function_call){
             return hl_function_call_node::deep_copy(std::static_pointer_cast<hl_function_call_node>(node));
-        } else if(node->node_type == hl_ast_node_type_program_root) {
-            return hl_ast_root::deep_copy(std::static_pointer_cast<hl_ast_root>(node));
         } else if(node->node_type == hl_ast_node_type_code_block){
             return hl_code_block::deep_copy(std::static_pointer_cast<hl_code_block>(node));
         } else {
@@ -155,8 +150,6 @@ namespace fcore{
             return std::static_pointer_cast<hl_ast_operand>(node)->pretty_print();
         } else if(node->node_type == hl_ast_node_type_function_call){
             return std::static_pointer_cast<hl_function_call_node>(node)->pretty_print();
-        } else if(node->node_type == hl_ast_node_type_program_root) {
-            return std::static_pointer_cast<hl_ast_root>(node)->pretty_print();
         } else if(node->node_type == hl_ast_node_type_code_block){
             return std::static_pointer_cast<hl_code_block>(node)->pretty_print();
         } else {

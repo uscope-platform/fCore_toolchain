@@ -29,7 +29,7 @@ namespace fcore{
     class loop_unrolling_pass : public pass_base {
     public:
         loop_unrolling_pass();
-        std::shared_ptr<hl_ast_root> process_global(std::shared_ptr<hl_ast_root> element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
     private:
 
         std::shared_ptr<hl_ast_node> process_function_def(const std::shared_ptr<hl_function_def_node> &node);

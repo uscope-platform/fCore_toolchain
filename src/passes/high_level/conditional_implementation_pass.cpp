@@ -22,8 +22,8 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<hl_ast_root> conditional_implementation_pass::process_global(std::shared_ptr<hl_ast_root> element) {
-        std::shared_ptr<hl_ast_root> ret_val = std::make_shared<hl_ast_root>();
+    std::shared_ptr<hl_code_block> conditional_implementation_pass::process_global(std::shared_ptr<hl_code_block> element) {
+        std::shared_ptr<hl_code_block> ret_val = std::make_shared<hl_code_block>();
 
         std::vector<std::shared_ptr<hl_ast_node>> body;
 
@@ -39,7 +39,7 @@ namespace fcore{
 
     std::vector<std::shared_ptr<hl_ast_node>>
     conditional_implementation_pass::process_block_by_type(const std::shared_ptr<hl_ast_node> &node,
-                                                                  const std::shared_ptr<hl_ast_root> &subtree) {
+                                                                  const std::shared_ptr<hl_code_block> &subtree) {
 
         switch (node->node_type) {
             case hl_ast_node_type_loop:
@@ -58,7 +58,7 @@ namespace fcore{
 
     std::vector<std::shared_ptr<hl_ast_node>>
     conditional_implementation_pass::process_loop(const std::shared_ptr<hl_ast_loop_node> &node,
-                                                         const std::shared_ptr<hl_ast_root> &subtree) {
+                                                         const std::shared_ptr<hl_code_block> &subtree) {
 
 
 
@@ -78,7 +78,7 @@ namespace fcore{
 
     std::vector<std::shared_ptr<hl_ast_node>>
     conditional_implementation_pass::process_definition(const std::shared_ptr<hl_definition_node> &node,
-                                                               const std::shared_ptr<hl_ast_root> &subtree) {
+                                                               const std::shared_ptr<hl_code_block> &subtree) {
         if(node->is_initialized()){
             if(node->is_scalar()){
                 auto initializer = node->get_scalar_initializer();
@@ -113,7 +113,7 @@ namespace fcore{
 
     std::vector<std::shared_ptr<hl_ast_node>>
     conditional_implementation_pass::process_expression(const std::shared_ptr<hl_expression_node> &node,
-                                                               const std::shared_ptr<hl_ast_root> &subtree) {
+                                                               const std::shared_ptr<hl_code_block> &subtree) {
         if(node->get_type()== expr_assign){
             auto rhs = node->get_rhs();
             if(rhs->node_type==hl_ast_node_type_conditional){
@@ -126,7 +126,7 @@ namespace fcore{
 
 
     std::vector<std::shared_ptr<hl_ast_node>>
-    conditional_implementation_pass::process_conditional(const std::shared_ptr<hl_ast_conditional_node>& node, const std::shared_ptr<hl_ast_root>& subtree) {
+    conditional_implementation_pass::process_conditional(const std::shared_ptr<hl_ast_conditional_node>& node, const std::shared_ptr<hl_code_block>& subtree) {
         std::vector<std::shared_ptr<hl_ast_node>> result_body;
 
         //TODO: FIND OUT WHAT THE PROG CONTENT NEED TO BE

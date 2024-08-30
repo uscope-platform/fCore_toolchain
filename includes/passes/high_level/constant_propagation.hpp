@@ -30,7 +30,7 @@ namespace fcore{
     class constant_propagation :public pass_base {
     public:
         explicit constant_propagation();
-        std::shared_ptr<hl_ast_root> process_global(std::shared_ptr<hl_ast_root> element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
 
     private:
         std::shared_ptr<hl_ast_node> propagate_constant(std::shared_ptr<hl_ast_node> element, int instr_idx);

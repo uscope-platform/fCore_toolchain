@@ -27,7 +27,7 @@ namespace fcore{
     class normalization_pass : public pass_base {
     public:
         normalization_pass();
-        std::shared_ptr<hl_ast_root> process_global(std::shared_ptr<hl_ast_root> element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
         bool is_normal(const std::shared_ptr<hl_ast_node>& element);
 
         norm_pair_t process_node_by_type(std::shared_ptr<hl_ast_node> n);

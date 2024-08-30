@@ -43,7 +43,7 @@ namespace fcore{
 
         void pre_process(const std::vector<std::string> &abs_includes);
         void parse(std::unordered_map<std::string, variable_class_t> dma_specs);
-        std::shared_ptr<hl_ast_root> AST;
+        std::shared_ptr<hl_code_block> AST;
         std::string error;
 
 

@@ -22,8 +22,8 @@ namespace fcore{
         efi_mode = false;
     }
 
-    std::shared_ptr<hl_ast_root> dead_load_elimination::process_global(std::shared_ptr<hl_ast_root> element) {
-        std::shared_ptr<hl_ast_root> retval = std::make_shared<hl_ast_root>();
+    std::shared_ptr<hl_code_block> dead_load_elimination::process_global(std::shared_ptr<hl_code_block> element) {
+        auto retval = std::make_shared<hl_code_block>();
 
         std::vector<std::shared_ptr<hl_ast_node>> new_content;
 

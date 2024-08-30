@@ -102,7 +102,7 @@ namespace fcore{
         void exitCompilationUnit(C_parser::C_grammarParser::CompilationUnitContext *ctx) override;
 
         void set_dma_specs(std::unordered_map<std::string, variable_class_t> ds) {dma_specs = std::move(ds);};
-        std::shared_ptr<hl_ast_root> get_ast(){
+        std::shared_ptr<hl_code_block> get_ast(){
             return root;
         };
 
@@ -153,7 +153,7 @@ namespace fcore{
         std::shared_ptr<hl_ast_loop_node> loop;
         std::vector<std::shared_ptr<hl_ast_node>> loop_body;
 
-        std::shared_ptr<hl_ast_root> root;
+        std::shared_ptr<hl_code_block> root;
 
         std::stack<std::shared_ptr<hl_ast_node>> outer_block_nodes;
         std::stack<std::vector<std::shared_ptr<hl_ast_node>>> outer_block_contents;

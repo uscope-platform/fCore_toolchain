@@ -28,7 +28,7 @@ namespace fcore {
     class high_level_ast_lowering {
     public:
         explicit high_level_ast_lowering();
-        void set_input_ast(std::shared_ptr<hl_ast_root> i) {input_ast = std::move(i);};
+        void set_input_ast(std::shared_ptr<hl_code_block> i) {input_ast = std::move(i);};
         instruction_stream translate();
     private:
         std::optional<instruction_variant> translate_node(const std::shared_ptr<hl_ast_node>& input);
@@ -39,7 +39,7 @@ namespace fcore {
         std::optional<instruction_variant> process_ternary_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest);
         std::optional<instruction_variant> process_immediate_expression(std::shared_ptr<hl_expression_node> input);
         std::optional<instruction_variant> process_regular_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest);
-        std::shared_ptr<hl_ast_root> input_ast;
+        std::shared_ptr<hl_code_block> input_ast;
 
         std::optional<instruction_variant> create_ast_node(isa_instruction_type t, std::vector<std::shared_ptr<variable>> args, const std::string& op);
         std::map<expression_type_t, std::string> expr_instruction_mapping;

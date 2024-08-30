@@ -22,7 +22,7 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<hl_ast_root> function_inlining_pass::process_global(std::shared_ptr<hl_ast_root> element) {
+    std::shared_ptr<hl_code_block> function_inlining_pass::process_global(std::shared_ptr<hl_code_block> element) {
 
         for(auto &item:element->get_content()){
             if(item->node_type == hl_ast_node_type_function_def){

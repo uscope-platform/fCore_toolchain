@@ -21,10 +21,10 @@
 namespace fcore{
 
 
-    std::shared_ptr<hl_ast_root>  hl_pass_manager::run_repeating_pass_group(std::shared_ptr<hl_ast_root> &subtree,
+    std::shared_ptr<hl_code_block>  hl_pass_manager::run_repeating_pass_group(std::shared_ptr<hl_code_block> &subtree,
                                                                                  const std::vector<std::shared_ptr<pass_base>> &group) {
 
-        auto working_tree =  std::static_pointer_cast<hl_ast_root>(hl_ast_node::deep_copy(subtree));
+        auto working_tree =  std::static_pointer_cast<hl_code_block>(hl_ast_node::deep_copy(subtree));
         int run_number = 1;
 
         std::shared_ptr<hl_ast_node> old_tree;
@@ -33,7 +33,7 @@ namespace fcore{
             for(auto &pass:group){
 
                 if(ic != nullptr) ic->start_event(pass->get_name(), false);
-                auto pass_res = pass->process_global(std::static_pointer_cast<hl_ast_root>(subtree));
+                auto pass_res = pass->process_global(std::static_pointer_cast<hl_code_block>(subtree));
                 working_tree =  pass_res;
                 if(ic != nullptr) ic->end_event(pass->get_name());
 
@@ -62,8 +62,8 @@ namespace fcore{
         passes.push_back(p);
     }
 
-    std::shared_ptr<hl_ast_root> hl_pass_manager::run_morphing_passes(std::shared_ptr<hl_ast_root> AST) {
-        auto working_ast = std::static_pointer_cast<hl_ast_root>(hl_ast_node::deep_copy(AST));
+    std::shared_ptr<hl_code_block> hl_pass_manager::run_morphing_passes(std::shared_ptr<hl_code_block> AST) {
+        auto working_ast = std::static_pointer_cast<hl_code_block>(hl_ast_node::deep_copy(AST));
 
         for(auto& p:passes){
             if(p.type == single_pass){
@@ -71,7 +71,7 @@ namespace fcore{
                     std::shared_ptr<pass_base> pass = p.pass[0];
 
                     if (ic != nullptr) ic->start_event(pass->get_name(), false);
-                    auto pass_res = pass->process_global(std::static_pointer_cast<hl_ast_root>(working_ast));
+                    auto pass_res = pass->process_global(std::static_pointer_cast<hl_code_block>(working_ast));
                     working_ast =  pass_res;
                     if (ic != nullptr) ic->end_event(pass->get_name());
                 }
@@ -84,7 +84,7 @@ namespace fcore{
                     for(auto &pass:p.pass){
 
                         if(ic != nullptr) ic->start_event(pass->get_name(), false);
-                        working_ast =  pass->process_global(std::static_pointer_cast<hl_ast_root>(working_ast));
+                        working_ast =  pass->process_global(std::static_pointer_cast<hl_code_block>(working_ast));
                         if(ic != nullptr) ic->end_event(pass->get_name());
                     }
                 }
