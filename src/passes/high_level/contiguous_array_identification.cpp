@@ -49,8 +49,6 @@ namespace fcore{
                 return process_element(std::static_pointer_cast<hl_ast_operand>(element));
             case hl_ast_node_type_code_block:
                 throw std::runtime_error("unexpected code block in contiguous array identification pass");
-            case hl_ast_node_type_program_root:
-                throw std::runtime_error("unexpected nested program root in contiguous array identification pass");
             default:
                 throw std::runtime_error("Internal error, this condition should never happen");
         }

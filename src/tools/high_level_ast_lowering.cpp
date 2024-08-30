@@ -109,7 +109,6 @@ namespace fcore{
                 }
             }
             case hl_ast_node_type_operand:
-            case hl_ast_node_type_program_root:
             case hl_ast_node_type_loop:
             case hl_ast_node_type_conditional:
             case hl_ast_node_type_function_def:

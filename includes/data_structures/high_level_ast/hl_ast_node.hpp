@@ -32,8 +32,7 @@ namespace fcore{
         hl_ast_node_type_function_def = 5,
         hl_ast_node_type_operand = 6,
         hl_ast_node_type_function_call = 7,
-        hl_ast_node_type_program_root = 8,
-        hl_ast_node_type_code_block = 9
+        hl_ast_node_type_code_block = 8
     } hl_ast_node_type_t;
 
     constexpr std::string_view hl_ast_node_to_string(hl_ast_node_type_t i){
@@ -45,7 +44,6 @@ namespace fcore{
             case hl_ast_node_type_function_def: return "hl_ast_node_type_function_def";
             case hl_ast_node_type_operand: return "hl_ast_node_type_operand";
             case hl_ast_node_type_function_call: return "hl_ast_node_type_function_call";
-            case hl_ast_node_type_program_root: return "hl_ast_node_type_program_root";
             case hl_ast_node_type_code_block: return "hl_ast_node_type_code_block";
             default: return "unknown hl ast type";
         }
