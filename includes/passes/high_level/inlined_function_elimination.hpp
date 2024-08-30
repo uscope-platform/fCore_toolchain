@@ -19,7 +19,7 @@
 #include <utility>
 
 #include "data_structures/high_level_ast/high_level_ast.hpp"
-#include "passes/pass_base.hpp"
+#include "passes/high_level/infrastructure/pass_base.hpp"
 
 namespace fcore{
     class inlined_function_elimination : public  pass_base{

@@ -18,7 +18,7 @@
 #ifndef FCORE_TOOLCHAIN_CONSTANT_FOLDING_PASS_HPP
 #define FCORE_TOOLCHAIN_CONSTANT_FOLDING_PASS_HPP
 
-#include "passes/pass_base.hpp"
+#include "passes/high_level/infrastructure/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "tools/expression_evaluator.hpp"
 

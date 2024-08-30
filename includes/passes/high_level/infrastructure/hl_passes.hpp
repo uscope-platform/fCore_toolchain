@@ -1,11 +1,10 @@
-// Copyright 2021 University of Nottingham Ningbo China
-// Author: Filippo Savi <filssavi@gmail.com>
+//  Copyright 2024 Filippo Savi <filssavi@gmail.com>
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,13 +15,12 @@
 #ifndef FCORE_TOOLCHAINLCHAIN_HL_PASSES_HPP
 #define FCORE_TOOLCHAINLCHAIN_HL_PASSES_HPP
 
-#include "passes/high_level/hl_pass_manager.hpp"
+#include "passes/high_level/infrastructure/hl_pass_manager.hpp"
 //HL PASSES
 #include "passes/high_level/function_inlining_pass.hpp"
 #include "passes/high_level/division_implementation_pass.hpp"
 #include "passes/high_level/inlined_function_elimination.hpp"
 #include "passes/high_level/normalization_pass.hpp"
-#include "passes/high_level/hl_variable_mapping.hpp"
 #include "passes/high_level/intrinsics_implementation_pass.hpp"
 #include "passes/high_level/dead_variable_elimination.hpp"
 #include "passes/high_level/constant_folding_pass.hpp"

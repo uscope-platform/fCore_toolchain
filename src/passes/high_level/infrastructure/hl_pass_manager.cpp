@@ -14,9 +14,9 @@
 // limitations under the License.06/07/2021.
 //
 
-#include "passes/high_level/hl_pass_manager.hpp"
+#include "passes/high_level/infrastructure/hl_pass_manager.hpp"
 
-#include "passes/pass_base.hpp"
+#include "passes/high_level/infrastructure/pass_base.hpp"
 
 namespace fcore{
 

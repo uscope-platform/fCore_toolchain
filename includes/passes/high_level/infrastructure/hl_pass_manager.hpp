@@ -20,7 +20,7 @@
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "instrumentation/instrumentation_core.hpp"
 
-#include "passes/pass_base.hpp"
+#include "pass_base.hpp"
 
 namespace fcore{
 

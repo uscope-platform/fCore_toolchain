@@ -17,7 +17,7 @@
 #ifndef FCORE_TOOLCHAIN_DEAD_LOAD_ELIMINATION_HPP
 #define FCORE_TOOLCHAIN_DEAD_LOAD_ELIMINATION_HPP
 
-#include "passes/pass_base.hpp"
+#include "passes/high_level/infrastructure/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
 namespace fcore{

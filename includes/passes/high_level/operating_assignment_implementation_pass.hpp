@@ -18,7 +18,7 @@
 #define FCORE_TOOLCHAIN_OPERATING_ASSIGNMENT_IMPLEMENTATION_PASS_H
 
 #include "data_structures/high_level_ast/high_level_ast.hpp"
-#include "passes/pass_base.hpp"
+#include "passes/high_level/infrastructure/pass_base.hpp"
 
 namespace fcore{
     class operating_assignment_implementation_pass : public pass_base {

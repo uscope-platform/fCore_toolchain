@@ -32,6 +32,8 @@ set(FCORE_COMMON_SRCS_I
         instrumentation/instrumentation_core.cpp
         data_structures/high_level_ast/hl_code_block.cpp
         ../includes/data_structures/high_level_ast/hl_code_block.hpp
+        ../includes/data_structures/high_level_ast/hl_ast_element.cpp
+        ../includes/data_structures/high_level_ast/hl_ast_element.hpp
 )
 
 
@@ -56,8 +58,7 @@ set(FCORE_CC_SRCS
         passes/high_level/constant_folding_pass.cpp
         passes/high_level/constant_propagation.cpp
         passes/high_level/array_initialization_substitution.cpp
-        passes/high_level/hl_pass_manager.cpp
-        passes/high_level/hl_variable_mapping.cpp
+        passes/high_level/infrastructure/hl_pass_manager.cpp
         passes/high_level/fuction_mangling_pass.cpp
         passes/high_level/operating_assignment_implementation_pass.cpp
         passes/high_level/inlined_function_elimination.cpp

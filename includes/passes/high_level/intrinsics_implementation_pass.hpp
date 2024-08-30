@@ -20,7 +20,7 @@
 #include <string>
 
 #include "data_structures/high_level_ast/high_level_ast.hpp"
-#include "passes/pass_base.hpp"
+#include "passes/high_level/infrastructure/pass_base.hpp"
 
 namespace fcore{
     class intrinsics_implementation_pass : public  pass_base {

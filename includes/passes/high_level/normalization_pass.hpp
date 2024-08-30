@@ -17,7 +17,7 @@
 #define FCORE_TOOLCHAIN_NORMALIZATION_PASS_HPP
 
 #include "data_structures/high_level_ast/high_level_ast.hpp"
-#include "passes/pass_base.hpp"
+#include "passes/high_level/infrastructure/pass_base.hpp"
 
 namespace fcore{
 

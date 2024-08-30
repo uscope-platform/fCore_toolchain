@@ -15,7 +15,7 @@
 #ifndef FCORE_TOOLCHAIN_INLINE_CONSTANT_EXTRACTION_H
 #define FCORE_TOOLCHAIN_INLINE_CONSTANT_EXTRACTION_H
 
-#include "passes/pass_base.hpp"
+#include "passes/high_level/infrastructure/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
 namespace fcore{
