@@ -117,23 +117,22 @@ namespace fcore{
         }
         element->set_rhs(new_rhs);
 
-        if(!element->is_unary()){
+        if(auto lhs = element->get_lhs()){
             if(element->get_type() != expr_assign){
                 std::shared_ptr<hl_ast_node> new_lhs;
-                if(element->get_lhs()->node_type == hl_ast_node_type_operand) {
-                    std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
-                    new_lhs = propagate_constant(lhs, instr_idx);
+                if(lhs.value()->node_type == hl_ast_node_type_operand) {
+                    new_lhs = propagate_constant( std::static_pointer_cast<hl_ast_operand>(lhs.value()), instr_idx);
                 } else {
-                    new_lhs = propagate_constant(element->get_lhs(), instr_idx);
+                    new_lhs = propagate_constant(lhs.value(), instr_idx);
                 }
                 element->set_lhs(new_lhs);
             } else{
-                auto lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
+                auto op = std::static_pointer_cast<hl_ast_operand>(lhs.value());
                 std::vector<std::shared_ptr<hl_ast_node>> new_idx;
-                for (auto &item: lhs->get_array_index()) {
+                for (auto &item: op->get_array_index()) {
                     new_idx.push_back(propagate_constant(item, instr_idx));
                 }
-                lhs->set_array_index(new_idx);
+                op->set_array_index(new_idx);
             }
 
 
@@ -244,14 +243,14 @@ namespace fcore{
 
 
         if(element->get_type() == expr_assign){
-            std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
+            std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs().value());
             analyze_assignment(element, instr_idx);
             if(
                     !lhs->get_contiguity()
                     ){
                 if(element->get_rhs()->node_type == hl_ast_node_type_operand){
                     std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(element->get_rhs());
-                    std::shared_ptr<hl_ast_operand> target = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
+                    std::shared_ptr<hl_ast_operand> target = std::static_pointer_cast<hl_ast_operand>(element->get_lhs().value());
                     return map_constants(op, target, instr_idx);
                 }
             }
@@ -299,7 +298,7 @@ namespace fcore{
 
 
     void constant_propagation::analyze_assignment(const std::shared_ptr<hl_expression_node> &element, int instr_idx) {
-        std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
+        std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs().value());
 
         if(needs_termination(element, instr_idx)){
             if(!lhs->get_array_index().empty()){
@@ -321,7 +320,7 @@ namespace fcore{
     bool constant_propagation::needs_termination(const std::shared_ptr<hl_expression_node> &element, int instr_idx) {
         bool needs_termination = false;
         bool analyze_rhs;
-        auto dest = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
+        auto dest = std::static_pointer_cast<hl_ast_operand>(element->get_lhs().value());
 
         if(dest->get_variable()->get_type() == var_type_array){
             std::vector<uint32_t> indices = get_index_array(dest);

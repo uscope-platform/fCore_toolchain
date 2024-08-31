@@ -165,12 +165,8 @@ namespace fcore {
     std::shared_ptr<hl_ast_node>
     intrinsics_implementation_pass::process_expression(const std::shared_ptr<hl_expression_node> &element) {
         element->set_rhs(process_node_by_type(element->get_rhs()));
-        if(!element->is_unary()){
-            element->set_lhs(process_node_by_type(element->get_lhs()));
-        }
-        if(element->is_ternary()){
-            element->set_ths(process_node_by_type(element->get_ths()));
-        }
+        if(auto ths = element->get_ths()) element->set_ths(process_node_by_type(ths.value()));
+        if(auto lhs = element->get_lhs()) element->set_lhs(process_node_by_type(lhs.value()));
 
         return element;
     }

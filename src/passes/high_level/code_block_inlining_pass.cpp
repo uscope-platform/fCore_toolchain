@@ -116,8 +116,9 @@ namespace fcore{
                 expr->set_rhs(processed_rhs[0]);
             }
 
-            if(!expr->is_unary()){
-                std::vector<std::shared_ptr<hl_ast_node>> processed_lhs = process_element_by_type(expr->get_lhs());
+
+            if(auto lhs = expr->get_lhs()){
+                std::vector<std::shared_ptr<hl_ast_node>> processed_lhs = process_element_by_type(lhs.value());
                 proc_size = processed_lhs.size();
                 if(proc_size>1){
                     for(uint32_t i = 0; i<proc_size-1; i++) ret_val.push_back(processed_lhs[i]);

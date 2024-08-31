@@ -23,7 +23,7 @@ namespace fcore{
         if(expression->is_immediate()) return false;
         if(expression->get_type() == expr_efi) return false;
         retval &= is_constant_subexpr(expression->get_rhs());
-        if(!expression->is_unary()) retval &= is_constant_subexpr(expression->get_lhs());
+        if(auto lhs = expression->get_lhs()) retval &= is_constant_subexpr(lhs.value());
         return retval;
     }
 
@@ -116,10 +116,10 @@ namespace fcore{
         std::shared_ptr<hl_ast_operand> retval;
 
         std::shared_ptr<hl_ast_operand> lhs;
-        if(expression->get_lhs()->node_type ==hl_ast_node_type_expr){
-            lhs = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_lhs()));
-        } else if(expression->get_lhs()->node_type ==hl_ast_node_type_operand) {
-            lhs = std::static_pointer_cast<hl_ast_operand>(expression->get_lhs());
+        if(expression->get_lhs().value()->node_type ==hl_ast_node_type_expr){
+            lhs = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_lhs().value()));
+        } else if(expression->get_lhs().value()->node_type ==hl_ast_node_type_operand) {
+            lhs = std::static_pointer_cast<hl_ast_operand>(expression->get_lhs().value());
         } else {
             throw std::runtime_error("node type not expected during expression evaluation");
         }
@@ -325,10 +325,10 @@ namespace fcore{
         std::shared_ptr<hl_ast_operand> retval;
 
         std::shared_ptr<hl_ast_operand> lhs;
-        if(expression->get_lhs()->node_type ==hl_ast_node_type_expr){
-            lhs = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_lhs()));
-        } else if(expression->get_lhs()->node_type ==hl_ast_node_type_operand) {
-            lhs = std::static_pointer_cast<hl_ast_operand>(expression->get_lhs());
+        if(expression->get_lhs().value()->node_type ==hl_ast_node_type_expr){
+            lhs = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_lhs().value()));
+        } else if(expression->get_lhs().value()->node_type ==hl_ast_node_type_operand) {
+            lhs = std::static_pointer_cast<hl_ast_operand>(expression->get_lhs().value());
         } else {
             throw std::runtime_error("node type not expected during expression evaluation");
         }
@@ -343,7 +343,7 @@ namespace fcore{
         }
 
         std::shared_ptr<hl_ast_operand> ths;
-        if(expression->get_ths()->node_type ==hl_ast_node_type_expr){
+        if(expression->get_ths().value()->node_type ==hl_ast_node_type_expr){
             ths = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_rhs()));
         } else if(expression->get_rhs()->node_type ==hl_ast_node_type_operand) {
             ths = std::static_pointer_cast<hl_ast_operand>(expression->get_rhs());

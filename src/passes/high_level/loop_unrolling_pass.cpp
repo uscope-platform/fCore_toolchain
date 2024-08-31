@@ -160,14 +160,14 @@ namespace fcore{
     }
 
     void loop_unrolling_pass::update_expression(std::shared_ptr<hl_expression_node> expression, std::shared_ptr<hl_ast_operand> loop_var) {
-        if(expression->get_lhs()->node_type == hl_ast_node_type_operand){
-            std::shared_ptr<hl_ast_operand> node = std::static_pointer_cast<hl_ast_operand>(expression->get_lhs());
+        if(expression->get_lhs().value()->node_type == hl_ast_node_type_operand){
+            std::shared_ptr<hl_ast_operand> node = std::static_pointer_cast<hl_ast_operand>(expression->get_lhs().value());
             std::string var_name = node->get_name();
             std::string loop_var_name = loop_var->get_name();
             if(var_name == loop_var_name)
                 expression->set_lhs(loop_var);
-        } else if(expression->get_lhs()->node_type == hl_ast_node_type_expr){
-            update_expression(std::static_pointer_cast<hl_expression_node>(expression->get_lhs()), std::move(loop_var));
+        } else if(expression->get_lhs().value()->node_type == hl_ast_node_type_expr){
+            update_expression(std::static_pointer_cast<hl_expression_node>(expression->get_lhs().value()), std::move(loop_var));
         } else if(expression->get_rhs()->node_type == hl_ast_node_type_operand){
             std::shared_ptr<hl_ast_operand> node = std::static_pointer_cast<hl_ast_operand>(expression->get_rhs());
             if(node->get_name() == loop_var->get_name())
@@ -206,9 +206,10 @@ namespace fcore{
         if(node->is_immediate()){
             return retval;
         }
-        if(!node->is_unary()){
-            retval->set_lhs(substitute_index(node->get_lhs(), idx_name, value));
-        }
+
+        if(auto lhs = node->get_lhs()) retval->set_lhs(substitute_index(lhs.value(), idx_name, value));
+        if(auto ths = node->get_ths()) retval->set_ths(substitute_index(ths.value(), idx_name, value));
+
         retval->set_rhs(substitute_index(node->get_rhs(), idx_name, value));
         return retval;
     }

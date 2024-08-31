@@ -103,13 +103,12 @@ namespace fcore{
 
     std::shared_ptr<hl_ast_node> array_index_lowering::process_expression(std::shared_ptr<hl_expression_node> element) {
         element->set_rhs(process_node_by_type(element->get_rhs()));
-        if(!element->is_unary()){
-            element->set_lhs(process_node_by_type(element->get_lhs()));
+        if(auto lhs = element->get_lhs()){
+            element->set_lhs(process_node_by_type(lhs.value()));
         }
-        if(element->is_ternary()){
-            element->set_ths(process_node_by_type(element->get_ths()));
+        if(auto ths = element->get_ths()){
+            element->set_ths(process_node_by_type(ths.value()));
         }
-
         return element;
     }
 

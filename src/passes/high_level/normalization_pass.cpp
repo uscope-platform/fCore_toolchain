@@ -43,9 +43,9 @@ namespace fcore{
         if(element->node_type== hl_ast_node_type_expr){
             std::shared_ptr<hl_expression_node> expr = std::static_pointer_cast<hl_expression_node>(element);
             if(!expr->is_immediate()){
-                if(!expr->is_unary()){
-                    if(expr->get_lhs()->node_type != hl_ast_node_type_operand) return false;
-                }
+                if(auto lhs = expr->get_lhs())
+                    if(lhs.value()->node_type != hl_ast_node_type_operand) return false;
+
                 if(expr->get_rhs()->node_type != hl_ast_node_type_operand) return false;
             }
 
@@ -85,14 +85,17 @@ namespace fcore{
             return ret_val;
         }
 
-        std::shared_ptr<hl_ast_node> lhs = n->get_lhs();
         std::shared_ptr<hl_ast_node> rhs = n->get_rhs();
 
         norm_pair_t np_l;
         norm_pair_t np_r = process_node_by_type(rhs);
-        if(!n->is_unary()) {
-            np_l = process_node_by_type(lhs);
-        }
+
+
+
+        if(auto lhs = n->get_lhs()) {
+            np_l = process_node_by_type(lhs.value());
+        };
+
 
         if(!np_l.second.empty()) {
             ret_val.second.insert(ret_val.second.end(), np_l.second.begin(), np_l.second.end());
@@ -124,8 +127,8 @@ namespace fcore{
             std::static_pointer_cast<hl_expression_node>(ret_val.first)->set_rhs(op);
         }
 
-        if(!n->is_unary()) {
-            if(lhs->node_type == hl_ast_node_type_expr){
+        if(auto lhs = n->get_lhs()) {
+            if(lhs.value()->node_type == hl_ast_node_type_expr){
                 std::string int_exp = "intermediate_expression_"+std::to_string(intermediate_ordinal);
                 std::shared_ptr<variable> var = std::make_shared<variable>(int_exp);
                 std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>(
@@ -164,8 +167,10 @@ namespace fcore{
         variable_type_t type_rhs = std::static_pointer_cast<hl_ast_operand>(expr->get_rhs())->get_type();
         c_types_t expr_type;
 
-        if(!expr->is_unary()){
-            variable_type_t type_lhs = std::static_pointer_cast<hl_ast_operand>(expr->get_lhs())->get_type();
+
+        if(auto lhs = expr->get_lhs()){
+
+            variable_type_t type_lhs = std::static_pointer_cast<hl_ast_operand>(lhs.value())->get_type();
 
             if(type_lhs == var_type_float_const && type_rhs == var_type_float_const){
                 expr_type = c_type_float;

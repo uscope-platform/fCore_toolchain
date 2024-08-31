@@ -100,16 +100,14 @@ namespace fcore{
                 retval.push_back(rhs_result[1]);
             }
 
-            if(!node->is_unary()){
-                std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(node->get_lhs());
-                std::vector<std::shared_ptr<hl_ast_node>> lhs_result = process_operand(lhs);
+            if(auto lhs = node->get_lhs()){
+                std::vector<std::shared_ptr<hl_ast_node>> lhs_result = process_operand(std::static_pointer_cast<hl_ast_operand>(lhs.value()));
                 node->set_lhs(lhs_result[0]);
                 if(lhs_result.size()==2)
                     retval.push_back(lhs_result[1]);
             }
-            if(node->is_ternary()){
-                std::shared_ptr<hl_ast_operand> ths = std::static_pointer_cast<hl_ast_operand>(node->get_ths());
-                std::vector<std::shared_ptr<hl_ast_node>> ths_result = process_operand(ths);
+            if(auto ths = node->get_ths()){
+                std::vector<std::shared_ptr<hl_ast_node>> ths_result = process_operand(std::static_pointer_cast<hl_ast_operand>(ths.value()));
                 node->set_ths(ths_result[0]);
                 if(ths_result.size()==2)
                     retval.push_back(ths_result[1]);

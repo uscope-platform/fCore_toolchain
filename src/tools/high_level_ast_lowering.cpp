@@ -90,14 +90,14 @@ namespace fcore{
             case hl_ast_node_type_expr:{
                 std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(input);
                 if(node->get_type() == expr_assign){
-                    if(node->get_lhs()->node_type != hl_ast_node_type_operand){
+                    if(node->get_lhs().value()->node_type != hl_ast_node_type_operand){
                         throw std::runtime_error("Invalid assignment expression detected  the lowering stage as the LHS is an expression and not a variable");
                     }
                     if(node->get_rhs()->node_type == hl_ast_node_type_expr){
-                        std::shared_ptr<variable> dest = std::static_pointer_cast<hl_ast_operand>(node->get_lhs())->get_variable();
+                        std::shared_ptr<variable> dest = std::static_pointer_cast<hl_ast_operand>(node->get_lhs().value())->get_variable();
                         return translate_node(std::static_pointer_cast<hl_expression_node>(node->get_rhs()), dest);
                     } else if(node->get_rhs()->node_type == hl_ast_node_type_operand){
-                        std::shared_ptr<variable> dest = std::static_pointer_cast<hl_ast_operand>(node->get_lhs())->get_variable();
+                        std::shared_ptr<variable> dest = std::static_pointer_cast<hl_ast_operand>(node->get_lhs().value())->get_variable();
                         return translate_node(std::static_pointer_cast<hl_ast_operand>(node->get_rhs()), dest);
                     } else{
                         throw std::runtime_error("Invalid assignment expression detected at the lowering stage as the RHS is neither an expression nor an operand");
@@ -171,7 +171,7 @@ namespace fcore{
             throw std::runtime_error("The required operation is not implementable on the fCore hardware");
         }
 
-        std::shared_ptr<variable> op_a = std::static_pointer_cast<hl_ast_operand>(input->get_lhs())->get_variable();
+        std::shared_ptr<variable> op_a = std::static_pointer_cast<hl_ast_operand>(input->get_lhs().value())->get_variable();
         std::shared_ptr<variable> op_b = std::static_pointer_cast<hl_ast_operand>(input->get_rhs())->get_variable();
         std::vector<std::shared_ptr<variable>> args = {op_a, op_b, std::move(dest)};
         return create_ast_node(fcore_op_types[opcode], args, opcode);
@@ -187,9 +187,9 @@ namespace fcore{
             throw std::runtime_error("The required operation is not implementable on the fCore hardware");
         }
 
-        std::shared_ptr<variable> op_a = std::static_pointer_cast<hl_ast_operand>(input->get_lhs())->get_variable();
+        std::shared_ptr<variable> op_a = std::static_pointer_cast<hl_ast_operand>(input->get_lhs().value())->get_variable();
         std::shared_ptr<variable> op_b = std::static_pointer_cast<hl_ast_operand>(input->get_rhs())->get_variable();
-        std::shared_ptr<variable> op_c = std::static_pointer_cast<hl_ast_operand>(input->get_ths())->get_variable();
+        std::shared_ptr<variable> op_c = std::static_pointer_cast<hl_ast_operand>(input->get_ths().value())->get_variable();
         std::vector<std::shared_ptr<variable>> args = {op_a, op_b, op_c, dest};
         return create_ast_node(fcore_op_types[opcode], args, opcode);
     }

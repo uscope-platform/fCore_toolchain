@@ -45,7 +45,7 @@ namespace fcore{
 
                         auto init_expr = build_initialization_expr(def, i);
 
-                        auto lhs = std::static_pointer_cast<hl_ast_operand>(init_expr->get_lhs());
+                        auto lhs = std::static_pointer_cast<hl_ast_operand>(init_expr->get_lhs().value());
                         lhs->get_variable()->set_array_shape(def->get_variable()->get_array_shape());
                         lhs->get_variable()->set_bound_reg_array(def->get_variable()->get_bound_reg_array());
                         lhs->get_variable()->set_variable_class(def->get_variable()->get_variable_class());

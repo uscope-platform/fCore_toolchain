@@ -31,9 +31,7 @@ set(FCORE_COMMON_SRCS_I
         passes/instruction_stream/virtual_operations_implementation.cpp
         instrumentation/instrumentation_core.cpp
         data_structures/high_level_ast/hl_code_block.cpp
-        ../includes/data_structures/high_level_ast/hl_code_block.hpp
         passes/high_level/infrastructure/hl_ast_visitor.cpp
-        ../includes/passes/high_level/infrastructure/hl_ast_visitor.hpp
 )
 
 

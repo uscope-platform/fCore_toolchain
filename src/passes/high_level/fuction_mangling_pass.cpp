@@ -108,9 +108,11 @@ namespace fcore{
     fuction_mangling_pass::mangle_node(std::shared_ptr<hl_expression_node> node, const std::string& function) {
         if(node->is_immediate())
             return node;
-        if(!node->is_unary()){
-            node->set_lhs(mangle_node(node->get_lhs(), function));
-        }
+
+
+        if(auto lhs = node->get_lhs()) node->set_lhs(mangle_node(lhs.value(), function));
+        if(auto ths = node->get_ths()) node->set_ths(mangle_node(ths.value(), function));
+
         node->set_rhs(mangle_node(node->get_rhs(),function));
         return node;
     }

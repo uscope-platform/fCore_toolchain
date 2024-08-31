@@ -121,8 +121,8 @@ namespace fcore{
     }
 
     std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_expression_node> &ex) {
-        if(ex->is_ternary()) ex->set_ths(process_node_by_type(ex->get_ths()));
-        if(!ex->is_unary()) ex->set_lhs(process_node_by_type(ex->get_lhs()));
+        if(auto ths = ex->get_ths()) ex->set_ths(process_node_by_type(ths.value()));
+        if(auto lhs = ex->get_lhs()) ex->set_lhs(process_node_by_type(lhs.value()));
         ex->set_rhs(process_node_by_type(ex->get_rhs()));
         return ops.visit_expression(ex);
     }

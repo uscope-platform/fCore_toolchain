@@ -85,9 +85,9 @@ namespace fcore{
             std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
             if(node->get_type() == expr_assign && node->get_assignment_type() != regular_assignment ){
                 std::shared_ptr<hl_expression_node> outer_exp = std::make_shared<hl_expression_node>(expr_assign);
-                outer_exp->set_lhs(node->get_lhs());
+                outer_exp->set_lhs(node->get_lhs().value());
                 std::shared_ptr<hl_expression_node> inner_exp = create_top_expression(node->get_assignment_type());
-                inner_exp->set_lhs(node->get_lhs());
+                inner_exp->set_lhs(node->get_lhs().value());
                 inner_exp->set_rhs(node->get_rhs());
                 outer_exp->set_rhs(inner_exp);
                 ret_val = outer_exp;

@@ -116,8 +116,9 @@ namespace fcore{
     function_inlining_pass::process_expression(std::shared_ptr<hl_expression_node> element) {
         std::vector<std::shared_ptr<hl_ast_node>> ret_val;
         if(!element->is_immediate()){
-            if(!element->is_unary()){
-                std::vector<std::shared_ptr<hl_ast_node>> processed_elements = process_element(element->get_lhs());
+
+            if(auto lhs = element->get_lhs()){
+                std::vector<std::shared_ptr<hl_ast_node>> processed_elements = process_element(lhs.value());
                 if(processed_elements.size() == 1)
                     element->set_lhs(processed_elements[0]);
                 else{
@@ -125,7 +126,6 @@ namespace fcore{
                     ret_val.push_back(processed_elements[0]);
                 }
             }
-
             std::vector<std::shared_ptr<hl_ast_node>> processed_elements = process_element(element->get_rhs());
             if(processed_elements.size() == 1)
                 element->set_rhs(processed_elements[0]);
@@ -316,14 +316,14 @@ namespace fcore{
             return statement;
         }
 
-        if(!statement->is_unary()){
-            std::shared_ptr<hl_ast_node> tmp_lhs = substitute_arguments(statement->get_lhs(), parameters);
-            statement->set_lhs(tmp_lhs);
-        }
 
-        if(statement->is_ternary()){
-            std::shared_ptr<hl_ast_node> tmp_ths = substitute_arguments(statement->get_ths(), parameters);
+        if(auto ths = statement->get_ths()) {
+            std::shared_ptr<hl_ast_node> tmp_ths = substitute_arguments(ths.value(), parameters);
             statement->set_lhs(tmp_ths);
+        }
+        if(auto lhs = statement->get_lhs()) {
+            std::shared_ptr<hl_ast_node> tmp_lhs = substitute_arguments(lhs.value(), parameters);
+            statement->set_lhs(tmp_lhs);
         }
 
         std::shared_ptr<hl_ast_node> tmp_rhs = substitute_arguments(statement->get_rhs(), parameters);

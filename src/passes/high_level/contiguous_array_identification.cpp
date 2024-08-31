@@ -67,7 +67,7 @@ namespace fcore{
 
                     process_efi_arguments(rhs);
 
-                    auto efi_return = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
+                    auto efi_return = std::static_pointer_cast<hl_ast_operand>(element->get_lhs().value());
                     if(!efi_return->get_variable()->get_array_shape().empty()){
                         std::shared_ptr<variable> var = std::make_shared<variable>("constant", 0);
                         std::shared_ptr<hl_ast_operand> idx = std::make_shared<hl_ast_operand>(var);
@@ -94,9 +94,10 @@ namespace fcore{
         }
 
         element->set_rhs(process_element(element->get_rhs()));
-        if(!element->is_unary()){
-            auto lhs = element->get_lhs();
-            element->set_lhs(process_element(lhs));
+
+
+        if(auto lhs = element->get_lhs()){
+            element->set_lhs(process_element(lhs.value()));
         }
 
         return element;
@@ -105,7 +106,7 @@ namespace fcore{
 
     void
     contiguous_array_identification::process_efi_arguments(std::shared_ptr<hl_expression_node> element) {
-        auto efi_arg = std::static_pointer_cast<hl_ast_operand>(element->get_lhs());
+        auto efi_arg = std::static_pointer_cast<hl_ast_operand>(element->get_lhs().value());
         efi_arg->set_contiguity(true);
         if(!contiguous_arrays.contains(efi_arg->get_name())){
             contiguous_arrays.insert(efi_arg->get_name());

@@ -17,8 +17,8 @@
 #define FCORE_TOOLCHAIN_HL_EXPRESSION_NODE_HPP
 
 
-#include "hl_ast_operand.hpp"
-#include "hl_ast_node.hpp"
+    #include "hl_ast_operand.hpp"
+    #include "hl_ast_node.hpp"
 #include "hl_function_call_node.hpp"
 #include "hl_ast_conditional_node.hpp"
 
@@ -152,9 +152,9 @@ namespace fcore{
         void set_rhs(const std::shared_ptr<hl_ast_node> &node) {rhs = node;};
         void set_ths(const std::shared_ptr<hl_ast_node> &node) {ths = node;};
 
-        std::shared_ptr<hl_ast_node> get_lhs(){return lhs;};
+        std::optional<std::shared_ptr<hl_ast_node>> get_lhs(){return lhs;};
         std::shared_ptr<hl_ast_node> get_rhs(){return rhs;};
-        std::shared_ptr<hl_ast_node> get_ths(){return ths;};
+        std::optional<std::shared_ptr<hl_ast_node>> get_ths(){return ths;};
 
         void set_assignment_type(assignment_type_t a) { assignment_type = a;};
         assignment_type_t get_assignment_type() {return assignment_type;};
@@ -177,9 +177,9 @@ namespace fcore{
         expression_type_t expr_type;
         assignment_type_t assignment_type;
 
-        std::shared_ptr<hl_ast_node> lhs;
+        std::optional<std::shared_ptr<hl_ast_node>> lhs;
         std::shared_ptr<hl_ast_node> rhs;
-        std::shared_ptr<hl_ast_node> ths;
+        std::optional<std::shared_ptr<hl_ast_node>> ths;
 
         std::map<expression_type_t, std::string> type_print;
         std::map<assignment_type_t, std::string> assign_prefix_print;

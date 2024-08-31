@@ -129,9 +129,8 @@ namespace fcore{
     conditional_implementation_pass::process_conditional(const std::shared_ptr<hl_ast_conditional_node>& node, const std::shared_ptr<hl_code_block>& subtree) {
         std::vector<std::shared_ptr<hl_ast_node>> result_body;
 
-        //TODO: FIND OUT WHAT THE PROG CONTENT NEED TO BE
         std::shared_ptr<hl_expression_node> condition = std::static_pointer_cast<hl_expression_node>(node->get_condition());
-        std::shared_ptr<hl_ast_operand> lhs_op = get_operands(condition->get_lhs(), node, subtree->get_content());
+        std::shared_ptr<hl_ast_operand> lhs_op = get_operands(condition->get_lhs().value(), node, subtree->get_content());
         std::shared_ptr<hl_ast_operand> rhs_op = get_operands(condition->get_rhs(), node, subtree->get_content());
 
         std::shared_ptr<hl_expression_node> const_cond_expr = std::make_shared<hl_expression_node>(condition->get_type());
