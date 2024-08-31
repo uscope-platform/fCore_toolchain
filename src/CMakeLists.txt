@@ -51,21 +51,21 @@ set(FCORE_CC_SRCS
         data_structures/high_level_ast/hl_function_call_node.cpp
         data_structures/high_level_ast/hl_ast_operand.cpp
         data_structures/constants_tracker.cpp
-        passes/high_level/array_index_lowering.cpp
+        passes/high_level/visitor_passes/array_index_lowering.cpp
         passes/high_level/dead_load_elimination.cpp
-        passes/high_level/constant_folding_pass.cpp
+        passes/high_level/visitor_passes/constant_folding_pass.cpp
         passes/high_level/constant_propagation.cpp
-        passes/high_level/array_initialization_substitution.cpp
+        passes/high_level/visitor_passes/array_initialization_substitution.cpp
         passes/high_level/infrastructure/hl_pass_manager.cpp
         passes/high_level/fuction_mangling_pass.cpp
-        passes/high_level/operating_assignment_implementation_pass.cpp
-        passes/high_level/inlined_function_elimination.cpp
+        passes/high_level/visitor_passes/operating_assignment_implementation_pass.cpp
+        passes/high_level/infrastructure/inlined_function_elimination.cpp
         passes/high_level/inline_constant_extraction.cpp
-        passes/high_level/intrinsics_implementation_pass.cpp
+        passes/high_level/visitor_passes/intrinsics_implementation_pass.cpp
         passes/high_level/function_inlining_pass.cpp
-        passes/high_level/division_implementation_pass.cpp
+        passes/high_level/visitor_passes/division_implementation_pass.cpp
         passes/high_level/code_block_inlining_pass.cpp
-        passes/high_level/dead_variable_elimination.cpp
+        passes/high_level/visitor_passes/dead_variable_elimination.cpp
         passes/high_level/conditional_implementation_pass.cpp
         passes/high_level/loop_unrolling_pass.cpp
         passes/high_level/normalization_pass.cpp

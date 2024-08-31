@@ -14,7 +14,7 @@
 // limitations under the License.08/07/2021.
 //
 
-#include "passes/high_level/operating_assignment_implementation_pass.hpp"
+#include "passes/high_level/visitor_passes/operating_assignment_implementation_pass.hpp"
 
 namespace fcore{
 

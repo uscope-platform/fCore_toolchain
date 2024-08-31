@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-#include "passes/high_level/division_implementation_pass.hpp"
+#include "passes/high_level/visitor_passes/division_implementation_pass.hpp"
 
 namespace fcore {
 

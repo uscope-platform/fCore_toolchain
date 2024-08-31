@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "passes/high_level/intrinsics_implementation_pass.hpp"
+#include "passes/high_level/visitor_passes/intrinsics_implementation_pass.hpp"
 
 namespace fcore {
 

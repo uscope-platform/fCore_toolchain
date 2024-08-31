@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#include "passes/high_level/array_initialization_substitution.h"
+#include "passes/high_level/visitor_passes/array_initialization_substitution.h"
 
 namespace fcore{
 

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#include "passes/high_level/array_index_lowering.hpp"
+#include "passes/high_level/visitor_passes/array_index_lowering.hpp"
 
 namespace fcore{
 

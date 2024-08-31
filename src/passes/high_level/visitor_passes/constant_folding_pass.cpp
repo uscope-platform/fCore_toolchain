@@ -15,7 +15,7 @@
 //
 
 
-#include "passes/high_level/constant_folding_pass.hpp"
+#include "passes/high_level/visitor_passes/constant_folding_pass.hpp"
 
 namespace fcore{
 
