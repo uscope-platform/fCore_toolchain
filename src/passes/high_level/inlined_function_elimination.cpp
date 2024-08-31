@@ -23,23 +23,23 @@ namespace fcore{
     }
 
     std::shared_ptr<hl_code_block> inlined_function_elimination::process_global(std::shared_ptr<hl_code_block> element) {
-        auto new_root = std::make_shared<hl_code_block>();
+
+        hl_ast_visitor_operations ops;
+        hl_ast_visitor visitor;
+
+        ops.visit_function_def = [this](auto && arg) { return process_function_definition(std::forward<decltype(arg)>(arg));};
+
+        return visitor.visit(ops, element);
+    }
+
+    std::vector<std::shared_ptr<hl_ast_node>>
+    inlined_function_elimination::process_function_definition(std::shared_ptr<hl_function_def_node> element) {
         std::vector<std::shared_ptr<hl_ast_node>> new_content;
-
-
-        for(auto &item:element->get_content()){
-            if(item->node_type == hl_ast_node_type_function_def){
-                std::shared_ptr<hl_function_def_node> node = std::static_pointer_cast<hl_function_def_node>(item);
-                if(node->get_name() == entry_point){
-                    std::vector<std::shared_ptr<hl_ast_node>> main_body = node->get_body();
-                    new_content.insert(new_content.end(), main_body.begin(), main_body.end());
-                }
-            } else{
-                new_content.push_back(item);
-            }
+        if(element->get_name() == entry_point){
+            std::vector<std::shared_ptr<hl_ast_node>> main_body = element->get_body();
+            new_content.insert(new_content.end(), main_body.begin(), main_body.end());
         }
-        new_root->set_content(new_content);
-        return new_root;
+        return new_content;
     }
 }
 

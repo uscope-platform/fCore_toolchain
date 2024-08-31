@@ -23,39 +23,42 @@ namespace fcore{
     }
 
     std::shared_ptr<hl_code_block> dead_variable_elimination::process_global(std::shared_ptr<hl_code_block> element) {
-        auto retval =  std::make_shared<hl_code_block>();
-        std::vector<std::shared_ptr<hl_ast_node>> new_body;
 
-        std::map<std::string, bool> defined_variables;
-        for(const auto& item:element->get_content()){
+        hl_ast_visitor_operations ops;
+        hl_ast_visitor visitor;
 
-            if(item->node_type == hl_ast_node_type_definition){
-                std::shared_ptr<hl_definition_node> node =std::static_pointer_cast<hl_definition_node>(item);
-                if(node->is_initialized())
-                    defined_variables.insert(std::make_pair(node->get_name(), true));
-            } else if(item->node_type == hl_ast_node_type_expr){
-                std::shared_ptr<hl_expression_node> node =std::static_pointer_cast<hl_expression_node>(item);
-                if(node->get_type() == expr_assign){
-                    std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(node->get_lhs().value());
-                    defined_variables.insert(std::make_pair(lhs->get_name(), true));
-                }
-            }
+        ops.visit_definition = [this](auto && arg) { return detect_definition(std::forward<decltype(arg)>(arg));};
+        ops.visit_expression = [this](auto && arg) { return detect_expression(std::forward<decltype(arg)>(arg));};
+        visitor.visit(ops, element);
+
+        hl_ast_visitor_operations ops2;
+        ops2.visit_definition = [this](auto && arg) { return process_definition(std::forward<decltype(arg)>(arg));};
+
+        return  visitor.visit(ops2, element);
+    }
+
+    std::vector<std::shared_ptr<hl_ast_node>>
+    dead_variable_elimination::process_definition(const std::shared_ptr<hl_definition_node> &def) {
+        if(defined_variables.count(def->get_name())>0){
+            return {hl_ast_node::deep_copy(def)};
         }
+        return {};
+    }
 
-        for(const auto& item:element->get_content()){
+    std::vector<std::shared_ptr<hl_ast_node>>
+    dead_variable_elimination::detect_definition(const std::shared_ptr<hl_definition_node> &def) {
+        if(def->is_initialized())
+            defined_variables.insert(std::make_pair(def->get_name(), true));
+        return {def};
+    }
 
-            if(item->node_type == hl_ast_node_type_definition){
-                std::shared_ptr<hl_definition_node> node =std::static_pointer_cast<hl_definition_node>(item);
-                if(defined_variables.count(node->get_name())>0){
-                    new_body.push_back(hl_ast_node::deep_copy(item));
-                }
-            } else {
-                new_body.push_back(hl_ast_node::deep_copy(item));
-            }
+    std::shared_ptr<hl_ast_node>
+    dead_variable_elimination::detect_expression(const std::shared_ptr<hl_expression_node> &expr) {
+        if(expr->get_type() == expr_assign){
+            std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(expr->get_lhs().value());
+            defined_variables.insert(std::make_pair(lhs->get_name(), true));
         }
-
-        retval->set_content(new_body);
-        return retval;
+        return expr;
     }
 
 }

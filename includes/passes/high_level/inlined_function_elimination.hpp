@@ -20,12 +20,14 @@
 
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "passes/high_level/infrastructure/pass_base.hpp"
+#include "passes/high_level/infrastructure/hl_ast_visitor.hpp"
 
 namespace fcore{
     class inlined_function_elimination : public  pass_base{
     public:
         explicit inlined_function_elimination(std::string entry_point_name);
         std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
+        std::vector<std::shared_ptr<hl_ast_node>> process_function_definition(std::shared_ptr<hl_function_def_node> element);
     private:
         std::string entry_point;
     };

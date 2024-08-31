@@ -22,47 +22,15 @@ namespace fcore{
     }
 
     std::shared_ptr<hl_code_block> array_initialization_substitution::process_global(std::shared_ptr<hl_code_block> element) {
-        std::vector<std::shared_ptr<hl_ast_node>> new_content;
 
-        for(auto &item:element->get_content()){
-            std::vector<std::shared_ptr<hl_ast_node>> content = process_node_by_type(item);
-            new_content.insert( new_content.end(), content.begin(), content.end());
-        }
+        hl_ast_visitor_operations ops;
+        hl_ast_visitor visitor;
 
-        element->set_content(new_content);
-        return element;
+        ops.visit_definition = process_definition;
+
+        return visitor.visit(ops, element);
     }
 
-
-    std::vector<std::shared_ptr<hl_ast_node>>
-    array_initialization_substitution::process_node_by_type(const std::shared_ptr<hl_ast_node> &node) {
-        if(node->node_type == hl_ast_node_type_definition){
-            auto def = std::static_pointer_cast<hl_definition_node>(node);
-            if(!def->is_scalar()){
-                if(def->is_initialized()){
-                    std::vector<std::shared_ptr<hl_ast_node>> ret;
-                    for(uint32_t i = 0; i<def->get_array_initializer().size(); ++i){
-
-                        auto init_expr = build_initialization_expr(def, i);
-
-                        auto lhs = std::static_pointer_cast<hl_ast_operand>(init_expr->get_lhs().value());
-                        lhs->get_variable()->set_array_shape(def->get_variable()->get_array_shape());
-                        lhs->get_variable()->set_bound_reg_array(def->get_variable()->get_bound_reg_array());
-                        lhs->get_variable()->set_variable_class(def->get_variable()->get_variable_class());
-                        lhs->get_variable()->set_type(def->get_variable()->get_type());
-                        ret.push_back(init_expr);
-                    }
-                    def->set_array_initializer({});
-                    ret.insert(ret.begin(), def);
-                    return ret;
-                } else {
-                    return {node};
-                }
-            } else return {node};
-
-        }
-        else return {node};
-    }
 
 
     std::shared_ptr<hl_expression_node> array_initialization_substitution::build_initialization_expr(const std::shared_ptr<hl_definition_node>& def, int index) {
@@ -89,6 +57,31 @@ namespace fcore{
         op->set_array_index(index_operands);
         init_expr->set_lhs(op);
         return init_expr;
+    }
+
+    std::vector<std::shared_ptr<hl_ast_node>>
+    array_initialization_substitution::process_definition(const std::shared_ptr<hl_definition_node> &def) {
+        if(!def->is_scalar()){
+            if(def->is_initialized()){
+                std::vector<std::shared_ptr<hl_ast_node>> ret;
+                for(uint32_t i = 0; i<def->get_array_initializer().size(); ++i){
+
+                    auto init_expr = build_initialization_expr(def, i);
+
+                    auto lhs = std::static_pointer_cast<hl_ast_operand>(init_expr->get_lhs().value());
+                    lhs->get_variable()->set_array_shape(def->get_variable()->get_array_shape());
+                    lhs->get_variable()->set_bound_reg_array(def->get_variable()->get_bound_reg_array());
+                    lhs->get_variable()->set_variable_class(def->get_variable()->get_variable_class());
+                    lhs->get_variable()->set_type(def->get_variable()->get_type());
+                    ret.push_back(init_expr);
+                }
+                def->set_array_initializer({});
+                ret.insert(ret.begin(), def);
+                return ret;
+            } else {
+                return {def};
+            }
+        } else return {def};
     }
 }
 

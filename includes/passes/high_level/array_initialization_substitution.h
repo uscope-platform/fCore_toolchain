@@ -18,6 +18,7 @@
 #include "passes/high_level/infrastructure/pass_base.hpp"
 #include "tools/array_linearizer.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
+#include "passes/high_level/infrastructure/hl_ast_visitor.hpp"
 
 namespace fcore{
     class array_initialization_substitution : public pass_base{
@@ -26,8 +27,8 @@ namespace fcore{
         std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
 
     private:
-        std::vector<std::shared_ptr<hl_ast_node>> process_node_by_type(const std::shared_ptr<hl_ast_node>& node);
-        std::shared_ptr<hl_expression_node> build_initialization_expr(const std::shared_ptr<hl_definition_node>& var_name, int index);
+        static std::vector<std::shared_ptr<hl_ast_node>> process_definition(const std::shared_ptr<hl_definition_node> &node);
+        static std::shared_ptr<hl_expression_node> build_initialization_expr(const std::shared_ptr<hl_definition_node>& var_name, int index);
     };
 }
 

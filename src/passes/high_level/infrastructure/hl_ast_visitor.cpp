@@ -174,7 +174,7 @@ namespace fcore{
         }
     }
 
-    std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_function_def_node> &def) {
+    std::vector<std::shared_ptr<hl_ast_node>> hl_ast_visitor::process_node(const std::shared_ptr<hl_function_def_node> &def) {
         std::vector<std::shared_ptr<hl_ast_node>> new_block;
 
         for(const auto &item:def->get_body()){
@@ -188,7 +188,7 @@ namespace fcore{
         if(ops.visit_function_def){
             return ops.visit_function_def(def);
         } else {
-            return def;
+            return {def};
         }
 
     }

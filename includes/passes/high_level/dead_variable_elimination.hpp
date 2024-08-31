@@ -20,6 +20,7 @@
 
 #include "passes/high_level/infrastructure/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
+#include "passes/high_level/infrastructure/hl_ast_visitor.hpp"
 #include "tools/variable_map.hpp"
 
 namespace fcore{
@@ -28,7 +29,12 @@ namespace fcore{
         explicit dead_variable_elimination();
         std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
 
+        std::vector<std::shared_ptr<hl_ast_node>> detect_definition(const std::shared_ptr<hl_definition_node> &def);
+        std::vector<std::shared_ptr<hl_ast_node>> process_definition(const std::shared_ptr<hl_definition_node> &def);
 
+        std::shared_ptr<hl_ast_node> detect_expression(const std::shared_ptr<hl_expression_node> &expr);
+    private:
+        std::map<std::string, bool> defined_variables;
     };
 }
 
