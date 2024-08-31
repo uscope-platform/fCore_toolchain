@@ -51,13 +51,13 @@ namespace fcore{
         return {def};
     }
 
-    std::shared_ptr<hl_ast_node>
+    std::vector<std::shared_ptr<hl_ast_node>>
     dead_variable_elimination::detect_expression(const std::shared_ptr<hl_expression_node> &expr) {
         if(expr->get_type() == expr_assign){
             std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(expr->get_lhs().value());
             defined_variables.insert(std::make_pair(lhs->get_name(), true));
         }
-        return expr;
+        return {expr};
     }
 
 }

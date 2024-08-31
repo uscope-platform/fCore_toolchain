@@ -39,13 +39,13 @@ namespace fcore{
             std::vector<std::shared_ptr<hl_ast_node>> (const std::shared_ptr<hl_definition_node> & def)
         > visit_definition;
         std::function<
-            std::shared_ptr<hl_ast_node> (const std::shared_ptr<hl_expression_node> &cond)
+            std::vector<std::shared_ptr<hl_ast_node>>  (const std::shared_ptr<hl_expression_node> &cond)
         > visit_expression;
         std::function<
             std::vector<std::shared_ptr<hl_ast_node>> (const std::shared_ptr<hl_function_def_node> &cond)
         > visit_function_def;
         std::function<
-            std::shared_ptr<hl_ast_node> (const std::shared_ptr<hl_function_call_node> &cond)
+            std::vector<std::shared_ptr<hl_ast_node>>  (const std::shared_ptr<hl_function_call_node> &cond)
         > visit_function_call;
     };
 
@@ -58,8 +58,8 @@ namespace fcore{
         std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_ast_loop_node> &loop);
         std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_ast_operand> &op);
         std::vector<std::shared_ptr<hl_ast_node>> process_node(const std::shared_ptr<hl_definition_node> &def);
-        std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_expression_node> &cond);
-        std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_function_call_node> &cond);
+        std::vector<std::shared_ptr<hl_ast_node>> process_node(const std::shared_ptr<hl_expression_node> &cond);
+        std::vector<std::shared_ptr<hl_ast_node>>  process_node(const std::shared_ptr<hl_function_call_node> &cond);
         std::vector<std::shared_ptr<hl_ast_node>> process_node(const std::shared_ptr<hl_function_def_node> &def);
         std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_code_block> &block);
         hl_ast_visitor_operations ops;

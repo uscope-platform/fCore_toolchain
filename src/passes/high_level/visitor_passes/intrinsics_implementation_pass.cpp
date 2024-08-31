@@ -32,7 +32,7 @@ namespace fcore {
     }
 
 
-    std::shared_ptr<hl_ast_node>
+    std::vector<std::shared_ptr<hl_ast_node>>
     intrinsics_implementation_pass::process_function_call(const std::shared_ptr<hl_function_call_node> &element) {
 
 
@@ -65,7 +65,7 @@ namespace fcore {
 
         unsigned int matches = substitutions.count(element->get_name());
         if(matches == 0) {
-            return element;
+            return {element};
         }
 
         std::shared_ptr<hl_expression_node> retval = std::make_shared<hl_expression_node>(substitutions[element->get_name()]);
@@ -84,6 +84,6 @@ namespace fcore {
             retval->set_rhs(element->get_arguments()[0]);
         }
 
-        return retval;
+        return {retval};
     }
 }

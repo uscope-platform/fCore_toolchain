@@ -74,7 +74,7 @@ namespace fcore{
         return retval;
     }
 
-    std::shared_ptr<hl_ast_node>
+    std::vector<std::shared_ptr<hl_ast_node>>
     operating_assignment_implementation_pass::process_expression(std::shared_ptr<hl_expression_node> element) {
         if(element->get_type() == expr_assign && element->get_assignment_type() != regular_assignment ){
             std::shared_ptr<hl_expression_node> outer_exp = std::make_shared<hl_expression_node>(expr_assign);
@@ -83,9 +83,9 @@ namespace fcore{
             inner_exp->set_lhs(element->get_lhs().value());
             inner_exp->set_rhs(element->get_rhs());
             outer_exp->set_rhs(inner_exp);
-            return outer_exp;
+            return {outer_exp};
         } else {
-            return element;
+            return {element};
         }
     }
 }

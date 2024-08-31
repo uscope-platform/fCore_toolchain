@@ -195,7 +195,7 @@ namespace fcore{
             }
         }
         element->set_body(new_content);
-        return element;
+        return {element};
     }
 
     std::shared_ptr<hl_ast_operand> function_inlining_pass::process_operand(std::shared_ptr<hl_ast_operand> element) {

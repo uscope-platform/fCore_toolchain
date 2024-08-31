@@ -26,7 +26,7 @@ namespace fcore{
     public:
         operating_assignment_implementation_pass();
         std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
-        static std::shared_ptr<hl_ast_node> process_expression(std::shared_ptr<hl_expression_node> element);
+        static std::vector<std::shared_ptr<hl_ast_node>>  process_expression(std::shared_ptr<hl_expression_node> element);
     private:
         static std::shared_ptr<hl_expression_node> create_top_expression(assignment_type_t a);
     };

@@ -143,7 +143,7 @@ namespace fcore{
         }
     }
 
-    std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_expression_node> &ex) {
+    std::vector<std::shared_ptr<hl_ast_node>>  hl_ast_visitor::process_node(const std::shared_ptr<hl_expression_node> &ex) {
         if(auto ths = ex->get_ths())
             ex->set_ths(get_expected_scalar_element(process_node_by_type(ths.value())));
         if(auto lhs = ex->get_lhs())
@@ -153,11 +153,11 @@ namespace fcore{
         if(ops.visit_expression){
             return ops.visit_expression(ex);
         } else {
-            return ex;
+            return {ex};
         }
     }
 
-    std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_function_call_node> &call) {
+    std::vector<std::shared_ptr<hl_ast_node>> hl_ast_visitor::process_node(const std::shared_ptr<hl_function_call_node> &call) {
 
         std::vector<std::shared_ptr<hl_ast_node>> new_block;
 
@@ -170,7 +170,7 @@ namespace fcore{
         if(ops.visit_function_call){
             return ops.visit_function_call(call);
         } else {
-            return call;
+            return {call};
         }
     }
 
