@@ -28,9 +28,8 @@ namespace fcore {
         hl_ast_visitor_operations ops;
         hl_ast_visitor visitor;
 
-        ops.visit_expression = std::bind(&division_implementation_pass::process_expression, this,
-                                         std::placeholders::_1);
-
+        // ops.visit_expression = [this](auto && arg) { return process_expression(std::forward<decltype(arg)>(arg)); };
+        ops.visit_expression = process_expression;
 
         return visitor.visit(ops, element);
     }

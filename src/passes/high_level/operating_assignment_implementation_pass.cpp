@@ -25,18 +25,15 @@ namespace fcore{
     std::shared_ptr<hl_code_block>
     operating_assignment_implementation_pass::process_global(std::shared_ptr<hl_code_block> element) {
 
+        hl_ast_visitor_operations ops;
+        hl_ast_visitor visitor;
 
-        std::shared_ptr<hl_code_block> ret_val = std::make_shared<hl_code_block>();
-        std::vector<std::shared_ptr<hl_ast_node>> new_content;
-        for(auto &item:element->get_content()){
-            new_content.push_back(process_node_by_type(item));
-        }
-        ret_val->set_content(new_content);
-        return ret_val;
+        ops.visit_expression = process_expression;
+
+
+        return visitor.visit(ops, element);
+
     }
-
-
-
 
 
     std::shared_ptr<hl_expression_node>
@@ -78,70 +75,17 @@ namespace fcore{
     }
 
     std::shared_ptr<hl_ast_node>
-    operating_assignment_implementation_pass::process_terminal(std::shared_ptr<hl_ast_node> element) {
-
-        std::shared_ptr<hl_ast_node> ret_val = element;
-        if(element->node_type == hl_ast_node_type_expr){
-            std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
-            if(node->get_type() == expr_assign && node->get_assignment_type() != regular_assignment ){
-                std::shared_ptr<hl_expression_node> outer_exp = std::make_shared<hl_expression_node>(expr_assign);
-                outer_exp->set_lhs(node->get_lhs().value());
-                std::shared_ptr<hl_expression_node> inner_exp = create_top_expression(node->get_assignment_type());
-                inner_exp->set_lhs(node->get_lhs().value());
-                inner_exp->set_rhs(node->get_rhs());
-                outer_exp->set_rhs(inner_exp);
-                ret_val = outer_exp;
-            }
-        }
-        return ret_val;
-    }
-
-    std::shared_ptr<hl_ast_node>
-    operating_assignment_implementation_pass::process_node_by_type(std::shared_ptr<hl_ast_node> item) {
-        if(!item->is_terminal()){
-            if(item->node_type == hl_ast_node_type_function_def){
-                std::shared_ptr<hl_function_def_node> node = std::static_pointer_cast<hl_function_def_node>(item);
-
-                std::vector<std::shared_ptr<hl_ast_node>> body =  node->get_body();
-                for(auto &i :body){
-                    i = process_node_by_type(i);
-                }
-                node->set_body(body);
-
-                return node;
-            }else if (item->node_type == hl_ast_node_type_conditional){
-                std::shared_ptr<hl_ast_conditional_node> node = std::static_pointer_cast<hl_ast_conditional_node>(item);
-
-                std::vector<std::shared_ptr<hl_ast_node>> new_block_content;
-                for(auto &i:node->get_if_block()){
-                    new_block_content.push_back(process_node_by_type(i));
-                }
-                node->set_if_block(new_block_content);
-
-                new_block_content.clear();
-
-                for(auto &i:node->get_else_block()){
-                    new_block_content.push_back(process_node_by_type(i));
-                }
-                node->set_else_block(new_block_content);
-                return node;
-            }else if (item->node_type == hl_ast_node_type_loop){
-                std::shared_ptr<hl_ast_loop_node> node = std::static_pointer_cast<hl_ast_loop_node>(item);
-
-                std::vector<std::shared_ptr<hl_ast_node>> new_block_content;
-                for(auto &i:node->get_loop_content()){
-                    new_block_content.push_back(process_node_by_type(i));
-                }
-                node->set_loop_content(new_block_content);
-
-                return node;
-            } else {
-
-                return item;
-            }
-
-        } else{
-            return process_terminal(item);
+    operating_assignment_implementation_pass::process_expression(std::shared_ptr<hl_expression_node> element) {
+        if(element->get_type() == expr_assign && element->get_assignment_type() != regular_assignment ){
+            std::shared_ptr<hl_expression_node> outer_exp = std::make_shared<hl_expression_node>(expr_assign);
+            outer_exp->set_lhs(element->get_lhs().value());
+            std::shared_ptr<hl_expression_node> inner_exp = create_top_expression(element->get_assignment_type());
+            inner_exp->set_lhs(element->get_lhs().value());
+            inner_exp->set_rhs(element->get_rhs());
+            outer_exp->set_rhs(inner_exp);
+            return outer_exp;
+        } else {
+            return element;
         }
     }
 }

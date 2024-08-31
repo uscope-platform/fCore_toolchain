@@ -19,14 +19,14 @@
 
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "passes/high_level/infrastructure/pass_base.hpp"
+#include "passes/high_level/infrastructure/hl_ast_visitor.hpp"
 
 namespace fcore{
     class operating_assignment_implementation_pass : public pass_base {
     public:
         operating_assignment_implementation_pass();
         std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
-        std::shared_ptr<hl_ast_node> process_node_by_type(std::shared_ptr<hl_ast_node> element);
-        std::shared_ptr<hl_ast_node> process_terminal(std::shared_ptr<hl_ast_node> element);
+        static std::shared_ptr<hl_ast_node> process_expression(std::shared_ptr<hl_expression_node> element);
     private:
         static std::shared_ptr<hl_expression_node> create_top_expression(assignment_type_t a);
     };
