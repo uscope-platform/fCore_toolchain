@@ -18,7 +18,7 @@
 
 namespace fcore{
 
-    std::shared_ptr<hl_ast_node> fcore::hl_ast_visitor::visit(const fcore::hl_ast_visitor_operations &operations,const std::shared_ptr<hl_code_block> &node) {
+    std::shared_ptr<hl_code_block> fcore::hl_ast_visitor::visit(const fcore::hl_ast_visitor_operations &operations,const std::shared_ptr<hl_code_block> &node) {
         ops = operations;
         auto ret_val = node;
         std::vector<std::shared_ptr<hl_ast_node>> new_content;
@@ -30,6 +30,7 @@ namespace fcore{
     }
 
     std::shared_ptr<hl_ast_node> fcore::hl_ast_visitor::process_node_by_type(const std::shared_ptr<hl_ast_node> &node) {
+        if(!node) return node;
         switch (node->node_type) {
             case hl_ast_node_type_expr:
                 return process_node(std::static_pointer_cast<hl_expression_node>(node));
@@ -69,8 +70,11 @@ namespace fcore{
         }
         cond->set_else_block(new_block);
 
-
-        return ops.visit_conditional(cond);
+        if(ops.visit_conditional){
+            return ops.visit_conditional(cond);
+        } else {
+            return cond;
+        }
     }
 
     std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_ast_loop_node> &loop) {
@@ -94,11 +98,20 @@ namespace fcore{
                 process_node_by_type(loop->get_iteration_expr())
         ));
 
-        return ops.visit_loop(loop);
+
+        if(ops.visit_loop){
+            return ops.visit_loop(loop);
+        } else {
+            return loop;
+        }
     }
 
     std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_ast_operand> &op) {
-        return ops.visit_operand(op);
+        if(ops.visit_operand){
+            return ops.visit_operand(op);
+        } else {
+            return op;
+        }
     }
 
     std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_definition_node> &def) {
@@ -117,14 +130,23 @@ namespace fcore{
         }
         def->set_array_index(new_block);
 
-        return ops.visit_definition(def);
+        if(ops.visit_definition){
+            return ops.visit_definition(def);
+        } else {
+            return def;
+        }
     }
 
     std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_expression_node> &ex) {
         if(auto ths = ex->get_ths()) ex->set_ths(process_node_by_type(ths.value()));
         if(auto lhs = ex->get_lhs()) ex->set_lhs(process_node_by_type(lhs.value()));
         ex->set_rhs(process_node_by_type(ex->get_rhs()));
-        return ops.visit_expression(ex);
+
+        if(ops.visit_expression){
+            return ops.visit_expression(ex);
+        } else {
+            return ex;
+        }
     }
 
     std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_function_call_node> &call) {
@@ -136,7 +158,11 @@ namespace fcore{
         }
         call->set_arguments(new_block);
 
-        return ops.visit_function_call(call);
+        if(ops.visit_function_call){
+            return ops.visit_function_call(call);
+        } else {
+            return call;
+        }
     }
 
     std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_function_def_node> &def) {
@@ -149,6 +175,11 @@ namespace fcore{
 
         def->set_return(process_node_by_type(def->get_return()));
 
-        return ops.visit_function_def(def);
+        if(ops.visit_function_def){
+            return ops.visit_function_def(def);
+        } else {
+            return def;
+        }
+
     }
 }

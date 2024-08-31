@@ -35,7 +35,7 @@ namespace fcore{
 
     class hl_ast_visitor {
     public:
-        std::shared_ptr<hl_ast_node> visit(const hl_ast_visitor_operations &operations,const std::shared_ptr<hl_code_block> &node);
+        std::shared_ptr<hl_code_block> visit(const hl_ast_visitor_operations &operations,const std::shared_ptr<hl_code_block> &node);
     private:
         std::shared_ptr<hl_ast_node> process_node_by_type(const std::shared_ptr<hl_ast_node> &node);
         std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_ast_conditional_node> &cond);
