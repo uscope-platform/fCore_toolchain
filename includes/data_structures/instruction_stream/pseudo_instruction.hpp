@@ -33,7 +33,6 @@ namespace fcore{
         uint32_t emit() const{ return 0;};
         void print() const {};
         std::string disassemble() const{return "";};
-        nlohmann::json dump()const;
 
         friend bool operator==(const pseudo_instruction& lhs, const pseudo_instruction& rhs){
             bool retval = true;

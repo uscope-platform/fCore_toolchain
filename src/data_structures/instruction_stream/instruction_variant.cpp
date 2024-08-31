@@ -54,17 +54,6 @@ namespace fcore{
         }, content);
     }
 
-    nlohmann::json instruction_variant::dump() {
-        return std::visit([](auto &var) -> nlohmann::json {
-            return var.dump();
-        }, content);
-    }
-
-    nlohmann::json instruction_variant::dump_instruction(instruction_variant &node) {
-        return std::visit([](auto &var) -> nlohmann::json {
-            return var.dump();
-        }, node.content);
-    }
 
 
 

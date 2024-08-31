@@ -42,9 +42,4 @@ namespace fcore{
         return opcode;
     }
 
-    nlohmann::json  independent_instruction::dump() const{
-        nlohmann::json retval;
-        retval["instruction_type"] = "isa_independent_instruction";
-        return retval;
-    }
 }

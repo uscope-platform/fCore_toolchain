@@ -31,8 +31,6 @@ namespace fcore{
         void print() const;
         int instruction_count() const;
 
-        nlohmann::json dump()const;
-
         friend bool operator==(const register_instruction& lhs, const register_instruction& rhs){
             bool retval = true;
 

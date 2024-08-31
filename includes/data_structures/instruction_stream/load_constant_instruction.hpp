@@ -44,8 +44,6 @@ namespace fcore{
         std::vector<std::shared_ptr<variable>> get_arguments() const {return {destination, constant};};
         void set_arguments(const std::vector<std::shared_ptr<variable>> &a);
 
-        nlohmann::json dump()const;
-
         friend bool operator==(const load_constant_instruction& lhs, const load_constant_instruction& rhs){
             bool retval = true;
 

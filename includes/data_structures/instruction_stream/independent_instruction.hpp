@@ -37,8 +37,6 @@ namespace fcore{
         void set_arguments(const std::vector<std::shared_ptr<variable>> &) {};
         std::vector<std::shared_ptr<variable>> get_arguments() const {return {};};
 
-        nlohmann::json dump()const;
-
         friend bool operator==(const independent_instruction& lhs, const independent_instruction& rhs){
             return rhs.opcode == lhs.opcode;
         };

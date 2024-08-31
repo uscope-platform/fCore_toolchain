@@ -60,15 +60,6 @@ namespace fcore {
         return opcode + " " + destination->get_name() + ", ";
     }
 
-    nlohmann::json load_constant_instruction::dump() const{
-        nlohmann::json retval;
-
-        retval["instruction_type"] = "isa_load_constant_instruction";
-        retval["destination"] = destination->dump();
-        retval["constant"] = constant->dump();
-        return retval;
-    }
-
     bool load_constant_instruction::is_float() {
         return constant->is_float();
     }

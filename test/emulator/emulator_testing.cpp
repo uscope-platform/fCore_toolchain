@@ -149,7 +149,6 @@ TEST(Emulator, emulator_inteconnect) {
     manager.emulate();
     auto res = manager.get_results()["test_consumer"];
 
-    auto s = res.dump();
     std::vector<uint32_t> reference = {0x426a7ae1, 0x42f070a4};
     ASSERT_EQ(res["outputs"]["consumer_out"]["0"][0], reference);
 

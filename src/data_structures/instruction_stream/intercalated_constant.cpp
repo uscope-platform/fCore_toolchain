@@ -48,13 +48,6 @@ namespace fcore {
     }
 
 
-    nlohmann::json intercalated_constant::dump()const {
-        nlohmann::json retval;
-        retval["instruction_type"] = "isa_intercalated_constant";
-        retval["intercalated_constant"] = float_const;
-        return retval;
-    }
-
     std::string intercalated_constant::disassemble()const {
         if(is_float) return std::to_string(float_const);
         else return  std::to_string(int_const);

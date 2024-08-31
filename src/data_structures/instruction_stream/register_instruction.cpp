@@ -59,14 +59,6 @@ namespace fcore{
         return opcode + " " + operand_a->get_name() + ", " + operand_b->get_name() + ", " + destination->get_name();
     }
 
-    nlohmann::json register_instruction::dump() const{
-        nlohmann::json retval;
-        retval["instruction_type"] = "isa_register_instruction";
-        retval["operand_a"] = operand_a->dump();
-        retval["operand_b"] = operand_b->dump();
-        retval["destination"] = destination->dump();
-        return retval;
-    }
 
 
 }

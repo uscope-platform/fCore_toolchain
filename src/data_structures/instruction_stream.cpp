@@ -43,16 +43,6 @@ namespace fcore{
         return stream_store.size();
     }
 
-    nlohmann::json instruction_stream::dump() {
-        nlohmann::json retval;
-        std::vector<nlohmann::json> stream;
-        for(auto &i:stream_store){
-            stream.push_back(instruction_variant::dump_instruction(i));
-        }
-        retval["type"] = "stream_ast";
-        retval["content"] = stream;
-        return retval;
-    }
 
 
 }

@@ -50,15 +50,6 @@ namespace fcore{
         return opcode + " " + source->get_name() + ", " + destination->get_name();
     }
 
-
-    nlohmann::json conversion_instruction::dump() const{
-        nlohmann::json retval;
-        retval["instruction_type"] = "isa_conversion_instruction";
-        retval["source"] = source->dump();
-        retval["destination"] = destination->dump();
-        return retval;
-    }
-
 }
 
 

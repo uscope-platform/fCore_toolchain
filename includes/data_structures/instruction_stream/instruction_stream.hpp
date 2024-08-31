@@ -39,7 +39,6 @@ namespace fcore{
         instruction_variant last() {return stream_store.back();};
         instruction_variant get(ssize_t i) {return stream_store[i];};
 
-        nlohmann::json dump();
 
         auto begin() {return stream_store.begin();};
         auto end() {return stream_store.end();};

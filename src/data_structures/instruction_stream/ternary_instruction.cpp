@@ -59,16 +59,6 @@ namespace fcore{
                   " OPERAND C: " << operand_c->to_str() << " DESTINATION: " << destination->to_str() <<std::endl;
     }
 
-    nlohmann::json ternary_instruction::dump() const{
-        nlohmann::json retval;
-        retval["instruction_type"] = "isa_ternary_instruction";
-        retval["operand_a"] = operand_a->dump();
-        retval["operand_b"] = operand_b->dump();
-        retval["operand_c"] = operand_c->dump();
-        retval["destination"] = destination->dump();
-        return retval;
-    }
-
     void ternary_instruction::set_arguments(const std::vector<std::shared_ptr<variable>> &a) {
         operand_a = a[0];
         operand_b = a[1];

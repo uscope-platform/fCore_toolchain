@@ -26,16 +26,4 @@ namespace fcore{
         return 1;
     }
 
-    nlohmann::json pseudo_instruction::dump()const {
-        nlohmann::json retval;
-
-        retval["instruction_type"] = "isa_pseudo_instruction";
-        std::vector<nlohmann::json> args_dump;
-        for(auto &i:arguments){
-            args_dump.push_back(i->dump());
-        }
-        retval["arguments"] = args_dump;
-        return retval;
-    }
-
 }

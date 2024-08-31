@@ -46,8 +46,6 @@ namespace fcore{
         std::vector<std::shared_ptr<variable>> get_arguments() const {return {};};
 
 
-        nlohmann::json dump() const;
-
         std::string get_opcode(){return opcode;};
 
     private:
