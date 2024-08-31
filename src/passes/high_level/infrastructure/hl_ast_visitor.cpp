@@ -23,50 +23,53 @@ namespace fcore{
         auto ret_val = node;
         std::vector<std::shared_ptr<hl_ast_node>> new_content;
         for(const auto &item:ret_val->get_content()){
-            new_content.push_back(process_node_by_type(item));
+            auto process_result = process_node_by_type(item);
+            new_content.insert(new_content.end(), process_result.begin(), process_result.end());
         }
         ret_val->set_content(new_content);
         return ret_val;
     }
 
-    std::shared_ptr<hl_ast_node> fcore::hl_ast_visitor::process_node_by_type(const std::shared_ptr<hl_ast_node> &node) {
-        if(!node) return node;
+    std::vector<std::shared_ptr<hl_ast_node>> fcore::hl_ast_visitor::process_node_by_type(const std::shared_ptr<hl_ast_node> &node) {
+        if(!node) return {node};
         switch (node->node_type) {
             case hl_ast_node_type_expr:
-                return process_node(std::static_pointer_cast<hl_expression_node>(node));
+                return {process_node(std::static_pointer_cast<hl_expression_node>(node))};
             case hl_ast_node_type_definition:
                 return process_node(std::static_pointer_cast<hl_definition_node>(node));
             case hl_ast_node_type_conditional:
-                return process_node(std::static_pointer_cast<hl_ast_conditional_node>(node));
+                return {process_node(std::static_pointer_cast<hl_ast_conditional_node>(node))};
             case hl_ast_node_type_loop:
-                return process_node(std::static_pointer_cast<hl_ast_loop_node>(node));
+                return {process_node(std::static_pointer_cast<hl_ast_loop_node>(node))};
             case hl_ast_node_type_function_def:
-                return process_node(std::static_pointer_cast<hl_function_def_node>(node));
+                return {process_node(std::static_pointer_cast<hl_function_def_node>(node))};
             case hl_ast_node_type_operand:
-                return process_node(std::static_pointer_cast<hl_ast_operand>(node));
+                return {process_node(std::static_pointer_cast<hl_ast_operand>(node))};
             case hl_ast_node_type_function_call:
-                return process_node(std::static_pointer_cast<hl_function_call_node>(node));
+                return {process_node(std::static_pointer_cast<hl_function_call_node>(node))};
             case hl_ast_node_type_code_block:
-                return visit(ops, std::static_pointer_cast<hl_code_block>(node));
+                return {process_node(std::static_pointer_cast<hl_code_block>(node))};
             default:
                 throw std::runtime_error("unexpected node encounted during AST visit");
         }
     }
 
     std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_ast_conditional_node> &cond) {
-        cond->set_condition(process_node_by_type(cond->get_condition()));
+        cond->set_condition(get_expected_scalar_element(process_node_by_type(cond->get_condition())));
 
         std::vector<std::shared_ptr<hl_ast_node>> new_block;
 
         for(const auto &item:cond->get_if_block()){
-            new_block.push_back(process_node_by_type(item));
+            auto ret_block = process_node_by_type(item);
+            new_block.insert(new_block.end(), ret_block.begin(), ret_block.end());
         }
         cond->set_if_block(new_block);
 
         new_block.clear();
 
         for(const auto &item:cond->get_else_block()){
-            new_block.push_back(process_node_by_type(item));
+            auto ret_block = process_node_by_type(item);
+            new_block.insert(new_block.end(), ret_block.begin(), ret_block.end());
         }
         cond->set_else_block(new_block);
 
@@ -82,20 +85,21 @@ namespace fcore{
         std::vector<std::shared_ptr<hl_ast_node>> new_block;
 
         for(const auto &item:loop->get_loop_content()){
-            new_block.push_back(process_node_by_type(item));
+            auto ret_content = process_node_by_type(item);
+            new_block.insert(new_block.end(), ret_content.begin(), ret_content.end());
         }
         loop->set_loop_content(new_block);
 
         loop->set_condition(std::static_pointer_cast<hl_expression_node>(
-                process_node_by_type(loop->get_condition())
-                ));
+            get_expected_scalar_element(process_node_by_type(loop->get_condition()))
+        ));
 
         loop->set_init_statement(std::static_pointer_cast<hl_definition_node>(
-                process_node_by_type(loop->get_init_statement())
+            get_expected_scalar_element(process_node_by_type(loop->get_init_statement()))
         ));
 
         loop->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(
-                process_node_by_type(loop->get_iteration_expr())
+            get_expected_scalar_element(process_node_by_type(loop->get_iteration_expr()))
         ));
 
 
@@ -114,33 +118,37 @@ namespace fcore{
         }
     }
 
-    std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_definition_node> &def) {
+    std::vector<std::shared_ptr<hl_ast_node>> hl_ast_visitor::process_node(const std::shared_ptr<hl_definition_node> &def) {
 
         std::vector<std::shared_ptr<hl_ast_node>> new_block;
 
         for(const auto &item:def->get_array_initializer()){
-            new_block.push_back(process_node_by_type(item));
+            auto new_array = process_node_by_type(item);
+            new_block.insert(new_block.end(), new_array.begin(), new_array.end());
         }
         def->set_array_initializer(new_block);
 
         new_block.clear();
 
         for(const auto &item:def->get_array_index()){
-            new_block.push_back(process_node_by_type(item));
+            auto new_array = process_node_by_type(item);
+            new_block.insert(new_block.end(), new_array.begin(), new_array.end());
         }
         def->set_array_index(new_block);
 
         if(ops.visit_definition){
             return ops.visit_definition(def);
         } else {
-            return def;
+            return {def};
         }
     }
 
     std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_expression_node> &ex) {
-        if(auto ths = ex->get_ths()) ex->set_ths(process_node_by_type(ths.value()));
-        if(auto lhs = ex->get_lhs()) ex->set_lhs(process_node_by_type(lhs.value()));
-        ex->set_rhs(process_node_by_type(ex->get_rhs()));
+        if(auto ths = ex->get_ths())
+            ex->set_ths(get_expected_scalar_element(process_node_by_type(ths.value())));
+        if(auto lhs = ex->get_lhs())
+            ex->set_lhs(get_expected_scalar_element(process_node_by_type(lhs.value())));
+        ex->set_rhs(get_expected_scalar_element(process_node_by_type(ex->get_rhs())));
 
         if(ops.visit_expression){
             return ops.visit_expression(ex);
@@ -154,7 +162,8 @@ namespace fcore{
         std::vector<std::shared_ptr<hl_ast_node>> new_block;
 
         for(const auto &item:call->get_arguments()){
-            new_block.push_back(process_node_by_type(item));
+            auto ret_args = process_node_by_type(item);
+            new_block.insert(new_block.end(), ret_args.begin(), ret_args.end());
         }
         call->set_arguments(new_block);
 
@@ -169,11 +178,12 @@ namespace fcore{
         std::vector<std::shared_ptr<hl_ast_node>> new_block;
 
         for(const auto &item:def->get_body()){
-            new_block.push_back(process_node_by_type(item));
+            auto ret_body = process_node_by_type(item);
+            new_block.insert(new_block.end(), ret_body.begin(), ret_body.end());
         }
         def->set_body(new_block);
 
-        def->set_return(process_node_by_type(def->get_return()));
+        def->set_return(get_expected_scalar_element(process_node_by_type(def->get_return())));
 
         if(ops.visit_function_def){
             return ops.visit_function_def(def);
@@ -181,5 +191,22 @@ namespace fcore{
             return def;
         }
 
+    }
+
+    std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_code_block> &block) {
+        auto ret_val = block;
+        std::vector<std::shared_ptr<hl_ast_node>> new_content;
+        for(const auto &item:ret_val->get_content()){
+            auto process_result = process_node_by_type(item);
+            new_content.insert(new_content.end(), process_result.begin(), process_result.end());
+        }
+        ret_val->set_content(new_content);
+        return ret_val;
+    }
+
+    std::shared_ptr<hl_ast_node>
+    hl_ast_visitor::get_expected_scalar_element(const std::vector<std::shared_ptr<hl_ast_node>> &vect) {
+        if(vect.size() ==1) return vect[0];
+        throw std::runtime_error("Unexpected vector return in a scalar only position during AST visit");
     }
 }

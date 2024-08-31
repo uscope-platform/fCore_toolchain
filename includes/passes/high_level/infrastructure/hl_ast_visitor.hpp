@@ -18,6 +18,8 @@
 #define FCORE_TOOLCHAIN_HL_AST_VISITOR_HPP
 
 #include <memory>
+#include <vector>
+
 #include "data_structures/high_level_ast/hl_ast_node.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
@@ -27,7 +29,7 @@ namespace fcore{
         std::function<std::shared_ptr<hl_ast_node>(const std::shared_ptr<hl_ast_conditional_node> &cond)> visit_conditional;
         std::function<std::shared_ptr<hl_ast_node>(const std::shared_ptr<hl_ast_loop_node> &cond)> visit_loop;
         std::function<std::shared_ptr<hl_ast_node>(const std::shared_ptr<hl_ast_operand> &cond)> visit_operand;
-        std::function<std::shared_ptr<hl_ast_node>(const std::shared_ptr<hl_definition_node> &cond)> visit_definition;
+        std::function<std::vector<std::shared_ptr<hl_ast_node>>(const  std::shared_ptr<hl_definition_node> & def)> visit_definition;
         std::function<std::shared_ptr<hl_ast_node>(const std::shared_ptr<hl_expression_node> &cond)> visit_expression;
         std::function<std::shared_ptr<hl_ast_node>(const std::shared_ptr<hl_function_def_node> &cond)> visit_function_def;
         std::function<std::shared_ptr<hl_ast_node>(const std::shared_ptr<hl_function_call_node> &cond)> visit_function_call;
@@ -37,15 +39,18 @@ namespace fcore{
     public:
         std::shared_ptr<hl_code_block> visit(const hl_ast_visitor_operations &operations,const std::shared_ptr<hl_code_block> &node);
     private:
-        std::shared_ptr<hl_ast_node> process_node_by_type(const std::shared_ptr<hl_ast_node> &node);
+        std::vector<std::shared_ptr<hl_ast_node>> process_node_by_type(const std::shared_ptr<hl_ast_node> &node);
         std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_ast_conditional_node> &cond);
         std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_ast_loop_node> &loop);
         std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_ast_operand> &op);
-        std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_definition_node> &def);
+        std::vector<std::shared_ptr<hl_ast_node>> process_node(const std::shared_ptr<hl_definition_node> &def);
         std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_expression_node> &cond);
         std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_function_call_node> &cond);
         std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_function_def_node> &def);
+        std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_code_block> &block);
         hl_ast_visitor_operations ops;
+
+        std::shared_ptr<hl_ast_node> get_expected_scalar_element(const std::vector<std::shared_ptr<hl_ast_node>> &vect);
 
     };
 
