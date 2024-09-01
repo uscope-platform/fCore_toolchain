@@ -159,17 +159,17 @@ namespace fcore{
             variable_class_t c{};
             switch (item.second.type) {
                 case core_iom_input:
-                    c = {variable_input_type, item.second.scalar_constant};
+                    c = {variable_input_type, item.second.scalar_io};
                     v->set_variable_class(c);
                     dma_io_spec[item.first] = c;
                     break;
                 case core_iom_output:
-                    c = {variable_output_type, item.second.scalar_constant};
+                    c = {variable_output_type, item.second.scalar_io};
                     v->set_variable_class(c);
                     dma_io_spec[item.first] = c;
                     break;
                 case core_iom_memory:
-                    c = {variable_memory_type, item.second.scalar_constant};
+                    c = {variable_memory_type, item.second.scalar_io};
                     v->set_variable_class(c);
                     dma_io_spec[item.first] = c;
                     break;
@@ -253,7 +253,7 @@ namespace fcore{
             std::vector<uint32_t> addr =  raw_map["address"];
             iom.address = addr;
             iom.type = core_iom_type_translator[raw_map["type"]];
-            iom.scalar_constant = raw_map["scalar_constant"];
+            iom.scalar_io = raw_map["scalar_io"];
         }
 
         return ret;

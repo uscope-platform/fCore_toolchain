@@ -37,7 +37,7 @@ namespace fcore{
 
     struct variable_class_t{
         iom_spec_t iom_spec;
-        bool scalar_constant;
+        bool scalar_io;
     };
 
 
@@ -95,7 +95,7 @@ namespace fcore{
 
         [[nodiscard]] uint32_t get_value() const;
         friend bool operator==(const variable& lhs, const variable& rhs){
-            bool cond = lhs.variable_class.scalar_constant == rhs.variable_class.scalar_constant;
+            bool cond = lhs.variable_class.scalar_io == rhs.variable_class.scalar_io;
             cond &= lhs.variable_class.iom_spec == rhs.variable_class.iom_spec;
             cond &= lhs.first_occurrence == rhs.first_occurrence;
             cond &= lhs.last_occurrence == rhs.last_occurrence;

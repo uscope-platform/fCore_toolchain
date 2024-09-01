@@ -70,7 +70,8 @@ constexpr std::string_view compiler_schema = R"~(
                 "title":"Object describing Inputs and outputs of a femtocore program",
                 "required": [
                     "type",
-                    "address"
+                    "address",
+                    "scalar_io"
                 ],
                 "properties": {
                     "type": {
@@ -87,6 +88,10 @@ constexpr std::string_view compiler_schema = R"~(
                             "type": "integer",
                             "title": "Address for a single scalar DMA variable or vector element"
                         }
+                    },
+                    "scalar_io":{
+                        "type": "boolean",
+                        "title": "Flag specifying if the scalar_io address space should be used forthis IO"
                     }
                 }
             }
