@@ -44,7 +44,8 @@
           "metadata": {
             "type": "float",
             "width": 32,
-            "signed": false
+            "signed": false,
+            "scalar_io": false
           },
           "reg_n": 15,
           "source": {
@@ -59,7 +60,8 @@
           "metadata": {
             "type": "float",
             "width": 32,
-            "signed": false
+            "signed": false,
+            "scalar_io": false
           },
           "reg_n": 38,
           "source": {

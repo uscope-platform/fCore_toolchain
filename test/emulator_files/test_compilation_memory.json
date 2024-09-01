@@ -27,7 +27,8 @@
           "metadata": {
             "type": "float",
             "width": 32,
-            "signed": false
+            "signed": false,
+            "scalar_io": false
           },
           "source": {
             "type":"file",
