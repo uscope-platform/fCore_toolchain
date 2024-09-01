@@ -32,9 +32,14 @@ namespace fcore{
         uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
         uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
         raw_instr += fcore_opcodes[opcode] & opcode_mask;
-        raw_instr += (operand_a->get_value() & register_mask) << fcore_opcode_width;
-        raw_instr += (operand_b->get_value() & register_mask) << (fcore_opcode_width+fcore_register_address_width);
-        raw_instr += (destination->get_value() & register_mask) << (fcore_opcode_width+2*fcore_register_address_width);
+
+        auto op_a = operand_a->get_value();
+        raw_instr += (op_a.first & register_mask) << fcore_opcode_width;
+
+        auto op_b = operand_a->get_value();
+        raw_instr += (op_b.first & register_mask) << (fcore_opcode_width+fcore_register_address_width);
+
+        raw_instr += (destination->get_value().first & register_mask) << (fcore_opcode_width+2*fcore_register_address_width);
 
         return raw_instr;
     }

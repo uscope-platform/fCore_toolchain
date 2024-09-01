@@ -137,10 +137,9 @@ namespace fcore{
 
     void register_allocation::allocate_register(std::shared_ptr<variable> &var, int reg_addr) {
         if(var->get_variable_class().scalar_io){
-            // TODO: ALLOCATE REGISTER IN SCALAR IO SPACE
-            throw std::runtime_error("Feature not yet implemented");
+            reg_map.insert_scalar_io(var, reg_addr);
         } else {
-            reg_map.insert(var, reg_addr, var->get_first_occurrence(), var->get_last_occurrence());
+            reg_map.insert(var, reg_addr);
             auto lin_identifier = var->get_linear_identifier();
             std::string var_type =get_variable_type(var);
             if(allocation_map->contains(lin_identifier)){
@@ -160,9 +159,10 @@ namespace fcore{
         if(var->get_variable_class().scalar_io){
             // TODO: ALLOCATE REGISTER IN SCALAR IO SPACE
             throw std::runtime_error("Feature not yet implemented");
+
         } else {
             std::pair<int, int> reg_pair = {reg_addr, var->get_size()};
-            reg_map.insert(var, reg_pair, var->get_first_occurrence(), var->get_last_occurrence());
+            reg_map.insert(var, reg_pair);
             allocated_contiguous_arrays[var->get_name()] = {reg_addr, reg_addr+var->get_size()-1};
             std::string var_type =get_variable_type(var);
 

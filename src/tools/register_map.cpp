@@ -48,16 +48,21 @@ namespace fcore{
         return retval;
     }
 
-    void register_map::insert(std::shared_ptr<variable> var,int reg, int from_inst, int to_inst) {
-        range_t req_range = {from_inst, to_inst};
+    void register_map::insert(const std::shared_ptr<variable>& var,int reg) {
+        range_t req_range;
+        req_range.start = var->get_first_occurrence();
+        req_range.end = var->get_last_occurrence();
         reg_map[reg].push_back(req_range);
         identifiers_map[var->get_identifier()] = std::make_shared<variable>("r"+std::to_string(reg));
     }
 
 
 
-    void register_map::insert(std::shared_ptr<variable> var, std::pair<int, int> reg, int from_inst, int to_inst) {
-        range_t req_range = {from_inst, to_inst};
+    void register_map::insert(const std::shared_ptr<variable>& var, std::pair<int, int> reg) {
+
+        range_t req_range;
+        req_range.start = var->get_first_occurrence();
+        req_range.end = var->get_last_occurrence();
 
         for(int i=0; i<reg.second; i++){
             reg_map[reg.first+i].push_back(req_range);
@@ -73,8 +78,15 @@ namespace fcore{
 
     std::shared_ptr<variable> register_map::get_identifier(const std::shared_ptr<variable> &var) {
         auto id = var->get_identifier();
-        return identifiers_map[id];
+        if(identifiers_map.contains(id))
+            return identifiers_map[id];
+        else
+            return scalar_io_map[id];
     }
-    
+
+    void register_map::insert_scalar_io(const std::shared_ptr<variable>& var, int reg) {
+        scalar_io_map[var->get_identifier()] = std::make_shared<variable>("r"+std::to_string(reg) + "c");
+    }
+
 }
 

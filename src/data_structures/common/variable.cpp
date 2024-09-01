@@ -77,18 +77,22 @@ namespace fcore{
         return used[0];
     }
 
-    uint32_t variable::get_value() const {
+    std::pair<uint32_t, bool> variable::get_value() const {
 
-        if(name.starts_with("r")){
+        if(name.starts_with('r')){
+            if(name.ends_with('c')){
+                auto reg_text = name.substr(1, name.size()-2);
+                return std::make_pair(std::stoi(reg_text), true);
+            }
             auto rest = name;
             rest.erase(0,1);
             if(!rest.empty() && std::find_if(rest.begin(), rest.end(), [](unsigned char c) { return !std::isdigit(c); }) == rest.end()){
-                return std::stoi(rest);
+                return std::make_pair(std::stoi(rest), false);
             };
         }
 
         if(is_constant()){
-            return const_i;
+            return std::make_pair(const_i, false);
         }
         throw std::runtime_error("Invalid operation: the compiler tried to get the numeric value of a variable");
     }

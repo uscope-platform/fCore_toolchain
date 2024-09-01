@@ -93,7 +93,8 @@ namespace fcore{
         [[nodiscard]]  std::vector<int> get_bound_reg_array() const { return bound_register;};
         void set_bound_reg_array(std::vector<int> reg) { bound_register = std::move(reg);};
 
-        [[nodiscard]] uint32_t get_value() const;
+        [[nodiscard]] std::pair<uint32_t, bool> get_value() const;
+
         friend bool operator==(const variable& lhs, const variable& rhs){
             bool cond = lhs.variable_class.scalar_io == rhs.variable_class.scalar_io;
             cond &= lhs.variable_class.iom_spec == rhs.variable_class.iom_spec;

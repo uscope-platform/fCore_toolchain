@@ -36,8 +36,9 @@ namespace fcore {
         register_map();
         bool is_used(int reg, int from_inst, int to_inst);
         bool is_used(std::pair<int,int> array, int from_inst, int to_inst);
-        void insert(std::shared_ptr<variable> var, int reg, int from_inst, int to_inst);
-        void insert(std::shared_ptr<variable> var, std::pair<int,int> reg, int from_inst, int to_inst);
+        void insert(const std::shared_ptr<variable>& var, int reg);
+        void insert(const std::shared_ptr<variable>& var, std::pair<int,int> reg);
+        void insert_scalar_io(const std::shared_ptr<variable>& var, int reg);
 
         std::shared_ptr<variable> get_identifier(const std::shared_ptr<variable>& var);
         void add_bound_identifier(const std::shared_ptr<variable> & var, int reg);
@@ -45,6 +46,7 @@ namespace fcore {
     private:
         std::unordered_map<std::string, std::shared_ptr<variable>> identifiers_map;
         std::vector<std::vector<range_t>> reg_map;
+        std::unordered_map<std::string, std::shared_ptr<variable>> scalar_io_map;
     };
 }
 
