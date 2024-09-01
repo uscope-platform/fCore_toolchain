@@ -156,18 +156,22 @@ namespace fcore{
     void fcore_cc::parse_dma_spec() {
         for(auto &item:dma_spec){
             std::shared_ptr<variable> v = std::make_shared<variable>(item.first);
+            variable_class_t c{};
             switch (item.second.type) {
                 case core_iom_input:
-                    v->set_variable_class(variable_input_type);
-                    dma_io_spec[item.first] = variable_input_type;
+                    c = {variable_input_type, item.second.scalar_constant};
+                    v->set_variable_class(c);
+                    dma_io_spec[item.first] = c;
                     break;
                 case core_iom_output:
-                    v->set_variable_class(variable_output_type);
-                    dma_io_spec[item.first] = variable_output_type;
+                    c = {variable_output_type, item.second.scalar_constant};
+                    v->set_variable_class(c);
+                    dma_io_spec[item.first] = c;
                     break;
                 case core_iom_memory:
-                    v->set_variable_class(variable_memory_type);
-                    dma_io_spec[item.first] = variable_memory_type;
+                    c = {variable_memory_type, item.second.scalar_constant};
+                    v->set_variable_class(c);
+                    dma_io_spec[item.first] = c;
                     break;
             }
             dma_io_map[item.first] = item.second.address;
@@ -249,6 +253,7 @@ namespace fcore{
             std::vector<uint32_t> addr =  raw_map["address"];
             iom.address = addr;
             iom.type = core_iom_type_translator[raw_map["type"]];
+            iom.scalar_constant = raw_map["scalar_constant"];
         }
 
         return ret;

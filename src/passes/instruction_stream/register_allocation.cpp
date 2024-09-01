@@ -49,13 +49,13 @@ namespace fcore{
 
         for(auto &item: *var_map) {
             auto vc = item.second->get_variable_class();
-            if (vc == variable_memory_type) {
+            if (vc.iom_spec == variable_memory_type) {
                 if (!excluded[n_regs - 1 - memory_idx]) {
                     memory_vars[item.first] = n_regs - memory_idx - 1;
                     excluded[n_regs - memory_idx - 1] = true;
                 }
                 memory_idx++;
-            } else if (vc == variable_input_type) {
+            } else if (vc.iom_spec == variable_input_type) {
                 if(!allocation_map->contains(item.first)){
                     if((item.second->get_type() == var_type_array) && item.second->is_contiguous()){
 
@@ -145,7 +145,7 @@ namespace fcore{
             item.emplace_back( var->get_linear_index(), reg_addr,var_type);
             allocation_map->emplace(lin_identifier, item);
         }
-        if(var->get_variable_class() == variable_output_type){
+        if(var->get_variable_class().iom_spec == variable_output_type){
             excluded[reg_addr] = true;
         }
     }
@@ -171,7 +171,7 @@ namespace fcore{
 
         }
         for(int i=0; i<var->get_size(); i++){
-            if(var->get_variable_class() == variable_output_type){
+            if(var->get_variable_class().iom_spec == variable_output_type){
                 excluded[reg_addr+i] = true;
             }
         }
@@ -180,11 +180,11 @@ namespace fcore{
 
     std::string register_allocation::get_variable_type(std::shared_ptr<variable> &var) {
         std::string var_type;
-        if(var->get_variable_class() == variable_input_type){
+        if(var->get_variable_class().iom_spec == variable_input_type){
             var_type = "i";
-        } else if(var->get_variable_class() == variable_output_type){
+        } else if(var->get_variable_class().iom_spec == variable_output_type){
             var_type = "o";
-        }else if(var->get_variable_class() == variable_memory_type ){
+        }else if(var->get_variable_class().iom_spec == variable_memory_type ){
             var_type = "m";
         } else{
             var_type = "g";

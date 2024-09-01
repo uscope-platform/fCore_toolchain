@@ -859,9 +859,9 @@ namespace fcore{
         )"""");
 
         std::unordered_map<std::string, variable_class_t> io_spec;
-        io_spec["a"] = variable_input_type;
-        io_spec["h"] = variable_input_type;
-        io_spec["j"] = variable_output_type;
+        io_spec["a"] = {variable_input_type, false};
+        io_spec["h"] = {variable_input_type, false};
+        io_spec["j"] = {variable_output_type, false};
 
         std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
         C_language_parser parser(test_content, result_def);
@@ -877,19 +877,19 @@ namespace fcore{
         std::shared_ptr<hl_expression_node> loop_body = std::make_shared<hl_expression_node>(expr_assign);
 
         std::shared_ptr<variable> var = std::make_shared<variable>("j");
-        var->set_variable_class(variable_output_type);
+        var->set_variable_class({variable_output_type, false});
         std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
 
         loop_body->set_lhs(op_1);
         std::shared_ptr<hl_expression_node> body_add_expr = std::make_shared<hl_expression_node>(expr_add);
 
         var = std::make_shared<variable>( "a");
-        var->set_variable_class(variable_input_type);
+        var->set_variable_class({variable_input_type, false});
         op_1 = std::make_shared<hl_ast_operand>(var);
 
 
         var = std::make_shared<variable>("h");
-        var->set_variable_class(variable_input_type);
+        var->set_variable_class({variable_input_type, false});
         std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
 
         body_add_expr->set_lhs(op_1);
@@ -956,9 +956,9 @@ namespace fcore{
         )"""");
 
         std::unordered_map<std::string, variable_class_t> io_spec;
-        io_spec["a"] = variable_input_type;
-        io_spec["h"] = variable_input_type;
-        io_spec["j"] = variable_output_type;
+        io_spec["a"] = {variable_input_type, false};
+        io_spec["h"] = {variable_input_type, false};
+        io_spec["j"] = {variable_output_type, false};
 
         std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
         C_language_parser parser(test_content, result_def);
@@ -972,19 +972,19 @@ namespace fcore{
         std::shared_ptr<hl_expression_node> content_expr = std::make_shared<hl_expression_node>(expr_assign);
 
         std::shared_ptr<variable> var = std::make_shared<variable>("j");
-        var->set_variable_class(variable_output_type);
+        var->set_variable_class({variable_output_type, false});
         std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
 
         content_expr->set_lhs(op_1);
         std::shared_ptr<hl_expression_node> body_add_expr = std::make_shared<hl_expression_node>(expr_add);
 
         var = std::make_shared<variable>( "a");
-        var->set_variable_class(variable_input_type);
+        var->set_variable_class({variable_input_type, false});
         op_1 = std::make_shared<hl_ast_operand>(var);
 
 
         var = std::make_shared<variable>("h");
-        var->set_variable_class(variable_input_type);
+        var->set_variable_class({variable_input_type, false});
         std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
 
         body_add_expr->set_lhs(op_1);
@@ -1092,7 +1092,7 @@ namespace fcore{
         )"""");
 
         std::unordered_map<std::string, variable_class_t> io_spec;
-        io_spec["b"] = variable_output_type;
+        io_spec["b"] = {variable_output_type, false};
 
         std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
         C_language_parser parser(test_content, result_def);
@@ -1122,7 +1122,7 @@ namespace fcore{
         shape = {2,2};
         def_2->set_array_shape(shape);
         var = std::make_shared<variable>( "b");
-        var->set_variable_class(variable_output_type);
+        var->set_variable_class({variable_output_type, false});
         std::shared_ptr<hl_definition_node> def_3 = std::make_shared<hl_definition_node>("b", c_type_int, var);
 
         std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(expr_add);

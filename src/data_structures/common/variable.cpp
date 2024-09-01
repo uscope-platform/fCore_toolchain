@@ -21,7 +21,7 @@ namespace fcore{
 
         name = "invalid-variable";
         used = {false};
-        variable_class = variable_regular_type;
+        variable_class = {variable_regular_type, false};
         first_occurrence = 32768;
         last_occurrence = 0;
         bound_register.push_back(-1);
@@ -32,9 +32,8 @@ namespace fcore{
         name = n;
         const_f = value;
         variable_type = var_type_float_const;
-
         used = {false};
-        variable_class = variable_regular_type;
+        variable_class =  {variable_regular_type, false};
         first_occurrence = 32768;
         last_occurrence = 0;
         bound_register.push_back(-1);
@@ -47,7 +46,7 @@ namespace fcore{
         const_i = value;
         variable_type = var_type_int_const;
         used = {false};
-        variable_class = variable_regular_type;
+        variable_class =  {variable_regular_type, false};
         first_occurrence = 32768;
         last_occurrence = 0;
         bound_register.push_back(-1);
@@ -61,7 +60,7 @@ namespace fcore{
         const_i = 0;
         variable_type = var_type_scalar;
         used = {false};
-        variable_class = variable_regular_type;
+        variable_class = {variable_regular_type, false};
         first_occurrence = 32768;
         last_occurrence = 0;
         bound_register.push_back(-1);
@@ -155,24 +154,6 @@ namespace fcore{
         copied_var->array_shape = original->array_shape;
         copied_var->array_index = original->array_index;
         return copied_var;
-    }
-
-    nlohmann::json variable::dump() {
-        nlohmann::json ret_val;
-
-        ret_val["name"] = name;
-        ret_val["type"] = variable_type;
-        ret_val["class"] = variable_class;
-        ret_val["first_occurrence"] = first_occurrence;
-        ret_val["last_occurrence"] = last_occurrence;
-        ret_val["bound_register"] = bound_register;
-        ret_val["contiguity"] = contiguity;
-        ret_val["used"] = used;
-        ret_val["const_i"] = const_i;
-        ret_val["const_f"] = const_f;
-        ret_val["array_shape"] = array_shape;
-        ret_val["array_index"] = array_index;
-        return ret_val;
     }
 
     std::string variable::get_identifier() {

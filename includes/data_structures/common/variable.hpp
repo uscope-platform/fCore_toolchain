@@ -33,7 +33,13 @@ namespace fcore{
         variable_output_type = 1,
         variable_memory_type = 2,
         variable_regular_type = 3
-    } variable_class_t;
+    } iom_spec_t;
+
+    struct variable_class_t{
+        iom_spec_t iom_spec;
+        bool scalar_constant;
+    };
+
 
     typedef enum {
         var_type_float_const = 0,
@@ -89,7 +95,8 @@ namespace fcore{
 
         [[nodiscard]] uint32_t get_value() const;
         friend bool operator==(const variable& lhs, const variable& rhs){
-            bool cond = lhs.variable_class == rhs.variable_class;
+            bool cond = lhs.variable_class.scalar_constant == rhs.variable_class.scalar_constant;
+            cond &= lhs.variable_class.iom_spec == rhs.variable_class.iom_spec;
             cond &= lhs.first_occurrence == rhs.first_occurrence;
             cond &= lhs.last_occurrence == rhs.last_occurrence;
             cond &= lhs.name == rhs.name;
@@ -124,7 +131,6 @@ namespace fcore{
         std::vector<int> get_array_index() const {return array_index;};
         void set_array_index(std::vector<int> ai) {array_index = std::move(ai);};
 
-        nlohmann::json dump();
 
         static std::shared_ptr<variable> deep_copy(const std::shared_ptr<variable>& original);
 
@@ -137,6 +143,7 @@ namespace fcore{
         unsigned int last_occurrence;
 
         bool contiguity;
+
         std::vector<int> bound_register;
 
         std::string name;

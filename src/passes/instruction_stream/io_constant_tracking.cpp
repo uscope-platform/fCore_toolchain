@@ -38,7 +38,7 @@ namespace fcore{
             return element;
         }
 
-        if(dest->get_variable_class() ==variable_output_type ||dest->get_variable_class() ==variable_input_type){
+        if(dest->get_variable_class().iom_spec ==variable_output_type ||dest->get_variable_class().iom_spec ==variable_input_type){
             add_assignment(dest->get_identifier());
         }
 

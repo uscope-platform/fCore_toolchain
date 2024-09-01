@@ -37,7 +37,7 @@ namespace fcore{
             } else {
                 if(i->node_type == hl_ast_node_type_definition){
                     auto def_class = std::static_pointer_cast<hl_definition_node>(i)->get_variable()->get_variable_class();
-                    if( def_class == variable_memory_type || def_class == variable_output_type){
+                    if( def_class.iom_spec == variable_memory_type || def_class.iom_spec == variable_output_type){
                         new_content.push_back(i);
                         instr_idx++;
                     }
@@ -70,7 +70,7 @@ namespace fcore{
             auto def = std::static_pointer_cast<hl_definition_node>(element);
             if(def->is_scalar()){
                 if(tracker.needs_purging(def->get_name(), {0})){
-                    if(def->get_variable()->get_variable_class() != variable_output_type && def->get_variable()->get_variable_class() != variable_memory_type){
+                    if(def->get_variable()->get_variable_class().iom_spec != variable_output_type && def->get_variable()->get_variable_class().iom_spec != variable_memory_type){
                         def->set_array_initializer({});
                     }
                 }
@@ -213,7 +213,7 @@ namespace fcore{
 
     bool constant_propagation::map_constants(const std::shared_ptr<hl_definition_node>& element, int instr_idx) {
         if (
-                element->get_variable()->get_variable_class() != variable_input_type &&
+                element->get_variable()->get_variable_class().iom_spec != variable_input_type &&
                 element->is_initialized() &&
                 element->get_scalar_initializer()->node_type == hl_ast_node_type_operand
                 ) {
@@ -270,7 +270,7 @@ namespace fcore{
                 }
             }
             auto var_class = target->get_variable()->get_variable_class();
-            if( var_class!= variable_memory_type && var_class != variable_output_type){
+            if( var_class.iom_spec != variable_memory_type && var_class.iom_spec != variable_output_type){
                 return true;
             } else {
                 return false;

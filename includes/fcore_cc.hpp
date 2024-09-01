@@ -63,6 +63,7 @@ namespace fcore {
     struct core_iom {
         core_iom_type type;
         std::vector<uint32_t> address;
+        bool scalar_constant;
     };
 
 

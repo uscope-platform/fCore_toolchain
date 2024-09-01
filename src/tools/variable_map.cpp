@@ -31,7 +31,7 @@ namespace fcore{
 
     void variable_map::insert(const std::string& key, std::shared_ptr<variable>item) {
         if(map.count(key)>0) return;
-        switch (item->get_variable_class()) {
+        switch (item->get_variable_class().iom_spec) {
             case variable_input_type:
                 n_inputs_++;
                 break;

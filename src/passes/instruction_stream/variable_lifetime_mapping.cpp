@@ -68,7 +68,7 @@ namespace fcore{
     std::shared_ptr<variable> variable_lifetime_mapping::update_variable_lifetime(const std::shared_ptr<variable>& var) const {
         std::shared_ptr<variable> retval = var;
         if(!var->is_constant()){
-            if(var->get_variable_class()==variable_input_type){
+            if(var->get_variable_class().iom_spec==variable_input_type){
                 retval->set_first_occurrence(0);
             } else{
                 if(instr_cntr <= retval->get_first_occurrence())

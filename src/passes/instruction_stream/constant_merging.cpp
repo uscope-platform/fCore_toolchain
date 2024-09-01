@@ -203,7 +203,7 @@ namespace fcore{
     }
 
     bool constant_merging::is_last_io_assignment(const std::shared_ptr<variable> &dest) {
-        if(dest->get_variable_class() == variable_output_type || dest->get_variable_class() == variable_memory_type){
+        if(dest->get_variable_class().iom_spec == variable_output_type || dest->get_variable_class().iom_spec == variable_memory_type){
             if(assignments_map->contains(dest->get_identifier())){
                 auto last_assignment_idx = assignments_map->at(dest->get_identifier()).second;
                 if( last_assignment_idx== idx || last_assignment_idx == -1){

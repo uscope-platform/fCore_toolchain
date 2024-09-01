@@ -153,7 +153,7 @@ namespace fcore{
 
     std::shared_ptr<variable> fuction_mangling_pass::mangle_variable(const std::shared_ptr<variable> &v, const std::string &function) {
         v->set_name(mangle_string(v->get_name(), function));
-        v->set_variable_class(variable_regular_type);
+        v->set_variable_class({variable_regular_type, false});
         v->set_bound_reg(-1);
         return v;
     }
