@@ -112,7 +112,9 @@ namespace fcore{
         };
 
         variable_class_t get_variable_class() {return variable_class;};
-        void set_variable_class(variable_class_t vc) {variable_class = vc;};
+        void set_variable_class(variable_class_t vc) {
+            variable_class = vc;
+        };
 
         unsigned  int get_size();
 

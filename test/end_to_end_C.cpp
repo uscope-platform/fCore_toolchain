@@ -1323,6 +1323,37 @@ TEST(EndToEndC, test_ternary_return) {
 
 }
 
+TEST(EndToEndC, scalar_io_space) {
+
+    std::vector<std::string> file_content = {R""""(
+        int main(){
+
+            float a;
+            float b;
+            float c = a+b;
+        }
+    )""""};
+
+    std::vector<std::string> includes;
+
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_input, {10}, true};
+    dma_map["b"] = {core_iom_input, {12}, false};
+    dma_map["c"] = {core_iom_output, {3}, false};
+
+    fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
+    compiler.set_dma_map(dma_map);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+
+    std::vector<uint32_t> gold_standard = {0x20003, 0xc, 0x1000a, 0x2000c,0xc,0x40021, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
 
 /*
 TEST(EndToEndC, test_ternary_mem_self_assign) {

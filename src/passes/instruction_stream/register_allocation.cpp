@@ -56,14 +56,15 @@ namespace fcore{
                 }
                 memory_idx++;
             } else if (vc.iom_spec == variable_input_type) {
-                if(!allocation_map->contains(item.first)){
-                    if((item.second->get_type() == var_type_array) && item.second->is_contiguous()){
-
-                        allocate_array(item.second, inputs_idx);
-                        inputs_idx += item.second->get_size();
-                    } else {
-                        allocate_register(item.second, inputs_idx);
-                        inputs_idx++;
+                if(!vc.scalar_io){
+                    if(!allocation_map->contains(item.first)){
+                        if((item.second->get_type() == var_type_array) && item.second->is_contiguous()){
+                            allocate_array(item.second, inputs_idx);
+                            inputs_idx += item.second->get_size();
+                        } else {
+                            allocate_register(item.second, inputs_idx);
+                            inputs_idx++;
+                        }
                     }
                 }
             }
@@ -135,47 +136,55 @@ namespace fcore{
 
 
     void register_allocation::allocate_register(std::shared_ptr<variable> &var, int reg_addr) {
-        reg_map.insert(var, reg_addr, var->get_first_occurrence(), var->get_last_occurrence());
-        auto lin_identifier = var->get_linear_identifier();
-        std::string var_type =get_variable_type(var);
-        if(allocation_map->contains(lin_identifier)){
-            allocation_map->at(lin_identifier).emplace_back(var->get_linear_index(),reg_addr, var_type);
+        if(var->get_variable_class().scalar_io){
+            // TODO: ALLOCATE REGISTER IN SCALAR IO SPACE
+            throw std::runtime_error("Feature not yet implemented");
         } else {
-            auto item = std::vector<io_map_entry>();
-            item.emplace_back( var->get_linear_index(), reg_addr,var_type);
-            allocation_map->emplace(lin_identifier, item);
-        }
-        if(var->get_variable_class().iom_spec == variable_output_type){
-            excluded[reg_addr] = true;
+            reg_map.insert(var, reg_addr, var->get_first_occurrence(), var->get_last_occurrence());
+            auto lin_identifier = var->get_linear_identifier();
+            std::string var_type =get_variable_type(var);
+            if(allocation_map->contains(lin_identifier)){
+                allocation_map->at(lin_identifier).emplace_back(var->get_linear_index(),reg_addr, var_type);
+            } else {
+                auto item = std::vector<io_map_entry>();
+                item.emplace_back( var->get_linear_index(), reg_addr,var_type);
+                allocation_map->emplace(lin_identifier, item);
+            }
+            if(var->get_variable_class().iom_spec == variable_output_type){
+                excluded[reg_addr] = true;
+            }
         }
     }
 
     void register_allocation::allocate_array(std::shared_ptr<variable> &var, int reg_addr) {
+        if(var->get_variable_class().scalar_io){
+            // TODO: ALLOCATE REGISTER IN SCALAR IO SPACE
+            throw std::runtime_error("Feature not yet implemented");
+        } else {
+            std::pair<int, int> reg_pair = {reg_addr, var->get_size()};
+            reg_map.insert(var, reg_pair, var->get_first_occurrence(), var->get_last_occurrence());
+            allocated_contiguous_arrays[var->get_name()] = {reg_addr, reg_addr+var->get_size()-1};
+            std::string var_type =get_variable_type(var);
 
-        std::pair<int, int> reg_pair = {reg_addr, var->get_size()};
-        reg_map.insert(var, reg_pair, var->get_first_occurrence(), var->get_last_occurrence());
-        allocated_contiguous_arrays[var->get_name()] = {reg_addr, reg_addr+var->get_size()-1};
-        std::string var_type =get_variable_type(var);
+            for(int i=0; i<var->get_size(); i++){
 
-        for(int i=0; i<var->get_size(); i++){
+                auto lin_identifier = var->get_linear_identifier(i);
 
-            auto lin_identifier = var->get_linear_identifier(i);
+                if(allocation_map->contains(lin_identifier)){
+                    allocation_map->at(lin_identifier).emplace_back( i,reg_addr+i, var_type);
+                } else {
+                    auto item = std::vector<io_map_entry>();
+                    item.emplace_back(i,reg_addr+i,  var_type);
+                    allocation_map->emplace(lin_identifier, item);
+                }
 
-            if(allocation_map->contains(lin_identifier)){
-                allocation_map->at(lin_identifier).emplace_back( i,reg_addr+i, var_type);
-            } else {
-                auto item = std::vector<io_map_entry>();
-                item.emplace_back(i,reg_addr+i,  var_type);
-                allocation_map->emplace(lin_identifier, item);
             }
-
-        }
-        for(int i=0; i<var->get_size(); i++){
-            if(var->get_variable_class().iom_spec == variable_output_type){
-                excluded[reg_addr+i] = true;
+            for(int i=0; i<var->get_size(); i++){
+                if(var->get_variable_class().iom_spec == variable_output_type){
+                    excluded[reg_addr+i] = true;
+                }
             }
         }
-
     }
 
     std::string register_allocation::get_variable_type(std::shared_ptr<variable> &var) {

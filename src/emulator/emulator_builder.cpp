@@ -60,6 +60,7 @@ namespace fcore{
                     addrs.push_back(addr_base+i);
                 }
                 spec.address  = addrs;
+                spec.scalar_io = false;
                 result[item.destination.io_name] = spec;
             }
         }
@@ -89,6 +90,7 @@ namespace fcore{
                     addrs.push_back(addr_base+i);
                 }
                 spec.address  = addrs;
+                spec.scalar_io = false;
                 result[output_name] = spec;
             }
         }
@@ -103,6 +105,7 @@ namespace fcore{
             spec.type = core_iom_input;
             spec.address  = item.address;
             assigned_inputs.insert(item.address.begin(), item.address.end());
+            spec.scalar_io = false;
             result[item.name] = spec;
         }
 
@@ -118,6 +121,7 @@ namespace fcore{
                 spec.address  = item.address;
                 memory_names.insert(item.name);
                 assigned_inputs.insert(item.address.begin(), item.address.end());
+                spec.scalar_io = false;
                 result[item.name] = spec;
             }
         }
@@ -133,6 +137,7 @@ namespace fcore{
                 std::vector<uint32_t> addrs = {mem_progressive};
                 assigned_outputs.insert(mem_progressive);
                 spec.address  = addrs;
+                spec.scalar_io = false;
                 result[item] = spec;
                 memory_names.insert(item);
                 while(assigned_outputs.contains(mem_progressive)|| assigned_inputs.contains(mem_progressive)) mem_progressive--;
@@ -149,6 +154,7 @@ namespace fcore{
             // TODO: ass support for vector outputs on different addresses?
             if(!assigned_outputs.contains(item.address[0])){
                 spec.address  = item.address;
+                spec.scalar_io = false;
                 if(!memory_names.contains(item.name)){
                     result[item.name] = spec;
                 } else{

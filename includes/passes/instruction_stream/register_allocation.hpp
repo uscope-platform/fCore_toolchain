@@ -40,15 +40,14 @@ namespace fcore{
     private:
         void allocate_register(std::shared_ptr<variable> &var, int reg_addr);
         void allocate_array(std::shared_ptr<variable> &var, int reg_addr);
+
         std::string get_variable_type(std::shared_ptr<variable> &var);
         register_map reg_map;
         std::shared_ptr<variable_map> var_map;
-        std::unordered_map<std::string, int> io_reservations;
         std::vector<bool> excluded;
 
         std::unordered_map<std::string, std::pair<int, int>> allocated_contiguous_arrays;
         std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>> allocation_map;
-        std::unordered_map<std::string, int> input_allocations;
         std::unordered_map<std::string, int> memory_vars;
     };
 }
