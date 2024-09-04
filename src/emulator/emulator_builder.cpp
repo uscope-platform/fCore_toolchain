@@ -268,7 +268,7 @@ namespace fcore{
         int section = 0;
 
         for(auto &instr:raw_prog){
-            if(section == 2){
+            if(section == code_section_index){
                 program.push_back(instr);
             }
             if(instr == fcore_opcodes["stop"]){

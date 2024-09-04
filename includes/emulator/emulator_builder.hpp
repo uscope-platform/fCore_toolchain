@@ -64,7 +64,7 @@ namespace fcore {
                 std::vector<emulator::emulator_memory_specs> memory_init_specs,
                 const std::set<std::string>& memories
         );
-
+        static constexpr uint16_t code_section_index = 3;
         bool debug_autogen;
     };
 }
