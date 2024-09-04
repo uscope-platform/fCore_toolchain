@@ -36,10 +36,19 @@ namespace fcore{
         auto op_a = operand_a->get_value();
         raw_instr += (op_a.first & register_mask) << fcore_opcode_width;
 
-        auto op_b = operand_a->get_value();
+        auto op_b = operand_b->get_value();
         raw_instr += (op_b.first & register_mask) << (fcore_opcode_width+fcore_register_address_width);
 
         raw_instr += (destination->get_value().first & register_mask) << (fcore_opcode_width+2*fcore_register_address_width);
+
+        if(op_a.second){
+            raw_instr += 1 <<  (fcore_opcode_width+3*fcore_register_address_width);
+        }
+
+        if(op_b.second){
+            raw_instr += 1 <<  (fcore_opcode_width+3*fcore_register_address_width +1);
+        }
+
 
         return raw_instr;
     }

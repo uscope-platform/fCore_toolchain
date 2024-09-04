@@ -30,6 +30,11 @@ namespace fcore{
         auto src = source->get_value();
         raw_instr += (src.first & register_mask) << fcore_opcode_width;
         raw_instr += (destination->get_value().first & register_mask) << (fcore_opcode_width+fcore_register_address_width);
+
+        if(src.second){
+            raw_instr += 1 <<  (fcore_opcode_width+2*fcore_register_address_width);
+        }
+
         return raw_instr;
     }
 

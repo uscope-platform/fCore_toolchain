@@ -85,7 +85,7 @@ TEST(Emulator, emulator_inputs) {
     in["metadata"]["type"] = "float";
     in["metadata"]["width"] = 12;
     in["metadata"]["signed"] = true;
-    in["metadata"]["scalar_io"] = false;
+    in["metadata"]["common_io"] = false;
     in["reg_n"] = 1;
     in["source"] = nlohmann::json();
     in["source"]["type"] = "file";
@@ -219,7 +219,7 @@ TEST(Emulator, emulator_header) {
                         "type": "float",
                         "width": 24,
                         "signed":false,
-                        "scalar_io": false
+                        "common_io": false
                     },
                     "source": {
                         "type": "constant",
@@ -234,7 +234,7 @@ TEST(Emulator, emulator_header) {
                         "type": "float",
                         "width": 24,
                         "signed":false,
-                        "scalar_io": false
+                        "common_io": false
                     },
                     "source": {
                         "type": "constant",
@@ -321,7 +321,7 @@ TEST(Emulator, emulator_multichannel) {
                         "type": "float",
                         "width": 24,
                         "signed":false,
-                        "scalar_io":false
+                        "common_io":false
                     },
                     "source": {
                         "type": "constant",
@@ -346,7 +346,7 @@ TEST(Emulator, emulator_multichannel) {
                         "type": "float",
                         "width": 24,
                         "signed":false,
-                        "scalar_io":false
+                        "common_io":false
                     },
                     "source": {
                         "type": "constant",
@@ -481,7 +481,7 @@ TEST(Emulator, emulator_multichannel_input_file) {
                         "type": "float",
                         "width": 24,
                         "signed":false,
-                        "scalar_io": false
+                        "common_io": false
                     },
                     "reg_n": 3,
                     "channel":[0,1,2,3],
@@ -497,7 +497,7 @@ TEST(Emulator, emulator_multichannel_input_file) {
                         "type": "float",
                         "width": 24,
                         "signed":false,
-                        "scalar_io": false
+                        "common_io": false
                     },
                     "reg_n": 4,
                     "channel":[0,1,2,3],
@@ -592,7 +592,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
                         "type": "float",
                         "width": 24,
                         "signed":false,
-                        "scalar_io": false
+                        "common_io": false
                     },
                     "reg_n": 3,
                     "channel":[0,1],
@@ -604,7 +604,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
                         "type": "float",
                         "width": 24,
                         "signed":false,
-                        "scalar_io": false
+                        "common_io": false
                     },
                     "reg_n": 4,
                     "channel":[0,1],
@@ -965,7 +965,7 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
                             "type": "float",
                             "width": 24,
                             "signed":false,
-                            "scalar_io": false
+                            "common_io": false
                         },
                         "reg_n": 3,
                         "channel":[0,1],
@@ -977,7 +977,7 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
                             "type": "float",
                             "width": 24,
                             "signed":false,
-                            "scalar_io": false
+                            "common_io": false
                         },
                         "reg_n": 4,
                         "channel":[0,1],

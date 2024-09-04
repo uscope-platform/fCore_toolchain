@@ -46,6 +46,7 @@ std::vector<uint32_t> reference_program = {
         0x10005,
         0x20006,
         0xc,
+        0xc,
         0x26,
         0x4179999a,
         0x46,
@@ -53,7 +54,7 @@ std::vector<uint32_t> reference_program = {
         0xc
     };
 
-    ASSERT_EQ(exec.size(), 10);
+    ASSERT_EQ(exec.size(), 11);
     ASSERT_EQ(exec, reference_program);
 
 

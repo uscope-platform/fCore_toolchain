@@ -44,7 +44,7 @@ namespace fcore{
         sections["code"] = std::move(code);
     }
 
-    void executable::add_io_mapping(const std::set<io_map_entry>&  mapping) {
+    void executable::add_io_mapping(const std::set<io_map_entry>&  mapping, const std::set<io_map_entry>&  common_io_mapping) {
         std::set<uint32_t>maps;
         for(const auto& pair:mapping){
             uint32_t raw_mapping = pair.io_addr+ (pair.core_addr<<16);
@@ -54,6 +54,15 @@ namespace fcore{
             }
         }
         sections["io_remapping"].push_back(0xC);
+
+        for(const auto& pair:common_io_mapping){
+            uint32_t raw_mapping = pair.io_addr+ (pair.core_addr<<16);
+            if(!maps.contains(raw_mapping)){
+                maps.insert(raw_mapping);
+                sections["common_io_remapping"].push_back(raw_mapping);
+            }
+        }
+        sections["common_io_remapping"].push_back(0xC);
     }
 
     void executable::generate_metadata() {
@@ -66,9 +75,11 @@ namespace fcore{
         std::vector<uint32_t> ret_exec;
         auto metadata_sect = sections["metadata"];
         auto io_remap_sect = sections["io_remapping"];
+        auto common_io_remap_sect = sections["common_io_remapping"];
         auto code_sect = sections["code"];
         std::move(metadata_sect.begin(), metadata_sect.end(), std::back_inserter(ret_exec));
         std::move(io_remap_sect.begin(), io_remap_sect.end(), std::back_inserter(ret_exec));
+        std::move(common_io_remap_sect.begin(), common_io_remap_sect.end(), std::back_inserter(ret_exec));
         std::move(code_sect.begin(), code_sect.end(), std::back_inserter(ret_exec));
         return ret_exec;
     }

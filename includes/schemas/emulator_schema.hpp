@@ -137,7 +137,7 @@ const std::string emulator_schema = R"~(
                     "type",
                     "width",
                     "signed",
-                    "scalar_io"
+                    "common_io"
                   ],
                   "properties": {
                     "type": {
@@ -156,9 +156,9 @@ const std::string emulator_schema = R"~(
                       "type": "boolean",
                       "title": "flag indicating whether the data is signed"
                     },
-                    "scalar_io": {
+                    "common_io": {
                       "type": "boolean",
-                      "title":"Flag specifying if the scalar_io address space should be used for this IO"
+                      "title":"Flag specifying if the common_io address space should be used for this IO"
                     }
                   }
                 },

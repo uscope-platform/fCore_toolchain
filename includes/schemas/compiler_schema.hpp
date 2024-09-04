@@ -71,7 +71,7 @@ constexpr std::string_view compiler_schema = R"~(
                 "required": [
                     "type",
                     "address",
-                    "scalar_io"
+                    "common_io"
                 ],
                 "properties": {
                     "type": {
@@ -89,9 +89,9 @@ constexpr std::string_view compiler_schema = R"~(
                             "title": "Address for a single scalar DMA variable or vector element"
                         }
                     },
-                    "scalar_io":{
+                    "common_io":{
                         "type": "boolean",
-                        "title": "Flag specifying if the scalar_io address space should be used forthis IO"
+                        "title": "Flag specifying if the common_io address space should be used forthis IO"
                     }
                 }
             }

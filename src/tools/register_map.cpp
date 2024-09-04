@@ -81,11 +81,12 @@ namespace fcore{
         if(identifiers_map.contains(id))
             return identifiers_map[id];
         else
-            return scalar_io_map[id];
+            return common_io_map[id];
     }
 
-    void register_map::insert_scalar_io(const std::shared_ptr<variable>& var, int reg) {
-        scalar_io_map[var->get_identifier()] = std::make_shared<variable>("r"+std::to_string(reg) + "c");
+    void register_map::insert_common_io(const std::shared_ptr<variable>& var, int reg) {
+        common_io_map[var->get_identifier()] = std::make_shared<variable>("r"+std::to_string(reg) + "c");
+        common_io_map[var->get_identifier()]->set_variable_class({variable_input_type, true});
     }
 
 }

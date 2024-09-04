@@ -39,9 +39,9 @@ namespace fcore{
 
         auto op_a = operand_a->get_value();
         raw_instr += (op_a.first & register_mask) << fcore_opcode_width;
-        auto op_b = operand_a->get_value();
+        auto op_b = operand_b->get_value();
         raw_instr += (op_b.first & register_mask) << (fcore_opcode_width+fcore_register_address_width);
-        auto op_c = operand_a->get_value();
+        auto op_c = operand_c->get_value();
         raw_instr += (op_c.first & register_mask) << (fcore_opcode_width+2*fcore_register_address_width);
 
         return raw_instr;

@@ -45,7 +45,7 @@
             "type": "float",
             "width": 32,
             "signed": false,
-            "scalar_io": false
+            "common_io": false
           },
           "reg_n": 15,
           "source": {
@@ -61,7 +61,7 @@
             "type": "float",
             "width": 32,
             "signed": false,
-            "scalar_io": false
+            "common_io": false
           },
           "reg_n": 38,
           "source": {

@@ -10,7 +10,7 @@
     "test_in": {
       "address": [42],
       "type": "input",
-      "scalar_io": false
+      "common_io": false
     }
   }
 }

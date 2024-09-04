@@ -35,7 +35,7 @@ namespace fcore{
         }
         explicit executable(std::vector<uint32_t> executable);
         void add_code_section(std::vector<uint32_t> code);
-        void add_io_mapping(const std::set<io_map_entry>& iom);
+        void add_io_mapping(const std::set<io_map_entry>&  mapping, const std::set<io_map_entry>&  common_io_mapping);
         std::vector<uint32_t> get_executable();
         std::vector<uint32_t> get_code();
         std::set<std::pair<uint16_t, uint16_t>> get_io_mapping();

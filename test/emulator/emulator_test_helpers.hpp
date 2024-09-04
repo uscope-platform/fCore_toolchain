@@ -78,7 +78,7 @@ static nlohmann::json prepare_spec(
         in_obj["metadata"]["type"] = inputs[i].type;
         in_obj["metadata"]["width"] = 32;
         in_obj["metadata"]["signed"] = true;
-        in_obj["metadata"]["scalar_io"] = false;
+        in_obj["metadata"]["common_io"] = false;
         in_obj["reg_n"] = i;
         in_obj["channel"] = 0;
         in_obj["source"] = nlohmann::json();

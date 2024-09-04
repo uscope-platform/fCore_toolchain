@@ -56,7 +56,7 @@ namespace fcore{
                 }
                 memory_idx++;
             } else if (vc.iom_spec == variable_input_type) {
-                if(!vc.scalar_io){
+                if(!vc.common_io){
                     if(!allocation_map->contains(item.first)){
                         if((item.second->get_type() == var_type_array) && item.second->is_contiguous()){
                             allocate_array(item.second, inputs_idx);
@@ -136,8 +136,12 @@ namespace fcore{
 
 
     void register_allocation::allocate_register(std::shared_ptr<variable> &var, int reg_addr) {
-        if(var->get_variable_class().scalar_io){
-            reg_map.insert_scalar_io(var, reg_addr);
+        if(var->get_variable_class().common_io){
+            reg_map.insert_common_io(var, reg_addr);
+            auto item = std::vector<io_map_entry>();
+            item.emplace_back( var->get_linear_index(), reg_addr, get_variable_type(var));
+            item[0].common_io = true;
+            allocation_map->emplace(var->get_linear_identifier(), item);
         } else {
             reg_map.insert(var, reg_addr);
             auto lin_identifier = var->get_linear_identifier();
@@ -156,7 +160,7 @@ namespace fcore{
     }
 
     void register_allocation::allocate_array(std::shared_ptr<variable> &var, int reg_addr) {
-        if(var->get_variable_class().scalar_io){
+        if(var->get_variable_class().common_io){
             // TODO: ALLOCATE REGISTER IN SCALAR IO SPACE
             throw std::runtime_error("Feature not yet implemented");
 

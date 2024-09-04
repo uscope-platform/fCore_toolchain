@@ -159,17 +159,17 @@ namespace fcore{
             variable_class_t c{};
             switch (item.second.type) {
                 case core_iom_input:
-                    c = {variable_input_type, item.second.scalar_io};
+                    c = {variable_input_type, item.second.common_io};
                     v->set_variable_class(c);
                     dma_io_spec[item.first] = c;
                     break;
                 case core_iom_output:
-                    c = {variable_output_type, item.second.scalar_io};
+                    c = {variable_output_type, item.second.common_io};
                     v->set_variable_class(c);
                     dma_io_spec[item.first] = c;
                     break;
                 case core_iom_memory:
-                    c = {variable_memory_type, item.second.scalar_io};
+                    c = {variable_memory_type, item.second.common_io};
                     v->set_variable_class(c);
                     dma_io_spec[item.first] = c;
                     break;
@@ -248,12 +248,22 @@ namespace fcore{
     std::unordered_map<std::string, core_iom> fcore_cc::load_iom_map(const nlohmann::json &raw_map) {
         std::unordered_map<std::string, core_iom> ret;
 
-        for(auto &item:raw_map.items()){
+        for(auto &obj:raw_map.items()){
             core_iom iom;
-            std::vector<uint32_t> addr =  raw_map["address"];
+            auto item = obj.value();
+
+            std::vector<uint32_t> addr;
+
+            if(item["address"].is_array()){
+                addr = (std::vector<uint32_t>)item["address"];
+            } else {
+                addr = {item["address"]};
+            }
+
             iom.address = addr;
-            iom.type = core_iom_type_translator[raw_map["type"]];
-            iom.scalar_io = raw_map["scalar_io"];
+            iom.type = core_iom_type_translator[item["type"]];
+            iom.common_io = item["common_io"];
+            ret[obj.key()] = iom;
         }
 
         return ret;

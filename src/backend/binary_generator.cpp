@@ -38,17 +38,24 @@ namespace fcore{
             if(item.second.size() == 1){
                 if(allocation_map->contains(item.first)){
                     for(auto &allocated_item:allocation_map->at(item.first)){
+
+                        uint16_t core_reg;
+                        uint16_t dma_reg;
+
                         if(allocated_item.io_addr != -1){
-                            uint16_t core_reg = allocated_item.core_addr;
-                            uint16_t dma_reg = item.second[allocated_item.io_addr];
-                            io_mapping.emplace(dma_reg,core_reg, allocated_item.type);
+                            core_reg = allocated_item.core_addr;
+                            dma_reg = item.second[allocated_item.io_addr];
                         } else {
-                            uint16_t core_reg = allocated_item.core_addr;
-                            uint16_t dma_reg = item.second[0];
+                            core_reg = allocated_item.core_addr;
+                            dma_reg = item.second[0];
+                        }
+
+                        if(allocated_item.common_io){
+                            common_io_mapping.emplace(dma_reg,core_reg, allocated_item.type);
+                        } else {
                             io_mapping.emplace(dma_reg,core_reg, allocated_item.type);
                         }
                     }
-
                 }
             } else{
                 for(int i = 0; i< item.second.size(); i++){
@@ -57,14 +64,18 @@ namespace fcore{
                         for(auto &allocated_item:allocation_map->at(identifier)){
                             uint16_t core_reg = allocated_item.core_addr;
                             uint16_t dma_reg = item.second[i];
-                            io_mapping.emplace(dma_reg,core_reg, allocated_item.type);
+                            if(allocated_item.common_io){
+                                common_io_mapping.emplace(dma_reg,core_reg, allocated_item.type);
+                            } else {
+                                io_mapping.emplace(dma_reg,core_reg, allocated_item.type);
+                            }
                         }
                     }
                 }
             }
 
         }
-        ex.add_io_mapping(io_mapping);
+        ex.add_io_mapping(io_mapping, common_io_mapping);
         ex.generate_metadata();
     }
 
