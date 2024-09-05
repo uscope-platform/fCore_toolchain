@@ -45,9 +45,10 @@ namespace fcore{
         }
     }
 
-    static const int fcore_register_address_width = 6;
-    static const int fcore_opcode_width = 5;
+    constexpr int fcore_register_address_width = 6;
+    constexpr int fcore_opcode_width = 5;
 
+    constexpr int n_operands = 3;
 
     static uint32_t get_opcode(uint32_t instr) {
         return instr & (1<<fcore_opcode_width)-1;
@@ -59,6 +60,9 @@ namespace fcore{
                 ((1<<(fcore_opcode_width + (operand_position-1)*fcore_register_address_width))-1)
         );
     }
+    static uint32_t flag_mask(uint8_t flag_n){
+        return ((1<<(fcore_opcode_width +n_operands*fcore_register_address_width)) + (flag_n-1));
+    }
 
     static std::array<uint32_t,3> get_operands(uint32_t instr){
         std::array<uint32_t,3> result = {};
@@ -69,6 +73,12 @@ namespace fcore{
 
     }
 
+    static std::array<bool, 2> get_common_io_flags(uint32_t instr){
+        std::array<bool,2> result = {};
+        result[0] = (instr & flag_mask(1)) >> (fcore_opcode_width + 3*fcore_register_address_width);
+        result[1] = (instr & flag_mask(2)) >> (fcore_opcode_width + 3*fcore_register_address_width+1);
+        return result;
+    }
     typedef enum {
         opcode_nop = 0,
         opcode_add = 1,

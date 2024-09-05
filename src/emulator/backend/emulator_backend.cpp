@@ -17,19 +17,21 @@
 
 namespace fcore{
 
-    void emulator_backend::run_round(std::shared_ptr<std::vector<uint32_t>> mem) {
+    void emulator_backend::run_round(std::shared_ptr<std::vector<uint32_t>> channel_mem, const std::shared_ptr<std::vector<uint32_t>> &common_mem) {
 
-        working_memory = std::move(mem);
+        working_memory = std::move(channel_mem);
+        common_io = common_mem;
 
 
         for(int i = 0; i<program.size(); i++){
             auto opcode = get_opcode(program[i]);
             auto operands  = get_operands(program[i]);
+            auto io_flags =get_common_io_flags(program[i]);
             if(opcode == fcore_opcodes["ldc"]){
                 run_load_constant_instruction(operands[0], program[i+1]);
                 i++;
             } else{
-                run_instruction_by_type(opcode, operands);
+                run_instruction_by_type(opcode, operands, io_flags);
             }
             if(stop_requested){
                 break;
@@ -39,17 +41,17 @@ namespace fcore{
 
     }
 
-    void emulator_backend::run_instruction_by_type(const uint32_t& raw_opcode, std::array<uint32_t, 3> operands) {
+    void emulator_backend::run_instruction_by_type(const uint32_t& raw_opcode, std::array<uint32_t, 3> operands, std::array<bool, 2> io_flags) {
         auto opcode = static_cast<opcode_table_t>(raw_opcode);
         switch (fcore_op_types[fcore_opcodes_reverse[opcode]]) {
             case isa_independent_instruction:
                 run_independent_instruction(opcode, operands);
                 break;
             case isa_register_instruction:
-                run_register_instruction(opcode,operands);
+                run_register_instruction(opcode,operands, io_flags);
                 break;
             case isa_conversion_instruction:
-                run_conversion_instruction(opcode, operands);
+                run_conversion_instruction(opcode, operands, io_flags);
                 break;
             case isa_ternary_instruction:
                 run_ternary_instruction(opcode,operands);
@@ -82,15 +84,26 @@ namespace fcore{
         working_memory->at(writeback_address) = result;
     }
 
-    void emulator_backend::run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands) {
+    void emulator_backend::run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 2> io_flags) {
 
 
         uint32_t dest = operands[2];
         uint32_t op_a = operands[0];
         uint32_t op_b = operands[1];
 
-        auto a = working_memory->at(op_a);
-        auto b = working_memory->at(op_b);
+
+        uint32_t a, b;
+        if(io_flags[0]){
+            a = common_io->at(op_a);
+        } else {
+            a = working_memory->at(op_a);
+        }
+
+        if(io_flags[1]){
+            b = common_io->at(op_b);
+        } else {
+            b = working_memory->at(op_b);
+        }
 
         uint32_t result;
         uint32_t writeback_address = dest;
@@ -161,31 +174,37 @@ namespace fcore{
 
     }
 
-    void emulator_backend::run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands) {
+    void emulator_backend::run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 2> io_flags) {
 
-        uint32_t src = operands[0];
+
+        uint32_t src;
+        if(io_flags[0]){
+            src = common_io->at(operands[0]);
+        } else {
+            src = working_memory->at(operands[0]);
+        }
         uint32_t dest = operands[1];
 
         uint32_t result;
 
         switch (opcode) {
             case opcode_rec:
-                result = execute_rec(working_memory->at(src));
+                result = execute_rec(src);
                 break;
             case opcode_fti:
-                result = execute_fti(working_memory->at(src));
+                result = execute_fti(src);
                 break;
             case opcode_itf:
-                result = execute_itf(working_memory->at(src));
+                result = execute_itf(src);
                 break;
             case opcode_not:
-                result = execute_not(working_memory->at(src));
+                result = execute_not(src);
                 break;
             case opcode_abs:
-                result = execute_abs(working_memory->at(src));
+                result = execute_abs(src);
                 break;
             case opcode_popcnt:
-                result = execute_popcnt(working_memory->at(src));
+                result = execute_popcnt(src);
                 break;
             default:
                 throw std::runtime_error("Encountered the following unimplemented operation: " + fcore_opcodes_reverse[opcode]);

@@ -1190,3 +1190,105 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
     ASSERT_FLOAT_EQ(res4[0], 60.2);
     ASSERT_FLOAT_EQ(res4[1], 60.2);
 }
+
+
+
+TEST(Emulator, emulator_common_io) {
+
+
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+    "cores": [
+        {
+            "id": "test",
+            "order": 0,
+            "input_data": [],
+            "inputs": [
+                {
+                    "name": "a",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false,
+                        "common_io": true
+                    },
+                    "source": {
+                        "type": "constant",
+                        "value": [5]
+                    },
+                    "reg_n": 3,
+                    "channel": [0]
+                },
+                {
+                    "name": "b",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false,
+                        "common_io": false
+                    },
+                    "source": {
+                        "type": "constant",
+                        "value": [1]
+                    },
+                    "reg_n": 4,
+                    "channel": [0]
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "c",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false
+                    },
+                    "reg_n": [5]
+                }
+            ],
+            "memory_init": [],
+            "channels": 1,
+            "options": {
+                "comparators": "reducing",
+                "efi_implementation": "none"
+            },
+            "program": {
+                "content": "int main(){float a, b;float c = a + b;}",
+                "build_settings": {
+                    "io": {
+                        "inputs": [
+                            "a",
+                            "b"
+                        ],
+                        "memories": [],
+                        "outputs": [
+                            "c"
+                        ]
+                    }
+                },
+                "headers": ["float add(float input_1, float input_2) {return input_1 + input_2;};"]
+            },
+            "sampling_frequency": 1,
+            "deployment": {
+                "has_reciprocal": false,
+                "control_address": 18316525568,
+                "rom_address": 17179869184
+            }
+        }
+    ],
+    "interconnect": [],
+    "emulation_time": 1,
+    "deployment_mode": false
+})");
+
+
+    emulator_manager manager(specs, false);
+    manager.process();
+    manager.emulate();
+
+    auto res_obj = manager.get_results();
+
+    std::vector<float> res = res_obj["test"]["outputs"]["c"]["0"][0];
+    ASSERT_FLOAT_EQ(res[0], 6.0);
+
+}

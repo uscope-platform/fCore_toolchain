@@ -114,6 +114,7 @@ namespace fcore{
         emulator_backend backend;
 
         std::vector<program_bundle> programs;
+        std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>> common_io_memory;
         std::unordered_map<std::string, core_memory_pool_t> emulators_memory;
 
         std::shared_ptr<instrumentation_core> profiler;

@@ -35,7 +35,7 @@ namespace fcore{
         emulator_backend() = default;
         void set_program(std::vector<uint32_t> p) {program = std::move(p);};
         void set_comparator_type(const comparator_type_t &t){comparator_type = t;};
-        void run_round(std::shared_ptr<std::vector<uint32_t>> mem);
+        void run_round(std::shared_ptr<std::vector<uint32_t>> channel_mem, const std::shared_ptr<std::vector<uint32_t>> &common_mem);
         void set_efi_selector(const efi_implementation_t sel){ efi_selector = sel;};
 
         void set_core_name(std::string name) {
@@ -48,12 +48,12 @@ namespace fcore{
     private:
 
 
-        void run_instruction_by_type(const uint32_t& opcode, std::array<uint32_t, 3> operands);
+        void run_instruction_by_type(const uint32_t& opcode, std::array<uint32_t, 3> operands, std::array<bool, 2> io_flags);
 
-        void run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands);
+        void run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 2> io_flags);
         void run_ternary_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands);
         void run_independent_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands);
-        void run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands);
+        void run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 2> io_flags);
         void run_load_constant_instruction(uint32_t dest, uint32_t val);
 
         uint32_t execute_add(uint32_t a, uint32_t b);
@@ -99,6 +99,7 @@ namespace fcore{
 
 
         std::shared_ptr<std::vector<uint32_t>> working_memory;
+        std::shared_ptr<std::vector<uint32_t>> common_io;
     };
 }
 

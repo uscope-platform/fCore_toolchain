@@ -142,8 +142,10 @@ namespace fcore {
                 uint32_t core_reg = 0;
                 auto io_addr = in.address[0];
 
+                bool is_common;
                 if(auto core_addr = io_map_entry::get_io_map_entry_by_io_addr(prog.io, io_addr)){
                     core_reg = core_addr->core_addr;
+                    is_common = core_addr->common_io;
                 } else {
                     throw std::runtime_error("unable to find input address in the core io map during input phase");
                 }
@@ -167,7 +169,11 @@ namespace fcore {
                             input_val = in_vect[info.step_n];
                         }
                     }
-                    emulators_memory[info.id][in.channel[channel]]->at(core_reg) = input_val;
+                    if(is_common){
+                        common_io_memory[info.id]->at(core_reg) = input_val;
+                    } else {
+                        emulators_memory[info.id][in.channel[channel]]->at(core_reg) = input_val;
+                    }
                 }
             }
         }
@@ -183,7 +189,7 @@ namespace fcore {
                 backend.set_program(emulator_builder::sanitize_program(prog.program.binary));
                 backend.set_efi_selector(prog.efi_selector);
                 backend.set_comparator_type(prog.comparator_type);
-                backend.run_round(emulators_memory[info.id][channel]);
+                backend.run_round(emulators_memory[info.id][channel], common_io_memory[info.id]);
             }
     }
 
@@ -280,6 +286,7 @@ namespace fcore {
             }
             emulators_memory[item.name] = pool;
 
+            common_io_memory[item.name] = std::make_shared<std::vector<uint32_t>>(32, 0);
 
             auto mem = io_remap_memory_init(item.memories, item.io);
 
