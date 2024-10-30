@@ -447,11 +447,11 @@ const std::string emulator_schema = R"~(
             "type": "object",
             "properties": {
               "rom_address":{
-                "type": "integer",
+                "type": "number",
                 "title": "Address of the target core complex ROM bus"
               },
               "control_address": {
-                "type": "integer",
+                "type": "number",
                 "title": "Address of the target core complex control bus"
               },
               "has_reciprocal": {

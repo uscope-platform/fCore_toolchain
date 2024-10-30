@@ -34,8 +34,6 @@ namespace fcore{
         valijson::SchemaParser parser;
         valijson::adapters::NlohmannJsonAdapter schema_adapter(chosen_schema_doc);
         parser.populateSchema(schema_adapter, schema);
-
-
     }
 
 

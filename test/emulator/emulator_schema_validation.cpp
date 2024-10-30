@@ -14,6 +14,7 @@
 
 #include <gtest/gtest.h>
 #include <fstream>
+#include "data_structures/emulation/specs/emulator_specs.hpp"
 #include "frontend/schema_validators/schema_validator_base.h"
 
 using namespace fcore;
@@ -73,3 +74,31 @@ TEST(compiler_schema, validation_fail_no_input) {
     std::string correct_message = "Error #1\n  context: <root>\n  desc:    Missing required property 'input_file'.\n";
     EXPECT_EQ(message, correct_message);
 }
+
+TEST(compiler_schema, validation_success_ints_as_floats) {
+    std::ifstream ifs("emu/schemas/msgpackd_schema.json");
+    nlohmann::json spec = nlohmann::json::parse(ifs);
+    schema_validator_base validator(emulator_input);
+    EXPECT_NO_THROW(validator.validate(spec));
+
+}
+
+TEST(compiler_schema, validation_fail_ints_as_floats) {
+    std::ifstream ifs("emu/schemas/msgpackd_schema_fail.json");
+    nlohmann::json spec = nlohmann::json::parse(ifs);
+    schema_validator_base validator(emulator_input);
+
+    EXPECT_NO_THROW(validator.validate(spec));
+
+    try{
+        fcore::emulator::emulator_specs s(spec);
+        EXPECT_TRUE(false);
+    } catch (std::runtime_error &e){
+        std::string message = e.what();
+        std::string correct_message = "Both rom and control addresses for core test should be integer like numbers";
+        EXPECT_EQ(message, correct_message);
+    }
+
+
+}
+
