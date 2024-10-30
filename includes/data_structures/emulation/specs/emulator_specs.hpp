@@ -46,6 +46,18 @@ namespace fcore::emulator{
         emulator_input_specs process_input(const nlohmann::json &i, const nlohmann::json &in_data);
         emulator_memory_specs process_memory(const nlohmann::json &m);
         nlohmann::json get_input_series(const nlohmann::json &input_data_obj, const std::string& file, const std::string &series);
+
+
+        bool check_float_intness(double d){
+            uint64_t rounded_addr = round(d);
+            uint64_t c_factor =ceil(d);
+            uint64_t f_factor =floor(d);
+            if(c_factor == rounded_addr && f_factor == rounded_addr){
+                return true;
+            } else {
+                return false;
+            }
+        };
     };
 
 } // fcore

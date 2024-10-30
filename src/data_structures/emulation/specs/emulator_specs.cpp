@@ -179,8 +179,14 @@ namespace fcore::emulator {
             c.inputs.push_back(process_input(i, core_obj["input_data"]));
         }
 
-        c.deployment.rom_address = core_obj["deployment"]["rom_address"];
-        c.deployment.control_address = core_obj["deployment"]["control_address"];
+        double rom_address = core_obj["deployment"]["rom_address"];
+        double control_address = core_obj["deployment"]["control_address"];
+
+        if(!check_float_intness(rom_address) || !check_float_intness(control_address)){
+            throw std::runtime_error("Both rom and control addresses for core " + c.id + " should be integer like numbers");
+        }
+        c.deployment.rom_address = rom_address;
+        c.deployment.control_address = control_address;
         c.deployment.has_reciprocal =  core_obj["deployment"]["has_reciprocal"];
 
         return c;
