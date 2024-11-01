@@ -154,10 +154,16 @@ namespace fcore {
                 if(core_reg != 0){
                     uint32_t input_val;
                     if(in.metadata.type==emulator::type_float){
-                        std::vector<float> in_vect = std::get<std::vector<float>>(in.data[channel]);
+
                         if(in.source_type == emulator::constant_input){
-                            input_val = emulator_backend::float_to_uint32(in_vect[0]);
+                            float value = std::get<std::vector<float>>(in.data[0])[0];
+                                if(in.data.size() != 1){
+                                    value = std::get<std::vector<float>>(in.data[channel])[0];
+                                }
+                            input_val = emulator_backend::float_to_uint32(value);
+
                         } else  {
+                            std::vector<float> in_vect = std::get<std::vector<float>>(in.data[channel]);
                             input_val = emulator_backend::float_to_uint32(in_vect[info.step_n]);
                         }
                     } else {
@@ -172,7 +178,11 @@ namespace fcore {
                     if(is_common){
                         common_io_memory[info.id]->at(core_reg) = input_val;
                     } else {
-                        emulators_memory[info.id][in.channel[channel]]->at(core_reg) = input_val;
+                        uint32_t sel_ch = channel;
+                        if(in.source_type != emulator::constant_input || in.channel.size()!=1){
+                            sel_ch = in.channel[channel];
+                        }
+                        emulators_memory[info.id][sel_ch]->at(core_reg) = input_val;
                     }
                 }
             }

@@ -549,7 +549,7 @@ TEST(Emulator, emulator_multichannel_input_file) {
     manager.emulate();
 
     auto res_obj = manager.get_results();
-    auto dbg = res_obj.dump();
+
 
     std::vector<float> res = res_obj["test"]["outputs"]["out"]["0"][0];
     ASSERT_FLOAT_EQ(res[0], 35.2);
@@ -702,7 +702,6 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
     manager.emulate();
 
     auto res_obj = manager.get_results();
-    auto dbg = res_obj.dump();
 
     std::vector<float> res = res_obj["test_producer"]["outputs"]["out"]["0"][0];
     ASSERT_FLOAT_EQ(res[0], 62.4);
@@ -814,7 +813,6 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
     auto res_obj = manager.get_results();
 
     auto res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"]["0"][0];
-    auto dbg = res_obj.dump();
 
     ASSERT_FLOAT_EQ(res[0], 54.6);
     res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"]["1"][0];
@@ -1065,7 +1063,6 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
     manager.emulate();
 
     auto res_obj = manager.get_results();
-    auto dbg = res_obj.dump();
 
     auto res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"]["0"][0];
     ASSERT_FLOAT_EQ(res[0], 218.4);
@@ -1173,8 +1170,6 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
     manager.emulate();
 
     auto res_obj = manager.get_results();
-    auto dbg = res_obj.dump();
-    int i = 0;
 
 
     std::vector<float> res = res_obj["test_consumer"]["outputs"]["consumer_out"]["0"][0];
@@ -1291,4 +1286,96 @@ TEST(Emulator, emulator_common_io) {
     std::vector<float> res = res_obj["test"]["outputs"]["c"]["0"][0];
     ASSERT_FLOAT_EQ(res[0], 6.0);
 
+}
+
+TEST(Emulator, emulator_multichannel_input) {
+    nlohmann::json specs = nlohmann::json::parse(
+            R"(
+    {
+        "cores": [
+            {
+                "order": 0,
+                "id": "test_producer",
+                "channels":2,
+                "options":{
+                    "comparators": "full",
+                    "efi_implementation":"none"
+                },
+                "sampling_frequency":1,
+                "input_data":[],
+                "inputs":[
+                    {
+                        "name": "a",
+                        "metadata":{
+                            "type": "float",
+                            "width": 24,
+                            "signed":false,
+                            "common_io": false
+                        },
+                        "source": {
+                            "type": "constant",
+                            "value": [5]
+                        },
+                        "reg_n": 3,
+                        "channel": [0]
+                    },
+                    {
+                        "name": "b",
+                        "metadata":{
+                            "type": "float",
+                            "width": 24,
+                            "signed":false,
+                            "common_io": false
+                        },
+                        "source": {
+                            "type": "constant",
+                            "value": [1]
+                        },
+                        "reg_n": 4,
+                        "channel": [0]
+                    }
+                ],
+                "outputs":[
+                    {
+                        "name":"out",
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": false
+                        },
+                        "reg_n":[7]
+                    }
+                ],
+                "memory_init":[],
+                "program": {
+                    "content": "int main(){\n  float a,b,out; out = a + b;\n}",
+                    "build_settings":{"io":{"inputs":["a", "b"],"outputs":["out"],"memories":[]}},
+                    "headers": []
+                },
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 2,
+    "deployment_mode": false
+    })");
+
+
+    emulator_manager manager(specs, false);
+    manager.process();
+    manager.emulate();
+
+    auto res_obj = manager.get_results();
+
+
+    std::vector<float> res = res_obj["test_producer"]["outputs"]["out"]["0"][0];
+    ASSERT_FLOAT_EQ(res[0], 6);
+    ASSERT_FLOAT_EQ(res[1], 6);
+    std::vector<float> res2 = (std::vector<float>) res_obj["test_producer"]["outputs"]["out"]["1"][0];
+    ASSERT_FLOAT_EQ(res2[0], 6);
+    ASSERT_FLOAT_EQ(res2[1], 6);
 }
