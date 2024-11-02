@@ -1311,4 +1311,49 @@ namespace fcore{
 
     }
 
+
+    TEST( cTreeVisitor, ternary_expr_operation){
+        std::istringstream test_content(R""""(
+        int main(){
+            theta = angle_overrange ? 0.0 : theta;
+        }
+        )"""");
+
+        std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(test_content, result_def);
+        parser.pre_process({});
+
+        std::unordered_map<std::string, variable_class_t> io_spec;
+        parser.parse(io_spec);
+
+        auto fun = parser.AST->get_content()[0];
+        auto result = std::static_pointer_cast<hl_function_def_node>(fun)->get_body()[0];
+
+
+        auto cond =  std::make_shared<hl_ast_conditional_node>();
+
+        auto var = std::make_shared<variable>( "angle_overrange");
+        std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
+
+        cond->set_condition(op);
+
+        var = std::make_shared<variable>("constant", 0);
+        op = std::make_shared<hl_ast_operand>(var);
+        cond->set_if_block({op});
+
+        var = std::make_shared<variable>("theta");
+        op = std::make_shared<hl_ast_operand>(var);
+        cond->set_if_block({op});
+        cond->set_ternary(true);
+
+        var = std::make_shared<variable>("theta");
+        op = std::make_shared<hl_ast_operand>(var);
+        auto gold_standard = std::make_shared<hl_expression_node>(expr_assign);
+        gold_standard->set_lhs(op);
+        gold_standard->set_rhs(cond);
+
+        ASSERT_EQ(*result, *gold_standard);
+
+    }
 }

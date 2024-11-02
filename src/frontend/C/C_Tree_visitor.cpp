@@ -438,14 +438,15 @@ namespace fcore{
     void C_Tree_visitor::exitConditionalExpression(C_parser::C_grammarParser::ConditionalExpressionContext *ctx) {
 
         if(ctx->Question() != nullptr){
-            auto conditional = std::make_shared<hl_ast_conditional_node>();
-            conditional->set_else_block({expressions_stack.top()});
+            auto c = std::make_shared<hl_ast_conditional_node>();
+            c->set_else_block({expressions_stack.top()});
             expressions_stack.pop();
-            conditional->set_if_block({expressions_stack.top()});
+            c->set_if_block({expressions_stack.top()});
             expressions_stack.pop();
-            conditional->set_condition(expressions_stack.top());
-            conditional->set_ternary(true);
-            expressions_stack.push(conditional);
+            c->set_condition(expressions_stack.top());
+            expressions_stack.pop();
+            c->set_ternary(true);
+            expressions_stack.push(c);
         }
     }
 
