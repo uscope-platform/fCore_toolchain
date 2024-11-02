@@ -1355,38 +1355,33 @@ TEST(EndToEndC, common_io_space) {
 
 }
 
-/*
-TEST(EndToEndC, test_ternary_mem_self_assign) {
+
+TEST(EndToEndC, self_assigned_conditional_select) {
 
     std::vector<std::string> file_content = {R""""(
-
         int main(){
-            float a;
-            float b;
-            float c;
 
-                c = a>0.0 ? b : c ;
+            float theta = theta + 500.0;
+            float angle_overrange = theta >= 65535.0;
+            theta = angle_overrange? 0.0 : theta;
         }
     )""""};
 
-    std::vector<std::string> include_content;
+    std::vector<std::string> includes;
+
 
     std::unordered_map<std::string, core_iom> dma_map;
-    dma_map["a"] = {core_iom_input, {3}};
-    dma_map["b"] = {core_iom_input, {4}};
-    dma_map["c"] = {core_iom_memory, {5}};
+    dma_map["theta"] = {core_iom_memory, {10}, false};
 
-    fcore_cc compiler(file_content, include_content);
+    fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
-    compiler.set_dma_map(dma_map)
-
+    compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x70003, 0xc, 0x10003, 0x20004, 0xc, 0x40028, 0x26, 0x3f800000,0x66, 0xbf800000, 0x6085b, 0xc};
+    std::vector<uint32_t> gold_standard = {0x90002, 0xc, 0x3f000A, 0xc, 0xc, 0x26, 0x43fa0000, 0x7e0fe1, 0x26, 0x477FFF00, 0x5f829, 0x7e005b, 0x7e004e, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
 }
- */

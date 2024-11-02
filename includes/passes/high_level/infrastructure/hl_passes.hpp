@@ -38,6 +38,7 @@
 #include "passes/high_level/contiguous_array_identification.hpp"
 #include "passes/high_level/visitor_passes/array_index_lowering.hpp"
 #include "passes/high_level/visitor_passes/array_initialization_substitution.h"
+#include "passes/high_level/visitor_passes/ternary_expression_extraction.hpp"
 
 #include "tools/variable_map.hpp"
 #include "data_structures/high_level_ast/hl_ast_node.hpp"
@@ -66,7 +67,6 @@ namespace fcore{
         manager.add_morphing_pass("Normalization", std::make_shared<normalization_pass>()); // pass #11
 
         manager.add_morphing_pass("Contiguous Array Identification", std::make_shared<contiguous_array_identification>()); // pass #12
-
         manager.add_morphing_pass("Dead Variable elimination", std::make_shared<dead_variable_elimination>());  // pass #13
 
         auto const_fold = std::make_shared<constant_folding_pass>();
@@ -76,7 +76,7 @@ namespace fcore{
         manager.add_morphing_pass("Inline Constant Extraction", std::make_shared<inline_constant_extraction>()); // pass #14
         manager.add_morphing_pass("Array Flattening", std::make_shared<array_index_lowering>()); // pass #15
         manager.add_morphing_pass("Dead Load elimination", std::make_shared<dead_load_elimination>()); // pass #16
-
+        manager.add_morphing_pass("Ternary Expression extraction", std::make_shared<ternary_expression_extraction>());
         return manager;
     }
 }

@@ -59,6 +59,7 @@ set(FCORE_CC_SRCS
         passes/high_level/visitor_passes/operating_assignment_implementation_pass.cpp
         passes/high_level/visitor_passes/intrinsics_implementation_pass.cpp
         passes/high_level/visitor_passes/division_implementation_pass.cpp
+        passes/high_level/visitor_passes/ternary_expression_extraction.cpp
         passes/high_level/visitor_passes/dead_variable_elimination.cpp
         passes/high_level/visitor_passes/array_index_lowering.cpp
         passes/high_level/visitor_passes/constant_folding_pass.cpp
