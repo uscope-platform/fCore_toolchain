@@ -22,6 +22,7 @@
 #include "passes/high_level/inlined_function_elimination.hpp"
 #include "passes/high_level/normalization_pass.hpp"
 #include "passes/high_level/visitor_passes/intrinsics_implementation_pass.hpp"
+#include "passes/high_level/visitor_passes/comparison_flipping.hpp"
 #include "passes/high_level/visitor_passes/dead_variable_elimination.hpp"
 #include "passes/high_level/visitor_passes/constant_folding_pass.hpp"
 #include "passes/high_level/constant_propagation.hpp"
@@ -49,6 +50,7 @@ namespace fcore{
 
         manager.add_morphing_pass("Division Implementation", std::make_shared<division_implementation_pass>()); // pass #1
         manager.add_morphing_pass("Intrinsics Implementation", std::make_shared<intrinsics_implementation_pass>()); // pass #2
+        manager.add_morphing_pass("Comparison flipping pass", std::make_shared<comparison_flipping>()); // pass #2
 
         manager.add_morphing_pass("Operating Assignment Implementation", std::make_shared<operating_assignment_implementation_pass>()); // pass #3
         manager.add_morphing_pass("Function Mangling", std::make_shared<fuction_mangling_pass>()); // pass #4

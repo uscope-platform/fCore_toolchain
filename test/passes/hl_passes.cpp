@@ -590,7 +590,6 @@ TEST(HlPassesTest, loop_unrolling_array) {
     ASSERT_EQ(*normalized_ast, *gold_standard);
 }
 
-
 TEST(HlPassesTest, test_matrix_scalarization) {
 
     std::string test_content = R""""(
@@ -826,7 +825,6 @@ TEST(HlPassesTest, function_return_inlining) {
     ASSERT_EQ(*normalized_ast, *gold_standard);
 }
 
-
 TEST(HlPassesTest, complex_normalization) {
     // INNER MULTIPLICATION
     std::shared_ptr<hl_expression_node> expr_1 = std::make_shared<hl_expression_node>(expr_mult);
@@ -905,7 +903,6 @@ TEST(HlPassesTest, complex_normalization) {
     ASSERT_EQ(*gold_standard, *input_root);
 }
 
-
 TEST(HlPassesTest, dead_load_elimination) {
 
     std::shared_ptr<hl_code_block> input_root = std::make_shared<hl_code_block>();
@@ -935,7 +932,6 @@ TEST(HlPassesTest, dead_load_elimination) {
     gold_standard->add_content(exp);
     ASSERT_EQ(*gold_standard, *input_root);
 }
-
 
 TEST(HlPassesTest, nested_function_inlining) {
 
@@ -1045,8 +1041,6 @@ TEST(HlPassesTest, nested_function_inlining) {
     ASSERT_EQ(*normalized_ast, *gold_standard);
 }
 
-
-
 TEST(HlPassesTest, complex_division_implementation) {
 
     std::string test_content = R""""(
@@ -1128,3 +1122,42 @@ TEST(HlPassesTest, complex_division_implementation) {
 
 }
 
+TEST(HlPassesTest, comparison_flipping) {
+
+    std::string test_content = R""""(
+
+        int main(){
+            float theta;
+            float angle_overrange = (theta + 500.0) >= 65535.0;
+        }
+    )"""";
+
+    std::istringstream in(test_content);
+
+    std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
+
+    C_language_parser parser(in, result_def);
+    parser.pre_process({});
+    std::unordered_map<std::string, variable_class_t> io_spec;
+    parser.parse(io_spec);
+
+    std::string ep = "main";
+
+    hl_pass_manager manager = create_hl_pass_manager(ep);
+    manager.disable_all();
+
+    manager.enable_pass("Function Inlining");
+    manager.enable_pass("Inlined Function Elimination");
+    manager.enable_pass("Code Block Expansion");
+    manager.enable_pass("Comparison flipping pass");
+    auto result_ast = manager.run_morphing_passes(parser.AST);
+
+    auto init = std::static_pointer_cast<hl_definition_node>(result_ast->get_content()[1])->get_scalar_initializer();
+    EXPECT_EQ(init->node_type,hl_ast_node_type_expr);
+    auto exp = std::static_pointer_cast<hl_expression_node>(init);
+    EXPECT_EQ(exp->get_type(), expr_lte);
+    auto rhs = exp->get_rhs();
+    auto lhs = exp->get_lhs().value();
+    EXPECT_EQ(rhs->node_type, hl_ast_node_type_expr);
+    EXPECT_EQ(lhs->node_type, hl_ast_node_type_operand);
+}

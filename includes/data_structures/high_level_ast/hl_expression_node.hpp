@@ -160,6 +160,7 @@ namespace fcore{
         assignment_type_t get_assignment_type() {return assignment_type;};
 
         expression_type_t get_type(){return expr_type;};
+        void set_type(expression_type_t t){expr_type = t;};
         std::string pretty_print();
         bool is_unary();
         bool is_ternary();

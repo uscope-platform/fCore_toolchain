@@ -13,18 +13,17 @@
 // limitations under the License.
 
 
-#ifndef FCORE_TOOLCHAIN_COMPARISON_FLIPPING_PASS_HPP
-#define FCORE_TOOLCHAIN_COMPARISON_FLIPPING_PASS_HPP
+#ifndef FCORE_TOOLCHAIN_CONSTANT_FOLDING_PASS_HPP
+#define FCORE_TOOLCHAIN_CONSTANT_FOLDING_PASS_HPP
 
 #include "passes/high_level/infrastructure/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
-#include "tools/expression_evaluator.hpp"
 #include "passes/high_level/infrastructure/hl_ast_visitor.hpp"
 
 namespace fcore{
-    class constant_folding_pass : public  pass_base {
+    class comparison_flipping : public  pass_base {
     public:
-        constant_folding_pass();
+        comparison_flipping();
         std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
     private:
         static std::vector<std::shared_ptr<hl_ast_node>> process_expression(std::shared_ptr<hl_expression_node> exp);
@@ -33,4 +32,4 @@ namespace fcore{
 
 
 
-#endif //FCORE_TOOLCHAIN_COMPARISON_FLIPPING_PASS_HPP
+#endif //FCORE_TOOLCHAIN_CONSTANT_FOLDING_PASS_HPP
