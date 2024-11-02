@@ -168,14 +168,13 @@ namespace fcore{
                 expression->set_lhs(loop_var);
         } else if(expression->get_lhs().value()->node_type == hl_ast_node_type_expr){
             update_expression(std::static_pointer_cast<hl_expression_node>(expression->get_lhs().value()), std::move(loop_var));
-        } else if(expression->get_rhs()->node_type == hl_ast_node_type_operand){
+        }
+        if(expression->get_rhs()->node_type == hl_ast_node_type_operand){
             std::shared_ptr<hl_ast_operand> node = std::static_pointer_cast<hl_ast_operand>(expression->get_rhs());
             if(node->get_name() == loop_var->get_name())
                 expression->set_rhs(loop_var);
         } else if(expression->get_rhs()->node_type == hl_ast_node_type_expr) {
             update_expression(std::static_pointer_cast<hl_expression_node>(expression->get_rhs()), std::move(loop_var));
-        } else {
-            throw std::runtime_error("loop variable not found in loop condition");
         }
     }
 
