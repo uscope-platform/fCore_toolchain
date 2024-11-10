@@ -20,6 +20,7 @@ namespace fcore{
     executable::executable() {
         sections["metadata"] = std::vector<uint32_t>();
         sections["io_remapping"] = std::vector<uint32_t>();
+        sections["common_io_map"] = std::vector<uint32_t>();
         sections["code"] = std::vector<uint32_t>();
     }
 
@@ -35,6 +36,11 @@ namespace fcore{
             sections["io_remapping"].push_back(executable[i]);
         }
         executable.erase(executable.begin(), executable.begin()+metadata[0]);
+        for(auto &i:executable){
+            if(i==0xC) break;
+            else(sections["common_io_map"].push_back(i));
+        }
+        executable.erase(executable.begin(), executable.begin() + sections["common_io_map"].size() + 1);
 
         sections["code"].insert(sections["code"].end(),executable.begin(), executable.end());
     }

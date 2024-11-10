@@ -422,5 +422,16 @@ namespace fcore {
         }
     }
 
+    std::vector<std::string> emulator_manager::disassemble() {
+        std::vector<std::string> ret;
+
+        for(auto &p:get_programs()){
+            fcore_dis d(p.program.binary);
+            ret.push_back(d.get_disassenbled_program());
+
+        }
+        return ret;
+    }
+
 
 }

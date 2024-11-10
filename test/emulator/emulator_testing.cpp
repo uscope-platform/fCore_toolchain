@@ -169,6 +169,10 @@ TEST(Emulator, emulator_compilation) {
     ASSERT_EQ(result, reference);
 }
 
+
+
+
+
 TEST(Emulator, emulator_compilation_interconnect) {
 
     std::ifstream ifs("emu/test_compilation_interconnect.json");
@@ -303,6 +307,119 @@ TEST(Emulator, emulator_header) {
 }
 
 
+
+TEST(Emulator, emulator_disassemble) {
+
+
+    nlohmann::json specs = nlohmann::json::parse(
+            R"(
+    {
+    "cores": [
+        {
+            "order": 0,
+            "id": "test_producer",
+            "channels":2,
+            "options":{
+                "comparators": "full",
+                "efi_implementation":"none"
+            },
+            "sampling_frequency":1,
+            "input_data":[],
+            "inputs":[
+                {
+                    "name": "input_1",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false,
+                        "common_io": false
+                    },
+                    "reg_n": 3,
+                    "channel":[0,1],
+                    "source":{"type": "constant","value": [31.2, 32.7]}
+                },
+                {
+                    "name": "input_2",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false,
+                        "common_io": false
+                    },
+                    "reg_n": 4,
+                    "channel":[0,1],
+                    "source":{"type": "constant","value": [31.2, 32.7]}
+                }
+            ],
+            "outputs":[
+                {
+                    "name":"out",
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false
+                    },
+                    "reg_n":[5]
+                }
+            ],
+            "memory_init":[],
+            "program": {
+                "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = input_1 + input_2;\n}",
+                "build_settings":{"io":{"inputs":["input_data"],"outputs":["out"],"memories":[]}},
+                "headers": []
+            },
+            "deployment": {
+                "has_reciprocal": false,
+                "control_address": 18316525568,
+                "rom_address": 17179869184
+            }
+        },
+        {
+            "order": 1,
+            "id": "test_reducer",
+            "channels":1,
+            "options":{
+                "comparators": "full",
+                "efi_implementation":"none"
+            },
+            "sampling_frequency":1,
+            "input_data":[],
+            "inputs":[],
+            "outputs":[
+                {
+                    "name":"out",
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false
+                    },
+                    "reg_n":[5]
+                }
+            ],
+            "memory_init":[],
+            "program": {
+                "content": "int main(){\n    float input_data[2];\n    float out = input_data[0] * input_data[1];\n}\n",
+                "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}},
+                "headers": []
+            },
+            "deployment": {
+                "has_reciprocal": false,
+                "control_address": 18316525568,
+                "rom_address": 17179869184
+            }
+        }
+    ],
+    "interconnect": [],
+    "emulation_time": 1,
+    "deployment_mode": false
+})");
+
+
+    emulator_manager manager(specs, false);
+    auto res = manager.disassemble();
+    ASSERT_EQ(res[0], "add r2, r1, r3\nstop\n");
+    ASSERT_EQ(res[1], "mul r1, r2, r3\nstop\n");
+}
 
 TEST(Emulator, emulator_multichannel) {
 
@@ -564,8 +681,6 @@ TEST(Emulator, emulator_multichannel_input_file) {
     ASSERT_FLOAT_EQ(res[0], 76.0);
     ASSERT_FLOAT_EQ(res[1], 76.1);
 }
-
-
 
 
 TEST(Emulator, emulator_multichannel_gather_transfer) {
@@ -937,8 +1052,6 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
         EXPECT_EQ( "Attempted write to unavailable channel: 1 of core: test_consumer",  msg);
     }
 }
-
-
 
 
 TEST(Emulator, emulator_multichannel_vector_transfer) {
