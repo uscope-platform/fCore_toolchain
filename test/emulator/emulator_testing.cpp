@@ -417,8 +417,12 @@ TEST(Emulator, emulator_disassemble) {
 
     emulator_manager manager(specs, false);
     auto res = manager.disassemble();
-    ASSERT_EQ(res[0], "add r2, r1, r3\nstop\n");
-    ASSERT_EQ(res[1], "mul r1, r2, r3\nstop\n");
+    std::unordered_map<std::string, std::string> expected = {
+            {"test_producer", "add r2, r1, r3\nstop\n"},
+            {"test_reducer", "mul r1, r2, r3\nstop\n"}
+    };
+
+    EXPECT_EQ(expected, res);
 }
 
 TEST(Emulator, emulator_multichannel) {

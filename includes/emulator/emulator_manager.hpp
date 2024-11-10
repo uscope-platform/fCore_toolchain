@@ -60,7 +60,7 @@ namespace fcore{
         void set_profiler(const std::shared_ptr<instrumentation_core> &prof){ this->profiler = prof;};
         void process();
         void emulate();
-        std::vector<std::string> disassemble();
+        std::unordered_map<std::string, std::string>  disassemble();
 
         std::shared_ptr<std::vector<uint32_t>> get_memory_snapshot(const std::string &core_id, int channel);
         nlohmann::json get_results();

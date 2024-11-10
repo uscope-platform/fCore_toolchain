@@ -422,12 +422,12 @@ namespace fcore {
         }
     }
 
-    std::vector<std::string> emulator_manager::disassemble() {
-        std::vector<std::string> ret;
+    std::unordered_map<std::string, std::string> emulator_manager::disassemble() {
+        std::unordered_map<std::string, std::string> ret;
 
         for(auto &p:get_programs()){
             fcore_dis d(p.program.binary);
-            ret.push_back(d.get_disassenbled_program());
+            ret[p.name] = d.get_disassenbled_program();
 
         }
         return ret;
