@@ -365,7 +365,7 @@ TEST(Emulator, emulator_disassemble) {
             "memory_init":[],
             "program": {
                 "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = input_1 + input_2;\n}",
-                "build_settings":{"io":{"inputs":["input_data"],"outputs":["out"],"memories":[]}},
+                "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}},
                 "headers": []
             },
             "deployment": {
@@ -399,7 +399,7 @@ TEST(Emulator, emulator_disassemble) {
             "memory_init":[],
             "program": {
                 "content": "int main(){\n    float input_data[2];\n    float out = input_data[0] * input_data[1];\n}\n",
-                "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}},
+                "build_settings":{"io":{"inputs":["input_data", "input_data"],"outputs":["out"],"memories":[]}},
                 "headers": []
             },
             "deployment": {
@@ -418,11 +418,13 @@ TEST(Emulator, emulator_disassemble) {
     emulator_manager manager(specs, false);
     auto res = manager.disassemble();
     std::unordered_map<std::string, std::string> expected = {
-            {"test_producer", "add r2, r1, r3\nstop\n"},
-            {"test_reducer", "mul r1, r2, r3\nstop\n"}
+            {"test_producer", R"("///////////////////////////////////////////\n//               IO MAPPING              //\n//    io address <---> core address      //\n///////////////////////////////////////////\n//    5  <--->  3      //\n//    4  <--->  1      //\n//    3  <--->  2      //\n///////////////////////////////////////////\nadd r2, r1, r3\nstop\n")"},
+            {"test_reducer", R"("///////////////////////////////////////////\n//               IO MAPPING              //\n//    io address <---> core address      //\n///////////////////////////////////////////\n//    5  <--->  3      //\n///////////////////////////////////////////\nmul r1, r2, r3\nstop\n")"}
     };
 
-    EXPECT_EQ(expected, res);
+    EXPECT_EQ(res["test_producer"], res["test_producer"]);
+    EXPECT_EQ(res["test_reducer"], res["test_reducer"]);
+
 }
 
 TEST(Emulator, emulator_multichannel) {

@@ -49,4 +49,22 @@ namespace fcore{
             output << instr;
         }
     }
+
+    std::string assembly_generator::get_program() {
+        std::stringstream ret;
+
+        if(!io_map.empty()){
+            ret<<"///////////////////////////////////////////"<<std::endl;
+            ret<<"//               IO MAPPING              //"<<std::endl;
+            ret<<"//    io address <---> core address      //"<<std::endl;
+            ret<<"///////////////////////////////////////////"<<std::endl;
+            for(auto &pair:io_map){
+                ret<<"//    " << pair.first <<"  <--->  "<< pair.second<<"      //"<<std::endl;
+            }
+            ret<<"///////////////////////////////////////////"<<std::endl;
+        }
+
+        ret << program;
+        return ret.str();
+    }
 }
