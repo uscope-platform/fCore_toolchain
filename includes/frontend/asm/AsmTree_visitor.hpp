@@ -22,11 +22,8 @@
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "data_structures/common/variable.hpp"
 #include "tools/variable_map.hpp"
-#include <iostream>
 #include <memory>
-#include <vector>
 #include <string>
-#include <utility>
 
 namespace fcore{
 

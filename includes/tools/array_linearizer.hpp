@@ -18,7 +18,6 @@
 #define FCORE_TOOLCHAIN_ARRAY_LINEARIZER_HPP
 
 #include <vector>
-#include <cstdint>
 #include <numeric>
 
 namespace fcore{

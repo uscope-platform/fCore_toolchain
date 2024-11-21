@@ -17,7 +17,6 @@
 #define FCORE_TOOLCHAIN_DEFINE_HPP
 
 #include <string>
-#include <utility>
 
 namespace fcore{
     class define {

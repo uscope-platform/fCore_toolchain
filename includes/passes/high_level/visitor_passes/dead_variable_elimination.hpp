@@ -19,7 +19,6 @@
 #include "passes/high_level/infrastructure/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "passes/high_level/infrastructure/hl_ast_visitor.hpp"
-#include "tools/variable_map.hpp"
 
 namespace fcore{
     class dead_variable_elimination : public pass_base{

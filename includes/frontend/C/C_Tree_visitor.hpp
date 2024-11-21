@@ -16,14 +16,11 @@
 #ifndef FCORE_TOOLCHAIN_C_TREE_VISITOR_HPP
 #define FCORE_TOOLCHAIN_C_TREE_VISITOR_HPP
 
-#include <iostream>
 #include <memory>
 #include <vector>
 #include <string>
 #include <utility>
 #include <stack>
-#include <exception>
-#include <stdexcept>
 
 #include "C_parser/C_grammarBaseListener.h"
 #include "C_parser/C_grammarParser.h"

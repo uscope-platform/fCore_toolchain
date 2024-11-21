@@ -17,14 +17,11 @@
 #ifndef FCORE_TOOLCHAIN_CONSTANT_PROPAGATION_HPP
 #define FCORE_TOOLCHAIN_CONSTANT_PROPAGATION_HPP
 
-#include <unordered_map>
-#include <unordered_set>
 
 #include "data_structures/constants_tracker.h"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "passes/high_level/infrastructure/pass_base.hpp"
 #include "tools/variable_map.hpp"
-#include "tools/array_linearizer.hpp"
 
 namespace fcore{
     class constant_propagation :public pass_base {

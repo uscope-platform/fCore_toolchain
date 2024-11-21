@@ -26,7 +26,6 @@
 #include "emulation_sequencer.hpp"
 #include "../../third_party/csv.hpp"
 #include "emulator/backend/emulator_backend.hpp"
-#include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "data_structures/emulation/emulator_metadata.hpp"
 #include "emulator_builder.hpp"
 #include "emulator/backend/multirate_io_repeater.hpp"

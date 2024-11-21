@@ -19,7 +19,6 @@
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "passes/high_level/infrastructure/pass_base.hpp"
 
-#include <utility>
 
 namespace fcore{
     class function_inlining_pass :public pass_base{

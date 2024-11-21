@@ -18,7 +18,6 @@
 
 #include <vector>
 #include <utility>
-#include <stdexcept>
 
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "tools/variable_map.hpp"

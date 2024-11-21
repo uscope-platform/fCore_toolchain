@@ -17,8 +17,8 @@
 #define FCORE_TOOLCHAIN_BA_EXECUTOR_HPP
 
 #include <cstdint>
-#include <spdlog/spdlog.h>
-#include <string>
+#include <stdexcept>
+#include <cstring>
 
 
 #include "floating_point_v7_1_bitacc_cmodel.h"

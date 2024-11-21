@@ -18,7 +18,6 @@
 
 #include "stream_pass_base.hpp"
 #include "tools/variable_map.hpp"
-#include "data_structures/common/variable.hpp"
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 
 namespace fcore{

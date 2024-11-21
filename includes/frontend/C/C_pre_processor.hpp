@@ -16,15 +16,10 @@
 #ifndef FCORE_TOOLCHAIN_C_PRE_PROCESSOR_HPP
 #define FCORE_TOOLCHAIN_C_PRE_PROCESSOR_HPP
 
-#include <istream>
 #include <fstream>
 #include <filesystem>
-#include <iostream>
-#include <sstream>
 #include <regex>
-#include <stdexcept>
 
-#include "data_structures/common/variable.hpp"
 #include "tools/define.hpp"
 #include "tools/variable_map.hpp"
 #include "tools/define_map.hpp"

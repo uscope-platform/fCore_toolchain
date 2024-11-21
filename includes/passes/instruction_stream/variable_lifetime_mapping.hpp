@@ -16,10 +16,6 @@
 #ifndef FCORE_TOOLCHAIN_VARIABLE_LIFETIME_MAPPING_HPP
 #define FCORE_TOOLCHAIN_VARIABLE_LIFETIME_MAPPING_HPP
 
-
-#include <type_traits>
-#include <variant>
-
 #include "stream_pass_base.hpp"
 #include "data_structures/common/variable.hpp"
 #include "tools/variable_map.hpp"

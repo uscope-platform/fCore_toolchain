@@ -21,7 +21,6 @@
 #include <cstdint>
 #include <numeric>
 #include <algorithm>
-#include <cmath>
 
 namespace fcore {
     struct core_metadata {

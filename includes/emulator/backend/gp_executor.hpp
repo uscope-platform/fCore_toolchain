@@ -17,7 +17,6 @@
 
 #include <cstdint>
 #include <spdlog/spdlog.h>
-#include <string>
 
 namespace fcore{
     class gp_executor {

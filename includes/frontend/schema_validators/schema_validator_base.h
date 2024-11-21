@@ -16,11 +16,6 @@
 #define FCORE_TOOLCHAIN_SCHEMA_VALIDATOR_BASE_H
 
 #include <string>
-#include <fstream>
-#include <utility>
-#include <filesystem>
-
-#include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
 
 #include <valijson/adapters/nlohmann_json_adapter.hpp>

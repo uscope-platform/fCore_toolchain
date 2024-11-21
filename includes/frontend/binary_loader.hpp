@@ -16,7 +16,6 @@
 #ifndef FCORE_TOOLCHAIN_BINARY_LOADER_HPP
 #define FCORE_TOOLCHAIN_BINARY_LOADER_HPP
 
-#include <istream>
 
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "data_structures/executable.hpp"

@@ -16,13 +16,10 @@
 #ifndef FCORE_TOOLCHAIN_VARIABLE_MAP_HPP
 #define FCORE_TOOLCHAIN_VARIABLE_MAP_HPP
 
-#include <iterator>
 #include <memory>
 #include <string>
 #include <unordered_map>
-#include <iterator>
 #include <utility>
-#include <cmath>
 #include "data_structures/common/variable.hpp"
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 

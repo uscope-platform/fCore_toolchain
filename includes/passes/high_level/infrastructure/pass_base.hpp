@@ -18,9 +18,7 @@
 
 #include <memory>
 #include <utility>
-#include <vector>
 #include <string>
-#include <unordered_map>
 
 #include "data_structures/high_level_ast/hl_code_block.hpp"
 

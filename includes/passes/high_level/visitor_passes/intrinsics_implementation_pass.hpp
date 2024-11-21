@@ -16,8 +16,6 @@
 #ifndef FCORE_TOOLCHAIN_INTRINSICS_IMPLEMENTATION_PASS_HPP
 #define FCORE_TOOLCHAIN_INTRINSICS_IMPLEMENTATION_PASS_HPP
 
-#include <map>
-#include <string>
 
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "passes/high_level/infrastructure/pass_base.hpp"

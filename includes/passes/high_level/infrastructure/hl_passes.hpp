@@ -34,14 +34,10 @@
 #include "passes/high_level/dead_load_elimination.hpp"
 #include "passes/high_level/visitor_passes/array_index_lowering.hpp"
 #include "passes/high_level/fuction_mangling_pass.hpp"
-#include "passes/instruction_stream/zero_assignment_removal_pass.hpp"
 #include "passes/high_level/contiguous_array_identification.hpp"
-#include "passes/high_level/visitor_passes/array_index_lowering.hpp"
 #include "passes/high_level/visitor_passes/array_initialization_substitution.h"
 #include "passes/high_level/visitor_passes/ternary_expression_extraction.hpp"
 
-#include "tools/variable_map.hpp"
-#include "data_structures/high_level_ast/hl_ast_node.hpp"
 
 namespace fcore{
     static hl_pass_manager create_hl_pass_manager(

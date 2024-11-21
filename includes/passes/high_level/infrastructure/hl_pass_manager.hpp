@@ -17,7 +17,6 @@
 #define FCORE_TOOLCHAIN_HL_PASS_MANAGER_HPP
 
 
-#include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "instrumentation/instrumentation_core.hpp"
 
 #include "pass_base.hpp"

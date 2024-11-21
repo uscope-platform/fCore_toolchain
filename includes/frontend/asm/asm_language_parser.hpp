@@ -17,9 +17,6 @@
 #define FCORE_TOOLCHAIN_ASM_LANGUAGE_PARSER_HPP
 
 #include <string>
-#include <sstream>
-#include <vector>
-#include <utility>
 
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "AsmTree_visitor.hpp"
@@ -28,6 +25,7 @@
 #include "antlr4-runtime.h"
 #include "asm_parser/asm_grammarLexer.h"
 #include "asm_parser/asm_grammarParser.h"
+
 namespace fcore{
 
     class asm_language_parser{

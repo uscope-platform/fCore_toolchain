@@ -24,7 +24,6 @@
 #include "tools/variable_map.hpp"
 #include "tools/register_map.hpp"
 #include "data_structures/common/memory_tracker.hpp"
-#include "tools/array_linearizer.hpp"
 #include "data_structures/common/io_map_entry.hpp"
 
 namespace fcore{
