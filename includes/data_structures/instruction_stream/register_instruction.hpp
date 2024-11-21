@@ -17,6 +17,7 @@
 #define FCORE_TOOLCHAIN_LL_REGISTER_INSTR_NODE_H
 
 #include <utility>
+#include <iostream>
 
 #include "data_structures/common/variable.hpp"
 #include "fCore_isa.hpp"

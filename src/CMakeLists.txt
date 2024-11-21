@@ -32,6 +32,7 @@ set(FCORE_COMMON_SRCS_I
         instrumentation/instrumentation_core.cpp
         data_structures/high_level_ast/hl_code_block.cpp
         passes/high_level/infrastructure/hl_ast_visitor.cpp
+        ../includes/data_structures/emulation/program_bundle.hpp
 )
 
 

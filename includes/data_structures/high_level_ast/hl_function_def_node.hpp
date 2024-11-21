@@ -16,9 +16,7 @@
 #ifndef FCORE_TOOLCHAIN_HL_FUNCTION_DEF_NODE_HPP
 #define FCORE_TOOLCHAIN_HL_FUNCTION_DEF_NODE_HPP
 
-#include <map>
 #include <string>
-#include <utility>
 
 #include "data_structures/high_level_ast/hl_ast_node.hpp"
 #include "data_structures/high_level_ast/hl_definition_node.hpp"

@@ -19,11 +19,8 @@
 
     #include "hl_ast_operand.hpp"
     #include "hl_ast_node.hpp"
-#include "hl_function_call_node.hpp"
-#include "hl_ast_conditional_node.hpp"
-
-#include <iostream>
-#include <sstream>
+    #include "hl_function_call_node.hpp"
+    #include "hl_ast_conditional_node.hpp"
 
 namespace fcore{
 

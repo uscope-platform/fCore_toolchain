@@ -16,6 +16,7 @@
 #define FCORE_TOOLCHAIN_TERNARY_INSTRUCTION_HPP
 
 #include <utility>
+#include <iostream>
 
 #include "data_structures/common/variable.hpp"
 #include "fCore_isa.hpp"

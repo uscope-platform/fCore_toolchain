@@ -16,7 +16,7 @@
 #ifndef FCORE_TOOLCHAIN_LOAD_CONSTANT_INSTRUCTION_HPP
 #define FCORE_TOOLCHAIN_LOAD_CONSTANT_INSTRUCTION_HPP
 
-#include <utility>
+#include <iostream>
 #include <cstdint>
 #include <string>
 #include <memory>

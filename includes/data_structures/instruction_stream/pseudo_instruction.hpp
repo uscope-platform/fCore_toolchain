@@ -17,6 +17,7 @@
 #define FCORE_TOOLCHAIN_PSEUDO_INSTRUCTION_HPP
 
 #include <utility>
+#include <iostream>
 
 #include "data_structures/common/variable.hpp"
 

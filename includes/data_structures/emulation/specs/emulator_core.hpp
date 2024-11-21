@@ -15,7 +15,6 @@
 #ifndef FCORE_TOOLCHAIN_EMULATOR_CORE_HPP
 #define FCORE_TOOLCHAIN_EMULATOR_CORE_HPP
 
-#include <nlohmann/json.hpp>
 #include <string>
 #include <variant>
 #include <cstdint>

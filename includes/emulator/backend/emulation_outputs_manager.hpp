@@ -18,14 +18,13 @@
 #define FCORE_TOOLCHAIN_EMULATION_OUTPUTS_MANAGER_HPP
 
 #include <unordered_map>
-#include <utility>
 #include <string>
 #include <nlohmann/json.hpp>
 
 #include "data_structures/emulation/specs/emulator_specs.hpp"
 #include "data_structures/emulation/emulator_output.hpp"
 #include "data_structures/emulation/emulator_metadata.hpp"
-#include "emulator/backend/emulator_backend.hpp"
+#include "data_structures/common/io_map_entry.hpp"
 
 namespace fcore{
 

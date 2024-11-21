@@ -17,7 +17,6 @@
 
 #include <unordered_map>
 #include <string>
-#include <fstream>
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 
@@ -25,8 +24,6 @@
 #include "data_structures/emulation/specs/emulator_specs.hpp"
 
 #include "emulation_sequencer.hpp"
-#include "frontend/schema_validators/schema_validator_base.h"
-#include "frontend/binary_loader.hpp"
 #include "../../third_party/csv.hpp"
 #include "emulator/backend/emulator_backend.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"

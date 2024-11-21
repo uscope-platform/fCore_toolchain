@@ -16,6 +16,7 @@
 #define FCORE_TOOLCHAIN_EMULATOR_H
 
 #include <utility>
+#include <bitset>
 #include <spdlog/spdlog.h>
 
 #include "efi_dispatcher.h"

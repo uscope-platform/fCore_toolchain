@@ -1,3 +1,5 @@
+
+
 //  Copyright 2024 Filippo Savi <filssavi@gmail.com>
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,36 +14,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FCORE_TOOLCHAIN_EMULATOR_METADATA_HPP
-#define FCORE_TOOLCHAIN_EMULATOR_METADATA_HPP
+#ifndef PROGRAM_BUNDLE_HPP
+#define PROGRAM_BUNDLE_HPP
 
-
+#include <string>
 #include <vector>
+#include <set>
 #include <cstdint>
-#include <unordered_map>
-#include <memory>
 
-namespace fcore{
-
-// FORWARD DECLARATIONS
-    class emulator_backend;
-
-    typedef std::unordered_map<uint32_t , std::shared_ptr<std::vector<uint32_t>>> core_memory_pool_t;
-
-    typedef enum {
-        efi_none = 0,
-        efi_trig = 1,
-        efi_sort = 2,
-    } efi_implementation_t;
-
-    typedef enum {
-        comparator_none = 0,
-        comparator_reducing= 1,
-        comparator_full = 2
-    } comparator_type_t;
-
-
-
+namespace fcore {
+    class program_bundle{
+    public:
+        std::string name;
+        fcore_program program;
+        std::set<io_map_entry> io;
+        std::vector<emulator::emulator_memory_specs> memories;
+        std::vector<emulator::emulator_input_specs> input;
+        uint32_t sampling_frequency;
+        uint32_t execution_order;
+        uint32_t active_channels;
+        efi_implementation_t efi_selector;
+        comparator_type_t comparator_type;
+    };
 }
 
-#endif //FCORE_TOOLCHAIN_EMULATOR_METADATA_HPP
+#endif //PROGRAM_BUNDLE_HPP
