@@ -139,19 +139,19 @@ namespace fcore {
                                             const std::string &dst_core, bool enabled) {
         switch (c.type) {
             case emulator::dma_link_scalar:
-                run_scalar_transfer(c, src_core, src_core, enabled);
+                run_scalar_transfer(c, src_core, dst_core, enabled);
                 break;
             case emulator::dma_link_scatter:
-                run_scatter_transfer(c, src_core, src_core, enabled);
+                run_scatter_transfer(c, src_core, dst_core, enabled);
                 break;
             case emulator::dma_link_gather:
-                run_gather_transfer(c, src_core, src_core, enabled);
+                run_gather_transfer(c, src_core, dst_core, enabled);
                 break;
             case emulator::dma_link_vector:
-                run_vector_transfer(c, src_core, src_core, enabled);
+                run_vector_transfer(c, src_core, dst_core, enabled);
                 break;
             case emulator::dma_link_2d_vector:
-                run_2d_vector_transfer(c, src_core, src_core, enabled);
+                run_2d_vector_transfer(c, src_core, dst_core, enabled);
                 break;
         }
     }
