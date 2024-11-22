@@ -18,6 +18,7 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <map>
 #include <spdlog/spdlog.h>
 
 #include "emulator/backend/emulator_backend.hpp"

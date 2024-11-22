@@ -29,11 +29,6 @@
 
 namespace fcore {
 
-    struct fcore_program{
-        std::vector<uint32_t> binary;
-        struct program_info program_length;
-    };
-
     class emulator_builder {
     public:
         emulator_builder(bool dbg);

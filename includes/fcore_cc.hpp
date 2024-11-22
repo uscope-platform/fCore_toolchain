@@ -32,39 +32,9 @@
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "instrumentation/instrumentation_core.hpp"
+#include "data_structures/common/program_metadata.hpp"
 
 namespace fcore {
-
-    struct core_info {
-        uint32_t n_channels = 11;
-        uint32_t efi_lenght = 13;
-        uint32_t load_overhead = 2;
-        uint32_t stop_duration = 1;
-        uint32_t fixed_core_overhead = 4;
-    };
-
-    struct program_info {
-        uint32_t fixed_portion;
-        uint32_t per_channel_portion;
-    };
-
-    typedef enum {
-        core_iom_input = 0,
-        core_iom_output = 1,
-        core_iom_memory = 2
-    } core_iom_type;
-
-    static std::unordered_map<std::string, core_iom_type> core_iom_type_translator = {
-            {"input", core_iom_input},
-            {"output", core_iom_output},
-            {"memory", core_iom_memory}
-    };
-
-    struct core_iom {
-        core_iom_type type;
-        std::vector<uint32_t> address;
-        bool common_io;
-    };
 
 
     typedef std::unordered_map<std::string, std::vector<io_map_entry>> io_map;

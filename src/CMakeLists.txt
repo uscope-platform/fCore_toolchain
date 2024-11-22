@@ -32,7 +32,6 @@ set(FCORE_COMMON_SRCS_I
         instrumentation/instrumentation_core.cpp
         data_structures/high_level_ast/hl_code_block.cpp
         passes/high_level/infrastructure/hl_ast_visitor.cpp
-        ../includes/data_structures/emulation/program_bundle.hpp
 )
 
 
@@ -106,6 +105,7 @@ set(FCORE_EMU_SRCS
         emulator/emulator_manager.cpp
         emulator/emulator_runner.cpp
         emulator/backend/multirate_io_repeater.cpp
+        emulator/interconnect_manager.cpp
         )
 
 

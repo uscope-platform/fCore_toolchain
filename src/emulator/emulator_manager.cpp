@@ -22,6 +22,7 @@ namespace fcore {
     emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg) :
     emu_spec(spec){
         debug_autogen = dbg;
+        emulators_memory = std::make_shared<std::unordered_map<std::string, core_memory_pool_t>>();
 
     }
 
@@ -95,7 +96,10 @@ namespace fcore {
 
     void emulator_manager::emulate() {
         allocate_memory();
-        output_repeater.clear();
+        ic_manager.clear_repeater();
+
+        ic_manager.set_program_bundle(programs);
+        ic_manager.set_emulator_memory(emulators_memory);
         run_cores();
     }
 
@@ -122,7 +126,7 @@ namespace fcore {
 
                 outputs_manager.process_outputs(
                         core.id,
-                        emulators_memory[core.id],
+                        emulators_memory->at(core.id),
                         core.running,
                         sel_prog.active_channels,
                         sel_prog.io
@@ -182,7 +186,7 @@ namespace fcore {
                         if(in.source_type != emulator::constant_input || in.channel.size()!=1){
                             sel_ch = in.channel[channel];
                         }
-                        emulators_memory[info.id][sel_ch]->at(core_reg) = input_val;
+                        emulators_memory->at(info.id)[sel_ch]->at(core_reg) = input_val;
                     }
                 }
             }
@@ -199,7 +203,7 @@ namespace fcore {
                 backend.set_program(emulator_builder::sanitize_program(prog.program.binary));
                 backend.set_efi_selector(prog.efi_selector);
                 backend.set_comparator_type(prog.comparator_type);
-                backend.run_round(emulators_memory[info.id][channel], common_io_memory[info.id]);
+                backend.run_round(emulators_memory->at(info.id)[channel], common_io_memory[info.id]);
             }
     }
 
@@ -207,26 +211,8 @@ namespace fcore {
 
         for(auto &conn:specs){
             if(info.id == conn.source_core_id){
-
                 for(auto &ch:conn.channels){
-
-                    switch (ch.type) {
-                        case emulator::dma_link_scalar:
-                            run_scalar_transfer(ch, conn.source_core_id, conn.destination_core_id, enabled_cores[conn.source_core_id]);
-                            break;
-                        case emulator::dma_link_scatter:
-                            run_scatter_transfer(ch, conn.source_core_id, conn.destination_core_id, enabled_cores[conn.source_core_id]);
-                            break;
-                        case emulator::dma_link_gather:
-                            run_gather_transfer(ch, conn.source_core_id, conn.destination_core_id, enabled_cores[conn.source_core_id]);
-                            break;
-                        case emulator::dma_link_vector:
-                            run_vector_transfer(ch, conn.source_core_id, conn.destination_core_id, enabled_cores[conn.source_core_id]);
-                            break;
-                        case emulator::dma_link_2d_vector:
-                            run_2d_vector_transfer(ch, conn.source_core_id, conn.destination_core_id, enabled_cores[conn.source_core_id]);
-                            break;
-                    }
+                    ic_manager.run_transfer(ch, conn.source_core_id, conn.destination_core_id, enabled_cores[conn.source_core_id]);
                 }
             }
         }
@@ -252,7 +238,7 @@ namespace fcore {
 
 
     std::shared_ptr<std::vector<uint32_t>> emulator_manager::get_memory_snapshot(const std::string &core_id, int channel) {
-        return emulators_memory[core_id][channel];
+        return emulators_memory->at(core_id)[channel];
     }
 
     std::unordered_map<unsigned int, uint32_t>
@@ -294,7 +280,7 @@ namespace fcore {
             for(int i = 0; i<item.active_channels; i++){
                 pool[i] = std::make_shared<std::vector<uint32_t>>(2 << (fcore_register_address_width - 1), 0);
             }
-            emulators_memory[item.name] = pool;
+            emulators_memory->insert({item.name, pool});
 
             common_io_memory[item.name] = std::make_shared<std::vector<uint32_t>>(32, 0);
 
@@ -302,123 +288,10 @@ namespace fcore {
 
             for(auto &init_val: mem){
                 // TODO: Add support for per channel initialization
-                for(const auto& reg_file:emulators_memory[item.name]){
+                for(const auto& reg_file:emulators_memory->at(item.name)){
                     reg_file.second->at(init_val.first) = init_val.second;
                 }
             }
-        }
-    }
-
-    void emulator_manager::run_scalar_transfer(
-            const emulator::dma_channel &c,
-            const std::string &src_core,
-            const std::string &dst_core,
-            bool enabled
-    ) {
-        spdlog::trace("SCALAR TRANSFER");
-        auto src_addr = translate_address(src_core, c.source.address[0], 0);
-        auto dst_addr = translate_address(dst_core, c.destination.address[0], 0);
-
-        transfer_register(src_core, dst_core, src_addr, dst_addr, 0, 0, enabled);
-
-    }
-
-    void emulator_manager::run_scatter_transfer(
-            const emulator::dma_channel &c,
-            const std::string &src_core,
-            const std::string &dst_core,
-            bool enabled
-            ) {
-        spdlog::trace("SCATTER TRANSFER");
-        for(int i = 0; i<c.length; i++){
-            auto src_addr = translate_address(src_core, c.source.address[0], i);
-            auto dst_addr = translate_address(dst_core, c.destination.address[0], 0);
-
-            transfer_register(src_core, dst_core, src_addr, dst_addr, 0, i, enabled);
-        }
-    }
-
-    void emulator_manager::run_gather_transfer(
-            const emulator::dma_channel &c,
-            const std::string &src_core,
-            const std::string &dst_core,
-            bool enabled
-            ) {
-
-        spdlog::trace("GATHER TRANSFER");
-        for(int i = 0; i<c.length; i++){
-            auto src_addr = translate_address(src_core, c.source.address[0], 0);
-            auto dst_addr = translate_address(dst_core, c.destination.address[0], i);
-
-            transfer_register(src_core, dst_core, src_addr, dst_addr, i, 0, enabled);
-        }
-    }
-
-    void emulator_manager::run_vector_transfer(
-            const emulator::dma_channel &c,
-            const std::string &src_core,
-            const std::string &dst_core,
-            bool enabled
-            ) {
-        spdlog::trace("VECTOR TRANSFER");
-        for(int i = 0; i<c.length; i++){
-            auto src_addr = translate_address(src_core, c.source.address[0], 0);
-            auto dst_addr = translate_address(dst_core, c.destination.address[0], 0);
-
-            transfer_register(src_core, dst_core, src_addr, dst_addr, i, i, enabled);
-        }
-    }
-
-    void emulator_manager::run_2d_vector_transfer(
-            const emulator::dma_channel &c,
-            const std::string &src_core,
-            const std::string &dst_core,
-            bool enabled
-            ) {
-        spdlog::trace("2D VECTOR TRANSFER");
-        for(int j = 0; j<c.stride; j++){
-            for(int i = 0; i<c.length; i++){
-                auto src_addr = translate_address(src_core, c.source.address[0] + j, 0);
-                auto dst_addr = translate_address(dst_core, c.destination.address[0]+ j, 0);
-
-                transfer_register(src_core, dst_core, src_addr, dst_addr, i, i, enabled);
-            }
-        }
-    }
-
-    void emulator_manager::transfer_register(const std::string& src_core, const std::string& dst_core,
-                                             uint32_t src_addr, uint32_t dst_addr,
-                                             uint32_t src_channel, uint32_t dst_channel,
-                                             bool src_enabled) {
-
-        spdlog::trace("REGISTER TO REGISTER TRANSFER: source {0} | target {1} | source pair ({2}, {3}) | target pair ({4}, {5})", src_core,dst_core, src_channel,src_addr, dst_channel,dst_addr);
-
-        if(dst_channel>=emulators_memory[dst_core].size()){
-            throw std::runtime_error("Attempted write to unavailable channel: " + std::to_string(dst_channel) + " of core: " + dst_core);
-        }
-        if(src_enabled){
-            if(src_channel>=emulators_memory[src_core].size()){
-                throw std::runtime_error("Attempted read from unavailable channel: " + std::to_string(src_channel) + " of core: " + src_core);
-            }
-            auto val = emulators_memory[src_core][src_channel]->at(src_addr);
-            output_repeater.add_output(src_core, src_addr,src_channel, val);
-             emulators_memory[dst_core][dst_channel]->at(dst_addr) = val;
-        } else {
-            auto val = output_repeater.get_output(src_core, src_addr, src_channel);
-            emulators_memory[dst_core][dst_channel]->at(dst_addr) = val;
-        }
-    }
-
-    uint32_t emulator_manager::translate_address(const std::string& core_id, uint32_t io_addr, uint32_t offset) {
-
-        auto bundle =get_bundle_by_name(core_id);
-
-        if(auto a = io_map_entry::get_io_map_entry_by_io_addr(bundle.io, io_addr + offset)){
-            auto core_addr = a->core_addr;
-            spdlog::trace("ADDRESS TRANSLATION: core {0} | io address {1} | core address {2}", core_id, io_addr + offset, core_addr);
-            return core_addr;
-        } else{
-            throw std::runtime_error("Unable to find io address " + std::to_string(io_addr + offset) + " in the source address map for core: " + core_id);
         }
     }
 

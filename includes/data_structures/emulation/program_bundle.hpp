@@ -22,7 +22,12 @@
 #include <set>
 #include <cstdint>
 
+#include "data_structures/common/io_map_entry.hpp"
+#include "data_structures/emulation/emulator_metadata.hpp"
+#include "data_structures/emulation/specs/emulator_specs.hpp"
+
 namespace fcore {
+
     class program_bundle{
     public:
         std::string name;

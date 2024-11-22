@@ -21,6 +21,8 @@
 #include <unordered_map>
 #include <memory>
 
+#include "data_structures/common/program_metadata.hpp"
+
 namespace fcore{
 
 // FORWARD DECLARATIONS
