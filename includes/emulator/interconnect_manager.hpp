@@ -31,6 +31,10 @@ namespace fcore {
 
         void clear_repeater();
 
+        void run_interconnect(const emulator::emulator_interconnect &ic, std::unordered_map<std::string, bool> enabled_cores);
+
+    private:
+
         void run_transfer(const emulator::dma_channel &c, const std::string &src_core, const std::string &dst_core,bool enabled);
         void run_scalar_transfer(const emulator::dma_channel &c, const std::string &src_core, const std::string &dst_core,bool enabled);
         void run_scatter_transfer(const emulator::dma_channel &c, const std::string &src_core, const std::string &dst_core,bool enabled);
@@ -41,9 +45,9 @@ namespace fcore {
         uint32_t translate_address(const std::string& core_id, uint32_t io_addr, uint32_t offset);
 
         void transfer_register(const std::string& src_core, const std::string& dst_core,
-            uint32_t src_addr, uint32_t dst_addr,
-            uint32_t src_channel, uint32_t dst_channel,
-            bool src_enabled
+                               uint32_t src_addr, uint32_t dst_addr,
+                               uint32_t src_channel, uint32_t dst_channel,
+                               bool src_enabled
         );
 
         program_bundle get_bundle_by_name(const std::string& name){
@@ -55,7 +59,7 @@ namespace fcore {
             throw std::runtime_error("Program bundle with name: " + name + " not found");
         }
 
-    private:
+
         std::vector<program_bundle> programs;
         multirate_io_repeater output_repeater;
         std::shared_ptr<std::unordered_map<std::string, core_memory_pool_t>> emulators_memory;

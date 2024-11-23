@@ -121,7 +121,7 @@ namespace fcore {
                         inputs_phase(core, sel_prog, j);
                         execution_phase(core, sel_prog, j);
                     }
-                    interconnects_phase(emu_spec.interconnects, core, sequencer.get_enabled_cores());
+                    interconnects_phase(emu_spec.interconnects, core);
                 }
 
                 outputs_manager.process_outputs(
@@ -207,13 +207,11 @@ namespace fcore {
             }
     }
 
-    void emulator_manager::interconnects_phase(const std::vector<emulator::emulator_interconnect> &specs, const core_step_metadata& info, std::unordered_map<std::string, bool> enabled_cores) {
+    void emulator_manager::interconnects_phase(const std::vector<emulator::emulator_interconnect> &specs, const core_step_metadata& info) {
 
         for(auto &conn:specs){
             if(info.id == conn.source_core_id){
-                for(auto &ch:conn.channels){
-                    ic_manager.run_transfer(ch, conn.source_core_id, conn.destination_core_id, enabled_cores[conn.source_core_id]);
-                }
+                ic_manager.run_interconnect(conn, sequencer.get_enabled_cores());
             }
         }
     }

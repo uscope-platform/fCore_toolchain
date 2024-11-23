@@ -18,6 +18,11 @@
 
 namespace fcore {
 
+    void interconnect_manager::run_interconnect(const emulator::emulator_interconnect &ic, std::unordered_map<std::string, bool> enabled_cores) {
+        for(auto &ch:ic.channels){
+            run_transfer(ch, ic.source_core_id, ic.destination_core_id, enabled_cores[ic.source_core_id]);
+        }
+    }
 
 
     void interconnect_manager::run_scalar_transfer(
@@ -159,5 +164,6 @@ namespace fcore {
     void interconnect_manager::clear_repeater() {
         output_repeater.clear();
     }
+
 
 }
