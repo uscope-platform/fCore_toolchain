@@ -17,23 +17,35 @@
 #ifndef FCORE_TOOLCHAIN_EMULATOR_RUNNER_HPP
 #define FCORE_TOOLCHAIN_EMULATOR_RUNNER_HPP
 
-#include "emulator/emulation_sequencer.hpp"
-#include "emulator/backend/emulation_outputs_manager.hpp"
-#include "emulator/backend/multirate_io_repeater.hpp"
+#include "emulator/backend/emulator_backend.hpp"
+#include "emulation_sequencer.hpp"
+#include "data_structures/emulation/program_bundle.hpp"
+#include "emulator_builder.hpp"
 
 namespace fcore {
 
     class emulator_runner {
     public:
+
+        emulator_runner(program_bundle &prog);
+
+        void set_common_io(std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>> &cm) {common_io_memory = cm;};
+        void set_emulators_memory(std::shared_ptr<std::unordered_map<std::string, core_memory_pool_t>> &sm) {emulators_memory = sm;};
+
+        void inputs_phase(const core_step_metadata& info, uint32_t  channel);
+        void emulate(uint32_t  channel);
     private:
-        void inputs_phase(const core_step_metadata& info);
-        void execution_phase(const core_step_metadata& info);
-        void interconnects_phase(const core_step_metadata& info, std::unordered_map<std::string, bool> enabled_cores);
 
+        static std::vector<uint32_t> sanitize_program(const std::vector<uint32_t>&  raw_prog);
+        static constexpr uint16_t code_section_index = 3;
 
-        multirate_io_repeater output_repeater;
-        emulation_sequencer sequencer;
-        emulation_outputs_manager outputs_manager;
+        program_bundle program;
+        std::string core_name;
+
+        std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>> common_io_memory;
+        std::shared_ptr<std::unordered_map<std::string, core_memory_pool_t>> emulators_memory;
+
+        emulator_backend backend;
     };
 
 } // fcore

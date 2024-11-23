@@ -23,7 +23,7 @@ namespace fcore {
     emu_spec(spec){
         debug_autogen = dbg;
         emulators_memory = std::make_shared<std::unordered_map<std::string, core_memory_pool_t>>();
-
+        common_io_memory = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
     }
 
     void emulator_manager::process() {
@@ -57,6 +57,13 @@ namespace fcore {
         sequencer.setup_run(emu_spec.emulation_time);
 
         check_bus_duplicates();
+
+        for(auto &p:programs){
+            emulator_runner r(p);
+            r.set_emulators_memory(emulators_memory);
+            r.set_common_io(common_io_memory);
+            runners.insert({p.name, r});
+        }
     }
 
     std::vector<program_bundle> emulator_manager::get_programs() {
@@ -97,7 +104,6 @@ namespace fcore {
     void emulator_manager::emulate() {
         allocate_memory();
         ic_manager.clear_repeater();
-
         ic_manager.set_program_bundle(programs);
         ic_manager.set_emulator_memory(emulators_memory);
         run_cores();
@@ -118,8 +124,8 @@ namespace fcore {
                 auto sel_prog = get_bundle_by_name(core.id);
                 if(!sequencer.is_empty_step()){
                     for(int j = 0; j<sel_prog.active_channels; ++j) {
-                        inputs_phase(core, sel_prog, j);
-                        execution_phase(core, sel_prog, j);
+                        runners.at(core.id).inputs_phase(core, j);
+                        runners.at(core.id).emulate(j);
                     }
                     interconnects_phase(emu_spec.interconnects, core);
                 }
@@ -138,77 +144,7 @@ namespace fcore {
     }
 
 
-    void emulator_manager::inputs_phase(const core_step_metadata& info, program_bundle &prog, uint32_t  channel) {
-
-        // APPLY INPUTS (ONLY WHEN THE EMULATOR IS RUN TO AVOID POTENTIALLY DESTROYING THE OUTPUTS IN MEMORY)
-        if(info.running){
-            for(auto &in:prog.input){
-                uint32_t core_reg = 0;
-                auto io_addr = in.address[0];
-
-                bool is_common;
-                if(auto core_addr = io_map_entry::get_io_map_entry_by_io_addr(prog.io, io_addr)){
-                    core_reg = core_addr->core_addr;
-                    is_common = core_addr->common_io;
-                } else {
-                    throw std::runtime_error("unable to find input address in the core io map during input phase");
-                }
-                if(in.source_type == emulator::external_input) continue;
-
-                if(core_reg != 0){
-                    uint32_t input_val;
-                    if(in.metadata.type==emulator::type_float){
-
-                        if(in.source_type == emulator::constant_input){
-                            float value = std::get<std::vector<float>>(in.data[0])[0];
-                                if(in.data.size() != 1){
-                                    value = std::get<std::vector<float>>(in.data[channel])[0];
-                                }
-                            input_val = emulator_backend::float_to_uint32(value);
-
-                        } else  {
-                            std::vector<float> in_vect = std::get<std::vector<float>>(in.data[channel]);
-                            input_val = emulator_backend::float_to_uint32(in_vect[info.step_n]);
-                        }
-                    } else {
-
-                        std::vector<uint32_t> in_vect = std::get<std::vector<uint32_t>>(in.data[channel]);
-                        if(in.source_type == emulator::constant_input){
-                            input_val = in_vect[0];
-                        } else  {
-                            input_val = in_vect[info.step_n];
-                        }
-                    }
-                    if(is_common){
-                        common_io_memory[info.id]->at(core_reg) = input_val;
-                    } else {
-                        uint32_t sel_ch = channel;
-                        if(in.source_type != emulator::constant_input || in.channel.size()!=1){
-                            sel_ch = in.channel[channel];
-                        }
-                        emulators_memory->at(info.id)[sel_ch]->at(core_reg) = input_val;
-                    }
-                }
-            }
-        }
-
-    }
-
-    void emulator_manager::execution_phase(const core_step_metadata& info, program_bundle &prog, uint32_t  channel) {
-
-            if(info.running){
-                // TODO: implement progress tracing
-
-                backend.set_core_name(info.id);
-                backend.set_program(emulator_builder::sanitize_program(prog.program.binary));
-                backend.set_efi_selector(prog.efi_selector);
-                backend.set_comparator_type(prog.comparator_type);
-                backend.run_round(emulators_memory->at(info.id)[channel], common_io_memory[info.id]);
-            }
-    }
-
     void emulator_manager::interconnects_phase(const std::vector<emulator::emulator_interconnect> &specs, const core_step_metadata& info) {
-
         for(auto &conn:specs){
             if(info.id == conn.source_core_id){
                 ic_manager.run_interconnect(conn, sequencer.get_enabled_cores());
@@ -279,8 +215,7 @@ namespace fcore {
                 pool[i] = std::make_shared<std::vector<uint32_t>>(2 << (fcore_register_address_width - 1), 0);
             }
             emulators_memory->insert({item.name, pool});
-
-            common_io_memory[item.name] = std::make_shared<std::vector<uint32_t>>(32, 0);
+            common_io_memory->insert({item.name, std::make_shared<std::vector<uint32_t>>(32, 0)});
 
             auto mem = io_remap_memory_init(item.memories, item.io);
 
