@@ -169,11 +169,6 @@ namespace fcore {
         return res;
     }
 
-
-    std::shared_ptr<std::vector<uint32_t>> emulator_manager::get_memory_snapshot(const std::string &core_id, int channel) {
-        return emulators_memory->at(core_id)[channel];
-    }
-
     std::unordered_map<unsigned int, uint32_t>
     emulator_manager::io_remap_memory_init(std::vector<emulator::emulator_memory_specs> &mem,
                                                   std::set<io_map_entry> &io_set) {

@@ -42,7 +42,6 @@ namespace fcore{
         void emulate();
         std::unordered_map<std::string, std::string>  disassemble();
 
-        std::shared_ptr<std::vector<uint32_t>> get_memory_snapshot(const std::string &core_id, int channel);
         nlohmann::json get_results();
         std::vector<program_bundle> get_programs();
     private:

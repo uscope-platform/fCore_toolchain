@@ -102,27 +102,27 @@ TEST(Emulator, emulator_inputs) {
     in["source"]["series"] = "input_2";
     spec["cores"][0]["inputs"].push_back(in);
 
-    auto MEM = nlohmann::json();
-    in["name"] = "out";
-    in["metadata"]["type"] = "float";
-    in["metadata"]["width"] = 12;
-    in["metadata"]["signed"] = true;
-    in["reg_n"] = 4;
-    in["is_output"] = true;
-    in["value"] = 0;
-    spec["cores"][0]["memory_init"].push_back(in);
+    auto out = nlohmann::json();
+    out["name"] = "out";
+    out["metadata"]["type"] = "integer";
+    out["metadata"]["width"] = 12;
+    out["metadata"]["signed"] = true;
+    out["reg_n"] = std::vector<uint32_t>({4});
+    out["type"] = "integer";
+    spec["cores"][0]["outputs"].push_back(out);
 
 
     spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_1");
     spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_2");
     spec["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("out");
 
+
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
+    uint32_t res = manager.get_results()["test"]["outputs"]["out"]["0"][0][1];
 
-    ASSERT_EQ(result->at(63), 0x42f070a4);
+    ASSERT_EQ(res, 0x42f070a4);
 
 }
 
@@ -147,7 +147,7 @@ TEST(Emulator, emulator_outputs) {
 TEST(Emulator, emulator_memory) {
 
 
-    auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal + out;}";
+    auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float mem =  internal + mem; float out=mem*1.0;}";
 
 
     auto spec = prepare_spec(program, 2,
@@ -188,7 +188,7 @@ TEST(Emulator, emulator_memory) {
     spec["cores"][0]["inputs"].push_back(in);
 
     auto MEM = nlohmann::json();
-    in["name"] = "out";
+    in["name"] = "mem";
     in["metadata"]["type"] = "float";
     in["metadata"]["width"] = 12;
     in["metadata"]["signed"] = true;
@@ -198,16 +198,27 @@ TEST(Emulator, emulator_memory) {
     spec["cores"][0]["memory_init"].push_back(in);
 
 
+    auto out = nlohmann::json();
+    out["name"] = "out";
+    out["metadata"]["type"] = "integer";
+    out["metadata"]["width"] = 12;
+    out["metadata"]["signed"] = true;
+    out["reg_n"] = std::vector<uint32_t>({12});
+    out["type"] = "integer";
+    spec["cores"][0]["outputs"].push_back(out);
+
     spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_1");
     spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_2");
-    spec["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("out");
+    spec["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("mem");
+    spec["cores"][0]["program"]["build_settings"]["io"]["outputs"].push_back("out");
 
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
-    auto result = manager.get_memory_snapshot("test", 0);
 
-    ASSERT_EQ(result->at(63), 0x42f470a4);
+    uint32_t res = manager.get_results()["test"]["outputs"]["out"]["0"][0][1];
+
+    ASSERT_EQ(res, 0x42f470a4);
 
 }
 
