@@ -251,6 +251,7 @@ const std::string emulator_schema = R"~(
               "title": "Object describing a single emulation output",
               "required": [
                 "reg_n",
+                "type",
                 "metadata",
                 "name"
               ],

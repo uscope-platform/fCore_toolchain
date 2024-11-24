@@ -96,6 +96,7 @@ static nlohmann::json prepare_spec(
         out_obj["metadata"]["type"] = outputs[i].type;
         out_obj["metadata"]["width"] = 32;
         out_obj["metadata"]["signed"] = true;
+        out_obj["type"] = "float";
         out_obj["reg_n"] = {10 + i};
         cs["program"]["build_settings"]["io"]["outputs"].push_back(outputs[i].name);
         cs["outputs"].push_back(out_obj);

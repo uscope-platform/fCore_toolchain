@@ -320,6 +320,7 @@ TEST(Emulator, emulator_header) {
             "outputs": [
                 {
                     "name": "out",
+                    "type": "float",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -423,6 +424,7 @@ TEST(Emulator, emulator_disassemble) {
             "outputs":[
                 {
                     "name":"out",
+                    "type": "float",
                     "metadata": {
                         "type": "float",
                         "width": 32,
@@ -457,6 +459,7 @@ TEST(Emulator, emulator_disassemble) {
             "outputs":[
                 {
                     "name":"out",
+                    "type": "float",
                     "metadata": {
                         "type": "float",
                         "width": 32,
@@ -561,6 +564,7 @@ TEST(Emulator, emulator_multichannel) {
             "outputs": [
                 {
                     "name": "out",
+                    "type": "float",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -702,6 +706,7 @@ TEST(Emulator, emulator_multichannel_input_file) {
             "outputs":[
                 {
                     "name":"out",
+                    "type": "float",
                     "metadata": {
                         "type": "float",
                         "width": 32,
@@ -804,6 +809,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
             "outputs":[
                 {
                     "name":"out",
+                    "type": "float",
                     "metadata": {
                         "type": "float",
                         "width": 32,
@@ -838,6 +844,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
             "outputs":[
                 {
                     "name":"out",
+                    "type": "float",
                     "metadata": {
                         "type": "float",
                         "width": 32,
@@ -947,6 +954,7 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
                 "outputs":[
                     {
                         "name":"out",
+                        "type": "float",
                         "metadata": {
                             "type": "float",
                             "width": 32,
@@ -1031,6 +1039,7 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
                 "outputs":[
                     {
                         "name":"out",
+                        "type": "float",
                         "metadata": {
                             "type": "float",
                             "width": 32,
@@ -1065,6 +1074,7 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
                 "outputs":[
                     {
                         "name":"out",
+                        "type": "float",
                         "metadata": {
                             "type": "float",
                             "width": 32,
@@ -1197,6 +1207,7 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
                 "outputs":[
                     {
                         "name":"out",
+                        "type": "float",
                         "metadata": {
                             "type": "float",
                             "width": 32,
@@ -1303,6 +1314,7 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
                 "outputs":[
                     {
                         "name":"consumer_out",
+                        "type": "float",
                         "metadata": {
                             "type": "float",
                             "width": 32,
@@ -1421,6 +1433,7 @@ TEST(Emulator, emulator_common_io) {
             "outputs": [
                 {
                     "name": "c",
+                    "type": "float",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -1526,6 +1539,7 @@ TEST(Emulator, emulator_multichannel_input) {
                 "outputs":[
                     {
                         "name":"out",
+                        "type": "float",
                         "metadata": {
                             "type": "float",
                             "width": 32,

@@ -75,6 +75,7 @@ namespace fcore::emulator {
 
     struct emulator_output_specs {
         std::string name;
+        register_data_type output_type;
         iom_metadata metadata;
         std::vector<uint32_t> address;
     };

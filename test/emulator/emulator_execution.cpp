@@ -329,7 +329,7 @@ TEST(Emulator_execution, emulator_efi) {
 
     nlohmann::json out_obj;
     out_obj["name"] = "sort_output";
-    out_obj["type"] = "float";
+    out_obj["type"] = "int";
     out_obj["metadata"] = nlohmann::json();
     out_obj["metadata"]["type"] = "float";
     out_obj["metadata"]["width"] = 12;
@@ -344,6 +344,8 @@ TEST(Emulator_execution, emulator_efi) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate();
+
+    auto res_obj = manager.get_results().dump(4);
     auto result = manager.get_memory_snapshot("test", 0);
     ASSERT_EQ(result->at(5), 1);
     ASSERT_EQ(result->at(6), 0);

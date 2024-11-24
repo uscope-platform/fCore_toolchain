@@ -40,7 +40,7 @@
       },
       "order":0,
       "outputs":[
-        {"metadata":{"signed":true,"type":"float","width":32},"name":"out","reg_n":[5]}],
+        {"metadata":{"signed":true,"type":"float","width":32},"type": "float","name":"out","reg_n":[5]}],
       "program":{
         "build_settings":{
           "io":{

@@ -54,6 +54,7 @@ namespace fcore::emulator {
         out.metadata.width = o["metadata"]["width"];
         out.metadata.is_signed = o["metadata"]["signed"];
         out.name = o["name"];
+        out.output_type = data_type_map[o["type"]];
         std::vector<uint32_t> addrs =  o["reg_n"];
         out.address = addrs;
         return out;

@@ -58,6 +58,7 @@
       "outputs": [
         {
           "reg_n":[4],
+          "type": "float",
           "metadata": {
             "type": "integer",
             "width": 15,

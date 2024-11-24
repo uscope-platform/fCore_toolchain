@@ -227,6 +227,7 @@
               "title": "Object describing a single emulation output",
               "required": [
                 "reg_n",
+                "type",
                 "metadata",
                 "name"
               ],

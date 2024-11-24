@@ -77,6 +77,7 @@
       "outputs": [
         {
           "reg_n":[42],
+          "type": "float",
           "metadata": {
             "type": "float",
             "width": 32,
