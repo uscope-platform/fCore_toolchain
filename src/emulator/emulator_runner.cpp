@@ -43,7 +43,7 @@ namespace fcore {
         return program;
     }
 
-    void emulator_runner::emulate(uint32_t channel) {
+    void emulator_runner::emulation_phase(uint32_t channel) {
         backend.run_round(emulators_memory->at(core_name)[channel], common_io_memory->at(core_name));
     }
 

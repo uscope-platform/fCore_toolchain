@@ -27,13 +27,13 @@ namespace fcore {
     class emulator_runner {
     public:
 
-        emulator_runner(program_bundle &prog);
+        explicit emulator_runner(program_bundle &prog);
 
         void set_common_io(std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>> &cm) {common_io_memory = cm;};
         void set_emulators_memory(std::shared_ptr<std::unordered_map<std::string, core_memory_pool_t>> &sm) {emulators_memory = sm;};
 
         void inputs_phase(const core_step_metadata& info, uint32_t  channel);
-        void emulate(uint32_t  channel);
+        void emulation_phase(uint32_t  channel);
     private:
 
         static std::vector<uint32_t> sanitize_program(const std::vector<uint32_t>&  raw_prog);

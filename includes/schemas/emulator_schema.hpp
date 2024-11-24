@@ -578,7 +578,7 @@ const std::string emulator_schema = R"~(
     },
     "emulation_time": {
       "type": "number",
-      "title": "Length of time to emulate"
+      "title": "Length of time to emulation_phase"
     },
     "deployment_mode": {
       "type": "boolean",
