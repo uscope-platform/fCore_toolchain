@@ -94,6 +94,10 @@ namespace fcore {
         } else {
             throw std::runtime_error("unable to find input address in the core io map during input phase");
         }
+
+        if(emulators_memory->at(core_name).size()< channel+1){
+            throw std::runtime_error("Attempted read from unavailable channel: " + std::to_string(channel) + " of core: " + core_name);
+        }
         if(is_common){
             return common_io_memory->at(core_name)->at(core_reg);
         } else {
@@ -113,6 +117,9 @@ namespace fcore {
             is_common = core_addr->common_io;
         } else {
             throw std::runtime_error("unable to find input address in the core io map during input phase");
+        }
+        if(emulators_memory->at(core_name).size()< channel+1){
+            throw std::runtime_error("Attempted write to unavailable channel: " + std::to_string(channel) + " of core: " + core_name);
         }
         if(core_reg != 0) {
             if (is_common) {
