@@ -105,8 +105,7 @@ namespace fcore {
     void emulator_manager::emulate() {
         allocate_memory();
         ic_manager.clear_repeater();
-        ic_manager.set_program_bundle(programs);
-        ic_manager.set_emulator_memory(emulators_memory);
+        ic_manager.set_runners(runners);
         outputs_manager.set_runners(runners);
         run_cores();
     }
