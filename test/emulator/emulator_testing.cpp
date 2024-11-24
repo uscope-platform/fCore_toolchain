@@ -141,6 +141,75 @@ TEST(Emulator, emulator_outputs) {
 
 }
 
+
+TEST(Emulator, emulator_memory) {
+
+
+    auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal + out;}";
+
+
+    auto spec = prepare_spec(program, 2,
+                             {}, {},{});
+
+
+    spec["cores"][0]["efi_implementation"] = "efi_sort";
+    spec["cores"][0]["input_data"] = std::vector<nlohmann::json>();
+    spec["cores"][0]["input_data"].push_back(nlohmann::json());
+    spec["cores"][0]["input_data"][0]["name"] = "data_file_1";
+    spec["cores"][0]["input_data"][0]["data"] = nlohmann::json();
+    spec["cores"][0]["input_data"][0]["data"]["input_1"] = {15.7,67.4};
+    spec["cores"][0]["input_data"][0]["data"]["input_2"] = {42.92,-5.8};
+    spec["cores"][0]["inputs"] = std::vector<nlohmann::json>();
+
+    auto in = nlohmann::json();
+    in["name"] = "input_1";
+
+    in["metadata"] = nlohmann::json();
+    in["metadata"]["type"] = "float";
+    in["metadata"]["width"] = 12;
+    in["metadata"]["signed"] = true;
+    in["metadata"]["common_io"] = false;
+    in["reg_n"] = 1;
+    in["source"] = nlohmann::json();
+    in["source"]["type"] = "file";
+    in["source"]["file"] = "data_file_1";
+    in["source"]["series"] = "input_1";
+    in["channel"] = 0;
+    spec["cores"][0]["inputs"].push_back(in);
+
+    in["name"] = "input_2";
+    in["reg_n"] = 2;
+    in["source"] = nlohmann::json();
+    in["source"]["type"] = "file";
+    in["source"]["file"] = "data_file_1";
+    in["source"]["series"] = "input_2";
+    spec["cores"][0]["inputs"].push_back(in);
+
+    auto MEM = nlohmann::json();
+    in["name"] = "out";
+    in["metadata"]["type"] = "float";
+    in["metadata"]["width"] = 12;
+    in["metadata"]["signed"] = true;
+    in["reg_n"] = 4;
+    in["is_output"] = true;
+    in["value"] = 2;
+    spec["cores"][0]["memory_init"].push_back(in);
+
+
+    spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_1");
+    spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_2");
+    spec["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("out");
+
+    emulator_manager manager(spec, false);
+    manager.process();
+    manager.emulate();
+    auto result = manager.get_memory_snapshot("test", 0);
+
+    ASSERT_EQ(result->at(63), 0x42f470a4);
+
+}
+
+
 TEST(Emulator, emulator_inteconnect) {
 
     std::ifstream ifs("emu/test_interconnect_spec.json");
