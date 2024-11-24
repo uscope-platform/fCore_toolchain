@@ -22,8 +22,6 @@ namespace fcore {
     emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg) :
     emu_spec(spec){
         debug_autogen = dbg;
-        emulators_memory = std::make_shared<std::unordered_map<std::string, core_memory_pool_t>>();
-        common_io_memory = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
         runners = std::make_shared<std::unordered_map<std::string, emulator_runner>>();
     }
 
@@ -61,8 +59,6 @@ namespace fcore {
 
         for(auto &p:programs){
             emulator_runner r(p);
-            r.set_emulators_memory(emulators_memory);
-            r.set_common_io(common_io_memory);
             runners->insert({p.name, r});
         }
     }
@@ -103,7 +99,6 @@ namespace fcore {
     }
 
     void emulator_manager::emulate() {
-        allocate_memory();
         ic_manager.clear_repeater();
         ic_manager.set_runners(runners);
         outputs_manager.set_runners(runners);
@@ -169,56 +164,11 @@ namespace fcore {
         return res;
     }
 
-    std::unordered_map<unsigned int, uint32_t>
-    emulator_manager::io_remap_memory_init(std::vector<emulator::emulator_memory_specs> &mem,
-                                                  std::set<io_map_entry> &io_set) {
-        std::unordered_map<unsigned int, uint32_t> ret;
-
-        for(auto &item: mem){
-            uint32_t io_address = item.address[0];
-            uint32_t core_address;
-            if(auto a = io_map_entry::get_io_map_entry_by_io_addr(io_set, io_address)){
-                core_address = a->core_addr;
-            } else {
-                throw std::runtime_error("unable to find input address in the core io map during memory initialization phase");
-            }
-            if(item.metadata.type == emulator::type_float){
-                auto values = std::get<std::vector<float>>(item.value);
-                ret[core_address] = emulator_backend::float_to_uint32(values[0]);
-            } else {
-                auto values = std::get<std::vector<uint32_t>>(item.value);
-                ret[core_address] = values[0];
-            }
-        }
-
-        return ret;
-    }
 
     void emulator_manager::check_bus_duplicates() {
         if(bus_map.check_duplicates()){
             auto duplicates = bus_map.get_duplicates().dump();
             throw std::domain_error(duplicates);
-        }
-    }
-
-    void emulator_manager::allocate_memory() {
-
-        for(auto &item:programs){
-            core_memory_pool_t pool;
-            for(int i = 0; i<item.active_channels; i++){
-                pool[i] = std::make_shared<std::vector<uint32_t>>(2 << (fcore_register_address_width - 1), 0);
-            }
-            emulators_memory->insert({item.name, pool});
-            common_io_memory->insert({item.name, std::make_shared<std::vector<uint32_t>>(32, 0)});
-
-            auto mem = io_remap_memory_init(item.memories, item.io);
-
-            for(auto &init_val: mem){
-                // TODO: Add support for per channel initialization
-                for(const auto& reg_file:emulators_memory->at(item.name)){
-                    reg_file.second->at(init_val.first) = init_val.second;
-                }
-            }
         }
     }
 

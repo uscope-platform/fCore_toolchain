@@ -25,6 +25,24 @@ namespace fcore {
         backend.set_program(sanitize_program(prog.program.binary));
         backend.set_efi_selector(prog.efi_selector);
         backend.set_comparator_type(prog.comparator_type);
+
+        for(int i = 0; i<prog.active_channels; i++){
+            emulators_memory[i] = std::make_shared<std::vector<uint32_t>>(2 << (fcore_register_address_width - 1), 0);
+        }
+
+
+        for(auto &init_val: prog.memories){
+            for(int i = 0; i< prog.active_channels; i++){
+                if(std::holds_alternative<std::vector<float>>(init_val.value)){
+                    float val =  emulator_backend::float_to_uint32(std::get<std::vector<float>>(init_val.value)[0]);
+                    dma_write(init_val.address[0], i, val);
+                } else {
+                    uint32_t val =  std::get<std::vector<uint32_t>>(init_val.value)[0];
+                    dma_write(init_val.address[0], i, val);
+                }
+            }
+        }
+
         core_name = prog.name;
     }
 
@@ -44,7 +62,7 @@ namespace fcore {
     }
 
     void emulator_runner::emulation_phase(uint32_t channel) {
-        backend.run_round(emulators_memory->at(core_name)[channel], common_io_memory->at(core_name));
+        backend.run_round(emulators_memory[channel], common_io_memory);
     }
 
     void emulator_runner::inputs_phase(const core_step_metadata &info, uint32_t channel) {
@@ -95,14 +113,14 @@ namespace fcore {
             throw std::runtime_error("unable to find input address in the core io map during input phase");
         }
 
-        if(emulators_memory->at(core_name).size()< channel+1){
+        if(emulators_memory.size()< channel+1){
             throw std::runtime_error("Attempted read from unavailable channel: " + std::to_string(channel) + " of core: " + core_name);
         }
         if(is_common){
-            return common_io_memory->at(core_name)->at(core_reg);
+            return common_io_memory->at(core_reg);
         } else {
 
-            return  emulators_memory->at(core_name)[channel]->at(core_reg);
+            return  emulators_memory[channel]->at(core_reg);
         }
 
     }
@@ -118,14 +136,14 @@ namespace fcore {
         } else {
             throw std::runtime_error("unable to find input address in the core io map during input phase");
         }
-        if(emulators_memory->at(core_name).size()< channel+1){
+        if(emulators_memory.size()< channel+1){
             throw std::runtime_error("Attempted write to unavailable channel: " + std::to_string(channel) + " of core: " + core_name);
         }
         if(core_reg != 0) {
             if (is_common) {
-                common_io_memory->at(core_name)->at(core_reg) = data;
+                common_io_memory->at(core_reg) = data;
             } else {
-                emulators_memory->at(core_name)[channel]->at(core_reg) = data;
+                emulators_memory[channel]->at(core_reg) = data;
             }
         }
 

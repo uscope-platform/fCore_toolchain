@@ -46,9 +46,7 @@ namespace fcore{
         std::vector<program_bundle> get_programs();
     private:
         void check_bus_duplicates();
-        std::unordered_map<unsigned int, uint32_t> io_remap_memory_init(std::vector<emulator::emulator_memory_specs> &mem,
-                                                                        std::set<io_map_entry> &io_map);
-        void allocate_memory();
+
         void run_cores();
 
         void interconnects_phase(const std::vector<emulator::emulator_interconnect> &specs, const core_step_metadata& info);
@@ -73,8 +71,6 @@ namespace fcore{
         interconnect_manager ic_manager;
 
         std::vector<program_bundle> programs;
-        std::shared_ptr<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>> common_io_memory;
-        std::shared_ptr<std::unordered_map<std::string, core_memory_pool_t>> emulators_memory;
 
         std::shared_ptr<instrumentation_core> profiler;
 

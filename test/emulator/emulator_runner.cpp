@@ -70,17 +70,6 @@ TEST(Emulator_runner, run_simple_emulator) {
 
     emulator_runner uut(bundle);
 
-    core_memory_pool_t pool;
-    for(int i = 0; i<1; i++){
-        pool[i] = std::make_shared<std::vector<uint32_t>>(2 << (fcore_register_address_width - 1), 0);
-    }
-
-    common_memory->insert({"test_prog", std::make_shared<std::vector<uint32_t>>(32, 0)});
-    emulators_memory->insert({"test_prog", pool});
-
-    uut.set_emulators_memory(emulators_memory);
-    uut.set_common_io(common_memory);
-
     core_step_metadata m;
     m.id = "test_prog";
     m.running = true;
@@ -102,16 +91,6 @@ TEST(Emulator_runner, run_simple_emulator_inputs) {
     bundle.input.clear();
     emulator_runner uut(bundle);
 
-    core_memory_pool_t pool;
-    for(int i = 0; i<1; i++){
-        pool[i] = std::make_shared<std::vector<uint32_t>>(2 << (fcore_register_address_width - 1), 0);
-    }
-
-    common_memory->insert({"test_prog", std::make_shared<std::vector<uint32_t>>(32, 0)});
-    emulators_memory->insert({"test_prog", pool});
-
-    uut.set_emulators_memory(emulators_memory);
-    uut.set_common_io(common_memory);
 
     core_step_metadata m;
     m.id = "test_prog";
