@@ -17,18 +17,18 @@
 #include "data_structures/emulation/emulator_output.hpp"
 namespace fcore{
 
-    emulator_output::emulator_output(const std::string& output_name, uint32_t size, uint32_t n_channels) {
+    emulator_output::emulator_output(const emulator::emulator_output_specs &s, uint32_t n_channels) {
         for(int i=0; i<n_channels; i++){
-            if(size == 1){
-                id[i] = {output_name};
+            if(s.address.size() == 1){
+                id[i] = {s.name};
                 data[i].emplace_back();
             } else {
-                for(int n = 0; n<size; n++){
-                    id[i].push_back(output_name + std::to_string(n));
+                for(int n = 0; n<s.address.size(); n++){
+                    id[i].push_back(s.name + std::to_string(n));
                     data[i].emplace_back();
                 }
             }
-            vector_size = size;
+            vector_size = s.address.size();
         }
     }
 

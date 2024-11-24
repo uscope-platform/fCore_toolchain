@@ -108,7 +108,7 @@
       "outputs": [
         {
           "reg_n":[8],
-          "type": "float",
+          "type": "integer",
           "metadata": {
             "type": "integer",
             "width": 32,
@@ -156,7 +156,7 @@
           "name": "interconnect_name",
           "type": "scalar_transfer",
           "length": 1,
-          "source_output": "test_out",
+          "source_output": "producer_out",
           "source": {
             "channel": 0,
             "register": 4

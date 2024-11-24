@@ -52,7 +52,7 @@ namespace fcore {
         }
 
         for(auto &ic:emu_spec.interconnects){
-            outputs_manager.add_interconnect_outputs(ic);
+            outputs_manager.add_interconnect_outputs(ic, emu_spec.cores);
         }
 
         sequencer.setup_run(emu_spec.emulation_time);

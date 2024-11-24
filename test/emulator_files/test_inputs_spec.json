@@ -60,7 +60,7 @@
           "reg_n":[4],
           "type": "float",
           "metadata": {
-            "type": "integer",
+            "type": "float",
             "width": 16,
             "signed": true
           },
@@ -68,7 +68,7 @@
         }
       ],
       "program":{
-        "content": "void main(){float input_1,input_2; float c = input_1 + input_2; float test_out = test_out + c;}",
+        "content": "void main(){float input_1,input_2; float c = input_1 + input_2; float test_out = test_out + c; float out = test_out*1.0;}",
         "build_settings": {
           "io": {
             "inputs": [
@@ -76,6 +76,7 @@
               "input_2"
             ],
             "outputs": [
+              "out"
             ],
             "memories": [
               "test_out"

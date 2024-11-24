@@ -116,8 +116,9 @@ TEST(Emulator_execution, emulator_fti) {
     manager.process();
     manager.emulate();
     auto res_obj = manager.get_results();
-    float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
-    EXPECT_NEAR(result, 2, 1e-6);
+    auto dbg = res_obj.dump();
+    uint32_t result = res_obj["test"]["outputs"]["test"]["0"][0][0];
+    EXPECT_EQ(result, 2);
 }
 
 TEST(Emulator_execution, emulator_and) {
@@ -329,7 +330,7 @@ TEST(Emulator_execution, emulator_efi) {
 
     nlohmann::json out_obj;
     out_obj["name"] = "sort_output";
-    out_obj["type"] = "int";
+    out_obj["type"] = "integer";
     out_obj["metadata"] = nlohmann::json();
     out_obj["metadata"]["type"] = "float";
     out_obj["metadata"]["width"] = 12;
@@ -345,11 +346,11 @@ TEST(Emulator_execution, emulator_efi) {
     manager.process();
     manager.emulate();
 
-    auto res_obj = manager.get_results().dump(4);
-    auto result = manager.get_memory_snapshot("test", 0);
-    ASSERT_EQ(result->at(5), 1);
-    ASSERT_EQ(result->at(6), 0);
-    ASSERT_EQ(result->at(7), 2);
+    auto  res_obj = manager.get_results()["test"]["outputs"]["sort_output"]["0"];
+
+    ASSERT_EQ(res_obj[0][0], 1);
+    ASSERT_EQ(res_obj[1][0], 0);
+    ASSERT_EQ(res_obj[2][0], 2);
 }
 
 

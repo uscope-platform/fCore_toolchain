@@ -21,13 +21,13 @@ namespace fcore{
     void emulation_outputs_manager::add_specs(const std::string& id, const std::vector<emulator::emulator_output_specs>& specs, uint32_t active_channels) {
         for(const auto &spec:specs){
             output_specs[id][spec.name]= spec;
-            auto data = emulator_output(spec.name, spec.address.size(), active_channels);
+            auto data = emulator_output(spec, active_channels);
             data_section[id].insert({spec.name, data});
         }
         output_specs[id];
     }
 
-    void emulation_outputs_manager::add_interconnect_outputs(const emulator::emulator_interconnect &spec) {
+    void emulation_outputs_manager::add_interconnect_outputs(const emulator::emulator_interconnect &spec,const std::vector<emulator::emulator_core> &cores) {
         for(auto &c:spec.channels){
             auto stride = c.stride != 0 ? c.stride : 1;
             auto length = c.length != 0 ? c.length : 1;
@@ -45,13 +45,22 @@ namespace fcore{
                 }
             }
 
+            for(auto &ch:cores){
+                if(ch.id == spec.source_core_id){
+                    for(auto &o:ch.outputs){
+                        if(c.source.io_name == o.name){
+                            out_spec.output_type = o.output_type;
+                        }
+                    }
+                }
+            }
 
-            out_spec.metadata.type = emulator::type_float; // TODO: HANDLE INTEGER Types by linking channels to ios
+            out_spec.metadata.type = emulator::type_float;
             out_spec.metadata.width = 32;
             out_spec.metadata.is_signed = true;
 
             output_specs[spec.source_core_id][c.source.io_name] =  out_spec;
-            auto data = emulator_output(c.source.io_name, stride, length);
+            auto data = emulator_output(out_spec, length);
             data_section[spec.source_core_id].insert({c.source.io_name, data});
         }
     }
@@ -98,9 +107,9 @@ namespace fcore{
         for(auto &s: output_specs[core_id]){
             auto out_data = data_section[core_id].at(s.second.name);
             nlohmann::json output_obj;
-            if(s.second.metadata.type == emulator::type_uint){
+            if(s.second.output_type == emulator::type_uint){
                 res[s.second.name] = out_data.get_integer_data();
-            } else if(s.second.metadata.type == emulator::type_float){
+            } else if(s.second.output_type == emulator::type_float){
                 res[s.second.name] = out_data.get_float_data();
             }
         }

@@ -21,6 +21,7 @@
 #include <map>
 #include <spdlog/spdlog.h>
 
+#include "data_structures/emulation/specs/emulator_specs.hpp"
 #include "emulator/backend/emulator_backend.hpp"
 
 
@@ -30,7 +31,7 @@ namespace fcore{
     class emulator_output {
     public:
         emulator_output() = default;
-        emulator_output(const std::string& id, uint32_t size, uint32_t n_channels);
+        emulator_output(const emulator::emulator_output_specs &s, uint32_t n_channels);
         void set_sampling_period(double per){sampling_period = per;};
         void add_data_point(const std::vector<uint32_t>& dp, uint32_t channel);
         void add_data_point(uint32_t dp, uint32_t channel);

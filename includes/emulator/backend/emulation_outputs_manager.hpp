@@ -34,7 +34,7 @@ namespace fcore{
     public:
         void set_runners(const std::shared_ptr<std::unordered_map<std::string, emulator_runner>> &r){runners = r;};
         void add_specs(const std::string& id, const std::vector<emulator::emulator_output_specs>& specs, uint32_t active_channels);
-        void add_interconnect_outputs(const emulator::emulator_interconnect &spec);
+        void add_interconnect_outputs(const emulator::emulator_interconnect &spec, const std::vector<emulator::emulator_core> &cores);
 
         void process_outputs(const std::string& core_id,
                              bool running,

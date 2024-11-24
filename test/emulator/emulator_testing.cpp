@@ -135,8 +135,10 @@ TEST(Emulator, emulator_outputs) {
     manager.emulate();
     auto res = manager.get_results()["test"];
 
+    auto dbg = manager.get_results().dump(4);
+
     std::vector<float> reference = {58.6199989, 120.220001};
-    std::vector<float> test_out = res["outputs"]["test_out"]["0"][0];
+    std::vector<float> test_out = res["outputs"]["out"]["0"][0];
     ASSERT_EQ(test_out, reference);
 
 }
@@ -899,7 +901,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
     manager.emulate();
 
     auto res_obj = manager.get_results();
-
+    auto dbg = res_obj.dump(4);
     std::vector<float> res = res_obj["test_producer"]["outputs"]["out"]["0"][0];
     ASSERT_FLOAT_EQ(res[0], 62.4);
     res = (std::vector<float>) res_obj["test_producer"]["outputs"]["out"]["1"][0];
