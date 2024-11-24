@@ -34,6 +34,9 @@ namespace fcore {
 
         void inputs_phase(const core_step_metadata& info, uint32_t  channel);
         void emulation_phase(uint32_t  channel);
+
+        uint32_t dma_read(uint32_t address, uint32_t channel);
+        void dma_write(uint32_t address, uint32_t channel, uint32_t data);
     private:
 
         static std::vector<uint32_t> sanitize_program(const std::vector<uint32_t>&  raw_prog);

@@ -24,6 +24,7 @@ namespace fcore {
         debug_autogen = dbg;
         emulators_memory = std::make_shared<std::unordered_map<std::string, core_memory_pool_t>>();
         common_io_memory = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
+        runners = std::make_shared<std::unordered_map<std::string, emulator_runner>>();
     }
 
     void emulator_manager::process() {
@@ -62,7 +63,7 @@ namespace fcore {
             emulator_runner r(p);
             r.set_emulators_memory(emulators_memory);
             r.set_common_io(common_io_memory);
-            runners.insert({p.name, r});
+            runners->insert({p.name, r});
         }
     }
 
@@ -106,6 +107,7 @@ namespace fcore {
         ic_manager.clear_repeater();
         ic_manager.set_program_bundle(programs);
         ic_manager.set_emulator_memory(emulators_memory);
+        outputs_manager.set_runners(runners);
         run_cores();
     }
 
@@ -124,18 +126,16 @@ namespace fcore {
                 auto sel_prog = get_bundle_by_name(core.id);
                 if(!sequencer.is_empty_step()){
                     for(int j = 0; j<sel_prog.active_channels; ++j) {
-                        runners.at(core.id).inputs_phase(core, j);
-                        runners.at(core.id).emulation_phase(j);
+                        runners->at(core.id).inputs_phase(core, j);
+                        runners->at(core.id).emulation_phase(j);
                     }
                     interconnects_phase(emu_spec.interconnects, core);
                 }
 
                 outputs_manager.process_outputs(
                         core.id,
-                        emulators_memory->at(core.id),
                         core.running,
-                        sel_prog.active_channels,
-                        sel_prog.io
+                        sel_prog.active_channels
                 );
             }
 

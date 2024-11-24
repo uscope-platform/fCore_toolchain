@@ -26,40 +26,42 @@
 #include "data_structures/emulation/emulator_metadata.hpp"
 #include "data_structures/common/io_map_entry.hpp"
 
+#include "emulator/emulator_runner.hpp"
+
 namespace fcore{
 
     class emulation_outputs_manager {
     public:
+        void set_runners(const std::shared_ptr<std::unordered_map<std::string, emulator_runner>> &r){runners = r;};
         void add_specs(const std::string& id, const std::vector<emulator::emulator_output_specs>& specs, uint32_t active_channels);
         void add_interconnect_outputs(const emulator::emulator_interconnect &spec);
 
         void process_outputs(const std::string& core_id,
-                             core_memory_pool_t &pool,
                              bool running,
-                             uint32_t active_channels,
-                             std::set<io_map_entry>& io_map
+                             uint32_t active_channels
                              );
 
         void process_scalar_output(
+                std::string core_id,
                 emulator_output &out,
                 const emulator::emulator_output_specs &spec,
-                core_memory_pool_t &pool,
-                uint32_t active_channels,
-                const std::set<io_map_entry>& io_map
+                uint32_t active_channels
         );
 
         void process_vector_output(
+                std::string core_id,
                 emulator_output &out,
                 const emulator::emulator_output_specs &spec,
-                core_memory_pool_t &pool,
-                uint32_t active_channels,
-                const std::set<io_map_entry>& io_map
+                uint32_t active_channels
         );
 
         void set_simulation_frequency(uint32_t freq);
         nlohmann::json get_emulation_output(const std::string& core_id);
         std::vector<double> get_timebase();
     private:
+
+        std::shared_ptr<std::unordered_map<std::string, emulator_runner>> runners;
+
         std::unordered_map<std::string,std::unordered_map<std::string, emulator_output>> data_section;
         std::unordered_map<std::string, std::unordered_map<std::string, emulator::emulator_output_specs>> output_specs;
     };

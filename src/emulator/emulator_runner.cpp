@@ -50,54 +50,78 @@ namespace fcore {
     void emulator_runner::inputs_phase(const core_step_metadata &info, uint32_t channel) {
         if(info.running){
             for(auto &in:program.input){
-                uint32_t core_reg = 0;
-                auto io_addr = in.address[0];
 
-                bool is_common;
-                if(auto core_addr = io_map_entry::get_io_map_entry_by_io_addr(program.io, io_addr)){
-                    core_reg = core_addr->core_addr;
-                    is_common = core_addr->common_io;
+                uint32_t input_val;
+                if(in.metadata.type==emulator::type_float){
+                    if(in.source_type == emulator::constant_input){
+                        float value = std::get<std::vector<float>>(in.data[0])[0];
+                        if(in.data.size() != 1){
+                            value = std::get<std::vector<float>>(in.data[channel])[0];
+                        }
+                        input_val = emulator_backend::float_to_uint32(value);
+
+                    } else  {
+                        std::vector<float> in_vect = std::get<std::vector<float>>(in.data[channel]);
+                        input_val = emulator_backend::float_to_uint32(in_vect[info.step_n]);
+                    }
                 } else {
-                    throw std::runtime_error("unable to find input address in the core io map during input phase");
-                }
-                if(in.source_type == emulator::external_input) continue;
 
-                if(core_reg != 0){
-                    uint32_t input_val;
-                    if(in.metadata.type==emulator::type_float){
-
-                        if(in.source_type == emulator::constant_input){
-                            float value = std::get<std::vector<float>>(in.data[0])[0];
-                            if(in.data.size() != 1){
-                                value = std::get<std::vector<float>>(in.data[channel])[0];
-                            }
-                            input_val = emulator_backend::float_to_uint32(value);
-
-                        } else  {
-                            std::vector<float> in_vect = std::get<std::vector<float>>(in.data[channel]);
-                            input_val = emulator_backend::float_to_uint32(in_vect[info.step_n]);
-                        }
-                    } else {
-
-                        std::vector<uint32_t> in_vect = std::get<std::vector<uint32_t>>(in.data[channel]);
-                        if(in.source_type == emulator::constant_input){
-                            input_val = in_vect[0];
-                        } else  {
-                            input_val = in_vect[info.step_n];
-                        }
-                    }
-                    if(is_common){
-                        common_io_memory->at(core_name)->at(core_reg) = input_val;
-                    } else {
-                        uint32_t sel_ch = channel;
-                        if(in.source_type != emulator::constant_input || in.channel.size()!=1){
-                            sel_ch = in.channel[channel];
-                        }
-                        emulators_memory->at(core_name)[sel_ch]->at(core_reg) = input_val;
+                    std::vector<uint32_t> in_vect = std::get<std::vector<uint32_t>>(in.data[channel]);
+                    if(in.source_type == emulator::constant_input){
+                        input_val = in_vect[0];
+                    } else  {
+                        input_val = in_vect[info.step_n];
                     }
                 }
+
+                uint32_t sel_ch = channel;
+                if(in.source_type != emulator::constant_input || in.channel.size()!=1){
+                    sel_ch = in.channel[channel];
+                }
+                dma_write(in.address[0], sel_ch, input_val);
             }
         }
+    }
+
+    uint32_t emulator_runner::dma_read(uint32_t address, uint32_t channel) {
+
+        uint32_t core_reg = 0;
+        bool is_common;
+
+        if(auto core_addr = io_map_entry::get_io_map_entry_by_io_addr(program.io, address)){
+            core_reg = core_addr->core_addr;
+            is_common = core_addr->common_io;
+        } else {
+            throw std::runtime_error("unable to find input address in the core io map during input phase");
+        }
+        if(is_common){
+            return common_io_memory->at(core_name)->at(core_reg);
+        } else {
+
+            return  emulators_memory->at(core_name)[channel]->at(core_reg);
+        }
+
+    }
+
+    void emulator_runner::dma_write(uint32_t address, uint32_t channel, uint32_t data) {
+
+        uint32_t core_reg = 0;
+        bool is_common;
+
+        if(auto core_addr = io_map_entry::get_io_map_entry_by_io_addr(program.io, address)){
+            core_reg = core_addr->core_addr;
+            is_common = core_addr->common_io;
+        } else {
+            throw std::runtime_error("unable to find input address in the core io map during input phase");
+        }
+        if(core_reg != 0) {
+            if (is_common) {
+                common_io_memory->at(core_name)->at(core_reg) = data;
+            } else {
+                emulators_memory->at(core_name)[channel]->at(core_reg) = data;
+            }
+        }
+
     }
 
 } // fcore

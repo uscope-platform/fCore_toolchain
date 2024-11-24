@@ -59,10 +59,8 @@ namespace fcore{
 
     void emulation_outputs_manager::process_outputs(
             const std::string& core_id,
-            core_memory_pool_t &pool,
             bool running,
-            uint32_t active_channels,
-            std::set<io_map_entry>& io_map
+            uint32_t active_channels
     ) {
 
         if(!running){
@@ -75,9 +73,9 @@ namespace fcore{
             for(auto &out: data_section[core_id]){
                 auto spec = output_specs[core_id][out.first];
                 if(spec.address.size()>1){
-                    process_vector_output(out.second, spec, pool ,active_channels, io_map);
+                    process_vector_output(core_id, out.second, spec ,active_channels);
                 } else {
-                    process_scalar_output(out.second, spec, pool ,active_channels, io_map);
+                    process_scalar_output(core_id, out.second, spec ,active_channels);
                 }
             }
 
@@ -136,45 +134,33 @@ namespace fcore{
     }
 
     void emulation_outputs_manager::process_scalar_output(
+            std::string core_id,
             emulator_output &out,
             const emulator::emulator_output_specs &spec,
-            core_memory_pool_t &pool, uint32_t active_channels,
-            const std::set<io_map_entry> &io_map
+            uint32_t active_channels
     ){
         uint16_t io_address = spec.address[0];
 
-        uint32_t core_address;
-        if(auto a = io_map_entry::get_io_map_entry_by_io_addr(io_map, io_address)){
-            core_address = a->core_addr;
-        } else {
-            std::string msg = "unable to find address for output: " + spec.name  + " in the io map of associated core during scalar output phase";
-            throw std::runtime_error(msg);
-        }
 
         for(int i = 0; i<active_channels; i++){
-            out.add_data_point(pool.at(i)->at(core_address), i);
+            auto val = runners->at(core_id).dma_read(io_address, i);
+            out.add_data_point(val, i);
         }
     }
 
     void emulation_outputs_manager::process_vector_output(
+            std::string core_id,
             emulator_output &out,
             const emulator::emulator_output_specs &spec,
-            core_memory_pool_t &pool, uint32_t active_channels,
-            const std::set<io_map_entry> &io_map
+            uint32_t active_channels
     ){
         for(int  j= 0; j<active_channels; j++){
             std::vector<uint32_t> data_point;
             for(int i = 0; i<spec.address.size(); i++){
                 uint16_t io_address = spec.address[i];
 
-                uint32_t core_address;
-                if(auto a = io_map_entry::get_io_map_entry_by_io_addr(io_map, io_address)){
-                    core_address = a->core_addr;
-                } else {
-                    throw std::runtime_error("unable to find address for: " + spec.name +" o in the core io map during vector output phase");
-                }
-
-                data_point.push_back(pool.at(j)->at(core_address));
+                auto val = runners->at(core_id).dma_read(io_address, j);
+                data_point.push_back(val);
             }
             out.add_data_point(data_point, j);
         }
