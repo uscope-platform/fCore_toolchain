@@ -39,7 +39,7 @@ namespace fcore{
         emulator_manager(nlohmann::json &spec_file, bool dbg);
         void set_profiler(const std::shared_ptr<instrumentation_core> &prof){ this->profiler = prof;};
         void process();
-        void emulate();
+        void emulate(bool interactive);
 
         void add_breakpoint(const std::string &s, uint32_t addr);
         void remove_breakpoint(const std::string &s, uint32_t addr);
@@ -57,6 +57,8 @@ namespace fcore{
 
         std::unordered_map<std::string, std::string> errors;
         bool debug_autogen;
+
+        bool in_interactive_session;
 
         hil_bus_map bus_map;
 

@@ -24,6 +24,7 @@ namespace fcore{
 
 
         for(int i = 0; i<program.size(); i++){
+            if(breakpoints.contains(i)) throw BreakpointException(i, *working_memory);
             auto opcode = get_opcode(program[i]);
             auto operands  = get_operands(program[i]);
             auto io_flags =get_common_io_flags(program[i]);

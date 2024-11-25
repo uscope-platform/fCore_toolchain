@@ -24,13 +24,14 @@
 
 namespace fcore {
 
+
     class emulator_runner {
     public:
 
         explicit emulator_runner(program_bundle &prog);
 
-        void add_breakpoint(uint32_t addr) {breakpoints.insert(addr);};
-        void remove_breakpoint(uint32_t addr) {breakpoints.erase(addr);};
+        void add_breakpoint(uint32_t addr) {backend.add_breakpoint(addr);};
+        void remove_breakpoint(uint32_t addr) {backend.remove_breakpoint(addr);};
 
         void inputs_phase(const core_step_metadata& info, uint32_t  channel);
         void emulation_phase(uint32_t  channel);
@@ -50,7 +51,6 @@ namespace fcore {
 
         emulator_backend backend;
 
-        std::set<uint32_t> breakpoints;
     };
 
 } // fcore

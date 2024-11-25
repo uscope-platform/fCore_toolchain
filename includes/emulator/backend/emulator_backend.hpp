@@ -17,6 +17,7 @@
 
 #include <utility>
 #include <bitset>
+#include <set>
 #include <spdlog/spdlog.h>
 
 #include "efi_dispatcher.h"
@@ -31,6 +32,17 @@
 
 
 namespace fcore{
+
+    class BreakpointException : public std::runtime_error {
+    public:
+        BreakpointException(uint32_t b, const std::vector<uint32_t>& mem)
+                : std::runtime_error("internal exception"), breakpoint(b), memory_view(mem) {}
+
+
+        uint32_t breakpoint;
+        std::vector<uint32_t> memory_view;
+    };
+
     class emulator_backend {
     public:
         emulator_backend() = default;
@@ -38,6 +50,9 @@ namespace fcore{
         void set_comparator_type(const comparator_type_t &t){comparator_type = t;};
         void run_round(std::shared_ptr<std::vector<uint32_t>> channel_mem, const std::shared_ptr<std::vector<uint32_t>> &common_mem);
         void set_efi_selector(const efi_implementation_t sel){ efi_selector = sel;};
+
+        void add_breakpoint(uint32_t addr) {breakpoints.insert(addr);};
+        void remove_breakpoint(uint32_t addr) {breakpoints.erase(addr);};
 
         void set_core_name(std::string name) {
             efi_backend.set_core_name(name);
@@ -101,6 +116,10 @@ namespace fcore{
 
         std::shared_ptr<std::vector<uint32_t>> working_memory;
         std::shared_ptr<std::vector<uint32_t>> common_io;
+
+
+        std::set<uint32_t> breakpoints;
+
     };
 }
 

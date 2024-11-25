@@ -22,6 +22,7 @@ namespace fcore {
     emulator_manager::emulator_manager(nlohmann::json &spec, bool dbg) :
     emu_spec(spec){
         debug_autogen = dbg;
+        in_interactive_session = false;
         runners = std::make_shared<std::unordered_map<std::string, emulator_runner>>();
     }
 
@@ -98,7 +99,11 @@ namespace fcore {
         return res;
     }
 
-    void emulator_manager::emulate() {
+    void emulator_manager::emulate(bool interactive) {
+
+        if(interactive & in_interactive_session) return;
+        else in_interactive_session = true;
+
         ic_manager.clear_repeater();
         ic_manager.set_runners(runners);
         outputs_manager.set_runners(runners);
@@ -118,7 +123,6 @@ namespace fcore {
             auto running_cores = sequencer.get_running_cores();
 
             for(auto &core:running_cores){
-
                 if(!sequencer.is_empty_step()){
                     for(int j = 0; j<core.n_channels; ++j) {
                         runners->at(core.id).inputs_phase(core, j);
@@ -126,7 +130,6 @@ namespace fcore {
                     }
                     interconnects_phase(emu_spec.interconnects, core);
                 }
-
             }
 
             outputs_manager.process_outputs(running_cores);
