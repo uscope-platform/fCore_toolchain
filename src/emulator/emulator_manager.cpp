@@ -43,9 +43,9 @@ namespace fcore {
 
         for(auto &core:emu_spec.cores){
 
-            outputs_manager.add_specs(core.id,  core.outputs, get_bundle_by_name(core.id).active_channels);
+            outputs_manager.add_specs(core.id,  core.outputs, core.channels);
 
-            sequencer.add_core(core.id, core.sampling_frequency, core.order);
+            sequencer.add_core(core.id, core.sampling_frequency, core.order, core.channels);
 
         }
 
@@ -102,39 +102,35 @@ namespace fcore {
         ic_manager.clear_repeater();
         ic_manager.set_runners(runners);
         outputs_manager.set_runners(runners);
-        run_cores();
-    }
-
-    void emulator_manager::run_cores() {
 
         sequencer.calculate_sequence();
         outputs_manager.set_simulation_frequency(sequencer.get_simulation_frequency());
 
         spdlog::info("EMULATION START");
+        run_cores();
+        spdlog::info("EMULATION DONE");
+    }
+
+    void emulator_manager::run_cores() {
+
         while(!sequencer.sim_complete()){
 
             auto running_cores = sequencer.get_running_cores();
 
             for(auto &core:running_cores){
 
-                auto sel_prog = get_bundle_by_name(core.id);
                 if(!sequencer.is_empty_step()){
-                    for(int j = 0; j<sel_prog.active_channels; ++j) {
+                    for(int j = 0; j<core.n_channels; ++j) {
                         runners->at(core.id).inputs_phase(core, j);
                         runners->at(core.id).emulation_phase(j);
                     }
                     interconnects_phase(emu_spec.interconnects, core);
                 }
 
-                outputs_manager.process_outputs(
-                        core.id,
-                        core.running,
-                        sel_prog.active_channels
-                );
             }
 
+            outputs_manager.process_outputs(running_cores);
         }
-        spdlog::info("EMULATION DONE");
     }
 
 
@@ -181,6 +177,14 @@ namespace fcore {
 
         }
         return ret;
+    }
+
+    void emulator_manager::add_breakpoint(const std::string &s, uint32_t addr) {
+        runners->at(s).add_breakpoint(addr);
+    }
+
+    void emulator_manager::remove_breakpoint(const std::string &s, uint32_t addr) {
+        runners->at(s).remove_breakpoint(addr);
     }
 
 

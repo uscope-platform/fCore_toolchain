@@ -19,12 +19,13 @@
 
 namespace fcore{
 
-    void emulation_sequencer::add_core(const std::string& core_id, uint32_t frequency, uint32_t order) {
+    void emulation_sequencer::add_core(const std::string& core_id, uint32_t frequency, uint32_t order, uint32_t n_channels) {
         core_metadata s;
         s.id = core_id;
         s.freq = frequency;
         s.current_step = 0;
         s.exec_order = order;
+        s.n_channels = n_channels;
         cores.push_back(s);
     }
 
@@ -80,7 +81,7 @@ namespace fcore{
             enabled_cores_map[i.id] = executing;
             m.order = i.exec_order;
             m.step_n = get_current_step()-1;
-
+            m.n_channels = i.n_channels;
             ret.push_back(m);
         }
         return ret;

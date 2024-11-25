@@ -36,10 +36,9 @@ namespace fcore{
         void add_specs(const std::string& id, const std::vector<emulator::emulator_output_specs>& specs, uint32_t active_channels);
         void add_interconnect_outputs(const emulator::emulator_interconnect &spec, const std::vector<emulator::emulator_core> &cores);
 
-        void process_outputs(const std::string& core_id,
-                             bool running,
-                             uint32_t active_channels
-                             );
+        void process_outputs(
+            const std::vector<core_step_metadata> &metadata
+        );
 
         void process_scalar_output(
                 std::string core_id,

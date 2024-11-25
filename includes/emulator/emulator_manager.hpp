@@ -40,6 +40,10 @@ namespace fcore{
         void set_profiler(const std::shared_ptr<instrumentation_core> &prof){ this->profiler = prof;};
         void process();
         void emulate();
+
+        void add_breakpoint(const std::string &s, uint32_t addr);
+        void remove_breakpoint(const std::string &s, uint32_t addr);
+
         std::unordered_map<std::string, std::string>  disassemble();
 
         nlohmann::json get_results();
@@ -50,15 +54,6 @@ namespace fcore{
         void run_cores();
 
         void interconnects_phase(const std::vector<emulator::emulator_interconnect> &specs, const core_step_metadata& info);
-
-        program_bundle get_bundle_by_name(const std::string& name){
-            for(const auto & p : programs){
-                if(p.name==name){
-                    return p;
-                }
-            }
-            throw std::runtime_error("Program bundle with name: " + name + " not found");
-        }
 
         std::unordered_map<std::string, std::string> errors;
         bool debug_autogen;

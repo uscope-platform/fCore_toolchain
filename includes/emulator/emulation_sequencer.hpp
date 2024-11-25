@@ -29,6 +29,7 @@ namespace fcore {
         uint64_t freq;
         uint32_t current_step;
         uint32_t exec_order;
+        uint32_t n_channels;
     };
 
     struct core_step_metadata {
@@ -36,11 +37,12 @@ namespace fcore {
         std::string id;
         uint32_t order;
         uint64_t step_n;
+        uint32_t n_channels;
     };
 
     class emulation_sequencer {
     public:
-        void add_core(const std::string &core_id, uint32_t frequency, uint32_t order);
+        void add_core(const std::string &core_id, uint32_t frequency, uint32_t order, uint32_t n_channels);
         void setup_run(double sim_l);
         void calculate_sequence();
 

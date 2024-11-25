@@ -67,28 +67,32 @@ namespace fcore{
 
 
     void emulation_outputs_manager::process_outputs(
-            const std::string& core_id,
-            bool running,
-            uint32_t active_channels
+        const std::vector<core_step_metadata> &metadata
     ) {
-
-        if(!running){
-            // carry over previous outputs
-            for(auto &out: data_section[core_id]){
-
-                out.second.repeat_last_data_point();
+        for(const auto &s:output_specs){
+            core_step_metadata m;
+            for(auto &m_temp:metadata){
+                if(s.first == m_temp.id) m = m_temp;
             }
-        } else {
-            for(auto &out: data_section[core_id]){
-                auto spec = output_specs[core_id][out.first];
-                if(spec.address.size()>1){
-                    process_vector_output(core_id, out.second, spec ,active_channels);
-                } else {
-                    process_scalar_output(core_id, out.second, spec ,active_channels);
+            if(!m.running){
+                // carry over previous outputs
+                for(auto &out: data_section[s.first]){
+
+                    out.second.repeat_last_data_point();
                 }
-            }
+            } else {
+                for(auto &out: data_section[s.first]){
+                    auto spec = output_specs[s.first][out.first];
+                    if(spec.address.size()>1){
+                        process_vector_output(s.first, out.second, spec ,m.n_channels);
+                    } else {
+                        process_scalar_output(s.first, out.second, spec ,m.n_channels);
+                    }
+                }
 
+            }
         }
+
 
     }
 
