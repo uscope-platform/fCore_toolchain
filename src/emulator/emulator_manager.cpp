@@ -99,21 +99,29 @@ namespace fcore {
         return res;
     }
 
-    void emulator_manager::emulate(bool interactive) {
+    std::optional<debug_checkpoint> emulator_manager::emulate(bool interactive) {
 
-        if(interactive & in_interactive_session) return;
-        else in_interactive_session = true;
+        if(!interactive || !in_interactive_session) {
 
-        ic_manager.clear_repeater();
-        ic_manager.set_runners(runners);
-        outputs_manager.set_runners(runners);
+            ic_manager.clear_repeater();
+            ic_manager.set_runners(runners);
+            outputs_manager.set_runners(runners);
 
-        sequencer.calculate_sequence();
-        outputs_manager.set_simulation_frequency(sequencer.get_simulation_frequency());
+            sequencer.calculate_sequence();
+            outputs_manager.set_simulation_frequency(sequencer.get_simulation_frequency());
+
+            in_interactive_session = true;
+        }
 
         spdlog::info("EMULATION START");
-        run_cores();
-        spdlog::info("EMULATION DONE");
+        try{
+
+            run_cores();
+            spdlog::info("EMULATION DONE");
+            return {};
+        } catch (BreakpointException &ex) {
+            return ex.data;
+        }
     }
 
     void emulator_manager::run_cores() {

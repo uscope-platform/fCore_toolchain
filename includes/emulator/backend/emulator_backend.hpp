@@ -33,14 +33,16 @@
 
 namespace fcore{
 
-    class BreakpointException : public std::runtime_error {
-    public:
-        BreakpointException(uint32_t b, const std::vector<uint32_t>& mem)
-                : std::runtime_error("internal exception"), breakpoint(b), memory_view(mem) {}
-
-
+    struct debug_checkpoint{
         uint32_t breakpoint;
         std::vector<uint32_t> memory_view;
+    };
+
+    class BreakpointException : public std::runtime_error {
+    public:
+        BreakpointException(const debug_checkpoint& checkpoint)
+                : std::runtime_error("internal exception"), data(checkpoint) {}
+            debug_checkpoint data;
     };
 
     class emulator_backend {
