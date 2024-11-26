@@ -34,7 +34,7 @@ namespace fcore {
         void remove_breakpoint(uint32_t addr) {backend.remove_breakpoint(addr);};
 
         void inputs_phase(const core_step_metadata& info, uint32_t  channel);
-        void emulation_phase(uint32_t  channel);
+        void emulation_phase(uint32_t  channel, uint32_t init_point);
 
         uint32_t dma_read(uint32_t address, uint32_t channel);
         void dma_write(uint32_t address, uint32_t channel, uint32_t data);

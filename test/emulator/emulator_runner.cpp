@@ -20,11 +20,11 @@
 
 using namespace fcore;
 
-program_bundle prepare_test_bundle(){
+program_bundle prepare_test_bundle(std::vector<uint32_t> program){
 
     program_bundle b;
     b.name = "test_prog";
-    b.program.binary = {0x20004, 0xc, 0x20000, 0x10001, 0x3000a, 0xc, 0xc, 0x60841, 0xc};
+    b.program.binary = program;
     b.program.program_length.fixed_portion = 5;
     b.program.program_length.per_channel_portion = 1;
     b.io.emplace(0, 2, "i");
@@ -63,7 +63,7 @@ program_bundle prepare_test_bundle(){
 
 
 TEST(Emulator_runner, run_simple_emulator) {
-    auto bundle = prepare_test_bundle();
+    auto bundle = prepare_test_bundle({0x20004, 0xc, 0x20000, 0x10001, 0x3000a, 0xc, 0xc, 0x60841, 0xc});
 
     auto emulators_memory  = std::make_shared<std::unordered_map<std::string, core_memory_pool_t>>();
     auto common_memory  = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
@@ -76,14 +76,14 @@ TEST(Emulator_runner, run_simple_emulator) {
     m.order = 0;
     m.step_n = 0;
     uut.inputs_phase(m, 0);
-    uut.emulation_phase(0);
+    uut.emulation_phase(0, 0);
     auto result = uut.dma_read(10, 0);
     ASSERT_EQ(result, 0x40733333);
 }
 
 
 TEST(Emulator_runner, run_simple_emulator_inputs) {
-    auto bundle = prepare_test_bundle();
+    auto bundle = prepare_test_bundle({0x20004, 0xc, 0x20000, 0x10001, 0x3000a, 0xc, 0xc, 0x60841, 0xc});
 
     auto emulators_memory  = std::make_shared<std::unordered_map<std::string, core_memory_pool_t>>();
     auto common_memory  = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
@@ -99,7 +99,59 @@ TEST(Emulator_runner, run_simple_emulator_inputs) {
     m.step_n = 0;
     uut.dma_write(0, 0, 0x40133333);
     uut.dma_write(1, 0, 0x3fc00000);
-    uut.emulation_phase(0);
+    uut.emulation_phase(0, 0);
     auto result = uut.dma_read(10, 0);
     ASSERT_EQ(result, 0x40733333);
+}
+
+
+
+TEST(Emulator_runner, breakpoint) {
+    auto bundle = prepare_test_bundle({0x40002, 0xc, 0x3f0014, 0xc, 0xc,0x26, 0x3f800000, 0x7e0fe1,  0x7e0fe1,  0x7e0fe1, 0xc});
+
+    auto emulators_memory  = std::make_shared<std::unordered_map<std::string, core_memory_pool_t>>();
+    auto common_memory  = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
+
+    bundle.input.clear();
+    emulator_runner uut(bundle);
+
+    uint32_t line = 3;
+
+    uut.add_breakpoint(line);
+
+    try{
+        uut.emulation_phase(0, 0);
+        ASSERT_TRUE(false);
+    } catch (BreakpointException &ex){
+        EXPECT_EQ(ex.data.breakpoint, line);
+        EXPECT_EQ(ex.data.memory_view[63], 0x3f800000);
+    }
+}
+
+
+TEST(Emulator_runner, continue_emulation) {
+    auto bundle = prepare_test_bundle({0x40002, 0xc, 0x3f0014, 0xc, 0xc,0x26, 0x3f800000, 0x7e0fe1,  0x7e0fe1,  0x7e0fe1, 0xc});
+
+    bundle.io.emplace(20,63,"o");
+
+    auto emulators_memory  = std::make_shared<std::unordered_map<std::string, core_memory_pool_t>>();
+    auto common_memory  = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
+
+    bundle.input.clear();
+    emulator_runner uut(bundle);
+
+    uint32_t line = 3;
+
+    uut.add_breakpoint(line);
+
+    try{
+        uut.emulation_phase(0, 0);
+        ASSERT_TRUE(false);
+    } catch (BreakpointException &ex){
+        EXPECT_EQ(ex.data.breakpoint, line);
+        EXPECT_EQ(ex.data.memory_view[63], 0x3f800000);
+        uut.emulation_phase(0, line);
+    }
+    auto result = uut.dma_read(20, 0);
+    EXPECT_EQ(result, 0x40400000);
 }

@@ -17,14 +17,18 @@
 
 namespace fcore{
 
-    void emulator_backend::run_round(std::shared_ptr<std::vector<uint32_t>> channel_mem, const std::shared_ptr<std::vector<uint32_t>> &common_mem) {
+    void emulator_backend::run_round(
+            std::shared_ptr<std::vector<uint32_t>> channel_mem,
+            const std::shared_ptr<std::vector<uint32_t>> &common_mem,
+            uint32_t init_point
+    ) {
 
         working_memory = std::move(channel_mem);
         common_io = common_mem;
 
 
-        for(uint32_t i = 0; i<program.size(); i++){
-            if(breakpoints.contains(i)) throw BreakpointException({i, *working_memory});
+        for(uint32_t i = init_point; i<program.size(); i++){
+            if(breakpoints.contains(i) && i!=init_point) throw BreakpointException({i, *working_memory});
             auto opcode = get_opcode(program[i]);
             auto operands  = get_operands(program[i]);
             auto io_flags =get_common_io_flags(program[i]);

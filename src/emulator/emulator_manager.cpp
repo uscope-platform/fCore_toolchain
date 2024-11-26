@@ -134,7 +134,7 @@ namespace fcore {
                 if(!sequencer.is_empty_step()){
                     for(int j = 0; j<core.n_channels; ++j) {
                         runners->at(core.id).inputs_phase(core, j);
-                        runners->at(core.id).emulation_phase(j);
+                        runners->at(core.id).emulation_phase(j, 0);
                     }
                     interconnects_phase(emu_spec.interconnects, core);
                 }
