@@ -53,7 +53,7 @@ namespace fcore{
             }
         }
 
-        progress =  (uint64_t) std::round(sim_length*(float)simulation_frequency);
+        progress =  (uint64_t) std::round(sim_length*(float)simulation_frequency)-1;
 
         std::sort(cores.begin(), cores.end(), [](core_metadata const& lhs, core_metadata const &rhs)-> bool {return lhs.exec_order<rhs.exec_order;});
 
@@ -61,7 +61,7 @@ namespace fcore{
 
     std::vector<core_step_metadata> emulation_sequencer::get_running_cores() {
         std::vector<core_step_metadata> ret;
-        progress--;
+        ;
         empty_step = true;
         for(auto &i: cores){
             bool executing = false;
@@ -80,7 +80,7 @@ namespace fcore{
             m.running = executing;
             enabled_cores_map[i.id] = executing;
             m.order = i.exec_order;
-            m.step_n = get_current_step()-1;
+            m.step_n = get_current_step() -1;
             m.n_channels = i.n_channels;
             ret.push_back(m);
         }

@@ -60,6 +60,8 @@ namespace fcore{
 
         bool in_interactive_session;
 
+        uint32_t interactive_restart_point;
+
         hil_bus_map bus_map;
 
         emulation_sequencer sequencer;

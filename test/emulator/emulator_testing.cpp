@@ -27,7 +27,7 @@ TEST(Emulator, emulator_executable_format) {
     nlohmann::json specs = nlohmann::json::parse(ifs);
     emulator_manager manager(specs, false);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
     auto res_obj = manager.get_results();
 
     std::vector<float>  result = std::vector<float>(res_obj["test"]["outputs"]["test_out"]["0"][0]);
@@ -120,6 +120,7 @@ TEST(Emulator, emulator_inputs) {
     emulator_manager manager(spec, false);
     manager.process();
     manager.emulate(true);
+    auto dbg = manager.get_results().dump(4);
     uint32_t res = manager.get_results()["test"]["outputs"]["out"]["0"][0][1];
 
     ASSERT_EQ(res, 0x42f070a4);
@@ -132,7 +133,7 @@ TEST(Emulator, emulator_outputs) {
     nlohmann::json specs = nlohmann::json::parse(ifs);
     emulator_manager manager(specs, false);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
     auto res = manager.get_results()["test"];
 
     auto dbg = manager.get_results().dump(4);
@@ -214,7 +215,7 @@ TEST(Emulator, emulator_memory) {
 
     emulator_manager manager(spec, false);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
 
     uint32_t res = manager.get_results()["test"]["outputs"]["out"]["0"][0][1];
 
@@ -229,7 +230,7 @@ TEST(Emulator, emulator_inteconnect) {
     nlohmann::json specs = nlohmann::json::parse(ifs);
     emulator_manager manager(specs, false);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
     auto res = manager.get_results()["test_consumer"];
 
     std::vector<uint32_t> reference = {0x426a7ae1, 0x42f070a4};
@@ -243,7 +244,7 @@ TEST(Emulator, emulator_compilation) {
     nlohmann::json specs = nlohmann::json::parse(ifs);
     emulator_manager manager(specs, false);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
     auto res = manager.get_results()["test"];
 
     std::vector<uint32_t> reference = {59,62};
@@ -261,7 +262,7 @@ TEST(Emulator, emulator_compilation_interconnect) {
     nlohmann::json specs = nlohmann::json::parse(ifs);
     emulator_manager manager(specs, false);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
     auto res = manager.get_results();
 
     std::vector<uint32_t> reference = {59,62};
@@ -279,7 +280,7 @@ TEST(Emulator, emulator_compilation_memory) {
     nlohmann::json specs = nlohmann::json::parse(ifs);
     emulator_manager manager(specs, false);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
     auto res = manager.get_results()["test"];
 
     std::vector<uint32_t> reference = {15,83};
@@ -380,11 +381,12 @@ TEST(Emulator, emulator_header) {
 
     emulator_manager manager(specs, false);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
 
     auto res_obj = manager.get_results();
 
     std::vector<float> res = res_obj["test"]["outputs"]["out"]["0"][0];
+    auto dbg = res_obj.dump(4);
     ASSERT_FLOAT_EQ(res[0], 9.0);
 
 }
@@ -626,7 +628,7 @@ TEST(Emulator, emulator_multichannel) {
 
     emulator_manager manager(specs, false);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
 
     auto res_obj = manager.get_results();
 
@@ -756,7 +758,7 @@ TEST(Emulator, emulator_multichannel_input_file) {
 
     emulator_manager manager(specs, false);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
 
     auto res_obj = manager.get_results();
 
@@ -909,7 +911,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
 
     emulator_manager manager(specs, false);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
 
     auto res_obj = manager.get_results();
     auto dbg = res_obj.dump(4);
@@ -1019,7 +1021,7 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
 
     emulator_manager manager(specs, false);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
 
     auto res_obj = manager.get_results();
 
@@ -1142,7 +1144,7 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
 
 
     try {
-        manager.emulate(true);
+        manager.emulate(false);
         FAIL();
     } catch( const std::runtime_error& err ) {
         std::string msg = err.what();
@@ -1272,7 +1274,7 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
 
     emulator_manager manager(specs, false);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
 
     auto res_obj = manager.get_results();
 
@@ -1380,7 +1382,7 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
 
     emulator_manager manager(specs, false);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
 
     auto res_obj = manager.get_results();
 
@@ -1493,7 +1495,7 @@ TEST(Emulator, emulator_common_io) {
 
     emulator_manager manager(specs, false);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
 
     auto res_obj = manager.get_results();
 
@@ -1582,7 +1584,7 @@ TEST(Emulator, emulator_multichannel_input) {
 
     emulator_manager manager(specs, false);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
 
     auto res_obj = manager.get_results();
 
@@ -1593,4 +1595,91 @@ TEST(Emulator, emulator_multichannel_input) {
     std::vector<float> res2 = (std::vector<float>) res_obj["test_producer"]["outputs"]["out"]["1"][0];
     ASSERT_FLOAT_EQ(res2[0], 6);
     ASSERT_FLOAT_EQ(res2[1], 6);
+}
+
+TEST(Emulator, emulator_interactive) {
+    nlohmann::json specs = nlohmann::json::parse(
+            R"(
+    {
+        "cores": [
+            {
+                "id": "test",
+                "order": 0,
+                "input_data": [],
+                "inputs": [
+                ],
+                "outputs": [
+                    {
+                        "name":"out",
+                        "type": "float",
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": false
+                        },
+                        "reg_n":[7]
+                    }
+                ],
+                "memory_init": [
+                    {
+                        "name":"mem",
+                        "metadata":{
+                            "type":"float",
+                            "width":12,
+                            "signed":true
+                        },
+                        "reg_n":14,
+                        "is_output": true,
+                        "value":2
+                    }
+                ],
+                "channels": 1,
+                "options": {
+                    "comparators": "reducing",
+                    "efi_implementation": "none"
+                },
+                "program": {
+                    "content": "int main(){\n float mem = mem + 1.0;  mem = mem + 1.0;  mem = mem + 1.0; out = mem*1.0;\n}",
+                    "build_settings": {
+                        "io": {
+                            "inputs": [],
+                            "memories": ["mem"],
+                            "outputs": []
+                        }
+                    },
+                    "headers": []
+                },
+                "sampling_frequency": 1,
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 2,
+        "deployment_mode": false
+    })");
+
+
+    emulator_manager manager(specs, false);
+    manager.process();
+    manager.add_breakpoint("test", 3);
+    auto bp_data = manager.emulate(true);
+
+    EXPECT_EQ(bp_data.value().breakpoint, 3);
+    EXPECT_EQ(bp_data.value().memory_view[63], 0x40400000);
+    EXPECT_EQ(bp_data.value().memory_view[1], 0x3f800000);
+
+    manager.remove_breakpoint("test", 3);
+
+    manager.emulate(true);
+    auto res_obj = manager.get_results();
+
+    auto dbg = res_obj.dump(4);
+
+    std::vector<float> res = res_obj["test"]["outputs"]["out"]["0"][0];
+    ASSERT_FLOAT_EQ(res[0], 5);
+    ASSERT_FLOAT_EQ(res[1], 8);
 }
