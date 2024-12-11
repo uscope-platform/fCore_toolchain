@@ -26,8 +26,7 @@ namespace fcore {
         interactive_restart_point = 0;
     }
 
-    void emulator_manager::process(nlohmann::json &spec_file) {
-        emu_spec.set_specs(spec_file);
+    void emulator_manager::process() {
         bus_map.clear();
 
         if(emu_spec.cores.empty()){
@@ -198,6 +197,11 @@ namespace fcore {
 
     void emulator_manager::remove_breakpoint(const std::string &s, uint32_t addr) {
         runners->at(s).remove_breakpoint(addr);
+    }
+
+    void emulator_manager::set_specs(nlohmann::json &spec_file) {
+        emu_spec.set_specs(spec_file);
+        bus_map.clear();
     }
 
 
