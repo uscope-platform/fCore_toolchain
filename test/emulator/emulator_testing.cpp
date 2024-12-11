@@ -25,8 +25,8 @@ TEST(Emulator, emulator_executable_format) {
 
     std::ifstream ifs("emu/test_exec_format.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
     manager.emulate(false);
     auto res_obj = manager.get_results();
 
@@ -45,8 +45,8 @@ TEST(Emulator, emulator_compile_error) {
 
     EXPECT_THROW({
         try{
-            emulator_manager manager(specs, false);
-            manager.process();
+            emulator_manager manager(false);
+            manager.process(specs);
         }
         catch( const std::runtime_error& e ) {
 
@@ -117,8 +117,8 @@ TEST(Emulator, emulator_inputs) {
     spec["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("out");
 
 
-    emulator_manager manager(spec, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(spec);
     manager.emulate(true);
     auto dbg = manager.get_results().dump(4);
     uint32_t res = manager.get_results()["test"]["outputs"]["out"]["0"][0][1];
@@ -131,8 +131,8 @@ TEST(Emulator, emulator_outputs) {
 
     std::ifstream ifs("emu/test_inputs_spec.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
     manager.emulate(false);
     auto res = manager.get_results()["test"];
 
@@ -213,8 +213,8 @@ TEST(Emulator, emulator_memory) {
     spec["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("mem");
     spec["cores"][0]["program"]["build_settings"]["io"]["outputs"].push_back("out");
 
-    emulator_manager manager(spec, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(spec);
     manager.emulate(false);
 
     uint32_t res = manager.get_results()["test"]["outputs"]["out"]["0"][0][1];
@@ -228,8 +228,8 @@ TEST(Emulator, emulator_inteconnect) {
 
     std::ifstream ifs("emu/test_interconnect_spec.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
     manager.emulate(false);
     auto res = manager.get_results()["test_consumer"];
 
@@ -242,8 +242,8 @@ TEST(Emulator, emulator_compilation) {
 
     std::ifstream ifs("emu/test_compilation.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
     manager.emulate(false);
     auto res = manager.get_results()["test"];
 
@@ -260,8 +260,8 @@ TEST(Emulator, emulator_compilation_interconnect) {
 
     std::ifstream ifs("emu/test_compilation_interconnect.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
     manager.emulate(false);
     auto res = manager.get_results();
 
@@ -278,8 +278,8 @@ TEST(Emulator, emulator_compilation_memory) {
 
     std::ifstream ifs("emu/test_compilation_memory.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
     manager.emulate(false);
     auto res = manager.get_results()["test"];
 
@@ -379,8 +379,8 @@ TEST(Emulator, emulator_header) {
 })");
 
 
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
     manager.emulate(false);
 
     auto res_obj = manager.get_results();
@@ -502,7 +502,7 @@ TEST(Emulator, emulator_disassemble) {
 })");
 
 
-    emulator_manager manager(specs, false);
+    emulator_manager manager(false);
     auto res = manager.disassemble();
     std::unordered_map<std::string, std::string> expected = {
             {"test_producer", R"("///////////////////////////////////////////\n//               IO MAPPING              //\n//    io address <---> core address      //\n///////////////////////////////////////////\n//    5  <--->  3      //\n//    4  <--->  1      //\n//    3  <--->  2      //\n///////////////////////////////////////////\nadd r2, r1, r3\nstop\n")"},
@@ -626,8 +626,8 @@ TEST(Emulator, emulator_multichannel) {
 })");
 
 
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
     manager.emulate(false);
 
     auto res_obj = manager.get_results();
@@ -756,8 +756,8 @@ TEST(Emulator, emulator_multichannel_input_file) {
 )");
 
 
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
     manager.emulate(false);
 
     auto res_obj = manager.get_results();
@@ -909,8 +909,8 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
 })");
 
 
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
     manager.emulate(false);
 
     auto res_obj = manager.get_results();
@@ -1019,8 +1019,8 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
     })");
 
 
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
     manager.emulate(false);
 
     auto res_obj = manager.get_results();
@@ -1139,8 +1139,8 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
     })");
 
 
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
 
 
     try {
@@ -1272,8 +1272,8 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
     })");
 
 
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
     manager.emulate(false);
 
     auto res_obj = manager.get_results();
@@ -1380,8 +1380,8 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
     })");
 
 
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
     manager.emulate(false);
 
     auto res_obj = manager.get_results();
@@ -1493,8 +1493,8 @@ TEST(Emulator, emulator_common_io) {
 })");
 
 
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
     manager.emulate(false);
 
     auto res_obj = manager.get_results();
@@ -1582,8 +1582,8 @@ TEST(Emulator, emulator_multichannel_input) {
     })");
 
 
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
     manager.emulate(false);
 
     auto res_obj = manager.get_results();
@@ -1663,8 +1663,8 @@ TEST(Emulator, emulator_interactive) {
     })");
 
 
-    emulator_manager manager(specs, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(specs);
     manager.add_breakpoint("test", 3);
     auto bp_data = manager.emulate(true);
 
@@ -1745,8 +1745,8 @@ TEST(Emulator, emulator_memory_as_output) {
     spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_2");
     spec["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("mem");
 
-    emulator_manager manager(spec, false);
-    manager.process();
+    emulator_manager manager(false);
+    manager.process(spec);
     manager.emulate(false);
 
     std::string dbg = manager.get_results().dump(4);

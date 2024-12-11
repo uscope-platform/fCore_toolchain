@@ -91,7 +91,8 @@ TEST(compiler_schema, validation_fail_ints_as_floats) {
     EXPECT_NO_THROW(validator.validate(spec));
 
     try{
-        fcore::emulator::emulator_specs s(spec);
+        fcore::emulator::emulator_specs s;
+        s.set_specs(spec);
         EXPECT_TRUE(false);
     } catch (std::runtime_error &e){
         std::string message = e.what();

@@ -36,9 +36,9 @@ namespace fcore{
 
     class emulator_manager {
     public:
-        emulator_manager(nlohmann::json &spec_file, bool dbg);
+        emulator_manager(bool dbg);
         void set_profiler(const std::shared_ptr<instrumentation_core> &prof){ this->profiler = prof;};
-        void process();
+        void process(nlohmann::json &spec_file);
         std::optional<debug_checkpoint> emulate(bool interactive);
 
         void add_breakpoint(const std::string &s, uint32_t addr);

@@ -17,7 +17,8 @@
 #include "data_structures/emulation/specs/emulator_specs.hpp"
 
 namespace fcore::emulator {
-    emulator_specs::emulator_specs(const nlohmann::json &spec_obj) {
+
+    void emulator_specs::set_specs(const nlohmann::json &spec_obj) {
 
         try{
             schema_validator_base validator(emulator_input);
@@ -297,4 +298,5 @@ namespace fcore::emulator {
         }
         throw std::runtime_error("Data series not found: " + file + "." + series);
     }
+
 } // fcore

@@ -54,7 +54,8 @@ namespace fcore{
                     }
                 }
             }
-
+            // TODO: ALLOW USER TO CHOSE THIS
+            out_spec.output_type = emulator::type_float;
             out_spec.metadata.type = emulator::type_float;
             out_spec.metadata.width = 32;
             out_spec.metadata.is_signed = true;
