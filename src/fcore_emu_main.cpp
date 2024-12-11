@@ -77,12 +77,14 @@ int main(int argc, char **argv) {
 
 
     try{
-        fcore::emulator_manager emu_manager(specs, debug_autogen);
+        fcore::emulator_manager emu_manager;
+        emu_manager.set_specs(specs);
+        if(debug_autogen) emu_manager.enable_debug_mode();
         emu_manager.set_profiler(profiler);
         emu_manager.process();
         profiler->set_phase("emulation");
         profiler->start_event("execution", true);
-        emu_manager.emulate();
+        emu_manager.emulate(false);
         profiler->end_event("execution");
         //results = emu_manager.get_results();
         results = profiler->dump();

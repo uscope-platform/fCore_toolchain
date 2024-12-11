@@ -36,7 +36,8 @@ namespace fcore{
 
     class emulator_manager {
     public:
-        emulator_manager(bool dbg);
+        emulator_manager();
+        void enable_debug_mode() {debug_autogen = true;};
         void set_profiler(const std::shared_ptr<instrumentation_core> &prof){ this->profiler = prof;};
         void set_specs(nlohmann::json &spec_file);
         void process();

@@ -28,7 +28,7 @@ TEST(Emulator_execution, emulator_load) {
 
     auto specs = prepare_spec(program, 1,
                              {}, {{"test", "float"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -44,7 +44,7 @@ TEST(Emulator_execution, emulator_add) {
 
     auto specs = prepare_spec(program, 1,
      {{"a", 2.3,"float"},{"b", 1.5, "float"}}, {{"test", "float"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -60,7 +60,7 @@ TEST(Emulator_execution, emulator_sub) {
 
     auto specs = prepare_spec(program, 1,
                              {{"a", 2.3,"float"},{"b", 1.5, "float"}}, {{"test", "float"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -74,7 +74,7 @@ TEST(Emulator_execution, emulator_mul) {
 
     auto specs = prepare_spec(program, 1,
                              {{"a", 2.3,"float"},{"b", 1.5, "float"}}, {{"test", "float"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -89,7 +89,7 @@ TEST(Emulator_execution, emulator_rec) {
 
     auto specs = prepare_spec(program, 1,
                              {{"a", 2,"float"}}, {{"test", "float"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -103,7 +103,7 @@ TEST(Emulator_execution, emulator_itf) {
 
     auto specs = prepare_spec(program, 1,
                              {{"a", 2,"integer"}}, {{"test", "float"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -118,7 +118,7 @@ TEST(Emulator_execution, emulator_fti) {
 
     auto specs = prepare_spec(program, 1,
                              {{"a", 2.3,"float"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -134,7 +134,7 @@ TEST(Emulator_execution, emulator_and) {
 
     auto specs = prepare_spec(program, 1,
                              {{"a", 0x5,"integer"}, {"b", 0xd,"integer"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -149,7 +149,7 @@ TEST(Emulator_execution, emulator_or) {
 
     auto specs = prepare_spec(program, 1,
                              {{"a", 0x5,"integer"}, {"b", 0xA,"integer"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -164,7 +164,7 @@ TEST(Emulator_execution, emulator_not) {
 
     auto specs = prepare_spec(program, 1,
                              {{"a", 0x210C,"integer"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -181,7 +181,7 @@ TEST(Emulator_execution, emulator_satn) {
 
     auto specs = prepare_spec(program, 1,
                              {{"a", -10,"float"}}, {{"test", "float"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -191,7 +191,7 @@ TEST(Emulator_execution, emulator_satn) {
 
     specs = prepare_spec(program, 1,
                              {{"a", -3,"float"}}, {{"test", "float"}}, {});
-    manager = emulator_manager(false);
+    manager = emulator_manager();
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -207,7 +207,7 @@ TEST(Emulator_execution, emulator_satp) {
 
     auto specs = prepare_spec(program, 1,
                              {{"a", 10,"float"}}, {{"test", "float"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -216,7 +216,7 @@ TEST(Emulator_execution, emulator_satp) {
     EXPECT_NEAR(result, 5, 1e-6);
     specs = prepare_spec(program, 1,
                         {{"a", 3,"float"}}, {{"test", "float"}}, {});
-    manager = emulator_manager(false);
+    manager = emulator_manager();
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -231,7 +231,7 @@ TEST(Emulator_execution, emulator_beq) {
 
     auto specs = prepare_spec(program, 1,
                              {{"a", 10.0,"float"}, {"b", 10.0,"float"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -241,7 +241,7 @@ TEST(Emulator_execution, emulator_beq) {
 
     specs = prepare_spec(program, 1,
                         {{"a", 10.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
-    manager = emulator_manager(false);
+    manager = emulator_manager();
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -258,7 +258,7 @@ TEST(Emulator_execution, emulator_bne) {
 
     auto specs = prepare_spec(program, 1,
                              {{"a", 15.0,"float"}, {"b", 10.0,"float"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -268,7 +268,7 @@ TEST(Emulator_execution, emulator_bne) {
 
     specs = prepare_spec(program, 1,
                         {{"a", 5.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
-    manager = emulator_manager(false);
+    manager = emulator_manager();
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -285,7 +285,7 @@ TEST(Emulator_execution, emulator_bgt) {
 
     auto specs = prepare_spec(program, 1,
                              {{"a", 15.0,"float"}, {"b", 10.0,"float"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -295,7 +295,7 @@ TEST(Emulator_execution, emulator_bgt) {
 
     specs = prepare_spec(program, 1,
                         {{"a", 5.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
-    manager = emulator_manager(false);
+    manager = emulator_manager();
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -311,7 +311,7 @@ TEST(Emulator_execution, emulator_ble) {
 
     auto specs = prepare_spec(program, 1,
                              {{"a", 5.0,"float"}, {"b", 10.0,"float"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -321,7 +321,7 @@ TEST(Emulator_execution, emulator_ble) {
 
     specs = prepare_spec(program, 1,
                         {{"a", 5.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
-    manager = emulator_manager(false);
+    manager = emulator_manager();
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -331,7 +331,7 @@ TEST(Emulator_execution, emulator_ble) {
 
     specs = prepare_spec(program, 1,
                         {{"a", 15.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
-    manager = emulator_manager(false);
+    manager = emulator_manager();
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -365,7 +365,7 @@ TEST(Emulator_execution, emulator_efi) {
     specs["cores"][0]["options"]["efi_implementation"] = "efi_sort";
 
     std::string dbg = specs.dump();
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -383,7 +383,7 @@ TEST(Emulator_execution, emulator_bset) {
 
     auto specs = prepare_spec(program, 1,
                              {{"a", 5,"integer"}}, {{"test", "integer"}}, {});
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -395,7 +395,7 @@ TEST(Emulator_execution, emulator_bset) {
 
     specs = prepare_spec(program, 1,
                              {{"a", 5,"integer"}}, {{"test", "integer"}}, {});
-    manager = emulator_manager(false);
+    manager = emulator_manager();
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -412,7 +412,7 @@ TEST(Emulator_execution, emulator_csel) {
     auto specs = prepare_spec(program, 1,
                              {{"a", 2,"float"}}, {{"test", "float"}}, {});
 
-    emulator_manager manager(false);
+    emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);
@@ -422,7 +422,7 @@ TEST(Emulator_execution, emulator_csel) {
 
     specs = prepare_spec(program, 1,
                         {{"a", -1,"float"}}, {{"test", "float"}}, {});
-    manager = emulator_manager(false);
+    manager = emulator_manager();
     manager.set_specs(specs);
     manager.process();
     manager.emulate(false);

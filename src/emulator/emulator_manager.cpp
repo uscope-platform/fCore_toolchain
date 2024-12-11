@@ -19,8 +19,8 @@
 namespace fcore {
 
 
-    emulator_manager::emulator_manager(bool dbg) {
-        debug_autogen = dbg;
+    emulator_manager::emulator_manager() {
+        debug_autogen = false;
         in_interactive_session = false;
         runners = std::make_shared<std::unordered_map<std::string, emulator_runner>>();
         interactive_restart_point = 0;
