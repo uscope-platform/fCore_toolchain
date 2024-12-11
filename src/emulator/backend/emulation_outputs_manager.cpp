@@ -115,6 +115,8 @@ namespace fcore{
                 res[s.second.name] = out_data.get_integer_data();
             } else if(s.second.output_type == emulator::type_float){
                 res[s.second.name] = out_data.get_float_data();
+            } else {
+                throw std::runtime_error("unknown output type");
             }
         }
 
