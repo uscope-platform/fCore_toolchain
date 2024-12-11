@@ -17,6 +17,12 @@
 
 namespace fcore{
 
+    bool operator==(const debug_checkpoint& lhs, const debug_checkpoint& rhs)
+    {
+        return lhs.breakpoint == rhs.breakpoint && lhs.memory_view == rhs.memory_view;
+    }
+
+
     void emulator_backend::run_round(
             std::shared_ptr<std::vector<uint32_t>> channel_mem,
             const std::shared_ptr<std::vector<uint32_t>> &common_mem,

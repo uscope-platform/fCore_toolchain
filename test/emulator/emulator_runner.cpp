@@ -155,3 +155,20 @@ TEST(Emulator_runner, continue_emulation) {
     auto result = uut.dma_read(20, 0);
     EXPECT_EQ(result, 0x40400000);
 }
+
+
+
+TEST(Emulator_runner, debug_checkpoint_serialization) {
+    debug_checkpoint base;
+    base.breakpoint = 23;
+    base.memory_view = {11,23,65};
+    nlohmann::json uut = base;
+
+    std::string ref = "{\"breakpoint\":23,\"memory_view\":[11,23,65]}";
+    std::string result = uut.dump();
+
+    EXPECT_EQ(ref, result);
+
+    debug_checkpoint test_2 = uut;
+    EXPECT_EQ(base, test_2);
+}

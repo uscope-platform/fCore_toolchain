@@ -38,6 +38,10 @@ namespace fcore{
         std::vector<uint32_t> memory_view;
     };
 
+    bool operator==(const debug_checkpoint& lhs, const debug_checkpoint& rhs);
+
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(debug_checkpoint, breakpoint, memory_view)
+
     class BreakpointException : public std::runtime_error {
     public:
         BreakpointException(const debug_checkpoint& checkpoint)
