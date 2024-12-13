@@ -199,7 +199,7 @@ namespace fcore {
         runners->at(s).remove_breakpoint(addr);
     }
 
-    void emulator_manager::set_specs(nlohmann::json &spec_file) {
+    void emulator_manager::set_specs(const nlohmann::json &spec_file) {
         emu_spec.set_specs(spec_file);
         bus_map.clear();
     }
