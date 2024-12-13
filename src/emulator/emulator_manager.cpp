@@ -205,5 +205,9 @@ namespace fcore {
         emu_spec.set_specs(spec_file);
     }
 
+    std::set<uint32_t> emulator_manager::get_breakpoints(const std::string &id) {
+        return runners->at(id).get_breakpoints();
+    }
+
 
 }

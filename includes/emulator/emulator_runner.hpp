@@ -32,6 +32,7 @@ namespace fcore {
 
         void add_breakpoint(uint32_t addr) {backend.add_breakpoint(addr);};
         void remove_breakpoint(uint32_t addr) {backend.remove_breakpoint(addr);};
+        std::set<uint32_t> get_breakpoints() {return backend.get_breakpoints();};
 
         void inputs_phase(const core_step_metadata& info, uint32_t  channel);
         void emulation_phase(uint32_t  channel, uint32_t init_point);

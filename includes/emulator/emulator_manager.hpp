@@ -40,6 +40,7 @@ namespace fcore{
         void enable_debug_mode() {debug_autogen = true;};
         void set_profiler(const std::shared_ptr<instrumentation_core> &prof){ this->profiler = prof;};
         void set_specs(const nlohmann::json &spec_file);
+        std::set<uint32_t> get_breakpoints(const std::string &id);
         void process();
         std::optional<debug_checkpoint> emulate(bool interactive);
 
