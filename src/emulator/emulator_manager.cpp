@@ -206,7 +206,11 @@ namespace fcore {
     }
 
     std::set<uint32_t> emulator_manager::get_breakpoints(const std::string &id) {
-        return runners->at(id).get_breakpoints();
+        if(runners->contains(id)){
+            return runners->at(id).get_breakpoints();
+        } else {
+            return {};
+        }
     }
 
 
