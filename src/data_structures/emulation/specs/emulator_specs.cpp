@@ -19,6 +19,8 @@
 namespace fcore::emulator {
 
     void emulator_specs::set_specs(const nlohmann::json &spec_obj) {
+        interconnects.clear();
+        cores.clear();
 
         try{
             schema_validator_base validator(emulator_input);
