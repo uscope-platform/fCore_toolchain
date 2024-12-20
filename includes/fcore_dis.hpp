@@ -27,13 +27,25 @@
 
 
 namespace fcore{
+
+    struct disassembled_program{
+        std::unordered_map<uint16_t, uint16_t> translation_table;
+        std::string program;
+
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(disassembled_program, translation_table, program
+        )
+    };
+
+    bool operator==(const disassembled_program& lhs, const disassembled_program& rhs);
+
     class fcore_dis {
     public:
         fcore_dis(std::istream &input, bin_loader_input_type_t in_type);
         explicit fcore_dis(const std::vector<uint32_t> &mem);
         std::string get_errors();
         void write_json(const std::string& output_file);
-        std::string get_disassenbled_program();
+        std::string get_disassembled_program_text();
+        disassembled_program get_diassembled_object();
         void write_disassembled_program(const std::string& output_file);
     private:
         void process_stream(instruction_stream program_stream);

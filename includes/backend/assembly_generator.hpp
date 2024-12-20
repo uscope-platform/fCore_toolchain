@@ -26,7 +26,8 @@ namespace fcore{
         explicit assembly_generator(const instruction_stream& stream);
         void set_io_map(const std::unordered_map<uint16_t, uint16_t> &iom){io_map = iom;};
         void write_program(const std::string& filename);
-        std::string get_program();
+        std::string get_program(bool add_header);
+        std::unordered_map<uint16_t, uint16_t> get_io_map() {return io_map;};
     private:
         std::unordered_map<uint16_t, uint16_t> io_map;
         std::string program;

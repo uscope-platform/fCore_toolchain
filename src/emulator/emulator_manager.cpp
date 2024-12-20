@@ -180,13 +180,12 @@ namespace fcore {
         }
     }
 
-    std::unordered_map<std::string, std::string> emulator_manager::disassemble() {
-        std::unordered_map<std::string, std::string> ret;
+    std::unordered_map<std::string, disassembled_program> emulator_manager::disassemble() {
+        std::unordered_map<std::string, disassembled_program> ret;
 
         for(auto &p:get_programs()){
             fcore_dis d(p.program.binary);
-            ret[p.name] = d.get_disassenbled_program();
-
+            ret[p.name] = d.get_diassembled_object();
         }
         return ret;
     }

@@ -25,7 +25,7 @@ TEST( Disassembler, disassembler) {
 
     fcore_dis disassembler(program);
 
-    std::string result = disassembler.get_disassenbled_program();
+    std::string result = disassembler.get_disassembled_program_text();
 
     std::string gold_standard = "ldc r4, 100.000000\nldc r5, 200.000000\nadd r24, r5, r6\nstop\n";
 

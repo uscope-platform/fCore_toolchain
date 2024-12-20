@@ -50,10 +50,10 @@ namespace fcore{
         }
     }
 
-    std::string assembly_generator::get_program() {
+    std::string assembly_generator::get_program(bool add_header) {
         std::stringstream ret;
 
-        if(!io_map.empty()){
+        if(!io_map.empty() && add_header){
             ret<<"///////////////////////////////////////////"<<std::endl;
             ret<<"//               IO MAPPING              //"<<std::endl;
             ret<<"//    io address <---> core address      //"<<std::endl;

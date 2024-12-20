@@ -17,6 +17,11 @@
 
 namespace fcore{
 
+
+    bool operator==(const disassembled_program& lhs, const disassembled_program& rhs){
+        return lhs.translation_table == rhs.translation_table && lhs.program == rhs.program;
+    }
+
     fcore_dis::fcore_dis(std::istream &input, bin_loader_input_type_t in_type) {
         error_code = "";
         try{
@@ -48,7 +53,7 @@ namespace fcore{
         nlohmann::json j;
         j["error_code"] = error_code;
         if(error_code.empty()){
-            j["disassembled_program"] = gen->get_program();
+            j["disassembled_program"] = gen->get_program(true);
         } else{
             j["disassembled_program"] = "";
         }
@@ -58,8 +63,8 @@ namespace fcore{
         ss.close();
     }
 
-    std::string fcore_dis::get_disassenbled_program() {
-        return gen->get_program();
+    std::string fcore_dis::get_disassembled_program_text() {
+        return gen->get_program(true);
     }
 
     void fcore_dis::write_disassembled_program(const std::string &output_file) {
@@ -74,6 +79,13 @@ namespace fcore{
         program_stream = sman.process_stream(program_stream);
         gen = std::make_unique<assembly_generator>(program_stream);
 
+    }
+
+    disassembled_program fcore_dis::get_diassembled_object() {
+        disassembled_program dis;
+        dis.program = gen->get_program(false);
+        dis.translation_table = gen->get_io_map();
+        return dis;
     }
 }
 

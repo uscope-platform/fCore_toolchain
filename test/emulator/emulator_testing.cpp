@@ -514,9 +514,9 @@ TEST(Emulator, emulator_disassemble) {
 
     emulator_manager manager;
     auto res = manager.disassemble();
-    std::unordered_map<std::string, std::string> expected = {
-            {"test_producer", R"("///////////////////////////////////////////\n//               IO MAPPING              //\n//    io address <---> core address      //\n///////////////////////////////////////////\n//    5  <--->  3      //\n//    4  <--->  1      //\n//    3  <--->  2      //\n///////////////////////////////////////////\nadd r2, r1, r3\nstop\n")"},
-            {"test_reducer", R"("///////////////////////////////////////////\n//               IO MAPPING              //\n//    io address <---> core address      //\n///////////////////////////////////////////\n//    5  <--->  3      //\n///////////////////////////////////////////\nmul r1, r2, r3\nstop\n")"}
+    std::unordered_map<std::string, disassembled_program> expected = {
+            {"test_producer", {{{5,4}, {4,1}, {3,2}}, R"("add r2, r1, r3\nstop\n")"}},
+            {"test_reducer",  {{{5,3}, {4,1}, {3,2}}, R"("mul r1, r2, r3\nstop\n")"}}
     };
 
     EXPECT_EQ(res["test_producer"], res["test_producer"]);

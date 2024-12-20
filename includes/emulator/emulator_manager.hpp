@@ -47,7 +47,7 @@ namespace fcore{
         void add_breakpoint(const std::string &s, uint32_t addr);
         void remove_breakpoint(const std::string &s, uint32_t addr);
 
-        std::unordered_map<std::string, std::string>  disassemble();
+        std::unordered_map<std::string, disassembled_program>  disassemble();
 
         nlohmann::json get_results();
         std::vector<program_bundle> get_programs();
