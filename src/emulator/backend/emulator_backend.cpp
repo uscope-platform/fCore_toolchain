@@ -17,9 +17,16 @@
 
 namespace fcore{
 
-    bool operator==(const debug_checkpoint& lhs, const debug_checkpoint& rhs)
-    {
-        return lhs.breakpoint == rhs.breakpoint && lhs.memory_view == rhs.memory_view;
+    bool operator==(const debug_checkpoint& lhs, const debug_checkpoint& rhs) {
+        bool ret = true;
+
+        ret &= lhs.core_name == rhs.core_name;
+        ret &= lhs.breakpoint == rhs.breakpoint;
+        ret &= lhs.memory_view == rhs.memory_view;
+        ret &= lhs.inputs == rhs.inputs;
+
+
+        return ret;
     }
 
 
@@ -34,7 +41,7 @@ namespace fcore{
 
 
         for(uint32_t i = init_point; i<program.size(); i++){
-            if(breakpoints.contains(i) && i!=init_point) throw BreakpointException({i, *working_memory});
+            if(breakpoints.contains(i) && i!=init_point) throw BreakpointException({core_name, i, *working_memory});
             auto opcode = get_opcode(program[i]);
             auto operands  = get_operands(program[i]);
             auto io_flags =get_common_io_flags(program[i]);

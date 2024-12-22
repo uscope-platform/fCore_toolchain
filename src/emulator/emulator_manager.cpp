@@ -120,6 +120,7 @@ namespace fcore {
             spdlog::info("EMULATION DONE");
             return {};
         } catch (BreakpointException &ex) {
+            ex.data.inputs = runners->at(ex.data.core_name).get_inputs();
             interactive_restart_point = ex.data.breakpoint;
             return ex.data;
         }

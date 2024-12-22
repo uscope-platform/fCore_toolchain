@@ -20,6 +20,7 @@ namespace fcore {
 
 
     emulator_runner::emulator_runner(program_bundle &prog) {
+        core_name = prog.name;
         backend.set_core_name(core_name);
         program = prog;
         backend.set_program(sanitize_program(prog.program.binary));
@@ -43,7 +44,6 @@ namespace fcore {
             }
         }
 
-        core_name = prog.name;
     }
 
     std::vector<uint32_t> emulator_runner::sanitize_program(const std::vector<uint32_t> &raw_prog) {
@@ -66,6 +66,8 @@ namespace fcore {
     }
 
     void emulator_runner::inputs_phase(const core_step_metadata &info, uint32_t channel) {
+
+
         if(info.running){
             for(auto &in:program.input){
 
@@ -96,6 +98,7 @@ namespace fcore {
                 if(in.source_type != emulator::constant_input || in.channel.size()!=1){
                     sel_ch = in.channel[channel];
                 }
+                current_inputs[in.name] = input_val;
                 dma_write(in.address[0], sel_ch, input_val);
             }
         }
