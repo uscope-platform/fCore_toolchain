@@ -52,6 +52,7 @@ namespace fcore {
         std::vector<core_step_metadata> get_running_cores();
         void advance_emulation() { progress--;};
 
+        void clear();
         std::unordered_map<std::string, bool> get_enabled_cores() { return enabled_cores_map; };
     private:
 

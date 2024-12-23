@@ -201,6 +201,8 @@ namespace fcore {
 
     void emulator_manager::set_specs(const nlohmann::json &spec_file) {
         runners->clear();
+        sequencer.clear();
+        outputs_manager.clear();
         bus_map.clear();
         emu_spec.set_specs(spec_file);
     }

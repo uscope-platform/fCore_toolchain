@@ -184,4 +184,9 @@ namespace fcore{
 
     }
 
+    void emulation_outputs_manager::clear() {
+        data_section.clear();
+        output_specs.clear();
+    }
+
 }

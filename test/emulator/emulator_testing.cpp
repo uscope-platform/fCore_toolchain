@@ -122,11 +122,108 @@ TEST(Emulator, emulator_inputs) {
     emulator_manager manager;
     manager.set_specs(spec);
     manager.process();
-    manager.emulate(true);
+    manager.emulate(false);
     auto dbg = manager.get_results().dump(4);
     uint32_t res = manager.get_results()["test"]["outputs"]["out"]["0"][0][1];
 
     ASSERT_EQ(res, 0x42f070a4);
+
+}
+
+
+
+TEST(Emulator, emulator_consecutive_runs) {
+
+
+    auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal + out;}";
+
+
+    auto spec = prepare_spec(program, 2,
+                             {}, {},{});
+
+
+    spec["cores"][0]["efi_implementation"] = "efi_sort";
+    spec["cores"][0]["input_data"] = std::vector<nlohmann::json>();
+    spec["cores"][0]["input_data"].push_back(nlohmann::json());
+    spec["cores"][0]["input_data"][0]["name"] = "data_file_1";
+    spec["cores"][0]["input_data"][0]["data"] = nlohmann::json();
+    spec["cores"][0]["input_data"][0]["data"]["input_1"] = {15.7,67.4};
+    spec["cores"][0]["input_data"][0]["data"]["input_2"] = {42.92,-5.8};
+    spec["cores"][0]["inputs"] = std::vector<nlohmann::json>();
+
+    auto in = nlohmann::json();
+    in["name"] = "input_1";
+
+    in["metadata"] = nlohmann::json();
+    in["metadata"]["type"] = "float";
+    in["metadata"]["width"] = 12;
+    in["metadata"]["signed"] = true;
+    in["metadata"]["common_io"] = false;
+    in["reg_n"] = 1;
+    in["source"] = nlohmann::json();
+    in["source"]["type"] = "file";
+    in["source"]["file"] = "data_file_1";
+    in["source"]["series"] = "input_1";
+    in["channel"] = 0;
+    spec["cores"][0]["inputs"].push_back(in);
+
+    in["name"] = "input_2";
+    in["reg_n"] = 2;
+    in["source"] = nlohmann::json();
+    in["source"]["type"] = "file";
+    in["source"]["file"] = "data_file_1";
+    in["source"]["series"] = "input_2";
+    spec["cores"][0]["inputs"].push_back(in);
+
+    auto out = nlohmann::json();
+    out["name"] = "out";
+    out["metadata"]["type"] = "integer";
+    out["metadata"]["width"] = 12;
+    out["metadata"]["signed"] = true;
+    out["reg_n"] = std::vector<uint32_t>({4});
+    out["type"] = "integer";
+    spec["cores"][0]["outputs"].push_back(out);
+
+
+    spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_1");
+    spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_2");
+    spec["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("out");
+
+
+    emulator_manager manager;
+    manager.set_specs(spec);
+    manager.process();
+    manager.emulate(false);
+
+    auto dbg = manager.get_results().dump(4);
+    std::vector<uint32_t> res = manager.get_results()["test"]["outputs"]["out"]["0"][0];
+    std::vector<uint32_t> check_vector = {0x426a7ae1, 0x42f070a4};
+
+    std::vector<float> res_f = {0, 0};
+    res_f[0] = emulator_backend::uint32_to_float(res[0]);
+    res_f[1] = emulator_backend::uint32_to_float(res[1]);
+
+
+    std::vector<float> check_f = {0, 0};
+    check_f[0] = emulator_backend::uint32_to_float(check_vector[0]);
+    check_f[1] = emulator_backend::uint32_to_float(check_vector[1]);
+    ASSERT_EQ(res, check_vector);
+
+    manager.set_specs(spec);
+    manager.process();
+    manager.emulate(false);
+
+    std::vector<uint32_t> res2 = manager.get_results()["test"]["outputs"]["out"]["0"][0];
+    check_vector = {0x426a7ae1, 0x42f070a4};
+
+    res_f[0] = emulator_backend::uint32_to_float(res2[0]);
+    res_f[1] = emulator_backend::uint32_to_float(res2[1]);
+
+    check_f[0] = emulator_backend::uint32_to_float(check_vector[0]);
+    check_f[1] = emulator_backend::uint32_to_float(check_vector[1]);
+
+    ASSERT_EQ(res2, check_vector);
+
 
 }
 

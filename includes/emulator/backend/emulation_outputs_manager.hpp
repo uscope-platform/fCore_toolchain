@@ -57,6 +57,7 @@ namespace fcore{
         void set_simulation_frequency(uint32_t freq);
         nlohmann::json get_emulation_output(const std::string& core_id);
         std::vector<double> get_timebase();
+        void clear();
     private:
 
         std::shared_ptr<std::unordered_map<std::string, emulator_runner>> runners;

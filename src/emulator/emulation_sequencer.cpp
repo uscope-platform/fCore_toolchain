@@ -90,5 +90,14 @@ namespace fcore{
     void emulation_sequencer::setup_run(double sim_l) {
         sim_length = sim_l;
     }
+
+    void emulation_sequencer::clear() {
+        progress = 0;
+        sim_length = 0;
+        simulation_frequency = 0;
+        empty_step = false;
+        cores.clear();
+        enabled_cores_map.clear();
+    }
 }
 
