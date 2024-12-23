@@ -163,10 +163,11 @@ TEST(Emulator_runner, debug_checkpoint_serialization) {
     base.breakpoint = 23;
     base.memory_view = {11,23,65};
     base.inputs= {{"test",1}, {"test",2}};
+    base.status = "in_progress";
     base.core_name = "name";
     nlohmann::json uut = base;
 
-    std::string ref = "{\"breakpoint\":23,\"core_name\":\"name\",\"inputs\":{\"test\":1},\"memory_view\":[11,23,65]}";
+    std::string ref = R"({"breakpoint":23,"core_name":"name","inputs":{"test":1},"memory_view":[11,23,65],"status":"in_progress"})";
     std::string result = uut.dump();
 
     EXPECT_EQ(ref, result);

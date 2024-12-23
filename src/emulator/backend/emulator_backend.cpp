@@ -41,7 +41,7 @@ namespace fcore{
 
 
         for(uint32_t i = init_point; i<program.size(); i++){
-            if(breakpoints.contains(i) && i!=init_point) throw BreakpointException({core_name, i, *working_memory});
+            if(breakpoints.contains(i) && i!=init_point) throw BreakpointException({"in_progress", core_name, i, *working_memory});
             auto opcode = get_opcode(program[i]);
             auto operands  = get_operands(program[i]);
             auto io_flags =get_common_io_flags(program[i]);

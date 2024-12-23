@@ -34,6 +34,7 @@
 namespace fcore{
 
     struct debug_checkpoint{
+        std::string status;
         std::string core_name;
         uint32_t breakpoint;
         std::vector<uint32_t> memory_view;
@@ -42,7 +43,7 @@ namespace fcore{
 
     bool operator==(const debug_checkpoint& lhs, const debug_checkpoint& rhs);
 
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(debug_checkpoint, breakpoint, memory_view, inputs, core_name)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(debug_checkpoint, status, breakpoint, memory_view, inputs, core_name)
 
     class BreakpointException : public std::runtime_error {
     public:
