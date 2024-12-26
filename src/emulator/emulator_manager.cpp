@@ -147,6 +147,21 @@ namespace fcore {
     }
 
 
+    debug_checkpoint emulator_manager::step_over(const std::string &core_id) {
+        auto current_core = sequencer.get_core_by_id(core_id);
+        auto checkpoint = runners->at(core_id).step_over();
+        if(checkpoint.completed_round){
+            interconnects_phase(emu_spec.interconnects, current_core);
+            if(sequencer.is_last_in_sequence(core_id)){
+                sequencer.advance_emulation();
+                outputs_manager.process_outputs(sequencer.get_running_cores());
+            }
+        }
+        checkpoint.inputs = runners->at(checkpoint.core_name).get_inputs();
+        return checkpoint;
+    }
+
+
     void emulator_manager::interconnects_phase(const std::vector<emulator::emulator_interconnect> &specs, const core_step_metadata& info) {
         for(auto &conn:specs){
             if(info.id == conn.source_core_id){

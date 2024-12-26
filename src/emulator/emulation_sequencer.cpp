@@ -99,5 +99,30 @@ namespace fcore{
         cores.clear();
         enabled_cores_map.clear();
     }
+
+    core_step_metadata emulation_sequencer::get_core_by_id(const std::string &id) {
+        for(auto &c:cores){
+            if(c.id == id){
+                core_step_metadata m;
+                m.id = c.id;
+                m.running = true;
+                m.order = c.exec_order;
+                m.step_n = get_current_step() -1;
+                m.n_channels = c.n_channels;
+                return m;
+            }
+        }
+        throw std::runtime_error("Core " + id + " not found");
+    }
+
+    bool emulation_sequencer::is_last_in_sequence(const std::string &id) {
+        for(auto &c:cores) {
+            if (c.id == id) {
+                if(c.exec_order == cores.size()-1) return true;
+                else return false;
+            }
+        }
+        throw std::runtime_error("Core " + id + " not found");
+    }
 }
 

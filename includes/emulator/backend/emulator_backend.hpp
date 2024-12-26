@@ -38,6 +38,7 @@ namespace fcore{
         std::string core_name;
         uint32_t breakpoint;
         std::vector<uint32_t> memory_view;
+        bool completed_round;
         std::unordered_map<std::string, uint32_t> inputs;
     };
 
@@ -58,6 +59,8 @@ namespace fcore{
         void set_program(std::vector<uint32_t> p) {program = std::move(p);};
         void set_comparator_type(const comparator_type_t &t){comparator_type = t;};
         void run_round(std::shared_ptr<std::vector<uint32_t>> channel_mem, const std::shared_ptr<std::vector<uint32_t>> &common_mem, uint32_t init_point);
+
+        debug_checkpoint step_over();
         void set_efi_selector(const efi_implementation_t sel){ efi_selector = sel;};
 
         std::set<uint32_t> get_breakpoints() {return breakpoints;};
@@ -73,6 +76,7 @@ namespace fcore{
         static float uint32_to_float(uint32_t u);
     private:
 
+        debug_checkpoint produce_checkpoint(bool round_complete);
 
         void run_instruction_by_type(const uint32_t& opcode, std::array<uint32_t, 3> operands, std::array<bool, 2> io_flags);
 
@@ -113,6 +117,8 @@ namespace fcore{
         #else
                 ba_executor exec;
         #endif
+
+         uint32_t current_instruction = 0;
 
         bool stop_requested = false;
 

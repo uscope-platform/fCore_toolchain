@@ -56,6 +56,8 @@ namespace fcore{
 
         void run_cores();
 
+        debug_checkpoint step_over(const std::string &core_id);
+
         void interconnects_phase(const std::vector<emulator::emulator_interconnect> &specs, const core_step_metadata& info);
 
         std::unordered_map<std::string, std::string> errors;

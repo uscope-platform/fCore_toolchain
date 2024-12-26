@@ -40,14 +40,15 @@ namespace fcore{
         common_io = common_mem;
 
 
-        for(uint32_t i = init_point; i<program.size(); i++){
-            if(breakpoints.contains(i) && i!=init_point) throw BreakpointException({"in_progress", core_name, i, *working_memory});
-            auto opcode = get_opcode(program[i]);
-            auto operands  = get_operands(program[i]);
-            auto io_flags =get_common_io_flags(program[i]);
+        for(current_instruction = init_point; current_instruction<program.size(); current_instruction++){
+            if(breakpoints.contains(current_instruction) && current_instruction!=init_point)
+                throw BreakpointException(produce_checkpoint(false));
+            auto opcode = get_opcode(program[current_instruction]);
+            auto operands  = get_operands(program[current_instruction]);
+            auto io_flags =get_common_io_flags(program[current_instruction]);
             if(opcode == fcore_opcodes["ldc"]){
-                run_load_constant_instruction(operands[0], program[i+1]);
-                i++;
+                run_load_constant_instruction(operands[0], program[current_instruction+1]);
+                current_instruction++;
             } else{
                 run_instruction_by_type(opcode, operands, io_flags);
             }
@@ -57,6 +58,21 @@ namespace fcore{
         }
         stop_requested = false;
 
+    }
+
+    debug_checkpoint emulator_backend::step_over() {
+        auto opcode = get_opcode(program[current_instruction]);
+        auto operands  = get_operands(program[current_instruction]);
+        auto io_flags =get_common_io_flags(program[current_instruction]);
+        if(opcode == fcore_opcodes["ldc"]){
+            run_load_constant_instruction(operands[0], program[current_instruction+1]);
+            current_instruction++;
+        } else{
+            run_instruction_by_type(opcode, operands, io_flags);
+        }
+        current_instruction++;
+
+        return produce_checkpoint(stop_requested);
     }
 
     void emulator_backend::run_instruction_by_type(const uint32_t& raw_opcode, std::array<uint32_t, 3> operands, std::array<bool, 2> io_flags) {
@@ -412,4 +428,15 @@ namespace fcore{
             throw std::runtime_error("The emulator has encountered a comparison instruction, however an unknown type was selected in the spec file");
         }
     }
+
+    debug_checkpoint emulator_backend::produce_checkpoint(bool round_complete) {
+        debug_checkpoint ret;
+        ret.core_name = core_name;
+        ret.completed_round = round_complete;
+        ret.memory_view = *working_memory;
+        ret.breakpoint = current_instruction;
+        ret.status = "in_progress";
+        return ret;
+    }
+
 }

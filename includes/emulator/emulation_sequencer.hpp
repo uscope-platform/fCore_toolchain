@@ -21,6 +21,7 @@
 #include <cstdint>
 #include <numeric>
 #include <algorithm>
+#include <stdexcept>
 
 namespace fcore {
     struct core_metadata {
@@ -51,6 +52,9 @@ namespace fcore {
         bool is_empty_step() {return empty_step;};
         std::vector<core_step_metadata> get_running_cores();
         void advance_emulation() { progress--;};
+
+        core_step_metadata get_core_by_id(const std::string &id);
+        bool is_last_in_sequence(const std::string &id);
 
         void clear();
         std::unordered_map<std::string, bool> get_enabled_cores() { return enabled_cores_map; };
