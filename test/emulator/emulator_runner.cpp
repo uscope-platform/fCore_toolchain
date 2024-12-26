@@ -175,3 +175,44 @@ TEST(Emulator_runner, debug_checkpoint_serialization) {
     debug_checkpoint test_2 = uut;
     EXPECT_EQ(base, test_2);
 }
+
+TEST(Emulator_runner, single_stepping) {
+    auto bundle = prepare_test_bundle({0x40002, 0xc, 0x3f0014, 0xc, 0xc,0x26, 0x3f800000, 0x7e0fe1,  0x7e0fe1,  0x7e0fe1, 0xc});
+
+    bundle.io.emplace(20,63,"o");
+
+    auto emulators_memory  = std::make_shared<std::unordered_map<std::string, core_memory_pool_t>>();
+    auto common_memory  = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
+
+    bundle.input.clear();
+    emulator_runner uut(bundle);
+
+    uint32_t line = 3;
+
+    uut.add_breakpoint(line);
+
+    try{
+        uut.emulation_phase(0, 0);
+        ASSERT_TRUE(false);
+    } catch (BreakpointException &ex){
+        EXPECT_EQ(ex.data.breakpoint, line);
+        EXPECT_EQ(ex.data.memory_view[63], 0x3f800000);
+    }
+
+    auto checkpoint = uut.step_over();
+
+    EXPECT_EQ(checkpoint.status, "in_progress");
+    EXPECT_EQ(checkpoint.core_name, "test_prog");
+    EXPECT_EQ(checkpoint.breakpoint, 4);
+    EXPECT_EQ(checkpoint.completed_round, false);
+    EXPECT_TRUE(checkpoint.inputs.empty());
+    std::vector<uint32_t> expected_mem(64, 0);
+    expected_mem[1] = 0x3f800000;
+    expected_mem[63] = 0x40000000;
+    EXPECT_EQ(checkpoint.memory_view, expected_mem);
+
+
+    auto result = uut.dma_read(20, 0);
+    EXPECT_EQ(result, 0x40000000);
+}
+
