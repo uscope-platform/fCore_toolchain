@@ -41,7 +41,7 @@ namespace fcore{
 
 
         for(current_instruction = init_point; current_instruction<program.size(); current_instruction++){
-            if(breakpoints.contains(current_instruction) && current_instruction!=init_point)
+            if(breakpoints.contains(current_instruction))
                 throw BreakpointException(produce_checkpoint(false));
             auto opcode = get_opcode(program[current_instruction]);
             auto operands  = get_operands(program[current_instruction]);
