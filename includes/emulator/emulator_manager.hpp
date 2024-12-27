@@ -43,6 +43,7 @@ namespace fcore{
         std::set<uint32_t> get_breakpoints(const std::string &id);
         void process();
         std::optional<debug_checkpoint> emulate(bool interactive);
+        debug_checkpoint step_over(const std::string &core_id);
 
         void add_breakpoint(const std::string &s, uint32_t addr);
         void remove_breakpoint(const std::string &s, uint32_t addr);
@@ -56,7 +57,6 @@ namespace fcore{
 
         void run_cores();
 
-        debug_checkpoint step_over(const std::string &core_id);
 
         void interconnects_phase(const std::vector<emulator::emulator_interconnect> &specs, const core_step_metadata& info);
 
