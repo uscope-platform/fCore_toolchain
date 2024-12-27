@@ -42,8 +42,10 @@ namespace fcore{
         void set_specs(const nlohmann::json &spec_file);
         std::set<uint32_t> get_breakpoints(const std::string &id);
         void process();
+
         std::optional<debug_checkpoint> emulate(bool interactive);
         debug_checkpoint step_over(const std::string &core_id);
+        std::optional<debug_checkpoint> continue_emulation();
 
         void add_breakpoint(const std::string &s, uint32_t addr);
         void remove_breakpoint(const std::string &s, uint32_t addr);
@@ -63,7 +65,6 @@ namespace fcore{
         std::unordered_map<std::string, std::string> errors;
         bool debug_autogen;
 
-        bool in_interactive_session;
 
         uint32_t interactive_restart_point;
 

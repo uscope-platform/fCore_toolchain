@@ -1791,7 +1791,7 @@ TEST(Emulator, emulator_interactive) {
 
     manager.remove_breakpoint("test", 3);
 
-    manager.emulate(true);
+    manager.continue_emulation();
     auto res_obj = manager.get_results();
 
     auto dbg = res_obj.dump(4);

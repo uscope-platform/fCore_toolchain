@@ -21,7 +21,6 @@ namespace fcore {
 
     emulator_manager::emulator_manager() {
         debug_autogen = false;
-        in_interactive_session = false;
         runners = std::make_shared<std::unordered_map<std::string, emulator_runner>>();
         interactive_restart_point = 0;
     }
@@ -100,18 +99,14 @@ namespace fcore {
     }
 
     std::optional<debug_checkpoint> emulator_manager::emulate(bool interactive) {
+        interactive_restart_point = 0;
+        ic_manager.clear_repeater();
+        ic_manager.set_runners(runners);
+        outputs_manager.set_runners(runners);
 
-        if(!interactive || !in_interactive_session) {
-            interactive_restart_point = 0;
-            ic_manager.clear_repeater();
-            ic_manager.set_runners(runners);
-            outputs_manager.set_runners(runners);
+        sequencer.calculate_sequence();
+        outputs_manager.set_simulation_frequency(sequencer.get_simulation_frequency());
 
-            sequencer.calculate_sequence();
-            outputs_manager.set_simulation_frequency(sequencer.get_simulation_frequency());
-
-            in_interactive_session = true;
-        }
 
         spdlog::info("EMULATION START");
         try{
@@ -125,6 +120,20 @@ namespace fcore {
             return ex.data;
         }
     }
+
+
+    std::optional<debug_checkpoint> emulator_manager::continue_emulation() {
+        try{
+            run_cores();
+            spdlog::info("EMULATION DONE");
+            return {};
+        } catch (BreakpointException &ex) {
+            ex.data.inputs = runners->at(ex.data.core_name).get_inputs();
+            interactive_restart_point = ex.data.breakpoint;
+            return ex.data;
+        }
+    }
+
 
     void emulator_manager::run_cores() {
         do{
@@ -143,7 +152,6 @@ namespace fcore {
             sequencer.advance_emulation();
             outputs_manager.process_outputs(running_cores);
         } while (!sequencer.sim_complete());
-
     }
 
 
