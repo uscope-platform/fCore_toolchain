@@ -103,7 +103,7 @@
         },
         "headers": []
       },
-      "order": 0,
+      "order": 1,
       "options": {
         "comparators": "reducing",
         "efi_implementation": "efi_sort"

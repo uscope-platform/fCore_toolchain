@@ -46,7 +46,7 @@ static nlohmann::json prepare_spec(
 
     auto cs = nlohmann::json();
 
-    cs["order"] = 0;
+    cs["order"] = 1;
     cs["id"] = "test";
 
     cs["program"] = nlohmann::json();

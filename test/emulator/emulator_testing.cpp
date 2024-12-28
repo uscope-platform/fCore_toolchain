@@ -403,7 +403,7 @@ TEST(Emulator, emulator_header) {
     "cores": [
         {
             "id": "test",
-            "order": 0,
+            "order": 1,
             "input_data": [],
             "inputs": [
                 {
@@ -508,7 +508,7 @@ TEST(Emulator, emulator_disassemble) {
     {
     "cores": [
         {
-            "order": 0,
+            "order": 1,
             "id": "test_producer",
             "channels":2,
             "options":{
@@ -568,7 +568,7 @@ TEST(Emulator, emulator_disassemble) {
             }
         },
         {
-            "order": 1,
+            "order": 2,
             "id": "test_reducer",
             "channels":1,
             "options":{
@@ -629,7 +629,7 @@ TEST(Emulator, emulator_multichannel) {
     "cores": [
         {
             "id": "test",
-            "order": 0,
+            "order": 1,
             "input_data": [],
             "inputs": [
                 {
@@ -764,7 +764,7 @@ TEST(Emulator, emulator_multichannel_input_file) {
 {
     "cores": [
         {
-            "order": 0,
+            "order": 1,
             "id": "test",
             "channels":4,
             "options":{
@@ -895,7 +895,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
     {
     "cores": [
         {
-            "order": 0,
+            "order": 1,
             "id": "test_producer",
             "channels":2,
             "options":{
@@ -955,7 +955,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
             }
         },
         {
-            "order": 1,
+            "order": 2,
             "id": "test_reducer",
             "channels":1,
             "options":{
@@ -1042,7 +1042,7 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
     {
         "cores": [
             {
-                "order": 0,
+                "order": 1,
                 "id": "test_producer",
                 "channels":1,
                 "options":{
@@ -1066,7 +1066,7 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
                 }
             },
             {
-                "order": 1,
+                "order": 2,
                 "id": "test_consumer",
                 "channels":2,
                 "options":{
@@ -1152,7 +1152,7 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
     {
         "cores": [
             {
-                "order": 0,
+                "order": 1,
                 "id": "test_producer",
                 "channels":1,
                 "options":{
@@ -1187,7 +1187,7 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
                 }
             },
             {
-                "order": 1,
+                "order": 2,
                 "id": "test_consumer",
                 "channels":1,
                 "options":{
@@ -1272,7 +1272,7 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
     {
         "cores": [
             {
-                "order": 0,
+                "order": 1,
                 "id": "test_producer",
                 "channels":2,
                 "options":{
@@ -1321,7 +1321,7 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
                 }
             },
             {
-                "order": 1,
+                "order": 2,
                 "id": "test_consumer",
                 "channels":2,
                 "options":{
@@ -1405,7 +1405,7 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
     {
         "cores": [
             {
-                "order": 0,
+                "order": 1,
                 "id": "test_producer",
                 "channels":2,
                 "options":{
@@ -1429,7 +1429,7 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
                 }
             },
             {
-                "order": 1,
+                "order": 2,
                 "id": "test_consumer",
                 "channels":2,
                 "options":{
@@ -1525,7 +1525,7 @@ TEST(Emulator, emulator_common_io) {
     "cores": [
         {
             "id": "test",
-            "order": 0,
+            "order": 1,
             "input_data": [],
             "inputs": [
                 {
@@ -1625,7 +1625,7 @@ TEST(Emulator, emulator_multichannel_input) {
     {
         "cores": [
             {
-                "order": 0,
+                "order": 1,
                 "id": "test_producer",
                 "channels":2,
                 "options":{
@@ -1720,7 +1720,7 @@ TEST(Emulator, emulator_interactive) {
         "cores": [
             {
                 "id": "test",
-                "order": 0,
+                "order": 1,
                 "input_data": [],
                 "inputs": [
                 ],

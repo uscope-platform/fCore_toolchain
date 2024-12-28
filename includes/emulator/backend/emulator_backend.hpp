@@ -39,6 +39,7 @@ namespace fcore{
         uint32_t breakpoint;
         std::vector<uint32_t> memory_view;
         bool completed_round;
+        std::string next_program;
         std::unordered_map<std::string, uint32_t> inputs;
     };
 

@@ -435,7 +435,10 @@ namespace fcore{
         ret.completed_round = round_complete;
         ret.memory_view = *working_memory;
         ret.breakpoint = current_instruction;
-        ret.status = "in_progress";
+        if(round_complete)
+            ret.status = "complete";
+        else
+            ret.status = "in_progress";
         return ret;
     }
 

@@ -147,11 +147,13 @@ TEST(Emulator_runner, continue_emulation) {
     try{
         uut.emulation_phase(0, 0);
         ASSERT_TRUE(false);
-    } catch (BreakpointException &ex){
+    } catch (BreakpointException &ex) {
         EXPECT_EQ(ex.data.breakpoint, line);
         EXPECT_EQ(ex.data.memory_view[63], 0x3f800000);
-        uut.emulation_phase(0, line);
     }
+    uut.remove_breakpoint(line);
+    uut.emulation_phase(0, line);
+
     auto result = uut.dma_read(20, 0);
     EXPECT_EQ(result, 0x40400000);
 }

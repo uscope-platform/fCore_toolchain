@@ -44,7 +44,7 @@ namespace fcore{
         void process();
 
         std::optional<debug_checkpoint> emulate(bool interactive);
-        debug_checkpoint step_over(const std::string &core_id);
+        debug_checkpoint step_over();
         std::optional<debug_checkpoint> continue_emulation();
 
         void add_breakpoint(const std::string &s, uint32_t addr);
@@ -67,6 +67,7 @@ namespace fcore{
 
 
         uint32_t interactive_restart_point;
+        std::string currently_active_core;
 
         hil_bus_map bus_map;
 

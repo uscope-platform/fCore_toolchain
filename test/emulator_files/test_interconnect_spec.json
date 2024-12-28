@@ -55,7 +55,7 @@
           "channel": 0
         }
       ],
-      "order": 0,
+      "order": 1,
       "outputs": [
       ],
       "program":{
@@ -117,7 +117,7 @@
           "name":"consumer_out"
         }
       ],
-      "order": 1,
+      "order": 2,
       "program":{
         "content": "void main(){float input_1; float consumer_out = input_1;}",
         "build_settings": {

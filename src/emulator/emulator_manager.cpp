@@ -110,11 +110,12 @@ namespace fcore {
 
         spdlog::info("EMULATION START");
         try{
-
+            currently_active_core = sequencer.get_core_by_order(1);
             run_cores();
             spdlog::info("EMULATION DONE");
             return {};
         } catch (BreakpointException &ex) {
+            ex.data.next_program = currently_active_core;
             ex.data.inputs = runners->at(ex.data.core_name).get_inputs();
             interactive_restart_point = ex.data.breakpoint;
             return ex.data;
@@ -128,6 +129,7 @@ namespace fcore {
             spdlog::info("EMULATION DONE");
             return {};
         } catch (BreakpointException &ex) {
+            ex.data.next_program = currently_active_core;
             ex.data.inputs = runners->at(ex.data.core_name).get_inputs();
             interactive_restart_point = ex.data.breakpoint;
             return ex.data;
@@ -145,6 +147,7 @@ namespace fcore {
                         runners->at(core.id).inputs_phase(core, j);
                         runners->at(core.id).emulation_phase(j, interactive_restart_point);
                         interactive_restart_point = 0;
+                        currently_active_core = sequencer.get_next_core_by_order(core.step_n);
                     }
                     interconnects_phase(emu_spec.interconnects, core);
                 }
@@ -155,17 +158,20 @@ namespace fcore {
     }
 
 
-    debug_checkpoint emulator_manager::step_over(const std::string &core_id) {
-        auto current_core = sequencer.get_core_by_id(core_id);
-        auto checkpoint = runners->at(core_id).step_over();
+    debug_checkpoint emulator_manager::step_over() {
+        auto current_core = sequencer.get_core_by_id(currently_active_core);
+        auto checkpoint = runners->at(currently_active_core).step_over();
         if(checkpoint.completed_round){
             interconnects_phase(emu_spec.interconnects, current_core);
-            if(sequencer.is_last_in_sequence(core_id)){
+            if(sequencer.is_last_in_sequence(currently_active_core)){
                 sequencer.advance_emulation();
                 outputs_manager.process_outputs(sequencer.get_running_cores());
             }
+            currently_active_core = sequencer.get_next_core_by_order(current_core.step_n);
+            // TODO: This implementation does not take into account multirate emulations (use a do while loop)
         }
         checkpoint.inputs = runners->at(checkpoint.core_name).get_inputs();
+        checkpoint.next_program = currently_active_core;
         return checkpoint;
     }
 
