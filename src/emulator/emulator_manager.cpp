@@ -147,7 +147,7 @@ namespace fcore {
                         runners->at(core.id).inputs_phase(core, j);
                         runners->at(core.id).emulation_phase(j, interactive_restart_point);
                         interactive_restart_point = 0;
-                        currently_active_core = sequencer.get_next_core_by_order(core.step_n);
+                        currently_active_core = sequencer.get_next_core_by_order(core.order);
                     }
                     interconnects_phase(emu_spec.interconnects, core);
                 }
@@ -167,7 +167,7 @@ namespace fcore {
                 sequencer.advance_emulation();
                 outputs_manager.process_outputs(sequencer.get_running_cores());
             }
-            currently_active_core = sequencer.get_next_core_by_order(current_core.step_n);
+            currently_active_core = sequencer.get_next_core_by_order(current_core.order);
             // TODO: This implementation does not take into account multirate emulations (use a do while loop)
         }
         checkpoint.inputs = runners->at(checkpoint.core_name).get_inputs();
