@@ -15,6 +15,8 @@
 #include <gtest/gtest.h>
 #include <filesystem>
 
+#include <sstream>
+
 #include "fcore_has.hpp"
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 
@@ -29,9 +31,17 @@ static inline uint32_t Reverse32(uint32_t value)
 }
 
 TEST( EndToEndAsm, simple_file ) {
-    std::string input_file = "asm/test_add.s";
 
-    std::ifstream stream(input_file);
+    std::istringstream stream(R"(
+        /* MICRO PROGRAM TO TEST ADDITIONS */
+        ldc r4, 100.0
+        ldc r5, 200.0
+        add r24, r5, r6
+        stop
+    )");
+
+    std::string input_file = "input_file";
+
     fcore_has uut(stream, false);
 
     std::vector<uint32_t> gold_standard = {0x60001, 0xc,0xc, 0xc, 0x86, 0x42c80000, 0xa6, 0x43480000, 0xc2b01, 0xc};
@@ -77,9 +87,20 @@ TEST( EndToEndAsm, simple_file ) {
 }
 
 TEST( EndToEndAsm, compare_file ) {
-    std::string input_file = "asm/compare_file.s";
 
-    std::ifstream stream(input_file);
+
+    std::istringstream stream(R"(
+        /* MICRO PROGRAM TO TEST ADDITIONS */
+        ldc r4, 100.0
+        add r4, r5, r6
+        mov r3, r4
+        bgt r2, r3, r1
+        ble r2, r3, r1
+        beq r2, r3, r1
+        bne r2, r3, r1
+        stop
+    )");
+
     fcore_has uut(stream, false);
 
     std::vector<uint32_t> result = uut.get_executable();
@@ -89,9 +110,26 @@ TEST( EndToEndAsm, compare_file ) {
 }
 
 TEST(EndToEndAsm, variables_file) {
-    std::string input_file = "asm/test_variables.s";
 
-    std::ifstream stream(input_file);
+    std::istringstream stream(R"(
+        /* MICRO PROGRAM TO TEST ADDITIONS */
+        let variable1
+        input in_1
+        output out_1
+        let variable2
+        let variable3
+        ldc variable1, 100.0
+        ldc variable3, 200.0
+        ldc r5, 200.0
+        add r4, r5, r6
+        add variable1, r9, r7
+        add variable3, r9, r7
+        ldc variable2, 100.0
+        add variable2, r9, r7
+        rec r5, r10
+        stop
+    )");
+
     fcore_has uut(stream, false);
 
     std::vector<uint32_t> result = uut.get_executable();
@@ -99,11 +137,14 @@ TEST(EndToEndAsm, variables_file) {
     ASSERT_EQ( result, gold_standard);
 }
 
-TEST(EndToEndAsm, load_constant_file) {
-    std::string input_file = "asm/test_ldc.s";
+TEST(EndToEndAsm, load_constant) {
+    std::istringstream stream(R"(
+        ldc r4, 100.0
+        ldc r5, 200.0
+        ldc r4, 3.14
+        stop
+    )");
 
-
-    std::ifstream stream(input_file);
     fcore_has uut(stream, false);
 
     std::vector<uint32_t> result = uut.get_executable();
@@ -112,27 +153,14 @@ TEST(EndToEndAsm, load_constant_file) {
     ASSERT_EQ( result, gold_standard);
 }
 
-TEST(EndToEndAsm, embeddable_wrapper_pass) {
-    std::string input_file = "asm/test_ldc.s";
-    int hex_size;
-    auto *hex_result = (uint32_t*) malloc(4096*sizeof(uint32_t));
-
-    fCore_has_embeddable_f(input_file.c_str(),hex_result, &hex_size, false);
-
-    std::vector<uint32_t> result;
-    for(int i = 0; i<hex_size;i++){
-        result.push_back(hex_result[i]);
-    }
-    free(hex_result);
-    std::vector<uint32_t> gold_standard = {0x70001, 0xc, 0xc, 0xc,0x86, 0x42c80000, 0xa6, 0x43480000, 0x86, 0x4048f5c3, 0xc};
-    ASSERT_EQ( result, gold_standard);
-}
-
 
 TEST(EndToEndAsm, load_integer_constant) {
-    std::string input_file = "asm/test_ldc_int.s";
 
-    std::ifstream stream(input_file);
+    std::istringstream stream(R"(
+        ldc r4, 100
+        stop
+    )");
+
     fcore_has uut(stream, true);
 
     std::vector<uint32_t> result = uut.get_executable();
@@ -143,11 +171,17 @@ TEST(EndToEndAsm, load_integer_constant) {
 
 
 TEST(EndToEndAsm, json_writing) {
-    std::string input_file = "asm/test_ldc.s";
+
 
     std::string test_json = "/tmp/e2e_asm_json_test.json";
 
-    std::ifstream stream(input_file);
+    std::istringstream stream(R"(
+        ldc r4, 100.0
+        ldc r5, 200.0
+        ldc r4, 3.14
+        stop
+    )");
+
     fcore_has uut(stream, false);
 
     uut.write_json(test_json);
@@ -168,6 +202,7 @@ TEST(EndToEndAsm, json_writing) {
 
 
 TEST(EndToEndAsm, conditional_select) {
+
     std::string input_string = "ldc r4, 100\n"
                              "ldc r5, 200\n"
                              "ldc r1, 1\n"

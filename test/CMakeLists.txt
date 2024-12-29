@@ -39,17 +39,6 @@ target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES}
 include(GoogleTest)
 gtest_discover_tests(test_target)
 
-# ASM TESTING FILES
-set(ASM_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/asm)
-file(MAKE_DIRECTORY ${ASM_TEST_FILES_DIR})
-configure_file(asm_files/test_add.s ${ASM_TEST_FILES_DIR} COPYONLY)
-configure_file(asm_files/test_for.s ${ASM_TEST_FILES_DIR} COPYONLY)
-configure_file(asm_files/test_global.s ${ASM_TEST_FILES_DIR} COPYONLY)
-configure_file(asm_files/test_variables.s ${ASM_TEST_FILES_DIR} COPYONLY)
-configure_file(asm_files/compare_file.s ${ASM_TEST_FILES_DIR} COPYONLY)
-configure_file(asm_files/test_ldc.s ${ASM_TEST_FILES_DIR} COPYONLY)
-configure_file(asm_files/test_ldc_int.s ${ASM_TEST_FILES_DIR} COPYONLY)
-
 # Preprocessor
 set(C_PREP_TEST_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/c_prep)
 file(MAKE_DIRECTORY ${C_PREP_TEST_FILES_DIR})

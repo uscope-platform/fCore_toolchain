@@ -16,22 +16,6 @@
 #include "fcore_has.hpp"
 
 
-void fCore_has_embeddable_f(const char * path, uint32_t *hex, int *hex_size, bool print_debug){
-    std::string ret_val;
-    std::ifstream stream;
-    stream.open(path);
-    std::vector<std::string> include_files;
-    // parse target file
-
-    fcore::fcore_has assembler(stream, print_debug);
-    std::vector<uint32_t> data = assembler.get_hexfile(false);
-    unsigned int int_size = assembler.get_program_size();
-    memcpy(hex_size, &int_size, sizeof(int));
-    for(int i = 0; i < assembler.get_program_size(); i++){
-        hex[i] = data[i];
-    }
-}
-
 namespace fcore{
 
     fcore_has::fcore_has(std::istream &input,bool print_debug) {
