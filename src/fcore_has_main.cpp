@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
     std::ifstream stream;
     stream.open(input_file);
 
-    fcore::fcore_has has_engine(stream, false);
+    fcore::fcore_has has_engine(stream, false, {});
 
     if(output_hex){
         has_engine.write_hexfile(output_file);
