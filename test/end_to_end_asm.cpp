@@ -42,7 +42,7 @@ TEST( EndToEndAsm, simple_file ) {
 
     std::string input_file = "input_file";
 
-    fcore_has uut(stream, false);
+    fcore_has uut(stream, false, {});
 
     std::vector<uint32_t> gold_standard = {0x60001, 0xc,0xc, 0xc, 0x86, 0x42c80000, 0xa6, 0x43480000, 0xc2b01, 0xc};
 
@@ -101,7 +101,7 @@ TEST( EndToEndAsm, compare_file ) {
         stop
     )");
 
-    fcore_has uut(stream, false);
+    fcore_has uut(stream, false, {});
 
     std::vector<uint32_t> result = uut.get_executable();
 
@@ -130,7 +130,7 @@ TEST(EndToEndAsm, variables_file) {
         stop
     )");
 
-    fcore_has uut(stream, false);
+    fcore_has uut(stream, false, {});
 
     std::vector<uint32_t> result = uut.get_executable();
     std::vector<uint32_t> gold_standard = {0xe0001,0xc, 0xc,0xc,0x26,0x42c80000, 0x46, 0x43480000, 0xA6, 0x43480000, 0xc2881, 0xe4821,0xe4841,0x26,0x42c80000,0xe4821, 0x50b2, 0xc};
@@ -145,7 +145,7 @@ TEST(EndToEndAsm, load_constant) {
         stop
     )");
 
-    fcore_has uut(stream, false);
+    fcore_has uut(stream, false, {});
 
     std::vector<uint32_t> result = uut.get_executable();
 
@@ -161,7 +161,7 @@ TEST(EndToEndAsm, load_integer_constant) {
         stop
     )");
 
-    fcore_has uut(stream, true);
+    fcore_has uut(stream, true, {});
 
     std::vector<uint32_t> result = uut.get_executable();
 
@@ -182,7 +182,7 @@ TEST(EndToEndAsm, json_writing) {
         stop
     )");
 
-    fcore_has uut(stream, false);
+    fcore_has uut(stream, false, {});
 
     uut.write_json(test_json);
 
@@ -210,7 +210,7 @@ TEST(EndToEndAsm, conditional_select) {
                              "stop";
 
     std::istringstream stream(input_string);
-    fcore_has uut(stream, true);
+    fcore_has uut(stream, true, {});
 
     std::vector<uint32_t> result = uut.get_executable();
 

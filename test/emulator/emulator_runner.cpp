@@ -17,6 +17,7 @@
 #include <gtest/gtest.h>
 
 #include "emulator/emulator_runner.hpp"
+#include "fcore_has.hpp"
 
 using namespace fcore;
 
@@ -63,7 +64,21 @@ program_bundle prepare_test_bundle(std::vector<uint32_t> program){
 
 
 TEST(Emulator_runner, run_simple_emulator) {
-    auto bundle = prepare_test_bundle({0x20004, 0xc, 0x20000, 0x10001, 0x3000a, 0xc, 0xc, 0x60841, 0xc});
+
+
+    std::istringstream stream(R"(
+        add r2, r1, r3
+        stop
+    )");
+
+    std::unordered_map<std::string, std::vector<uint32_t>> io_map = {{"r2", {2}}, {"r1", {1}}, {"r3", {3}}};
+
+    fcore_has has(stream, false, io_map);
+
+    std::vector<uint32_t> test_exec = has.get_executable();
+
+
+    auto bundle = prepare_test_bundle(test_exec);
 
     auto emulators_memory  = std::make_shared<std::unordered_map<std::string, core_memory_pool_t>>();
     auto common_memory  = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
@@ -83,7 +98,21 @@ TEST(Emulator_runner, run_simple_emulator) {
 
 
 TEST(Emulator_runner, run_simple_emulator_inputs) {
-    auto bundle = prepare_test_bundle({0x20004, 0xc, 0x20000, 0x10001, 0x3000a, 0xc, 0xc, 0x60841, 0xc});
+
+    std::istringstream stream(R"(
+        add r2, r1, r3
+        stop
+    )");
+
+    std::unordered_map<std::string, std::vector<uint32_t>> io_map = {{"r2", {2}}, {"r1", {1}}, {"r3", {3}}};
+
+    fcore_has has(stream, false, io_map);
+
+    std::vector<uint32_t> test_exec = has.get_executable();
+
+
+    auto bundle = prepare_test_bundle(test_exec);
+
 
     auto emulators_memory  = std::make_shared<std::unordered_map<std::string, core_memory_pool_t>>();
     auto common_memory  = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
@@ -107,7 +136,22 @@ TEST(Emulator_runner, run_simple_emulator_inputs) {
 
 
 TEST(Emulator_runner, breakpoint) {
-    auto bundle = prepare_test_bundle({0x40002, 0xc, 0x3f0014, 0xc, 0xc,0x26, 0x3f800000, 0x7e0fe1,  0x7e0fe1,  0x7e0fe1, 0xc});
+
+    std::istringstream stream(R"(
+        ldc r1, 1.000000
+        add r63, r1, r63
+        add r63, r1, r63
+        add r63, r1, r63
+        stop
+    )");
+
+    std::unordered_map<std::string, std::vector<uint32_t>> io_map = {{"r63", {63}}};
+
+    fcore_has has(stream, false, io_map);
+
+    std::vector<uint32_t> test_exec = has.get_executable();
+
+    auto bundle = prepare_test_bundle(test_exec);
 
     auto emulators_memory  = std::make_shared<std::unordered_map<std::string, core_memory_pool_t>>();
     auto common_memory  = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
@@ -130,7 +174,23 @@ TEST(Emulator_runner, breakpoint) {
 
 
 TEST(Emulator_runner, continue_emulation) {
-    auto bundle = prepare_test_bundle({0x40002, 0xc, 0x3f0014, 0xc, 0xc,0x26, 0x3f800000, 0x7e0fe1,  0x7e0fe1,  0x7e0fe1, 0xc});
+
+    std::istringstream stream(R"(
+        ldc r1, 1.000000
+        add r63, r1, r63
+        add r63, r1, r63
+        add r63, r1, r63
+        stop
+    )");
+
+    std::unordered_map<std::string, std::vector<uint32_t>> io_map = {{"r63", {63}}};
+
+    fcore_has has(stream, false, io_map);
+
+    std::vector<uint32_t> test_exec = has.get_executable();
+
+    auto bundle = prepare_test_bundle(test_exec);
+
 
     bundle.io.emplace(20,63,"o");
 
@@ -179,7 +239,22 @@ TEST(Emulator_runner, debug_checkpoint_serialization) {
 }
 
 TEST(Emulator_runner, single_stepping) {
-    auto bundle = prepare_test_bundle({0x40002, 0xc, 0x3f0014, 0xc, 0xc,0x26, 0x3f800000, 0x7e0fe1,  0x7e0fe1,  0x7e0fe1, 0xc});
+
+    std::istringstream stream(R"(
+        ldc r1, 1.000000
+        add r63, r1, r63
+        add r63, r1, r63
+        add r63, r1, r63
+        stop
+    )");
+
+    std::unordered_map<std::string, std::vector<uint32_t>> io_map = {{"r63", {63}}};
+
+    fcore_has has(stream, false, io_map);
+
+    std::vector<uint32_t> test_exec = has.get_executable();
+
+    auto bundle = prepare_test_bundle(test_exec);
 
     bundle.io.emplace(20,63,"o");
 
