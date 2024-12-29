@@ -610,14 +610,16 @@ TEST(Emulator, emulator_disassemble) {
 
 
     emulator_manager manager;
+    manager.set_specs(specs);
     auto res = manager.disassemble();
     std::unordered_map<std::string, disassembled_program> expected = {
-            {"test_producer", {{{5,4}, {4,1}, {3,2}}, R"("add r2, r1, r3\nstop\n")"}},
-            {"test_reducer",  {{{5,3}, {4,1}, {3,2}}, R"("mul r1, r2, r3\nstop\n")"}}
+            {"test_producer", {{{5,3}, {4,1}, {3,2}}, "add r2, r1, r3\nstop\n"}},
+            {"test_reducer",  {{{5,3}}, "mul r1, r2, r3\nstop\n"}}
     };
-
-    EXPECT_EQ(res["test_producer"], res["test_producer"]);
-    EXPECT_EQ(res["test_reducer"], res["test_reducer"]);
+    EXPECT_EQ(res["test_producer"].program, expected["test_producer"].program);
+    EXPECT_EQ(res["test_producer"].translation_table, expected["test_producer"].translation_table);
+    EXPECT_EQ(res["test_reducer"].program, expected["test_reducer"].program);
+    EXPECT_EQ(res["test_reducer"].translation_table, expected["test_reducer"].translation_table);
 
 }
 
