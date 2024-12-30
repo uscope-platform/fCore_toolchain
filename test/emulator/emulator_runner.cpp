@@ -293,3 +293,52 @@ TEST(Emulator_runner, single_stepping) {
     EXPECT_EQ(result, 0x40000000);
 }
 
+
+TEST(Emulator_runner, single_step_conclusion) {
+
+    std::istringstream stream(R"(
+        ldc r63, 52.5000
+        ldc r1, 2.000000
+        add r63, r1, r63
+        mul r63, r1, r63
+        sub r63, r1, r63
+        stop
+    )");
+
+    std::unordered_map<std::string, std::vector<uint32_t>> io_map = {{"r63", {63}}};
+
+    fcore_has has(stream, false, io_map);
+
+    std::vector<uint32_t> test_exec = has.get_executable();
+
+    auto bundle = prepare_test_bundle(test_exec);
+
+    bundle.io.emplace(20,63,"o");
+
+    auto emulators_memory  = std::make_shared<std::unordered_map<std::string, core_memory_pool_t>>();
+    auto common_memory  = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
+
+    bundle.input.clear();
+    emulator_runner uut(bundle);
+
+    uint32_t line = 7;
+
+    uut.add_breakpoint(line);
+
+    try{
+        uut.emulation_phase(0, 0);
+        ASSERT_TRUE(false);
+    } catch (BreakpointException &ex){
+        EXPECT_EQ(ex.data.breakpoint, line);
+        EXPECT_EQ(ex.data.memory_view[63], 0x42d60000);
+    }
+
+    auto checkpoint = uut.step_over();
+
+    EXPECT_EQ(checkpoint.status, "complete");
+    EXPECT_EQ(checkpoint.core_name, "test_prog");
+    EXPECT_EQ(checkpoint.breakpoint, 8);
+    EXPECT_EQ(checkpoint.completed_round, true);
+    EXPECT_TRUE(checkpoint.inputs.empty());
+}
+
