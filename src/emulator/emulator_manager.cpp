@@ -125,9 +125,15 @@ namespace fcore {
 
     std::optional<debug_checkpoint> emulator_manager::continue_emulation() {
         try{
+            step_over(); // use step_over to avoid re-triggering the same breakpoint again;
+            interactive_restart_point++;
             run_cores();
+            auto end_state = runners->at(currently_active_core).get_end_state();
+            end_state.next_program = "";
+            end_state.inputs =  runners->at(currently_active_core).get_inputs();
+
             spdlog::info("EMULATION DONE");
-            return {};
+            return end_state;
         } catch (BreakpointException &ex) {
             ex.data.next_program = currently_active_core;
             ex.data.inputs = runners->at(ex.data.core_name).get_inputs();

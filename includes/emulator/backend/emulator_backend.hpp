@@ -33,7 +33,8 @@
 
 namespace fcore{
 
-    struct debug_checkpoint{
+    class debug_checkpoint{
+    public:
         std::string status;
         std::string core_name;
         uint32_t breakpoint;
@@ -43,7 +44,9 @@ namespace fcore{
         std::unordered_map<std::string, uint32_t> inputs;
     };
 
+
     bool operator==(const debug_checkpoint& lhs, const debug_checkpoint& rhs);
+    std::ostream& operator<<(std::ostream& os, const debug_checkpoint& cp);
 
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(debug_checkpoint, status, breakpoint, memory_view, inputs, core_name)
 
@@ -61,6 +64,9 @@ namespace fcore{
         void set_comparator_type(const comparator_type_t &t){comparator_type = t;};
         void run_round(std::shared_ptr<std::vector<uint32_t>> channel_mem, const std::shared_ptr<std::vector<uint32_t>> &common_mem, uint32_t init_point);
 
+
+        debug_checkpoint get_checkpoint();
+
         debug_checkpoint step_over();
         void set_efi_selector(const efi_implementation_t sel){ efi_selector = sel;};
 
@@ -75,9 +81,11 @@ namespace fcore{
 
         static uint32_t float_to_uint32(float f);
         static float uint32_to_float(uint32_t u);
-    private:
 
         debug_checkpoint produce_checkpoint(bool round_complete);
+
+    private:
+
 
         void run_instruction_by_type(const uint32_t& opcode, std::array<uint32_t, 3> operands, std::array<bool, 2> io_flags);
 

@@ -29,6 +29,25 @@ namespace fcore{
         return ret;
     }
 
+    std::ostream& operator<<(std::ostream& os, const debug_checkpoint& cp){
+        os <<"\n\tcore name: " << cp.core_name<< std::endl;
+        os <<"\tstatus: " << cp.status<< std::endl;
+        os <<"\tline: " << cp.breakpoint<< std::endl;
+
+        os <<"\tcompleted round: " << (cp.completed_round ? "true" : "false")<< std::endl;
+        os <<"\tnext program: " << cp.next_program<< std::endl;
+        os <<"\tmemory view: ";
+        for(auto &v:cp.memory_view){
+            os << std::hex<< std::to_string(v);
+            if(&v != &cp.memory_view.back()) os  << ", ";
+        }
+
+        os <<"\n\tinputs: ";
+        for(auto &v:cp.inputs){
+            os << v.first << " = " << v.second << "        ";
+        }
+        return os;
+    }
 
     void emulator_backend::run_round(
             std::shared_ptr<std::vector<uint32_t>> channel_mem,
