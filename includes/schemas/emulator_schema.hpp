@@ -391,6 +391,10 @@ const std::string emulator_schema = R"~(
                 "type": "string",
                 "title": "source code of the selected program"
               },
+              "type":{
+                "type": "string",
+                "enum": ["c", "asm"]
+              },
               "io": {
                 "type": "object",
                 "title": "Object listing input, output and memories for the program",

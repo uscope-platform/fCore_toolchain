@@ -193,18 +193,19 @@ namespace fcore{
 
         std::vector<std::string> content = {core_spec.program.content};
 
+
         auto headers = core_spec.program.headers;
 
-        fcore_cc compiler(content, headers);
-        compiler.set_profiler(profiler);
-        compiler.set_dma_map(dma_io);
-        bool result = compiler.compile();
-
-
-        if(!result){
-            throw std::runtime_error(compiler.get_errors());
+        fcore_program ret_val;
+        if(core_spec.program.type==  emulator::prog_type_asm){
+            auto [prog, io_map] = compile_program_asm(content, headers, dma_io,  core_spec.id);
+            am = io_map;
+            ret_val = prog;
+        } else {
+            auto [prog, io_map] = compile_program_c(content, headers, dma_io,  core_spec.id);
+            am = io_map;
+            ret_val = prog;
         }
-        auto program = compiler.get_executable();
 
         if(debug_autogen){
             if(!std::filesystem::exists("autogen")) std::filesystem::create_directories("autogen");
@@ -216,20 +217,8 @@ namespace fcore{
 
             std::ofstream ofs2("autogen/" + core_name + "_src.c");
             ofs2<<program_content;
-
-            compiler.write_verilog_memfile("autogen/"+core_name+ ".mem");
-
-            fcore_dis dis_engine(compiler.get_executable());
-            dis_engine.write_disassembled_program("autogen/"+core_name+ ".s");
-            std::ofstream ofs3("autogen/" + core_name + "_profiling.json");
-            ofs3<<profiler->dump();
         }
 
-        fcore_program ret_val;
-        ret_val.binary = program;
-        ret_val.program_length = compiler.get_program_info();
-
-        am = compiler.get_io_map();
 
         return ret_val;
     }
@@ -276,5 +265,47 @@ namespace fcore{
             }
         }
         return program;
+    }
+
+    std::pair<fcore_program,std::set<io_map_entry>>  emulator_builder::compile_program_c(
+            std::vector<std::string> &content,
+            std::vector<std::string> &headers,
+            std::unordered_map<std::string, core_iom> &dma_io,
+            std::string core_name
+    ) {
+
+        fcore_cc compiler(content, headers);
+        compiler.set_profiler(profiler);
+        compiler.set_dma_map(dma_io);
+        bool result = compiler.compile();
+
+
+        if(!result){
+            throw std::runtime_error(compiler.get_errors());
+        }
+
+        if(debug_autogen){
+
+            compiler.write_verilog_memfile("autogen/"+core_name+ ".mem");
+
+            fcore_dis dis_engine(compiler.get_executable());
+            dis_engine.write_disassembled_program("autogen/"+core_name+ ".s");
+            std::ofstream ofs3("autogen/" + core_name + "_profiling.json");
+            ofs3<<profiler->dump();
+        }
+
+        fcore_program ret_val;
+        ret_val.binary = compiler.get_executable();
+        ret_val.program_length = compiler.get_program_info();
+        return {ret_val, compiler.get_io_map()};
+    }
+
+    std::pair<fcore_program,std::set<io_map_entry>>  emulator_builder::compile_program_asm(
+            std::vector<std::string> &contents,
+            std::vector<std::string> &inc,
+            std::unordered_map<std::string, core_iom> &map,
+            std::string core_name
+    ) {
+        return {};
     }
 }

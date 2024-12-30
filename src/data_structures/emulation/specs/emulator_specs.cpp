@@ -149,6 +149,15 @@ namespace fcore::emulator {
         c.sampling_frequency = core_obj["sampling_frequency"];
         c.channels = core_obj["channels"];
         c.options = core_obj["options"];
+        if(core_obj["program"].contains("type")){
+            if(core_obj["program"]["type"] == "asm"){
+                c.program.type = prog_type_asm;
+            } else {
+                c.program.type = prog_type_c;
+            }
+        } else {
+            c.program.type = prog_type_c;
+        }
         c.program.content = core_obj["program"]["content"];
         c.program.headers = core_obj["program"]["headers"];
 

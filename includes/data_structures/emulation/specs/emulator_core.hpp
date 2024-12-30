@@ -22,6 +22,12 @@
 
 namespace fcore::emulator {
 
+
+    typedef enum {
+        prog_type_c=0,
+        prog_type_asm=1
+    } program_data_type;
+
     struct core_io {
         std::set<std::string> inputs;
         std::set<std::string> outputs;
@@ -30,10 +36,10 @@ namespace fcore::emulator {
 
     struct program_data {
         std::string content;
+        program_data_type type;
         core_io io;
         std::vector<std::string> headers;
     };
-
 
     typedef enum {
         type_float=0,

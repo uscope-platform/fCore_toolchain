@@ -396,6 +396,10 @@
                     }
                   }
                 }
+              },
+              "type":{
+                "type": "string",
+                "enum": ["c", "asm"]
               }
             },
             "required": [

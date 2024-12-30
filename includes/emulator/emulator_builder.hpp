@@ -40,12 +40,27 @@ namespace fcore {
         );
 
 
+
         static std::vector<uint32_t> sanitize_program(const std::vector<uint32_t>&  raw_prog);
 
 
         efi_implementation_t get_efi_implementation(const std::string &s);
         comparator_type_t get_comparator_type(const std::string &s);
     private:
+
+        std::pair<fcore_program,std::set<io_map_entry>> compile_program_c(
+                std::vector<std::string> &contents,
+                std::vector<std::string> &inc,
+                std::unordered_map<std::string, core_iom> &map,
+                std::string core_name
+        );
+        std::pair<fcore_program,std::set<io_map_entry>> compile_program_asm(
+                std::vector<std::string> &contents,
+                std::vector<std::string> &inc,
+                std::unordered_map<std::string, core_iom> &map,
+                std::string core_name
+                );
+
 
         std::shared_ptr<instrumentation_core> profiler = std::make_shared<instrumentation_core>();
 
