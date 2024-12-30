@@ -37,8 +37,8 @@ namespace fcore{
             stream_pass_manager sman(io_res, ic);
             sman.set_enabled_passes({true, false, false, false, true, true, true, false ,false}); // do not mess with constants in assembly
 
+            //TODO: implement instruction info stuff
             instruction_stream program_stream = sman.process_stream(target_parser.program);
-
 
             auto amap = std::make_shared<std::unordered_map<std::string, std::vector<io_map_entry>>>();
 

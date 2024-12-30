@@ -306,6 +306,23 @@ namespace fcore{
             std::unordered_map<std::string, core_iom> &map,
             std::string core_name
     ) {
-        return {};
+        std::unordered_map<std::string, std::vector<uint32_t>> io_map;
+
+        std::set<io_map_entry> io_map_out;
+        for(int i = 1; i<64; i++){
+            auto var_name = "r" + std::to_string(i);
+            io_map[var_name] = {};
+            io_map[var_name].push_back(i);
+            io_map_out.emplace(i, i, "o");
+        }
+
+        std::stringstream iss(contents[0]);
+        fcore_has assembler(iss, false, io_map);
+
+        fcore_program ret_val;
+        ret_val.binary = assembler.get_executable();
+        ret_val.program_length = assembler.get_program_info();
+
+        return {ret_val, io_map_out};
     }
 }

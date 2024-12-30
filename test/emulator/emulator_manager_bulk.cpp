@@ -59,6 +59,39 @@ TEST(emulator_manager_bulk, emulator_compile_error) {
 }
 
 
+TEST(emulator_manager_bulk, emulator_asm) {
+
+
+    auto program = "ldc r42, 12.5000\nldc r3, 3.2000\nadd r3, r42, r12\nstop\n";
+
+
+    auto spec = prepare_spec(program, 1,
+                             {}, {},{});
+
+
+    spec["cores"][0]["program"]["type"] = "asm";
+
+    auto out = nlohmann::json();
+    out["name"] = "r12";
+    out["metadata"]["type"] = "float";
+    out["metadata"]["width"] = 12;
+    out["metadata"]["signed"] = true;
+    out["reg_n"] = std::vector<uint32_t>({12});
+    out["type"] = "float";
+    spec["cores"][0]["outputs"].push_back(out);
+
+
+    spec["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("out");
+
+
+    emulator_manager manager;
+    manager.set_specs(spec);
+    manager.process();
+    manager.emulate(false);
+    float res = manager.get_results()["test"]["outputs"]["r12"]["0"][0][0];
+    ASSERT_FLOAT_EQ(res, 15.7f);
+
+}
 
 
 TEST(emulator_manager_bulk, emulator_inputs) {

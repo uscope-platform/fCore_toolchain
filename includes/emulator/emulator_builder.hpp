@@ -25,6 +25,7 @@
 #include "fcore_dis.hpp"
 #include "emulator/backend/emulator_backend.hpp"
 #include "fcore_cc.hpp"
+#include "fcore_has.hpp"
 
 
 namespace fcore {

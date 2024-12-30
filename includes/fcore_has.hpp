@@ -21,6 +21,7 @@
 #include <nlohmann/json.hpp>
 
 #include "frontend/asm/asm_language_parser.hpp"
+#include "data_structures/common/program_metadata.hpp"
 #include "backend/binary_generator.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "data_structures/instruction_stream/instruction_stream.hpp"
@@ -37,6 +38,7 @@ namespace fcore{
         std::vector<uint32_t> get_executable();
         std::vector<uint32_t> get_raw_code();
         std::string get_errors();
+        struct program_info get_program_info() { return length_info;}
         void write_hexfile(const std::string& ouput_file);
         void write_verilog_memfile(const std::string& ouput_file);
         void write_json(const std::string& output_file);
@@ -46,6 +48,7 @@ namespace fcore{
         std::unordered_map<std::string, std::vector<uint32_t>> dma_map;
         binary_generator writer;
         std::string error_code;
+        struct program_info length_info;
         nlohmann::json dump;
     };
 }
