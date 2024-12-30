@@ -21,7 +21,7 @@
 
 using namespace fcore;
 
-TEST(Emulator, emulator_executable_format) {
+TEST(emulator_manager_bulk, emulator_executable_format) {
 
     std::ifstream ifs("emu/test_exec_format.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
@@ -39,7 +39,7 @@ TEST(Emulator, emulator_executable_format) {
 
 }
 
-TEST(Emulator, emulator_compile_error) {
+TEST(emulator_manager_bulk, emulator_compile_error) {
 
     std::ifstream ifs("emu/test_exec_format_error.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
@@ -61,7 +61,7 @@ TEST(Emulator, emulator_compile_error) {
 
 
 
-TEST(Emulator, emulator_inputs) {
+TEST(emulator_manager_bulk, emulator_inputs) {
 
 
     auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal + out;}";
@@ -132,7 +132,7 @@ TEST(Emulator, emulator_inputs) {
 
 
 
-TEST(Emulator, emulator_consecutive_runs) {
+TEST(emulator_manager_bulk, emulator_consecutive_runs) {
 
 
     auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal + out;}";
@@ -227,7 +227,7 @@ TEST(Emulator, emulator_consecutive_runs) {
 
 }
 
-TEST(Emulator, emulator_outputs) {
+TEST(emulator_manager_bulk, emulator_outputs) {
 
     std::ifstream ifs("emu/test_inputs_spec.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
@@ -246,7 +246,7 @@ TEST(Emulator, emulator_outputs) {
 }
 
 
-TEST(Emulator, emulator_memory) {
+TEST(emulator_manager_bulk, emulator_memory) {
 
 
     auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float mem =  internal + mem; float out=mem*1.0;}";
@@ -326,7 +326,7 @@ TEST(Emulator, emulator_memory) {
 }
 
 
-TEST(Emulator, emulator_inteconnect) {
+TEST(emulator_manager_bulk, emulator_inteconnect) {
 
     std::ifstream ifs("emu/test_interconnect_spec.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
@@ -341,7 +341,7 @@ TEST(Emulator, emulator_inteconnect) {
 
 }
 
-TEST(Emulator, emulator_compilation) {
+TEST(emulator_manager_bulk, emulator_compilation) {
 
     std::ifstream ifs("emu/test_compilation.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
@@ -358,9 +358,7 @@ TEST(Emulator, emulator_compilation) {
 
 
 
-
-
-TEST(Emulator, emulator_compilation_interconnect) {
+TEST(emulator_manager_bulk, emulator_compilation_interconnect) {
 
     std::ifstream ifs("emu/test_compilation_interconnect.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
@@ -379,7 +377,7 @@ TEST(Emulator, emulator_compilation_interconnect) {
 }
 
 
-TEST(Emulator, emulator_compilation_memory) {
+TEST(emulator_manager_bulk, emulator_compilation_memory) {
 
     std::ifstream ifs("emu/test_compilation_memory.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
@@ -395,7 +393,7 @@ TEST(Emulator, emulator_compilation_memory) {
 }
 
 
-TEST(Emulator, emulator_header) {
+TEST(emulator_manager_bulk, emulator_header) {
 
 
     nlohmann::json specs = nlohmann::json::parse(
@@ -500,7 +498,7 @@ TEST(Emulator, emulator_header) {
 
 
 
-TEST(Emulator, emulator_disassemble) {
+TEST(emulator_manager_bulk, emulator_disassemble) {
 
 
     nlohmann::json specs = nlohmann::json::parse(
@@ -623,7 +621,7 @@ TEST(Emulator, emulator_disassemble) {
 
 }
 
-TEST(Emulator, emulator_multichannel) {
+TEST(emulator_manager_bulk, emulator_multichannel) {
 
 
     nlohmann::json specs = nlohmann::json::parse(
@@ -758,7 +756,7 @@ TEST(Emulator, emulator_multichannel) {
 
 
 
-TEST(Emulator, emulator_multichannel_input_file) {
+TEST(emulator_manager_bulk, emulator_multichannel_input_file) {
 
 
     nlohmann::json specs = nlohmann::json::parse(
@@ -889,7 +887,7 @@ TEST(Emulator, emulator_multichannel_input_file) {
 }
 
 
-TEST(Emulator, emulator_multichannel_gather_transfer) {
+TEST(emulator_manager_bulk, emulator_multichannel_gather_transfer) {
 
 
     nlohmann::json specs = nlohmann::json::parse(
@@ -1036,7 +1034,7 @@ TEST(Emulator, emulator_multichannel_gather_transfer) {
 }
 
 
-TEST(Emulator, emulator_multichannel_scatter_transfer) {
+TEST(emulator_manager_bulk, emulator_multichannel_scatter_transfer) {
 
 
     nlohmann::json specs = nlohmann::json::parse(
@@ -1146,7 +1144,7 @@ TEST(Emulator, emulator_multichannel_scatter_transfer) {
 }
 
 
-TEST(Emulator, emulator_multichannel_transfer_error) {
+TEST(emulator_manager_bulk, emulator_multichannel_transfer_error) {
 
 
     nlohmann::json specs = nlohmann::json::parse(
@@ -1268,7 +1266,7 @@ TEST(Emulator, emulator_multichannel_transfer_error) {
 }
 
 
-TEST(Emulator, emulator_multichannel_vector_transfer) {
+TEST(emulator_manager_bulk, emulator_multichannel_vector_transfer) {
     nlohmann::json specs = nlohmann::json::parse(
             R"(
     {
@@ -1401,7 +1399,7 @@ TEST(Emulator, emulator_multichannel_vector_transfer) {
 }
 
 
-TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
+TEST(emulator_manager_bulk, emulator_multichannel_2d_vector_transfer) {
     nlohmann::json specs = nlohmann::json::parse(
             R"(
     {
@@ -1519,7 +1517,7 @@ TEST(Emulator, emulator_multichannel_2d_vector_transfer) {
 
 
 
-TEST(Emulator, emulator_common_io) {
+TEST(emulator_manager_bulk, emulator_common_io) {
 
 
     nlohmann::json specs = nlohmann::json::parse(
@@ -1621,7 +1619,7 @@ TEST(Emulator, emulator_common_io) {
 
 }
 
-TEST(Emulator, emulator_multichannel_input) {
+TEST(emulator_manager_bulk, emulator_multichannel_input) {
     nlohmann::json specs = nlohmann::json::parse(
             R"(
     {
@@ -1715,7 +1713,7 @@ TEST(Emulator, emulator_multichannel_input) {
     ASSERT_FLOAT_EQ(res2[1], 6);
 }
 
-TEST(Emulator, emulator_interactive) {
+TEST(emulator_manager_bulk, emulator_interactive) {
     nlohmann::json specs = nlohmann::json::parse(
             R"(
     {
@@ -1805,7 +1803,7 @@ TEST(Emulator, emulator_interactive) {
 
 
 
-TEST(Emulator, emulator_memory_as_output) {
+TEST(emulator_manager_bulk, emulator_memory_as_output) {
 
 
     auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float mem =  internal + mem;}";
