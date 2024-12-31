@@ -120,7 +120,7 @@ TEST(emulator_manager_interactive, breakpoint) {
     emulator_manager manager;
     manager.set_specs(spec);
     manager.process();
-    manager.add_breakpoint("test", 4);
+    manager.add_breakpoint("test", 2);
     auto breakpoint = manager.emulate(true);
     EXPECT_TRUE(breakpoint.has_value());
 
@@ -131,7 +131,7 @@ TEST(emulator_manager_interactive, breakpoint) {
     expected.status = "in_progress";
     expected.core_name = "test";
     expected.next_program = "test";
-    expected.breakpoint = 4;
+    expected.breakpoint = 2;
     expected.completed_round = false;
     expected.memory_view.resize(64, 0);
     expected.memory_view[3] = 0x404ccccd;
@@ -161,10 +161,10 @@ TEST(emulator_manager_interactive, continue_emulation) {
     emulator_manager manager;
     manager.set_specs(spec);
     manager.process();
-    manager.add_breakpoint("test", 4);
+    manager.add_breakpoint("test", 2);
     auto bp_1 = manager.emulate(true);
     EXPECT_TRUE(bp_1.has_value());
-    EXPECT_EQ(bp_1.value().breakpoint, 4);
+    EXPECT_EQ(bp_1.value().breakpoint, 2);
     auto breakpoint = manager.continue_emulation();
     EXPECT_TRUE(breakpoint.has_value());
     auto result = breakpoint.value();
@@ -173,7 +173,7 @@ TEST(emulator_manager_interactive, continue_emulation) {
     debug_checkpoint expected;
     expected.status = "complete";
     expected.core_name = "test";
-    expected.breakpoint = 5;
+    expected.breakpoint = 3;
     expected.next_program = "";
     expected.completed_round = true;
     expected.memory_view.resize(64, 0);
@@ -202,17 +202,17 @@ TEST(emulator_manager_interactive, step_over) {
     emulator_manager manager;
     manager.set_specs(spec);
     manager.process();
-    manager.add_breakpoint("test", 4);
+    manager.add_breakpoint("test", 2);
     auto bp_1 = manager.emulate(true);
     EXPECT_TRUE(bp_1.has_value());
-    EXPECT_EQ(bp_1.value().breakpoint, 4);
+    EXPECT_EQ(bp_1.value().breakpoint, 2);
     auto breakpoint = manager.step_over();
 
     debug_checkpoint expected;
     expected.status = "in_progress";
     expected.core_name = "test";
     expected.next_program = "test";
-    expected.breakpoint = 5;
+    expected.breakpoint = 3;
     expected.completed_round = false;
     expected.memory_view.resize(64, 0);
     expected.memory_view[3] = 0x404ccccd;
@@ -240,10 +240,10 @@ TEST(emulator_manager_interactive, step_over_roune_end) {
     emulator_manager manager;
     manager.set_specs(spec);
     manager.process();
-    manager.add_breakpoint("test", 5);
+    manager.add_breakpoint("test", 3);
     auto bp_1 = manager.emulate(true);
     EXPECT_TRUE(bp_1.has_value());
-    EXPECT_EQ(bp_1.value().breakpoint, 5);
+    EXPECT_EQ(bp_1.value().breakpoint, 3);
     auto breakpoint = manager.step_over();
 
     debug_checkpoint expected;

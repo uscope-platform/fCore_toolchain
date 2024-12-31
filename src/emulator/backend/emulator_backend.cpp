@@ -70,15 +70,14 @@ namespace fcore{
         common_io = common_mem;
 
 
-        for(current_instruction = init_point; current_instruction<program.size(); current_instruction++){
+        for(current_instruction = init_point; current_instruction<prog.size(); current_instruction++){
             if(breakpoints.contains(current_instruction))
                 throw BreakpointException(produce_checkpoint(false));
-            auto opcode = get_opcode(program[current_instruction]);
-            auto operands  = get_operands(program[current_instruction]);
-            auto io_flags =get_common_io_flags(program[current_instruction]);
+            auto opcode = get_opcode(prog[current_instruction].instruction);
+            auto operands  = get_operands(prog[current_instruction].instruction);
+            auto io_flags =get_common_io_flags(prog[current_instruction].instruction);
             if(opcode == fcore_opcodes["ldc"]){
-                run_load_constant_instruction(operands[0], program[current_instruction+1]);
-                current_instruction++;
+                run_load_constant_instruction(operands[0], prog[current_instruction].load_constant);
             } else{
                 run_instruction_by_type(opcode, operands, io_flags);
             }
@@ -91,17 +90,15 @@ namespace fcore{
     }
 
     debug_checkpoint emulator_backend::step_over() {
-        auto opcode = get_opcode(program[current_instruction]);
-        auto operands  = get_operands(program[current_instruction]);
-        auto io_flags =get_common_io_flags(program[current_instruction]);
+        auto opcode = get_opcode(prog[current_instruction].instruction);
+        auto operands  = get_operands(prog[current_instruction].instruction);
+        auto io_flags =get_common_io_flags(prog[current_instruction].instruction);
         if(opcode == fcore_opcodes["ldc"]){
-            run_load_constant_instruction(operands[0], program[current_instruction+1]);
-            current_instruction++;
+            run_load_constant_instruction(operands[0], prog[current_instruction].load_constant);
         } else{
             run_instruction_by_type(opcode, operands, io_flags);
         }
         current_instruction++;
-
         return produce_checkpoint(stop_requested);
     }
 

@@ -159,7 +159,7 @@ TEST(Emulator_runner, breakpoint) {
     bundle.input.clear();
     emulator_runner uut(bundle);
 
-    uint32_t line = 3;
+    uint32_t line = 2;
 
     uut.add_breakpoint(line);
 
@@ -200,7 +200,7 @@ TEST(Emulator_runner, continue_emulation) {
     bundle.input.clear();
     emulator_runner uut(bundle);
 
-    uint32_t line = 3;
+    uint32_t line = 2;
 
     uut.add_breakpoint(line);
 
@@ -270,7 +270,7 @@ TEST(Emulator_runner, single_stepping) {
     bundle.input.clear();
     emulator_runner uut(bundle);
 
-    uint32_t line = 3;
+    uint32_t line = 2;
 
     uut.add_breakpoint(line);
 
@@ -286,7 +286,7 @@ TEST(Emulator_runner, single_stepping) {
 
     EXPECT_EQ(checkpoint.status, "in_progress");
     EXPECT_EQ(checkpoint.core_name, "test_prog");
-    EXPECT_EQ(checkpoint.breakpoint, 4);
+    EXPECT_EQ(checkpoint.breakpoint, 3);
     EXPECT_EQ(checkpoint.completed_round, false);
     EXPECT_TRUE(checkpoint.inputs.empty());
     std::vector<uint32_t> expected_mem(64, 0);
@@ -327,7 +327,7 @@ TEST(Emulator_runner, single_step_conclusion) {
     bundle.input.clear();
     emulator_runner uut(bundle);
 
-    uint32_t line = 7;
+    uint32_t line = 5;
 
     uut.add_breakpoint(line);
 
@@ -343,7 +343,7 @@ TEST(Emulator_runner, single_step_conclusion) {
 
     EXPECT_EQ(checkpoint.status, "complete");
     EXPECT_EQ(checkpoint.core_name, "test_prog");
-    EXPECT_EQ(checkpoint.breakpoint, 8);
+    EXPECT_EQ(checkpoint.breakpoint, 6);
     EXPECT_EQ(checkpoint.completed_round, true);
     EXPECT_TRUE(checkpoint.inputs.empty());
 }

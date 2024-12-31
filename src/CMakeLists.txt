@@ -97,6 +97,7 @@ set(FCORE_EMU_SRCS
         data_structures/emulation/hil_bus_map.cpp
         data_structures/emulation/emulator_output.cpp
         data_structures/emulation/specs/emulator_specs.cpp
+        data_structures/emulation/emulation_program.cpp
         emulator/backend/emulator_backend.cpp
         emulator/backend/emulation_outputs_manager.cpp
         emulator/backend/efi_dispatcher.cpp

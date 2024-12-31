@@ -21,6 +21,7 @@
 #include <spdlog/spdlog.h>
 
 #include "efi_dispatcher.h"
+#include "data_structures/emulation/emulation_program.hpp"
 #include "data_structures/emulation/emulator_metadata.hpp"
 #include "fCore_isa.hpp"
 
@@ -61,12 +62,10 @@ namespace fcore{
     class emulator_backend {
     public:
         emulator_backend() = default;
-        void set_program(std::vector<uint32_t> p) {program = std::move(p);};
+        void set_program(std::vector<uint32_t> p) {prog.process_raw_program(p);};
         void set_comparator_type(const comparator_type_t &t){comparator_type = t;};
         void run_round(std::shared_ptr<std::vector<uint32_t>> channel_mem, const std::shared_ptr<std::vector<uint32_t>> &common_mem, uint32_t init_point);
 
-
-        debug_checkpoint get_checkpoint();
 
         debug_checkpoint step_over();
         void set_efi_selector(const efi_implementation_t sel){ efi_selector = sel;};
@@ -133,7 +132,7 @@ namespace fcore{
         bool stop_requested = false;
 
         std::string core_name;
-        std::vector<uint32_t> program;
+        emulation_program prog;
         efi_implementation_t efi_selector;
         comparator_type_t comparator_type;
 
