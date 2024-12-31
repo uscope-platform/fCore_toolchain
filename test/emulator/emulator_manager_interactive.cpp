@@ -225,7 +225,7 @@ TEST(emulator_manager_interactive, step_over) {
 
 
 
-TEST(emulator_manager_interactive, step_over_roune_end) {
+TEST(emulator_manager_interactive, step_over_round_end) {
 
     std::string program = R"(
         ldc r42, 12.5000
@@ -250,12 +250,15 @@ TEST(emulator_manager_interactive, step_over_roune_end) {
     expected.status = "in_progress";
     expected.core_name = "test";
     expected.next_program = "test";
-    expected.breakpoint = 6;
-    expected.completed_round = false;
+    expected.breakpoint = 0;
+    expected.completed_round = true;
     expected.memory_view.resize(64, 0);
     expected.memory_view[3] = 0x404ccccd;
     expected.memory_view[12] = 0x417b3333;
     expected.memory_view[42] = 0x41480000;
+    expected.progress.current = 2;
+    expected.progress.total_steps = 2;
+    expected.progress.period = 1;
 
     EXPECT_EQ(expected, breakpoint);
 

@@ -121,7 +121,7 @@ namespace fcore{
     bool emulation_sequencer::is_last_in_sequence(const std::string &id) {
         for(auto &c:cores) {
             if (c.id == id) {
-                if(c.exec_order == cores.size()-1) return true;
+                if(c.exec_order == cores.size()) return true;
                 else return false;
             }
         }

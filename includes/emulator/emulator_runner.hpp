@@ -43,6 +43,7 @@ namespace fcore {
         uint32_t dma_read(uint32_t address, uint32_t channel);
         void dma_write(uint32_t address, uint32_t channel, uint32_t data);
 
+
         std::unordered_map<std::string, uint32_t> get_inputs() {return current_inputs;};
 
     private:

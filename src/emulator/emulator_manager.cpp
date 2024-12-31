@@ -177,6 +177,11 @@ namespace fcore {
                 outputs_manager.process_outputs(sequencer.get_running_cores());
             }
             currently_active_core = sequencer.get_next_core_by_order(current_core.order);
+            if(sequencer.sim_complete()){
+                checkpoint.status = "complete";
+            } else {
+                checkpoint.status = "in_progress";
+            }
             // TODO: This implementation does not take into account multirate emulations (use a do while loop)
         }
         checkpoint.inputs = runners->at(checkpoint.core_name).get_inputs();

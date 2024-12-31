@@ -98,7 +98,12 @@ namespace fcore{
         } else{
             run_instruction_by_type(opcode, operands, io_flags);
         }
-        current_instruction++;
+
+        if(stop_requested){
+            current_instruction = 0;
+        } else {
+            current_instruction++;
+        }
         return produce_checkpoint(stop_requested);
     }
 
