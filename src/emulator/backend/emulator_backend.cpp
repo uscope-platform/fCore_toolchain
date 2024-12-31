@@ -24,7 +24,12 @@ namespace fcore{
         ret &= lhs.breakpoint == rhs.breakpoint;
         ret &= lhs.memory_view == rhs.memory_view;
         ret &= lhs.inputs == rhs.inputs;
-
+        ret &= lhs.completed_round == rhs.completed_round;
+        ret &= lhs.next_program == rhs.next_program;
+        ret &= lhs.progress.period == rhs.progress.period;
+        ret &= lhs.progress.total_steps == rhs.progress.total_steps;
+        ret &= lhs.progress.current == rhs.progress.current;
+        ret &= lhs.status == rhs.status;
 
         return ret;
     }
@@ -46,6 +51,12 @@ namespace fcore{
         for(auto &v:cp.inputs){
             os << v.first << " = " << v.second << "        ";
         }
+
+        os <<"\n\tprogress" << std::endl;
+        os << "\t\t period: " << cp.progress.period << std::endl;
+        os << "\t\t total steps: " << cp.progress.total_steps << std::endl;
+        os << "\t\t current: " << cp.progress.current << std::endl;
+
         return os;
     }
 

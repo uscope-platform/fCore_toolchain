@@ -65,7 +65,7 @@ TEST(emulator_manager_bulk, emulator_asm) {
     auto program = "ldc r42, 12.5000\nldc r3, 3.2000\nadd r3, r42, r12\nstop\n";
 
 
-    auto spec = prepare_spec(program, 1,
+    auto spec = prepare_spec(program, 1, 1,
                              {}, {},{});
 
 
@@ -100,7 +100,7 @@ TEST(emulator_manager_bulk, emulator_inputs) {
     auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal + out;}";
 
 
-    auto spec = prepare_spec(program, 2,
+    auto spec = prepare_spec(program, 2, 1,
                              {}, {},{});
 
 
@@ -171,7 +171,7 @@ TEST(emulator_manager_bulk, emulator_consecutive_runs) {
     auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal + out;}";
 
 
-    auto spec = prepare_spec(program, 2,
+    auto spec = prepare_spec(program, 2, 1,
                              {}, {},{});
 
 
@@ -285,7 +285,7 @@ TEST(emulator_manager_bulk, emulator_memory) {
     auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float mem =  internal + mem; float out=mem*1.0;}";
 
 
-    auto specs = prepare_spec(program, 2,
+    auto specs = prepare_spec(program, 2, 1,
                              {}, {},{});
 
 
@@ -1753,7 +1753,7 @@ TEST(emulator_manager_bulk, emulator_memory_as_output) {
     auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float mem =  internal + mem;}";
 
 
-    auto spec = prepare_spec(program, 2,
+    auto spec = prepare_spec(program, 2, 1,
                              {}, {},{});
 
 

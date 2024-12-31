@@ -144,5 +144,13 @@ namespace fcore{
         }
         throw std::runtime_error("Core with exection order " + std::to_string(n_step) + " not found");
     }
+
+    emulation_progress_stat emulation_sequencer::get_progress() {
+        emulation_progress_stat ret;
+        ret.current = get_current_step();
+        ret.total_steps = std::round(sim_length*(float)simulation_frequency);
+        ret.period = 1/simulation_frequency;
+        return ret;
+    }
 }
 

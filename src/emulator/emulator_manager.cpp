@@ -117,6 +117,7 @@ namespace fcore {
         } catch (BreakpointException &ex) {
             ex.data.next_program = currently_active_core;
             ex.data.inputs = runners->at(ex.data.core_name).get_inputs();
+            ex.data.progress = sequencer.get_progress();
             interactive_restart_point = ex.data.breakpoint;
             return ex.data;
         }
@@ -131,12 +132,14 @@ namespace fcore {
             auto end_state = runners->at(currently_active_core).get_end_state();
             end_state.next_program = "";
             end_state.inputs =  runners->at(currently_active_core).get_inputs();
+            end_state.progress = sequencer.get_progress();
 
             spdlog::info("EMULATION DONE");
             return end_state;
         } catch (BreakpointException &ex) {
             ex.data.next_program = currently_active_core;
             ex.data.inputs = runners->at(ex.data.core_name).get_inputs();
+            ex.data.progress = sequencer.get_progress();
             interactive_restart_point = ex.data.breakpoint;
             return ex.data;
         }
@@ -178,6 +181,8 @@ namespace fcore {
         }
         checkpoint.inputs = runners->at(checkpoint.core_name).get_inputs();
         checkpoint.next_program = currently_active_core;
+        checkpoint.progress = sequencer.get_progress();
+
         return checkpoint;
     }
 

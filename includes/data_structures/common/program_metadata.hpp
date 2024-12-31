@@ -20,10 +20,20 @@
 #include <cstdint>
 #include <string>
 #include <unordered_map>
-#include<vector>
+#include <vector>
+#include <nlohmann/json.hpp>
 
 
 namespace fcore {
+
+    class emulation_progress_stat {
+    public:
+        uint32_t current;
+        uint32_t total_steps;
+        float period;
+    };
+
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(emulation_progress_stat, current, total_steps, period);
 
     struct core_info {
         uint32_t n_channels = 11;

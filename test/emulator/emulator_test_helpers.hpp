@@ -36,6 +36,7 @@ struct memory_struct{
 static nlohmann::json prepare_spec(
         const std::string &content,
         float emulation_time,
+        uint32_t sampling_frequency,
         std::vector<input_struct>inputs,
         std::vector<output_struct> outputs,
         std::vector<memory_struct> memories
@@ -56,7 +57,7 @@ static nlohmann::json prepare_spec(
     cs["options"] = nlohmann::json();
     cs["options"]["comparators"] = "full";
     cs["options"]["efi_implementation"] = "none";
-    cs["sampling_frequency"] =1;
+    cs["sampling_frequency"] =sampling_frequency;
     cs["deployment"] = nlohmann::json();
     cs["deployment"]["control_address"] = 18316525568;
     cs["deployment"]["rom_address"] = 17179869184;

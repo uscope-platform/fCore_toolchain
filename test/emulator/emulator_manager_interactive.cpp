@@ -130,13 +130,16 @@ TEST(emulator_manager_interactive, breakpoint) {
     debug_checkpoint expected;
     expected.status = "in_progress";
     expected.core_name = "test";
+    expected.next_program = "test";
     expected.breakpoint = 4;
     expected.completed_round = false;
     expected.memory_view.resize(64, 0);
     expected.memory_view[3] = 0x404ccccd;
     expected.memory_view[12] = 0x0;
     expected.memory_view[42] = 0x41480000;
-
+    expected.progress.current = 1;
+    expected.progress.total_steps = 1;
+    expected.progress.period = 1;
     EXPECT_EQ(expected, result);
 }
 
@@ -171,11 +174,15 @@ TEST(emulator_manager_interactive, continue_emulation) {
     expected.status = "complete";
     expected.core_name = "test";
     expected.breakpoint = 5;
+    expected.next_program = "";
     expected.completed_round = true;
     expected.memory_view.resize(64, 0);
     expected.memory_view[3] = 0x404ccccd;
     expected.memory_view[12] = 0x417b3333;
     expected.memory_view[42] = 0x41480000;
+    expected.progress.period = 1;
+    expected.progress.total_steps = 1;
+    expected.progress.current = 2;
 
     EXPECT_EQ(expected, result);
 }
@@ -215,3 +222,43 @@ TEST(emulator_manager_interactive, step_over) {
     EXPECT_EQ(expected, breakpoint);
 
 }
+
+
+
+TEST(emulator_manager_interactive, step_over_roune_end) {
+
+    std::string program = R"(
+        ldc r42, 12.5000
+        ldc r3, 3.2000
+        add r3, r42, r12
+        stop
+    )";
+    uint32_t n_steps = 2;
+
+    auto spec = prepare_asm_spec(program, n_steps, {12, 42});
+
+    emulator_manager manager;
+    manager.set_specs(spec);
+    manager.process();
+    manager.add_breakpoint("test", 5);
+    auto bp_1 = manager.emulate(true);
+    EXPECT_TRUE(bp_1.has_value());
+    EXPECT_EQ(bp_1.value().breakpoint, 5);
+    auto breakpoint = manager.step_over();
+
+    debug_checkpoint expected;
+    expected.status = "in_progress";
+    expected.core_name = "test";
+    expected.next_program = "test";
+    expected.breakpoint = 6;
+    expected.completed_round = false;
+    expected.memory_view.resize(64, 0);
+    expected.memory_view[3] = 0x404ccccd;
+    expected.memory_view[12] = 0x417b3333;
+    expected.memory_view[42] = 0x41480000;
+
+    EXPECT_EQ(expected, breakpoint);
+
+};
+
+

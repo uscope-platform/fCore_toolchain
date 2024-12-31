@@ -23,6 +23,8 @@
 #include <algorithm>
 #include <stdexcept>
 
+#include "data_structures/common/program_metadata.hpp"
+
 namespace fcore {
     struct core_metadata {
         std::string id;
@@ -37,7 +39,7 @@ namespace fcore {
         bool running;
         std::string id;
         uint32_t order;
-        uint64_t step_n;
+        uint64_t step_n ;
         uint32_t n_channels;
     };
 
@@ -46,6 +48,8 @@ namespace fcore {
         void add_core(const std::string &core_id, uint32_t frequency, uint32_t order, uint32_t n_channels);
         void setup_run(double sim_l);
         void calculate_sequence();
+
+        emulation_progress_stat get_progress();
 
         uint32_t get_simulation_frequency(){ return simulation_frequency;};
         bool sim_complete() const { return progress < 0; };
@@ -62,7 +66,7 @@ namespace fcore {
         std::unordered_map<std::string, bool> get_enabled_cores() { return enabled_cores_map; };
     private:
 
-        uint64_t get_current_step() const { return sim_length - progress; };
+        uint64_t get_current_step() const { return sim_length*simulation_frequency - progress; };
         std::vector<core_metadata> cores;
         int64_t progress;
         float sim_length;

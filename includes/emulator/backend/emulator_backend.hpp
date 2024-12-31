@@ -38,6 +38,7 @@ namespace fcore{
         std::string status;
         std::string core_name;
         uint32_t breakpoint;
+        emulation_progress_stat progress;
         std::vector<uint32_t> memory_view;
         bool completed_round;
         std::string next_program;
@@ -48,7 +49,7 @@ namespace fcore{
     bool operator==(const debug_checkpoint& lhs, const debug_checkpoint& rhs);
     std::ostream& operator<<(std::ostream& os, const debug_checkpoint& cp);
 
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(debug_checkpoint, status, breakpoint, memory_view, inputs, core_name)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(debug_checkpoint, status, core_name, breakpoint, progress, memory_view, completed_round, next_program, inputs )
 
     class BreakpointException : public std::runtime_error {
     public:
