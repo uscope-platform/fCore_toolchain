@@ -195,6 +195,7 @@ endif(${INCLUDE_EMULATOR})
 target_link_libraries(fcore_emu_lib PUBLIC
         fcore_dis_lib
         fcore_cc_lib
+        fcore_has_lib
 )
 
 target_link_libraries(fCore_emu
