@@ -19,6 +19,8 @@
 namespace fcore::emulator {
 
     void emulator_specs::set_specs(const nlohmann::json &spec_obj) {
+        std::set<uint32_t> current_orders;
+
         interconnects.clear();
         cores.clear();
 
@@ -37,6 +39,10 @@ namespace fcore::emulator {
         for(const auto &cs:spec_obj["cores"]){
             auto c = process_core(cs);
             cores.push_back(c);
+            if(current_orders.contains(c.order)){
+                throw std::runtime_error("Core ID: " + c.id + " has duplicate order field");
+            }
+            current_orders.insert(c.order);
         }
 
 
