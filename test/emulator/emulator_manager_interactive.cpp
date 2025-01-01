@@ -22,60 +22,64 @@
 using namespace fcore;
 
 
-nlohmann::json prepare_asm_spec(std::string program, uint32_t n_steps, std::vector<uint32_t> output_regs){
+nlohmann::json prepare_asm_spec(std::vector<std::string> pv, uint32_t n_steps, std::vector<uint32_t> output_regs){
 
     nlohmann::json spec;
     spec["cores"] = std::vector<nlohmann::json>();
     spec["emulation_time"] = n_steps;
 
-    auto cs = nlohmann::json();
+    for(int i = 0; i< pv.size(); i++){
+        auto cs = nlohmann::json();
 
-    cs["order"] = 1;
-    cs["id"] = "test";
+        cs["order"] = i+1;
+        cs["id"] = "test_" + std::to_string(i);
 
-    cs["program"] = nlohmann::json();
-    cs["program"]["headers"] = std::vector<std::string>();
-    cs["program"]["content"] = program;
-    cs["channels"] = 1;
-    cs["options"] = nlohmann::json();
-    cs["options"]["comparators"] = "full";
-    cs["options"]["efi_implementation"] = "none";
-    cs["sampling_frequency"] =1;
-    cs["deployment"] = nlohmann::json();
-    cs["deployment"]["control_address"] = 18316525568;
-    cs["deployment"]["rom_address"] = 17179869184;
-    cs["deployment"]["has_reciprocal"] = false;
-    cs["input_data"] = std::vector<nlohmann::json>();
-    cs["inputs"]= std::vector<nlohmann::json>();
+        cs["program"] = nlohmann::json();
+        cs["program"]["headers"] = std::vector<std::string>();
+        cs["program"]["content"] = pv[i];
+        cs["channels"] = 1;
+        cs["options"] = nlohmann::json();
+        cs["options"]["comparators"] = "full";
+        cs["options"]["efi_implementation"] = "none";
+        cs["sampling_frequency"] =1;
+        cs["deployment"] = nlohmann::json();
+        cs["deployment"]["control_address"] = 18316525568;
+        cs["deployment"]["rom_address"] = 17179869184;
+        cs["deployment"]["has_reciprocal"] = false;
+        cs["input_data"] = std::vector<nlohmann::json>();
+        cs["inputs"]= std::vector<nlohmann::json>();
 
-    cs["program"]["type"] = "asm";
-    cs["program"]["build_settings"] = nlohmann::json();
-    cs["program"]["build_settings"]["io"] = nlohmann::json();
+        cs["program"]["type"] = "asm";
+        cs["program"]["build_settings"] = nlohmann::json();
+        cs["program"]["build_settings"]["io"] = nlohmann::json();
 
-    cs["program"]["build_settings"]["io"]["inputs"] = std::vector<std::string>();
-    cs["program"]["build_settings"]["io"]["outputs"] = std::vector<std::string>();
-    cs["program"]["build_settings"]["io"]["memories"] = std::vector<std::string>();
-    cs["program"]["build_settings"]["io"]["memories"].push_back("out");
+        cs["program"]["build_settings"]["io"]["inputs"] = std::vector<std::string>();
+        cs["program"]["build_settings"]["io"]["outputs"] = std::vector<std::string>();
+        cs["program"]["build_settings"]["io"]["memories"] = std::vector<std::string>();
+        cs["program"]["build_settings"]["io"]["memories"].push_back("out");
 
 
 
-    cs["outputs"]= std::vector<nlohmann::json>();
+        cs["outputs"]= std::vector<nlohmann::json>();
 
-    for(auto &i:output_regs){
-        auto out = nlohmann::json();
-        out["name"] = "r" + std::to_string(i);
-        out["metadata"]["type"] = "float";
-        out["metadata"]["width"] = i;
-        out["metadata"]["signed"] = true;
-        out["reg_n"] = std::vector<uint32_t>();
-        out["reg_n"].push_back(i);
-        out["type"] = "float";
-        cs["outputs"].push_back(out);
+        for(auto &j:output_regs){
+            auto out = nlohmann::json();
+            out["name"] = "r" + std::to_string(j);
+            out["metadata"]["type"] = "float";
+            out["metadata"]["width"] = j;
+            out["metadata"]["signed"] = true;
+            out["reg_n"] = std::vector<uint32_t>();
+            out["reg_n"].push_back(j);
+            out["type"] = "float";
+            cs["outputs"].push_back(out);
+        }
+
+        cs["memory_init"]= std::vector<nlohmann::json>();
+
+        spec["cores"].push_back(cs);
     }
 
-    cs["memory_init"]= std::vector<nlohmann::json>();
 
-    spec["cores"].push_back(cs);
     spec["interconnect"] = std::vector<nlohmann::json>();
     spec["deployment_mode"] = false;
     return spec;
@@ -92,13 +96,13 @@ TEST(emulator_manager_interactive, uninterrupted_run) {
     )";
     uint32_t n_steps = 1;
 
-    auto spec = prepare_asm_spec(program, n_steps, {12, 42});
+    auto spec = prepare_asm_spec({program}, n_steps, {12, 42});
 
     emulator_manager manager;
     manager.set_specs(spec);
     manager.process();
     manager.emulate(true);
-    float res = manager.get_results()["test"]["outputs"]["r12"]["0"][0][0];
+    float res = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, 15.7f);
 
 }
@@ -115,12 +119,12 @@ TEST(emulator_manager_interactive, breakpoint) {
     )";
     uint32_t n_steps = 1;
 
-    auto spec = prepare_asm_spec(program, n_steps, {12, 42});
+    auto spec = prepare_asm_spec({program}, n_steps, {12, 42});
 
     emulator_manager manager;
     manager.set_specs(spec);
     manager.process();
-    manager.add_breakpoint("test", 2);
+    manager.add_breakpoint("test_0", 2);
     auto breakpoint = manager.emulate(true);
     EXPECT_TRUE(breakpoint.has_value());
 
@@ -129,8 +133,8 @@ TEST(emulator_manager_interactive, breakpoint) {
 
     debug_checkpoint expected;
     expected.status = "in_progress";
-    expected.core_name = "test";
-    expected.next_program = "test";
+    expected.core_name = "test_0";
+    expected.next_program = "test_0";
     expected.breakpoint = 2;
     expected.completed_round = false;
     expected.memory_view.resize(64, 0);
@@ -156,12 +160,12 @@ TEST(emulator_manager_interactive, continue_emulation) {
     )";
     uint32_t n_steps = 1;
 
-    auto spec = prepare_asm_spec(program, n_steps, {12, 42});
+    auto spec = prepare_asm_spec({program}, n_steps, {12, 42});
 
     emulator_manager manager;
     manager.set_specs(spec);
     manager.process();
-    manager.add_breakpoint("test", 2);
+    manager.add_breakpoint("test_0", 2);
     auto bp_1 = manager.emulate(true);
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 2);
@@ -172,7 +176,7 @@ TEST(emulator_manager_interactive, continue_emulation) {
 
     debug_checkpoint expected;
     expected.status = "complete";
-    expected.core_name = "test";
+    expected.core_name = "test_0";
     expected.breakpoint = 3;
     expected.next_program = "";
     expected.completed_round = true;
@@ -197,12 +201,12 @@ TEST(emulator_manager_interactive, step_over) {
     )";
     uint32_t n_steps = 1;
 
-    auto spec = prepare_asm_spec(program, n_steps, {12, 42});
+    auto spec = prepare_asm_spec({program}, n_steps, {12, 42});
 
     emulator_manager manager;
     manager.set_specs(spec);
     manager.process();
-    manager.add_breakpoint("test", 2);
+    manager.add_breakpoint("test_0", 2);
     auto bp_1 = manager.emulate(true);
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 2);
@@ -210,8 +214,8 @@ TEST(emulator_manager_interactive, step_over) {
 
     debug_checkpoint expected;
     expected.status = "in_progress";
-    expected.core_name = "test";
-    expected.next_program = "test";
+    expected.core_name = "test_0";
+    expected.next_program = "test_0";
     expected.breakpoint = 3;
     expected.completed_round = false;
     expected.memory_view.resize(64, 0);
@@ -235,12 +239,12 @@ TEST(emulator_manager_interactive, step_over_round_end) {
     )";
     uint32_t n_steps = 2;
 
-    auto spec = prepare_asm_spec(program, n_steps, {12, 42});
+    auto spec = prepare_asm_spec({program}, n_steps, {12, 42});
 
     emulator_manager manager;
     manager.set_specs(spec);
     manager.process();
-    manager.add_breakpoint("test", 3);
+    manager.add_breakpoint("test_0", 3);
     auto bp_1 = manager.emulate(true);
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 3);
@@ -248,8 +252,8 @@ TEST(emulator_manager_interactive, step_over_round_end) {
 
     debug_checkpoint expected;
     expected.status = "in_progress";
-    expected.core_name = "test";
-    expected.next_program = "test";
+    expected.core_name = "test_0";
+    expected.next_program = "test_0";
     expected.breakpoint = 0;
     expected.completed_round = true;
     expected.memory_view.resize(64, 0);
@@ -264,4 +268,115 @@ TEST(emulator_manager_interactive, step_over_round_end) {
 
 };
 
+
+TEST(emulator_manager_interactive, two_programs_continue) {
+
+    std::string program_a = R"(
+        ldc r42, 12.5000
+        ldc r3, 3.2000
+        add r3, r42, r12
+        stop
+    )";
+
+    std::string program_b = R"(
+        ldc r42, 1.5000
+        ldc r3, 332.2000
+        sub r42, r3, r12
+        stop
+    )";
+    uint32_t n_steps = 1;
+
+    auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42});
+
+    emulator_manager manager;
+    manager.set_specs(spec);
+    manager.process();
+    manager.add_breakpoint("test_0", 3);
+    auto bp_1 = manager.emulate(true);
+    EXPECT_TRUE(bp_1.has_value());
+    EXPECT_EQ(bp_1.value().breakpoint, 3);
+    manager.remove_breakpoint("test_0", 3);
+    auto breakpoint = manager.continue_emulation();
+
+    debug_checkpoint expected;
+    expected.status = "complete";
+    expected.core_name = "test_0";
+    expected.next_program = "";
+    expected.breakpoint = 4;
+    expected.completed_round = true;
+    expected.memory_view.resize(64, 0);
+    expected.memory_view[3] = 0x404ccccd;
+    expected.memory_view[12] = 0x417b3333;
+    expected.memory_view[42] = 0x41480000;
+    expected.progress.current = 2;
+    expected.progress.total_steps = 1;
+    expected.progress.period = 1;
+
+    EXPECT_EQ(expected, breakpoint);
+    auto dbg = manager.get_results().dump(4);
+    auto results = manager.get_results();
+
+    float res = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0][0];
+    ASSERT_FLOAT_EQ(res, 15.7f);
+
+     res = manager.get_results()["test_1"]["outputs"]["r12"]["0"][0][0];
+    ASSERT_FLOAT_EQ(res, -330.7f);
+};
+
+
+
+TEST(emulator_manager_interactive, second_program_breakpoint) {
+
+    std::string program_a = R"(
+        ldc r42, 12.5000
+        ldc r3, 3.2000
+        add r3, r42, r12
+        stop
+    )";
+
+    std::string program_b = R"(
+        ldc r42, 1.5000
+        ldc r3, 332.2000
+        sub r42, r3, r12
+        stop
+    )";
+    uint32_t n_steps = 1;
+
+    auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42});
+
+    emulator_manager manager;
+    manager.set_specs(spec);
+    manager.process();
+    manager.add_breakpoint("test_1", 3);
+    auto bp_1 = manager.emulate(true);
+    EXPECT_TRUE(bp_1.has_value());
+    EXPECT_EQ(bp_1.value().core_name, "test_1");
+    EXPECT_EQ(bp_1.value().breakpoint, 3);
+    manager.remove_breakpoint("test_1", 3);
+    auto breakpoint = manager.continue_emulation();
+
+    debug_checkpoint expected;
+    expected.status = "complete";
+    expected.core_name = "test_0";
+    expected.next_program = "";
+    expected.breakpoint = 4;
+    expected.completed_round = true;
+    expected.memory_view.resize(64, 0);
+    expected.memory_view[3] = 0x404ccccd;
+    expected.memory_view[12] = 0x417b3333;
+    expected.memory_view[42] = 0x41480000;
+    expected.progress.current = 3;
+    expected.progress.total_steps = 1;
+    expected.progress.period = 1;
+
+    EXPECT_EQ(expected, breakpoint);
+    auto dbg = manager.get_results().dump(4);
+    auto results = manager.get_results();
+
+    float res = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0][0];
+    ASSERT_FLOAT_EQ(res, 15.7f);
+
+    res = manager.get_results()["test_1"]["outputs"]["r12"]["0"][0][0];
+    ASSERT_FLOAT_EQ(res, -330.7f);
+};
 

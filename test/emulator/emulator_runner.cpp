@@ -343,7 +343,7 @@ TEST(Emulator_runner, single_step_conclusion) {
 
     EXPECT_EQ(checkpoint.status, "complete");
     EXPECT_EQ(checkpoint.core_name, "test_prog");
-    EXPECT_EQ(checkpoint.breakpoint, 6);
+    EXPECT_EQ(checkpoint.breakpoint, 0);
     EXPECT_EQ(checkpoint.completed_round, true);
     EXPECT_TRUE(checkpoint.inputs.empty());
 }
