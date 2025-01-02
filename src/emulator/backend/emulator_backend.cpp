@@ -102,13 +102,16 @@ namespace fcore{
             run_instruction_by_type(opcode, operands, io_flags);
         }
 
-        auto res = produce_checkpoint(stop_requested);
+        debug_checkpoint res;
+
 
         if(stop_requested){
             current_instruction = 0;
-            stop_requested = 0;
+            res =  produce_checkpoint(true);
+            stop_requested = false;
         } else {
             current_instruction++;
+            res =  produce_checkpoint(false);
         }
 
         return res;
