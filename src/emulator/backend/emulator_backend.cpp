@@ -102,12 +102,16 @@ namespace fcore{
             run_instruction_by_type(opcode, operands, io_flags);
         }
 
+        auto res = produce_checkpoint(stop_requested);
+
         if(stop_requested){
             current_instruction = 0;
+            stop_requested = 0;
         } else {
             current_instruction++;
         }
-        return produce_checkpoint(stop_requested);
+
+        return res;
     }
 
     void emulator_backend::run_instruction_by_type(const uint32_t& raw_opcode, std::array<uint32_t, 3> operands, std::array<bool, 2> io_flags) {

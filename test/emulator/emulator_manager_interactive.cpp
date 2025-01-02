@@ -437,3 +437,42 @@ TEST(emulator_manager_interactive, two_programs_step_over) {
 };
 
 
+
+TEST(emulator_manager_interactive, first_core_correct_restart) {
+
+    std::string program_a = R"(
+        ldc r42, 12.5000
+        add r12, r42, r12
+        stop
+    )";
+
+    std::string program_b = R"(
+        ldc r42, 1.5000
+        stop
+    )";
+    uint32_t n_steps = 2;
+
+    auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42});
+
+    emulator_manager manager;
+    manager.set_specs(spec);
+    manager.process();
+    manager.add_breakpoint("test_0", 2);
+    auto bp = manager.emulate(true);
+    EXPECT_TRUE(bp.has_value());
+    EXPECT_EQ(bp.value().breakpoint, 2);
+    manager.remove_breakpoint("test_0", 2);
+
+    manager.step_over();
+    manager.step_over();
+    manager.step_over();
+    manager.step_over();
+    manager.step_over();
+    manager.continue_emulation();
+    auto results = manager.get_results().dump(4);
+
+    float res = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0][1];
+    EXPECT_FLOAT_EQ(res, 25.f);
+};
+
+
