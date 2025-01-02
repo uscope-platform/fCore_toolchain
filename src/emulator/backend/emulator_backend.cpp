@@ -60,15 +60,18 @@ namespace fcore{
         return os;
     }
 
-    void emulator_backend::run_round(
+    void emulator_backend::setup_memory(
             std::shared_ptr<std::vector<uint32_t>> channel_mem,
-            const std::shared_ptr<std::vector<uint32_t>> &common_mem,
-            uint32_t init_point
+            const std::shared_ptr<std::vector<uint32_t>> &common_mem
     ) {
-
         working_memory = std::move(channel_mem);
         common_io = common_mem;
 
+    }
+
+    void emulator_backend::run_round(
+            uint32_t init_point
+    ) {
 
         for(current_instruction = init_point; current_instruction<prog.size(); current_instruction++){
             if(breakpoints.contains(current_instruction))

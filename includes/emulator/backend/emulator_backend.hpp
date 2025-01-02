@@ -64,7 +64,8 @@ namespace fcore{
         emulator_backend() = default;
         void set_program(std::vector<uint32_t> p) {prog.process_raw_program(p);};
         void set_comparator_type(const comparator_type_t &t){comparator_type = t;};
-        void run_round(std::shared_ptr<std::vector<uint32_t>> channel_mem, const std::shared_ptr<std::vector<uint32_t>> &common_mem, uint32_t init_point);
+        void setup_memory(std::shared_ptr<std::vector<uint32_t>> channel_mem, const std::shared_ptr<std::vector<uint32_t>> &common_mem);
+        void run_round(uint32_t init_point);
 
 
         debug_checkpoint step_over();

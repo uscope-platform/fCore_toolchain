@@ -380,3 +380,60 @@ TEST(emulator_manager_interactive, second_program_breakpoint) {
     ASSERT_FLOAT_EQ(res, -330.7f);
 };
 
+TEST(emulator_manager_interactive, two_programs_step_over) {
+
+    std::string program_a = R"(
+        ldc r42, 12.5000
+        ldc r3, 3.2000
+        add r3, r42, r12
+        stop
+    )";
+
+    std::string program_b = R"(
+        ldc r42, 1.5000
+        ldc r3, 332.2000
+        sub r42, r3, r12
+        stop
+    )";
+    uint32_t n_steps = 1;
+
+    auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42});
+
+    emulator_manager manager;
+    manager.set_specs(spec);
+    manager.process();
+    manager.add_breakpoint("test_0", 3);
+    auto bp_1 = manager.emulate(true);
+    EXPECT_TRUE(bp_1.has_value());
+    EXPECT_EQ(bp_1.value().breakpoint, 3);
+    manager.remove_breakpoint("test_0", 3);
+    manager.step_over();
+    auto breakpoint = manager.continue_emulation();
+
+
+    debug_checkpoint expected;
+    expected.status = "complete";
+    expected.core_name = "test_0";
+    expected.next_program = "";
+    expected.breakpoint = 4;
+    expected.completed_round = true;
+    expected.memory_view.resize(64, 0);
+    expected.memory_view[3] = 0x404ccccd;
+    expected.memory_view[12] = 0x417b3333;
+    expected.memory_view[42] = 0x41480000;
+    expected.progress.current = 2;
+    expected.progress.total_steps = 1;
+    expected.progress.period = 1;
+
+    EXPECT_EQ(expected, breakpoint);
+    auto dbg = manager.get_results().dump(4);
+    auto results = manager.get_results();
+
+    float res = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0][0];
+    ASSERT_FLOAT_EQ(res, 15.7f);
+
+    res = manager.get_results()["test_1"]["outputs"]["r12"]["0"][0][0];
+    ASSERT_FLOAT_EQ(res, -330.7f);
+};
+
+
