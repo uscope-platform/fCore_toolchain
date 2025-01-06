@@ -50,6 +50,7 @@ namespace fcore{
         void add_breakpoint(const std::string &s, uint32_t addr);
         void remove_breakpoint(const std::string &s, uint32_t addr);
 
+        void set_multichannel_debug(bool mc){multichannel_debug = mc;};
 
         std::unordered_map<std::string, disassembled_program>  disassemble();
 
@@ -66,6 +67,7 @@ namespace fcore{
         std::unordered_map<std::string, std::string> errors;
         bool debug_autogen;
 
+        bool multichannel_debug;
 
         uint32_t interactive_restart_point;
         std::string currently_active_core;
