@@ -119,7 +119,6 @@ namespace fcore{
         uint32_t execute_compare_ne(uint32_t a, uint32_t b);
         void execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest);
 
-
         uint32_t process_comparison_output(bool val);
 
         #if GENERAL_PURPOSE_EMULATION==1

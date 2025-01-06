@@ -142,6 +142,7 @@ TEST(emulator_manager_interactive, breakpoint) {
     expected.memory_view[12] = 0x0;
     expected.memory_view[42] = 0x41480000;
     expected.progress.current = 1;
+    expected.progress.channel = 0;
     expected.progress.total_steps = 1;
     expected.progress.period = 1;
     EXPECT_EQ(expected, result);
@@ -185,6 +186,7 @@ TEST(emulator_manager_interactive, continue_emulation) {
     expected.memory_view[12] = 0x417b3333;
     expected.memory_view[42] = 0x41480000;
     expected.progress.period = 1;
+    expected.progress.channel = 0;
     expected.progress.total_steps = 1;
     expected.progress.current = 2;
 
@@ -222,6 +224,10 @@ TEST(emulator_manager_interactive, step_over) {
     expected.memory_view[3] = 0x404ccccd;
     expected.memory_view[12] = 0x417b3333;
     expected.memory_view[42] = 0x41480000;
+    expected.progress.channel =0;
+    expected.progress.total_steps = 1;
+    expected.progress.period = 1;
+    expected.progress.current =1;
 
     EXPECT_EQ(expected, breakpoint);
 
@@ -261,6 +267,7 @@ TEST(emulator_manager_interactive, step_over_round_end) {
     expected.memory_view[12] = 0x417b3333;
     expected.memory_view[42] = 0x41480000;
     expected.progress.current = 2;
+    expected.progress.channel = 0;
     expected.progress.total_steps = 2;
     expected.progress.period = 1;
 
@@ -309,6 +316,7 @@ TEST(emulator_manager_interactive, two_programs_continue) {
     expected.memory_view[12] = 0x417b3333;
     expected.memory_view[42] = 0x41480000;
     expected.progress.current = 2;
+    expected.progress.channel = 0;
     expected.progress.total_steps = 1;
     expected.progress.period = 1;
 
@@ -366,6 +374,7 @@ TEST(emulator_manager_interactive, second_program_breakpoint) {
     expected.memory_view[12] = 0x417b3333;
     expected.memory_view[42] = 0x41480000;
     expected.progress.current = 3;
+    expected.progress.channel = 0;
     expected.progress.total_steps = 1;
     expected.progress.period = 1;
 
@@ -422,6 +431,7 @@ TEST(emulator_manager_interactive, two_programs_step_over) {
     expected.memory_view[12] = 0x417b3333;
     expected.memory_view[42] = 0x41480000;
     expected.progress.current = 2;
+    expected.progress.channel = 0;
     expected.progress.total_steps = 1;
     expected.progress.period = 1;
 

@@ -21,6 +21,7 @@ namespace fcore {
 
     emulator_manager::emulator_manager() {
         debug_autogen = false;
+        multichannel_debug = false;
         runners = std::make_shared<std::unordered_map<std::string, emulator_runner>>();
         interactive_restart_point = 0;
     }
@@ -115,11 +116,8 @@ namespace fcore {
             spdlog::info("EMULATION DONE");
             return {};
         } catch (BreakpointException &ex) {
-            ex.data.next_program = currently_active_core;
-            ex.data.inputs = runners->at(ex.data.core_name).get_inputs();
-            ex.data.progress = sequencer.get_progress();
             interactive_restart_point = ex.data.breakpoint;
-            return ex.data;
+            return augment_checkpoint_info(ex.data);
         }
     }
 
@@ -133,15 +131,13 @@ namespace fcore {
             end_state.next_program = "";
             end_state.inputs =  runners->at(currently_active_core).get_inputs();
             end_state.progress = sequencer.get_progress();
+            end_state.progress.channel = current_channel-1;
 
             spdlog::info("EMULATION DONE");
             return end_state;
         } catch (BreakpointException &ex) {
-            ex.data.next_program = currently_active_core;
-            ex.data.inputs = runners->at(ex.data.core_name).get_inputs();
-            ex.data.progress = sequencer.get_progress();
             interactive_restart_point = ex.data.breakpoint;
-            return ex.data;
+            return augment_checkpoint_info(ex.data);
         }
     }
 
@@ -152,9 +148,9 @@ namespace fcore {
 
             for(auto &core:running_cores){
                 if(!sequencer.is_empty_step()){
-                    for(int j = 0; j<core.n_channels; ++j) {
-                        runners->at(core.id).inputs_phase(core, j);
-                        runners->at(core.id).emulation_phase(j, interactive_restart_point);
+                    for(current_channel = 0; current_channel<core.n_channels; ++current_channel) {
+                        runners->at(core.id).inputs_phase(core, current_channel);
+                        runners->at(core.id).emulation_phase(current_channel, interactive_restart_point);
                         interactive_restart_point = 0;
                         currently_active_core = sequencer.get_next_core_by_order(core.order);
                     }
@@ -187,6 +183,7 @@ namespace fcore {
         checkpoint.inputs = runners->at(checkpoint.core_name).get_inputs();
         checkpoint.next_program = currently_active_core;
         checkpoint.progress = sequencer.get_progress();
+        checkpoint.progress.channel = current_channel;
 
         return checkpoint;
     }
@@ -258,6 +255,19 @@ namespace fcore {
         } else {
             return {};
         }
+    }
+
+    void emulator_manager::set_multichannel_debug(bool mc) {
+        multichannel_debug = mc;
+    }
+
+    debug_checkpoint emulator_manager::augment_checkpoint_info(debug_checkpoint &in) {
+        debug_checkpoint d = in;
+        d.next_program = currently_active_core;
+        d.inputs = runners->at(d.core_name).get_inputs();
+        d.progress = sequencer.get_progress();
+        d.progress.channel = current_channel;
+        return d;
     }
 
 

@@ -50,7 +50,7 @@ namespace fcore{
         void add_breakpoint(const std::string &s, uint32_t addr);
         void remove_breakpoint(const std::string &s, uint32_t addr);
 
-        void set_multichannel_debug(bool mc){multichannel_debug = mc;};
+        void set_multichannel_debug(bool mc);
 
         std::unordered_map<std::string, disassembled_program>  disassemble();
 
@@ -61,16 +61,18 @@ namespace fcore{
 
         void run_cores();
 
+        debug_checkpoint augment_checkpoint_info(debug_checkpoint &in);
 
         void interconnects_phase(const std::vector<emulator::emulator_interconnect> &specs, const core_step_metadata& info);
 
         std::unordered_map<std::string, std::string> errors;
         bool debug_autogen;
-
         bool multichannel_debug;
+
 
         uint32_t interactive_restart_point;
         std::string currently_active_core;
+        uint32_t current_channel;
 
         hil_bus_map bus_map;
 

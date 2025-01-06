@@ -231,11 +231,12 @@ TEST(Emulator_runner, debug_checkpoint_serialization) {
     base.completed_round = false;
     base.progress.current = 12;
     base.progress.total_steps = 22;
+    base.progress.channel = 3;
     base.progress.period = 0.1;
 
     nlohmann::json uut = base;
 
-    std::string ref = R"({"breakpoint":23,"completed_round":false,"core_name":"name","inputs":{"test":1},"memory_view":[11,23,65],"next_program":"test_2","progress":{"current":12,"period":0.10000000149011612,"total_steps":22},"status":"in_progress"})";
+    std::string ref = R"({"breakpoint":23,"completed_round":false,"core_name":"name","inputs":{"test":1},"memory_view":[11,23,65],"next_program":"test_2","progress":{"channel":3,"current":12,"period":0.10000000149011612,"total_steps":22},"status":"in_progress"})";
     std::string result = uut.dump();
 
     EXPECT_EQ(ref, result);
