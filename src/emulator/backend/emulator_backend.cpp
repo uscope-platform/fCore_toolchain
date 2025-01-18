@@ -75,12 +75,20 @@ namespace fcore{
             int init_point
     ) {
 
+        bool skip_breakpoint = current_instruction == init_point;
+
         for(current_instruction = init_point; current_instruction<prog.size(); current_instruction++){
-            if(breakpoints.contains(current_instruction))
-                throw BreakpointException(produce_checkpoint(false));
             auto opcode = get_opcode(prog[current_instruction].instruction);
             auto operands  = get_operands(prog[current_instruction].instruction);
             auto io_flags =get_common_io_flags(prog[current_instruction].instruction);
+
+            if(breakpoints.contains(current_instruction) & !skip_breakpoint){
+                spdlog::trace("Breakpoint Hit at line {0}",  current_instruction);
+                throw BreakpointException(produce_checkpoint(false));
+            }
+
+            spdlog::trace("Running instruction {0}: opcode = {1}", current_instruction, fcore_opcodes_reverse[opcode]);
+
             if(opcode == fcore_opcodes["ldc"]){
                 run_load_constant_instruction(operands[0], prog[current_instruction].load_constant);
             } else{
@@ -90,6 +98,7 @@ namespace fcore{
                 break;
             }
         }
+        current_instruction = -1;
         stop_requested = false;
 
     }

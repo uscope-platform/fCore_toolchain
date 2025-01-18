@@ -127,7 +127,7 @@ namespace fcore{
                 ba_executor exec;
         #endif
 
-         int current_instruction = 0;
+         int current_instruction = -1;
 
         bool stop_requested = false;
 

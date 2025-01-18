@@ -178,7 +178,7 @@ TEST(emulator_manager_interactive, continue_emulation) {
     debug_checkpoint expected;
     expected.status = "complete";
     expected.core_name = "test_0";
-    expected.breakpoint = 3;
+    expected.breakpoint = 0;
     expected.next_program = "";
     expected.completed_round = true;
     expected.memory_view.resize(64, 0);
@@ -309,7 +309,7 @@ TEST(emulator_manager_interactive, two_programs_continue) {
     expected.status = "complete";
     expected.core_name = "test_0";
     expected.next_program = "";
-    expected.breakpoint = 4;
+    expected.breakpoint = 0;
     expected.completed_round = true;
     expected.memory_view.resize(64, 0);
     expected.memory_view[3] = 0x404ccccd;
@@ -367,7 +367,7 @@ TEST(emulator_manager_interactive, second_program_breakpoint) {
     expected.status = "complete";
     expected.core_name = "test_0";
     expected.next_program = "";
-    expected.breakpoint = 4;
+    expected.breakpoint = 0;
     expected.completed_round = true;
     expected.memory_view.resize(64, 0);
     expected.memory_view[3] = 0x404ccccd;

@@ -38,7 +38,7 @@ namespace fcore {
         void emulation_phase(uint32_t  channel, int init_point);
 
         debug_checkpoint step_over();
-        debug_checkpoint get_end_state(){return backend.produce_checkpoint(true);};
+        debug_checkpoint get_end_state();
 
         uint32_t dma_read(uint32_t address, uint32_t channel);
         void dma_write(uint32_t address, uint32_t channel, uint32_t data);

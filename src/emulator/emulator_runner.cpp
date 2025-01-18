@@ -159,4 +159,10 @@ namespace fcore {
 
     }
 
+    debug_checkpoint emulator_runner::get_end_state() {
+        auto ret = backend.produce_checkpoint(true);
+        ret.breakpoint = 0;
+        return ret;
+    }
+
 } // fcore
