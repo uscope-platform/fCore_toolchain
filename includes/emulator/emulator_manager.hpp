@@ -70,8 +70,7 @@ namespace fcore{
         bool multichannel_debug;
 
 
-        uint32_t interactive_restart_point;
-        uint32_t current_instruction;
+        int interactive_restart_point;
         std::string currently_active_core;
         uint32_t current_channel;
 

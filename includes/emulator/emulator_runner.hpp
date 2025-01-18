@@ -35,7 +35,7 @@ namespace fcore {
         std::set<uint32_t> get_breakpoints() {return backend.get_breakpoints();};
 
         void inputs_phase(const core_step_metadata& info, uint32_t  channel);
-        void emulation_phase(uint32_t  channel, uint32_t init_point);
+        void emulation_phase(uint32_t  channel, int init_point);
 
         debug_checkpoint step_over();
         debug_checkpoint get_end_state(){return backend.produce_checkpoint(true);};

@@ -151,7 +151,7 @@ namespace fcore {
                         interactive_restart_point = 0;
                     }
                     do {
-                        spdlog::trace("Start round {0} -- {2} on channel {1}", sequencer.get_current_step(), current_channel, interactive_restart_point);
+                        spdlog::trace("Start round {0} on channel {1}, from instruction {2}", sequencer.get_current_step(), current_channel, interactive_restart_point);
                         runners->at(core.id).inputs_phase(core, current_channel);
                         runners->at(core.id).emulation_phase(current_channel, interactive_restart_point);
                         currently_active_core = sequencer.get_next_core_by_order(core.order);

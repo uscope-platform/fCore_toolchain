@@ -65,7 +65,7 @@ namespace fcore{
         void set_program(std::vector<uint32_t> p) {prog.process_raw_program(p);};
         void set_comparator_type(const comparator_type_t &t){comparator_type = t;};
         void setup_memory(std::shared_ptr<std::vector<uint32_t>> channel_mem, const std::shared_ptr<std::vector<uint32_t>> &common_mem);
-        void run_round(uint32_t init_point);
+        void run_round(int init_point);
 
 
         debug_checkpoint step_over();
@@ -127,7 +127,7 @@ namespace fcore{
                 ba_executor exec;
         #endif
 
-         uint32_t current_instruction = 0;
+         int current_instruction = 0;
 
         bool stop_requested = false;
 

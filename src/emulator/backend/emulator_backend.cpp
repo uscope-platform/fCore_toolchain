@@ -72,7 +72,7 @@ namespace fcore{
     }
 
     void emulator_backend::run_round(
-            uint32_t init_point
+            int init_point
     ) {
 
         for(current_instruction = init_point; current_instruction<prog.size(); current_instruction++){
