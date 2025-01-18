@@ -22,7 +22,7 @@
 using namespace fcore;
 
 
-nlohmann::json prepare_asm_spec(std::vector<std::string> pv, uint32_t n_steps, std::vector<uint32_t> output_regs){
+nlohmann::json prepare_asm_spec(std::vector<std::string> pv, uint32_t n_steps, std::vector<uint32_t> output_regs, uint32_t n_channels){
 
     nlohmann::json spec;
     spec["cores"] = std::vector<nlohmann::json>();
@@ -37,7 +37,7 @@ nlohmann::json prepare_asm_spec(std::vector<std::string> pv, uint32_t n_steps, s
         cs["program"] = nlohmann::json();
         cs["program"]["headers"] = std::vector<std::string>();
         cs["program"]["content"] = pv[i];
-        cs["channels"] = 1;
+        cs["channels"] = n_channels;
         cs["options"] = nlohmann::json();
         cs["options"]["comparators"] = "full";
         cs["options"]["efi_implementation"] = "none";
@@ -96,7 +96,7 @@ TEST(emulator_manager_interactive, uninterrupted_run) {
     )";
     uint32_t n_steps = 1;
 
-    auto spec = prepare_asm_spec({program}, n_steps, {12, 42});
+    auto spec = prepare_asm_spec({program}, n_steps, {12, 42}, 1);
 
     emulator_manager manager;
     manager.set_specs(spec);
@@ -119,7 +119,7 @@ TEST(emulator_manager_interactive, breakpoint) {
     )";
     uint32_t n_steps = 1;
 
-    auto spec = prepare_asm_spec({program}, n_steps, {12, 42});
+    auto spec = prepare_asm_spec({program}, n_steps, {12, 42}, 1);
 
     emulator_manager manager;
     manager.set_specs(spec);
@@ -161,7 +161,7 @@ TEST(emulator_manager_interactive, continue_emulation) {
     )";
     uint32_t n_steps = 1;
 
-    auto spec = prepare_asm_spec({program}, n_steps, {12, 42});
+    auto spec = prepare_asm_spec({program}, n_steps, {12, 42}, 1);
 
     emulator_manager manager;
     manager.set_specs(spec);
@@ -203,7 +203,7 @@ TEST(emulator_manager_interactive, step_over) {
     )";
     uint32_t n_steps = 1;
 
-    auto spec = prepare_asm_spec({program}, n_steps, {12, 42});
+    auto spec = prepare_asm_spec({program}, n_steps, {12, 42}, 1);
 
     emulator_manager manager;
     manager.set_specs(spec);
@@ -245,7 +245,7 @@ TEST(emulator_manager_interactive, step_over_round_end) {
     )";
     uint32_t n_steps = 2;
 
-    auto spec = prepare_asm_spec({program}, n_steps, {12, 42});
+    auto spec = prepare_asm_spec({program}, n_steps, {12, 42}, 1);
 
     emulator_manager manager;
     manager.set_specs(spec);
@@ -293,7 +293,7 @@ TEST(emulator_manager_interactive, two_programs_continue) {
     )";
     uint32_t n_steps = 1;
 
-    auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42});
+    auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42}, 1);
 
     emulator_manager manager;
     manager.set_specs(spec);
@@ -350,7 +350,7 @@ TEST(emulator_manager_interactive, second_program_breakpoint) {
     )";
     uint32_t n_steps = 1;
 
-    auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42});
+    auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42}, 1);
 
     emulator_manager manager;
     manager.set_specs(spec);
@@ -406,7 +406,7 @@ TEST(emulator_manager_interactive, two_programs_step_over) {
     )";
     uint32_t n_steps = 1;
 
-    auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42});
+    auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42}, 1);
 
     emulator_manager manager;
     manager.set_specs(spec);
@@ -462,7 +462,7 @@ TEST(emulator_manager_interactive, first_core_correct_restart) {
     )";
     uint32_t n_steps = 2;
 
-    auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42});
+    auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42}, 1);
 
     emulator_manager manager;
     manager.set_specs(spec);
@@ -486,3 +486,29 @@ TEST(emulator_manager_interactive, first_core_correct_restart) {
 };
 
 
+
+/*
+TEST(emulator_manager_interactive, continue_emulation_multiphase) {
+
+    std::string program = R"(
+        ldc r42, 12.5000
+        add r12, r42, r12
+        stop
+    )";
+    uint32_t n_steps = 2;
+
+    auto spec = prepare_asm_spec({program}, n_steps, {12}, 1);
+
+    emulator_manager manager;
+    manager.set_specs(spec);
+    manager.process();
+    manager.add_breakpoint("test_0", 2);
+    auto bp_1 = manager.emulate(true);
+    EXPECT_TRUE(bp_1.has_value());
+    EXPECT_EQ(bp_1.value().breakpoint, 2);
+    manager.remove_breakpoint("test_0", 2);
+    auto breakpoint = manager.continue_emulation();
+    auto results = manager.get_results();
+    auto test = results.dump(4);
+    EXPECT_TRUE(false);
+}*/

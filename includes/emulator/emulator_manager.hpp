@@ -59,7 +59,7 @@ namespace fcore{
     private:
         void check_bus_duplicates();
 
-        void run_cores();
+        void run_cores(bool in_progress);
 
         debug_checkpoint augment_checkpoint_info(debug_checkpoint &in);
 
@@ -71,6 +71,7 @@ namespace fcore{
 
 
         uint32_t interactive_restart_point;
+        uint32_t current_instruction;
         std::string currently_active_core;
         uint32_t current_channel;
 

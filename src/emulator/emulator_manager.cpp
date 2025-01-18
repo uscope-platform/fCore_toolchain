@@ -112,7 +112,7 @@ namespace fcore {
         spdlog::info("EMULATION START");
         try{
             currently_active_core = sequencer.get_core_by_order(1);
-            run_cores();
+            run_cores(false);
             spdlog::info("EMULATION DONE");
             return {};
         } catch (BreakpointException &ex) {
@@ -124,9 +124,7 @@ namespace fcore {
 
     std::optional<debug_checkpoint> emulator_manager::continue_emulation() {
         try{
-            step_over(); // use step_over to avoid re-triggering the same breakpoint again;
-            interactive_restart_point++;
-            run_cores();
+            run_cores(true);
             auto end_state = runners->at(currently_active_core).get_end_state();
             end_state.next_program = "";
             end_state.inputs =  runners->at(currently_active_core).get_inputs();
@@ -142,18 +140,24 @@ namespace fcore {
     }
 
 
-    void emulator_manager::run_cores() {
+    void emulator_manager::run_cores(bool in_progress) {
         do{
             auto running_cores = sequencer.get_running_cores();
 
             for(auto &core:running_cores){
                 if(!sequencer.is_empty_step()){
-                    for(current_channel = 0; current_channel<core.n_channels; ++current_channel) {
+                    if(!in_progress) {
+                        current_channel = 0;
+                        interactive_restart_point = 0;
+                    }
+                    do {
+                        spdlog::trace("Start round {0} -- {2} on channel {1}", sequencer.get_current_step(), current_channel, interactive_restart_point);
                         runners->at(core.id).inputs_phase(core, current_channel);
                         runners->at(core.id).emulation_phase(current_channel, interactive_restart_point);
-                        interactive_restart_point = 0;
                         currently_active_core = sequencer.get_next_core_by_order(core.order);
-                    }
+                        current_channel++;
+                    } while (current_channel < core.n_channels);
+
                     interconnects_phase(emu_spec.interconnects, core);
                 }
             }

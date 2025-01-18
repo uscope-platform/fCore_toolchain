@@ -63,10 +63,10 @@ namespace fcore {
         bool is_last_in_sequence(const std::string &id);
 
         void clear();
+        uint64_t get_current_step() const { return sim_length*simulation_frequency - progress; };
         std::unordered_map<std::string, bool> get_enabled_cores() { return enabled_cores_map; };
     private:
 
-        uint64_t get_current_step() const { return sim_length*simulation_frequency - progress; };
         std::vector<core_metadata> cores;
         int64_t progress;
         float sim_length;

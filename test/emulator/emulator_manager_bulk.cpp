@@ -88,6 +88,7 @@ TEST(emulator_manager_bulk, emulator_asm) {
     manager.set_specs(spec);
     manager.process();
     manager.emulate(false);
+    auto dbg = manager.get_results().dump(4);
     float res = manager.get_results()["test"]["outputs"]["r12"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, 15.7f);
 
