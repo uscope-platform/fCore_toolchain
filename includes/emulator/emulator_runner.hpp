@@ -37,6 +37,7 @@ namespace fcore {
         void inputs_phase(const core_step_metadata& info, uint32_t  channel);
         void emulation_phase(uint32_t  channel, int init_point);
 
+        void reset_instruction_pointer() {backend.reset_instruction_pointer();};
         debug_checkpoint step_over();
         debug_checkpoint get_end_state();
 

@@ -141,12 +141,13 @@ namespace fcore {
 
 
     void emulator_manager::run_cores(bool in_progress) {
+        bool is_in_progress = in_progress;
         do{
             auto running_cores = sequencer.get_running_cores();
 
             for(auto &core:running_cores){
                 if(!sequencer.is_empty_step()){
-                    if(!in_progress) {
+                    if(!is_in_progress) {
                         current_channel = 0;
                         interactive_restart_point = 0;
                     }
@@ -154,7 +155,10 @@ namespace fcore {
                         spdlog::trace("Start round {0} on channel {1}, from instruction {2}", sequencer.get_current_step(), current_channel, interactive_restart_point);
                         runners->at(core.id).inputs_phase(core, current_channel);
                         runners->at(core.id).emulation_phase(current_channel, interactive_restart_point);
+                        runners->at(core.id).reset_instruction_pointer();
+                        interactive_restart_point = 0;
                         currently_active_core = sequencer.get_next_core_by_order(core.order);
+                        is_in_progress = false;
                         current_channel++;
                     } while (current_channel < core.n_channels);
 

@@ -66,6 +66,7 @@ namespace fcore{
             std::shared_ptr<std::vector<uint32_t>> channel_mem,
             const std::shared_ptr<std::vector<uint32_t>> &common_mem
     ) {
+        spdlog::trace("Setup memory");
         working_memory = std::move(channel_mem);
         common_io = common_mem;
 

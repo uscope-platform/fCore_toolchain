@@ -67,6 +67,7 @@ namespace fcore{
         void setup_memory(std::shared_ptr<std::vector<uint32_t>> channel_mem, const std::shared_ptr<std::vector<uint32_t>> &common_mem);
         void run_round(int init_point);
 
+        void reset_instruction_pointer() {current_instruction =0;};
 
         debug_checkpoint step_over();
         void set_efi_selector(const efi_implementation_t sel){ efi_selector = sel;};
