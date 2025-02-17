@@ -283,7 +283,7 @@ TEST(Emulator_runner, single_stepping) {
         EXPECT_EQ(ex.data.memory_view[63], 0x3f800000);
     }
 
-    auto checkpoint = uut.step_over();
+    auto checkpoint = uut.step_over(0);
 
     EXPECT_EQ(checkpoint.status, "in_progress");
     EXPECT_EQ(checkpoint.core_name, "test_prog");
@@ -340,7 +340,7 @@ TEST(Emulator_runner, single_step_conclusion) {
         EXPECT_EQ(ex.data.memory_view[63], 0x42d60000);
     }
 
-    auto checkpoint = uut.step_over();
+    auto checkpoint = uut.step_over(0);
 
     EXPECT_EQ(checkpoint.status, "complete");
     EXPECT_EQ(checkpoint.core_name, "test_prog");

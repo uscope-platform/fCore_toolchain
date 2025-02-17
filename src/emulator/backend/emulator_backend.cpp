@@ -105,6 +105,9 @@ namespace fcore{
     }
 
     debug_checkpoint emulator_backend::step_over() {
+        if(current_instruction == -1) {
+            reset_instruction_pointer();
+        };
         auto opcode = get_opcode(prog[current_instruction].instruction);
         auto operands  = get_operands(prog[current_instruction].instruction);
         auto io_flags =get_common_io_flags(prog[current_instruction].instruction);

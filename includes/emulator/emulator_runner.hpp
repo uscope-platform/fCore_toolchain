@@ -38,7 +38,7 @@ namespace fcore {
         void emulation_phase(uint32_t  channel, int init_point);
 
         void reset_instruction_pointer() {backend.reset_instruction_pointer();};
-        debug_checkpoint step_over();
+        debug_checkpoint step_over(uint32_t channel);
         debug_checkpoint get_end_state();
 
         uint32_t dma_read(uint32_t address, uint32_t channel);

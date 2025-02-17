@@ -66,8 +66,9 @@ namespace fcore {
         backend.run_round(init_point);
     }
 
-    debug_checkpoint emulator_runner::step_over() {
-        backend.setup_memory(emulators_memory[0], common_io_memory);
+    debug_checkpoint emulator_runner::step_over(uint32_t channel) {
+
+        backend.setup_memory(emulators_memory[channel], common_io_memory);
         return backend.step_over();
     }
 

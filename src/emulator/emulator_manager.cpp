@@ -172,8 +172,9 @@ namespace fcore {
 
 
     debug_checkpoint emulator_manager::step_over() {
+        spdlog::trace("step over of core: {0}", currently_active_core);
         auto current_core = sequencer.get_core_by_id(currently_active_core);
-        auto checkpoint = runners->at(currently_active_core).step_over();
+        auto checkpoint = runners->at(currently_active_core).step_over(current_channel);
         if(checkpoint.completed_round){
             interconnects_phase(emu_spec.interconnects, current_core);
             if(sequencer.is_last_in_sequence(currently_active_core)){

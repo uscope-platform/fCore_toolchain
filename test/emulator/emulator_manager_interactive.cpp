@@ -373,7 +373,7 @@ TEST(emulator_manager_interactive, second_program_breakpoint) {
     expected.memory_view[3] = 0x404ccccd;
     expected.memory_view[12] = 0x417b3333;
     expected.memory_view[42] = 0x41480000;
-    expected.progress.current = 3;
+    expected.progress.current = 2;
     expected.progress.channel = 0;
     expected.progress.total_steps = 1;
     expected.progress.period = 1;
@@ -424,7 +424,7 @@ TEST(emulator_manager_interactive, two_programs_step_over) {
     expected.status = "complete";
     expected.core_name = "test_0";
     expected.next_program = "";
-    expected.breakpoint = 4;
+    expected.breakpoint = 0;
     expected.completed_round = true;
     expected.memory_view.resize(64, 0);
     expected.memory_view[3] = 0x404ccccd;
