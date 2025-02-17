@@ -487,7 +487,7 @@ TEST(emulator_manager_interactive, first_core_correct_restart) {
 
 
 
-/*
+
 TEST(emulator_manager_interactive, continue_emulation_multiphase) {
 
     std::string program = R"(
@@ -497,7 +497,7 @@ TEST(emulator_manager_interactive, continue_emulation_multiphase) {
     )";
     uint32_t n_steps = 2;
 
-    auto spec = prepare_asm_spec({program}, n_steps, {12}, 1);
+    auto spec = prepare_asm_spec({program}, n_steps, {12}, 2);
 
     emulator_manager manager;
     manager.set_specs(spec);
@@ -510,5 +510,11 @@ TEST(emulator_manager_interactive, continue_emulation_multiphase) {
     auto breakpoint = manager.continue_emulation();
     auto results = manager.get_results();
     auto test = results.dump(4);
-    EXPECT_TRUE(false);
-}*/
+
+    std::vector<float> expected =  {12.5, 25.00};
+    std::vector<float> res_1 = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0];
+    std::vector<float> res_2 = manager.get_results()["test_0"]["outputs"]["r12"]["1"][0];
+
+    EXPECT_EQ(res_1, expected);
+    EXPECT_EQ(res_2, expected);
+}
