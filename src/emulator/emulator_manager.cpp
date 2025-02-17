@@ -151,7 +151,6 @@ namespace fcore {
                         current_channel = 0;
                         interactive_restart_point = 0;
                     }
-                    auto step_n = sequencer.get_current_step();
                     do {
                         spdlog::trace("Start round {0} on channel {1}, from instruction {2}", sequencer.get_current_step(), current_channel, interactive_restart_point);
                         runners->at(core.id).inputs_phase(core, current_channel);
@@ -178,10 +177,17 @@ namespace fcore {
         interactive_restart_point++;
         if(checkpoint.completed_round){
             interconnects_phase(emu_spec.interconnects, current_core);
-            if(sequencer.is_last_in_sequence(currently_active_core)){
-                sequencer.advance_emulation();
-                outputs_manager.process_outputs(sequencer.get_running_cores());
+            runners->at(currently_active_core).reset_instruction_pointer();
+            if (current_channel==current_core.n_channels-1) {
+                current_channel = 0;
+                if(sequencer.is_last_in_sequence(currently_active_core)){
+                    sequencer.advance_emulation();
+                    outputs_manager.process_outputs(sequencer.get_running_cores());
+                }
+            } else {
+                current_channel++;
             }
+
             currently_active_core = sequencer.get_next_core_by_order(current_core.order);
             if(sequencer.sim_complete()){
                 checkpoint.status = "complete";
