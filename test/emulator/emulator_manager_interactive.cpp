@@ -518,3 +518,36 @@ TEST(emulator_manager_interactive, continue_emulation_multiphase) {
     EXPECT_EQ(res_1, expected);
     EXPECT_EQ(res_2, expected);
 }
+
+
+TEST(emulator_manager_interactive, multiphase_cross_channel_stepover) {
+
+    std::string program = R"(
+        ldc r42, 12.5000
+        add r12, r42, r12
+        stop
+    )";
+    uint32_t n_steps = 2;
+
+    auto spec = prepare_asm_spec({program}, n_steps, {12}, 2);
+
+    emulator_manager manager;
+    manager.set_specs(spec);
+    manager.process();
+    manager.add_breakpoint("test_0", 1);
+    auto bp_1 = manager.emulate(true);
+    EXPECT_TRUE(bp_1.has_value());
+    EXPECT_EQ(bp_1.value().breakpoint, 1);
+    manager.remove_breakpoint("test_0", 1);
+    manager.step_over();
+    auto breakpoint = manager.continue_emulation();
+    auto results = manager.get_results();
+    auto test = results.dump(4);
+
+    std::vector<float> expected =  {12.5, 25.00};
+    std::vector<float> res_0 = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0];
+    std::vector<float> res_1 = manager.get_results()["test_0"]["outputs"]["r12"]["1"][0];
+
+    EXPECT_EQ(res_0, expected);
+    EXPECT_EQ(res_1, expected);
+}

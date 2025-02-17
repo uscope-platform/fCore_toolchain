@@ -151,6 +151,7 @@ namespace fcore {
                         current_channel = 0;
                         interactive_restart_point = 0;
                     }
+                    auto step_n = sequencer.get_current_step();
                     do {
                         spdlog::trace("Start round {0} on channel {1}, from instruction {2}", sequencer.get_current_step(), current_channel, interactive_restart_point);
                         runners->at(core.id).inputs_phase(core, current_channel);
@@ -158,10 +159,9 @@ namespace fcore {
                         runners->at(core.id).reset_instruction_pointer();
                         interactive_restart_point = 0;
                         currently_active_core = sequencer.get_next_core_by_order(core.order);
-                        is_in_progress = false;
                         current_channel++;
                     } while (current_channel < core.n_channels);
-
+                    is_in_progress = false;
                     interconnects_phase(emu_spec.interconnects, core);
                 }
             }
@@ -172,9 +172,10 @@ namespace fcore {
 
 
     debug_checkpoint emulator_manager::step_over() {
-        spdlog::trace("step over of core: {0}", currently_active_core);
+        spdlog::trace("step over of core: {0}, channel {1}", currently_active_core, current_channel);
         auto current_core = sequencer.get_core_by_id(currently_active_core);
         auto checkpoint = runners->at(currently_active_core).step_over(current_channel);
+        interactive_restart_point++;
         if(checkpoint.completed_round){
             interconnects_phase(emu_spec.interconnects, current_core);
             if(sequencer.is_last_in_sequence(currently_active_core)){
@@ -187,6 +188,7 @@ namespace fcore {
             } else {
                 checkpoint.status = "in_progress";
             }
+            interactive_restart_point = 0;
             // TODO: This implementation does not take into account multirate emulations (use a do while loop)
         }
         checkpoint.inputs = runners->at(checkpoint.core_name).get_inputs();
