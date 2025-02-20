@@ -43,7 +43,7 @@ namespace fcore{
         std::set<uint32_t> get_breakpoints(const std::string &id);
         void process();
 
-        std::optional<debug_checkpoint> emulate(bool interactive);
+        std::optional<debug_checkpoint> emulate();
         debug_checkpoint step_over();
         std::optional<debug_checkpoint> continue_emulation();
 

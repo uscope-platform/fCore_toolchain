@@ -21,6 +21,7 @@ namespace fcore {
 
     emulator_manager::emulator_manager() {
         debug_autogen = false;
+        current_channel = 0;
         multichannel_debug = false;
         runners = std::make_shared<std::unordered_map<std::string, emulator_runner>>();
         interactive_restart_point = 0;
@@ -99,7 +100,7 @@ namespace fcore {
         return res;
     }
 
-    std::optional<debug_checkpoint> emulator_manager::emulate(bool interactive) {
+    std::optional<debug_checkpoint> emulator_manager::emulate() {
         interactive_restart_point = 0;
         ic_manager.clear_repeater();
         ic_manager.set_runners(runners);

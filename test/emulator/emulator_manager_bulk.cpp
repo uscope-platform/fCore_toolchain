@@ -28,7 +28,7 @@ TEST(emulator_manager_bulk, emulator_executable_format) {
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
     auto res_obj = manager.get_results();
 
     std::vector<float>  result = std::vector<float>(res_obj["test"]["outputs"]["test_out"]["0"][0]);
@@ -87,7 +87,7 @@ TEST(emulator_manager_bulk, emulator_asm) {
     emulator_manager manager;
     manager.set_specs(spec);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
     auto dbg = manager.get_results().dump(4);
     float res = manager.get_results()["test"]["outputs"]["r12"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, 15.7f);
@@ -156,7 +156,7 @@ TEST(emulator_manager_bulk, emulator_inputs) {
     emulator_manager manager;
     manager.set_specs(spec);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
     auto dbg = manager.get_results().dump(4);
     uint32_t res = manager.get_results()["test"]["outputs"]["out"]["0"][0][1];
 
@@ -227,7 +227,7 @@ TEST(emulator_manager_bulk, emulator_consecutive_runs) {
     emulator_manager manager;
     manager.set_specs(spec);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
 
     auto dbg = manager.get_results().dump(4);
     std::vector<uint32_t> res = manager.get_results()["test"]["outputs"]["out"]["0"][0];
@@ -245,7 +245,7 @@ TEST(emulator_manager_bulk, emulator_consecutive_runs) {
 
     manager.set_specs(spec);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
 
     std::vector<uint32_t> res2 = manager.get_results()["test"]["outputs"]["out"]["0"][0];
     check_vector = {0x426a7ae1, 0x42f070a4};
@@ -268,7 +268,7 @@ TEST(emulator_manager_bulk, emulator_outputs) {
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
     auto res = manager.get_results()["test"];
 
     auto dbg = manager.get_results().dump(4);
@@ -351,7 +351,7 @@ TEST(emulator_manager_bulk, emulator_memory) {
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
 
     uint32_t res = manager.get_results()["test"]["outputs"]["out"]["0"][0][1];
 
@@ -367,7 +367,7 @@ TEST(emulator_manager_bulk, emulator_inteconnect) {
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
     auto res = manager.get_results()["test_consumer"];
 
     std::vector<uint32_t> reference = {0x426a7ae1, 0x42f070a4};
@@ -382,7 +382,7 @@ TEST(emulator_manager_bulk, emulator_compilation) {
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
     auto res = manager.get_results()["test"];
 
     std::vector<uint32_t> reference = {59,62};
@@ -399,7 +399,7 @@ TEST(emulator_manager_bulk, emulator_compilation_interconnect) {
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
     auto res = manager.get_results();
 
     std::vector<uint32_t> reference = {59,62};
@@ -418,7 +418,7 @@ TEST(emulator_manager_bulk, emulator_compilation_memory) {
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
     auto res = manager.get_results()["test"];
 
     std::vector<uint32_t> reference = {15,83};
@@ -520,7 +520,7 @@ TEST(emulator_manager_bulk, emulator_header) {
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
 
     auto res_obj = manager.get_results();
 
@@ -770,7 +770,7 @@ TEST(emulator_manager_bulk, emulator_multichannel) {
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
 
     auto res_obj = manager.get_results();
 
@@ -901,7 +901,7 @@ TEST(emulator_manager_bulk, emulator_multichannel_input_file) {
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
 
     auto res_obj = manager.get_results();
 
@@ -1055,7 +1055,7 @@ TEST(emulator_manager_bulk, emulator_multichannel_gather_transfer) {
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
 
     auto res_obj = manager.get_results();
     auto dbg = res_obj.dump(4);
@@ -1166,7 +1166,7 @@ TEST(emulator_manager_bulk, emulator_multichannel_scatter_transfer) {
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
 
     auto res_obj = manager.get_results();
 
@@ -1290,7 +1290,7 @@ TEST(emulator_manager_bulk, emulator_multichannel_transfer_error) {
 
 
     try {
-        manager.emulate(false);
+        manager.emulate();
         FAIL();
     } catch( const std::runtime_error& err ) {
         std::string msg = err.what();
@@ -1421,7 +1421,7 @@ TEST(emulator_manager_bulk, emulator_multichannel_vector_transfer) {
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
 
     auto res_obj = manager.get_results();
 
@@ -1530,7 +1530,7 @@ TEST(emulator_manager_bulk, emulator_multichannel_2d_vector_transfer) {
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
 
     auto res_obj = manager.get_results();
 
@@ -1644,7 +1644,7 @@ TEST(emulator_manager_bulk, emulator_common_io) {
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
 
     auto res_obj = manager.get_results();
 
@@ -1734,7 +1734,7 @@ TEST(emulator_manager_bulk, emulator_multichannel_input) {
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
 
     auto res_obj = manager.get_results();
 
@@ -1810,7 +1810,7 @@ TEST(emulator_manager_bulk, emulator_memory_as_output) {
     emulator_manager manager;
     manager.set_specs(spec);
     manager.process();
-    manager.emulate(false);
+    manager.emulate();
 
     std::string dbg = manager.get_results().dump(4);
 

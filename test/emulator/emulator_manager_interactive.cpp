@@ -101,7 +101,7 @@ TEST(emulator_manager_interactive, uninterrupted_run) {
     emulator_manager manager;
     manager.set_specs(spec);
     manager.process();
-    manager.emulate(true);
+    manager.emulate();
     float res = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, 15.7f);
 
@@ -125,7 +125,7 @@ TEST(emulator_manager_interactive, breakpoint) {
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 2);
-    auto breakpoint = manager.emulate(true);
+    auto breakpoint = manager.emulate();
     EXPECT_TRUE(breakpoint.has_value());
 
     auto result = breakpoint.value();
@@ -167,7 +167,7 @@ TEST(emulator_manager_interactive, continue_emulation) {
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 2);
-    auto bp_1 = manager.emulate(true);
+    auto bp_1 = manager.emulate();
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 2);
     auto breakpoint = manager.continue_emulation();
@@ -209,7 +209,7 @@ TEST(emulator_manager_interactive, step_over) {
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 2);
-    auto bp_1 = manager.emulate(true);
+    auto bp_1 = manager.emulate();
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 2);
     auto breakpoint = manager.step_over();
@@ -251,7 +251,7 @@ TEST(emulator_manager_interactive, step_over_round_end) {
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 3);
-    auto bp_1 = manager.emulate(true);
+    auto bp_1 = manager.emulate();
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 3);
     auto breakpoint = manager.step_over();
@@ -299,7 +299,7 @@ TEST(emulator_manager_interactive, two_programs_continue) {
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 3);
-    auto bp_1 = manager.emulate(true);
+    auto bp_1 = manager.emulate();
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 3);
     manager.remove_breakpoint("test_0", 3);
@@ -356,7 +356,7 @@ TEST(emulator_manager_interactive, second_program_breakpoint) {
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_1", 3);
-    auto bp_1 = manager.emulate(true);
+    auto bp_1 = manager.emulate();
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().core_name, "test_1");
     EXPECT_EQ(bp_1.value().breakpoint, 3);
@@ -412,7 +412,7 @@ TEST(emulator_manager_interactive, two_programs_step_over) {
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 3);
-    auto bp_1 = manager.emulate(true);
+    auto bp_1 = manager.emulate();
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 3);
     manager.remove_breakpoint("test_0", 3);
@@ -468,7 +468,7 @@ TEST(emulator_manager_interactive, first_core_correct_restart) {
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 2);
-    auto bp = manager.emulate(true);
+    auto bp = manager.emulate();
     EXPECT_TRUE(bp.has_value());
     EXPECT_EQ(bp.value().breakpoint, 2);
     manager.remove_breakpoint("test_0", 2);
@@ -503,7 +503,7 @@ TEST(emulator_manager_interactive, continue_emulation_multiphase) {
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 2);
-    auto bp_1 = manager.emulate(true);
+    auto bp_1 = manager.emulate();
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 2);
     manager.remove_breakpoint("test_0", 2);
@@ -534,7 +534,7 @@ TEST(emulator_manager_interactive, multiphase_cross_channel_stepover) {
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 2);
-    auto bp_1 = manager.emulate(true);
+    auto bp_1 = manager.emulate();
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 2);
     manager.remove_breakpoint("test_0", 2);
@@ -566,7 +566,7 @@ TEST(emulator_manager_interactive, multiphase_stepover_restart) {
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 1);
-    auto bp_1 = manager.emulate(true);
+    auto bp_1 = manager.emulate();
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 1);
     manager.remove_breakpoint("test_0", 1);
