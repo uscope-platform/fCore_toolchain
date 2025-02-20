@@ -21,6 +21,7 @@ namespace fcore {
 
     emulator_runner::emulator_runner(program_bundle &prog) {
         core_name = prog.name;
+        multichannel_debug = false;
         backend.set_core_name(core_name);
         program = prog;
         backend.set_program(sanitize_program(prog.program.binary));
@@ -63,12 +64,14 @@ namespace fcore {
 
     void emulator_runner::emulation_phase(uint32_t channel, int init_point) {
         auto mem = emulators_memory[channel];
+        backend.set_debugging(multichannel_debug || channel == 0);
         backend.setup_memory(mem, common_io_memory);
         backend.run_round(init_point);
     }
 
     debug_checkpoint emulator_runner::step_over(uint32_t channel) {
         auto mem = emulators_memory[channel];
+        backend.set_debugging(multichannel_debug || channel == 0);
         backend.setup_memory(mem, common_io_memory);
         return backend.step_over();
     }

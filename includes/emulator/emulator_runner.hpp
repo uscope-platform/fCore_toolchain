@@ -44,6 +44,7 @@ namespace fcore {
         uint32_t dma_read(uint32_t address, uint32_t channel);
         void dma_write(uint32_t address, uint32_t channel, uint32_t data);
 
+        void set_multichannel_debug(bool mc_debug){ multichannel_debug = mc_debug; };
 
         std::unordered_map<std::string, uint32_t> get_inputs() {return current_inputs;};
 
@@ -58,6 +59,7 @@ namespace fcore {
         std::shared_ptr<std::vector<uint32_t>> common_io_memory;
         std::unordered_map<std::string, uint32_t> current_inputs;
         core_memory_pool_t emulators_memory;
+        bool multichannel_debug;
 
         emulator_backend backend;
 

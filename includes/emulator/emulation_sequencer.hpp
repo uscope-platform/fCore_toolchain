@@ -49,7 +49,7 @@ namespace fcore {
         void setup_run(double sim_l);
         void calculate_sequence();
 
-        emulation_progress_stat get_progress();
+        emulation_progress_stat get_progress() const;
 
         uint32_t get_simulation_frequency(){ return simulation_frequency;};
         bool sim_complete() const { return progress < 0; };

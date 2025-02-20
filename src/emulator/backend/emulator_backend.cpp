@@ -76,14 +76,15 @@ namespace fcore{
             int init_point
     ) {
 
-        bool skip_breakpoint = current_instruction == init_point;
 
         for(current_instruction = init_point; current_instruction<prog.size(); current_instruction++){
+
+            bool skip_breakpoint = current_instruction == init_point;
             auto opcode = get_opcode(prog[current_instruction].instruction);
             auto operands  = get_operands(prog[current_instruction].instruction);
             auto io_flags =get_common_io_flags(prog[current_instruction].instruction);
 
-            if(breakpoints.contains(current_instruction) & !skip_breakpoint){
+            if(breakpoints.contains(current_instruction) & !skip_breakpoint & debugging_enabled){
                 spdlog::trace("Breakpoint Hit at line {0}",  current_instruction);
                 throw BreakpointException(produce_checkpoint(false));
             }

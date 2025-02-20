@@ -81,6 +81,8 @@ namespace fcore{
             core_name = std::move(name);
         };
 
+        void set_debugging(bool value) {debugging_enabled = value;};
+
         static uint32_t float_to_uint32(float f);
         static float uint32_to_float(uint32_t u);
 
@@ -131,6 +133,7 @@ namespace fcore{
          int current_instruction = -1;
 
         bool stop_requested = false;
+        bool debugging_enabled = true;
 
         std::string core_name;
         emulation_program prog;

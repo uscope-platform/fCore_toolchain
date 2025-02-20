@@ -22,7 +22,7 @@ namespace fcore {
     emulator_manager::emulator_manager() {
         debug_autogen = false;
         current_channel = 0;
-        multichannel_debug = false;
+        multichannel_debug = true;
         runners = std::make_shared<std::unordered_map<std::string, emulator_runner>>();
         interactive_restart_point = 0;
     }
@@ -109,6 +109,9 @@ namespace fcore {
         sequencer.calculate_sequence();
         outputs_manager.set_simulation_frequency(sequencer.get_simulation_frequency());
 
+        for (auto &val: *runners | std::views::values) {
+            val.set_multichannel_debug(multichannel_debug);
+        }
 
         spdlog::info("EMULATION START");
         try{

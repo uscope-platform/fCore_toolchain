@@ -486,9 +486,7 @@ TEST(emulator_manager_interactive, first_core_correct_restart) {
 };
 
 
-
-
-TEST(emulator_manager_interactive, continue_emulation_multiphase) {
+TEST(emulator_manager_interactive, continue_emulation_multichannel) {
 
     std::string program = R"(
         ldc r42, 12.5000
@@ -519,7 +517,7 @@ TEST(emulator_manager_interactive, continue_emulation_multiphase) {
     EXPECT_EQ(res_2, expected);
 }
 
-TEST(emulator_manager_interactive, multiphase_cross_channel_stepover) {
+TEST(emulator_manager_interactive, multichannel_cross_channel_stepover) {
 
     std::string program = R"(
         ldc r42, 12.5000
@@ -551,7 +549,7 @@ TEST(emulator_manager_interactive, multiphase_cross_channel_stepover) {
     EXPECT_EQ(res_1, expected);
 }
 
-TEST(emulator_manager_interactive, multiphase_stepover_restart) {
+TEST(emulator_manager_interactive, multichannel_stepover_restart) {
 
     std::string program = R"(
         ldc r42, 12.5000
@@ -574,6 +572,91 @@ TEST(emulator_manager_interactive, multiphase_stepover_restart) {
     auto breakpoint = manager.continue_emulation();
     auto results = manager.get_results();
     auto test = results.dump(4);
+
+    std::vector<float> expected =  {12.5, 25.00};
+    std::vector<float> res_0 = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0];
+    std::vector<float> res_1 = manager.get_results()["test_0"]["outputs"]["r12"]["1"][0];
+
+    EXPECT_EQ(res_0, expected);
+    EXPECT_EQ(res_1, expected);
+}
+
+
+
+TEST(emulator_manager_interactive, multichannel_breakpoint) {
+
+    std::string program = R"(
+        ldc r42, 12.5000
+        add r12, r42, r12
+        stop
+    )";
+    uint32_t n_steps = 2;
+
+    auto spec = prepare_asm_spec({program}, n_steps, {12}, 2);
+
+    emulator_manager manager;
+    manager.set_multichannel_debug(true);
+    manager.set_specs(spec);
+    manager.process();
+    manager.add_breakpoint("test_0", 1);
+    auto bp = manager.emulate();
+    EXPECT_TRUE(bp.has_value());
+    EXPECT_EQ(bp.value().breakpoint, 1);
+    EXPECT_EQ(bp.value().progress.channel, 0);
+    EXPECT_EQ(bp.value().progress.current, 1);
+
+
+    bp = manager.continue_emulation();
+    EXPECT_EQ(bp.value().breakpoint, 1);
+    EXPECT_EQ(bp.value().progress.channel, 1);
+    EXPECT_EQ(bp.value().progress.current, 1);
+    EXPECT_FALSE(bp.value().completed_round);
+    manager.remove_breakpoint("test_0", 1);
+    bp = manager.continue_emulation();
+    EXPECT_TRUE(bp.value().completed_round);
+    auto results = manager.get_results();
+
+    std::vector<float> expected =  {12.5, 25.00};
+    std::vector<float> res_0 = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0];
+    std::vector<float> res_1 = manager.get_results()["test_0"]["outputs"]["r12"]["1"][0];
+
+    EXPECT_EQ(res_0, expected);
+    EXPECT_EQ(res_1, expected);
+}
+
+
+TEST(emulator_manager_interactive, disable_multichannel_debug) {
+
+    std::string program = R"(
+        ldc r42, 12.5000
+        add r12, r42, r12
+        stop
+    )";
+    uint32_t n_steps = 2;
+
+    auto spec = prepare_asm_spec({program}, n_steps, {12}, 2);
+
+    emulator_manager manager;
+    manager.set_multichannel_debug(false);
+    manager.set_specs(spec);
+    manager.process();
+    manager.add_breakpoint("test_0", 1);
+    auto bp = manager.emulate();
+    EXPECT_TRUE(bp.has_value());
+    EXPECT_EQ(bp.value().breakpoint, 1);
+    EXPECT_EQ(bp.value().progress.channel, 0);
+    EXPECT_EQ(bp.value().progress.current, 1);
+
+
+    bp = manager.continue_emulation();
+
+    EXPECT_EQ(bp.value().breakpoint, 1);
+    EXPECT_EQ(bp.value().progress.channel, 0);
+    EXPECT_EQ(bp.value().progress.current, 2);
+
+    bp = manager.continue_emulation();
+    EXPECT_TRUE(bp.value().completed_round);
+    auto results = manager.get_results();
 
     std::vector<float> expected =  {12.5, 25.00};
     std::vector<float> res_0 = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0];

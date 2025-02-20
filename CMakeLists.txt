@@ -10,6 +10,8 @@ option(INCLUDE_COVERAGE "Build with support for code coverage" OFF)
 
 option(USE_CONAN "Use the conan package manager for dependency management" OFF)
 
+set(CMAKE_LINKER_TYPE MOLD)
+
 set(ANTLR_VERSION 4.13.1)
 SET(ANTLR_JAR antlr-${ANTLR_VERSION}-complete.jar)
 set(ANTLR_CLASSPATH ${CMAKE_CURRENT_BINARY_DIR}/antlr_jar/${ANTLR_JAR})
