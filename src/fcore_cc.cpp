@@ -101,6 +101,11 @@ namespace fcore{
         ss.close();
     }
 
+    std::shared_ptr<hl_code_block> fcore_cc::get_hl_ast() {
+        parse(dma_io_spec, std::make_shared<define_map>());
+        return hl_ast;
+    }
+
     void fcore_cc::parse(std::unordered_map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map) {
         error_code = "";
         C_language_parser target_parser;

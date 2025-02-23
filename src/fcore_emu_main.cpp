@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
         emu_manager.process();
         profiler->set_phase("emulation");
         profiler->start_event("execution", true);
-        emu_manager.emulate(false);
+        emu_manager.emulate();
         profiler->end_event("execution");
         //results = emu_manager.get_results();
         results = profiler->dump();

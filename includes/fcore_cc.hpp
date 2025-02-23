@@ -56,9 +56,11 @@ namespace fcore {
         void write_json(const std::string& output_file);
         nlohmann::json get_dump() {return dump;};
 
+        std::shared_ptr<hl_code_block> get_hl_ast();
+
         void set_dma_map(std::unordered_map<std::string, core_iom> &map){dma_spec = map;};
-        void set_core_info(struct core_info &i) {info = i;};
-        struct program_info get_program_info() { return length_info;}
+        void set_core_info(core_info &i) {info = i;};
+        program_info get_program_info() { return length_info;}
 
         static nlohmann::json dump_iom_map(std::unordered_map<std::string, core_iom> &map);
         static std::unordered_map<std::string, core_iom> load_iom_map(const nlohmann::json &raw_map);
@@ -67,7 +69,7 @@ namespace fcore {
         std::shared_ptr<hl_code_block>  parse_include(std::istream &file, std::shared_ptr<define_map> def_map);
         void parse(std::unordered_map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map);
         void optimize(std::unordered_map<std::string, std::vector<uint32_t >> &dma_map);
-        void analyze_program_length(std::shared_ptr<struct instruction_count> c);
+        void analyze_program_length(std::shared_ptr<instruction_count> c);
         std::ifstream input_file_stream;
         std::istringstream input_string_stream;
         std::string type;

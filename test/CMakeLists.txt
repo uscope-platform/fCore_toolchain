@@ -1,12 +1,13 @@
 set(TEST_SOURCES
         Instruction_classes.cpp
         passes/instruction_stream_pass.cpp
+        passes/type_checking.cpp
+        passes/hl_passes.cpp
         end_to_end_asm.cpp
         testing_main.cpp
         end_to_end_C.cpp
         C_preprocessor.cpp
         C_tree_visitor_testing.cpp
-        passes/hl_passes.cpp
         disassembler_testing.cpp
         hl_pretty_print.cpp
         deep_copy.cpp
