@@ -21,6 +21,20 @@ fcore::function_calls_checks::function_calls_checks(): type_check_base("function
 }
 
 void fcore::function_calls_checks::run_check(const std::shared_ptr<hl_code_block> &element) {
-    int a = 0;
-    return;
+    std::unordered_map<std::string, std::vector<c_types_t>> signatures_map;
+
+    // First pass: function definition mapping
+    for(const auto &f:element->get_content()) {
+        if(f->node_type == hl_ast_node_type_function_def) {
+            const auto def = std::static_pointer_cast<hl_function_def_node>(f);
+            std::vector<c_types_t> types;
+            for(auto &p : def->get_parameters_list()) {
+               types.push_back(p->get_type());
+            }
+            signatures_map[def->get_name()] = types;
+        }
+    }
+
+    //  Second pass: arguments checking;
+    int i = 0;
 }

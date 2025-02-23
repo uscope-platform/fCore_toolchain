@@ -74,6 +74,7 @@ set(FCORE_CC_SRCS
         passes/high_level/contiguous_array_identification.cpp
         passes/semantic_analysis/infrastructure/type_checking_engine.cpp
         passes/semantic_analysis/assignments.cpp
+        passes/semantic_analysis/undefined_variables.cpp
         passes/semantic_analysis/function_calls.cpp
         fcore_cc.cpp
         tools/high_level_ast_lowering.cpp
