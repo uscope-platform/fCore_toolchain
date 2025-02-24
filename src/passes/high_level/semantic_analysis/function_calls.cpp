@@ -25,8 +25,6 @@ namespace fcore {
 
     std::shared_ptr<hl_code_block> function_calls_checks::process_global(std::shared_ptr<hl_code_block> element) {
 
-
-
         hl_observing_visitor visitor;
 
         hl_observing_visitor_operations functions_mapping_ops;

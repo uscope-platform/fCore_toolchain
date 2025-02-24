@@ -55,3 +55,58 @@ TEST(type_checking, wrong_call_arguments) {
     }
 }
 
+TEST(type_checking, int_to_float_assignment) {
+    std::vector<std::string> input =  {R"(
+
+        void main(){
+            if(5>4){
+                float a = 1;
+            }
+        }
+    )"};
+    auto includes = std::vector<std::string>();
+
+
+    auto engine = create_type_checking_engine();
+
+    fcore_cc compiler(input, includes);
+    auto ast = compiler.get_hl_ast();
+
+    try {
+        engine.run_semantic_analysis(ast);
+        EXPECT_TRUE(false);
+    } catch(const std::runtime_error &err) {
+        std::string msg = err.what();
+        EXPECT_EQ(msg,  "Assignment of an integer (1) to the float variable (a) is prohibited");
+    }
+}
+
+
+
+
+TEST(type_checking, float_to_int_assignment) {
+    std::vector<std::string> input =  {R"(
+
+        void main(){
+            if(5>4){
+                int a = 1.5;
+            }
+        }
+    )"};
+    auto includes = std::vector<std::string>();
+
+
+    auto engine = create_type_checking_engine();
+
+    fcore_cc compiler(input, includes);
+    auto ast = compiler.get_hl_ast();
+
+    try {
+        engine.run_semantic_analysis(ast);
+        EXPECT_TRUE(false);
+    } catch(const std::runtime_error &err) {
+        std::string msg = err.what();
+        EXPECT_EQ(msg,  "Assignment of a float (1.5) to the integer variable (a) is prohibited");
+    }
+}
+

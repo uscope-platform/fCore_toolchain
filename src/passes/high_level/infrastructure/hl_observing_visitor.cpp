@@ -71,57 +71,39 @@ namespace fcore {
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<hl_ast_conditional_node> &cond) {
-        if(preorder_ops.visit_conditional) {
-            preorder_ops.visit_conditional(cond);
-        }
+        if(preorder_ops.visit_conditional) preorder_ops.visit_conditional(cond);
         process_node_by_type(cond->get_condition());
         process_nodes_vector(cond->get_if_block());
-        preorder_ops.before_else();
+        if (preorder_ops.before_else) preorder_ops.before_else();
         process_nodes_vector(cond->get_else_block());
 
-        if(postorder_ops.visit_conditional) {
-            postorder_ops.visit_conditional(cond);
-        }
+        if(postorder_ops.visit_conditional) postorder_ops.visit_conditional(cond);
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<hl_ast_loop_node> &loop) {
-        if(preorder_ops.visit_loop) {
-            preorder_ops.visit_loop(loop);
-        }
+        if(preorder_ops.visit_loop) preorder_ops.visit_loop(loop);
         process_node_by_type(loop->get_init_statement());
         process_node_by_type(loop->get_condition());
         process_node_by_type(loop->get_iteration_expr());
         process_nodes_vector(loop->get_loop_content());
-        if(postorder_ops.visit_loop) {
-            postorder_ops.visit_loop(loop);
-        }
+        if(postorder_ops.visit_loop) postorder_ops.visit_loop(loop);
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<hl_ast_operand> &op) {
-        if(preorder_ops.visit_operand) {
-            preorder_ops.visit_operand(op);
-        }
+        if(preorder_ops.visit_operand) preorder_ops.visit_operand(op);
         process_nodes_vector(op->get_array_index());
-        if(postorder_ops.visit_operand) {
-            postorder_ops.visit_operand(op);
-        }
+        if(postorder_ops.visit_operand) postorder_ops.visit_operand(op);
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<hl_definition_node> &def) {
-        if(preorder_ops.visit_definition) {
-            preorder_ops.visit_definition(def);
-        }
+        if(preorder_ops.visit_definition) preorder_ops.visit_definition(def);
         process_nodes_vector(def->get_array_initializer());
         process_nodes_vector(def->get_array_index());
-        if(postorder_ops.visit_definition) {
-            postorder_ops.visit_definition(def);
-        }
+        if(postorder_ops.visit_definition) postorder_ops.visit_definition(def);
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<hl_expression_node> &exp) {
-        if(preorder_ops.visit_expression) {
-            preorder_ops.visit_expression(exp);
-        }
+        if(preorder_ops.visit_expression) preorder_ops.visit_expression(exp);
         if(const auto lhs = exp->get_lhs()) {
             process_node_by_type(*lhs);
         }
@@ -129,31 +111,20 @@ namespace fcore {
             process_node_by_type(*ths);
         }
         process_node_by_type(exp->get_rhs());
-        if(postorder_ops.visit_expression) {
-            postorder_ops.visit_expression(exp);
-        }
+        if(postorder_ops.visit_expression) postorder_ops.visit_expression(exp);
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<hl_function_call_node> &call) {
-        if(preorder_ops.visit_function_call) {
-            preorder_ops.visit_function_call(call);
-        }
+        if(preorder_ops.visit_function_call) preorder_ops.visit_function_call(call);
         process_nodes_vector(call->get_arguments());
-        if(postorder_ops.visit_function_call) {
-            postorder_ops.visit_function_call(call);
-        }
+        if(postorder_ops.visit_function_call) postorder_ops.visit_function_call(call);
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<hl_function_def_node> &f_def) {
-        if(preorder_ops.visit_function_def) {
-            preorder_ops.visit_function_def(f_def);
-        }
+        if(preorder_ops.visit_function_def) preorder_ops.visit_function_def(f_def);
         process_nodes_vector(f_def->get_body());
         process_node_by_type(f_def->get_return());
-
-        if(postorder_ops.visit_function_def) {
-            postorder_ops.visit_function_def(f_def);
-        }
+        if(postorder_ops.visit_function_def) postorder_ops.visit_function_def(f_def);
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<hl_code_block> &block) {

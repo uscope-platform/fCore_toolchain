@@ -18,6 +18,8 @@
 #define ASSIGNMENTS_HPP
 
 #include "passes/high_level/infrastructure/pass_base.hpp"
+#include "data_structures/high_level_ast/high_level_ast.hpp"
+#include "passes/high_level/infrastructure/hl_observing_visitor.hpp"
 
 namespace fcore {
 
@@ -25,6 +27,10 @@ namespace fcore {
     public:
         assignments_checks();
         std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
+    private:
+
+        void process_definition(const std::shared_ptr<hl_definition_node> &def);
+
     };
 
 }
