@@ -2,6 +2,7 @@ set(TEST_SOURCES
         Instruction_classes.cpp
         passes/instruction_stream_pass.cpp
         passes/type_checking.cpp
+        passes/semantic_analysis.cpp
         passes/hl_passes.cpp
         end_to_end_asm.cpp
         testing_main.cpp

@@ -25,6 +25,7 @@ namespace fcore {
 
     struct hl_observing_visitor_operations{
         std::function<void (const std::shared_ptr<hl_ast_conditional_node> &cond)> visit_conditional;
+        std::function<void ()> before_else;
         std::function<void (const std::shared_ptr<hl_ast_loop_node> &cond)> visit_loop;
         std::function<void (const std::shared_ptr<hl_ast_operand> &cond)> visit_operand;
         std::function<void (const std::shared_ptr<hl_definition_node> & def)> visit_definition;
@@ -34,7 +35,7 @@ namespace fcore {
     };
     class hl_observing_visitor {
     public:
-        void visit(const hl_observing_visitor_operations &operations,const std::shared_ptr<hl_code_block> &node);
+        void visit(const std::pair<hl_observing_visitor_operations,hl_observing_visitor_operations>&operations,const std::shared_ptr<hl_code_block> &node);
     private:
         void process_node_by_type(const std::shared_ptr<hl_ast_node> &node);
         void process_nodes_vector(const std::vector<std::shared_ptr<hl_ast_node>> &node);
@@ -46,7 +47,8 @@ namespace fcore {
         void process_node(const std::shared_ptr<hl_function_call_node> &cond);
         void process_node(const std::shared_ptr<hl_function_def_node> &def);
         void process_node(const std::shared_ptr<hl_code_block> &block);
-        hl_observing_visitor_operations ops;
+        hl_observing_visitor_operations preorder_ops;
+        hl_observing_visitor_operations postorder_ops;
 
     };
 

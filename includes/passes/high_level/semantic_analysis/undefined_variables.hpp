@@ -18,7 +18,11 @@
 #define UNDEFINED_VARIABLES_HPP
 
 #include "passes/high_level/infrastructure/pass_base.hpp"
-#include "passes/high_level/infrastructure/hl_acting_visitor.hpp"
+#include "passes/high_level/infrastructure/hl_observing_visitor.hpp"
+
+#include <stack>
+#include <unordered_set>
+#include <spdlog/spdlog.h>
 
 namespace fcore {
     class undefined_variables : public pass_base{
@@ -26,7 +30,22 @@ namespace fcore {
         undefined_variables();
         std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
     private:
+
+        void push_stack();
+        void pop_stack();
+        void reset_conditional_stack();
+
+        void process_definition(const std::shared_ptr<hl_definition_node> &def);
+        void process_function_def(const std::shared_ptr<hl_function_def_node> &def);
+        void process_operand(const std::shared_ptr<hl_ast_operand> &op) const;
+
+        std::stack<std::unordered_set<std::string>> definitions_stack;
+        std::unordered_set<std::string> current_stack;
+
     };
+
+
+
 }
 
 

@@ -18,9 +18,10 @@
 
 
 namespace fcore {
-    void hl_observing_visitor::visit(const hl_observing_visitor_operations &operations,
+    void hl_observing_visitor::visit(const std::pair<hl_observing_visitor_operations,hl_observing_visitor_operations>&operations,
         const std::shared_ptr<hl_code_block> &node) {
-        ops = operations;
+        preorder_ops = operations.first;
+        postorder_ops = operations.second;
 
 
         auto ret_val = node;
@@ -35,20 +36,28 @@ namespace fcore {
         switch (node->node_type) {
             case hl_ast_node_type_expr:
                 process_node(std::static_pointer_cast<hl_expression_node>(node));
+                break;
             case hl_ast_node_type_definition:
                 process_node(std::static_pointer_cast<hl_definition_node>(node));
+                break;
             case hl_ast_node_type_conditional:
                 process_node(std::static_pointer_cast<hl_ast_conditional_node>(node));
+                break;
             case hl_ast_node_type_loop:
                 process_node(std::static_pointer_cast<hl_ast_loop_node>(node));
+                break;
             case hl_ast_node_type_function_def:
                 process_node(std::static_pointer_cast<hl_function_def_node>(node));
+                break;
             case hl_ast_node_type_operand:
                 process_node(std::static_pointer_cast<hl_ast_operand>(node));
+                break;
             case hl_ast_node_type_function_call:
                 process_node(std::static_pointer_cast<hl_function_call_node>(node));
+                break;
             case hl_ast_node_type_code_block:
                 process_node(std::static_pointer_cast<hl_code_block>(node));
+                break;
             default:
                 throw std::runtime_error("unexpected node encounted during AST visit");
         }
@@ -62,41 +71,56 @@ namespace fcore {
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<hl_ast_conditional_node> &cond) {
-
+        if(preorder_ops.visit_conditional) {
+            preorder_ops.visit_conditional(cond);
+        }
         process_node_by_type(cond->get_condition());
         process_nodes_vector(cond->get_if_block());
+        preorder_ops.before_else();
         process_nodes_vector(cond->get_else_block());
 
-        if(ops.visit_conditional){
-            ops.visit_conditional(cond);
+        if(postorder_ops.visit_conditional) {
+            postorder_ops.visit_conditional(cond);
         }
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<hl_ast_loop_node> &loop) {
+        if(preorder_ops.visit_loop) {
+            preorder_ops.visit_loop(loop);
+        }
         process_node_by_type(loop->get_init_statement());
         process_node_by_type(loop->get_condition());
         process_node_by_type(loop->get_iteration_expr());
         process_nodes_vector(loop->get_loop_content());
-        if(ops.visit_loop) {
-            ops.visit_loop(loop);
+        if(postorder_ops.visit_loop) {
+            postorder_ops.visit_loop(loop);
         }
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<hl_ast_operand> &op) {
-        if(ops.visit_operand) {
-            ops.visit_operand(op);
+        if(preorder_ops.visit_operand) {
+            preorder_ops.visit_operand(op);
+        }
+        if(postorder_ops.visit_operand) {
+            postorder_ops.visit_operand(op);
         }
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<hl_definition_node> &def) {
+        if(preorder_ops.visit_definition) {
+            preorder_ops.visit_definition(def);
+        }
         process_nodes_vector(def->get_array_initializer());
         process_nodes_vector(def->get_array_index());
-        if(ops.visit_definition) {
-            ops.visit_definition(def);
+        if(postorder_ops.visit_definition) {
+            postorder_ops.visit_definition(def);
         }
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<hl_expression_node> &exp) {
+        if(preorder_ops.visit_expression) {
+            preorder_ops.visit_expression(exp);
+        }
         if(const auto lhs = exp->get_lhs()) {
             process_node_by_type(*lhs);
         }
@@ -104,28 +128,35 @@ namespace fcore {
             process_node_by_type(*ths);
         }
         process_node_by_type(exp->get_rhs());
-        if(ops.visit_expression) {
-            ops.visit_expression(exp);
+        if(postorder_ops.visit_expression) {
+            postorder_ops.visit_expression(exp);
         }
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<hl_function_call_node> &call) {
+        if(preorder_ops.visit_function_call) {
+            preorder_ops.visit_function_call(call);
+        }
         process_nodes_vector(call->get_arguments());
-        if(ops.visit_function_call) {
-            ops.visit_function_call(call);
+        if(postorder_ops.visit_function_call) {
+            postorder_ops.visit_function_call(call);
         }
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<hl_function_def_node> &f_def) {
+        if(preorder_ops.visit_function_def) {
+            preorder_ops.visit_function_def(f_def);
+        }
         process_nodes_vector(f_def->get_body());
         process_node_by_type(f_def->get_return());
 
-        if(ops.visit_function_def) {
-            ops.visit_function_def(f_def);
+        if(postorder_ops.visit_function_def) {
+            postorder_ops.visit_function_def(f_def);
         }
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<hl_code_block> &block) {
         process_nodes_vector(block->get_content());
     }
+
 }
