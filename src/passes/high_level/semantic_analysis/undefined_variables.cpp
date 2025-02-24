@@ -16,10 +16,14 @@
 
 #include "passes/high_level/semantic_analysis/undefined_variables.hpp"
 
-fcore::undefined_variables::undefined_variables() : type_check_base("Undefined Variables checking", 1){
+namespace fcore {
 
-}
+    undefined_variables::undefined_variables() : pass_base("Undefined Variables checking", 1){
 
-void fcore::undefined_variables::run_check(const std::shared_ptr<hl_code_block> &element) {
+    }
+
+    std::shared_ptr<hl_code_block> undefined_variables::process_global(std::shared_ptr<hl_code_block> element) {
+        return element;
+    }
 
 }

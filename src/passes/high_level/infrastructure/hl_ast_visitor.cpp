@@ -18,7 +18,7 @@
 
 namespace fcore{
 
-    std::shared_ptr<hl_code_block> fcore::hl_ast_visitor::visit(const fcore::hl_ast_visitor_operations &operations,const std::shared_ptr<hl_code_block> &node) {
+    std::shared_ptr<hl_code_block> hl_ast_visitor::visit(const hl_ast_visitor_operations &operations,const std::shared_ptr<hl_code_block> &node) {
         ops = operations;
         auto ret_val = node;
         std::vector<std::shared_ptr<hl_ast_node>> new_content;
@@ -30,7 +30,7 @@ namespace fcore{
         return ret_val;
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>> fcore::hl_ast_visitor::process_node_by_type(const std::shared_ptr<hl_ast_node> &node) {
+    std::vector<std::shared_ptr<hl_ast_node>> hl_ast_visitor::process_node_by_type(const std::shared_ptr<hl_ast_node> &node) {
         if(!node) return {node};
         switch (node->node_type) {
             case hl_ast_node_type_expr:

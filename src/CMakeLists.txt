@@ -72,7 +72,6 @@ set(FCORE_CC_SRCS
         passes/high_level/optimizations/loop_unrolling_pass.cpp
         passes/high_level/optimizations/normalization_pass.cpp
         passes/high_level/optimizations/contiguous_array_identification.cpp
-        passes/high_level/infrastructure/type_checking_engine.cpp
         passes/high_level/semantic_analysis/assignments.cpp
         passes/high_level/semantic_analysis/undefined_variables.cpp
         passes/high_level/semantic_analysis/function_calls.cpp

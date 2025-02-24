@@ -17,13 +17,13 @@
 #ifndef FUNCTION_CALLS_HPP
 #define FUNCTION_CALLS_HPP
 
-#include "passes/high_level/infrastructure/type_check_base.hpp"
+#include "passes/high_level/infrastructure/pass_base.hpp"
 
 namespace fcore {
-    class function_calls_checks : public type_check_base{
+    class function_calls_checks : public pass_base{
     public:
         function_calls_checks();
-        void run_check(const std::shared_ptr<hl_code_block>  &element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
     private:
     };
 }

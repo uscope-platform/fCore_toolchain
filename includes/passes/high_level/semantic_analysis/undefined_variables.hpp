@@ -17,13 +17,13 @@
 #ifndef UNDEFINED_VARIABLES_HPP
 #define UNDEFINED_VARIABLES_HPP
 
-#include "passes/high_level/infrastructure/type_check_base.hpp"
+#include "passes/high_level/infrastructure/pass_base.hpp"
 
 namespace fcore {
-    class undefined_variables : public type_check_base{
+    class undefined_variables : public pass_base{
     public:
         undefined_variables();
-        void run_check(const std::shared_ptr<hl_code_block>  &element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
     private:
     };
 }

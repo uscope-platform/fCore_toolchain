@@ -16,10 +16,13 @@
 
 #include "passes/high_level/semantic_analysis/assignments.hpp"
 
+namespace fcore {
 
-fcore::assignments_checks::assignments_checks() :type_check_base("assignments checks", 1) {
-}
+    assignments_checks::assignments_checks() :pass_base("assignments checks", 1) {
+    }
 
-void fcore::assignments_checks::run_check(const std::shared_ptr<hl_code_block> &element) {
-    return;
+    std::shared_ptr<hl_code_block> assignments_checks::process_global(std::shared_ptr<hl_code_block> element) {
+        return element;
+    }
+
 }

@@ -42,7 +42,6 @@ TEST(type_checking, wrong_call_arguments) {
     fcore_cc compiler(input, includes);
     auto ast = compiler.get_hl_ast();
     auto engine = create_type_checking_engine();
-    engine.check(ast);
     EXPECT_TRUE(false);
 }
 

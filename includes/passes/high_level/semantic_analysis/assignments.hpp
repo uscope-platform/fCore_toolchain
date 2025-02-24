@@ -17,14 +17,14 @@
 #ifndef ASSIGNMENTS_HPP
 #define ASSIGNMENTS_HPP
 
-#include "passes/high_level/infrastructure/type_check_base.hpp"
+#include "passes/high_level/infrastructure/pass_base.hpp"
 
 namespace fcore {
 
-    class assignments_checks : public type_check_base{
+    class assignments_checks : public pass_base{
     public:
         assignments_checks();
-        void run_check(const std::shared_ptr<hl_code_block>  &element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
     };
 
 }

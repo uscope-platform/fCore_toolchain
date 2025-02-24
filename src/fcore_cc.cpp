@@ -127,7 +127,7 @@ namespace fcore{
         hl_manager = create_hl_pass_manager(ep);
         hl_manager.set_profiler(profiling_core);
         if (profiling_core != nullptr) profiling_core->set_phase("AST processing");
-        hl_ast = hl_manager.run_morphing_passes(hl_ast);
+        hl_ast = hl_manager.run_optimizations(hl_ast);
 
         high_level_ast_lowering translator;
         translator.set_input_ast(hl_ast);

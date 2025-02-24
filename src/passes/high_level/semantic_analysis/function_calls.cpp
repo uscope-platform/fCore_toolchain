@@ -16,10 +16,17 @@
 
 #include "passes/high_level/semantic_analysis/function_calls.hpp"
 
+namespace fcore {
+    function_calls_checks::function_calls_checks(): pass_base("function calls checks", 1)  {
+    }
 
-fcore::function_calls_checks::function_calls_checks(): type_check_base("function calls checks", 1)  {
+    std::shared_ptr<hl_code_block> function_calls_checks::process_global(std::shared_ptr<hl_code_block> element) {
+        return element;
+    }
 }
 
+
+/*
 void fcore::function_calls_checks::run_check(const std::shared_ptr<hl_code_block> &element) {
     std::unordered_map<std::string, std::vector<c_types_t>> signatures_map;
 
@@ -38,3 +45,4 @@ void fcore::function_calls_checks::run_check(const std::shared_ptr<hl_code_block
     //  Second pass: arguments checking;
     int i = 0;
 }
+*/
