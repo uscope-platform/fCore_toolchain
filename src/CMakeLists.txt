@@ -51,31 +51,31 @@ set(FCORE_CC_SRCS
         data_structures/high_level_ast/hl_function_call_node.cpp
         data_structures/high_level_ast/hl_ast_operand.cpp
         data_structures/constants_tracker.cpp
-        passes/high_level/dead_load_elimination.cpp
-        passes/high_level/constant_propagation.cpp
+        passes/high_level/optimizations/dead_load_elimination.cpp
+        passes/high_level/optimizations/constant_propagation.cpp
         passes/high_level/infrastructure/hl_pass_manager.cpp
         passes/high_level/infrastructure/inlined_function_elimination.cpp
-        passes/high_level/visitor_passes/array_initialization_substitution.cpp
-        passes/high_level/visitor_passes/operating_assignment_implementation_pass.cpp
-        passes/high_level/visitor_passes/intrinsics_implementation_pass.cpp
-        passes/high_level/visitor_passes/division_implementation_pass.cpp
-        passes/high_level/visitor_passes/ternary_expression_extraction.cpp
-        passes/high_level/visitor_passes/dead_variable_elimination.cpp
-        passes/high_level/visitor_passes/array_index_lowering.cpp
-        passes/high_level/visitor_passes/constant_folding_pass.cpp
-        passes/high_level/visitor_passes/comparison_flipping.cpp
-        passes/high_level/inline_constant_extraction.cpp
-        passes/high_level/fuction_mangling_pass.cpp
-        passes/high_level/function_inlining_pass.cpp
-        passes/high_level/code_block_inlining_pass.cpp
-        passes/high_level/conditional_implementation_pass.cpp
-        passes/high_level/loop_unrolling_pass.cpp
-        passes/high_level/normalization_pass.cpp
-        passes/high_level/contiguous_array_identification.cpp
-        passes/semantic_analysis/infrastructure/type_checking_engine.cpp
-        passes/semantic_analysis/assignments.cpp
-        passes/semantic_analysis/undefined_variables.cpp
-        passes/semantic_analysis/function_calls.cpp
+        passes/high_level/optimizations/visitor_passes/array_initialization_substitution.cpp
+        passes/high_level/optimizations/visitor_passes/operating_assignment_implementation_pass.cpp
+        passes/high_level/optimizations/visitor_passes/intrinsics_implementation_pass.cpp
+        passes/high_level/optimizations/visitor_passes/division_implementation_pass.cpp
+        passes/high_level/optimizations/visitor_passes/ternary_expression_extraction.cpp
+        passes/high_level/optimizations/visitor_passes/dead_variable_elimination.cpp
+        passes/high_level/optimizations/visitor_passes/array_index_lowering.cpp
+        passes/high_level/optimizations/visitor_passes/constant_folding_pass.cpp
+        passes/high_level/optimizations/visitor_passes/comparison_flipping.cpp
+        passes/high_level/optimizations/inline_constant_extraction.cpp
+        passes/high_level/optimizations/fuction_mangling_pass.cpp
+        passes/high_level/optimizations/function_inlining_pass.cpp
+        passes/high_level/optimizations/code_block_inlining_pass.cpp
+        passes/high_level/optimizations/conditional_implementation_pass.cpp
+        passes/high_level/optimizations/loop_unrolling_pass.cpp
+        passes/high_level/optimizations/normalization_pass.cpp
+        passes/high_level/optimizations/contiguous_array_identification.cpp
+        passes/high_level/infrastructure/type_checking_engine.cpp
+        passes/high_level/semantic_analysis/assignments.cpp
+        passes/high_level/semantic_analysis/undefined_variables.cpp
+        passes/high_level/semantic_analysis/function_calls.cpp
         fcore_cc.cpp
         tools/high_level_ast_lowering.cpp
         tools/expression_evaluator.cpp

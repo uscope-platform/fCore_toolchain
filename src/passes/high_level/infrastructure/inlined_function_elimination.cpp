@@ -14,7 +14,7 @@
 // limitations under the License.08/07/2021.
 //
 
-#include "passes/high_level/inlined_function_elimination.hpp"
+#include "passes/high_level/optimizations/inlined_function_elimination.hpp"
 
 namespace fcore{
 

@@ -12,37 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-#include <fcore_cc.hpp>
-#include <gtest/gtest.h>
-#include "tools/variable_map.hpp"
-#include "frontend/C/C_language_parser.hpp"
-#include <sstream>
-
-
 #include "passes/high_level/infrastructure/type_checking_engine.hpp"
 
-#include <memory>
 
-using namespace fcore;
-
-TEST(type_checking, wrong_call_arguments) {
-    std::vector<std::string> input =  {R"(
-        float add(float a, float b){
-            return a+b;
-        };
-
-        void main(){
-            float a = 1.0;
-            int b_int = 2;
-            float c = add(a, b_int);
+namespace fcore {
+    void type_checking_engine::check(const std::shared_ptr<hl_code_block> & ast) {
+        for (auto &[pass, name]:passes) {
+            pass->run_check(ast);
         }
-    )"};
-    auto includes = std::vector<std::string>();
-    fcore_cc compiler(input, includes);
-    auto ast = compiler.get_hl_ast();
-    auto engine = create_type_checking_engine();
-    engine.check(ast);
-    EXPECT_TRUE(false);
-}
 
+    };
+    void type_checking_engine::add_check(const std::string& name, const std::shared_ptr<type_check_base>& pass) {
+        passes.push_back({pass, name});
+    };
+}

@@ -22,7 +22,7 @@
 #include "frontend/C/C_language_parser.hpp"
 #include "passes/high_level/infrastructure/hl_passes.hpp"
 #include "passes/high_level/infrastructure/hl_pass_manager.hpp"
-#include "passes/high_level/normalization_pass.hpp"
+#include "passes/high_level/optimizations/normalization_pass.hpp"
 #include "tools/high_level_ast_lowering.hpp"
 
 #include <memory>
