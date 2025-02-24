@@ -46,8 +46,12 @@ TEST(type_checking, wrong_call_arguments) {
     fcore_cc compiler(input, includes);
     auto ast = compiler.get_hl_ast();
 
-    engine.run_semantic_analysis(ast);
-
-    EXPECT_TRUE(false);
+    try {
+        engine.run_semantic_analysis(ast);
+        EXPECT_TRUE(false);
+    } catch(const std::runtime_error &err) {
+        std::string msg = err.what();
+        EXPECT_EQ(msg,  "Argument #1 of a call to add is of the wrong type");
+    }
 }
 

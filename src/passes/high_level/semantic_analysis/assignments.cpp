@@ -18,7 +18,7 @@
 
 namespace fcore {
 
-    assignments_checks::assignments_checks() :pass_base("assignments checks", 1) {
+    assignments_checks::assignments_checks() :pass_base("assignments checks") {
     }
 
     std::shared_ptr<hl_code_block> assignments_checks::process_global(std::shared_ptr<hl_code_block> element) {

@@ -29,10 +29,6 @@ namespace fcore{
             name = std::move(n);
             n_passes = 1;
         };
-        pass_base(std::string n, uint8_t n_p) {
-            name = std::move(n);
-            n_passes = n_p;
-        }
 
         virtual std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) {
             return element;

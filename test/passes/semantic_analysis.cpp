@@ -55,7 +55,6 @@ TEST(semantic_analysis, simple_undefined_variable) {
 
 }
 
-
 TEST(semantic_analysis, undefined_variable_in_else) {
     std::vector<std::string> input =  {R"(
         float add(float a, float b){
@@ -89,7 +88,6 @@ TEST(semantic_analysis, undefined_variable_in_else) {
 
 }
 
-
 TEST(semantic_analysis, for_loop_variable) {
     std::vector<std::string> input =  {R"(
 
@@ -115,7 +113,6 @@ TEST(semantic_analysis, for_loop_variable) {
     }
 
 }
-
 
 TEST(semantic_analysis, undefined_for_loop_variable) {
     std::vector<std::string> input =  {R"(
@@ -144,8 +141,6 @@ TEST(semantic_analysis, undefined_for_loop_variable) {
     }
 
 }
-
-
 
 TEST(semantic_analysis, undefined_variable_in_expression) {
     std::vector<std::string> input =  {R"(

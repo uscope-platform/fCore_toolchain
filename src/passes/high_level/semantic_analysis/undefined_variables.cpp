@@ -18,7 +18,7 @@
 
 namespace fcore {
 
-    undefined_variables::undefined_variables() : pass_base("Undefined Variables checking", 1){
+    undefined_variables::undefined_variables() : pass_base("Undefined Variables checking"){
 
     }
 
