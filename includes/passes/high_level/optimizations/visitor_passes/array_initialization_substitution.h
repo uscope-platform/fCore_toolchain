@@ -18,7 +18,7 @@
 #include "passes/high_level/infrastructure/pass_base.hpp"
 #include "tools/array_linearizer.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
-#include "passes/high_level/infrastructure/hl_ast_visitor.hpp"
+#include "passes/high_level/infrastructure/hl_acting_visitor.hpp"
 
 namespace fcore{
     class array_initialization_substitution : public pass_base{

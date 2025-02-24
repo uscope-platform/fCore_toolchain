@@ -23,7 +23,11 @@ namespace fcore {
     }
 
     std::shared_ptr<hl_code_block> undefined_variables::process_global(std::shared_ptr<hl_code_block> element) {
-        return element;
+        hl_acting_visitor_operations ops;
+        hl_acting_visitor visitor;
+
+
+        return visitor.visit(ops, element);
     }
 
 }

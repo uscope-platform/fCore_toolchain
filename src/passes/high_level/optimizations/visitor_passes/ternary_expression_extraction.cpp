@@ -24,8 +24,8 @@ namespace fcore{
 
     std::shared_ptr<hl_code_block>
     ternary_expression_extraction::process_global(std::shared_ptr<hl_code_block> element) {
-        hl_ast_visitor_operations ops;
-        hl_ast_visitor visitor;
+        hl_acting_visitor_operations ops;
+        hl_acting_visitor visitor;
 
         ops.visit_expression = process_expression;
 

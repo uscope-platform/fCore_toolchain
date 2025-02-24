@@ -14,11 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "passes/high_level/infrastructure/hl_ast_visitor.hpp"
+#include "passes/high_level/infrastructure/hl_acting_visitor.hpp"
 
 namespace fcore{
 
-    std::shared_ptr<hl_code_block> hl_ast_visitor::visit(const hl_ast_visitor_operations &operations,const std::shared_ptr<hl_code_block> &node) {
+    std::shared_ptr<hl_code_block> hl_acting_visitor::visit(const hl_acting_visitor_operations &operations,const std::shared_ptr<hl_code_block> &node) {
         ops = operations;
         auto ret_val = node;
         std::vector<std::shared_ptr<hl_ast_node>> new_content;
@@ -30,7 +30,7 @@ namespace fcore{
         return ret_val;
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>> hl_ast_visitor::process_node_by_type(const std::shared_ptr<hl_ast_node> &node) {
+    std::vector<std::shared_ptr<hl_ast_node>> hl_acting_visitor::process_node_by_type(const std::shared_ptr<hl_ast_node> &node) {
         if(!node) return {node};
         switch (node->node_type) {
             case hl_ast_node_type_expr:
@@ -54,7 +54,7 @@ namespace fcore{
         }
     }
 
-    std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_ast_conditional_node> &cond) {
+    std::shared_ptr<hl_ast_node> hl_acting_visitor::process_node(const std::shared_ptr<hl_ast_conditional_node> &cond) {
         cond->set_condition(get_expected_scalar_element(process_node_by_type(cond->get_condition())));
 
         std::vector<std::shared_ptr<hl_ast_node>> new_block;
@@ -75,12 +75,11 @@ namespace fcore{
 
         if(ops.visit_conditional){
             return ops.visit_conditional(cond);
-        } else {
-            return cond;
         }
+        return cond;
     }
 
-    std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_ast_loop_node> &loop) {
+    std::shared_ptr<hl_ast_node> hl_acting_visitor::process_node(const std::shared_ptr<hl_ast_loop_node> &loop) {
 
         std::vector<std::shared_ptr<hl_ast_node>> new_block;
 
@@ -105,20 +104,18 @@ namespace fcore{
 
         if(ops.visit_loop){
             return ops.visit_loop(loop);
-        } else {
-            return loop;
         }
+        return loop;
     }
 
-    std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_ast_operand> &op) {
+    std::shared_ptr<hl_ast_node> hl_acting_visitor::process_node(const std::shared_ptr<hl_ast_operand> &op) {
         if(ops.visit_operand){
             return ops.visit_operand(op);
-        } else {
-            return op;
         }
+        return op;
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>> hl_ast_visitor::process_node(const std::shared_ptr<hl_definition_node> &def) {
+    std::vector<std::shared_ptr<hl_ast_node>> hl_acting_visitor::process_node(const std::shared_ptr<hl_definition_node> &def) {
 
         std::vector<std::shared_ptr<hl_ast_node>> new_block;
 
@@ -138,26 +135,24 @@ namespace fcore{
 
         if(ops.visit_definition){
             return ops.visit_definition(def);
-        } else {
-            return {def};
         }
+        return {def};
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>>  hl_ast_visitor::process_node(const std::shared_ptr<hl_expression_node> &ex) {
-        if(auto ths = ex->get_ths())
-            ex->set_ths(get_expected_scalar_element(process_node_by_type(ths.value())));
-        if(auto lhs = ex->get_lhs())
-            ex->set_lhs(get_expected_scalar_element(process_node_by_type(lhs.value())));
+    std::vector<std::shared_ptr<hl_ast_node>>  hl_acting_visitor::process_node(const std::shared_ptr<hl_expression_node> &ex) {
+        if(const auto ths = ex->get_ths())
+            ex->set_ths(get_expected_scalar_element(process_node_by_type(*ths)));
+        if(const auto lhs = ex->get_lhs())
+            ex->set_lhs(get_expected_scalar_element(process_node_by_type(*lhs)));
         ex->set_rhs(get_expected_scalar_element(process_node_by_type(ex->get_rhs())));
 
         if(ops.visit_expression){
             return ops.visit_expression(ex);
-        } else {
-            return {ex};
         }
+        return {ex};
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>> hl_ast_visitor::process_node(const std::shared_ptr<hl_function_call_node> &call) {
+    std::vector<std::shared_ptr<hl_ast_node>> hl_acting_visitor::process_node(const std::shared_ptr<hl_function_call_node> &call) {
 
         std::vector<std::shared_ptr<hl_ast_node>> new_block;
 
@@ -169,12 +164,11 @@ namespace fcore{
 
         if(ops.visit_function_call){
             return ops.visit_function_call(call);
-        } else {
-            return {call};
         }
+        return {call};
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>> hl_ast_visitor::process_node(const std::shared_ptr<hl_function_def_node> &def) {
+    std::vector<std::shared_ptr<hl_ast_node>> hl_acting_visitor::process_node(const std::shared_ptr<hl_function_def_node> &def) {
         std::vector<std::shared_ptr<hl_ast_node>> new_block;
 
         for(const auto &item:def->get_body()){
@@ -187,13 +181,11 @@ namespace fcore{
 
         if(ops.visit_function_def){
             return ops.visit_function_def(def);
-        } else {
-            return {def};
         }
-
+        return {def};
     }
 
-    std::shared_ptr<hl_ast_node> hl_ast_visitor::process_node(const std::shared_ptr<hl_code_block> &block) {
+    std::shared_ptr<hl_ast_node> hl_acting_visitor::process_node(const std::shared_ptr<hl_code_block> &block) {
         auto ret_val = block;
         std::vector<std::shared_ptr<hl_ast_node>> new_content;
         for(const auto &item:ret_val->get_content()){
@@ -205,7 +197,7 @@ namespace fcore{
     }
 
     std::shared_ptr<hl_ast_node>
-    hl_ast_visitor::get_expected_scalar_element(const std::vector<std::shared_ptr<hl_ast_node>> &vect) {
+    hl_acting_visitor::get_expected_scalar_element(const std::vector<std::shared_ptr<hl_ast_node>> &vect) {
         if(vect.size() ==1) return vect[0];
         throw std::runtime_error("Unexpected vector return in a scalar only position during AST visit");
     }

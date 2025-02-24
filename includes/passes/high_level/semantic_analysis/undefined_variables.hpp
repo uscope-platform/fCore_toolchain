@@ -18,6 +18,7 @@
 #define UNDEFINED_VARIABLES_HPP
 
 #include "passes/high_level/infrastructure/pass_base.hpp"
+#include "passes/high_level/infrastructure/hl_acting_visitor.hpp"
 
 namespace fcore {
     class undefined_variables : public pass_base{

@@ -22,14 +22,14 @@ namespace fcore{
 
     std::shared_ptr<hl_code_block> dead_variable_elimination::process_global(std::shared_ptr<hl_code_block> element) {
 
-        hl_ast_visitor_operations ops;
-        hl_ast_visitor visitor;
+        hl_acting_visitor_operations ops;
+        hl_acting_visitor visitor;
 
         ops.visit_definition = [this](auto && arg) { return detect_definition(std::forward<decltype(arg)>(arg));};
         ops.visit_expression = [this](auto && arg) { return detect_expression(std::forward<decltype(arg)>(arg));};
         visitor.visit(ops, element);
 
-        hl_ast_visitor_operations ops2;
+        hl_acting_visitor_operations ops2;
         ops2.visit_definition = [this](auto && arg) { return process_definition(std::forward<decltype(arg)>(arg));};
 
         return  visitor.visit(ops2, element);

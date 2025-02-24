@@ -39,9 +39,15 @@ TEST(type_checking, wrong_call_arguments) {
         }
     )"};
     auto includes = std::vector<std::string>();
+
+
+    auto engine = create_type_checking_engine();
+
     fcore_cc compiler(input, includes);
     auto ast = compiler.get_hl_ast();
-    auto engine = create_type_checking_engine();
+
+    engine.run_semantic_analysis(ast);
+
     EXPECT_TRUE(false);
 }
 

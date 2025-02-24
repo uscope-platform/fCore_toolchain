@@ -16,7 +16,7 @@
 #define FCORE_TOOLCHAINLCHAINLCHAIN_DIVISION_IMPLEMENTATION_PASS_HPP
 
 #include "data_structures/high_level_ast/high_level_ast.hpp"
-#include "passes/high_level/infrastructure/hl_ast_visitor.hpp"
+#include "passes/high_level/infrastructure/hl_acting_visitor.hpp"
 #include "passes/high_level/infrastructure/pass_base.hpp"
 
 namespace fcore{

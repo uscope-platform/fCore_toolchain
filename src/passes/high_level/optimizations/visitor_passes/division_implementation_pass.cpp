@@ -25,8 +25,8 @@ namespace fcore {
     std::shared_ptr<hl_code_block>
     division_implementation_pass::process_global(std::shared_ptr<hl_code_block> element) {
 
-        hl_ast_visitor_operations ops;
-        hl_ast_visitor visitor;
+        hl_acting_visitor_operations ops;
+        hl_acting_visitor visitor;
 
         // ops.visit_expression = [this](auto && arg) { return process_expression(std::forward<decltype(arg)>(arg)); };
         ops.visit_expression = process_expression;

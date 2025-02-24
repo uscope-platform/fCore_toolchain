@@ -24,8 +24,8 @@ namespace fcore{
 
     std::shared_ptr<hl_code_block> inlined_function_elimination::process_global(std::shared_ptr<hl_code_block> element) {
 
-        hl_ast_visitor_operations ops;
-        hl_ast_visitor visitor;
+        hl_acting_visitor_operations ops;
+        hl_acting_visitor visitor;
 
         ops.visit_function_def = [this](auto && arg) { return process_function_definition(std::forward<decltype(arg)>(arg));};
 

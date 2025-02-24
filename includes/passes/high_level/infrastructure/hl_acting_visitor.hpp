@@ -25,7 +25,7 @@
 
 namespace fcore{
 
-    struct hl_ast_visitor_operations{
+    struct hl_acting_visitor_operations{
         std::function<
             std::shared_ptr<hl_ast_node> (const std::shared_ptr<hl_ast_conditional_node> &cond)
         > visit_conditional;
@@ -49,9 +49,9 @@ namespace fcore{
         > visit_function_call;
     };
 
-    class hl_ast_visitor {
+    class hl_acting_visitor {
     public:
-        std::shared_ptr<hl_code_block> visit(const hl_ast_visitor_operations &operations,const std::shared_ptr<hl_code_block> &node);
+        std::shared_ptr<hl_code_block> visit(const hl_acting_visitor_operations &operations,const std::shared_ptr<hl_code_block> &node);
     private:
         std::vector<std::shared_ptr<hl_ast_node>> process_node_by_type(const std::shared_ptr<hl_ast_node> &node);
         std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_ast_conditional_node> &cond);
@@ -62,7 +62,7 @@ namespace fcore{
         std::vector<std::shared_ptr<hl_ast_node>>  process_node(const std::shared_ptr<hl_function_call_node> &cond);
         std::vector<std::shared_ptr<hl_ast_node>> process_node(const std::shared_ptr<hl_function_def_node> &def);
         std::shared_ptr<hl_ast_node> process_node(const std::shared_ptr<hl_code_block> &block);
-        hl_ast_visitor_operations ops;
+        hl_acting_visitor_operations ops;
 
         std::shared_ptr<hl_ast_node> get_expected_scalar_element(const std::vector<std::shared_ptr<hl_ast_node>> &vect);
 
