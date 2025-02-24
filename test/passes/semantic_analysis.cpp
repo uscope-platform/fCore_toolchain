@@ -89,3 +89,89 @@ TEST(semantic_analysis, undefined_variable_in_else) {
 
 }
 
+
+TEST(semantic_analysis, for_loop_variable) {
+    std::vector<std::string> input =  {R"(
+
+        void main(){
+            float a[4];
+            for(int i = 0; i<5; ++i){
+                a[i] = 1.0;
+            }
+        }
+    )"};
+
+    auto includes = std::vector<std::string>();
+    auto engine = create_type_checking_engine();
+
+    fcore_cc compiler(input, includes);
+    auto ast = compiler.get_hl_ast();
+
+    try {
+        engine.run_semantic_analysis(ast);
+    } catch(const std::runtime_error &err) {
+        spdlog::critical("unexpected error: {}", err.what());
+        EXPECT_TRUE(false);
+    }
+
+}
+
+
+TEST(semantic_analysis, undefined_for_loop_variable) {
+    std::vector<std::string> input =  {R"(
+
+        void main(){
+            float a[4];
+            for(int i = 0; i<5; ++i){
+                a[j] = 1.0;
+            }
+        }
+    )"};
+
+    auto includes = std::vector<std::string>();
+    auto engine = create_type_checking_engine();
+
+    fcore_cc compiler(input, includes);
+    auto ast = compiler.get_hl_ast();
+
+    try {
+        engine.run_semantic_analysis(ast);
+        spdlog::critical("The undefined variable j was not caught");
+        EXPECT_TRUE(false);
+    } catch(const std::runtime_error &err) {
+        std::string msg = err.what();
+        EXPECT_EQ(msg, "Undefined variable: j");
+    }
+
+}
+
+
+
+TEST(semantic_analysis, undefined_variable_in_expression) {
+    std::vector<std::string> input =  {R"(
+
+        void main(){
+            float a = 3.0;
+            float b = 2.0;
+
+            float c = a + ba;
+        }
+    )"};
+
+    auto includes = std::vector<std::string>();
+    auto engine = create_type_checking_engine();
+
+    fcore_cc compiler(input, includes);
+    auto ast = compiler.get_hl_ast();
+
+    try {
+        engine.run_semantic_analysis(ast);
+        spdlog::critical("The undefined variable ba was not caught");
+        EXPECT_TRUE(false);
+    } catch(const std::runtime_error &err) {
+        std::string msg = err.what();
+        EXPECT_EQ(msg, "Undefined variable: ba");
+    }
+
+}
+

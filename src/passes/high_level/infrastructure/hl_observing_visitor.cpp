@@ -101,6 +101,7 @@ namespace fcore {
         if(preorder_ops.visit_operand) {
             preorder_ops.visit_operand(op);
         }
+        process_nodes_vector(op->get_array_index());
         if(postorder_ops.visit_operand) {
             postorder_ops.visit_operand(op);
         }
