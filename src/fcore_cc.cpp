@@ -15,8 +15,6 @@
 
 #include "fcore_cc.hpp"
 
-#include <utility>
-
 
 
 namespace fcore{
@@ -119,10 +117,12 @@ namespace fcore{
         target_parser.pre_process({});
         target_parser.parse(std::move(dma_specs));
         hl_ast = target_parser.AST;
+
         if (profiling_core != nullptr) profiling_core->end_event("program_parsing");
     }
 
     void fcore_cc::optimize(std::unordered_map<std::string, std::vector<uint32_t>> &dma_map) {
+
         std::string ep = "main";
         hl_manager = create_hl_pass_manager(ep);
         hl_manager.set_profiler(profiling_core);

@@ -16,7 +16,6 @@
 #ifndef FCORE_TOOLCHAIN_FCORE_CC_HPP
 #define FCORE_TOOLCHAIN_FCORE_CC_HPP
 
-#include <istream>
 #include <vector>
 #include <string>
 #include <fstream>
@@ -29,7 +28,6 @@
 #include "passes/high_level/infrastructure/hl_passes.hpp"
 #include "passes/high_level/infrastructure/hl_pass_manager.hpp"
 #include "tools/high_level_ast_lowering.hpp"
-#include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "instrumentation/instrumentation_core.hpp"
 #include "data_structures/common/program_metadata.hpp"
@@ -89,8 +87,8 @@ namespace fcore {
         std::unordered_map<std::string, variable_class_t> dma_io_spec;
         std::shared_ptr<io_map> allocation_map;
 
-        struct core_info info;
-        struct program_info length_info;
+        core_info info;
+        program_info length_info;
 
         std::shared_ptr<instrumentation_core> profiling_core;
 
