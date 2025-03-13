@@ -16,6 +16,8 @@
 #ifndef FCORE_TOOLCHAIN_FUCTION_MANGLING_PASS_H
 #define FCORE_TOOLCHAIN_FUCTION_MANGLING_PASS_H
 
+#include <unordered_set>
+
 #include "passes/high_level/infrastructure/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
@@ -35,6 +37,8 @@ namespace fcore{
         std::vector<std::shared_ptr<hl_ast_node>> mangle_vector(const std::vector<std::shared_ptr<hl_ast_node>> &v, const std::string& function);
         std::shared_ptr<variable> mangle_variable(const std::shared_ptr<variable> &v, const std::string &function);
         std::string mangle_string(const std::string& s, const std::string& function);
+
+        std::unordered_map<std::string, std::pmr::unordered_set<std::string>> definitions_map;
     };
 }
 
