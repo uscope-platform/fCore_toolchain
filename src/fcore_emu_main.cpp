@@ -44,8 +44,6 @@ int main(int argc, char **argv) {
 
     std::shared_ptr<spdlog::logger> logger = spdlog::stdout_color_mt("logger", spdlog::color_mode::automatic);
 
-    std::unordered_map<std::string, std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::nanoseconds>> profiling_data;
-
     if(!output_file.empty() & !output_force){
         if(std::filesystem::exists(output_file)){
             spdlog::critical("The Specified output file already exists, to force the file to be rewritten use the --f flag");
@@ -75,7 +73,7 @@ int main(int argc, char **argv) {
 
     std::shared_ptr<fcore::instrumentation_core> profiler = std::make_shared<fcore::instrumentation_core>();
 
-
+    nlohmann::json profiling_data;
     try{
         fcore::emulator_manager emu_manager;
         emu_manager.set_specs(specs);
@@ -86,8 +84,8 @@ int main(int argc, char **argv) {
         profiler->start_event("execution", true);
         emu_manager.emulate();
         profiler->end_event("execution");
-        //results = emu_manager.get_results();
-        results = profiler->dump();
+        results = emu_manager.get_results();
+        profiling_data = profiler->dump();
     } catch (std::runtime_error &err) {
         spdlog::critical(err.what());
         exit(-1);
@@ -100,6 +98,7 @@ int main(int argc, char **argv) {
     }
 
 
+    results["profiling"] = profiling_data;
     std::ofstream ss(output_file);
     ss<< results.dump(4);
     ss.close();

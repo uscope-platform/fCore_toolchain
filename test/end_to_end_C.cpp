@@ -1385,3 +1385,45 @@ TEST(EndToEndC, self_assigned_conditional_select) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+
+TEST(EndToEndC, complex_const_propagation_in_function) {
+
+    std::vector<std::string> file_content = {R""""(
+
+
+        float dab_input(float i_in_past){
+            float k = t_sw/c_in;
+            return k*i_in_past;
+        }
+
+
+        int main(){
+
+            float f_sw = 25e3;
+            float c_in = 1e-3;
+            float t_sw  = 1/f_sw;
+            float i_in_past;
+
+            float v_dab_in = dab_input(i_in_past);
+
+        }
+    )""""};
+
+    std::vector<std::string> includes;
+
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["i_in_past"] = {core_iom_memory, {10}, false};
+    dma_map["v_dab_in"] = {core_iom_output, {12}, false};
+
+
+    fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
+    compiler.set_dma_map(dma_map);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+    ASSERT_TRUE(false);
+
+}
