@@ -29,7 +29,6 @@
 
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
-#include <gtest/gtest_prod.h>
 
 namespace fcore{
 

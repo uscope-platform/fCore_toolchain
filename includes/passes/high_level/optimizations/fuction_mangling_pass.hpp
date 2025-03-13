@@ -16,7 +16,6 @@
 #ifndef FCORE_TOOLCHAIN_FUCTION_MANGLING_PASS_H
 #define FCORE_TOOLCHAIN_FUCTION_MANGLING_PASS_H
 
-#include <unordered_set>
 
 #include "passes/high_level/infrastructure/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"

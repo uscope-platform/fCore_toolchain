@@ -17,14 +17,9 @@
 #define FCORE_TOOLCHAIN_C_LANGUAGE_PARSER_HPP
 
 #include <string>
-#include <sstream>
-#include <utility>
 #include <vector>
-#include <utility>
 #include <regex>
-#include <gtest/gtest_prod.h>
 
-#include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "C_Tree_visitor.hpp"
 #include "C_ErrorHandling.hpp"
 #include "C_pre_processor.hpp"

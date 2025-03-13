@@ -75,7 +75,7 @@ namespace fcore {
             if(arguments[i]->node_type == hl_ast_node_type_operand) {
                 auto arg_type = current_scope[std::static_pointer_cast<hl_ast_operand>(arguments[i])->get_name()];
                 if(arg_type != definitions[call->get_name()][i].second) {
-                    std::string error = fmt::format("Argument #{0} of a call to {1} is of the wrong type", i, call->get_name());
+                    const std::string error = fmt::format("Argument #{0} of a call to {1} is of the wrong type", i, call->get_name());
                     throw std::runtime_error(error);
                 }
             }

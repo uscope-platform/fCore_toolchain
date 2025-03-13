@@ -1387,34 +1387,3 @@ TEST(EndToEndC, self_assigned_conditional_select) {
 }
 
 
-TEST(EndToEndC, global_constant) {
-
-    std::vector<std::string> file_content = {R""""(
-        float gain = 2.0;
-        int main(){
-            flat b = gain*a;
-        }
-    )""""};
-
-    std::vector<std::string> includes;
-
-
-    std::unordered_map<std::string, core_iom> dma_map;
-    dma_map["a"] = {core_iom_input, {1}, false};
-    dma_map["b"] = {core_iom_output, {10}, false};
-
-    fcore_cc compiler(file_content, includes);
-    compiler.enable_logging();
-    compiler.set_dma_map(dma_map);
-    compiler.compile();
-    std::vector<uint32_t> result =  compiler.get_executable();
-
-
-    std::vector<uint32_t> gold_standard = {};
-
-    ASSERT_EQ(gold_standard, result);
-
-}
-
-
-

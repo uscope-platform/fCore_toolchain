@@ -21,7 +21,6 @@
 #include <regex>
 
 #include "tools/define.hpp"
-#include "tools/variable_map.hpp"
 #include "tools/define_map.hpp"
 namespace fcore{
 
