@@ -46,8 +46,8 @@ namespace fcore{
         std::shared_ptr<hl_code_block> AST;
         std::string error;
 
-
-
+        std::vector<std::shared_ptr<hl_ast_node>> get_ext_decl(){return visitor.get_ext_decl();}
+        std::vector<std::shared_ptr<hl_ast_node>> get_functions(){return visitor.get_functions();}
     private:
 
         C_Tree_visitor visitor;
@@ -55,27 +55,6 @@ namespace fcore{
 
         std::unique_ptr<C_pre_processor> preproc;
         std::shared_ptr<define_map> dmap;
-        // preprocessor test
-        FRIEND_TEST( cFrontend, preprocessor_include);
-        FRIEND_TEST( cFrontend, preprocessor_pragma);
-        // tree visitor test
-        FRIEND_TEST( cTreeVisitor, unaryExpressions);
-        FRIEND_TEST( cTreeVisitor, multiplicativeExpressions);
-        FRIEND_TEST( cTreeVisitor, additiveExpressions);
-        FRIEND_TEST(cTreeVisitor, shiftExpressions);
-        FRIEND_TEST(cTreeVisitor, relationalExpressions);
-        FRIEND_TEST(cTreeVisitor, equalityExpressions);
-        FRIEND_TEST(cTreeVisitor, exOrBinExpressions);
-        FRIEND_TEST(cTreeVisitor, andBinExpressions);
-        FRIEND_TEST(cTreeVisitor, orBinExpressions);
-        FRIEND_TEST(cTreeVisitor, andLogExpressions);
-        FRIEND_TEST(cTreeVisitor, orLogExpressions);
-        FRIEND_TEST( cTreeVisitor, assignmentExpressions);
-        FRIEND_TEST(cTreeVisitor, definition);
-        FRIEND_TEST(cTreeVisitor, function_def);
-        FRIEND_TEST(cTreeVisitor, function_call);
-        FRIEND_TEST(cTreeVisitor, returnTest);
-        FRIEND_TEST(cTreeVisitor, hex_constant);
 
         std::string preprocessed_content;
     };

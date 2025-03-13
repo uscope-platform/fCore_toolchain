@@ -103,24 +103,9 @@ namespace fcore{
             return root;
         };
 
+        std::vector<std::shared_ptr<hl_ast_node>> get_ext_decl(){return ext_decl;};
+        std::vector<std::shared_ptr<hl_ast_node>> get_functions(){return functions;};
     private:
-        FRIEND_TEST( cTreeVisitor, unaryExpressions);
-        FRIEND_TEST( cTreeVisitor, multiplicativeExpressions);
-        FRIEND_TEST( cTreeVisitor, additiveExpressions);
-        FRIEND_TEST(cTreeVisitor, shiftExpressions);
-        FRIEND_TEST(cTreeVisitor, relationalExpressions);
-        FRIEND_TEST(cTreeVisitor, equalityExpressions);
-        FRIEND_TEST(cTreeVisitor, exOrBinExpressions);
-        FRIEND_TEST(cTreeVisitor, andBinExpressions);
-        FRIEND_TEST(cTreeVisitor, orBinExpressions);
-        FRIEND_TEST(cTreeVisitor, andLogExpressions);
-        FRIEND_TEST(cTreeVisitor, orLogExpressions);
-        FRIEND_TEST( cTreeVisitor, assignmentExpressions);
-        FRIEND_TEST(cTreeVisitor, definition);
-        FRIEND_TEST(cTreeVisitor, function_def);
-        FRIEND_TEST(cTreeVisitor, function_call);
-        FRIEND_TEST(cTreeVisitor, returnTest);
-        FRIEND_TEST(cTreeVisitor, hex_constant);
 
         template<typename T>
         void processExpression(unsigned int expression_size, const T& operands_array, std::map<std::string, expression_type_t> &expr_map);
