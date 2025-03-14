@@ -17,7 +17,7 @@
 namespace fcore{
 
     ternary_reduction::ternary_reduction() :
-            stream_pass_base("Ternary reduction", 3, true) {
+            stream_pass_base("Ternary reduction", 3, true, high_level_pass) {
         last_pass = 999;
     }
 

@@ -28,13 +28,13 @@ set(FCORE_COMMON_SRCS_I
         passes/instruction_stream/zero_assignment_removal_pass.cpp
         passes/instruction_stream/bound_register_mapping.cpp
         passes/instruction_stream/ternary_reduction.cpp
+        passes/instruction_stream/uninitialized_variable_detection.cpp
         passes/instruction_stream/virtual_operations_implementation.cpp
         instrumentation/instrumentation_core.cpp
         data_structures/high_level_ast/hl_code_block.cpp
         passes/high_level/infrastructure/hl_acting_visitor.cpp
         passes/high_level/infrastructure/hl_observing_visitor.cpp
 )
-
 
 
 set(FCORE_CC_SRCS

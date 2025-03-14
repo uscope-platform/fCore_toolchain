@@ -19,7 +19,8 @@
 
 namespace fcore{
 
-    virtual_operations_implementation::virtual_operations_implementation() : stream_pass_base("virtual operations implementation pass", 1,  false) {
+    virtual_operations_implementation::virtual_operations_implementation() :
+    stream_pass_base("virtual operations implementation pass", 1,  false, global_pass) {
 
     }
 

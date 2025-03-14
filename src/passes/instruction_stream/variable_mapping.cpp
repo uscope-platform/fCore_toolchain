@@ -16,7 +16,7 @@
 #include "passes/instruction_stream/variable_mapping.hpp"
 namespace fcore{
     variable_mapping::variable_mapping(std::shared_ptr<variable_map> &v) :
-            stream_pass_base("Variable mapping", 1,  false){
+            stream_pass_base("Variable mapping", 1,  false, global_pass){
         vmap = v;
     }
 

@@ -15,33 +15,42 @@
 
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 
+
 namespace fcore{
 
     stream_pass_manager::stream_pass_manager(std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
                                                     const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map,
-                                                    std::shared_ptr<instrumentation_core> &prof
+                                                    std::shared_ptr<instrumentation_core> &prof,
+                                                    mode m
     ) {
-        constructs_pass_manager(bm, all_map, prof);
+        constructs_pass_manager(bm, all_map, prof, m);
     }
 
-    stream_pass_manager::stream_pass_manager(std::vector<int> &io_res, std::shared_ptr<instrumentation_core> &prof) {
+    stream_pass_manager::stream_pass_manager(
+        std::vector<int> &io_res,
+        std::shared_ptr<instrumentation_core> &prof,
+        mode m
+        ) {
 
         auto bm = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
         auto am = std::make_shared<std::unordered_map<std::string, std::vector<io_map_entry>>>();
-        constructs_pass_manager( bm, am, prof);
+        constructs_pass_manager( bm, am, prof, m);
     }
 
 
     void
     stream_pass_manager::constructs_pass_manager(std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
                                                         const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map,
-                                                 std::shared_ptr<instrumentation_core> &prof
+                                                        std::shared_ptr<instrumentation_core> &prof,
+                                                        mode m
     ) {
 
-        ic = std::make_shared<struct instruction_count>();
-        std::shared_ptr<variable_map> var_map = std::make_shared<variable_map>();
+        optimizer_mode = m;
+        ic = std::make_shared<instruction_count>();
+        auto var_map = std::make_shared<variable_map>();
         auto  io_assignment_map = std::make_shared<std::unordered_map<std::string, std::pair<int, int>>>();
         passes.push_back(std::make_shared<virtual_operations_implementation>());
+        passes.push_back(std::make_shared<uninitialized_variable_detection>());
         passes.push_back(std::make_shared<ternary_reduction>());
         passes.push_back(std::make_shared<io_constant_tracking>(io_assignment_map));
         passes.push_back(std::make_shared<constant_merging>(io_assignment_map));
@@ -49,10 +58,8 @@ namespace fcore{
         passes.push_back(std::make_shared<variable_lifetime_mapping>(var_map));
         passes.push_back(std::make_shared<register_allocation>(var_map, bm,all_map));
         passes.push_back(std::make_shared<zero_assignment_removal_pass>());
-        passes.push_back(std::make_shared<bound_register_mapping_pass>());
         passes.push_back(std::make_shared<instruction_counting_pass>(ic));
 
-        enabled_passes = {true, true, true, true, true, true, true, true, false, true};
         profiler = prof;
         if(profiler != nullptr) profiler->set_phase("stream processing");
     }
@@ -62,7 +69,12 @@ namespace fcore{
         int pass_n = 0;
         instruction_stream ret_val = std::move(stream);
         for(auto &pass:passes){
-            if(enabled_passes[pass_n]){
+
+            bool pass_enabled = pass->pass_type == global_pass;
+            pass_enabled |= pass->pass_type == high_level_pass && optimizer_mode == high_level_language;
+            pass_enabled |= pass->pass_type == asm_pass && optimizer_mode == asm_language;
+
+            if(pass_enabled){
                 if(profiler != nullptr)  profiler->start_event(pass->get_name(), false);
                 ret_val = apply_pass(ret_val, pass);
                 if(profiler != nullptr) profiler->end_event(pass->get_name());

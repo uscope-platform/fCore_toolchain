@@ -18,7 +18,7 @@
 namespace fcore{
 
     variable_lifetime_mapping::variable_lifetime_mapping(std::shared_ptr<variable_map> &v) :
-            stream_pass_base("Variable lifetime mapping", 1, false) {
+            stream_pass_base("Variable lifetime mapping", 1, false, global_pass) {
         vmap = v;
         instr_cntr = 0;
     }

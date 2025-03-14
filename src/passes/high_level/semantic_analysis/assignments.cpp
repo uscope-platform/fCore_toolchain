@@ -40,13 +40,13 @@ namespace fcore {
         for(auto &val: def->get_array_initializer()) {
             if(val->node_type == hl_ast_node_type_operand) {
                 auto op = std::static_pointer_cast<hl_ast_operand>(val);
-                if(op->get_type() != var_type_float_const) {
+                if(op->get_variable()->get_type() != var_type_float_const) {
                     if(def_type == c_type_float) {
                         auto var = fmt::format("Assignment of an integer ({0}) to the float variable ({1}) is prohibited",op->get_float_val(), def->get_name());
                         throw std::runtime_error(var);
                     }
                 }
-                if(def->get_type() != var_type_int_const && op->get_float_val() != 0.0) {
+                if(op->get_variable()->get_type() != var_type_int_const && op->get_float_val() != 0.0) {
                     if(def_type == c_type_int || def_type == c_type_long || def_type == c_type_short) {
                         auto var = fmt::format("Assignment of a float ({0}) to the integer variable ({1}) is prohibited",op->get_float_val(), def->get_name());
                         throw std::runtime_error(var);

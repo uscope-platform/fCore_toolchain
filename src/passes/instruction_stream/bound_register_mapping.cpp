@@ -18,7 +18,7 @@
 
 namespace fcore{
 
-    bound_register_mapping_pass::bound_register_mapping_pass() : stream_pass_base("Bound register mapping" , 1, false){
+    bound_register_mapping_pass::bound_register_mapping_pass() : stream_pass_base("Bound register mapping" , 1, false, high_level_pass){
 
     }
 

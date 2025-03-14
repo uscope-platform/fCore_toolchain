@@ -1387,3 +1387,31 @@ TEST(EndToEndC, self_assigned_conditional_select) {
 }
 
 
+
+
+TEST(EndToEndC, uninitialized_variable) {
+
+    std::vector<std::string> file_content = {R""""(
+        int main(){
+            float gain = 4;
+            float k = gain*2.0;
+        }
+    )""""};
+
+    std::vector<std::string> includes;
+
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["k"] = {core_iom_memory, {10}, false};
+
+    fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
+    compiler.set_dma_map(dma_map);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+
+
+}
+
+

@@ -75,7 +75,7 @@ namespace fcore{
         std::vector<int> io_res;
 
         std::shared_ptr<instrumentation_core> ic = nullptr;
-        stream_pass_manager sman(io_res, ic);
+        stream_pass_manager sman(io_res, ic,stream_pass_manager::high_level_language);
         program_stream = sman.process_stream(program_stream);
         gen = std::make_unique<assembly_generator>(program_stream);
 

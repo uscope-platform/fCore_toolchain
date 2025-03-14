@@ -54,6 +54,7 @@ find_package(CLI11 CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(valijson REQUIRED)
 find_package(antlr4-runtime CONFIG REQUIRED)
+find_package(fmt REQUIRED)
 
 
 add_subdirectory(includes/asm_parser)

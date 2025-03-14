@@ -34,8 +34,7 @@ namespace fcore{
             std::shared_ptr<instrumentation_core> ic = nullptr;
 
             std::vector<int> io_res;
-            stream_pass_manager sman(io_res, ic);
-            sman.set_enabled_passes({true, false, false, false, true, true, true, false ,false}); // do not mess with constants in assembly
+            stream_pass_manager sman(io_res, ic, stream_pass_manager::asm_language);
 
             //TODO: implement instruction info stuff
             instruction_stream program_stream = sman.process_stream(target_parser.program);

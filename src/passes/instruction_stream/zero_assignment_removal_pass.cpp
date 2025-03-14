@@ -19,7 +19,7 @@
 namespace fcore{
 
     zero_assignment_removal_pass::zero_assignment_removal_pass() :
-            stream_pass_base("Zero assignment removal", 1, false){
+            stream_pass_base("Zero assignment removal", 1, false, high_level_pass){
         delete_intercalated_const = false;
     }
 

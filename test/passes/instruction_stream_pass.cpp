@@ -26,9 +26,9 @@ using namespace fcore;
 TEST(virtual_instructions, virtual_instruction_implementation) {
 
 
-    std::shared_ptr<variable> op_a = std::make_shared<variable>("r3");
-    std::shared_ptr<variable> op_b = std::make_shared<variable>("r4");
-    std::vector<std::shared_ptr<variable>> args = {op_a, op_b};
+    auto op_a = std::make_shared<variable>("r3");
+    auto op_b = std::make_shared<variable>("r4");
+    std::vector args = {op_a, op_b};
 
 
     binary_generator writer;
@@ -40,7 +40,7 @@ TEST(virtual_instructions, virtual_instruction_implementation) {
     std::shared_ptr<io_map> allocation_map;
 
     auto ic =  std::make_shared<instrumentation_core>();
-    stream_pass_manager sman(bindings_map, allocation_map, ic);
+    stream_pass_manager sman(bindings_map, allocation_map, ic,stream_pass_manager::asm_language);
     program_stream = sman.process_stream(program_stream);
 
     writer.process_stream(program_stream, false);
@@ -54,9 +54,9 @@ TEST(virtual_instructions, virtual_instruction_implementation) {
 TEST(virtual_instructions, ternary_reduction) {
 
 
-    std::shared_ptr<variable> op_a = std::make_shared<variable>("r3");
-    std::shared_ptr<variable> op_b = std::make_shared<variable>("r4");
-    std::vector<std::shared_ptr<variable>> args = {op_a, op_b};
+    auto op_a = std::make_shared<variable>("r3");
+    auto op_b = std::make_shared<variable>("r4");
+    std::vector args = {op_a, op_b};
 
 
     binary_generator writer;
@@ -69,7 +69,7 @@ TEST(virtual_instructions, ternary_reduction) {
 
     auto ic =  std::make_shared<instrumentation_core>();
 
-    stream_pass_manager sman( bindings_map, allocation_map, ic);
+    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
     program_stream = sman.process_stream(program_stream);
 
     writer.process_stream(program_stream, false);

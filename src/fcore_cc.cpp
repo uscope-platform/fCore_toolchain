@@ -137,7 +137,7 @@ namespace fcore{
         allocation_map = std::make_shared<io_map>();
 
         auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
-        stream_pass_manager sman( bindings_map, allocation_map, profiling_core);
+        stream_pass_manager sman( bindings_map, allocation_map, profiling_core, stream_pass_manager::high_level_language);
         program_stream = sman.process_stream(program_stream);
 
         analyze_program_length(sman.get_instruction_count());

@@ -18,50 +18,50 @@
 
 #include <utility>
 
-#include "passes/instruction_stream/variable_lifetime_mapping.hpp"
-#include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "passes/instruction_stream/stream_pass_base.hpp"
-
-#include "passes/instruction_stream/variable_lifetime_mapping.hpp"
-#include "passes/instruction_stream/variable_mapping.hpp"
-#include "passes/instruction_stream/register_allocation.hpp"
-#include "passes/instruction_stream/constant_merging.hpp"
-#include "passes/instruction_stream/zero_assignment_removal_pass.hpp"
-#include "passes/instruction_stream/bound_register_mapping.hpp"
-#include "passes/instruction_stream/io_constant_tracking.hpp"
-#include "passes/instruction_stream/ternary_reduction.hpp"
-#include "passes/instruction_stream/instruction_counting_pass.hpp"
-#include "passes/instruction_stream/virtual_operations_implementation.hpp"
+#include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "data_structures/common/memory_tracker.hpp"
-
 #include "instrumentation/instrumentation_core.hpp"
+#include "data_structures/common/io_map_entry.hpp"
+
+#include "passes/instruction_stream/stream_passes.hpp"
 
 namespace fcore{
+
+
     class stream_pass_manager {
     public:
+
+        enum mode {
+            high_level_language,
+            asm_language
+        };
+
         stream_pass_manager(
                 std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
                 const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map,
-                std::shared_ptr<instrumentation_core> &prof
+                std::shared_ptr<instrumentation_core> &prof,
+                mode m
         );
         stream_pass_manager(
                 std::vector<int> &io_res,
-                std::shared_ptr<instrumentation_core> &prof
+                std::shared_ptr<instrumentation_core> &prof,
+                mode m
         );
         void constructs_pass_manager(
                 std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
                 const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map,
-                std::shared_ptr<instrumentation_core> &prof
+                std::shared_ptr<instrumentation_core> &prof,
+                mode m
         );
 
         instruction_stream process_stream(instruction_stream stream);
         instruction_stream apply_pass(instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass);
-        void set_enabled_passes(std::vector<bool> ep) {enabled_passes = std::move(ep);};
-        std::shared_ptr<struct instruction_count> get_instruction_count() {return ic;};
+        std::shared_ptr<instruction_count> get_instruction_count() {return ic;};
     private:
+        mode optimizer_mode;
         std::vector<std::shared_ptr<stream_pass_base>> passes;
-        std::vector<bool> enabled_passes;
-        std::shared_ptr<struct instruction_count> ic;
+        std::shared_ptr<instruction_count> ic;
         std::shared_ptr<instrumentation_core> profiler;
     };
 }

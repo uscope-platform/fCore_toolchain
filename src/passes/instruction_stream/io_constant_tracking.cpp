@@ -20,7 +20,7 @@
 namespace fcore{
 
     io_constant_tracking::io_constant_tracking(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam) :
-            stream_pass_base("io_constant_tracking", 1, false){
+            stream_pass_base("io_constant_tracking", 1, false, high_level_pass){
         index = 0;
         last_assignment_map = std::move(lam);
     }

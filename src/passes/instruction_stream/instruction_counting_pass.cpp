@@ -18,7 +18,7 @@
 namespace fcore{
 
     instruction_counting_pass::instruction_counting_pass(std::shared_ptr<struct instruction_count> &c):
-            stream_pass_base("io_constant_tracking", 1, false) {
+            stream_pass_base("io_constant_tracking", 1, false, global_pass) {
         count = c;
     }
 
