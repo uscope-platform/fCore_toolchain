@@ -118,10 +118,7 @@ namespace fcore{
 
         bool is_const = ctx->Const() != nullptr;
         std::string type_name = ctx->typeSpecifier()->getText();
-        if(ctx->typeSpecifier()->structOrUnionSpecifier() != nullptr) {
-            // TODO: IMPLEMENT STRUCT PARSING;
-            return;
-        } else {
+        if(ctx->typeSpecifier()->structSpecifier() == nullptr) {
            std::string raw_name = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->getText();
             std::string name = raw_name.substr(0, raw_name.find('['));
 
@@ -546,6 +543,18 @@ namespace fcore{
         root->set_content(functions);
 
     }
+
+    void C_Tree_visitor::exitStructDeclaration(C_parser::C_grammarParser::StructDeclarationContext *ctx) {
+        auto type = ctx->specifierQualifierList()->typeSpecifier()->getText();
+        auto name = ctx->structDeclaratorList()->structDeclarator()[0]->getText();
+        int i = 0;
+    }
+
+    void C_Tree_visitor::exitStructSpecifier(C_parser::C_grammarParser::StructSpecifierContext *ctx) {
+        auto struct_name = ctx->Identifier()->getText();
+
+    }
+
     void C_Tree_visitor::exitStructExpression(C_parser::C_grammarParser::StructExpressionContext *ctx) {
         std::vector<std::string> accessors;
         for(auto &item: ctx->Identifier()) {

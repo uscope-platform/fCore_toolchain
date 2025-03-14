@@ -98,6 +98,10 @@ namespace fcore{
         void exitForContent(C_parser::C_grammarParser::ForContentContext *ctx) override;
         void exitCompilationUnit(C_parser::C_grammarParser::CompilationUnitContext *ctx) override;
 
+        void exitStructDeclaration(C_parser::C_grammarParser::StructDeclarationContext *ctx) override;
+
+        void exitStructSpecifier(C_parser::C_grammarParser::StructSpecifierContext *ctx) override;
+
         void set_dma_specs(std::unordered_map<std::string, variable_class_t> ds) {dma_specs = std::move(ds);};
         std::shared_ptr<hl_code_block> get_ast(){
             return root;

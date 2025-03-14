@@ -13,22 +13,22 @@ namespace C_parser {
 class  C_grammarParser : public antlr4::Parser {
 public:
   enum {
-    T__0 = 1, T__1 = 2, Case = 3, Char = 4, Const = 5, Else = 6, Float = 7, 
-    For = 8, If = 9, Int = 10, Long = 11, Return = 12, Short = 13, Signed = 14, 
-    Typedef = 15, Unsigned = 16, Void = 17, Volatile = 18, While = 19, LeftParen = 20, 
-    RightParen = 21, LeftBracket = 22, RightBracket = 23, LeftBrace = 24, 
-    RightBrace = 25, Less = 26, LessEqual = 27, Greater = 28, GreaterEqual = 29, 
-    LeftShift = 30, RightShift = 31, Plus = 32, PlusPlus = 33, Minus = 34, 
-    MinusMinus = 35, Star = 36, Div = 37, Mod = 38, And = 39, Or = 40, AndAnd = 41, 
-    OrOr = 42, Caret = 43, Not = 44, Tilde = 45, Question = 46, Colon = 47, 
-    Semi = 48, Comma = 49, Assign = 50, StarAssign = 51, DivAssign = 52, 
-    ModAssign = 53, PlusAssign = 54, MinusAssign = 55, LeftShiftAssign = 56, 
-    RightShiftAssign = 57, AndAssign = 58, XorAssign = 59, OrAssign = 60, 
-    Equal = 61, NotEqual = 62, Arrow = 63, Dot = 64, Ellipsis = 65, Identifier = 66, 
-    IntegerConstant = 67, FloatingConstant = 68, DigitSequence = 69, CharacterConstant = 70, 
-    StringLiteral = 71, ComplexDefine = 72, IncludeDirective = 73, AsmBlock = 74, 
-    LineAfterPreprocessing = 75, LineDirective = 76, PragmaDirective = 77, 
-    Whitespace = 78, Newline = 79, BlockComment = 80, LineComment = 81
+    T__0 = 1, Case = 2, Char = 3, Const = 4, Else = 5, Float = 6, For = 7, 
+    If = 8, Int = 9, Long = 10, Return = 11, Short = 12, Signed = 13, Typedef = 14, 
+    Unsigned = 15, Void = 16, Volatile = 17, While = 18, LeftParen = 19, 
+    RightParen = 20, LeftBracket = 21, RightBracket = 22, LeftBrace = 23, 
+    RightBrace = 24, Less = 25, LessEqual = 26, Greater = 27, GreaterEqual = 28, 
+    LeftShift = 29, RightShift = 30, Plus = 31, PlusPlus = 32, Minus = 33, 
+    MinusMinus = 34, Star = 35, Div = 36, Mod = 37, And = 38, Or = 39, AndAnd = 40, 
+    OrOr = 41, Caret = 42, Not = 43, Tilde = 44, Question = 45, Colon = 46, 
+    Semi = 47, Comma = 48, Assign = 49, StarAssign = 50, DivAssign = 51, 
+    ModAssign = 52, PlusAssign = 53, MinusAssign = 54, LeftShiftAssign = 55, 
+    RightShiftAssign = 56, AndAssign = 57, XorAssign = 58, OrAssign = 59, 
+    Equal = 60, NotEqual = 61, Arrow = 62, Dot = 63, Ellipsis = 64, Identifier = 65, 
+    IntegerConstant = 66, FloatingConstant = 67, DigitSequence = 68, CharacterConstant = 69, 
+    StringLiteral = 70, ComplexDefine = 71, IncludeDirective = 72, AsmBlock = 73, 
+    LineAfterPreprocessing = 74, LineDirective = 75, PragmaDirective = 76, 
+    Whitespace = 77, Newline = 78, BlockComment = 79, LineComment = 80
   };
 
   enum {
@@ -42,21 +42,21 @@ public:
     RuleConditionalExpression = 21, RuleAssignmentExpression = 22, RuleAssignmentOperator = 23, 
     RuleExpression = 24, RuleConstantExpression = 25, RuleDeclaration = 26, 
     RuleInitDeclaratorList = 27, RuleInitDeclarator = 28, RuleTypeSpecifier = 29, 
-    RuleStructOrUnionSpecifier = 30, RuleStructOrUnion = 31, RuleStructDeclarationList = 32, 
-    RuleSpecifierQualifierList = 33, RuleStructDeclaration = 34, RuleStructDeclaratorList = 35, 
-    RuleStructDeclarator = 36, RuleDeclarator = 37, RuleDirectDeclarator = 38, 
-    RuleArrayDeclarator = 39, RuleNestedParenthesesBlock = 40, RuleParameterTypeList = 41, 
-    RuleParameterList = 42, RuleParameterDeclaration = 43, RuleIdentifierList = 44, 
-    RuleTypeName = 45, RuleTypedefName = 46, RuleInitializer = 47, RuleFunctionCallExpression = 48, 
-    RuleArgumentExpressionList = 49, RuleArgumentExpression = 50, RuleInitializerList = 51, 
-    RuleDesignation = 52, RuleDesignatorList = 53, RuleDesignator = 54, 
-    RuleStatement = 55, RuleCompoundStatement = 56, RuleBlockItem = 57, 
-    RuleExpressionStatement = 58, RuleIfContent = 59, RuleElseContent = 60, 
-    RuleConditionalBlockItem = 61, RuleConditionContent = 62, RuleSelectionStatement = 63, 
-    RuleIterationStatement = 64, RuleForContent = 65, RuleForBlockItem = 66, 
-    RuleForExitCondition = 67, RuleForDeclaration = 68, RuleForIterationExpression = 69, 
-    RuleReturnStatement = 70, RuleTranslationUnit = 71, RuleExternalDeclaration = 72, 
-    RuleFunctionDefinition = 73, RuleDeclarationList = 74, RuleConstant = 75
+    RuleStructSpecifier = 30, RuleStructDeclarationList = 31, RuleSpecifierQualifierList = 32, 
+    RuleStructDeclaration = 33, RuleStructDeclaratorList = 34, RuleStructDeclarator = 35, 
+    RuleDeclarator = 36, RuleDirectDeclarator = 37, RuleArrayDeclarator = 38, 
+    RuleNestedParenthesesBlock = 39, RuleParameterTypeList = 40, RuleParameterList = 41, 
+    RuleParameterDeclaration = 42, RuleIdentifierList = 43, RuleTypeName = 44, 
+    RuleTypedefName = 45, RuleInitializer = 46, RuleFunctionCallExpression = 47, 
+    RuleArgumentExpressionList = 48, RuleArgumentExpression = 49, RuleInitializerList = 50, 
+    RuleDesignation = 51, RuleDesignatorList = 52, RuleDesignator = 53, 
+    RuleStatement = 54, RuleCompoundStatement = 55, RuleBlockItem = 56, 
+    RuleExpressionStatement = 57, RuleIfContent = 58, RuleElseContent = 59, 
+    RuleConditionalBlockItem = 60, RuleConditionContent = 61, RuleSelectionStatement = 62, 
+    RuleIterationStatement = 63, RuleForContent = 64, RuleForBlockItem = 65, 
+    RuleForExitCondition = 66, RuleForDeclaration = 67, RuleForIterationExpression = 68, 
+    RuleReturnStatement = 69, RuleTranslationUnit = 70, RuleExternalDeclaration = 71, 
+    RuleFunctionDefinition = 72, RuleDeclarationList = 73, RuleConstant = 74
   };
 
   explicit C_grammarParser(antlr4::TokenStream *input);
@@ -106,8 +106,7 @@ public:
   class InitDeclaratorListContext;
   class InitDeclaratorContext;
   class TypeSpecifierContext;
-  class StructOrUnionSpecifierContext;
-  class StructOrUnionContext;
+  class StructSpecifierContext;
   class StructDeclarationListContext;
   class SpecifierQualifierListContext;
   class StructDeclarationContext;
@@ -693,7 +692,7 @@ public:
     antlr4::tree::TerminalNode *Float();
     antlr4::tree::TerminalNode *Signed();
     antlr4::tree::TerminalNode *Unsigned();
-    StructOrUnionSpecifierContext *structOrUnionSpecifier();
+    StructSpecifierContext *structSpecifier();
     TypedefNameContext *typedefName();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -705,11 +704,10 @@ public:
 
   TypeSpecifierContext* typeSpecifier();
 
-  class  StructOrUnionSpecifierContext : public antlr4::ParserRuleContext {
+  class  StructSpecifierContext : public antlr4::ParserRuleContext {
   public:
-    StructOrUnionSpecifierContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    StructSpecifierContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    StructOrUnionContext *structOrUnion();
     antlr4::tree::TerminalNode *LeftBrace();
     StructDeclarationListContext *structDeclarationList();
     antlr4::tree::TerminalNode *RightBrace();
@@ -722,21 +720,7 @@ public:
    
   };
 
-  StructOrUnionSpecifierContext* structOrUnionSpecifier();
-
-  class  StructOrUnionContext : public antlr4::ParserRuleContext {
-  public:
-    StructOrUnionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  StructOrUnionContext* structOrUnion();
+  StructSpecifierContext* structSpecifier();
 
   class  StructDeclarationListContext : public antlr4::ParserRuleContext {
   public:

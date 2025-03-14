@@ -170,18 +170,12 @@ typeSpecifier
     |   'signed'
     |   'unsigned'
     )
-    | structOrUnionSpecifier
+    | structSpecifier
     |   typedefName
     ;
 
-structOrUnionSpecifier
-    : structOrUnion Identifier? '{' structDeclarationList '}'
-    | structOrUnion Identifier
-    ;
-
-structOrUnion
-    : 'struct'
-    | 'union'
+structSpecifier
+    : 'struct' Identifier? '{' structDeclarationList '}'
     ;
 
 structDeclarationList

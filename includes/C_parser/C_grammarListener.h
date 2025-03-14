@@ -106,11 +106,8 @@ public:
   virtual void enterTypeSpecifier(C_grammarParser::TypeSpecifierContext *ctx) = 0;
   virtual void exitTypeSpecifier(C_grammarParser::TypeSpecifierContext *ctx) = 0;
 
-  virtual void enterStructOrUnionSpecifier(C_grammarParser::StructOrUnionSpecifierContext *ctx) = 0;
-  virtual void exitStructOrUnionSpecifier(C_grammarParser::StructOrUnionSpecifierContext *ctx) = 0;
-
-  virtual void enterStructOrUnion(C_grammarParser::StructOrUnionContext *ctx) = 0;
-  virtual void exitStructOrUnion(C_grammarParser::StructOrUnionContext *ctx) = 0;
+  virtual void enterStructSpecifier(C_grammarParser::StructSpecifierContext *ctx) = 0;
+  virtual void exitStructSpecifier(C_grammarParser::StructSpecifierContext *ctx) = 0;
 
   virtual void enterStructDeclarationList(C_grammarParser::StructDeclarationListContext *ctx) = 0;
   virtual void exitStructDeclarationList(C_grammarParser::StructDeclarationListContext *ctx) = 0;

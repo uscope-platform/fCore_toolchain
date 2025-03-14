@@ -80,9 +80,7 @@ public:
 
     virtual std::any visitTypeSpecifier(C_grammarParser::TypeSpecifierContext *context) = 0;
 
-    virtual std::any visitStructOrUnionSpecifier(C_grammarParser::StructOrUnionSpecifierContext *context) = 0;
-
-    virtual std::any visitStructOrUnion(C_grammarParser::StructOrUnionContext *context) = 0;
+    virtual std::any visitStructSpecifier(C_grammarParser::StructSpecifierContext *context) = 0;
 
     virtual std::any visitStructDeclarationList(C_grammarParser::StructDeclarationListContext *context) = 0;
 

@@ -137,11 +137,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitStructOrUnionSpecifier(C_grammarParser::StructOrUnionSpecifierContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitStructOrUnion(C_grammarParser::StructOrUnionContext *ctx) override {
+  virtual std::any visitStructSpecifier(C_grammarParser::StructSpecifierContext *ctx) override {
     return visitChildren(ctx);
   }
 

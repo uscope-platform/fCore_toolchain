@@ -108,11 +108,8 @@ public:
   virtual void enterTypeSpecifier(C_grammarParser::TypeSpecifierContext * /*ctx*/) override { }
   virtual void exitTypeSpecifier(C_grammarParser::TypeSpecifierContext * /*ctx*/) override { }
 
-  virtual void enterStructOrUnionSpecifier(C_grammarParser::StructOrUnionSpecifierContext * /*ctx*/) override { }
-  virtual void exitStructOrUnionSpecifier(C_grammarParser::StructOrUnionSpecifierContext * /*ctx*/) override { }
-
-  virtual void enterStructOrUnion(C_grammarParser::StructOrUnionContext * /*ctx*/) override { }
-  virtual void exitStructOrUnion(C_grammarParser::StructOrUnionContext * /*ctx*/) override { }
+  virtual void enterStructSpecifier(C_grammarParser::StructSpecifierContext * /*ctx*/) override { }
+  virtual void exitStructSpecifier(C_grammarParser::StructSpecifierContext * /*ctx*/) override { }
 
   virtual void enterStructDeclarationList(C_grammarParser::StructDeclarationListContext * /*ctx*/) override { }
   virtual void exitStructDeclarationList(C_grammarParser::StructDeclarationListContext * /*ctx*/) override { }
