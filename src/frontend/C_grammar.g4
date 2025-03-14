@@ -41,13 +41,14 @@ primaryExpression
     ;
 
 structExpression
-    : primaryExpression '.'  Identifier
+    : primaryExpression ('.'  Identifier)+
     ;
 
 unaryExpression
     :
     ('++' |  '--' )* (
     structExpression
+    | primaryExpression
     |  unaryOperator unaryExpression
     | functionCallExpression)
     | arrayAccessExpression

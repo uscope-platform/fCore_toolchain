@@ -118,51 +118,57 @@ namespace fcore{
 
         bool is_const = ctx->Const() != nullptr;
         std::string type_name = ctx->typeSpecifier()->getText();
-        std::string raw_name = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->getText();
-        std::string name = raw_name.substr(0, raw_name.find('['));
-
-        std::shared_ptr<variable> var = std::make_shared<variable>(name);
-        if(dma_specs.contains(name)){
-            var->set_variable_class(dma_specs[name]);
-        }
-
-        if(in_array_declaration)
-            var->set_type(var_type_array);
-        std::shared_ptr<hl_definition_node> node = std::make_shared<hl_definition_node>(name, hl_ast_node::string_to_type(type_name), var);
-        node->set_constant(is_const);
-
-        if(in_array_declaration){
-
-            in_array_declaration = false;
-            unsigned int d = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->arrayDeclarator().size();
-            std::vector<int> shape;
-
-            std::vector<std::shared_ptr<hl_ast_node>> idx_array;
-            for(unsigned int i = 0; i< d; ++i){
-                shape.insert(shape.begin(), std::static_pointer_cast<hl_ast_operand>(expressions_stack.top())->get_int_value());
-                idx_array.insert(idx_array.begin(), expressions_stack.top());
-                expressions_stack.pop();
-            }
-
-            node->set_array_shape(shape);
-            array_shapes_map[name] = shape;
-            node->set_array_index(idx_array);
-            node->set_array_initializer(array_initializer_data);
-            array_initializer_data.clear();
-        } else{
-            if(current_initializer != nullptr){
-                node->set_scalar_initializer(current_initializer);
-                current_initializer = nullptr;
-            }
-        }
-
-
-
-        if(in_function_body | in_conditional_block | in_foor_loop_block){
-            current_block_item = node;
+        if(ctx->typeSpecifier()->structOrUnionSpecifier() != nullptr) {
+            // TODO: IMPLEMENT STRUCT PARSING;
+            return;
         } else {
-            ext_decl.push_back(node);
+           std::string raw_name = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->getText();
+            std::string name = raw_name.substr(0, raw_name.find('['));
+
+            std::shared_ptr<variable> var = std::make_shared<variable>(name);
+            if(dma_specs.contains(name)){
+                var->set_variable_class(dma_specs[name]);
+            }
+
+            if(in_array_declaration)
+                var->set_type(var_type_array);
+            std::shared_ptr<hl_definition_node> node = std::make_shared<hl_definition_node>(name, hl_ast_node::string_to_type(type_name), var);
+            node->set_constant(is_const);
+
+            if(in_array_declaration){
+
+                in_array_declaration = false;
+                unsigned int d = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->arrayDeclarator().size();
+                std::vector<int> shape;
+
+                std::vector<std::shared_ptr<hl_ast_node>> idx_array;
+                for(unsigned int i = 0; i< d; ++i){
+                    shape.insert(shape.begin(), std::static_pointer_cast<hl_ast_operand>(expressions_stack.top())->get_int_value());
+                    idx_array.insert(idx_array.begin(), expressions_stack.top());
+                    expressions_stack.pop();
+                }
+
+                node->set_array_shape(shape);
+                array_shapes_map[name] = shape;
+                node->set_array_index(idx_array);
+                node->set_array_initializer(array_initializer_data);
+                array_initializer_data.clear();
+            } else{
+                if(current_initializer != nullptr){
+                    node->set_scalar_initializer(current_initializer);
+                    current_initializer = nullptr;
+                }
+            }
+
+
+
+            if(in_function_body | in_conditional_block | in_foor_loop_block){
+                current_block_item = node;
+            } else {
+                ext_decl.push_back(node);
+            }
         }
+
     }
 
     void C_Tree_visitor::enterArrayAccessExpression(C_parser::C_grammarParser::ArrayAccessExpressionContext *) {
@@ -540,7 +546,17 @@ namespace fcore{
         root->set_content(functions);
 
     }
+    void C_Tree_visitor::exitStructExpression(C_parser::C_grammarParser::StructExpressionContext *ctx) {
+        std::vector<std::string> accessors;
+        for(auto &item: ctx->Identifier()) {
+            auto id = item->getText();
+            accessors.push_back(id);
+        }
+        const auto base_expr = std::static_pointer_cast<hl_ast_operand>(expressions_stack.top());
+        base_expr->get_variable()->add_struct_accessors(accessors);
 
+
+    }
 
     template<typename T>
     void C_Tree_visitor::processExpression(unsigned int expression_size, const T& operands_array,

@@ -157,6 +157,7 @@ namespace fcore{
         copied_var->contiguity = original->contiguity;
         copied_var->array_shape = original->array_shape;
         copied_var->array_index = original->array_index;
+        copied_var->struct_accessors = original->struct_accessors;
         return copied_var;
     }
 

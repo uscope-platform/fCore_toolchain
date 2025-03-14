@@ -195,8 +195,10 @@ public:
     StructExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     PrimaryExpressionContext *primaryExpression();
-    antlr4::tree::TerminalNode *Dot();
-    antlr4::tree::TerminalNode *Identifier();
+    std::vector<antlr4::tree::TerminalNode *> Dot();
+    antlr4::tree::TerminalNode* Dot(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> Identifier();
+    antlr4::tree::TerminalNode* Identifier(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -212,6 +214,7 @@ public:
     UnaryExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     StructExpressionContext *structExpression();
+    PrimaryExpressionContext *primaryExpression();
     UnaryOperatorContext *unaryOperator();
     UnaryExpressionContext *unaryExpression();
     FunctionCallExpressionContext *functionCallExpression();

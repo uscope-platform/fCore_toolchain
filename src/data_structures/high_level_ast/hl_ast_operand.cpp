@@ -76,6 +76,9 @@ namespace fcore{
             }
 
         }
+        for(auto &id:inner_variable->get_struct_accessors()) {
+            ret_val += "." + id;
+        }
         return ret_val;
     }
 

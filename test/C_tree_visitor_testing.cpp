@@ -1408,7 +1408,7 @@ namespace fcore{
     TEST( cTreeVisitor, struct_usage){
         std::istringstream test_content(R""""(
         int main(){
-            float out = p.gain + p.phase;
+            float out = p.gain.a1 + p.phase.a2;
         }
         )"""");
 
@@ -1420,9 +1420,30 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
         auto fun = parser.AST->get_content()[0];
-        auto result = std::static_pointer_cast<hl_function_def_node>(fun)->get_body()[0];
+        auto res_def = std::static_pointer_cast<hl_function_def_node>(fun)->get_body()[0];
 
-        ASSERT_TRUE(false);
+        auto res_expr = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(res_def)->get_scalar_initializer());
+
+        auto var = std::make_shared<variable>("p");
+        auto op_1 = std::make_shared<hl_ast_operand>(var);
+
+        var = std::make_shared<variable>("p");
+        auto op_2= std::make_shared<hl_ast_operand>(var);
+
+        op_1->get_variable()->add_struct_accessors({"gain", "a1"});
+        op_2->get_variable()->add_struct_accessors({"phase", "a2"});
+
+        auto gs_1 = std::make_shared<hl_expression_node>(expr_add);
+        gs_1->set_lhs(op_1);
+        gs_1->set_rhs(op_2);
+
+
+
+        EXPECT_EQ(*res_expr, *gs_1);
+        if(HasFailure()){
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res_expr)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_1)->pretty_print()<< std::endl;
+        }
 
     }
 

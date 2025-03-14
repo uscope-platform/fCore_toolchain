@@ -76,6 +76,7 @@ namespace fcore{
         void exitAssignmentExpression(C_parser::C_grammarParser::AssignmentExpressionContext *ctx) override;
         void exitArgumentExpression(C_parser::C_grammarParser::ArgumentExpressionContext *ctx) override;
         void exitConditionalExpression(C_parser::C_grammarParser::ConditionalExpressionContext *ctx) override;
+        void exitStructExpression(C_parser::C_grammarParser::StructExpressionContext *ctx) override;
 
         void exitStatement(C_parser::C_grammarParser::StatementContext *ctx) override;
         void exitFunctionCallExpression(C_parser::C_grammarParser::FunctionCallExpressionContext *ctx) override;
@@ -155,6 +156,7 @@ namespace fcore{
         std::vector<std::shared_ptr<hl_ast_node>> array_initializer_data;
         int initializer_array_level;
     };
+
 }
 
 

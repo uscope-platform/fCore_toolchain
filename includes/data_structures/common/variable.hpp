@@ -106,6 +106,7 @@ namespace fcore{
             cond &= lhs.contiguity == rhs.contiguity;
             cond &= lhs.array_index == rhs.array_index;
             cond &= lhs.array_shape == rhs.array_shape;
+            cond &= lhs.struct_accessors == rhs.struct_accessors;
             return cond;
         };
 
@@ -131,11 +132,13 @@ namespace fcore{
         std::vector<int> get_array_index() const {return array_index;};
         void set_array_index(std::vector<int> ai) {array_index = std::move(ai);};
 
+        void add_struct_accessors(const std::vector<std::string> &a){struct_accessors = a;};
+        std::vector<std::string> get_struct_accessors() const {return struct_accessors;};
 
         static std::shared_ptr<variable> deep_copy(const std::shared_ptr<variable>& original);
 
     private:
-
+        std::vector<std::string> struct_accessors;
         variable_class_t variable_class;
         variable_type_t variable_type;
 
