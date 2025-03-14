@@ -25,6 +25,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitStructExpression(C_grammarParser::StructExpressionContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitUnaryExpression(C_grammarParser::UnaryExpressionContext *ctx) override {
     return visitChildren(ctx);
   }

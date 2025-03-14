@@ -1379,38 +1379,53 @@ namespace fcore{
         auto fun = parser.AST->get_content()[0];
         auto result = std::static_pointer_cast<hl_function_def_node>(fun)->get_body()[0];
 
-        auto cond =  std::make_shared<hl_ast_conditional_node>();
-
-        auto var = std::make_shared<variable>( "a");
-        auto op = std::make_shared<hl_ast_operand>(var);
-
-        auto expr = std::make_shared<hl_expression_node>(expr_gt);
-        expr->set_lhs(op);
-
-        var = std::make_shared<variable>("constant", 0);
-        op = std::make_shared<hl_ast_operand>(var);
-        expr->set_rhs(op);
-
-        cond->set_condition(expr);
-
-        var = std::make_shared<variable>("constant", 100);
-        op = std::make_shared<hl_ast_operand>(var);
-        cond->set_if_block({op});
-
-        var = std::make_shared<variable>("constant", 200);
-        op = std::make_shared<hl_ast_operand>(var);
-        cond->set_if_block({op});
-        cond->set_ternary(true);
-
-        var = std::make_shared<variable>("b");
-        auto gold_standard = std::make_shared<hl_definition_node>("b", c_type_int, var);
-        gold_standard->set_scalar_initializer(cond);
-
-
-
-        ASSERT_EQ(*result,*gold_standard);
+        ASSERT_TRUE(false);
 
     }
+
+    TEST( cTreeVisitor, struct_initialization){
+        std::istringstream test_content(R""""(
+        int main(){
+
+            struct parameters p = {1.0,5.0};
+        }
+        )"""");
+
+        auto result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(test_content, result_def);
+        parser.pre_process({});
+
+        std::unordered_map<std::string, variable_class_t> io_spec;
+        parser.parse(io_spec);
+        auto fun = parser.AST->get_content()[0];
+        auto result = std::static_pointer_cast<hl_function_def_node>(fun)->get_body()[0];
+
+        ASSERT_TRUE(false);
+
+    }
+
+    TEST( cTreeVisitor, struct_usage){
+        std::istringstream test_content(R""""(
+        int main(){
+            float out = p.gain + p.phase;
+        }
+        )"""");
+
+        auto result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(test_content, result_def);
+        parser.pre_process({});
+
+        std::unordered_map<std::string, variable_class_t> io_spec;
+        parser.parse(io_spec);
+        auto fun = parser.AST->get_content()[0];
+        auto result = std::static_pointer_cast<hl_function_def_node>(fun)->get_body()[0];
+
+        ASSERT_TRUE(false);
+
+    }
+
 
 
 

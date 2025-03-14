@@ -24,6 +24,9 @@ public:
   virtual void enterPrimaryExpression(C_grammarParser::PrimaryExpressionContext * /*ctx*/) override { }
   virtual void exitPrimaryExpression(C_grammarParser::PrimaryExpressionContext * /*ctx*/) override { }
 
+  virtual void enterStructExpression(C_grammarParser::StructExpressionContext * /*ctx*/) override { }
+  virtual void exitStructExpression(C_grammarParser::StructExpressionContext * /*ctx*/) override { }
+
   virtual void enterUnaryExpression(C_grammarParser::UnaryExpressionContext * /*ctx*/) override { }
   virtual void exitUnaryExpression(C_grammarParser::UnaryExpressionContext * /*ctx*/) override { }
 

@@ -24,6 +24,8 @@ public:
 
     virtual std::any visitPrimaryExpression(C_grammarParser::PrimaryExpressionContext *context) = 0;
 
+    virtual std::any visitStructExpression(C_grammarParser::StructExpressionContext *context) = 0;
+
     virtual std::any visitUnaryExpression(C_grammarParser::UnaryExpressionContext *context) = 0;
 
     virtual std::any visitArrayAccessExpression(C_grammarParser::ArrayAccessExpressionContext *context) = 0;

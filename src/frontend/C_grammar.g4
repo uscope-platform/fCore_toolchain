@@ -40,9 +40,14 @@ primaryExpression
     |   '(' expression ')'
     ;
 
+structExpression
+    : primaryExpression '.'  Identifier
+    ;
+
 unaryExpression
     :
-    ('++' |  '--' )* (primaryExpression
+    ('++' |  '--' )* (
+    structExpression
     |  unaryOperator unaryExpression
     | functionCallExpression)
     | arrayAccessExpression
