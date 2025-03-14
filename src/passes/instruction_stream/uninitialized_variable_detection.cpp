@@ -76,8 +76,10 @@ namespace fcore {
         is_valid |= var->get_variable_class().iom_spec == variable_memory_type;
         is_valid |= var->get_type() == var_type_float_const;
         is_valid |= var->get_type() == var_type_int_const;
+        is_valid |= var->is_explicit_register(var->get_name());
         if(!is_valid) {
-           // throw std::runtime_error(std::format("ERROR: Variable '{}' is used before initialization", var->get_name()));
+            auto errror = std::format("ERROR: Variable '{}' is used before initialization", var->get_name());
+            throw std::runtime_error(errror);
         }
     }
 }

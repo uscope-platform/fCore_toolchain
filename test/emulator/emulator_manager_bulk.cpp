@@ -531,130 +531,6 @@ TEST(emulator_manager_bulk, emulator_header) {
 }
 
 
-
-TEST(emulator_manager_bulk, emulator_disassemble) {
-
-
-    nlohmann::json specs = nlohmann::json::parse(
-            R"(
-    {
-    "cores": [
-        {
-            "order": 1,
-            "id": "test_producer",
-            "channels":2,
-            "options":{
-                "comparators": "full",
-                "efi_implementation":"none"
-            },
-            "sampling_frequency":1,
-            "input_data":[],
-            "inputs":[
-                {
-                    "name": "input_1",
-                    "metadata":{
-                        "type": "float",
-                        "width": 24,
-                        "signed":false,
-                        "common_io": false
-                    },
-                    "reg_n": 3,
-                    "channel":[0,1],
-                    "source":{"type": "constant","value": [31.2, 32.7]}
-                },
-                {
-                    "name": "input_2",
-                    "metadata":{
-                        "type": "float",
-                        "width": 24,
-                        "signed":false,
-                        "common_io": false
-                    },
-                    "reg_n": 4,
-                    "channel":[0,1],
-                    "source":{"type": "constant","value": [31.2, 32.7]}
-                }
-            ],
-            "outputs":[
-                {
-                    "name":"out",
-                    "type": "float",
-                    "metadata": {
-                        "type": "float",
-                        "width": 32,
-                        "signed": false
-                    },
-                    "reg_n":[5]
-                }
-            ],
-            "memory_init":[],
-            "program": {
-                "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = input_1 + input_2;\n}",
-                "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}},
-                "headers": []
-            },
-            "deployment": {
-                "has_reciprocal": false,
-                "control_address": 18316525568,
-                "rom_address": 17179869184
-            }
-        },
-        {
-            "order": 2,
-            "id": "test_reducer",
-            "channels":1,
-            "options":{
-                "comparators": "full",
-                "efi_implementation":"none"
-            },
-            "sampling_frequency":1,
-            "input_data":[],
-            "inputs":[],
-            "outputs":[
-                {
-                    "name":"out",
-                    "type": "float",
-                    "metadata": {
-                        "type": "float",
-                        "width": 32,
-                        "signed": false
-                    },
-                    "reg_n":[5]
-                }
-            ],
-            "memory_init":[],
-            "program": {
-                "content": "int main(){\n    float input_data[2];\n    float out = input_data[0] * input_data[1];\n}\n",
-                "build_settings":{"io":{"inputs":["input_data", "input_data"],"outputs":["out"],"memories":[]}},
-                "headers": []
-            },
-            "deployment": {
-                "has_reciprocal": false,
-                "control_address": 18316525568,
-                "rom_address": 17179869184
-            }
-        }
-    ],
-    "interconnect": [],
-    "emulation_time": 1,
-    "deployment_mode": false
-})");
-
-
-    emulator_manager manager;
-    manager.set_specs(specs);
-    auto res = manager.disassemble();
-    std::unordered_map<std::string, disassembled_program> expected = {
-            {"test_producer", {{{5,3}, {4,1}, {3,2}}, "add r2, r1, r3\nstop\n"}},
-            {"test_reducer",  {{{5,3}}, "mul r1, r2, r3\nstop\n"}}
-    };
-    EXPECT_EQ(res["test_producer"].program, expected["test_producer"].program);
-    EXPECT_EQ(res["test_producer"].translation_table, expected["test_producer"].translation_table);
-    EXPECT_EQ(res["test_reducer"].program, expected["test_reducer"].program);
-    EXPECT_EQ(res["test_reducer"].translation_table, expected["test_reducer"].translation_table);
-
-}
-
 TEST(emulator_manager_bulk, emulator_multichannel) {
 
 
@@ -1820,4 +1696,154 @@ TEST(emulator_manager_bulk, emulator_memory_as_output) {
     res = manager.get_results()["test"]["outputs"]["mem"]["0"][0][1];
 
     ASSERT_FLOAT_EQ(res, 122.22);
+}
+
+
+
+TEST(emulator_manager_bulk, emulator_disassemble) {
+
+
+    nlohmann::json specs = nlohmann::json::parse(
+            R"(
+    {
+    "cores": [
+        {
+            "order": 1,
+            "id": "test_producer",
+            "channels":2,
+            "options":{
+                "comparators": "full",
+                "efi_implementation":"none"
+            },
+            "sampling_frequency":1,
+            "input_data":[],
+            "inputs":[
+                {
+                    "name": "input_1",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false,
+                        "common_io": false
+                    },
+                    "reg_n": 3,
+                    "channel":[0,1],
+                    "source":{"type": "constant","value": [31.2, 32.7]}
+                },
+                {
+                    "name": "input_2",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false,
+                        "common_io": false
+                    },
+                    "reg_n": 4,
+                    "channel":[0,1],
+                    "source":{"type": "constant","value": [31.2, 32.7]}
+                }
+            ],
+            "outputs":[
+                {
+                    "name":"out",
+                    "type": "float",
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false
+                    },
+                    "reg_n":[5]
+                }
+            ],
+            "memory_init":[],
+            "program": {
+                "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = input_1 + input_2;\n}",
+                "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}},
+                "headers": []
+            },
+            "deployment": {
+                "has_reciprocal": false,
+                "control_address": 18316525568,
+                "rom_address": 17179869184
+            }
+        },
+        {
+            "order": 2,
+            "id": "test_reducer",
+            "channels":1,
+            "options":{
+                "comparators": "full",
+                "efi_implementation":"none"
+            },
+            "sampling_frequency":1,
+            "input_data":[],
+            "inputs":[
+                {
+                    "name": "input_data_1",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false,
+                        "common_io": false
+                    },
+                    "reg_n": 3,
+                    "channel":[0,1],
+                    "source":{"type": "constant","value": [31.2, 32.7]}
+                },
+                {
+                    "name": "input_data_2",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false,
+                        "common_io": false
+                    },
+                    "reg_n": 4,
+                    "channel":[0,1],
+                    "source":{"type": "constant","value": [31.2, 32.7]}
+                }
+            ],
+            "outputs":[
+                {
+                    "name":"out",
+                    "type": "float",
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false
+                    },
+                    "reg_n":[5]
+                }
+            ],
+            "memory_init":[],
+            "program": {
+                "content": "int main(){\n    float input_data_1, input_data_2; \n    float out = input_data_1 * input_data_2;\n}\n",
+                "build_settings":{"io":{"inputs":["input_data_1", "input_data_2"],"outputs":["out"],"memories":[]}},
+                "headers": []
+            },
+            "deployment": {
+                "has_reciprocal": false,
+                "control_address": 18316525568,
+                "rom_address": 17179869184
+            }
+        }
+    ],
+    "interconnect": [],
+    "emulation_time": 1,
+    "deployment_mode": false
+})");
+
+
+    emulator_manager manager;
+    manager.set_specs(specs);
+    auto res = manager.disassemble();
+    std::unordered_map<std::string, disassembled_program> expected = {
+            {"test_producer", {{{5,3}, {4,1}, {3,2}}, "add r2, r1, r3\nstop\n"}},
+            {"test_reducer",  {{{5,3}, {4,2}, {3,1}}, "mul r1, r2, r3\nstop\n"}}
+    };
+    EXPECT_EQ(res["test_producer"].program, expected["test_producer"].program);
+    EXPECT_EQ(res["test_producer"].translation_table, expected["test_producer"].translation_table);
+    EXPECT_EQ(res["test_reducer"].program, expected["test_reducer"].program);
+    EXPECT_EQ(res["test_reducer"].translation_table, expected["test_reducer"].translation_table);
+
 }

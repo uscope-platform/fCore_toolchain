@@ -59,13 +59,13 @@ TEST(EndToEndC, end_to_end_intrinsics) {
     std::vector<std::string> includes;
 
     std::unordered_map<std::string, core_iom> dma_map;
-    dma_map["a"] = {core_iom_output, {10}};
+    dma_map["a"] = {core_iom_input, {10}};
     
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
     compiler.set_dma_map(dma_map);
     compiler.compile();
-    std::vector<uint32_t> result = compiler.get_executable();
+    auto result = compiler.get_executable();
 
     std::vector<uint32_t> gold_standard = {0x70002, 0xc, 0x1000A, 0xc, 0xc, 0x1024,0x46,0x42C80000, 0x61030, 0x1033, 0x2f836, 0xc};
     ASSERT_EQ(result, gold_standard);
@@ -116,7 +116,7 @@ TEST(EndToEndC, json_writing) {
     std::string test_json = "/tmp/e2e_c_json_test.json";
 
     std::unordered_map<std::string, core_iom> dma_map;
-    dma_map["a"] = {core_iom_output, {10}};
+    dma_map["a"] = {core_iom_input, {10}};
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
@@ -314,7 +314,7 @@ TEST(EndToEndC, array_initialization) {
 
 
     std::unordered_map<std::string, core_iom> dma_map;
-    dma_map["c"] = {core_iom_output, {7}};
+    dma_map["c"] = {core_iom_input, {7}};
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
@@ -323,7 +323,7 @@ TEST(EndToEndC, array_initialization) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x50002, 0xc,0x20007, 0xc, 0xc, 0x26, 0x41300000, 0x61023, 0x21063, 0xc};
+    std::vector<uint32_t> gold_standard = {0x50002, 0xc,0x10007, 0xc, 0xc, 0x46, 0x41300000, 0x60843, 0x40863, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 }
@@ -951,7 +951,7 @@ TEST(EndToEndC, contiguos_array_allocation) {
         float out_1;
         float out_2;
 
-        float index[2];
+        float index[2] = {1.0, 1.0};
 
         int c;
         int a[2];
@@ -976,7 +976,14 @@ TEST(EndToEndC, contiguos_array_allocation) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x60004, 0xc,0x10002, 0x30006, 0x20007, 0xc, 0xc, 0x85855,0x40881, 0x26,0x2,0x608a1,0xc};
+    std::vector<uint32_t> gold_standard = {
+        0x80004,
+        0xc,
+        0x10002, 0x30006, 0x20007,
+        0xc,
+        0xc,
+        0x46, 0x3f800000, 0x85855,0x40881, 0x26,0x2,0x608a1,0xc
+    };
 
     ASSERT_EQ(gold_standard, result);
 
@@ -1387,13 +1394,11 @@ TEST(EndToEndC, self_assigned_conditional_select) {
 }
 
 
-
-
 TEST(EndToEndC, uninitialized_variable) {
 
     std::vector<std::string> file_content = {R""""(
         int main(){
-            float gain = 4;
+            float gain;
             float k = gain*2.0;
         }
     )""""};
@@ -1409,8 +1414,9 @@ TEST(EndToEndC, uninitialized_variable) {
     compiler.set_dma_map(dma_map);
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
-
-
+    auto error = compiler.get_errors();
+    std::string reference_error = "ERROR: Variable 'gain' is used before initialization";
+    ASSERT_EQ(reference_error, error);
 
 }
 
