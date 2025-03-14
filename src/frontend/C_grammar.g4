@@ -162,15 +162,44 @@ typeSpecifier
     |   'long'
     |   'float'
     |   'signed'
-    |   'unsigned')
+    |   'unsigned'
+    )
+    | structOrUnionSpecifier
     |   typedefName
     ;
 
+structOrUnionSpecifier
+    : structOrUnion Identifier? '{' structDeclarationList '}'
+    | structOrUnion Identifier
+    ;
+
+structOrUnion
+    : 'struct'
+    | 'union'
+    ;
+
+structDeclarationList
+    : structDeclaration+
+    ;
 
 specifierQualifierList
     :   (typeSpecifier| Const) specifierQualifierList?
     ;
 
+structDeclaration // The first two rules have priority order and cannot be simplified to one expression.
+    : specifierQualifierList structDeclaratorList ';'
+    | specifierQualifierList ';'
+    ;
+
+
+structDeclaratorList
+    : structDeclarator (',' structDeclarator)*
+    ;
+
+structDeclarator
+    : declarator
+    | declarator? ':' constantExpression
+    ;
 
 declarator
     :   directDeclarator

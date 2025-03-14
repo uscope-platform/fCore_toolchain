@@ -1,5 +1,5 @@
 
-// Generated from ../../src/frontend/C_grammar.g4 by ANTLR 4.13.1
+// Generated from /home/filssavi/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -103,8 +103,26 @@ public:
   virtual void enterTypeSpecifier(C_grammarParser::TypeSpecifierContext *ctx) = 0;
   virtual void exitTypeSpecifier(C_grammarParser::TypeSpecifierContext *ctx) = 0;
 
+  virtual void enterStructOrUnionSpecifier(C_grammarParser::StructOrUnionSpecifierContext *ctx) = 0;
+  virtual void exitStructOrUnionSpecifier(C_grammarParser::StructOrUnionSpecifierContext *ctx) = 0;
+
+  virtual void enterStructOrUnion(C_grammarParser::StructOrUnionContext *ctx) = 0;
+  virtual void exitStructOrUnion(C_grammarParser::StructOrUnionContext *ctx) = 0;
+
+  virtual void enterStructDeclarationList(C_grammarParser::StructDeclarationListContext *ctx) = 0;
+  virtual void exitStructDeclarationList(C_grammarParser::StructDeclarationListContext *ctx) = 0;
+
   virtual void enterSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext *ctx) = 0;
   virtual void exitSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext *ctx) = 0;
+
+  virtual void enterStructDeclaration(C_grammarParser::StructDeclarationContext *ctx) = 0;
+  virtual void exitStructDeclaration(C_grammarParser::StructDeclarationContext *ctx) = 0;
+
+  virtual void enterStructDeclaratorList(C_grammarParser::StructDeclaratorListContext *ctx) = 0;
+  virtual void exitStructDeclaratorList(C_grammarParser::StructDeclaratorListContext *ctx) = 0;
+
+  virtual void enterStructDeclarator(C_grammarParser::StructDeclaratorContext *ctx) = 0;
+  virtual void exitStructDeclarator(C_grammarParser::StructDeclaratorContext *ctx) = 0;
 
   virtual void enterDeclarator(C_grammarParser::DeclaratorContext *ctx) = 0;
   virtual void exitDeclarator(C_grammarParser::DeclaratorContext *ctx) = 0;

@@ -1,5 +1,5 @@
 
-// Generated from ../../src/frontend/C_grammar.g4 by ANTLR 4.13.1
+// Generated from /home/filssavi/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -78,7 +78,19 @@ public:
 
     virtual std::any visitTypeSpecifier(C_grammarParser::TypeSpecifierContext *context) = 0;
 
+    virtual std::any visitStructOrUnionSpecifier(C_grammarParser::StructOrUnionSpecifierContext *context) = 0;
+
+    virtual std::any visitStructOrUnion(C_grammarParser::StructOrUnionContext *context) = 0;
+
+    virtual std::any visitStructDeclarationList(C_grammarParser::StructDeclarationListContext *context) = 0;
+
     virtual std::any visitSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext *context) = 0;
+
+    virtual std::any visitStructDeclaration(C_grammarParser::StructDeclarationContext *context) = 0;
+
+    virtual std::any visitStructDeclaratorList(C_grammarParser::StructDeclaratorListContext *context) = 0;
+
+    virtual std::any visitStructDeclarator(C_grammarParser::StructDeclaratorContext *context) = 0;
 
     virtual std::any visitDeclarator(C_grammarParser::DeclaratorContext *context) = 0;
 

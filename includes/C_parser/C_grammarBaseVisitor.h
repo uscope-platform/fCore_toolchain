@@ -1,5 +1,5 @@
 
-// Generated from ../../src/frontend/C_grammar.g4 by ANTLR 4.13.1
+// Generated from /home/filssavi/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -133,7 +133,31 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual std::any visitStructOrUnionSpecifier(C_grammarParser::StructOrUnionSpecifierContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitStructOrUnion(C_grammarParser::StructOrUnionContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitStructDeclarationList(C_grammarParser::StructDeclarationListContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual std::any visitSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitStructDeclaration(C_grammarParser::StructDeclarationContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitStructDeclaratorList(C_grammarParser::StructDeclaratorListContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitStructDeclarator(C_grammarParser::StructDeclaratorContext *ctx) override {
     return visitChildren(ctx);
   }
 

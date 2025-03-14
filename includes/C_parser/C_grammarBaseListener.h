@@ -1,5 +1,5 @@
 
-// Generated from ../../src/frontend/C_grammar.g4 by ANTLR 4.13.1
+// Generated from /home/filssavi/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -105,8 +105,26 @@ public:
   virtual void enterTypeSpecifier(C_grammarParser::TypeSpecifierContext * /*ctx*/) override { }
   virtual void exitTypeSpecifier(C_grammarParser::TypeSpecifierContext * /*ctx*/) override { }
 
+  virtual void enterStructOrUnionSpecifier(C_grammarParser::StructOrUnionSpecifierContext * /*ctx*/) override { }
+  virtual void exitStructOrUnionSpecifier(C_grammarParser::StructOrUnionSpecifierContext * /*ctx*/) override { }
+
+  virtual void enterStructOrUnion(C_grammarParser::StructOrUnionContext * /*ctx*/) override { }
+  virtual void exitStructOrUnion(C_grammarParser::StructOrUnionContext * /*ctx*/) override { }
+
+  virtual void enterStructDeclarationList(C_grammarParser::StructDeclarationListContext * /*ctx*/) override { }
+  virtual void exitStructDeclarationList(C_grammarParser::StructDeclarationListContext * /*ctx*/) override { }
+
   virtual void enterSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext * /*ctx*/) override { }
   virtual void exitSpecifierQualifierList(C_grammarParser::SpecifierQualifierListContext * /*ctx*/) override { }
+
+  virtual void enterStructDeclaration(C_grammarParser::StructDeclarationContext * /*ctx*/) override { }
+  virtual void exitStructDeclaration(C_grammarParser::StructDeclarationContext * /*ctx*/) override { }
+
+  virtual void enterStructDeclaratorList(C_grammarParser::StructDeclaratorListContext * /*ctx*/) override { }
+  virtual void exitStructDeclaratorList(C_grammarParser::StructDeclaratorListContext * /*ctx*/) override { }
+
+  virtual void enterStructDeclarator(C_grammarParser::StructDeclaratorContext * /*ctx*/) override { }
+  virtual void exitStructDeclarator(C_grammarParser::StructDeclaratorContext * /*ctx*/) override { }
 
   virtual void enterDeclarator(C_grammarParser::DeclaratorContext * /*ctx*/) override { }
   virtual void exitDeclarator(C_grammarParser::DeclaratorContext * /*ctx*/) override { }

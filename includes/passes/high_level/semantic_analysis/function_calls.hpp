@@ -26,8 +26,6 @@
 
 namespace fcore {
 
-
-
     class function_calls_checks : public pass_base{
     public:
         function_calls_checks();
