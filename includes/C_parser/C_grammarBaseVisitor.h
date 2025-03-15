@@ -1,5 +1,5 @@
 
-// Generated from /home/filssavi/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.13.2
+// Generated from /home/fils/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -22,10 +22,6 @@ public:
   }
 
   virtual std::any visitPrimaryExpression(C_grammarParser::PrimaryExpressionContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitStructExpression(C_grammarParser::StructExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -134,6 +130,10 @@ public:
   }
 
   virtual std::any visitTypeSpecifier(C_grammarParser::TypeSpecifierContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitStructExpression(C_grammarParser::StructExpressionContext *ctx) override {
     return visitChildren(ctx);
   }
 

@@ -1,5 +1,5 @@
 
-// Generated from /home/filssavi/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.13.2
+// Generated from /home/fils/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -23,8 +23,6 @@ public:
     virtual std::any visitCompilationUnit(C_grammarParser::CompilationUnitContext *context) = 0;
 
     virtual std::any visitPrimaryExpression(C_grammarParser::PrimaryExpressionContext *context) = 0;
-
-    virtual std::any visitStructExpression(C_grammarParser::StructExpressionContext *context) = 0;
 
     virtual std::any visitUnaryExpression(C_grammarParser::UnaryExpressionContext *context) = 0;
 
@@ -79,6 +77,8 @@ public:
     virtual std::any visitInitDeclarator(C_grammarParser::InitDeclaratorContext *context) = 0;
 
     virtual std::any visitTypeSpecifier(C_grammarParser::TypeSpecifierContext *context) = 0;
+
+    virtual std::any visitStructExpression(C_grammarParser::StructExpressionContext *context) = 0;
 
     virtual std::any visitStructSpecifier(C_grammarParser::StructSpecifierContext *context) = 0;
 

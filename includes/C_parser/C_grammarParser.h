@@ -1,5 +1,5 @@
 
-// Generated from /home/filssavi/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.13.2
+// Generated from /home/fils/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -32,16 +32,16 @@ public:
   };
 
   enum {
-    RuleCompilationUnit = 0, RulePrimaryExpression = 1, RuleStructExpression = 2, 
-    RuleUnaryExpression = 3, RuleArrayAccessExpression = 4, RuleUnaryOperator = 5, 
-    RuleMultiplicativeOperator = 6, RuleMultiplicativeExpression = 7, RuleAdditiveOperator = 8, 
-    RuleAdditiveExpression = 9, RuleShiftOperator = 10, RuleShiftExpression = 11, 
-    RuleRelationalOperator = 12, RuleRelationalExpression = 13, RuleEqualityOperator = 14, 
-    RuleEqualityExpression = 15, RuleAndExpression = 16, RuleExclusiveOrExpression = 17, 
-    RuleInclusiveOrExpression = 18, RuleLogicalAndExpression = 19, RuleLogicalOrExpression = 20, 
-    RuleConditionalExpression = 21, RuleAssignmentExpression = 22, RuleAssignmentOperator = 23, 
-    RuleExpression = 24, RuleConstantExpression = 25, RuleDeclaration = 26, 
-    RuleInitDeclaratorList = 27, RuleInitDeclarator = 28, RuleTypeSpecifier = 29, 
+    RuleCompilationUnit = 0, RulePrimaryExpression = 1, RuleUnaryExpression = 2, 
+    RuleArrayAccessExpression = 3, RuleUnaryOperator = 4, RuleMultiplicativeOperator = 5, 
+    RuleMultiplicativeExpression = 6, RuleAdditiveOperator = 7, RuleAdditiveExpression = 8, 
+    RuleShiftOperator = 9, RuleShiftExpression = 10, RuleRelationalOperator = 11, 
+    RuleRelationalExpression = 12, RuleEqualityOperator = 13, RuleEqualityExpression = 14, 
+    RuleAndExpression = 15, RuleExclusiveOrExpression = 16, RuleInclusiveOrExpression = 17, 
+    RuleLogicalAndExpression = 18, RuleLogicalOrExpression = 19, RuleConditionalExpression = 20, 
+    RuleAssignmentExpression = 21, RuleAssignmentOperator = 22, RuleExpression = 23, 
+    RuleConstantExpression = 24, RuleDeclaration = 25, RuleInitDeclaratorList = 26, 
+    RuleInitDeclarator = 27, RuleTypeSpecifier = 28, RuleStructExpression = 29, 
     RuleStructSpecifier = 30, RuleStructDeclarationList = 31, RuleSpecifierQualifierList = 32, 
     RuleStructDeclaration = 33, RuleStructDeclaratorList = 34, RuleStructDeclarator = 35, 
     RuleDeclarator = 36, RuleDirectDeclarator = 37, RuleArrayDeclarator = 38, 
@@ -78,7 +78,6 @@ public:
 
   class CompilationUnitContext;
   class PrimaryExpressionContext;
-  class StructExpressionContext;
   class UnaryExpressionContext;
   class ArrayAccessExpressionContext;
   class UnaryOperatorContext;
@@ -106,6 +105,7 @@ public:
   class InitDeclaratorListContext;
   class InitDeclaratorContext;
   class TypeSpecifierContext;
+  class StructExpressionContext;
   class StructSpecifierContext;
   class StructDeclarationListContext;
   class SpecifierQualifierListContext;
@@ -188,25 +188,6 @@ public:
   };
 
   PrimaryExpressionContext* primaryExpression();
-
-  class  StructExpressionContext : public antlr4::ParserRuleContext {
-  public:
-    StructExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    PrimaryExpressionContext *primaryExpression();
-    std::vector<antlr4::tree::TerminalNode *> Dot();
-    antlr4::tree::TerminalNode* Dot(size_t i);
-    std::vector<antlr4::tree::TerminalNode *> Identifier();
-    antlr4::tree::TerminalNode* Identifier(size_t i);
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  StructExpressionContext* structExpression();
 
   class  UnaryExpressionContext : public antlr4::ParserRuleContext {
   public:
@@ -703,6 +684,25 @@ public:
   };
 
   TypeSpecifierContext* typeSpecifier();
+
+  class  StructExpressionContext : public antlr4::ParserRuleContext {
+  public:
+    StructExpressionContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    PrimaryExpressionContext *primaryExpression();
+    std::vector<antlr4::tree::TerminalNode *> Dot();
+    antlr4::tree::TerminalNode* Dot(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> Identifier();
+    antlr4::tree::TerminalNode* Identifier(size_t i);
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual std::any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  StructExpressionContext* structExpression();
 
   class  StructSpecifierContext : public antlr4::ParserRuleContext {
   public:

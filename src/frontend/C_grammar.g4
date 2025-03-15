@@ -40,10 +40,6 @@ primaryExpression
     |   '(' expression ')'
     ;
 
-structExpression
-    : primaryExpression ('.'  Identifier)+
-    ;
-
 unaryExpression
     :
     ('++' |  '--' )* (
@@ -174,8 +170,14 @@ typeSpecifier
     |   typedefName
     ;
 
+structExpression
+    : primaryExpression ('.'  Identifier)+
+    ;
+
+
 structSpecifier
     : 'struct' Identifier? '{' structDeclarationList '}'
+    | 'struct' Identifier
     ;
 
 structDeclarationList

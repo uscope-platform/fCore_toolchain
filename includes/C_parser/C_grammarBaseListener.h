@@ -1,5 +1,5 @@
 
-// Generated from /home/filssavi/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.13.2
+// Generated from /home/fils/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -23,9 +23,6 @@ public:
 
   virtual void enterPrimaryExpression(C_grammarParser::PrimaryExpressionContext * /*ctx*/) override { }
   virtual void exitPrimaryExpression(C_grammarParser::PrimaryExpressionContext * /*ctx*/) override { }
-
-  virtual void enterStructExpression(C_grammarParser::StructExpressionContext * /*ctx*/) override { }
-  virtual void exitStructExpression(C_grammarParser::StructExpressionContext * /*ctx*/) override { }
 
   virtual void enterUnaryExpression(C_grammarParser::UnaryExpressionContext * /*ctx*/) override { }
   virtual void exitUnaryExpression(C_grammarParser::UnaryExpressionContext * /*ctx*/) override { }
@@ -107,6 +104,9 @@ public:
 
   virtual void enterTypeSpecifier(C_grammarParser::TypeSpecifierContext * /*ctx*/) override { }
   virtual void exitTypeSpecifier(C_grammarParser::TypeSpecifierContext * /*ctx*/) override { }
+
+  virtual void enterStructExpression(C_grammarParser::StructExpressionContext * /*ctx*/) override { }
+  virtual void exitStructExpression(C_grammarParser::StructExpressionContext * /*ctx*/) override { }
 
   virtual void enterStructSpecifier(C_grammarParser::StructSpecifierContext * /*ctx*/) override { }
   virtual void exitStructSpecifier(C_grammarParser::StructSpecifierContext * /*ctx*/) override { }

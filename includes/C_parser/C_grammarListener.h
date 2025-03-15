@@ -1,5 +1,5 @@
 
-// Generated from /home/filssavi/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.13.2
+// Generated from /home/fils/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -21,9 +21,6 @@ public:
 
   virtual void enterPrimaryExpression(C_grammarParser::PrimaryExpressionContext *ctx) = 0;
   virtual void exitPrimaryExpression(C_grammarParser::PrimaryExpressionContext *ctx) = 0;
-
-  virtual void enterStructExpression(C_grammarParser::StructExpressionContext *ctx) = 0;
-  virtual void exitStructExpression(C_grammarParser::StructExpressionContext *ctx) = 0;
 
   virtual void enterUnaryExpression(C_grammarParser::UnaryExpressionContext *ctx) = 0;
   virtual void exitUnaryExpression(C_grammarParser::UnaryExpressionContext *ctx) = 0;
@@ -105,6 +102,9 @@ public:
 
   virtual void enterTypeSpecifier(C_grammarParser::TypeSpecifierContext *ctx) = 0;
   virtual void exitTypeSpecifier(C_grammarParser::TypeSpecifierContext *ctx) = 0;
+
+  virtual void enterStructExpression(C_grammarParser::StructExpressionContext *ctx) = 0;
+  virtual void exitStructExpression(C_grammarParser::StructExpressionContext *ctx) = 0;
 
   virtual void enterStructSpecifier(C_grammarParser::StructSpecifierContext *ctx) = 0;
   virtual void exitStructSpecifier(C_grammarParser::StructSpecifierContext *ctx) = 0;
