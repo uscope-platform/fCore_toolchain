@@ -24,29 +24,6 @@ namespace fcore{
         inner_variable = std::move(iv);
     }
 
-    void hl_ast_operand::set_name(const std::string &n) {
-        inner_variable->set_name(n);
-    }
-
-    int hl_ast_operand::get_int_value() const {
-        return inner_variable->get_int_value();
-    }
-
-    float hl_ast_operand::get_float_val() const {
-        return inner_variable->get_float_val();
-    }
-
-    void hl_ast_operand::set_type(variable_type_t type) {
-        inner_variable->set_type(type);
-    }
-
-    variable_type_t hl_ast_operand::get_type() {
-        return inner_variable->get_type();
-    }
-
-    hl_ast_operand::operator std::string() {
-        return pretty_print();
-    }
 
     std::string hl_ast_operand::pretty_print() {
         std::string ret_val;
@@ -74,21 +51,6 @@ namespace fcore{
         return ret_val;
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>> hl_ast_operand::get_array_index() {
-        return array_index;
-    }
-
-    void hl_ast_operand::set_array_index(std::vector<std::shared_ptr<hl_ast_node>> idx) {
-        array_index = std::move(idx);
-    }
-
-    void hl_ast_operand::set_variable(std::shared_ptr<variable> v) {
-        inner_variable = std::move(v);
-    }
-
-    std::shared_ptr<variable> hl_ast_operand::get_variable() {
-        return inner_variable;
-    }
 
     std::shared_ptr<hl_ast_operand> hl_ast_operand::deep_copy(const std::shared_ptr<hl_ast_operand> &orig) {
         std::shared_ptr<variable> new_var = variable::deep_copy(orig->get_variable());
