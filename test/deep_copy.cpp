@@ -12,6 +12,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #include <gtest/gtest.h>
 #include <fstream>
 
@@ -308,6 +309,36 @@ TEST( HlAstDeepCopy, function_def){
     }
 
     ASSERT_NE(result->get_return(), gold_standard->get_return());
+
+
+}
+
+
+
+TEST( HlAstDeepCopy, struct_def){
+
+    auto struct_def = std::make_shared<hl_ast_struct>("parameters");
+    auto var = std::make_shared<variable>("gain");
+    auto def = std::make_shared<hl_definition_node>("gain", c_type_float, var);
+    struct_def->add_definition(def);
+
+    var = std::make_shared<variable>("phase");
+    def = std::make_shared<hl_definition_node>("phase", c_type_float, var);
+    struct_def->add_definition(def);
+
+    auto result = std::static_pointer_cast<hl_ast_struct>(hl_ast_node::deep_copy(struct_def));
+
+    // CHECK EQUIVALENCE BETWEEN ORIGINAL AND COPY
+    ASSERT_EQ(*result, *struct_def);
+    // CHECK THAT THE TWO POINTERS ARE ACTUALLY DIFFERENT
+    ASSERT_NE(result, struct_def);
+
+    std::vector<std::shared_ptr<hl_definition_node>> res_vect = result->get_definitions();
+    std::vector<std::shared_ptr<hl_definition_node>> gs_vect = struct_def->get_definitions();
+
+    for(int i = 0; i< res_vect.size(); ++i){
+        ASSERT_NE(res_vect[i], gs_vect[i]);
+    }
 
 
 }

@@ -55,7 +55,8 @@ namespace fcore{
         c_type_short = 3,
         c_type_int = 4,
         c_type_long = 5,
-        c_type_float = 6
+        c_type_float = 6,
+        c_type_struct = 7
     } c_types_t;
 
     constexpr std::string_view c_types_to_string(c_types_t i){
@@ -66,6 +67,7 @@ namespace fcore{
             case c_type_int: return "c_type_int";
             case c_type_long: return "c_type_long";
             case c_type_float: return "c_type_float";
+            case c_type_struct: return  "c_type_struct";
             default: return "unknown c type";
         }
     }
@@ -73,6 +75,8 @@ namespace fcore{
     class hl_ast_node {
 
     public:
+        virtual ~hl_ast_node() = default;
+
         explicit hl_ast_node(hl_ast_node_type_t t);
         static c_types_t string_to_type(const std::string& t);
         static std::string  type_to_string(const c_types_t &t);

@@ -42,7 +42,8 @@ namespace fcore{
         var_type_float_const = 0,
         var_type_int_const = 1,
         var_type_scalar = 2,
-        var_type_array = 3
+        var_type_array = 3,
+        var_type_struct = 4
     } variable_type_t;
 
 

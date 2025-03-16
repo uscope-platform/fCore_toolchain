@@ -16,6 +16,7 @@
 #include "frontend/C/C_Tree_visitor.hpp"
 
 #include <utility>
+#include <data_structures/high_level_ast/hl_ast_struct.hpp>
 
 namespace fcore{
 
@@ -552,8 +553,19 @@ namespace fcore{
 
     void C_Tree_visitor::exitStructSpecifier(C_parser::C_grammarParser::StructSpecifierContext *ctx) {
         auto struct_name = ctx->Identifier()->getText();
-        for(auto &f:struct_fields) {
-            int i =0;
+        auto struct_def = std::make_shared<hl_ast_struct>(struct_name);
+
+        for(auto &[field_type, field_name]:struct_fields) {
+            auto var = std::make_shared<variable>(field_name);
+            auto def = std::make_shared<hl_definition_node>(field_name, hl_ast_node::string_to_type(field_type), var);
+            struct_def->add_definition(def);
+        }
+        auto def = std::make_shared<hl_definition_node>(struct_name, struct_def);
+
+        if(in_function_body | in_conditional_block | in_foor_loop_block){
+            current_block_item = def;
+        } else {
+            ext_decl.push_back(def);
         }
 
         struct_fields.clear();
@@ -561,7 +573,7 @@ namespace fcore{
 
     void C_Tree_visitor::exitStructExpression(C_parser::C_grammarParser::StructExpressionContext *ctx) {
         std::vector<std::string> accessors;
-        for(auto &item: ctx->Identifier()) {
+        for(const auto &item: ctx->Identifier()) {
             auto id = item->getText();
             accessors.push_back(id);
         }
@@ -708,13 +720,13 @@ namespace fcore{
         if(in_conditional_block){
             outer_block_nodes.push(conditional);
             outer_block_contents.push(conditional_body);
-            outer_block_types.push("conditional");
+            outer_block_types.emplace("conditional");
         } else if(in_foor_loop_block){
             outer_block_nodes.push(loop);
             outer_block_contents.push(loop_body);
-            outer_block_types.push("loop");
+            outer_block_types.emplace("loop");
         } else{
-            outer_block_types.push("function");
+            outer_block_types.emplace("function");
         }
     }
 

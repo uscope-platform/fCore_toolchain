@@ -14,6 +14,7 @@
 // limitations under the License.
 #include <gtest/gtest.h>
 #include <fstream>
+#include <data_structures/high_level_ast/hl_ast_struct.hpp>
 
 #include "tools/define_map.hpp"
 #include "frontend/C/C_language_parser.hpp"
@@ -1379,7 +1380,18 @@ namespace fcore{
         auto fun = parser.AST->get_content()[0];
         auto result = std::static_pointer_cast<hl_function_def_node>(fun)->get_body()[0];
 
-        ASSERT_TRUE(false);
+        auto struct_def = std::make_shared<hl_ast_struct>("parameters");
+        auto var = std::make_shared<variable>("gain");
+        auto def = std::make_shared<hl_definition_node>("gain", c_type_float, var);
+        struct_def->add_definition(def);
+
+        var = std::make_shared<variable>("phase");
+        def = std::make_shared<hl_definition_node>("phase", c_type_float, var);
+        struct_def->add_definition(def);
+
+        def = std::make_shared<hl_definition_node>("parameters", struct_def);
+
+        EXPECT_EQ(*def, *result);
 
     }
 

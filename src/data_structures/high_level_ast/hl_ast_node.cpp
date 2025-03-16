@@ -68,10 +68,11 @@ namespace fcore{
                 return *std::static_pointer_cast<hl_function_def_node>(lhs) == *std::static_pointer_cast<hl_function_def_node>(rhs);
             case hl_ast_node_type_function_call:
                 return *std::static_pointer_cast<hl_function_call_node>(lhs) == *std::static_pointer_cast<hl_function_call_node>(rhs);
+            case hl_ast_node_type_struct:
+                return *std::static_pointer_cast<hl_ast_struct>(lhs) == *std::static_pointer_cast<hl_ast_struct>(rhs);
             default:
                 return false;
         }
-        return false;
     }
 
     std::string hl_ast_node::type_to_string(const c_types_t &t) {
@@ -81,7 +82,8 @@ namespace fcore{
                 {c_type_short, "short"},
                 {c_type_int, "int"},
                 {c_type_long, "long"},
-                {c_type_float, "float"}
+                {c_type_float, "float"},
+                {c_type_struct, "struct"}
         };
 
         return translator[t];
@@ -90,25 +92,35 @@ namespace fcore{
     std::shared_ptr<hl_ast_node> hl_ast_node::deep_copy(const std::shared_ptr<hl_ast_node> &node) {
         if(node == nullptr){
             return nullptr;
-        } else if(node->node_type == hl_ast_node_type_expr){
-            return hl_expression_node::deep_copy(std::static_pointer_cast<hl_expression_node>(node));
-        } else if(node->node_type == hl_ast_node_type_definition){
-            return hl_definition_node::deep_copy(std::static_pointer_cast<hl_definition_node>(node));
-        } else if(node->node_type == hl_ast_node_type_conditional){
-            return hl_ast_conditional_node::deep_copy(std::static_pointer_cast<hl_ast_conditional_node>(node));
-        } else if(node->node_type == hl_ast_node_type_loop){
-            return hl_ast_loop_node::deep_copy(std::static_pointer_cast<hl_ast_loop_node>(node));
-        } else if(node->node_type == hl_ast_node_type_function_def){
-            return hl_function_def_node::deep_copy(std::static_pointer_cast<hl_function_def_node>(node));
-        } else if(node->node_type == hl_ast_node_type_operand){
-            return hl_ast_operand::deep_copy(std::static_pointer_cast<hl_ast_operand>(node));
-        } else if(node->node_type == hl_ast_node_type_function_call){
-            return hl_function_call_node::deep_copy(std::static_pointer_cast<hl_function_call_node>(node));
-        } else if(node->node_type == hl_ast_node_type_code_block){
-            return hl_code_block::deep_copy(std::static_pointer_cast<hl_code_block>(node));
-        } else {
-            throw std::runtime_error("HL ast node with unknown type");
         }
+        if(node->node_type == hl_ast_node_type_expr){
+            return hl_expression_node::deep_copy(std::static_pointer_cast<hl_expression_node>(node));
+        }
+        if(node->node_type == hl_ast_node_type_definition){
+            return hl_definition_node::deep_copy(std::static_pointer_cast<hl_definition_node>(node));
+        }
+        if(node->node_type == hl_ast_node_type_conditional){
+            return hl_ast_conditional_node::deep_copy(std::static_pointer_cast<hl_ast_conditional_node>(node));
+        }
+        if(node->node_type == hl_ast_node_type_loop){
+            return hl_ast_loop_node::deep_copy(std::static_pointer_cast<hl_ast_loop_node>(node));
+        }
+        if(node->node_type == hl_ast_node_type_function_def){
+            return hl_function_def_node::deep_copy(std::static_pointer_cast<hl_function_def_node>(node));
+        }
+        if(node->node_type == hl_ast_node_type_operand){
+            return hl_ast_operand::deep_copy(std::static_pointer_cast<hl_ast_operand>(node));
+        }
+        if(node->node_type == hl_ast_node_type_function_call){
+            return hl_function_call_node::deep_copy(std::static_pointer_cast<hl_function_call_node>(node));
+        }
+        if(node->node_type == hl_ast_node_type_code_block){
+            return hl_code_block::deep_copy(std::static_pointer_cast<hl_code_block>(node));
+        }
+        if(node->node_type == hl_ast_node_type_struct) {
+            return hl_ast_struct::deep_copy(std::static_pointer_cast<hl_ast_struct>(node));
+        }
+        throw std::runtime_error("HL ast node with unknown type");
 
     }
 
@@ -126,7 +138,7 @@ namespace fcore{
             if(lhs.size() != rhs.size()) return false;
 
             for(uint32_t i = 0; i<lhs.size(); i++){
-                body_equal &= hl_ast_node::compare_content_by_type( lhs[i], rhs[i]);
+                body_equal &= compare_content_by_type( lhs[i], rhs[i]);
             }
             ret_val &= body_equal;
         }
@@ -136,23 +148,32 @@ namespace fcore{
     std::string hl_ast_node::pretty_print(const std::shared_ptr<hl_ast_node> &node) {
         if(node->node_type == hl_ast_node_type_expr){
             return std::static_pointer_cast<hl_expression_node>(node)->pretty_print();
-        } else if(node->node_type == hl_ast_node_type_definition){
-            return std::static_pointer_cast<hl_definition_node>(node)->pretty_print();
-        } else if(node->node_type == hl_ast_node_type_conditional){
-            return std::static_pointer_cast<hl_ast_conditional_node>(node)->pretty_print();
-        } else if(node->node_type == hl_ast_node_type_loop){
-            return std::static_pointer_cast<hl_ast_loop_node>(node)->pretty_print();
-        } else if(node->node_type == hl_ast_node_type_function_def){
-            return std::static_pointer_cast<hl_function_def_node>(node)->pretty_print();
-        } else if(node->node_type == hl_ast_node_type_operand){
-            return std::static_pointer_cast<hl_ast_operand>(node)->pretty_print();
-        } else if(node->node_type == hl_ast_node_type_function_call){
-            return std::static_pointer_cast<hl_function_call_node>(node)->pretty_print();
-        } else if(node->node_type == hl_ast_node_type_code_block){
-            return std::static_pointer_cast<hl_code_block>(node)->pretty_print();
-        } else {
-            throw std::runtime_error("HL ast node with unknown type");
         }
+        if(node->node_type == hl_ast_node_type_definition){
+            return std::static_pointer_cast<hl_definition_node>(node)->pretty_print();
+        }
+        if(node->node_type == hl_ast_node_type_conditional){
+            return std::static_pointer_cast<hl_ast_conditional_node>(node)->pretty_print();
+        }
+        if(node->node_type == hl_ast_node_type_loop){
+            return std::static_pointer_cast<hl_ast_loop_node>(node)->pretty_print();
+        }
+        if(node->node_type == hl_ast_node_type_function_def){
+            return std::static_pointer_cast<hl_function_def_node>(node)->pretty_print();
+        }
+        if(node->node_type == hl_ast_node_type_operand){
+            return std::static_pointer_cast<hl_ast_operand>(node)->pretty_print();
+        }
+        if(node->node_type == hl_ast_node_type_function_call){
+            return std::static_pointer_cast<hl_function_call_node>(node)->pretty_print();
+        }
+        if(node->node_type == hl_ast_node_type_code_block){
+            return std::static_pointer_cast<hl_code_block>(node)->pretty_print();
+        }
+        if(node->node_type == hl_ast_node_type_struct) {
+            return std::static_pointer_cast<hl_ast_struct>(node)->pretty_print();
+        }
+        throw std::runtime_error("HL ast node with unknown type");
     }
 
 

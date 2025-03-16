@@ -15,6 +15,8 @@
 //
 
 #include "data_structures/high_level_ast/hl_definition_node.hpp"
+#include "data_structures/high_level_ast/hl_ast_struct.hpp"
+#include <utility>
 
 namespace fcore {
 
@@ -25,8 +27,18 @@ namespace fcore {
         inner_variable = std::move(v);
     }
 
-    bool hl_definition_node::is_initialized() {
-        return !initializer.empty();
+    hl_definition_node::hl_definition_node(std::string n, std::shared_ptr<hl_ast_struct> s): hl_ast_node(hl_ast_node_type_definition) {
+        name = std::move(n);
+        type = c_type_struct;
+        constant = false;
+        struct_specs = std::move(s);
+    }
+
+    bool hl_definition_node::is_initialized() const {
+        if(type == c_type_struct) {
+            return struct_specs->is_initialized();
+        } else
+            return !initializer.empty();
     }
 
     void hl_definition_node::set_scalar_initializer(const std::shared_ptr<hl_ast_node>& init) {
