@@ -163,9 +163,6 @@ namespace fcore{
         bool is_ternary();
         bool is_immediate();
 
-        bool is_terminal() override {
-            return true;
-        }
 
         friend bool operator==(const hl_expression_node& lhs, const hl_expression_node& rhs);
 

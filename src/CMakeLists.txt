@@ -51,6 +51,7 @@ set(FCORE_CC_SRCS
         data_structures/high_level_ast/hl_expression_node.cpp
         data_structures/high_level_ast/hl_function_call_node.cpp
         data_structures/high_level_ast/hl_ast_operand.cpp
+        data_structures/high_level_ast/hl_ast_struct.cpp
         data_structures/constants_tracker.cpp
         passes/high_level/optimizations/dead_load_elimination.cpp
         passes/high_level/optimizations/constant_propagation.cpp

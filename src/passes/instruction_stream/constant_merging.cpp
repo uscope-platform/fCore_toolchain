@@ -195,9 +195,9 @@ namespace fcore{
             return reassignments_map[var_name];
         }
         if(v->is_float()) {
-            return float_const_map[v->get_const_f()];
+            return float_const_map[v->get_float_val()];
         } else{
-            return int_const_map[v->get_const_i()];
+            return int_const_map[v->get_int_value()];
         }
 
     }

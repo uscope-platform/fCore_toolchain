@@ -54,9 +54,6 @@ namespace fcore{
 
 
         std::string pretty_print();
-        bool is_terminal() override {
-            return true;
-        }
 
         friend bool operator==(const hl_definition_node& lhs, const hl_definition_node& rhs){
             bool ret_val = true;
@@ -66,8 +63,8 @@ namespace fcore{
             ret_val &= lhs.name == rhs.name;
 
 
-            ret_val &= hl_ast_node::compare_vectors(lhs.array_index, rhs.array_index);
-            ret_val &= hl_ast_node::compare_vectors(lhs.initializer, rhs.initializer);
+            ret_val &= compare_vectors(lhs.array_index, rhs.array_index);
+            ret_val &= compare_vectors(lhs.initializer, rhs.initializer);
 
             if(lhs.inner_variable == nullptr && rhs.inner_variable == nullptr) ret_val &= true;
             else if (lhs.inner_variable == nullptr || rhs.inner_variable == nullptr) ret_val &= false;

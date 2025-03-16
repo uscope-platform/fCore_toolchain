@@ -135,6 +135,8 @@ namespace fcore{
         std::shared_ptr<hl_ast_conditional_node> conditional;
         std::vector<std::shared_ptr<hl_ast_node>> conditional_body;
 
+        std::vector<std::pair<std::string, std::string>> struct_fields;
+
 
         std::shared_ptr<hl_ast_loop_node> loop;
         std::vector<std::shared_ptr<hl_ast_node>> loop_body;

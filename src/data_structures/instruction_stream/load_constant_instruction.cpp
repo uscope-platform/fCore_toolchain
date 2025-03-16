@@ -44,7 +44,7 @@ namespace fcore {
 
 
     float load_constant_instruction::get_constant_f() {
-        return constant->get_const_f();
+        return constant->get_float_val();
     }
 
     void load_constant_instruction::set_arguments(const std::vector<std::shared_ptr<variable>> &a) {
@@ -53,7 +53,7 @@ namespace fcore {
     }
 
     int load_constant_instruction::get_constant_i() {
-        return constant->get_const_i();
+        return constant->get_int_value();
     }
 
     std::string load_constant_instruction::disassemble() const{

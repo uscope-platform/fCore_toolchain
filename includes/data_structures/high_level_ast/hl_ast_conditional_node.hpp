@@ -35,16 +35,13 @@ namespace fcore{
         friend bool operator==(const hl_ast_conditional_node& lhs, const hl_ast_conditional_node& rhs){
             bool ret_val = true;
 
-            ret_val &= hl_ast_node::compare_vectors(lhs.if_block, rhs.if_block);
-            ret_val &= hl_ast_node::compare_vectors(lhs.else_block, rhs.else_block);
-            ret_val &= hl_ast_node::compare_content_by_type( lhs.condition, rhs.condition);
+            ret_val &= compare_vectors(lhs.if_block, rhs.if_block);
+            ret_val &= compare_vectors(lhs.else_block, rhs.else_block);
+            ret_val &= compare_content_by_type( lhs.condition, rhs.condition);
             ret_val &= lhs.ternary_flag == rhs.ternary_flag;
 
             return ret_val;
         };
-        bool is_terminal() override {
-            return false;
-        }
 
 
         bool has_else() {return !else_block.empty();};

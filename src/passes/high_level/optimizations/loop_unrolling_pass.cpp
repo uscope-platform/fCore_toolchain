@@ -95,7 +95,7 @@ namespace fcore{
 
             std::vector<std::shared_ptr<hl_ast_node>> new_content;
             for(auto &item:content){
-                int loop_variable_val = loop_var->get_variable()->get_const_i();
+                int loop_variable_val = loop_var->get_variable()->get_int_value();
                 new_content.push_back(substitute_index(item, loop_var_name, loop_variable_val));
             }
             var = std::make_shared<variable>(loop_var_name, (int)current_loop_iteration);

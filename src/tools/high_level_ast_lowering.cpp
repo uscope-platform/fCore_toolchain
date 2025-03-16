@@ -211,7 +211,7 @@ namespace fcore{
         }
         std::vector<std::shared_ptr<variable>> args = {std::move(dest), var};
         if(args[0]->get_variable_class().iom_spec == variable_regular_type){
-            if(args[1]->get_const_f() == 0 && args[1]->get_const_i() == 0 && args[1]->is_constant() && !args[0]->is_contiguous()){
+            if(args[1]->get_float_val() == 0 && args[1]->get_int_value() == 0 && args[1]->is_constant() && !args[0]->is_contiguous()){
                 args[0]->set_bound_reg(0);
             }
         }

@@ -28,20 +28,12 @@ namespace fcore{
         inner_variable->set_name(n);
     }
 
-    void hl_ast_operand::set_immediate(const int &v) {
-        inner_variable->set_const_i(v);
-    }
-
-    void hl_ast_operand::set_immediate(const float &v) {
-        inner_variable->set_const_f(v);
-    }
-
     int hl_ast_operand::get_int_value() const {
-        return inner_variable->get_const_i();
+        return inner_variable->get_int_value();
     }
 
     float hl_ast_operand::get_float_val() const {
-        return inner_variable->get_const_f();
+        return inner_variable->get_float_val();
     }
 
     void hl_ast_operand::set_type(variable_type_t type) {
@@ -60,10 +52,10 @@ namespace fcore{
         std::string ret_val;
         switch (inner_variable->get_type()) {
             case var_type_int_const:
-                ret_val = std::to_string(inner_variable->get_const_i());
+                ret_val = std::to_string(inner_variable->get_int_value());
                 break;
             case var_type_float_const:
-                ret_val = std::to_string(inner_variable->get_const_f());
+                ret_val = std::to_string(inner_variable->get_float_val());
                 break;
             case var_type_scalar:
                 ret_val = inner_variable->get_name();

@@ -97,19 +97,19 @@ namespace fcore{
         throw std::runtime_error("Invalid operation: the compiler tried to get the numeric value of a variable");
     }
 
-    float variable::get_const_f() {
+    float variable::get_float_val() const {
         if(variable_type == var_type_float_const){
             return const_f;
         } else {
-            return (float) const_i;
+            return static_cast<float>(const_i);
         }
     }
 
-    int variable::get_const_i() {
+    int variable::get_int_value() const {
         if(variable_type == var_type_int_const){
             return const_i;
         } else {
-            return (int)const_f;
+            return static_cast<int>(const_f);
         }
     }
 
@@ -126,21 +126,6 @@ namespace fcore{
         return "";
     }
 
-    void variable::set_const_f(float f) {
-        if(variable_type == var_type_float_const){
-            const_f = f;
-        } else {
-            throw std::runtime_error("Setting the floating point value of a non floating point variable is not allowed");
-        }
-    }
-
-    void variable::set_const_i(int i) {
-        if(variable_type == var_type_int_const){
-            const_i = i;
-        } else {
-            throw std::runtime_error("Setting the integer  value of a non integer point variable is not allowed");
-        }
-    }
 
     std::shared_ptr<variable> variable::deep_copy(const std::shared_ptr <variable>& original) {
         std::shared_ptr<variable> copied_var = std::make_shared<variable>();

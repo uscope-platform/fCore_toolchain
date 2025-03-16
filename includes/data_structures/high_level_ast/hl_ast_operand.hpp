@@ -29,14 +29,16 @@ namespace fcore{
         explicit hl_ast_operand(std::shared_ptr<variable> iv);
         // VARIABLE NAME
         void set_name(const std::string &name);
-        std::string get_name() { return inner_variable->get_name();};
-        std::string get_identifier() { return inner_variable->get_identifier();};
+        std::string get_name() { return inner_variable->get_name();}
+        std::string get_identifier() { return inner_variable->get_identifier();}
+
         // INTEGER IMMEDIATE VALUE
-        void set_immediate(const int &v);
+        void set_immediate(const int &v) {inner_variable->set_immediate(v);}
         [[nodiscard]] int get_int_value() const;
         // FLOAT IMMEDIATE VALUE
-        void set_immediate(const float &v);
+        void set_immediate(const float &v) {inner_variable->set_immediate(v);}
         [[nodiscard]] float get_float_val() const;
+
         // TYPE
         variable_type_t get_type();
         void set_type(variable_type_t type);
@@ -53,7 +55,6 @@ namespace fcore{
         std::shared_ptr<variable> get_variable();
 
 
-        bool is_terminal() override {return true;}
         bool is_scalar() {return  inner_variable->get_type()!=var_type_array;};
         std::string pretty_print();
         operator std::string();
@@ -65,7 +66,7 @@ namespace fcore{
             else if (lhs.inner_variable == nullptr || rhs.inner_variable == nullptr) ret_val &= false;
             else ret_val &= *lhs.inner_variable == *rhs.inner_variable;
 
-            ret_val &= hl_ast_node::compare_vectors(lhs.array_index, rhs.array_index);
+            ret_val &= compare_vectors(lhs.array_index, rhs.array_index);
 
             return ret_val;
         };

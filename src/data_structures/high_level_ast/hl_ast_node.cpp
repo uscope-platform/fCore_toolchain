@@ -24,12 +24,10 @@
 #include "data_structures/high_level_ast/hl_ast_conditional_node.hpp"
 #include "data_structures/high_level_ast/hl_ast_loop_node.h"
 #include "data_structures/high_level_ast/hl_code_block.hpp"
+#include "data_structures/high_level_ast/hl_ast_struct.hpp"
+
 
 namespace fcore{
-
-    bool hl_ast_node::is_terminal() {
-        return false;
-    }
 
     hl_ast_node::hl_ast_node(hl_ast_node_type_t t) {
         node_type = t;

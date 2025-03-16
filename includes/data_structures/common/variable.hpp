@@ -61,8 +61,23 @@ namespace fcore{
 
         int get_linear_index();
         int get_linear_index(const std::vector<int>& idx);
-        float get_const_f();
-        int get_const_i();
+        float get_float_val() const;
+        int get_int_value() const;
+
+        void set_immediate(const float f) {
+            if(variable_type == var_type_float_const){
+                const_f = f;
+            } else {
+                throw std::runtime_error("Setting the floating point value of a non floating point variable is not allowed");
+            }
+        }
+        void set_immediate(const int i){
+            if(variable_type == var_type_int_const){
+                const_i = i;
+            } else {
+                throw std::runtime_error("Setting the integer  value of a non integer point variable is not allowed");
+            }
+        }
 
         void set_const_f(float f);
         void set_const_i(int i);

@@ -38,14 +38,11 @@ namespace fcore{
 
             ret_val &= lhs.name == rhs.name;
 
-            ret_val &= hl_ast_node::compare_vectors(lhs.arguments, rhs.arguments);
+            ret_val &= compare_vectors(lhs.arguments, rhs.arguments);
 
             return ret_val;
         };
 
-        bool is_terminal() override {
-            return true;
-        }
 
         static std::shared_ptr<hl_function_call_node> deep_copy(const std::shared_ptr<hl_function_call_node> &node);
 

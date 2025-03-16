@@ -135,7 +135,7 @@ namespace fcore{
         if(ctx->FloatingPointLiteral() != nullptr){
             immediate = std::make_shared<variable>("constant", std::stof(ctx->FloatingPointLiteral()->getText()));
             program.push_back(instruction_variant(load_constant_instruction("ldc", dest, immediate)));
-            program.push_back(instruction_variant(intercalated_constant(immediate->get_const_f())));
+            program.push_back(instruction_variant(intercalated_constant(immediate->get_float_val())));
         } else if(ctx->integer_const() != nullptr){
             uint32_t const_val =  std::stoul(ctx->integer_const()->getText(), nullptr, 0);
             immediate = std::make_shared<variable>("constant",*(int*)&const_val);

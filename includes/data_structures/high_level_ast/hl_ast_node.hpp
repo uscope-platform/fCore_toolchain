@@ -30,7 +30,8 @@ namespace fcore{
         hl_ast_node_type_function_def = 5,
         hl_ast_node_type_operand = 6,
         hl_ast_node_type_function_call = 7,
-        hl_ast_node_type_code_block = 8
+        hl_ast_node_type_code_block = 8,
+        hl_ast_node_type_struct = 9
     } hl_ast_node_type_t;
 
     constexpr std::string_view hl_ast_node_to_string(hl_ast_node_type_t i){
@@ -43,6 +44,7 @@ namespace fcore{
             case hl_ast_node_type_operand: return "hl_ast_node_type_operand";
             case hl_ast_node_type_function_call: return "hl_ast_node_type_function_call";
             case hl_ast_node_type_code_block: return "hl_ast_node_type_code_block";
+            case hl_ast_node_type_struct: return "hl_ast_struct";
             default: return "unknown hl ast type";
         }
     }
@@ -75,8 +77,6 @@ namespace fcore{
         static c_types_t string_to_type(const std::string& t);
         static std::string  type_to_string(const c_types_t &t);
 
-        virtual bool is_terminal();
-
         virtual std::string pretty_print(const std::shared_ptr<hl_ast_node> &node);
 
         friend bool operator==(const hl_ast_node& lhs, const hl_ast_node& rhs){
@@ -94,7 +94,6 @@ namespace fcore{
 
         hl_ast_node_type_t node_type;
 
-    protected:
 
     };
 }

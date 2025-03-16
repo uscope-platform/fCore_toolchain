@@ -38,6 +38,7 @@ namespace fcore{
         bool has_return(){ return return_expression != nullptr;};
         std::vector<std::shared_ptr<hl_ast_node>> get_body();
         std::string pretty_print();
+
         friend bool operator==(const hl_function_def_node& lhs, const hl_function_def_node& rhs){
             bool ret_val = true;
 
@@ -58,7 +59,7 @@ namespace fcore{
                 ret_val &= param_equal;
             }
 
-            ret_val &= hl_ast_node::compare_vectors(lhs.function_body, rhs.function_body);
+            ret_val &= compare_vectors(lhs.function_body, rhs.function_body);
 
             if(lhs.return_expression != nullptr && rhs.return_expression != nullptr){
                 ret_val &= *lhs.return_expression == *rhs.return_expression;
@@ -68,10 +69,6 @@ namespace fcore{
 
             return ret_val;
         };
-
-        bool is_terminal() override {
-            return false;
-        }
 
         static std::shared_ptr<hl_function_def_node> deep_copy(const std::shared_ptr<hl_function_def_node> &node);
 

@@ -547,12 +547,16 @@ namespace fcore{
     void C_Tree_visitor::exitStructDeclaration(C_parser::C_grammarParser::StructDeclarationContext *ctx) {
         auto type = ctx->specifierQualifierList()->typeSpecifier()->getText();
         auto name = ctx->structDeclaratorList()->structDeclarator()[0]->getText();
-        int i = 0;
+        struct_fields.emplace_back(type, name);
     }
 
     void C_Tree_visitor::exitStructSpecifier(C_parser::C_grammarParser::StructSpecifierContext *ctx) {
         auto struct_name = ctx->Identifier()->getText();
+        for(auto &f:struct_fields) {
+            int i =0;
+        }
 
+        struct_fields.clear();
     }
 
     void C_Tree_visitor::exitStructExpression(C_parser::C_grammarParser::StructExpressionContext *ctx) {
