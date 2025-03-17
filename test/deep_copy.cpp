@@ -314,7 +314,6 @@ TEST( HlAstDeepCopy, function_def){
 }
 
 
-
 TEST( HlAstDeepCopy, struct_def){
 
     auto struct_def = std::make_shared<hl_ast_struct>("parameters");
@@ -328,9 +327,7 @@ TEST( HlAstDeepCopy, struct_def){
 
     auto result = std::static_pointer_cast<hl_ast_struct>(hl_ast_node::deep_copy(struct_def));
 
-    // CHECK EQUIVALENCE BETWEEN ORIGINAL AND COPY
     ASSERT_EQ(*result, *struct_def);
-    // CHECK THAT THE TWO POINTERS ARE ACTUALLY DIFFERENT
     ASSERT_NE(result, struct_def);
 
     std::vector<std::shared_ptr<hl_definition_node>> res_vect = result->get_definitions();

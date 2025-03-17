@@ -46,7 +46,7 @@ namespace fcore {
         std::stringstream ss;
         ss << "struct " + name + " {\n";
         for(const auto &def: definitions) {
-            ss << def->pretty_print() << "\n";
+            ss << "    "<< def->pretty_print() << ";\n";
         }
         ss << "};\n";
         return ss.str();

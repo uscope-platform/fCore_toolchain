@@ -269,3 +269,23 @@ TEST( hl_pretty_print, function_def){
       ASSERT_EQ(result, "void test(int array_test) {\n5*6\n}");
 
 }
+
+
+
+TEST( hl_pretty_print, struct_def){
+
+    auto struct_def = std::make_shared<hl_ast_struct>("parameters");
+    auto var = std::make_shared<variable>("gain");
+    auto def = std::make_shared<hl_definition_node>("gain", c_type_float, var);
+    struct_def->add_definition(def);
+
+    var = std::make_shared<variable>("phase");
+    def = std::make_shared<hl_definition_node>("phase", c_type_float, var);
+    struct_def->add_definition(def);
+
+    auto result =  struct_def->pretty_print();
+    std::string check = "struct parameters {\n    float gain;\n    float phase;\n};\n";
+
+    ASSERT_EQ(result, check);
+
+}

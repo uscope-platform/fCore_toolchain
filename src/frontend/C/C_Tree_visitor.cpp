@@ -119,18 +119,21 @@ namespace fcore{
 
         bool is_const = ctx->Const() != nullptr;
         std::string type_name = ctx->typeSpecifier()->getText();
+
+        std::shared_ptr<hl_definition_node> node;
         if(ctx->typeSpecifier()->structSpecifier() == nullptr) {
-           std::string raw_name = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->getText();
+            std::string raw_name = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->getText();
             std::string name = raw_name.substr(0, raw_name.find('['));
 
             std::shared_ptr<variable> var = std::make_shared<variable>(name);
+
             if(dma_specs.contains(name)){
                 var->set_variable_class(dma_specs[name]);
             }
 
             if(in_array_declaration)
                 var->set_type(var_type_array);
-            std::shared_ptr<hl_definition_node> node = std::make_shared<hl_definition_node>(name, hl_ast_node::string_to_type(type_name), var);
+            node = std::make_shared<hl_definition_node>(name, hl_ast_node::string_to_type(type_name), var);
             node->set_constant(is_const);
 
             if(in_array_declaration){
@@ -159,14 +162,24 @@ namespace fcore{
             }
 
 
+        } else if(ctx->initDeclaratorList() == nullptr) {
+            return;
+        } else{
 
-            if(in_function_body | in_conditional_block | in_foor_loop_block){
-                current_block_item = node;
-            } else {
-                ext_decl.push_back(node);
-            }
+            auto rest = ctx->initDeclaratorList()->initDeclarator();
+            std::string name = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->getText();
+
+            std::shared_ptr<variable> var = std::make_shared<variable>(name);
+            var->set_type(var_type_struct);
+            node = std::make_shared<hl_definition_node>(name, c_type_struct, var);
+            node->set_array_initializer(array_initializer_data);
+            array_initializer_data.clear();
         }
-
+        if(in_function_body | in_conditional_block | in_foor_loop_block){
+            current_block_item = node;
+        } else {
+            ext_decl.push_back(node);
+        }
     }
 
     void C_Tree_visitor::enterArrayAccessExpression(C_parser::C_grammarParser::ArrayAccessExpressionContext *) {
@@ -245,7 +258,8 @@ namespace fcore{
 
         if(ctx->expression() != nullptr){
             return;
-        } else if(ctx->Identifier() != nullptr){
+        }
+        if(ctx->Identifier() != nullptr){
             std::string var_name = ctx->Identifier()->getText();
 
             std::shared_ptr<variable> var = std::make_shared<variable>(var_name);
@@ -557,6 +571,7 @@ namespace fcore{
 
         for(auto &[field_type, field_name]:struct_fields) {
             auto var = std::make_shared<variable>(field_name);
+            var->set_type(var_type_struct);
             auto def = std::make_shared<hl_definition_node>(field_name, hl_ast_node::string_to_type(field_type), var);
             struct_def->add_definition(def);
         }

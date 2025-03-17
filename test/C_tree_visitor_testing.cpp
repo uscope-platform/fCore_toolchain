@@ -1411,10 +1411,21 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
         auto fun = parser.AST->get_content()[0];
-        auto result = std::static_pointer_cast<hl_function_def_node>(fun)->get_body()[0];
+        auto result = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(fun)->get_body()[0]);
 
-        ASSERT_TRUE(false);
+        auto var = std::make_shared<variable>("p");
+        var->set_type(var_type_struct);
+        auto def = std::make_shared<hl_definition_node>("p", c_type_struct, var);
 
+        std::vector<std::shared_ptr<hl_ast_node>> init_list;
+
+        var = std::make_shared<variable>("constant", 1.0f);
+        init_list.emplace_back(std::make_shared<hl_ast_operand>(var));
+        var = std::make_shared<variable>("constant", 5.0f);
+        init_list.emplace_back(std::make_shared<hl_ast_operand>(var));
+        def->set_array_initializer(init_list);
+
+        ASSERT_EQ(*result, *def);
     }
 
     TEST( cTreeVisitor, struct_usage){
