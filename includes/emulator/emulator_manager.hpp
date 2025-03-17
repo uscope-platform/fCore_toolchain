@@ -22,7 +22,6 @@
 
 #include "emulator_builder.hpp"
 #include "emulator/backend/emulator_backend.hpp"
-#include "../../third_party/csv.hpp"
 #include "emulation_sequencer.hpp"
 #include "data_structures/emulation/hil_bus_map.hpp"
 #include "data_structures/emulation/specs/emulator_specs.hpp"
