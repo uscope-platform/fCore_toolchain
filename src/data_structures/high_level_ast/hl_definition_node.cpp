@@ -36,12 +36,7 @@ namespace fcore {
     }
 
     bool hl_definition_node::is_initialized() const {
-        if(struct_specs != nullptr) {
-            return struct_specs->is_initialized();
-        } else {
-            return !initializer.empty();
-        }
-
+        return !initializer.empty();
     }
 
     void hl_definition_node::set_scalar_initializer(const std::shared_ptr<hl_ast_node>& init) {
