@@ -266,7 +266,7 @@ TEST( hl_pretty_print, function_def){
     gold_standard->set_return(exp);
 
     auto result = gold_standard->pretty_print();
-      ASSERT_EQ(result, "void test(int array_test) {\n5*6\n}");
+      ASSERT_EQ(result, "void test(int array_test) {\n    5*6\n    return 7*8\n}");
 
 }
 

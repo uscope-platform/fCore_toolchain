@@ -1369,7 +1369,9 @@ namespace fcore{
 
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
-        auto result = parser.get_globals()[0];
+        auto globals = parser.get_globals();
+        ASSERT_EQ(globals.size(), 1);
+        auto result = globals[0];
 
         auto struct_def = std::make_shared<hl_ast_struct>("parameters");
         auto var = std::make_shared<variable>("gain");
@@ -1404,17 +1406,16 @@ namespace fcore{
         auto fun = parser.AST->get_content()[0];
         auto result = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(fun)->get_body()[0]);
 
-        auto var = std::make_shared<variable>("p");
-        var->set_type(var_type_struct);
-        auto def = std::make_shared<hl_definition_node>("p", c_type_struct, var);
+        auto struct_def = std::make_shared<hl_ast_struct>("parameters");
 
         std::vector<std::shared_ptr<hl_ast_node>> init_list;
-
-        var = std::make_shared<variable>("constant", 1.0f);
+        auto var = std::make_shared<variable>("constant", 1.0f);
         init_list.emplace_back(std::make_shared<hl_ast_operand>(var));
         var = std::make_shared<variable>("constant", 5.0f);
         init_list.emplace_back(std::make_shared<hl_ast_operand>(var));
-        def->set_array_initializer(init_list);
+        struct_def->add_initializers(init_list);
+
+        auto def = std::make_shared<hl_definition_node>("p", struct_def);
 
         ASSERT_EQ(*result, *def);
     }
@@ -1462,6 +1463,59 @@ namespace fcore{
     }
 
 
+    TEST( cTreeVisitor, struct_func_param){
+        std::istringstream test_content(R""""(
+
+            float test(float err, struct parameters p){
+                return err*p.gain + p.phase;
+            }
+
+        )"""");
+
+        auto result_def = std::make_shared<define_map>();
+
+        C_language_parser parser(test_content, result_def);
+        parser.pre_process({});
+
+        std::unordered_map<std::string, variable_class_t> io_spec;
+        parser.parse(io_spec);
+        auto result = std::static_pointer_cast<hl_function_def_node>( parser.AST->get_content()[0]);
+
+        auto ref_fcn = std::make_shared<hl_function_def_node>();
+        ref_fcn->set_name("test");
+        ref_fcn->set_return_type(c_type_float);
+        auto var = std::make_shared<variable>("err");
+        auto def = std::make_shared<hl_definition_node>("err", c_type_float, var);
+        auto struct_def = std::make_shared<hl_ast_struct>("parameters");
+        auto def2 = std::make_shared<hl_definition_node>("p", struct_def);
+        ref_fcn->set_parameters_list({def, def2});
+
+
+        auto exp = std::make_shared<hl_expression_node>(expr_mult);
+        var = std::make_shared<variable>("err");
+        auto op = std::make_shared<hl_ast_operand>(var);
+        exp->set_lhs(op);
+
+        var = std::make_shared<variable>("p");
+        var->add_struct_accessors({"gain"});
+        op = std::make_shared<hl_ast_operand>(var);
+        exp->set_rhs(op);
+
+        auto exp2 = std::make_shared<hl_expression_node>(expr_add);
+        exp2->set_lhs(exp);
+        var = std::make_shared<variable>("p");
+        var->add_struct_accessors({"phase"});
+        op = std::make_shared<hl_ast_operand>(var);
+        exp2->set_rhs(op);
+        ref_fcn->set_return(exp2);
+
+        EXPECT_EQ(*result, *ref_fcn);
+        if(HasFailure()){
+             std::cout << "TEST RESULT: " << result->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << ref_fcn->pretty_print()<< std::endl;
+        }
+
+    }
 
 
 

@@ -237,6 +237,7 @@ parameterList
 
 parameterDeclaration
     :   Const? typeSpecifier declarator
+    |   Const? structSpecifier declarator
     ;
 
 identifierList

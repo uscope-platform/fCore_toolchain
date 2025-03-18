@@ -77,32 +77,41 @@ namespace fcore{
             id_name = ctx->declarator()->directDeclarator()->Identifier()->getText();
             n_dimensions = 0;
         } else {
-            id_name =  id_name = ctx->declarator()->directDeclarator()->directDeclarator()->Identifier()->getText();
+            id_name = ctx->declarator()->directDeclarator()->directDeclarator()->Identifier()->getText();
             n_dimensions = ctx->declarator()->directDeclarator()->arrayDeclarator().size();
         }
 
-        std::string type = ctx->typeSpecifier()->getText();
+        std::shared_ptr<hl_definition_node> identifier;
 
-        std::shared_ptr<variable> var = std::make_shared<variable>(id_name);
+        if(ctx->typeSpecifier()->structSpecifier() != nullptr) {
+            auto struct_def = std::make_shared<hl_ast_struct>(ctx->typeSpecifier()->structSpecifier()->Identifier()->getText());
+            identifier = std::make_shared<hl_definition_node>(id_name, struct_def);
+        }else {
 
-        if(dma_specs.contains(id_name)){
-            var->set_variable_class(dma_specs[id_name]);
-        }
+            std::string type = ctx->typeSpecifier()->getText();
 
-        std::shared_ptr<hl_definition_node> identifier = std::make_shared<hl_definition_node>(id_name, hl_ast_node::string_to_type(type), var);
-        if(n_dimensions>0){
-            std::vector<int> shape;
+            std::shared_ptr<variable> var = std::make_shared<variable>(id_name);
 
-            std::vector<std::shared_ptr<hl_ast_node>> idx_array;
-            for(unsigned int i = 0; i< n_dimensions; ++i){
-                shape.insert(shape.begin(), std::static_pointer_cast<hl_ast_operand>(expressions_stack.top())->get_int_value());
-                idx_array.insert(idx_array.begin(), expressions_stack.top());
-                expressions_stack.pop();
+            if(dma_specs.contains(id_name)){
+                var->set_variable_class(dma_specs[id_name]);
             }
 
-            identifier->set_array_shape(shape);
-            identifier->set_array_index(idx_array);
+            identifier = std::make_shared<hl_definition_node>(id_name, hl_ast_node::string_to_type(type), var);
+            if(n_dimensions>0){
+                std::vector<int> shape;
+
+                std::vector<std::shared_ptr<hl_ast_node>> idx_array;
+                for(unsigned int i = 0; i< n_dimensions; ++i){
+                    shape.insert(shape.begin(), std::static_pointer_cast<hl_ast_operand>(expressions_stack.top())->get_int_value());
+                    idx_array.insert(idx_array.begin(), expressions_stack.top());
+                    expressions_stack.pop();
+                }
+
+                identifier->set_array_shape(shape);
+                identifier->set_array_index(idx_array);
+            }
         }
+
 
         if(in_function_declaration) {
             parameters_list.push_back(identifier);
@@ -169,10 +178,10 @@ namespace fcore{
             auto rest = ctx->initDeclaratorList()->initDeclarator();
             std::string name = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->getText();
 
-            std::shared_ptr<variable> var = std::make_shared<variable>(name);
-            var->set_type(var_type_struct);
-            node = std::make_shared<hl_definition_node>(name, c_type_struct, var);
-            node->set_array_initializer(array_initializer_data);
+            std::string type = ctx->typeSpecifier()->structSpecifier()->Identifier()->getText();
+            auto struct_def = std::make_shared<hl_ast_struct>(type);
+            struct_def->add_initializers(array_initializer_data);
+            node = std::make_shared<hl_definition_node>(name, struct_def);
             array_initializer_data.clear();
         }
         if(in_function_body | in_conditional_block | in_foor_loop_block){
@@ -579,6 +588,7 @@ namespace fcore{
             current_block_item = def;
         } else {
             globals.push_back(def);
+
         }
 
         struct_fields.clear();

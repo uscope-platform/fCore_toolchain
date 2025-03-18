@@ -62,7 +62,7 @@ namespace fcore{
             ret_val &= compare_vectors(lhs.function_body, rhs.function_body);
 
             if(lhs.return_expression != nullptr && rhs.return_expression != nullptr){
-                ret_val &= *lhs.return_expression == *rhs.return_expression;
+                ret_val &= compare_content_by_type(lhs.return_expression, rhs.return_expression);
             } else if (lhs.return_expression != nullptr || rhs.return_expression != nullptr){
                 ret_val &= false;
             }

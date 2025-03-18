@@ -1,5 +1,5 @@
 
-// Generated from /home/fils/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.13.2
+// Generated from /home/filssavi/git/fCore_toolchain/src/frontend/C_grammar.g4 by ANTLR 4.13.2
 
 #pragma once
 
@@ -927,6 +927,7 @@ public:
     TypeSpecifierContext *typeSpecifier();
     DeclaratorContext *declarator();
     antlr4::tree::TerminalNode *Const();
+    StructSpecifierContext *structSpecifier();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;

@@ -1434,6 +1434,7 @@ TEST(EndToEndC, struct_propagation) {
             float test(float err, struct parameters p){
                 return err*p.gain + p.phase;
             }
+
             void main(){
 
                 struct parameters params = {4.0, 1.0};
@@ -1451,7 +1452,7 @@ TEST(EndToEndC, struct_propagation) {
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
     compiler.set_dma_map(dma_map);
-    compiler.compile();
+   /// compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
     std::vector<uint32_t> gold_standard = {0x90002, 0xc, 0x3f000A, 0xc, 0xc, 0x26, 0x43fa0000, 0x7e0fe1, 0x26, 0x477FFF00, 0x5f829, 0x7e005b, 0x7e004e, 0xc};

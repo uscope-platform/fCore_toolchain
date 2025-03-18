@@ -92,6 +92,7 @@ namespace fcore{
         std::string name;
         c_types_t type;
         std::shared_ptr<hl_ast_struct> struct_specs;
+
         std::vector<std::shared_ptr<hl_ast_node>> initializer;
         std::vector<std::shared_ptr<hl_ast_node>> array_index;
         std::shared_ptr<variable> inner_variable;

@@ -32,6 +32,7 @@ namespace fcore {
         type = c_type_struct;
         constant = false;
         struct_specs = std::move(s);
+        inner_variable = std::make_shared<variable>(n);
     }
 
     bool hl_definition_node::is_initialized() const {
@@ -71,7 +72,9 @@ namespace fcore {
 
         std::ostringstream ss;
         if(constant) ss << "const ";
-        ss << hl_ast_node::type_to_string(type) << " " << name;
+        ss << hl_ast_node::type_to_string(type);
+        if(struct_specs != nullptr) ss << " " << struct_specs->get_name();
+        ss << " " << name;
 
         if(!initializer.empty()){
             ss << " = ";
@@ -104,8 +107,19 @@ namespace fcore {
     }
 
     std::shared_ptr<hl_definition_node> hl_definition_node::deep_copy(const std::shared_ptr<hl_definition_node> &orig) {
-        std::shared_ptr<variable> new_var = variable::deep_copy(orig->get_variable());
-        std::shared_ptr<hl_definition_node> copied_obj = std::make_shared<hl_definition_node>(orig->get_name(), orig->get_type(), new_var);
+        std::shared_ptr<hl_definition_node> copied_obj;
+        if(orig->struct_specs != nullptr) {
+            auto new_struct =  std::static_pointer_cast<hl_ast_struct>(hl_ast_node::deep_copy(orig->struct_specs));
+            copied_obj = std::make_shared<hl_definition_node>(orig->get_name(), new_struct);
+
+            if(orig->inner_variable != nullptr) {
+                copied_obj->set_variable(variable::deep_copy(orig->get_variable()));
+            }
+        } else {
+            std::shared_ptr<variable> new_var = variable::deep_copy(orig->get_variable());
+            copied_obj = std::make_shared<hl_definition_node>(orig->get_name(), orig->get_type(), new_var);
+
+        }
         copied_obj->set_constant(orig->is_constant());
         if(orig->is_initialized()){
             std::vector<std::shared_ptr<hl_ast_node>> old_initializer = orig->get_array_initializer();

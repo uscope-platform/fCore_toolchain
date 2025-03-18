@@ -29,7 +29,10 @@ namespace fcore {
 
             void add_definition(const std::shared_ptr<hl_definition_node> &d){definitions.push_back(d);}
             std::vector<std::shared_ptr<hl_definition_node>> get_definitions() {return definitions;};
-            std::string get_name() {return name;};
+
+            void add_initializers(const std::vector<std::shared_ptr<hl_ast_node>> &i) {initializers = i;}
+            std::vector<std::shared_ptr<hl_ast_node>> get_initializers() {return initializers;}
+            std::string get_name() {return name;}
 
             std::string pretty_print();
             bool is_initialized() const;
@@ -42,7 +45,7 @@ namespace fcore {
         private:
             std::string name;
             std::vector<std::shared_ptr<hl_definition_node>> definitions;
-
+            std::vector<std::shared_ptr<hl_ast_node>> initializers;
     };
 }
 

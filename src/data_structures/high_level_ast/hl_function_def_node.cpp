@@ -50,7 +50,7 @@ namespace fcore{
     std::string hl_function_def_node::pretty_print() {
         std::ostringstream ss;
 
-        ss << hl_ast_node::type_to_string(return_type) << " " << name << "(";
+        ss << type_to_string(return_type) << " " << name << "(";
         if(!parameters_list.empty()){
             for(int i = 0; i<parameters_list.size(); i++){
                 ss << parameters_list[i]->pretty_print();
@@ -60,12 +60,11 @@ namespace fcore{
         ss << ") {" << std::endl;
         if(!function_body.empty()){
             for(const auto& item:function_body){
-                if(item->node_type == hl_ast_node_type_expr){
-                    ss << std::static_pointer_cast<hl_expression_node>(item)->pretty_print() << std::endl;
-                } else if(item->node_type == hl_ast_node_type_definition){
-                    ss << std::static_pointer_cast<hl_definition_node>(item)->pretty_print() << std::endl;
-                }
+                ss <<  "    "<<hl_ast_node::pretty_print(item) << std::endl;
             }
+        }
+        if(return_expression != nullptr) {
+            ss << "    return "<< hl_ast_node::pretty_print(return_expression) << std::endl;
         }
         ss << "}";
         std::string ret = ss.str();
