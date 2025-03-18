@@ -337,5 +337,27 @@ TEST( HlAstDeepCopy, struct_def){
         ASSERT_NE(res_vect[i], gs_vect[i]);
     }
 
+}
+
+TEST( HlAstDeepCopy, struct_init){
+
+    auto var = std::make_shared<variable>("p");
+    var->set_type(var_type_struct);
+    auto def = std::make_shared<hl_definition_node>("p", c_type_struct, var);
+
+    std::vector<std::shared_ptr<hl_ast_node>> init_list;
+
+    var = std::make_shared<variable>("constant", 1.0f);
+    init_list.emplace_back(std::make_shared<hl_ast_operand>(var));
+    var = std::make_shared<variable>("constant", 5.0f);
+    init_list.emplace_back(std::make_shared<hl_ast_operand>(var));
+    def->set_array_initializer(init_list);
+
+    auto result = std::static_pointer_cast<hl_definition_node>(hl_ast_node::deep_copy(def));
+
+    ASSERT_EQ(*result, *def);
+    ASSERT_NE(result, def);
+
 
 }
+

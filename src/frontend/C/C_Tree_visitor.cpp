@@ -228,9 +228,8 @@ namespace fcore{
     }
 
     void C_Tree_visitor::exitUnaryExpression(C_parser::C_grammarParser::UnaryExpressionContext *ctx) {
-        std::shared_ptr<hl_expression_node> expression;
-        expression_type_t expr;
         if(ctx->unaryExpression() != nullptr|| !ctx->PlusPlus().empty() || !ctx->MinusMinus().empty()){
+            expression_type_t expr;
 
             if( !ctx->PlusPlus().empty()){
                 expr = expr_incr_pre;
@@ -244,7 +243,7 @@ namespace fcore{
                 expr = expr_neg;
             }
 
-            expression = std::make_shared<hl_expression_node>( expr);
+            const auto expression = std::make_shared<hl_expression_node>(expr);
             expression->set_rhs(expressions_stack.top());
             expressions_stack.pop();
             expressions_stack.push(expression);
