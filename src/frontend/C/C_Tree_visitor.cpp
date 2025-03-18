@@ -178,7 +178,7 @@ namespace fcore{
         if(in_function_body | in_conditional_block | in_foor_loop_block){
             current_block_item = node;
         } else {
-            ext_decl.push_back(node);
+            globals.push_back(node);
         }
     }
 
@@ -570,7 +570,6 @@ namespace fcore{
 
         for(auto &[field_type, field_name]:struct_fields) {
             auto var = std::make_shared<variable>(field_name);
-            var->set_type(var_type_struct);
             auto def = std::make_shared<hl_definition_node>(field_name, hl_ast_node::string_to_type(field_type), var);
             struct_def->add_definition(def);
         }
@@ -579,7 +578,7 @@ namespace fcore{
         if(in_function_body | in_conditional_block | in_foor_loop_block){
             current_block_item = def;
         } else {
-            ext_decl.push_back(def);
+            globals.push_back(def);
         }
 
         struct_fields.clear();
@@ -751,7 +750,7 @@ namespace fcore{
 
     void C_Tree_visitor::exitForDeclaration(C_parser::C_grammarParser::ForDeclarationContext *) {
         loop->set_init_statement(std::static_pointer_cast<hl_definition_node>(current_block_item));
-        ext_decl.clear();
+        globals.clear();
     }
 
     void C_Tree_visitor::exitForIterationExpression(C_parser::C_grammarParser::ForIterationExpressionContext *) {

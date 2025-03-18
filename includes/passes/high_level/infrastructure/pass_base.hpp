@@ -25,6 +25,8 @@
 namespace fcore{
     class pass_base {
     public:
+        virtual ~pass_base() = default;
+
         explicit pass_base(std::string n) {
             name = std::move(n);
             n_passes = 1;

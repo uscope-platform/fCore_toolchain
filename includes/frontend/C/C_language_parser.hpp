@@ -41,7 +41,7 @@ namespace fcore{
         std::shared_ptr<hl_code_block> AST;
         std::string error;
 
-        std::vector<std::shared_ptr<hl_ast_node>> get_ext_decl(){return visitor.get_ext_decl();}
+        std::vector<std::shared_ptr<hl_definition_node>> get_globals(){return visitor.get_globals();}
         std::vector<std::shared_ptr<hl_ast_node>> get_functions(){return visitor.get_functions();}
     private:
 

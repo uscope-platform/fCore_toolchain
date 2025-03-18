@@ -107,7 +107,7 @@ namespace fcore{
             return root;
         };
 
-        std::vector<std::shared_ptr<hl_ast_node>> get_ext_decl(){return ext_decl;};
+        std::vector<std::shared_ptr<hl_definition_node>> get_globals(){return globals;};
         std::vector<std::shared_ptr<hl_ast_node>> get_functions(){return functions;};
     private:
 
@@ -116,7 +116,7 @@ namespace fcore{
         void save_current_block_context();
         std::string restore_current_block_context();
 
-        std::vector<std::shared_ptr<hl_ast_node>> ext_decl;
+        std::vector<std::shared_ptr<hl_definition_node>> globals;
         std::vector<std::shared_ptr<hl_definition_node>> parameters_list;
         std::vector<std::shared_ptr<hl_ast_node>> functions;
         std::vector<std::shared_ptr<hl_ast_node>> function_body;

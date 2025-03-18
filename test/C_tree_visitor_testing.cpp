@@ -36,14 +36,14 @@ namespace fcore{
         parser.pre_process({});
 
         parser.parse(std::unordered_map<std::string, variable_class_t>());
-        std::vector<std::shared_ptr<hl_ast_node>> results = parser.get_ext_decl();
+        std::vector<std::shared_ptr<hl_definition_node>> results = parser.get_globals();
 
         std::shared_ptr<hl_expression_node> res_1 = std::static_pointer_cast<hl_expression_node>(
-                std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
+                results[0]->get_scalar_initializer());
         std::shared_ptr<hl_expression_node> res_2 = std::static_pointer_cast<hl_expression_node>(
-                std::static_pointer_cast<hl_definition_node>(results[1])->get_scalar_initializer());
+                results[1]->get_scalar_initializer());
         std::shared_ptr<hl_expression_node> res_3 = std::static_pointer_cast<hl_expression_node>(
-                std::static_pointer_cast<hl_definition_node>(results[2])->get_scalar_initializer());
+                results[2]->get_scalar_initializer());
 
 
         std::stack<std::shared_ptr<hl_expression_node>> gold_standard;
@@ -105,9 +105,9 @@ namespace fcore{
         parser.pre_process({});
 
         parser.parse(std::unordered_map<std::string, variable_class_t>());
-        std::vector<std::shared_ptr<hl_ast_node>> results = parser.get_ext_decl();
+        std::vector<std::shared_ptr<hl_definition_node>> results = parser.get_globals();
 
-        auto res = std::static_pointer_cast<hl_ast_operand>(std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer())->get_int_value();
+        auto res = std::static_pointer_cast<hl_ast_operand>(results[0]->get_scalar_initializer())->get_int_value();
 
         EXPECT_EQ(res, 0xff);
     }
@@ -125,7 +125,7 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        auto results = parser.get_ext_decl();
+        auto results = parser.get_globals();
 
         // a = !b;
 
@@ -180,7 +180,7 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        auto results = parser.get_ext_decl();
+        auto results = parser.get_globals();
 
 
 
@@ -225,7 +225,7 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::vector<std::shared_ptr<hl_ast_node>> results =  parser.get_ext_decl();
+        std::vector<std::shared_ptr<hl_definition_node>> results =  parser.get_globals();
 
 
 
@@ -248,8 +248,7 @@ namespace fcore{
 
         gs_2->set_rhs(op_2);
 
-        auto res = std::static_pointer_cast<hl_expression_node>(
-                std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
+        auto res = std::static_pointer_cast<hl_expression_node>(results[0]->get_scalar_initializer());
 
         EXPECT_EQ(*res, *gs_2);
         if(HasFailure()){
@@ -271,7 +270,7 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::vector<std::shared_ptr<hl_ast_node>> results =  parser.get_ext_decl();
+        std::vector<std::shared_ptr<hl_definition_node>> results =  parser.get_globals();
 
 
         auto var = std::make_shared<variable>("c");
@@ -306,7 +305,7 @@ namespace fcore{
         op_2= std::make_shared<hl_ast_operand>(var);
         gs_4->set_rhs(op_2);
         std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(
-                std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
+                results[0]->get_scalar_initializer());
 
         EXPECT_EQ(*res, *gs_4);
         if(HasFailure()){
@@ -328,7 +327,7 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::vector<std::shared_ptr<hl_ast_node>> results =  parser.get_ext_decl();
+        std::vector<std::shared_ptr<hl_definition_node>> results =  parser.get_globals();
 
 
 
@@ -352,7 +351,7 @@ namespace fcore{
         gs_2->set_rhs(op_2);
 
         auto res = std::static_pointer_cast<hl_expression_node>(
-                std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
+                results[0]->get_scalar_initializer());
 
         EXPECT_EQ(*res, *gs_2);
         if(HasFailure()){
@@ -375,7 +374,7 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::vector<std::shared_ptr<hl_ast_node>> results = parser.get_ext_decl();
+        std::vector<std::shared_ptr<hl_definition_node>> results = parser.get_globals();
 
         auto var = std::make_shared<variable>("c");
         auto op_1 = std::make_shared<hl_ast_operand>(var);
@@ -389,7 +388,7 @@ namespace fcore{
 
 
         std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(
-                std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
+                results[0]->get_scalar_initializer());
 
         EXPECT_EQ(*res, *gs_1);
         if(HasFailure()){
@@ -412,7 +411,7 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::vector<std::shared_ptr<hl_ast_node>> results = parser.get_ext_decl();
+        std::vector<std::shared_ptr<hl_definition_node>> results = parser.get_globals();
 
 
 
@@ -428,8 +427,7 @@ namespace fcore{
         gs_1->set_rhs(op_2);
 
 
-        auto res = std::static_pointer_cast<hl_expression_node>(
-                std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
+        auto res = std::static_pointer_cast<hl_expression_node>(results[0]->get_scalar_initializer());
 
         EXPECT_EQ(*res, *gs_1);
         if(HasFailure()){
@@ -452,7 +450,7 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::vector<std::shared_ptr<hl_ast_node>> results = parser.get_ext_decl();
+        std::vector<std::shared_ptr<hl_definition_node>> results = parser.get_globals();
 
 
 
@@ -467,8 +465,7 @@ namespace fcore{
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
-        auto res = std::static_pointer_cast<hl_expression_node>(
-                std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
+        auto res = std::static_pointer_cast<hl_expression_node>(results[0]->get_scalar_initializer());
 
         EXPECT_EQ(*res, *gs_1);
         if(HasFailure()){
@@ -491,7 +488,7 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::vector<std::shared_ptr<hl_ast_node>> results = parser.get_ext_decl();
+        std::vector<std::shared_ptr<hl_definition_node>> results = parser.get_globals();
 
 
 
@@ -507,8 +504,7 @@ namespace fcore{
         gs_1->set_rhs(op_2);
 
 
-        auto res = std::static_pointer_cast<hl_expression_node>(
-                std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
+        auto res = std::static_pointer_cast<hl_expression_node>(results[0]->get_scalar_initializer());
 
         EXPECT_EQ(*res, *gs_1);
         if(HasFailure()){
@@ -724,7 +720,7 @@ namespace fcore{
         var = std::make_shared<variable>("test");
         auto def = std::make_shared<hl_definition_node>("test",c_type_int, var);
         def->set_scalar_initializer(gs_1);
-        auto res = std::static_pointer_cast<hl_definition_node>(parser.get_ext_decl()[0]);
+        auto res = std::static_pointer_cast<hl_definition_node>(parser.get_globals()[0]);
 
         EXPECT_EQ(*res, *def);
         if(HasFailure()){
@@ -1360,14 +1356,10 @@ namespace fcore{
 
     TEST( cTreeVisitor, struct_definition){
         std::istringstream test_content(R""""(
-        int main(){
-
             struct parameters {
                 float gain;
                 float phase;
             };
-
-        }
         )"""");
 
         auto result_def = std::make_shared<define_map>();
@@ -1377,8 +1369,7 @@ namespace fcore{
 
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
-        auto fun = parser.AST->get_content()[0];
-        auto result = std::static_pointer_cast<hl_function_def_node>(fun)->get_body()[0];
+        auto result = parser.get_globals()[0];
 
         auto struct_def = std::make_shared<hl_ast_struct>("parameters");
         auto var = std::make_shared<variable>("gain");
