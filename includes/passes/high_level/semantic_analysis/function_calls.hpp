@@ -29,7 +29,7 @@ namespace fcore {
     class function_calls_checks : public pass_base{
     public:
         function_calls_checks();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
     private:
 
         void push_stack();

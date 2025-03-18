@@ -24,7 +24,7 @@ namespace fcore{
     class dead_variable_elimination : public pass_base{
     public:
         explicit dead_variable_elimination();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
 
         std::vector<std::shared_ptr<hl_ast_node>> detect_definition(const std::shared_ptr<hl_definition_node> &def);
         std::vector<std::shared_ptr<hl_ast_node>> process_definition(const std::shared_ptr<hl_definition_node> &def);

@@ -21,7 +21,7 @@ namespace fcore{
     }
 
     std::shared_ptr<hl_code_block>
-    inline_constant_extraction::process_global(std::shared_ptr<hl_code_block> element) {
+    inline_constant_extraction::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
         auto retval = std::make_shared<hl_code_block>();
         std::vector<std::shared_ptr<hl_ast_node>> new_content;
 

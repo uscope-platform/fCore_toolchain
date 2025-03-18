@@ -19,10 +19,12 @@
 #include <memory>
 #include <utility>
 #include <string>
-
 #include "data_structures/high_level_ast/hl_code_block.hpp"
 
 namespace fcore{
+
+    class hl_definition_node;
+
     class pass_base {
     public:
         virtual ~pass_base() = default;
@@ -32,7 +34,7 @@ namespace fcore{
             n_passes = 1;
         };
 
-        virtual std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) {
+        virtual std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
             return element;
         };
         std::string get_name() {return name;};

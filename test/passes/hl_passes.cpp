@@ -56,7 +56,7 @@ TEST(HlPassesTest, divisionImplementation) {
     manager.enable_pass("Division Implementation");
 
 
-    std::shared_ptr<hl_code_block> result =  manager.run_optimizations(input_root);
+    std::shared_ptr<hl_code_block> result =  manager.run_optimizations(input_root, {});
 
     std::shared_ptr<hl_expression_node> mult_exp = std::make_shared<hl_expression_node>(expr_mult);
 
@@ -130,7 +130,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
 
 
-    std::shared_ptr<hl_code_block> result =  manager.run_optimizations(input_root);;
+    std::shared_ptr<hl_code_block> result =  manager.run_optimizations(input_root, {});
 
     var = std::make_shared<variable>("b");
     std::shared_ptr<hl_definition_node> def_3 = std::make_shared<hl_definition_node>("b", c_type_float, var);
@@ -206,7 +206,7 @@ TEST(HlPassesTest, test_operating_assignments_implementation) {
     manager.enable_pass("Operating Assignment Implementation");
 
 
-    const std::shared_ptr<hl_code_block>& result = manager.run_optimizations(input_root);;
+    const std::shared_ptr<hl_code_block>& result = manager.run_optimizations(input_root, {});
 
     std::shared_ptr<hl_code_block> gold_standard= std::make_shared<hl_code_block>();
 
@@ -337,7 +337,7 @@ TEST(HlPassesTest, function_inlining) {
     manager.enable_pass("Code Block Expansion");
 
 
-    const std::shared_ptr<hl_code_block>& res = manager.run_optimizations(input_root);;
+    const std::shared_ptr<hl_code_block>& res =  manager.run_optimizations(input_root, {});
 
     std::shared_ptr<hl_code_block> gold_standard= std::make_shared<hl_code_block>();
 
@@ -414,10 +414,11 @@ TEST(HlPassesTest, simple_normalization) {
     manager.enable_pass("Inlined Function Elimination");
     manager.enable_pass("Normalization");
 
-    auto opt_result = manager.run_optimizations(parser.AST);
+    auto globals = parser.get_globals();
+    auto opt_result = manager.run_optimizations(parser.AST, globals);
 
     normalization_pass p;
-    std::shared_ptr<hl_ast_node> raw_result = p.process_global(opt_result);
+    std::shared_ptr<hl_ast_node> raw_result = p.process_global(opt_result, globals);
 
     std::shared_ptr<variable> var = std::make_shared<variable>("intermediate_expression_0");
     std::shared_ptr<hl_definition_node> def_1 = std::make_shared<hl_definition_node>("intermediate_expression_0", c_type_float, var);
@@ -491,7 +492,7 @@ TEST(HlPassesTest, hl_ast_lowering) {
 
 
 
-    std::shared_ptr<hl_code_block> normalized_ast = manager.run_optimizations(parser.AST);
+    std::shared_ptr<hl_code_block> normalized_ast = manager.run_optimizations(parser.AST, parser.get_globals());
 
     high_level_ast_lowering tranlator;
 
@@ -550,7 +551,7 @@ TEST(HlPassesTest, loop_unrolling_array) {
 
 
 
-    std::shared_ptr<hl_code_block> normalized_ast = manager.run_optimizations(parser.AST);
+    std::shared_ptr<hl_code_block> normalized_ast = manager.run_optimizations(parser.AST, parser.get_globals());
 
     std::shared_ptr<hl_code_block> gold_standard= std::make_shared<hl_code_block>();
 
@@ -620,7 +621,7 @@ TEST(HlPassesTest, test_matrix_scalarization) {
 
 
 
-    std::shared_ptr<hl_ast_node> normalized_ast = manager.run_optimizations(parser.AST);
+    std::shared_ptr<hl_ast_node> normalized_ast = manager.run_optimizations(parser.AST, parser.get_globals());
 
     std::shared_ptr<hl_code_block> gold_standard= std::make_shared<hl_code_block>();
 
@@ -738,7 +739,7 @@ TEST(HlPassesTest, function_inlining_array) {
     manager.enable_pass("Inlined Function Elimination");
     manager.enable_pass("Code Block Expansion");
     manager.enable_pass("Loop Unrolling");
-    auto result_ast = manager.run_optimizations(parser.AST);
+    auto result_ast = manager.run_optimizations(parser.AST, parser.get_globals());
 
     std::shared_ptr<hl_ast_node> normalized_ast = result_ast->get_content()[5];
 
@@ -794,7 +795,7 @@ TEST(HlPassesTest, function_return_inlining) {
     hl_pass_manager manager = create_hl_pass_manager(ep);
 
 
-    std::shared_ptr<hl_ast_node> normalized_ast = manager.run_optimizations(parser.AST);
+    std::shared_ptr<hl_ast_node> normalized_ast = manager.run_optimizations(parser.AST, parser.get_globals());
 
     std::shared_ptr<hl_code_block> gold_standard= std::make_shared<hl_code_block>();
 
@@ -866,7 +867,7 @@ TEST(HlPassesTest, complex_normalization) {
     manager.disable_all();
     manager.enable_pass("Normalization");
 
-    input_root = manager.run_optimizations(input_root);
+    input_root =  manager.run_optimizations(input_root, {});
 
 
     var = std::make_shared<variable>("intermediate_expression_0");
@@ -925,7 +926,7 @@ TEST(HlPassesTest, dead_load_elimination) {
     manager.disable_all();
     manager.enable_pass("Dead Load elimination");
 
-    input_root= manager.run_optimizations(input_root);
+    input_root=  manager.run_optimizations(input_root, {});
 
 
     std::shared_ptr<hl_code_block> gold_standard= std::make_shared<hl_code_block>();
@@ -972,7 +973,7 @@ TEST(HlPassesTest, nested_function_inlining) {
     hl_pass_manager manager = create_hl_pass_manager(ep);
 
 
-    std::shared_ptr<hl_ast_node> normalized_ast =  manager.run_optimizations(parser.AST);
+    std::shared_ptr<hl_ast_node> normalized_ast =  manager.run_optimizations(parser.AST, parser.get_globals());
 
     std::shared_ptr<hl_code_block> gold_standard= std::make_shared<hl_code_block>();
 
@@ -1072,7 +1073,7 @@ TEST(HlPassesTest, complex_division_implementation) {
     manager.enable_pass("Division Implementation");
     
 
-    auto result = manager.run_optimizations(parser.AST);
+    auto result = manager.run_optimizations(parser.AST, parser.get_globals());
 
     std::shared_ptr<hl_code_block> gold_standard= std::make_shared<hl_code_block>();
 
@@ -1150,7 +1151,7 @@ TEST(HlPassesTest, comparison_flipping) {
     manager.enable_pass("Inlined Function Elimination");
     manager.enable_pass("Code Block Expansion");
     manager.enable_pass("Comparison flipping pass");
-    auto result_ast = manager.run_optimizations(parser.AST);
+    auto result_ast = manager.run_optimizations(parser.AST, parser.get_globals());
 
     auto init = std::static_pointer_cast<hl_definition_node>(result_ast->get_content()[1])->get_scalar_initializer();
     EXPECT_EQ(init->node_type,hl_ast_node_type_expr);

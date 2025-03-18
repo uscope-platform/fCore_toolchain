@@ -43,10 +43,10 @@ TEST(semantic_analysis, simple_undefined_variable) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto ast = compiler.get_hl_ast();
+    auto [ast, globals] = compiler.get_hl_ast();
 
     try {
-        engine.run_semantic_analysis(ast);
+        engine.run_semantic_analysis(ast, globals);
         EXPECT_TRUE(false);
     } catch(const std::runtime_error &err) {
         std::string msg = err.what();
@@ -76,10 +76,10 @@ TEST(semantic_analysis, undefined_variable_in_else) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto ast = compiler.get_hl_ast();
+    auto [ast, globals] = compiler.get_hl_ast();
 
     try {
-        engine.run_semantic_analysis(ast);
+        engine.run_semantic_analysis(ast, globals);
         EXPECT_TRUE(false);
     } catch(const std::runtime_error &err) {
         std::string msg = err.what();
@@ -103,10 +103,10 @@ TEST(semantic_analysis, for_loop_variable) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto ast = compiler.get_hl_ast();
+    auto [ast, globals] = compiler.get_hl_ast();
 
     try {
-        engine.run_semantic_analysis(ast);
+        engine.run_semantic_analysis(ast, globals);
     } catch(const std::runtime_error &err) {
         spdlog::critical("unexpected error: {}", err.what());
         EXPECT_TRUE(false);
@@ -129,10 +129,10 @@ TEST(semantic_analysis, undefined_for_loop_variable) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto ast = compiler.get_hl_ast();
+    auto [ast, globals] = compiler.get_hl_ast();
 
     try {
-        engine.run_semantic_analysis(ast);
+        engine.run_semantic_analysis(ast, globals);
         spdlog::critical("The undefined variable j was not caught");
         EXPECT_TRUE(false);
     } catch(const std::runtime_error &err) {
@@ -157,10 +157,10 @@ TEST(semantic_analysis, undefined_variable_in_expression) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto ast = compiler.get_hl_ast();
+    auto [ast, globals] = compiler.get_hl_ast();
 
     try {
-        engine.run_semantic_analysis(ast);
+        engine.run_semantic_analysis(ast, globals);
         spdlog::critical("The undefined variable ba was not caught");
         EXPECT_TRUE(false);
     } catch(const std::runtime_error &err) {

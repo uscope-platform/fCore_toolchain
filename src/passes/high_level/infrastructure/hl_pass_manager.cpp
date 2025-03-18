@@ -21,8 +21,11 @@
 namespace fcore{
 
 
-    std::shared_ptr<hl_code_block>  hl_pass_manager::run_repeating_pass_group(std::shared_ptr<hl_code_block> &subtree,
-                                                                                 const std::vector<std::shared_ptr<pass_base>> &group) {
+    std::shared_ptr<hl_code_block>  hl_pass_manager::run_repeating_pass_group(
+        std::shared_ptr<hl_code_block> &subtree,
+        const std::vector<std::shared_ptr<pass_base>> &group,
+        const std::vector<std::shared_ptr<hl_definition_node>> &globals
+    ) {
 
         auto working_tree =  std::static_pointer_cast<hl_code_block>(hl_ast_node::deep_copy(subtree));
         int run_number = 1;
@@ -33,7 +36,7 @@ namespace fcore{
             for(auto &pass:group){
 
                 if(ic != nullptr) ic->start_event(pass->get_name(), false);
-                auto pass_res = pass->process_global(std::static_pointer_cast<hl_code_block>(subtree));
+                auto pass_res = pass->process_global(std::static_pointer_cast<hl_code_block>(subtree), globals);
                 working_tree =  pass_res;
                 if(ic != nullptr) ic->end_event(pass->get_name());
 
@@ -71,7 +74,7 @@ namespace fcore{
         analysis_passes.push_back(p);
     }
 
-    std::shared_ptr<hl_code_block> hl_pass_manager::run_optimizations(std::shared_ptr<hl_code_block> AST) {
+    std::shared_ptr<hl_code_block> hl_pass_manager::run_optimizations(const std::shared_ptr<hl_code_block>& AST,const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
         auto working_ast = std::static_pointer_cast<hl_code_block>(hl_ast_node::deep_copy(AST));
 
         for(auto& p:optimization_passes){
@@ -80,20 +83,20 @@ namespace fcore{
                     std::shared_ptr<pass_base> pass = p.pass[0];
 
                     if (ic != nullptr) ic->start_event(pass->get_name(), false);
-                    auto pass_res = pass->process_global(std::static_pointer_cast<hl_code_block>(working_ast));
+                    auto pass_res = pass->process_global(std::static_pointer_cast<hl_code_block>(working_ast), globals);
                     working_ast =  pass_res;
                     if (ic != nullptr) ic->end_event(pass->get_name());
                 }
             } else if(p.type == repeating_pass_group) {
                 if (p.enabled) {
-                    working_ast = run_repeating_pass_group(working_ast, p.pass);
+                    working_ast = run_repeating_pass_group(working_ast, p.pass, globals);
                 }
             } else if(p.type == unique_pass_group) {
                 if(p.enabled){
                     for(auto &pass:p.pass){
 
                         if(ic != nullptr) ic->start_event(pass->get_name(), false);
-                        working_ast =  pass->process_global(std::static_pointer_cast<hl_code_block>(working_ast));
+                        working_ast =  pass->process_global(std::static_pointer_cast<hl_code_block>(working_ast), globals);
                         if(ic != nullptr) ic->end_event(pass->get_name());
                     }
                 }
@@ -106,13 +109,16 @@ namespace fcore{
         return working_ast;
     }
 
-    void hl_pass_manager::run_semantic_analysis(std::shared_ptr<hl_code_block> AST) {
+    void hl_pass_manager::run_semantic_analysis(
+        std::shared_ptr<hl_code_block> AST,
+        const std::vector<std::shared_ptr<hl_definition_node>> &globals
+    ) {
         const auto working_ast = std::static_pointer_cast<hl_code_block>(hl_ast_node::deep_copy(AST));
 
         for(const auto& p:analysis_passes) {
             for(int i = 0; i<p.repetitions; i++) {
                 if (ic != nullptr) ic->start_event(p.pass->get_name(), false);
-                p.pass->process_global(working_ast);
+                p.pass->process_global(working_ast, globals);
                 if (ic != nullptr) ic->end_event(p.pass->get_name());
             }
         }

@@ -23,7 +23,7 @@ namespace fcore {
     assignments_checks::assignments_checks() :pass_base("assignments checks") {
     }
 
-    std::shared_ptr<hl_code_block> assignments_checks::process_global(std::shared_ptr<hl_code_block> element) {
+    std::shared_ptr<hl_code_block> assignments_checks::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
         hl_observing_visitor visitor;
 
         hl_observing_visitor_operations functions_mapping_ops;

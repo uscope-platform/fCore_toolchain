@@ -23,7 +23,7 @@ namespace fcore{
     class inlined_function_elimination : public  pass_base{
     public:
         explicit inlined_function_elimination(std::string entry_point_name);
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
         std::vector<std::shared_ptr<hl_ast_node>> process_function_definition(std::shared_ptr<hl_function_def_node> element);
     private:
         std::string entry_point;

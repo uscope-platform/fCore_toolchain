@@ -22,7 +22,7 @@ namespace fcore{
     class inline_constant_extraction : public pass_base {
     public:
         inline_constant_extraction();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
         std::vector<std::shared_ptr<hl_ast_node>> process_node(const std::shared_ptr<hl_expression_node> &element);
         std::vector<std::shared_ptr<hl_ast_node>> process_node(const std::shared_ptr<hl_definition_node> &element);
 

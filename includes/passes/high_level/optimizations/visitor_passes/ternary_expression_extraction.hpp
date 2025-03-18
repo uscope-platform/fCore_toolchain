@@ -25,7 +25,7 @@ namespace fcore {
     class ternary_expression_extraction : public pass_base {
     public:
         ternary_expression_extraction();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
         static std::vector<std::shared_ptr<hl_ast_node>>  process_expression(std::shared_ptr<hl_expression_node> element);
     private:
         int ternary_progressive;

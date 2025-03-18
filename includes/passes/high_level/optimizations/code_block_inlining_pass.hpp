@@ -23,7 +23,7 @@ namespace fcore{
     class code_block_inlining_pass : public pass_base{
     public:
         code_block_inlining_pass();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
         std::vector<std::shared_ptr<hl_ast_node>> process_element_by_type(std::shared_ptr<hl_ast_node> element);
     private:
         std::vector<std::shared_ptr<hl_ast_node>> process_vector(const std::vector<std::shared_ptr<hl_ast_node>>& elements);

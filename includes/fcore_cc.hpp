@@ -54,7 +54,7 @@ namespace fcore {
         void write_json(const std::string& output_file);
         nlohmann::json get_dump() {return dump;};
 
-        std::shared_ptr<hl_code_block> get_hl_ast();
+        std::pair<std::shared_ptr<hl_code_block>, std::vector<std::shared_ptr<hl_definition_node>>> get_hl_ast();
 
         void set_dma_map(std::unordered_map<std::string, core_iom> &map){dma_spec = map;};
         void set_core_info(core_info &i) {info = i;};
@@ -78,6 +78,8 @@ namespace fcore {
         std::unordered_map<std::string, core_iom> dma_spec;
 
         std::shared_ptr<hl_code_block> hl_ast;
+        std::vector<std::shared_ptr<hl_definition_node>> globals;
+
         binary_generator writer;
         hl_pass_manager  hl_manager;
         std::string error_code;

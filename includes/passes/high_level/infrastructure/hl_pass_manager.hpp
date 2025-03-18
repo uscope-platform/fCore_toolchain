@@ -18,7 +18,7 @@
 
 
 #include "instrumentation/instrumentation_core.hpp"
-
+#include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "pass_base.hpp"
 
 namespace fcore{
@@ -47,14 +47,28 @@ namespace fcore{
     public:
 
         void add_optimization_pass(const std::string& name, const std::shared_ptr<pass_base>& pass);
-        void add_optimization_pass_group(const std::string& name, const std::vector<std::shared_ptr<pass_base>>& group);
+        void add_optimization_pass_group(
+            const std::string& name,
+            const std::vector<std::shared_ptr<pass_base>>& group
+            );
 
         void add_analysis_pass(const std::string&name, const std::shared_ptr<pass_base>& pass, uint8_t repetitions);
 
-        [[nodiscard]] std::shared_ptr<hl_code_block> run_optimizations(std::shared_ptr<hl_code_block> AST);
+        [[nodiscard]] std::shared_ptr<hl_code_block> run_optimizations(
+            const std::shared_ptr<hl_code_block>& AST,
+            const std::vector<std::shared_ptr<hl_definition_node>> &globals
+        );
 
-        void run_semantic_analysis(std::shared_ptr<hl_code_block> AST);
-        std::shared_ptr<hl_code_block> run_repeating_pass_group(std::shared_ptr<hl_code_block> &subtree, const std::vector<std::shared_ptr<pass_base>>& group);
+        void run_semantic_analysis(
+            std::shared_ptr<hl_code_block> AST,
+            const std::vector<std::shared_ptr<hl_definition_node>> &globals
+        );
+
+        std::shared_ptr<hl_code_block> run_repeating_pass_group(
+            std::shared_ptr<hl_code_block> &subtree,
+            const std::vector<std::shared_ptr<pass_base>>& group,
+            const std::vector<std::shared_ptr<hl_definition_node>> &globals
+        );
 
         void disable_all();
         void enable_pass(const std::string& name);

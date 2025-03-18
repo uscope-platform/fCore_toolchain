@@ -24,7 +24,7 @@ namespace fcore{
     class fuction_mangling_pass  : public pass_base{
     public:
         fuction_mangling_pass();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
     private:
         std::shared_ptr<hl_ast_node> mangle_node(const std::shared_ptr<hl_ast_node>& node, const std::string &function);
         std::shared_ptr<hl_expression_node> mangle_node(std::shared_ptr<hl_expression_node> node, const std::string& function);

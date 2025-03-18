@@ -28,7 +28,7 @@ namespace fcore {
     class undefined_variables : public pass_base{
     public:
         undefined_variables();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
     private:
 
         void push_stack();

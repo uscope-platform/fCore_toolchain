@@ -23,7 +23,7 @@ namespace fcore{
     }
 
     std::shared_ptr<hl_code_block>
-    operating_assignment_implementation_pass::process_global(std::shared_ptr<hl_code_block> element) {
+    operating_assignment_implementation_pass::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
 
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;

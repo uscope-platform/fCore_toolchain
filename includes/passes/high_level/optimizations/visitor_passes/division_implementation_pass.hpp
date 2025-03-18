@@ -23,7 +23,7 @@ namespace fcore{
     class division_implementation_pass :public pass_base {
     public:
         division_implementation_pass();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element) override;
+        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
 
     private:
         static std::vector<std::shared_ptr<hl_ast_node>> process_expression(std::shared_ptr<hl_expression_node> exp);

@@ -99,9 +99,9 @@ namespace fcore{
         ss.close();
     }
 
-    std::shared_ptr<hl_code_block> fcore_cc::get_hl_ast() {
+    std::pair<std::shared_ptr<hl_code_block>, std::vector<std::shared_ptr<hl_definition_node>>> fcore_cc::get_hl_ast() {
         parse(dma_io_spec, std::make_shared<define_map>());
-        return hl_ast;
+        return {hl_ast, globals};
     }
 
     void fcore_cc::parse(std::unordered_map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map) {
@@ -117,6 +117,7 @@ namespace fcore{
         target_parser.pre_process({});
         target_parser.parse(std::move(dma_specs));
         hl_ast = target_parser.AST;
+        globals = target_parser.get_globals();
 
         if (profiling_core != nullptr) profiling_core->end_event("program_parsing");
     }
@@ -127,7 +128,7 @@ namespace fcore{
         hl_manager = create_hl_pass_manager(ep);
         hl_manager.set_profiler(profiling_core);
         if (profiling_core != nullptr) profiling_core->set_phase("AST processing");
-        hl_ast = hl_manager.run_optimizations(hl_ast);
+        hl_ast = hl_manager.run_optimizations(hl_ast, globals);
 
         high_level_ast_lowering translator;
         translator.set_input_ast(hl_ast);
