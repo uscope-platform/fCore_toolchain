@@ -1504,4 +1504,47 @@ TEST(EndToEndC, struct_multi_propagation) {
 
 
 
+TEST(EndToEndC, struct_field_assign) {
+
+    std::vector<std::string> file_content = {R""""(
+            struct parameters{
+                float gain;
+                float phase;
+            };
+
+            float test(float err, struct parameters p){
+                return err*p.gain + p.phase;
+            }
+
+            void main(){
+
+                struct parameters params;
+                params.gain = 4.0;
+                params.phase = 1.0;
+                float in;
+                float out = test(in, params);
+            }
+    )""""};
+
+    std::vector<std::string> includes;
+
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["in"] = {core_iom_input, {10}, false};
+
+    fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
+    compiler.set_dma_map(dma_map);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+    std::vector<uint32_t> gold_standard = {0x70002, 0xc, 0x1000A, 0xc, 0xc, 0x46, 0x40800000, 0x61023, 0x26, 0x3f800000, 0x40861, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
+
+
+
+
 

@@ -35,11 +35,13 @@ namespace fcore {
         hl_acting_visitor visitor;
 
         ops.visit_definition = [this](auto && arg) { return process_definition(std::forward<decltype(arg)>(arg));};
-        ops.visit_operand    = [this](auto && arg) { return process_operand(std::forward<decltype(arg)>(arg));};
+        ops.visit_expression = [this](auto && arg) { return process_expression(std::forward<decltype(arg)>(arg));};
         visitor.visit(ops, element);
 
         hl_acting_visitor_operations ops2;
-        return  visitor.visit(ops2, element);
+        ops2.visit_operand    = [this](auto && arg) { return process_operand(std::forward<decltype(arg)>(arg));};
+        auto result =  visitor.visit(ops2, element);
+        return result;
     }
 
     std::vector<std::shared_ptr<hl_ast_node>> destructuring_pass::process_definition(
@@ -48,9 +50,34 @@ namespace fcore {
             auto name = def->get_name();
             auto inst = def->get_struct_specs();
             inst->set_definitions(struct_definitions[inst->get_name()]->get_definitions());
+            if(inst->get_initializers().empty()) inst->add_initializers(std::vector<std::shared_ptr<hl_ast_node>>(inst->get_definitions().size()));
             struct_instances.insert({name, inst});
         }
         return {def};
+    }
+
+    std::vector<std::shared_ptr<hl_ast_node>> destructuring_pass::process_expression(std::shared_ptr<hl_expression_node> exp) {
+        if(exp->get_type() == expr_assign) {
+            auto lhs = std::static_pointer_cast<hl_ast_operand>(exp->get_lhs().value());
+            if(!lhs->get_variable()->get_struct_accessors().empty()) {
+                if(exp->get_rhs()->node_type == hl_ast_node_type_operand) {
+                    auto rhs = std::static_pointer_cast<hl_ast_operand>(exp->get_rhs());
+                    if(rhs->get_variable()->is_constant()) {
+                    auto inst =  struct_instances[lhs->get_name()];
+                        auto defs = inst->get_definitions();
+                        auto old_inits = inst->get_initializers();
+                        for(int i = 0; i< defs.size(); i++) {
+                            if(defs[i]->get_name() == lhs->get_variable()->get_struct_accessors()[0]) {
+                                old_inits[i] = rhs;
+                            }
+                        }
+                        inst->add_initializers(old_inits);
+                        return {};
+                    }
+                }
+            }
+        }
+        return {exp};
     }
 
 
