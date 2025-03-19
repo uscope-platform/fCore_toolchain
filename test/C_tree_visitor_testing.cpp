@@ -1520,5 +1520,61 @@ namespace fcore{
     }
 
 
+    TEST( cTreeVisitor, struct_assignment){
+        std::istringstream test_content(R""""(
+        int main(){
+            struct parameters p;
+            p.gain = 1.0;
+            p.phase = 4.0;
+        }
+        )"""");
+
+        auto def_map = std::make_shared<define_map>();
+
+        C_language_parser parser(test_content, def_map);
+        parser.pre_process({});
+
+        std::unordered_map<std::string, variable_class_t> io_spec;
+        parser.parse(io_spec);
+        auto fun = parser.AST->get_content()[0];
+        auto result = std::static_pointer_cast<hl_function_def_node>(fun)->get_body();
+
+        auto struct_def = std::make_shared<hl_ast_struct>("parameters");
+
+
+        auto reference_def = std::make_shared<hl_definition_node>("p", struct_def);
+
+         std::vector<std::shared_ptr<hl_ast_node>> reference;
+        reference.push_back(reference_def);
+
+
+
+        auto expr = std::make_shared<hl_expression_node>(expr_assign);
+        auto var = std::make_shared<variable>("constant",1.0f);
+        auto op = std::make_shared<hl_ast_operand>(var);
+        expr->set_rhs(op);
+        var = std::make_shared<variable>("p");
+        var->add_struct_accessors({"gain"});
+        op = std::make_shared<hl_ast_operand>(var);
+        expr->set_lhs(op);
+
+        reference.push_back(expr);
+
+        expr = std::make_shared<hl_expression_node>(expr_assign);
+        var = std::make_shared<variable>("constant",4.0f);
+        op = std::make_shared<hl_ast_operand>(var);
+        expr->set_rhs(op);
+        var = std::make_shared<variable>("p");
+        var->add_struct_accessors({"phase"});
+        op = std::make_shared<hl_ast_operand>(var);
+        expr->set_lhs(op);
+
+        reference.push_back(expr);
+
+        ASSERT_TRUE(hl_ast_node::compare_vectors(reference, result));
+    }
+
+
+
 
 }

@@ -66,6 +66,11 @@ namespace fcore {
             ret_val &= *lhs.definitions[i] == *rhs.definitions[i];
         }
 
+        if(lhs.initializers.size() != rhs.initializers.size()) return false;
+        for(uint32_t i = 0; i<lhs.initializers.size(); i++){
+            ret_val &= *lhs.initializers[i] == *rhs.initializers[i];
+        }
+
         ret_val &= lhs.name == rhs.name;
 
         return ret_val;
