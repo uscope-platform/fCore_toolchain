@@ -38,6 +38,11 @@ namespace fcore {
             auto new_node = std::static_pointer_cast<hl_definition_node>(hl_ast_node::deep_copy(def));
             ret_val->add_definition(new_node);
         }
+        std::vector<std::shared_ptr<hl_ast_node>> new_initializers;
+        for(auto &init: node->initializers) {
+            new_initializers.push_back(hl_ast_node::deep_copy(init));
+        }
+        ret_val->add_initializers(new_initializers);
         return ret_val;
     }
 

@@ -28,6 +28,7 @@ namespace fcore {
             explicit hl_ast_struct(const std::string &name);
 
             void add_definition(const std::shared_ptr<hl_definition_node> &d){definitions.push_back(d);}
+            void set_definitions(const std::vector<std::shared_ptr<hl_definition_node>> &defs){definitions = defs;}
             std::vector<std::shared_ptr<hl_definition_node>> get_definitions() {return definitions;};
 
             void add_initializers(const std::vector<std::shared_ptr<hl_ast_node>> &i) {initializers = i;}

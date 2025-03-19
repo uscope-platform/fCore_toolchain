@@ -1481,6 +1481,8 @@ namespace fcore{
         parser.parse(io_spec);
         auto result = std::static_pointer_cast<hl_function_def_node>( parser.AST->get_content()[0]);
 
+        EXPECT_TRUE(parser.get_globals().empty());
+
         auto ref_fcn = std::make_shared<hl_function_def_node>();
         ref_fcn->set_name("test");
         ref_fcn->set_return_type(c_type_float);

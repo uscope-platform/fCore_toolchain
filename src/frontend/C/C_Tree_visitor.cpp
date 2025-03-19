@@ -587,8 +587,7 @@ namespace fcore{
         if(in_function_body | in_conditional_block | in_foor_loop_block){
             current_block_item = def;
         } else {
-            globals.push_back(def);
-
+            if(!in_function_declaration) globals.push_back(def);
         }
 
         struct_fields.clear();

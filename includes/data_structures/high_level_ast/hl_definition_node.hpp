@@ -41,7 +41,10 @@ namespace fcore{
         bool is_scalar();
         void set_constant(bool c);
         bool is_constant() const;
-        bool is_struct();
+        bool is_struct() {return struct_specs != nullptr;}
+
+
+        std::shared_ptr<hl_ast_struct> get_struct_specs(){return struct_specs;}
 
         std::vector<std::shared_ptr<hl_ast_node>> get_array_index() {return array_index;};
         void set_array_index(std::vector<std::shared_ptr<hl_ast_node>> i) {array_index = std::move(i);};

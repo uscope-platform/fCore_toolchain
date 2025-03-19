@@ -422,6 +422,7 @@ namespace fcore{
 
                     new_operand->set_array_index(tmp_vect);
                 }
+                new_operand->get_variable()->add_struct_accessors(old_operand->get_variable()->get_struct_accessors());
                 ret_val = new_operand;
             } else if(op_node->node_type == hl_ast_node_type_expr){
                 ret_val = hl_ast_node::deep_copy(op_node);

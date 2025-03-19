@@ -361,3 +361,19 @@ TEST( HlAstDeepCopy, struct_init){
 
 }
 
+
+TEST( HlAstDeepCopy, variable){
+
+    std::shared_ptr<variable> ref = std::make_shared<variable>("array");
+    ref->set_array_index({32, 54, 22});
+    ref->set_array_shape({2, 1});
+    ref->set_first_occurrence(3);
+    ref->set_last_occurrence(11);
+    ref->set_contiguity(true);
+    ref->add_struct_accessors({"acc", {"bcc"}});
+    auto res = variable::deep_copy(ref);
+
+    EXPECT_NE(res, ref);
+    EXPECT_EQ(*res, *ref);
+}
+

@@ -27,8 +27,12 @@ namespace fcore {
         destructuring_pass();
         std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
 
+        std::vector<std::shared_ptr<hl_ast_node>> process_definition(const
+        std::shared_ptr<hl_definition_node> &def);
+        std::shared_ptr<hl_ast_node> process_operand(std::shared_ptr<hl_ast_operand> exp);
     private:
-        static std::vector<std::shared_ptr<hl_ast_node>> process_definition(std::shared_ptr<hl_definition_node> exp);
+        std::map<std::string, std::shared_ptr<hl_ast_struct>> struct_definitions;
+        std::map<std::string, std::shared_ptr<hl_ast_struct>> struct_instances;
     };
 }
 
