@@ -289,3 +289,33 @@ TEST( hl_pretty_print, struct_def){
     ASSERT_EQ(result, check);
 
 }
+
+
+
+TEST(hl_pretty_print, complex_expression) {
+
+    auto e_add = std::make_shared<hl_expression_node>(expr_add);
+    auto var = std::make_shared<variable>("constant", 2.9f);
+    auto op = std::make_shared<hl_ast_operand>(var);
+    e_add->set_lhs(op);
+    var = std::make_shared<variable>("constant", 5.1f);
+    op = std::make_shared<hl_ast_operand>(var);
+    e_add->set_rhs(op);
+
+    auto e_mul = std::make_shared<hl_expression_node>(expr_mult);
+    e_mul->set_rhs(e_add);
+    var = std::make_shared<variable>("constant", 3.3f);
+    op = std::make_shared<hl_ast_operand>(var);
+    e_mul->set_lhs(op);
+
+    auto e_div = std::make_shared<hl_expression_node>(expr_div);
+    e_div->set_lhs(e_mul);
+    var = std::make_shared<variable>("constant", 7.0f);
+    op = std::make_shared<hl_ast_operand>(var);
+    e_div->set_rhs(op);
+
+    auto result = e_div->pretty_print();
+    std::string reference = "(3.300000*(2.900000+5.100000))/7.000000";
+    EXPECT_EQ(result, reference);
+
+}

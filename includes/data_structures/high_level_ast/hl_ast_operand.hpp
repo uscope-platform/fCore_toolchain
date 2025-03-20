@@ -48,14 +48,16 @@ namespace fcore{
 
         // ARRAY CONTIGUITY
         void set_contiguity(bool c) { inner_variable->set_contiguity(c);}
-        bool get_contiguity() {return inner_variable->is_contiguous();};
+        bool get_contiguity() {return inner_variable->is_contiguous();}
 
         //INNER VARIABLE
         void set_variable(std::shared_ptr<variable> v) {inner_variable = std::move(v);}
         std::shared_ptr<variable> get_variable() {return inner_variable;}
 
 
-        bool is_scalar() {return  inner_variable->get_type()!=var_type_array;};
+        bool is_scalar() {return  inner_variable->get_type()!=var_type_array;}
+        bool is_constant() {return inner_variable->is_constant();}
+
         std::string pretty_print();
         operator std::string(){return pretty_print();}
 

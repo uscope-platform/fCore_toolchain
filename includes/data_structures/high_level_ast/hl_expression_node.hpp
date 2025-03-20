@@ -142,6 +142,8 @@ namespace fcore{
         }
     }
     // FORWARD DECLARATIONS
+    class expression_evaluator;
+
     class hl_expression_node : public hl_ast_node{
     public:
         hl_expression_node( expression_type_t et);
@@ -163,6 +165,8 @@ namespace fcore{
         bool is_ternary();
         bool is_immediate();
 
+        bool is_constant();
+        static std::shared_ptr<hl_ast_operand> evaluate(const std::shared_ptr<hl_expression_node> &node);
 
         friend bool operator==(const hl_expression_node& lhs, const hl_expression_node& rhs);
 

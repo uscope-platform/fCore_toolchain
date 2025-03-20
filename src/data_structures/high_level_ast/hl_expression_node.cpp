@@ -15,6 +15,9 @@
 //
 
 #include "data_structures/high_level_ast/hl_expression_node.hpp"
+
+#include "tools/expression_evaluator.hpp"
+
 namespace fcore{
 
     hl_expression_node::hl_expression_node(expression_type_t et) : hl_ast_node(hl_ast_node_type_expr) {
@@ -73,7 +76,7 @@ namespace fcore{
                 std::string tmp_lhs = *op;
                 ss << tmp_lhs;
             } else {
-                ss << std::static_pointer_cast<hl_expression_node>(lhs.value())->pretty_print();
+                ss << "(" <<std::static_pointer_cast<hl_expression_node>(lhs.value())->pretty_print() << ")";
             }
 
         }
@@ -88,7 +91,7 @@ namespace fcore{
         } else if(rhs->node_type == hl_ast_node_type_function_call){
             ss << std::static_pointer_cast<hl_function_call_node>(rhs)->pretty_print();
         }else{
-            ss << std::static_pointer_cast<hl_expression_node>(rhs)->pretty_print();
+            ss << "(" <<std::static_pointer_cast<hl_expression_node>(rhs)->pretty_print() << ")";
         }
         std::string ret = ss.str();
         return ret;
@@ -117,6 +120,38 @@ namespace fcore{
         bool res  = false;
         res |= expr_type == expr_nop;
         return res;
+    }
+
+    bool hl_expression_node::is_constant() {
+        bool res  = true;
+        if(rhs->node_type == hl_ast_node_type_operand) {
+            res &= std::static_pointer_cast<hl_ast_operand>(rhs)->is_constant();
+        } else {
+            res &= std::static_pointer_cast<hl_expression_node>(rhs)->is_constant();
+        }
+
+        if(auto lhs_val = lhs.value()) {
+            if(lhs_val->node_type == hl_ast_node_type_operand) {
+                res &= std::static_pointer_cast<hl_ast_operand>(lhs_val)->is_constant();
+            } else {
+                res &= std::static_pointer_cast<hl_expression_node>(lhs_val)->is_constant();
+            }
+        }
+
+        if(is_ternary()) {
+            auto ths_val = ths.value();
+            if(ths_val->node_type == hl_ast_node_type_operand) {
+                res &= std::static_pointer_cast<hl_ast_operand>(ths_val)->is_constant();
+            } else {
+                res &= std::static_pointer_cast<hl_expression_node>(ths_val)->is_constant();
+            }
+        }
+
+        return res;
+    }
+
+    std::shared_ptr<hl_ast_operand> hl_expression_node::evaluate(const std::shared_ptr<hl_expression_node> &node) {
+        return expression_evaluator::evaluate_expression(node);
     }
 
     bool hl_expression_node::is_ternary() {
