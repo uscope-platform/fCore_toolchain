@@ -135,7 +135,7 @@ namespace fcore{
         const_cond_expr->set_lhs(lhs_op);
         const_cond_expr->set_rhs(rhs_op);
 
-        std::shared_ptr<hl_ast_operand> result_op = expression_evaluator::evaluate_expression(const_cond_expr);
+        std::shared_ptr<hl_ast_operand> result_op =  hl_expression_node::evaluate(const_cond_expr);
         bool result;
         if(result_op->get_type() == var_type_int_const) result = result_op->get_int_value();
         if(result_op->get_type() == var_type_float_const) result = result_op->get_float_val() == 1;

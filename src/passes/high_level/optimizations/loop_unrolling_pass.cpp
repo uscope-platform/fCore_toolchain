@@ -113,10 +113,10 @@ namespace fcore{
 
         if(raw_initializer->node_type == hl_ast_node_type_expr){
 
-            if(!expression_evaluator::is_constant_expression(std::static_pointer_cast<hl_expression_node>(raw_initializer))){
+            if(!std::static_pointer_cast<hl_expression_node>(raw_initializer)->is_constant()){
                 throw std::runtime_error("Loop initialization statement is not a compile time constant");
             }
-            initializer = expression_evaluator::evaluate_expression(std::static_pointer_cast<hl_expression_node>(raw_initializer));
+            initializer = hl_expression_node::evaluate(std::static_pointer_cast<hl_expression_node>(raw_initializer));
         } else if(raw_initializer->node_type == hl_ast_node_type_operand){
             initializer = std::static_pointer_cast<hl_ast_operand>(raw_initializer);
             if(initializer->get_type() == var_type_float_const){
@@ -143,7 +143,7 @@ namespace fcore{
         }
 
         std::shared_ptr<hl_expression_node> loop_cond = update_loop_condition(condition, loop_var);
-        auto expr = expression_evaluator::evaluate_expression(loop_cond);
+        auto expr = hl_expression_node::evaluate(loop_cond);
         bool res = expr->get_int_value();
         ++current_loop_iteration;
         return res;

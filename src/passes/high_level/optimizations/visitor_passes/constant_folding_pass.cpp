@@ -36,8 +36,8 @@ namespace fcore{
 
 
     std::vector<std::shared_ptr<hl_ast_node>>  constant_folding_pass::process_expression(std::shared_ptr<hl_expression_node> exp) {
-        if(expression_evaluator::is_constant_expression(exp)){
-            return {expression_evaluator::evaluate_expression(exp)};
+        if(exp->is_constant()){
+            return {hl_expression_node::evaluate(exp)};
         } else return {exp};
     }
 

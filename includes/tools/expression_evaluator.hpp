@@ -25,7 +25,6 @@ namespace fcore {
     public:
         expression_evaluator() = default;
         static std::shared_ptr<hl_ast_operand> evaluate_expression(std::shared_ptr<hl_expression_node> expression);
-        static bool is_constant_expression(const std::shared_ptr<hl_expression_node>& expression);
     private:
         static bool is_constant_subexpr(const std::shared_ptr<hl_ast_node>& subex);
         static std::shared_ptr<hl_ast_operand> evaluate_regular_expression(std::shared_ptr<hl_expression_node> expression);

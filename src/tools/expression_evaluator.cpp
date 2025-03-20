@@ -18,27 +18,6 @@
 
 namespace fcore{
 
-    bool expression_evaluator::is_constant_expression(const std::shared_ptr<hl_expression_node>& expression) {
-        bool retval = true;
-        if(expression->is_immediate()) return false;
-        if(expression->get_type() == expr_efi) return false;
-        retval &= is_constant_subexpr(expression->get_rhs());
-        if(auto lhs = expression->get_lhs()) retval &= is_constant_subexpr(lhs.value());
-        return retval;
-    }
-
-    bool expression_evaluator::is_constant_subexpr(const std::shared_ptr<hl_ast_node>& subex) {
-        if(subex->node_type == hl_ast_node_type_operand){
-            std::shared_ptr<hl_ast_operand> node = std::static_pointer_cast<hl_ast_operand>(subex);
-            if(node->get_type() == var_type_scalar ||  node->get_type() == var_type_array){
-                return false;
-            } else{
-                return true;
-            }
-        } else{
-            return is_constant_expression(std::static_pointer_cast<hl_expression_node>(subex));
-        }
-    }
 
     std::shared_ptr<hl_ast_operand>
     expression_evaluator::evaluate_expression(std::shared_ptr<hl_expression_node> expression) {

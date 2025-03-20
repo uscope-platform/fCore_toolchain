@@ -18,7 +18,6 @@
 
 #include "passes/high_level/infrastructure/pass_base.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
-#include "tools/expression_evaluator.hpp"
 #include "passes/high_level/infrastructure/hl_acting_visitor.hpp"
 
 namespace fcore{
