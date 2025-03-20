@@ -66,6 +66,7 @@ set(FCORE_CC_SRCS
         passes/high_level/optimizations/visitor_passes/array_index_lowering.cpp
         passes/high_level/optimizations/visitor_passes/constant_folding_pass.cpp
         passes/high_level/optimizations/visitor_passes/comparison_flipping.cpp
+        passes/high_level/optimizations/visitor_passes/constant_commutation.cpp
         passes/high_level/optimizations/inline_constant_extraction.cpp
         passes/high_level/optimizations/fuction_mangling_pass.cpp
         passes/high_level/optimizations/function_inlining_pass.cpp

@@ -118,7 +118,4 @@ namespace fcore {
         throw std::runtime_error("Encountered an undefined field ("+ op->get_variable()->get_struct_accessors()[0] + ") in struct: "+ op->get_name());
     }
 
-    std::shared_ptr<variable> destructuring_pass::process_variable(std::shared_ptr<variable> v) {
-        return v;
-    }
 }

@@ -17,6 +17,8 @@
 
 #include "passes/high_level/infrastructure/hl_pass_manager.hpp"
 //HL PASSES
+#include <passes/high_level/optimizations/visitor_passes/constant_commutation.hpp>
+
 #include "passes/high_level/optimizations/function_inlining_pass.hpp"
 #include "passes/high_level/optimizations/visitor_passes/division_implementation_pass.hpp"
 #include "passes/high_level/optimizations/inlined_function_elimination.hpp"
@@ -66,7 +68,7 @@ namespace fcore{
 
         manager.add_optimization_pass("Contiguous Array Identification", std::make_shared<contiguous_array_identification>()); // pass #12
         manager.add_optimization_pass("Dead Variable elimination", std::make_shared<dead_variable_elimination>());  // pass #13
-
+        manager.add_optimization_pass("Constant Commutation", std::make_shared<constant_commutation>());
         auto const_fold = std::make_shared<constant_folding_pass>();
         auto const_prop = std::make_shared<constant_propagation>();
         manager.add_optimization_pass_group("Constants optimization", {const_fold, const_prop}); // group #-1
