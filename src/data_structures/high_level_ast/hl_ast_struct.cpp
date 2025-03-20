@@ -68,6 +68,7 @@ namespace fcore {
 
         if(lhs.initializers.size() != rhs.initializers.size()) return false;
         for(uint32_t i = 0; i<lhs.initializers.size(); i++){
+            if((lhs.initializers[i] == nullptr) != (rhs.initializers[i] == nullptr)) return false;
             ret_val &= *lhs.initializers[i] == *rhs.initializers[i];
         }
 

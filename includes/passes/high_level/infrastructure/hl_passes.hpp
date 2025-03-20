@@ -56,7 +56,9 @@ namespace fcore{
         manager.add_optimization_pass_group("Function Inlining", {std::make_shared<function_inlining_pass>(),  std::make_shared<code_block_inlining_pass>()}); // group #-1
         manager.add_optimization_pass("Inlined Function Elimination", std::make_shared<inlined_function_elimination>(entry_point)); // pass #6
         manager.add_optimization_pass("Code Block Expansion",std::make_shared<code_block_inlining_pass>()); // pass #7
-        manager.add_optimization_pass("Destructuring", std::make_shared<destructuring_pass>());
+
+        manager.add_optimization_pass_group("Destructuring", {std::make_shared<destructuring_pass>()});
+
         manager.add_optimization_pass("Loop Unrolling", std::make_shared<loop_unrolling_pass>()); // pass #8
         manager.add_optimization_pass("Array Initialization", std::make_shared<array_initialization_substitution>()); // pass #9
         manager.add_optimization_pass("Conditional Implementation", std::make_shared<conditional_implementation_pass>()); // pass #10

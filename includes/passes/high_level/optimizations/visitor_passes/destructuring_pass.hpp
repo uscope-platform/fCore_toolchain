@@ -31,8 +31,12 @@ namespace fcore {
         std::vector<std::shared_ptr<hl_ast_node>> process_expression(std::shared_ptr<hl_expression_node> exp);
         std::shared_ptr<hl_ast_node> process_operand(std::shared_ptr<hl_ast_operand> op);
     private:
+
+        std::shared_ptr<variable> process_variable(std::shared_ptr<variable> v);
+
         std::map<std::string, std::shared_ptr<hl_ast_struct>> struct_definitions;
         std::map<std::string, std::shared_ptr<hl_ast_struct>> struct_instances;
+
     };
 }
 

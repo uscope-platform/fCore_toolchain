@@ -130,7 +130,8 @@ namespace fcore{
             res &= std::static_pointer_cast<hl_expression_node>(rhs)->is_constant();
         }
 
-        if(auto lhs_val = lhs.value()) {
+        if(lhs.has_value()) {
+            auto lhs_val = lhs.value();
             if(lhs_val->node_type == hl_ast_node_type_operand) {
                 res &= std::static_pointer_cast<hl_ast_operand>(lhs_val)->is_constant();
             } else {

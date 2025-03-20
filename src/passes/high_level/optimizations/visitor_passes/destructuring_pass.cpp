@@ -60,15 +60,28 @@ namespace fcore {
         if(exp->get_type() == expr_assign) {
             auto lhs = std::static_pointer_cast<hl_ast_operand>(exp->get_lhs().value());
             if(!lhs->get_variable()->get_struct_accessors().empty()) {
-                if(exp->get_rhs()->node_type == hl_ast_node_type_operand) {
-                    auto rhs = std::static_pointer_cast<hl_ast_operand>(exp->get_rhs());
+                auto raw_rhs = exp->get_rhs();
+                auto inst =  struct_instances[lhs->get_name()];
+                auto defs = inst->get_definitions();
+                if(raw_rhs->node_type == hl_ast_node_type_operand) {
+                    auto rhs = std::static_pointer_cast<hl_ast_operand>(raw_rhs);
                     if(rhs->get_variable()->is_constant()) {
-                    auto inst =  struct_instances[lhs->get_name()];
-                        auto defs = inst->get_definitions();
                         auto old_inits = inst->get_initializers();
                         for(int i = 0; i< defs.size(); i++) {
                             if(defs[i]->get_name() == lhs->get_variable()->get_struct_accessors()[0]) {
                                 old_inits[i] = rhs;
+                            }
+                        }
+                        inst->add_initializers(old_inits);
+                        return {};
+                    }
+                } else if(raw_rhs->node_type==hl_ast_node_type_expr) {
+                    auto rhs = std::static_pointer_cast<hl_expression_node>(raw_rhs);
+                    if(rhs->is_constant()) {
+                        auto old_inits = inst->get_initializers();
+                        for(int i = 0; i< defs.size(); i++) {
+                            if(defs[i]->get_name() == lhs->get_variable()->get_struct_accessors()[0]) {
+                                old_inits[i] = hl_expression_node::evaluate(rhs);
                             }
                         }
                         inst->add_initializers(old_inits);
@@ -94,10 +107,18 @@ namespace fcore {
 
         for(int i = 0; i< defs.size(); i++) {
             if(defs[i]->get_name() == op->get_variable()->get_struct_accessors()[0]) {
-                op->set_variable(std::static_pointer_cast<hl_ast_operand>(inits[i])->get_variable());
-                return {op};
+                if(inits[i] != nullptr) {
+                    op->set_variable(std::static_pointer_cast<hl_ast_operand>(inits[i])->get_variable());
+                    return {op};
+                } else {
+                    return op;
+                }
             }
         }
         throw std::runtime_error("Encountered an undefined field ("+ op->get_variable()->get_struct_accessors()[0] + ") in struct: "+ op->get_name());
+    }
+
+    std::shared_ptr<variable> destructuring_pass::process_variable(std::shared_ptr<variable> v) {
+        return v;
     }
 }
