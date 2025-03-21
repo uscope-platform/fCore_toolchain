@@ -15,7 +15,7 @@
 
 #include <gtest/gtest.h>
 
-#include "fcore_cc.hpp"
+#include "../../includes/fcore_cc.hpp"
 
 using namespace fcore;
 

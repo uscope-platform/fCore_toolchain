@@ -323,9 +323,9 @@ namespace fcore{
 
         std::shared_ptr<hl_ast_operand> ths;
         if(expression->get_ths().value()->node_type ==hl_ast_node_type_expr){
-            ths = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_rhs()));
+            ths = evaluate_expression_side(std::static_pointer_cast<hl_expression_node>(expression->get_ths().value()));
         } else if(expression->get_rhs()->node_type ==hl_ast_node_type_operand) {
-            ths = std::static_pointer_cast<hl_ast_operand>(expression->get_rhs());
+            ths = std::static_pointer_cast<hl_ast_operand>(expression->get_ths().value());
         } else {
             throw std::runtime_error("node type not expected during expression evaluation");
         }

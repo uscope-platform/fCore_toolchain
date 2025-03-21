@@ -12,13 +12,15 @@ set(TEST_SOURCES
         C_tree_visitor_testing.cpp
         disassembler_testing.cpp
         hl_pretty_print.cpp
-        deep_copy.cpp
         emulator/emulator_manager_interactive.cpp
         emulator/emulator_manager_bulk.cpp
         emulator/emulator_execution.cpp
         emulator/emulator_schema_validation.cpp
         emulator/emulator_runner.cpp
-        length_analysis.cpp)
+        tools/length_analysis.cpp
+        tools/deep_copy.cpp
+        tools/expression_evaluator.cpp
+)
 
 
 
