@@ -632,9 +632,10 @@ TEST(EndToEndC, function_inlining_expression) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0xF0003, 0xc,  0x3f0006, 0x10019, 0xc, 0xc, 0x46, 0x40A00000, 0x61023, 0x26,
-                                           0x3727C5AC, 0x41823, 0x217e1, 0x46, 0xC3160000, 0x21031, 0x46,
-                                           0x43160000, 0x21030, 0x4002e, 0xc};
+    std::vector<uint32_t> gold_standard = {
+        0xC0003, 0xc,  0x3f0006, 0x10019, 0xc, 0xc, 0x46, 0x3851B717, 0x61023,
+        0x21fe1, 0x46, 0xC3160000, 0x21031, 0x46,
+        0x43160000, 0x21030, 0x4002e, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
@@ -1633,7 +1634,7 @@ TEST(EndToEndC, struct_nested_self_referenced_field_assignment) {
 }
 
 
-TEST(EndToEndC, commutative_constant_evaluation) {
+TEST(EndToEndC, mult_commutative_constant_evaluation) {
 
     std::vector<std::string> file_content = {R""""(
 
@@ -1662,3 +1663,68 @@ TEST(EndToEndC, commutative_constant_evaluation) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+
+
+TEST(EndToEndC, avoid_commutative_constant_evaluation) {
+
+    std::vector<std::string> file_content = {R""""(
+
+
+            void main(){
+
+                float in;
+                float out = 5.0*(7.0-in);
+            }
+    )""""};
+
+    std::vector<std::string> includes;
+
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["in"] = {core_iom_input, {10}, false};
+
+    fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
+    compiler.set_dma_map(dma_map);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+    std::vector<uint32_t> gold_standard = {0x70002, 0xc, 0x1000A, 0xc, 0xc, 0x46, 0x40e00000, 0x60842, 0x26, 0x40a00000, 0x41823, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
+
+
+TEST(EndToEndC, add_commutative_constant_evaluation) {
+
+    std::vector<std::string> file_content = {R""""(
+
+
+            void main(){
+
+                float in;
+                float out = 5.0+in+7.0;
+            }
+    )""""};
+
+    std::vector<std::string> includes;
+
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["in"] = {core_iom_input, {10}, false};
+
+    fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
+    compiler.set_dma_map(dma_map);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+    std::vector<uint32_t> gold_standard = {0x40002, 0xc, 0x1000A, 0xc, 0xc, 0x46, 0x41400000, 0x61021, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
+
+

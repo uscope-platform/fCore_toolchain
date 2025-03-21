@@ -27,8 +27,8 @@ namespace fcore {
         constant_commutation();
         std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
     private:
-        static std::vector<std::shared_ptr<hl_ast_node>> process_expression(std::shared_ptr<hl_expression_node> exp);
-
+        static std::vector<std::shared_ptr<hl_ast_node>> process_expression(const std::shared_ptr<hl_expression_node>& exp);
+        static std::vector<std::shared_ptr<hl_ast_node>> process_expression_by_type(const std::shared_ptr<hl_expression_node>& exp, expression_type_t type);
         static std::pair<std::shared_ptr<hl_ast_operand>, std::shared_ptr<hl_ast_operand>>  process_left_expression(std::shared_ptr<hl_expression_node> exp);
         static std::pair<std::shared_ptr<hl_ast_operand>, std::shared_ptr<hl_ast_operand>> process_right_expression(std::shared_ptr<hl_expression_node> exp);
     };
