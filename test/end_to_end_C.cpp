@@ -1728,3 +1728,65 @@ TEST(EndToEndC, add_commutative_constant_evaluation) {
 }
 
 
+TEST(EndToEndC, add_sub_commutation) {
+
+    std::vector<std::string> file_content = {R""""(
+
+
+            void main(){
+
+                float in;
+                float out = 5.0 + in - 7.0;
+            }
+    )""""};
+
+    std::vector<std::string> includes;
+
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["in"] = {core_iom_input, {10}, false};
+
+    fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
+    compiler.set_dma_map(dma_map);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+    std::vector<uint32_t> gold_standard = {0x40002, 0xc, 0x1000A, 0xc, 0xc, 0x46, 0x40000000, 0x61021, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
+
+
+
+
+TEST(EndToEndC, sub_add_commutation) {
+
+    std::vector<std::string> file_content = {R""""(
+
+
+            void main(){
+
+                float in;
+                float out = 5.0 - in + 7.0;
+            }
+    )""""};
+
+    std::vector<std::string> includes;
+
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["in"] = {core_iom_input, {10}, false};
+
+    fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
+    compiler.set_dma_map(dma_map);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+    std::vector<uint32_t> gold_standard = {0x40002, 0xc, 0x1000A, 0xc, 0xc, 0x46, 0x41400000, 0x61022, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}

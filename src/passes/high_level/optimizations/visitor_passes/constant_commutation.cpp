@@ -38,11 +38,11 @@ namespace fcore {
         const std::shared_ptr<hl_expression_node>& exp) {
         switch(exp->get_type()) {
             case expr_add:
-                return process_expression_by_type(exp, expr_add);
+                return process_expression_by_type(exp, expr_add, expr_sub);
             case expr_sub:
-                return process_expression_by_type(exp, expr_sub);
+                return process_expression_by_type(exp, expr_sub, expr_add);
             case expr_mult:
-                return process_expression_by_type(exp, expr_mult);
+                return process_expression_by_type(exp, expr_mult, expr_mult);
             default:
                 return {exp};
         }
@@ -50,19 +50,23 @@ namespace fcore {
 
     std::vector<std::shared_ptr<hl_ast_node>> constant_commutation::process_expression_by_type(
         const std::shared_ptr<hl_expression_node>& exp,
-        expression_type_t type
+        expression_type_t main_type,
+        expression_type_t additional_type
     ) {
-        if(exp->get_type() != type) return {exp};
+        if(exp->get_type() != main_type) return {exp};
         if(exp->get_rhs()->node_type  == exp->get_lhs().value()->node_type) return {exp};
 
         std::shared_ptr<hl_ast_operand> lhs_op, rhs_op, parent_op;
 
+        expression_type_t child_type;
+
         if(exp->get_rhs()->node_type == hl_ast_node_type_operand) {
             auto child_exp = std::static_pointer_cast<hl_expression_node>(exp->get_lhs().value());
+            child_type = child_exp->get_type();
             if(child_exp->is_immediate() || child_exp->is_constant() || child_exp->is_unary()) {
                 return {exp};
             }
-            if(child_exp->get_type() != type) return {exp};
+            if(child_type != main_type && child_type !=  additional_type) return {exp};
             if(child_exp->get_rhs()->node_type != hl_ast_node_type_operand || child_exp->get_lhs().value()->node_type != hl_ast_node_type_operand)
                 return {exp};
             parent_op = std::static_pointer_cast<hl_ast_operand>(exp->get_rhs());
@@ -78,7 +82,9 @@ namespace fcore {
             if(child_exp->is_immediate() || child_exp->is_constant() || child_exp->is_unary()) {
                 return {exp};
             }
-            if(child_exp->get_type() != type) return {exp};
+            child_type = child_exp->get_type();
+
+            if(child_type != main_type && child_type !=  additional_type) return {exp};
             if(child_exp->get_rhs()->node_type != hl_ast_node_type_operand || child_exp->get_lhs().value()->node_type != hl_ast_node_type_operand)
                 return {exp};
             parent_op = std::static_pointer_cast<hl_ast_operand>(exp->get_lhs().value());
@@ -90,9 +96,9 @@ namespace fcore {
             lhs_op = lhs;
         }
 
-        std::shared_ptr<hl_expression_node> return_expr = std::make_shared<hl_expression_node>(type);
+        std::shared_ptr<hl_expression_node> return_expr = std::make_shared<hl_expression_node>(child_type);
 
-        std::shared_ptr<hl_expression_node> inner_exp = std::make_shared<hl_expression_node>(type);
+        std::shared_ptr<hl_expression_node> inner_exp = std::make_shared<hl_expression_node>(main_type);
         inner_exp->set_lhs(parent_op);
         inner_exp->set_rhs(rhs_op);
         return_expr->set_rhs(inner_exp);
