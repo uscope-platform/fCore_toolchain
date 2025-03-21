@@ -48,34 +48,34 @@ namespace fcore{
     ){
         hl_pass_manager manager;
 
-        manager.add_optimization_pass("Division Implementation", std::make_shared<division_implementation_pass>()); // pass #1
-        manager.add_optimization_pass("Intrinsics Implementation", std::make_shared<intrinsics_implementation_pass>()); // pass #2
-        manager.add_optimization_pass("Comparison flipping pass", std::make_shared<comparison_flipping>()); // pass #2
+        manager.add_optimization_pass("Division Implementation", std::make_shared<division_implementation_pass>());
+        manager.add_optimization_pass("Intrinsics Implementation", std::make_shared<intrinsics_implementation_pass>());
+        manager.add_optimization_pass("Comparison flipping pass", std::make_shared<comparison_flipping>());
 
-        manager.add_optimization_pass("Operating Assignment Implementation", std::make_shared<operating_assignment_implementation_pass>()); // pass #3
-        manager.add_optimization_pass("Function Mangling", std::make_shared<fuction_mangling_pass>()); // pass #4
+        manager.add_optimization_pass("Operating Assignment Implementation", std::make_shared<operating_assignment_implementation_pass>());
+        manager.add_optimization_pass("Function Mangling", std::make_shared<fuction_mangling_pass>());
 
-        manager.add_optimization_pass_group("Function Inlining", {std::make_shared<function_inlining_pass>(),  std::make_shared<code_block_inlining_pass>()}); // group #-1
-        manager.add_optimization_pass("Inlined Function Elimination", std::make_shared<inlined_function_elimination>(entry_point)); // pass #6
-        manager.add_optimization_pass("Code Block Expansion",std::make_shared<code_block_inlining_pass>()); // pass #7
+        manager.add_optimization_pass_group("Function Inlining", {std::make_shared<function_inlining_pass>(),  std::make_shared<code_block_inlining_pass>()});
+        manager.add_optimization_pass("Inlined Function Elimination", std::make_shared<inlined_function_elimination>(entry_point));
+        manager.add_optimization_pass("Code Block Expansion",std::make_shared<code_block_inlining_pass>());
 
         manager.add_optimization_pass_group("Destructuring", {std::make_shared<destructuring_pass>()});
 
-        manager.add_optimization_pass("Loop Unrolling", std::make_shared<loop_unrolling_pass>()); // pass #8
-        manager.add_optimization_pass("Array Initialization", std::make_shared<array_initialization_substitution>()); // pass #9
-        manager.add_optimization_pass("Conditional Implementation", std::make_shared<conditional_implementation_pass>()); // pass #10
-        manager.add_optimization_pass("Normalization", std::make_shared<normalization_pass>()); // pass #11
-
-        manager.add_optimization_pass("Contiguous Array Identification", std::make_shared<contiguous_array_identification>()); // pass #12
-        manager.add_optimization_pass("Dead Variable elimination", std::make_shared<dead_variable_elimination>());  // pass #13
+        manager.add_optimization_pass("Loop Unrolling", std::make_shared<loop_unrolling_pass>());
+        manager.add_optimization_pass("Array Initialization", std::make_shared<array_initialization_substitution>());
+        manager.add_optimization_pass("Conditional Implementation", std::make_shared<conditional_implementation_pass>());
         manager.add_optimization_pass("Constant Commutation", std::make_shared<constant_commutation>());
+        manager.add_optimization_pass("Normalization", std::make_shared<normalization_pass>());
+
+        manager.add_optimization_pass("Contiguous Array Identification", std::make_shared<contiguous_array_identification>());
+        manager.add_optimization_pass("Dead Variable elimination", std::make_shared<dead_variable_elimination>());
         auto const_fold = std::make_shared<constant_folding_pass>();
         auto const_prop = std::make_shared<constant_propagation>();
-        manager.add_optimization_pass_group("Constants optimization", {const_fold, const_prop}); // group #-1
+        manager.add_optimization_pass_group("Constants optimization", {const_fold, const_prop});
 
-        manager.add_optimization_pass("Inline Constant Extraction", std::make_shared<inline_constant_extraction>()); // pass #14
-        manager.add_optimization_pass("Array Flattening", std::make_shared<array_index_lowering>()); // pass #15
-        manager.add_optimization_pass("Dead Load elimination", std::make_shared<dead_load_elimination>()); // pass #16
+        manager.add_optimization_pass("Inline Constant Extraction", std::make_shared<inline_constant_extraction>());
+        manager.add_optimization_pass("Array Flattening", std::make_shared<array_index_lowering>());
+        manager.add_optimization_pass("Dead Load elimination", std::make_shared<dead_load_elimination>());
         manager.add_optimization_pass("Ternary Expression extraction", std::make_shared<ternary_expression_extraction>());
         return manager;
     }

@@ -1657,7 +1657,7 @@ TEST(EndToEndC, commutative_constant_evaluation) {
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
-    std::vector<uint32_t> gold_standard = {0x70002, 0xc, 0x1000A, 0xc, 0xc, 0x46, 0x40800000, 0x61023, 0x26, 0x3f800000, 0x40861, 0xc};
+    std::vector<uint32_t> gold_standard = {0x40002, 0xc, 0x1000A, 0xc, 0xc, 0x46, 0x420c0000, 0x61023, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 

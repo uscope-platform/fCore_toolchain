@@ -18,6 +18,7 @@
 #define CONSTANT_COMMUTATION_HPP
 
 #include "passes/high_level/infrastructure/pass_base.hpp"
+#include "passes/high_level/infrastructure/hl_acting_visitor.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
 namespace fcore {
@@ -26,6 +27,10 @@ namespace fcore {
         constant_commutation();
         std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
     private:
+        static std::vector<std::shared_ptr<hl_ast_node>> process_expression(std::shared_ptr<hl_expression_node> exp);
+
+        static std::pair<std::shared_ptr<hl_ast_operand>, std::shared_ptr<hl_ast_operand>>  process_left_expression(std::shared_ptr<hl_expression_node> exp);
+        static std::pair<std::shared_ptr<hl_ast_operand>, std::shared_ptr<hl_ast_operand>> process_right_expression(std::shared_ptr<hl_expression_node> exp);
     };
 
 }

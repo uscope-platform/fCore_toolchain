@@ -122,6 +122,14 @@ namespace fcore{
         return res;
     }
 
+    void hl_expression_node::swap_operands() {
+        if(!is_unary() && !is_immediate() && !is_ternary()){
+            auto lhs_tmp = lhs.value();
+            lhs = rhs;
+            rhs = lhs_tmp;
+        }
+    }
+
     bool hl_expression_node::is_constant() {
         bool res  = true;
         if(rhs->node_type == hl_ast_node_type_operand) {

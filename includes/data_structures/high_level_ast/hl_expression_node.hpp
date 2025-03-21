@@ -165,6 +165,8 @@ namespace fcore{
         bool is_ternary();
         bool is_immediate();
 
+        void swap_operands();
+
         bool is_constant();
         static std::shared_ptr<hl_ast_operand> evaluate(const std::shared_ptr<hl_expression_node> &node);
 
