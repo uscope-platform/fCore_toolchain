@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "data_structures/high_level_ast/hl_ast_node_variant.hpp"
+#include "data_structures/high_level_ast/variant/hl_ast_node_variant.hpp"
 
 namespace fcore{
 
