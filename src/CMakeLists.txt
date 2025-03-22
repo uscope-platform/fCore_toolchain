@@ -43,7 +43,7 @@ set(FCORE_CC_SRCS
         frontend/C/C_ErrorHandling.cpp
         frontend/C/C_Tree_visitor.cpp
         data_structures/high_level_ast/ast_node.cpp
-        data_structures/high_level_ast/hl_ast_node_variant.cpp
+        data_structures/high_level_ast/variant/hl_ast_node_variant.cpp
         data_structures/high_level_ast/ast_definition.cpp
         data_structures/high_level_ast/ast_function_def.cpp
         data_structures/high_level_ast/ast_loop.cpp
@@ -125,7 +125,6 @@ add_library(common_srcs ${FCORE_COMMON_SRCS_I})
 target_link_libraries(common_srcs PUBLIC
         nlohmann_json::nlohmann_json
         ValiJSON::valijson
-        magic_enum::magic_enum
 )
 
 add_library(fcore_has_lib ${FCORE_AS_SRCS} ${ASM_PARSER_SRCS})

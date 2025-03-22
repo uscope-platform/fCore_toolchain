@@ -55,7 +55,6 @@ find_package(spdlog CONFIG REQUIRED)
 find_package(valijson REQUIRED)
 find_package(antlr4-runtime CONFIG REQUIRED)
 find_package(fmt REQUIRED)
-find_package(magic_enum REQUIRED)
 
 add_subdirectory(includes/asm_parser)
 add_subdirectory(includes/C_parser)

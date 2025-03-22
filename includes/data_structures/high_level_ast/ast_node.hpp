@@ -59,19 +59,6 @@ namespace fcore{
         c_type_struct = 7
     } c_types_t;
 
-    constexpr std::string_view c_types_to_string(c_types_t i){
-        switch (i) {
-            case c_type_void:return "c_type_void";
-            case c_type_char: return "c_type_char";
-            case c_type_short: return "c_type_short";
-            case c_type_int: return "c_type_int";
-            case c_type_long: return "c_type_long";
-            case c_type_float: return "c_type_float";
-            case c_type_struct: return  "c_type_struct";
-            default: return "unknown c type";
-        }
-    }
-
     class ast_node {
 
     public:
