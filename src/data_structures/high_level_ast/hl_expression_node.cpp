@@ -16,41 +16,43 @@
 
 #include "data_structures/high_level_ast/hl_expression_node.hpp"
 
+#include <unordered_set>
+
 #include "tools/expression_evaluator.hpp"
 
 namespace fcore{
 
-    hl_expression_node::hl_expression_node(expression_type_t et) : hl_ast_node(hl_ast_node_type_expr) {
-        expr_type = et;
-        assignment_type = regular_assignment;
+    hl_expression_node::hl_expression_node(expression_type et) : hl_ast_node(hl_ast_node_type_expr) {
+        expression_t = et;
+        assignment_t = regular_assignment;
         type_print = {
-                {expr_add, "+"},
-                {expr_sub, "-"},
-                {expr_mult, "*"},
-                {expr_div, "/"},
-                {expr_incr_pre, "++(pre)"},
-                {expr_incr_post, "(post)++"},
-                {expr_decr_pre, "--(pre)"},
-                {expr_decr_post, "(post)--"},
-                {expr_modulo, "%"},
-                {expr_and_l, "&&"},
-                {expr_and_b, "&"},
-                {expr_or_l, "||"},
-                {expr_or_b, "|"},
-                {expr_not_l, "!"},
-                {expr_not_b, "~"},
-                {expr_xor_b, "^"},
-                {expr_lsh, "<<"},
-                {expr_rsh, ">>"},
-                {expr_eq, "=="},
-                {expr_neq, "!="},
-                {expr_neg, "-"},
-                {expr_lt, "<"},
-                {expr_gt, ">"},
-                {expr_lte, "<="},
-                {expr_gte, ">="},
-                {expr_assign, "="},
-                {expr_reciprocal, "1/"}
+                {ADD, "+"},
+                {SUB, "-"},
+                {MULT, "*"},
+                {DIV, "/"},
+                {PRE_INCR, "++(pre)"},
+                {POST_INCR, "(post)++"},
+                {PRE_DECR, "--(pre)"},
+                {POST_DECR, "(post)--"},
+                {MODULO, "%"},
+                {AND_L, "&&"},
+                {AND_B, "&"},
+                {OR_L, "||"},
+                {OR_B, "|"},
+                {NOT_L, "!"},
+                {NOT_B, "~"},
+                {XOR_B, "^"},
+                {LSH, "<<"},
+                {RSH, ">>"},
+                {EQ, "=="},
+                {NEQ, "!="},
+                {NEG, "-"},
+                {LT, "<"},
+                {GT, ">"},
+                {LTE, "<="},
+                {GTE, ">="},
+                {ASSIGN, "="},
+                {RECIPROCAL, "1/"}
         };
 
         assign_prefix_print = {
@@ -81,7 +83,7 @@ namespace fcore{
 
         }
 
-        ss << assign_prefix_print[assignment_type] << type_print[expr_type];
+        ss << assign_prefix_print[assignment_t] << type_print[expression_t];
 
         if (rhs->node_type == hl_ast_node_type_operand) {
 
@@ -99,26 +101,28 @@ namespace fcore{
 
 
     bool hl_expression_node::is_unary() {
-        bool res  = false;
-        res |= expr_type == expr_reciprocal;
-        res |= expr_type == expr_not_b;
-        res |= expr_type == expr_not_l;
-        res |= expr_type == expr_neg;
-        res |= expr_type == expr_incr_pre;
-        res |= expr_type == expr_incr_post;
-        res |= expr_type == expr_decr_post;
-        res |= expr_type == expr_decr_pre;
-        res |= expr_type == expr_call;
-        res |= expr_type == expr_itf;
-        res |= expr_type == expr_fti;
-        res |= expr_type == expr_abs;
-        res |= expr_type == expr_popcnt;
-        return res;
+        std::unordered_set<expression_type> unaries = {
+            RECIPROCAL,
+            NOT_B,
+            NOT_L,
+            NEG,
+            PRE_INCR,
+            POST_INCR,
+            POST_DECR,
+            PRE_DECR,
+            CALL,
+            ITF,
+            FTI,
+            ABS,
+            POPCNT
+
+        };
+        return unaries.contains(expression_t);
     }
 
     bool hl_expression_node::is_immediate() {
         bool res  = false;
-        res |= expr_type == expr_nop;
+        res |= expression_t == NOP;
         return res;
     }
 
@@ -165,7 +169,7 @@ namespace fcore{
 
     bool hl_expression_node::is_ternary() {
         bool res  = false;
-        res |= expr_type == expr_csel;
+        res |= expression_t == CSEL;
         return res;
     }
 
@@ -235,8 +239,8 @@ namespace fcore{
         else return false;
 
 
-        ret_val &= l_ex.expr_type == r_ex.expr_type;
-        ret_val &= l_ex.assignment_type == r_ex.assignment_type;
+        ret_val &= l_ex.expression_t == r_ex.expression_t;
+        ret_val &= l_ex.assignment_t == r_ex.assignment_t;
 
         return ret_val;
     }

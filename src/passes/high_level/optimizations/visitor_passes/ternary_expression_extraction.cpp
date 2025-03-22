@@ -38,10 +38,10 @@ namespace fcore{
     ternary_expression_extraction::process_expression(std::shared_ptr<hl_expression_node> element) {
         std::vector<std::shared_ptr<hl_ast_node>> ret_val;
 
-        if(element->get_type() == hl_expression_node::expr_assign){
+        if(element->get_type() == hl_expression_node::ASSIGN){
             if(element->get_rhs()->node_type == hl_ast_node_type_expr){
                 auto expr_r = std::static_pointer_cast<hl_expression_node>(element->get_rhs());
-                if(expr_r->get_type() == hl_expression_node::expr_csel){
+                if(expr_r->get_type() == hl_expression_node::CSEL){
                     auto lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs().value());
                     auto def_name = "ternary_output_" + lhs->get_identifier();
 

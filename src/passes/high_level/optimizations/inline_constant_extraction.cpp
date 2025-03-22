@@ -46,11 +46,11 @@ namespace fcore{
 
     std::vector<std::shared_ptr<hl_ast_node>> inline_constant_extraction::process_node(const std::shared_ptr<hl_expression_node> &element) {
         std::vector<std::shared_ptr<hl_ast_node>> ret_val;
-        if(!element->is_immediate() && element->get_type()!=hl_expression_node::expr_assign){
+        if(!element->is_immediate() && element->get_type()!=hl_expression_node::ASSIGN){
             throw std::runtime_error("Non assignment top level expressions should not reach inline constant extraction pass");
         }
 
-        if(element->get_type()==hl_expression_node::expr_assign){
+        if(element->get_type()==hl_expression_node::ASSIGN){
             if(element->get_rhs()->node_type != hl_ast_node_type_operand){
                 std::vector<std::shared_ptr<hl_ast_node>> res = process_expression(std::static_pointer_cast<hl_expression_node>(element->get_rhs()));
                 if(res.size()>1){
@@ -90,7 +90,7 @@ namespace fcore{
 
         std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
 
-        if(node->get_type()==hl_expression_node::expr_efi){
+        if(node->get_type()==hl_expression_node::EFI){
             retval.push_back(element);
         } else {
             std::vector<std::shared_ptr<hl_ast_node>> rhs_result = process_operand(std::static_pointer_cast<hl_ast_operand>(node->get_rhs()));

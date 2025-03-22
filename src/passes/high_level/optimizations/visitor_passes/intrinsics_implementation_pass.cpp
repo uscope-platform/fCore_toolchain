@@ -36,17 +36,17 @@ namespace fcore {
     intrinsics_implementation_pass::process_function_call(const std::shared_ptr<hl_function_call_node> &element) {
 
 
-        static std::map<std::string, hl_expression_node::expression_type_t> substitutions= {
-                std::make_pair("itf", hl_expression_node::expr_itf),
-                std::make_pair("fti", hl_expression_node::expr_fti),
-                std::make_pair("satp", hl_expression_node::expr_satp),
-                std::make_pair("satn", hl_expression_node::expr_satn),
-                std::make_pair("abs", hl_expression_node::expr_abs),
-                std::make_pair("popcnt", hl_expression_node::expr_popcnt),
-                std::make_pair("efi", hl_expression_node::expr_efi),
-                std::make_pair("bset", hl_expression_node::expr_bset),
-                std::make_pair("bsel", hl_expression_node::expr_bsel),
-                std::make_pair("nop", hl_expression_node::expr_nop)
+        static std::map<std::string, hl_expression_node::expression_type> substitutions= {
+                std::make_pair("itf", hl_expression_node::ITF),
+                std::make_pair("fti", hl_expression_node::FTI),
+                std::make_pair("satp", hl_expression_node::SATP),
+                std::make_pair("satn", hl_expression_node::SATN),
+                std::make_pair("abs", hl_expression_node::ABS),
+                std::make_pair("popcnt", hl_expression_node::POPCNT),
+                std::make_pair("efi", hl_expression_node::EFI),
+                std::make_pair("bset", hl_expression_node::BSET),
+                std::make_pair("bsel", hl_expression_node::BSEL),
+                std::make_pair("nop", hl_expression_node::NOP)
         };
         static std::map<std::string, int> n_arguments= {
                 std::make_pair("itf", 1),
@@ -71,7 +71,7 @@ namespace fcore {
         std::shared_ptr<hl_expression_node> retval = std::make_shared<hl_expression_node>(substitutions[element->get_name()]);
 
         if(n_arguments[element->get_name()]== 3){
-            retval = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+            retval = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
             retval->set_lhs(element->get_arguments()[2]);
             std::shared_ptr<hl_expression_node> rhs = std::make_shared<hl_expression_node>(substitutions[element->get_name()]);
             rhs->set_lhs(element->get_arguments()[0]);

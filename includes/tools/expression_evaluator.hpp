@@ -31,12 +31,12 @@ namespace fcore {
         static std::shared_ptr<hl_ast_operand> evaluate_ternary_expression(std::shared_ptr<hl_expression_node> expression);
         static std::shared_ptr<hl_ast_operand> evaluate_unary_expression(std::shared_ptr<hl_expression_node> expression);
         static std::shared_ptr<hl_ast_operand> evaluate_expression_side(const std::shared_ptr<hl_ast_node>& side);
-        static int evaluate_regular_expr_i(int operand_a, int operand_b, hl_expression_node::expression_type_t operation);
-        static float evaluate_regular_expr_f(float operand_a, float operand_b, hl_expression_node::expression_type_t operation);
+        static int evaluate_regular_expr_i(int operand_a, int operand_b, hl_expression_node::expression_type operation);
+        static float evaluate_regular_expr_f(float operand_a, float operand_b, hl_expression_node::expression_type operation);
         static int evaluate_ternary_expr_i(int operand_a, int operand_b,  int operand_c);
         static float evaluate_ternary_expr_f(float operand_a, float operand_b, float operand_c);
-        static int evaluate_unary_expr_i(int operand, hl_expression_node::expression_type_t operation);
-        static float evaluate_unary_expr_f(float operand, hl_expression_node::expression_type_t operation);
+        static int evaluate_unary_expr_i(int operand, hl_expression_node::expression_type operation);
+        static float evaluate_unary_expr_f(float operand, hl_expression_node::expression_type operation);
     };
 }
 

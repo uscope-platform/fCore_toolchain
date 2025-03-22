@@ -30,8 +30,8 @@ namespace fcore {
         static std::vector<std::shared_ptr<hl_ast_node>> process_expression(const std::shared_ptr<hl_expression_node>& exp);
         static std::vector<std::shared_ptr<hl_ast_node>> process_expression_by_type(
             const std::shared_ptr<hl_expression_node>& exp,
-            hl_expression_node::expression_type_t type,
-            hl_expression_node::expression_type_t additional_type
+            hl_expression_node::expression_type type,
+            hl_expression_node::expression_type additional_type
         );
         static std::pair<std::shared_ptr<hl_ast_operand>, std::shared_ptr<hl_ast_operand>>  process_left_expression(std::shared_ptr<hl_expression_node> exp);
         static std::pair<std::shared_ptr<hl_ast_operand>, std::shared_ptr<hl_ast_operand>> process_right_expression(std::shared_ptr<hl_expression_node> exp);

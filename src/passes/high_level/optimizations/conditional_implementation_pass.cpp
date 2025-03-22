@@ -112,7 +112,7 @@ namespace fcore{
     std::vector<std::shared_ptr<hl_ast_node>>
     conditional_implementation_pass::process_expression(const std::shared_ptr<hl_expression_node> &node,
                                                                const std::shared_ptr<hl_code_block> &subtree) {
-        if(node->get_type()== hl_expression_node::expr_assign){
+        if(node->get_type()== hl_expression_node::ASSIGN){
             auto rhs = node->get_rhs();
             if(rhs->node_type==hl_ast_node_type_conditional){
                 auto cond = std::static_pointer_cast<hl_ast_conditional_node>(rhs);
@@ -203,7 +203,7 @@ namespace fcore{
     std::shared_ptr<hl_ast_node>
     conditional_implementation_pass::process_ternary(const std::shared_ptr<hl_ast_conditional_node> &node) {
 
-        std::shared_ptr<hl_expression_node> ret = std::make_shared<hl_expression_node>(hl_expression_node::expr_csel);
+        std::shared_ptr<hl_expression_node> ret = std::make_shared<hl_expression_node>(hl_expression_node::CSEL);
         ret->set_lhs(node->get_condition());
         ret->set_rhs(node->get_if_block()[0]);
         ret->set_ths(node->get_else_block()[0]);

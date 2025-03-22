@@ -51,16 +51,16 @@ namespace fcore{
 
         auto var = std::make_shared<variable>( "b");
         auto op = std::make_shared<hl_ast_operand>(var);
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_not_l);
+        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::NOT_L);
         gs_1->set_rhs(op);
 
         // c = -~d;
         var = std::make_shared<variable>( "d");
         op = std::make_shared<hl_ast_operand>(var);
 
-        auto exp = std::make_shared<hl_expression_node>(hl_expression_node::expr_not_b);
+        auto exp = std::make_shared<hl_expression_node>(hl_expression_node::NOT_B);
         exp->set_rhs(op);
-        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::expr_neg);
+        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::NEG);
         gs_2->set_rhs(exp);
 
 
@@ -69,9 +69,9 @@ namespace fcore{
         var = std::make_shared<variable>( "f");
         op = std::make_shared<hl_ast_operand>(var);
 
-        exp = std::make_shared<hl_expression_node>(hl_expression_node::expr_not_b);
+        exp = std::make_shared<hl_expression_node>(hl_expression_node::NOT_B);
         exp->set_rhs(op);
-        auto gs_3 = std::make_shared<hl_expression_node>(hl_expression_node::expr_not_l);
+        auto gs_3 = std::make_shared<hl_expression_node>(hl_expression_node::NOT_L);
         gs_3->set_rhs(exp);
 
 
@@ -136,18 +136,18 @@ namespace fcore{
         var = std::make_shared<variable>("constant",5);
         auto op_2= std::make_shared<hl_ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
+        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
-        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::expr_div);
+        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::DIV);
         gs_2->set_lhs(gs_1);
         var = std::make_shared<variable>("constant",6);
         op_2= std::make_shared<hl_ast_operand>(var);
 
         gs_2->set_rhs(op_2);
 
-        auto gs_3 = std::make_shared<hl_expression_node>(hl_expression_node::expr_modulo);
+        auto gs_3 = std::make_shared<hl_expression_node>(hl_expression_node::MODULO);
         gs_3->set_lhs(gs_2);
 
         var = std::make_shared<variable>("constant", 3);
@@ -191,11 +191,11 @@ namespace fcore{
         var = std::make_shared<variable>("constant",5);
         auto op_2= std::make_shared<hl_ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
-        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::expr_sub);
+        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::SUB);
         gs_2->set_lhs(gs_1);
         var = std::make_shared<variable>("constant",6);
         op_2= std::make_shared<hl_ast_operand>(var);
@@ -236,11 +236,11 @@ namespace fcore{
         var = std::make_shared<variable>("constant",5);
         auto op_2= std::make_shared<hl_ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_rsh);
+        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::RSH);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
-        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::expr_lsh);
+        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::LSH);
         gs_2->set_lhs(gs_1);
 
         var = std::make_shared<variable>("constant",6);
@@ -280,25 +280,25 @@ namespace fcore{
         var = std::make_shared<variable>("constant",5);
         auto op_2= std::make_shared<hl_ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_gt);
+        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::GT);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
-        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::expr_lt);
+        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::LT);
         gs_2->set_lhs(gs_1);
 
         var = std::make_shared<variable>("constant", 6);
         op_2= std::make_shared<hl_ast_operand>(var);
         gs_2->set_rhs(op_2);
 
-        auto gs_3 = std::make_shared<hl_expression_node>(hl_expression_node::expr_gte);
+        auto gs_3 = std::make_shared<hl_expression_node>(hl_expression_node::GTE);
         gs_3->set_lhs(gs_2);
 
         var = std::make_shared<variable>("constant",3);
         op_2= std::make_shared<hl_ast_operand>(var);
         gs_3->set_rhs(op_2);
 
-        auto gs_4 = std::make_shared<hl_expression_node>(hl_expression_node::expr_lte);
+        auto gs_4 = std::make_shared<hl_expression_node>(hl_expression_node::LTE);
         gs_4->set_lhs(gs_3);
 
         var = std::make_shared<variable>("constant",7);
@@ -338,11 +338,11 @@ namespace fcore{
         var = std::make_shared<variable>("constant", 5);
         auto op_2= std::make_shared<hl_ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_eq);
+        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::EQ);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
-        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::expr_neq);
+        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::NEQ);
         gs_2->set_lhs(gs_1);
 
         var = std::make_shared<variable>("constant",6);
@@ -382,7 +382,7 @@ namespace fcore{
         var = std::make_shared<variable>("constant", 5);
         auto op_2= std::make_shared<hl_ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_and_b);
+        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::AND_B);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
@@ -422,7 +422,7 @@ namespace fcore{
         var = std::make_shared<variable>("constant", 5);
         auto op_2= std::make_shared<hl_ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_xor_b);
+        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::XOR_B);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
@@ -461,7 +461,7 @@ namespace fcore{
         var = std::make_shared<variable>("constant", 5);
         auto op_2= std::make_shared<hl_ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_or_l);
+        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::OR_L);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
@@ -499,7 +499,7 @@ namespace fcore{
         var = std::make_shared<variable>("constant", 5);
         auto op_2= std::make_shared<hl_ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_and_l);
+        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::AND_L);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
@@ -548,14 +548,14 @@ namespace fcore{
         var = std::make_shared<variable>("constant", 5);
         auto op_2= std::make_shared<hl_ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_xor_b);
+        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::XOR_B);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
         var = std::make_shared<variable>("test");
         auto op_3 = std::make_shared<hl_ast_operand>(var);
 
-        auto assignment = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+        auto assignment = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
         assignment->set_lhs(op_3);
         assignment->set_rhs(gs_1);
 
@@ -574,7 +574,7 @@ namespace fcore{
             hl_expression_node::rsh_assignment
         };
         for(auto item:assignment_types){
-            assignment = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+            assignment = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
             assignment->set_assignment_type(item);
             assignment->set_lhs(op_3);
             assignment->set_rhs(gs_1);
@@ -626,7 +626,7 @@ namespace fcore{
         var = std::make_shared<variable>("constant", 5);
         auto op_2= std::make_shared<hl_ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_xor_b);
+        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::XOR_B);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
@@ -634,7 +634,7 @@ namespace fcore{
         var = std::make_shared<variable>("test");
         auto op_3 = std::make_shared<hl_ast_operand>(var);
 
-        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
         gs_2->set_lhs(op_3);
         gs_2->set_rhs(gs_1);
 
@@ -681,7 +681,7 @@ namespace fcore{
         var = std::make_shared<variable>("constant", 4);
         auto op_2= std::make_shared<hl_ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
@@ -724,7 +724,7 @@ namespace fcore{
         var = std::make_shared<variable>("constant", 5);
         auto op_2= std::make_shared<hl_ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_xor_b);
+        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::XOR_B);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
@@ -767,14 +767,14 @@ namespace fcore{
         var = std::make_shared<variable>("constant", 5);
         auto op_2= std::make_shared<hl_ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_xor_b);
+        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::XOR_B);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
         var = std::make_shared<variable>("test");
         auto op_3 = std::make_shared<hl_ast_operand>(var);
 
-        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
         gs_2->set_lhs(op_3);
         gs_2->set_rhs(gs_1);
 
@@ -835,7 +835,7 @@ namespace fcore{
         var = std::make_shared<variable>("constant",0);
         op_1 = std::make_shared<hl_ast_operand>(var);
 
-        auto condition = std::make_shared<hl_expression_node>(hl_expression_node::expr_eq);
+        auto condition = std::make_shared<hl_expression_node>(hl_expression_node::EQ);
         condition->set_lhs(op_2);
         condition->set_rhs(op_1);
         gold_standard->set_condition(condition);
@@ -880,14 +880,14 @@ namespace fcore{
         auto gold_standard = std::make_shared<hl_ast_loop_node>();
 
         // LOOP BODY
-        auto loop_body = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+        auto loop_body = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
 
         auto var = std::make_shared<variable>("j");
         var->set_variable_class({variable_output_type, false});
         auto op_1 = std::make_shared<hl_ast_operand>(var);
 
         loop_body->set_lhs(op_1);
-        auto body_add_expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+        auto body_add_expr = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
 
         var = std::make_shared<variable>( "a");
         var->set_variable_class({variable_input_type, false});
@@ -912,7 +912,7 @@ namespace fcore{
         init_def->set_scalar_initializer(def_val);
         gold_standard->set_init_statement(init_def);
         // LOOP CONDITION
-        auto loop_cond = std::make_shared<hl_expression_node>(hl_expression_node::expr_lt);
+        auto loop_cond = std::make_shared<hl_expression_node>(hl_expression_node::LT);
 
         var = std::make_shared<variable>("i");
         op_1 = std::make_shared<hl_ast_operand>(var);
@@ -925,7 +925,7 @@ namespace fcore{
         loop_cond->set_lhs(op_1);
         gold_standard->set_condition(loop_cond);
         // LOOP ITERATION EXPR
-        auto loop_iter = std::make_shared<hl_expression_node>(hl_expression_node::expr_incr_pre);
+        auto loop_iter = std::make_shared<hl_expression_node>(hl_expression_node::PRE_INCR);
 
         var = std::make_shared<variable>("i");
         op_1 = std::make_shared<hl_ast_operand>(var);
@@ -975,14 +975,14 @@ namespace fcore{
 
         // CONTENT EXPRESSION
 
-        auto content_expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+        auto content_expr = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
 
         auto var = std::make_shared<variable>("j");
         var->set_variable_class({variable_output_type, false});
         auto op_1 = std::make_shared<hl_ast_operand>(var);
 
         content_expr->set_lhs(op_1);
-        auto body_add_expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+        auto body_add_expr = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
 
         var = std::make_shared<variable>( "a");
         var->set_variable_class({variable_input_type, false});
@@ -1016,7 +1016,7 @@ namespace fcore{
 
         //       LOOP CONDITION
 
-        auto loop_cond = std::make_shared<hl_expression_node>(hl_expression_node::expr_lt);
+        auto loop_cond = std::make_shared<hl_expression_node>(hl_expression_node::LT);
 
         var = std::make_shared<variable>("k");
         op_1 = std::make_shared<hl_ast_operand>(var);
@@ -1031,7 +1031,7 @@ namespace fcore{
 
         //       LOOP ITERATION EXPR
 
-        auto loop_iter = std::make_shared<hl_expression_node>(hl_expression_node::expr_incr_pre);
+        auto loop_iter = std::make_shared<hl_expression_node>(hl_expression_node::PRE_INCR);
 
         var = std::make_shared<variable>("k");
         op_1 = std::make_shared<hl_ast_operand>(var);
@@ -1056,7 +1056,7 @@ namespace fcore{
         outer_loop->set_init_statement(init_def);
 
         // LOOP CONDITION
-        loop_cond = std::make_shared<hl_expression_node>(hl_expression_node::expr_lt);
+        loop_cond = std::make_shared<hl_expression_node>(hl_expression_node::LT);
 
         var = std::make_shared<variable>("i");
         op_1 = std::make_shared<hl_ast_operand>(var);
@@ -1069,7 +1069,7 @@ namespace fcore{
         loop_cond->set_lhs(op_1);
         outer_loop->set_condition(loop_cond);
         // LOOP ITERATION EXPR
-        loop_iter = std::make_shared<hl_expression_node>(hl_expression_node::expr_incr_pre);
+        loop_iter = std::make_shared<hl_expression_node>(hl_expression_node::PRE_INCR);
 
         var = std::make_shared<variable>("i");
         op_1 = std::make_shared<hl_ast_operand>(var);
@@ -1131,7 +1131,7 @@ namespace fcore{
         var->set_variable_class({variable_output_type, false});
         auto def_3 = std::make_shared<hl_definition_node>("b", c_type_int, var);
 
-        auto ex = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+        auto ex = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
 
         var = std::make_shared<variable>( "array_test");
         var->set_type(var_type_array);
@@ -1289,7 +1289,7 @@ namespace fcore{
         auto var = std::make_shared<variable>( "a");
         auto op = std::make_shared<hl_ast_operand>(var);
 
-        auto expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_gt);
+        auto expr = std::make_shared<hl_expression_node>(hl_expression_node::GT);
         expr->set_lhs(op);
 
         var = std::make_shared<variable>("constant", 0);
@@ -1355,7 +1355,7 @@ namespace fcore{
 
         var = std::make_shared<variable>("theta");
         op = std::make_shared<hl_ast_operand>(var);
-        auto gold_standard = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+        auto gold_standard = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
         gold_standard->set_lhs(op);
         gold_standard->set_rhs(cond);
 
@@ -1459,7 +1459,7 @@ namespace fcore{
         op_1->get_variable()->add_struct_accessors({"gain", "a1"});
         op_2->get_variable()->add_struct_accessors({"phase", "a2"});
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
@@ -1504,7 +1504,7 @@ namespace fcore{
         ref_fcn->set_parameters_list({def, def2});
 
 
-        auto exp = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
+        auto exp = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
         var = std::make_shared<variable>("err");
         auto op = std::make_shared<hl_ast_operand>(var);
         exp->set_lhs(op);
@@ -1514,7 +1514,7 @@ namespace fcore{
         op = std::make_shared<hl_ast_operand>(var);
         exp->set_rhs(op);
 
-        auto exp2 = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+        auto exp2 = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
         exp2->set_lhs(exp);
         var = std::make_shared<variable>("p");
         var->add_struct_accessors({"phase"});
@@ -1560,7 +1560,7 @@ namespace fcore{
 
 
 
-        auto expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+        auto expr = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
         auto var = std::make_shared<variable>("constant",1.0f);
         auto op = std::make_shared<hl_ast_operand>(var);
         expr->set_rhs(op);
@@ -1571,7 +1571,7 @@ namespace fcore{
 
         reference.push_back(expr);
 
-        expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+        expr = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
         var = std::make_shared<variable>("constant",4.0f);
         op = std::make_shared<hl_ast_operand>(var);
         expr->set_rhs(op);

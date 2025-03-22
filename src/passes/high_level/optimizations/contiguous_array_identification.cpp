@@ -59,10 +59,10 @@ namespace fcore{
     contiguous_array_identification::process_element(std::shared_ptr<hl_expression_node> element) {
         if(element->is_immediate()) return element;
 
-        if(element->get_type() == hl_expression_node::expr_assign){
+        if(element->get_type() == hl_expression_node::ASSIGN){
             if(element->get_rhs()->node_type == hl_ast_node_type_expr){
                 auto rhs = std::static_pointer_cast<hl_expression_node>(element->get_rhs());
-                if(rhs->get_type()==hl_expression_node::expr_efi){
+                if(rhs->get_type()==hl_expression_node::EFI){
 
                     process_efi_arguments(rhs);
 
@@ -88,7 +88,7 @@ namespace fcore{
                     return element;
                 }
             }
-        } else if(element->get_type()==hl_expression_node::expr_efi){
+        } else if(element->get_type()==hl_expression_node::EFI){
             process_efi_arguments(element);
         }
 
@@ -132,7 +132,7 @@ namespace fcore{
             auto processed_item = process_element(item);
             if(processed_item->node_type == hl_ast_node_type_expr){
                 auto expr = std::static_pointer_cast<hl_expression_node>(processed_item);
-                if(expr->get_type() == hl_expression_node::expr_efi){
+                if(expr->get_type() == hl_expression_node::EFI){
                     if(!element->is_scalar()){ // SCALARS ARE CONTIGUOUS BY DEFINITION, THUS THEY SHOULD BE TREATED NORMALLY
                         element->get_variable()->set_contiguity(true);
                         contiguous_arrays.insert(element->get_name());

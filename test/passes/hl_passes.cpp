@@ -39,7 +39,7 @@ TEST(HlPassesTest, divisionImplementation) {
 
     std::shared_ptr<hl_definition_node> define = std::make_shared<hl_definition_node>("a", c_type_float, var);
 
-    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(hl_expression_node::expr_div);
+    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(hl_expression_node::DIV);
     var = std::make_shared<variable>("constant", 4);
     std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
     exp->set_lhs(op);
@@ -58,7 +58,7 @@ TEST(HlPassesTest, divisionImplementation) {
 
     std::shared_ptr<hl_code_block> result =  manager.run_optimizations(input_root, {});
 
-    std::shared_ptr<hl_expression_node> mult_exp = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
+    std::shared_ptr<hl_expression_node> mult_exp = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
 
 
     var = std::make_shared<variable>("constant", 4);
@@ -67,7 +67,7 @@ TEST(HlPassesTest, divisionImplementation) {
 
     var = std::make_shared<variable>("constant",6);
     op_1= std::make_shared<hl_ast_operand>(var);
-    std::shared_ptr<hl_expression_node> rec_exp = std::make_shared<hl_expression_node>(hl_expression_node::expr_reciprocal);
+    std::shared_ptr<hl_expression_node> rec_exp = std::make_shared<hl_expression_node>(hl_expression_node::RECIPROCAL);
     rec_exp->set_rhs(op_1);
 
     mult_exp->set_rhs(rec_exp);
@@ -139,7 +139,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
     var->set_variable_class({variable_output_type, false});
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
 
-    std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(hl_expression_node::expr_itf);
+    std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(hl_expression_node::ITF);
     ex_1->set_rhs(op_1);
     def_3->set_scalar_initializer(ex_1);
 
@@ -155,7 +155,7 @@ TEST(HlPassesTest, intrinsics_implementation) {
     var = std::make_shared<variable>("constant",100);
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
 
-    ex_1= std::make_shared<hl_expression_node>(hl_expression_node::expr_satp);
+    ex_1= std::make_shared<hl_expression_node>(hl_expression_node::SATP);
     ex_1->set_lhs(op_1);
     ex_1->set_rhs(op_2);
     def_4->set_scalar_initializer(ex_1);
@@ -185,11 +185,11 @@ TEST(HlPassesTest, test_operating_assignments_implementation) {
     std::shared_ptr<variable> var = std::make_shared<variable>("b");
     std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
 
-    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
     exp->set_assignment_type(hl_expression_node::addition_assignment);
     exp->set_lhs(op);
 
-    std::shared_ptr<hl_expression_node> expmul = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
+    std::shared_ptr<hl_expression_node> expmul = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
     expmul->set_lhs(op);
     var = std::make_shared<variable>("constant", 3);
     op = std::make_shared<hl_ast_operand>(var);
@@ -211,9 +211,9 @@ TEST(HlPassesTest, test_operating_assignments_implementation) {
     std::shared_ptr<hl_code_block> gold_standard= std::make_shared<hl_code_block>();
 
     var = std::make_shared<variable>("c");
-    std::shared_ptr<hl_expression_node> exadd = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+    std::shared_ptr<hl_expression_node> exadd = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
 
-    std::shared_ptr<hl_expression_node> exmul = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
+    std::shared_ptr<hl_expression_node> exmul = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
 
     var = std::make_shared<variable>("b");
     std::shared_ptr<hl_ast_operand> op_1 = std::make_shared<hl_ast_operand>(var);
@@ -227,7 +227,7 @@ TEST(HlPassesTest, test_operating_assignments_implementation) {
     exadd->set_lhs(op_1);
     exadd->set_rhs(exmul);
 
-    std::shared_ptr<hl_expression_node> exassign = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+    std::shared_ptr<hl_expression_node> exassign = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
     exassign->set_lhs(op_1);
     exassign->set_rhs(exadd);
 
@@ -262,7 +262,7 @@ TEST(HlPassesTest, function_inlining) {
     parameters.push_back(def);
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
 
-    std::shared_ptr<hl_expression_node> exp_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+    std::shared_ptr<hl_expression_node> exp_1 = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
     exp_1->set_lhs(op_1);
     exp_1->set_rhs(op_2);
 
@@ -271,7 +271,7 @@ TEST(HlPassesTest, function_inlining) {
     def->set_scalar_initializer(exp_1);
 
     op_1 = std::make_shared<hl_ast_operand>(var);
-    exp_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+    exp_1 = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
     exp_1->set_lhs(op_1);
     exp_1->set_rhs(op_2);
 
@@ -298,11 +298,11 @@ TEST(HlPassesTest, function_inlining) {
     parameters.push_back(def);
     std::shared_ptr<hl_ast_operand> op_f = std::make_shared<hl_ast_operand>(var);
 
-    exp_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+    exp_1 = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
     exp_1->set_lhs(op_e);
     exp_1->set_rhs(op_f);
 
-    std::shared_ptr<hl_expression_node> exp_2 = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+    std::shared_ptr<hl_expression_node> exp_2 = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
     exp_2->set_lhs(exp_1);
     exp_2->set_rhs(op_f);
 
@@ -344,7 +344,7 @@ TEST(HlPassesTest, function_inlining) {
     // CALL BODY
     var = std::make_shared<variable>("_fcmglr_function_add_1_c");
     def = std::make_shared<hl_definition_node>("_fcmglr_function_add_1_c", c_type_int, var);
-    std::shared_ptr<hl_expression_node> exadd = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+    std::shared_ptr<hl_expression_node> exadd = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
 
     var = std::make_shared<variable>("constant",2);
     op_1 = std::make_shared<hl_ast_operand>(var);
@@ -358,11 +358,11 @@ TEST(HlPassesTest, function_inlining) {
 
     gold_standard->add_content(def);
 
-    std::shared_ptr<hl_expression_node> ex_add2 = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+    std::shared_ptr<hl_expression_node> ex_add2 = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
     ex_add2->set_lhs(exadd);
     ex_add2->set_rhs(op_2);
 
-    exadd = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+    exadd = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
 
     var = std::make_shared<variable>("_fcmglr_function_add_1_c");
     op_1 = std::make_shared<hl_ast_operand>(var);
@@ -433,7 +433,7 @@ TEST(HlPassesTest, simple_normalization) {
     var = std::make_shared<variable>("constant", 5.0f);
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
 
-    std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
+    std::shared_ptr<hl_expression_node> ex_1= std::make_shared<hl_expression_node>(hl_expression_node::MULT);
     ex_1->set_lhs(op_1);
     ex_1->set_rhs(op_2);
     def_1->set_scalar_initializer(ex_1);
@@ -450,7 +450,7 @@ TEST(HlPassesTest, simple_normalization) {
     var = std::make_shared<variable>("constant",6.0f);
     op_2 = std::make_shared<hl_ast_operand>(var);
 
-    ex_1= std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+    ex_1= std::make_shared<hl_expression_node>(hl_expression_node::ADD);
     ex_1->set_lhs(op_1);
     ex_1->set_rhs(op_2);
     def_2->set_scalar_initializer(ex_1);
@@ -557,7 +557,7 @@ TEST(HlPassesTest, loop_unrolling_array) {
 
     for(int i = 5; i<7; ++i){
         //assignment
-        std::shared_ptr<hl_expression_node> assign_exp = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+        std::shared_ptr<hl_expression_node> assign_exp = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
 
         std::shared_ptr<variable> def_var = std::make_shared<variable>("j");
         def_var->set_type(var_type_array);
@@ -568,7 +568,7 @@ TEST(HlPassesTest, loop_unrolling_array) {
         assign_exp->set_lhs(assign_op);
 
         //INITIALIZER
-        std::shared_ptr<hl_expression_node> expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+        std::shared_ptr<hl_expression_node> expr = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
         // LHS
         def_var = std::make_shared<variable>("a");
         def_var->set_type(var_type_array);
@@ -648,7 +648,7 @@ TEST(HlPassesTest, test_matrix_scalarization) {
     def->set_array_index({op_1});
     gold_standard->add_content(def);
 
-    std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+    std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
     // FIRST EXPRESSION LHS
     var = std::make_shared<variable>("a");
     var->set_type(var_type_array);
@@ -657,7 +657,7 @@ TEST(HlPassesTest, test_matrix_scalarization) {
     std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
     ex->set_lhs(op);
     // FIRST EXPRESSION RHS
-    std::shared_ptr<hl_expression_node> ex_inner = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
+    std::shared_ptr<hl_expression_node> ex_inner = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
     var = std::make_shared<variable>("b");
     var->set_type(var_type_array);
     var->set_array_shape({3});
@@ -670,7 +670,7 @@ TEST(HlPassesTest, test_matrix_scalarization) {
     ex->set_rhs(ex_inner);
     gold_standard->add_content(ex);
 
-    ex = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+    ex = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
     // SECOND EXPRESSION LHS
     var = std::make_shared<variable>("b");
     var->set_type(var_type_array);
@@ -679,7 +679,7 @@ TEST(HlPassesTest, test_matrix_scalarization) {
     op = std::make_shared<hl_ast_operand>(var);
     ex->set_lhs(op);
     // SECOND EXPRESSION RHS
-    ex_inner = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
+    ex_inner = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
     var = std::make_shared<variable>("a");
     var->set_type(var_type_array);
     var->set_array_shape({10,2});
@@ -743,13 +743,13 @@ TEST(HlPassesTest, function_inlining_array) {
 
     std::shared_ptr<hl_ast_node> normalized_ast = result_ast->get_content()[5];
 
-    std::shared_ptr<hl_expression_node> gold_standard = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+    std::shared_ptr<hl_expression_node> gold_standard = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
 
     std::shared_ptr<variable> var = std::make_shared<variable>("_fcmglr_flattened_array_c_1_1");
     std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
     gold_standard->set_lhs(op);
 
-    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
     var = std::make_shared<variable>("constant", 5.0f);
     op = std::make_shared<hl_ast_operand>(var);
     exp->set_lhs(op);
@@ -809,7 +809,7 @@ TEST(HlPassesTest, function_return_inlining) {
     var = std::make_shared<variable>("ret");
     var->set_variable_class({variable_output_type, false});
     def = std::make_shared<hl_definition_node>("ret", c_type_float, var);
-    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
 
     var = std::make_shared<variable>("inlined_variable_0");
     op = std::make_shared<hl_ast_operand>(var);
@@ -828,7 +828,7 @@ TEST(HlPassesTest, function_return_inlining) {
 
 TEST(HlPassesTest, complex_normalization) {
     // INNER MULTIPLICATION
-    std::shared_ptr<hl_expression_node> expr_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
+    std::shared_ptr<hl_expression_node> expr_1 = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
 
     std::shared_ptr<variable> var = std::make_shared<variable>("fwd_in");
     std::shared_ptr<hl_ast_operand> fwd_op = std::make_shared<hl_ast_operand>(var);
@@ -838,21 +838,21 @@ TEST(HlPassesTest, complex_normalization) {
     std::shared_ptr<hl_ast_operand> ts_op = std::make_shared<hl_ast_operand>(var);
     expr_1->set_lhs(ts_op);
     // OUTER MULTIPLICATION
-    std::shared_ptr<hl_expression_node> expr_2 = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
+    std::shared_ptr<hl_expression_node> expr_2 = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
     expr_2->set_lhs(expr_1);
 
     var = std::make_shared<variable>("omega");
     std::shared_ptr<hl_ast_operand> w_op = std::make_shared<hl_ast_operand>(var);
     expr_2->set_rhs(w_op);
     // ADDITION
-    expr_1 = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+    expr_1 = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
     expr_1->set_rhs(expr_2);
 
     var = std::make_shared<variable>("integ_1");
     std::shared_ptr<hl_ast_operand> integ_op = std::make_shared<hl_ast_operand>(var);
     expr_1->set_lhs(integ_op);
 
-    expr_2 = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+    expr_2 = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
     expr_2->set_rhs(expr_1);
     expr_2->set_lhs(integ_op);
 
@@ -873,7 +873,7 @@ TEST(HlPassesTest, complex_normalization) {
     var = std::make_shared<variable>("intermediate_expression_0");
     std::shared_ptr<hl_definition_node> ie0_def = std::make_shared<hl_definition_node>("intermediate_expression_0", c_type_float, var);
     std::shared_ptr<hl_ast_operand> ie0_op = std::make_shared<hl_ast_operand>(var);
-    std::shared_ptr<hl_expression_node> expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
+    std::shared_ptr<hl_expression_node> expr = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
     expr->set_rhs(fwd_op);
     expr->set_lhs(ts_op);
     ie0_def->set_scalar_initializer(expr);
@@ -881,18 +881,18 @@ TEST(HlPassesTest, complex_normalization) {
     var = std::make_shared<variable>("intermediate_expression_1");
     std::shared_ptr<hl_definition_node> ie1_def = std::make_shared<hl_definition_node>("intermediate_expression_1", c_type_float, var);
     std::shared_ptr<hl_ast_operand> ie1_op = std::make_shared<hl_ast_operand>(var);
-    expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
+    expr = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
     expr->set_rhs(w_op);
     expr->set_lhs(ie0_op);
     ie1_def->set_scalar_initializer(expr);
 
 
-    expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+    expr = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
     expr->set_rhs(ie1_op);
     expr->set_lhs(integ_op);
 
 
-    std::shared_ptr<hl_expression_node> expr_as = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+    std::shared_ptr<hl_expression_node> expr_as = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
     expr_as->set_rhs(expr);
     expr_as->set_lhs(integ_op);
     
@@ -915,7 +915,7 @@ TEST(HlPassesTest, dead_load_elimination) {
     std::shared_ptr<variable> cvar = std::make_shared<variable>("constant", 158.6f);
     std::shared_ptr<hl_ast_operand> constant_op = std::make_shared<hl_ast_operand>(cvar);
     std::shared_ptr<hl_ast_operand> dest_op = std::make_shared<hl_ast_operand>(ts_var);
-    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
     exp->set_rhs(constant_op);
     exp->set_lhs(dest_op);
     input_root->add_content(exp);
@@ -990,7 +990,7 @@ TEST(HlPassesTest, nested_function_inlining) {
 
 
 
-    std::shared_ptr<hl_expression_node> exp_add = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+    std::shared_ptr<hl_expression_node> exp_add = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
     exp_add->set_rhs(mem_2_op);
     exp_add->set_lhs(in_1_op);
 
@@ -1024,7 +1024,7 @@ TEST(HlPassesTest, nested_function_inlining) {
     std::shared_ptr<hl_ast_operand> op_2 = std::make_shared<hl_ast_operand>(var);
 
 
-    std::shared_ptr<hl_expression_node> expr_sat = std::make_shared<hl_expression_node>(hl_expression_node::expr_satp);
+    std::shared_ptr<hl_expression_node> expr_sat = std::make_shared<hl_expression_node>(hl_expression_node::SATP);
     expr_sat->set_rhs(op_2);
     expr_sat->set_lhs(op_1);
 
@@ -1034,7 +1034,7 @@ TEST(HlPassesTest, nested_function_inlining) {
     std::shared_ptr<hl_ast_operand> op_dest = std::make_shared<hl_ast_operand>(var);
 
 
-    std::shared_ptr<hl_expression_node> expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+    std::shared_ptr<hl_expression_node> expr = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
     expr->set_rhs(expr_sat);
     expr->set_lhs(op_dest);
     gold_standard->add_content(expr);
@@ -1099,13 +1099,13 @@ TEST(HlPassesTest, complex_division_implementation) {
     std::shared_ptr<variable> c = std::make_shared<variable>("c");
     std::shared_ptr<hl_definition_node> c_def = std::make_shared<hl_definition_node>("c", c_type_int, c);
 
-    std::shared_ptr<hl_expression_node> mul_exp = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
+    std::shared_ptr<hl_expression_node> mul_exp = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
     mul_exp->set_lhs(std::make_shared<hl_ast_operand>(a));
 
 
     mul_exp->set_lhs(std::make_shared<hl_ast_operand>(a));
 
-    std::shared_ptr<hl_expression_node> rec_exp = std::make_shared<hl_expression_node>(hl_expression_node::expr_reciprocal);
+    std::shared_ptr<hl_expression_node> rec_exp = std::make_shared<hl_expression_node>(hl_expression_node::RECIPROCAL);
     rec_exp->set_rhs(std::make_shared<hl_ast_operand>(b));
     mul_exp->set_rhs(rec_exp);
 
@@ -1156,7 +1156,7 @@ TEST(HlPassesTest, comparison_flipping) {
     auto init = std::static_pointer_cast<hl_definition_node>(result_ast->get_content()[1])->get_scalar_initializer();
     EXPECT_EQ(init->node_type,hl_ast_node_type_expr);
     auto exp = std::static_pointer_cast<hl_expression_node>(init);
-    EXPECT_EQ(exp->get_type(), hl_expression_node::expr_lte);
+    EXPECT_EQ(exp->get_type(), hl_expression_node::LTE);
     auto rhs = exp->get_rhs();
     auto lhs = exp->get_lhs().value();
     EXPECT_EQ(rhs->node_type, hl_ast_node_type_expr);

@@ -37,12 +37,12 @@ namespace fcore {
     std::vector<std::shared_ptr<hl_ast_node>> constant_commutation::process_expression(
         const std::shared_ptr<hl_expression_node>& exp) {
         switch(exp->get_type()) {
-            case hl_expression_node::expr_add:
-                return process_expression_by_type(exp, hl_expression_node::expr_add, hl_expression_node::expr_sub);
-            case hl_expression_node::expr_sub:
-                return process_expression_by_type(exp, hl_expression_node::expr_sub, hl_expression_node::expr_add);
-            case hl_expression_node::expr_mult:
-                return process_expression_by_type(exp, hl_expression_node::expr_mult, hl_expression_node::expr_mult);
+            case hl_expression_node::ADD:
+                return process_expression_by_type(exp, hl_expression_node::ADD, hl_expression_node::SUB);
+            case hl_expression_node::SUB:
+                return process_expression_by_type(exp, hl_expression_node::SUB, hl_expression_node::ADD);
+            case hl_expression_node::MULT:
+                return process_expression_by_type(exp, hl_expression_node::MULT, hl_expression_node::MULT);
             default:
                 return {exp};
         }
@@ -50,15 +50,15 @@ namespace fcore {
 
     std::vector<std::shared_ptr<hl_ast_node>> constant_commutation::process_expression_by_type(
         const std::shared_ptr<hl_expression_node>& exp,
-        hl_expression_node::expression_type_t main_type,
-        hl_expression_node::expression_type_t additional_type
+        hl_expression_node::expression_type main_type,
+        hl_expression_node::expression_type additional_type
     ) {
         if(exp->get_type() != main_type) return {exp};
         if(exp->get_rhs()->node_type  == exp->get_lhs().value()->node_type) return {exp};
 
         std::shared_ptr<hl_ast_operand> lhs_op, rhs_op, parent_op;
 
-        hl_expression_node::expression_type_t child_type;
+        hl_expression_node::expression_type child_type;
 
         if(exp->get_rhs()->node_type == hl_ast_node_type_operand) {
             auto child_exp = std::static_pointer_cast<hl_expression_node>(exp->get_lhs().value());

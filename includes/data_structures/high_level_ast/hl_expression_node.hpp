@@ -30,7 +30,7 @@ namespace fcore{
     class hl_expression_node : public hl_ast_node{
     public:
 
-         enum assignment_type_t{
+         enum assignment_type{
             regular_assignment,
             addition_assignment,
             subtraction_assignment,
@@ -44,51 +44,51 @@ namespace fcore{
             rsh_assignment,
         } ;
 
-        enum expression_type_t{
-            expr_add,
-            expr_sub,
-            expr_mult,
-            expr_div,
-            expr_incr_pre,
-            expr_incr_post,
-            expr_decr_pre,
-            expr_decr_post,
-            expr_modulo,
-            expr_and_l,
-            expr_and_b,
-            expr_or_l,
-            expr_or_b,
-            expr_not_l,
-            expr_not_b,
-            expr_xor_b,
-            expr_lsh,
-            expr_rsh,
-            expr_eq,
-            expr_neq,
-            expr_neg,
-            expr_lt,
-            expr_gt,
-            expr_lte,
-            expr_gte,
-            expr_assign,
-            expr_call,
-            expr_reciprocal,
-            expr_itf,
-            expr_fti,
-            expr_satp,
-            expr_satn,
-            expr_abs,
-            expr_popcnt,
-            expr_efi,
-            expr_bset,
-            expr_bsel,
-            expr_nop,
-            expr_csel
+        enum expression_type{
+            ADD,
+            SUB,
+            MULT,
+            DIV,
+            PRE_INCR,
+            POST_INCR,
+            PRE_DECR,
+            POST_DECR,
+            MODULO,
+            AND_L,
+            AND_B,
+            OR_L,
+            OR_B,
+            NOT_L,
+            NOT_B,
+            XOR_B,
+            LSH,
+            RSH,
+            EQ,
+            NEQ,
+            NEG,
+            LT,
+            GT,
+            LTE,
+            GTE,
+            ASSIGN,
+            CALL,
+            RECIPROCAL,
+            ITF,
+            FTI,
+            SATP,
+            SATN,
+            ABS,
+            POPCNT,
+            EFI,
+            BSET,
+            BSEL,
+            NOP,
+            CSEL
         } ;
 
 
 
-        hl_expression_node( expression_type_t et);
+        hl_expression_node( expression_type et);
         void set_lhs(const std::shared_ptr<hl_ast_node> &node) {lhs = node;};
         void set_rhs(const std::shared_ptr<hl_ast_node> &node) {rhs = node;};
         void set_ths(const std::shared_ptr<hl_ast_node> &node) {ths = node;};
@@ -97,11 +97,11 @@ namespace fcore{
         std::shared_ptr<hl_ast_node> get_rhs(){return rhs;};
         std::optional<std::shared_ptr<hl_ast_node>> get_ths(){return ths;};
 
-        void set_assignment_type(assignment_type_t a) { assignment_type = a;};
-        assignment_type_t get_assignment_type() {return assignment_type;};
+        void set_assignment_type(assignment_type a) { assignment_t = a;};
+        assignment_type get_assignment_type() {return assignment_t;};
 
-        expression_type_t get_type(){return expr_type;};
-        void set_type(expression_type_t t){expr_type = t;};
+        expression_type get_type(){return expression_t;};
+        void set_type(expression_type t){expression_t = t;};
         std::string pretty_print();
         bool is_unary();
         bool is_ternary();
@@ -117,15 +117,15 @@ namespace fcore{
         static std::shared_ptr<hl_expression_node> deep_copy (const std::shared_ptr<hl_expression_node> &node);
 
     private:
-        expression_type_t expr_type;
-        assignment_type_t assignment_type;
+        expression_type expression_t;
+        assignment_type assignment_t;
 
         std::optional<std::shared_ptr<hl_ast_node>> lhs;
         std::shared_ptr<hl_ast_node> rhs;
         std::optional<std::shared_ptr<hl_ast_node>> ths;
 
-        std::map<expression_type_t, std::string> type_print;
-        std::map<assignment_type_t, std::string> assign_prefix_print;
+        std::map<expression_type, std::string> type_print;
+        std::map<assignment_type, std::string> assign_prefix_print;
     };
 }
 

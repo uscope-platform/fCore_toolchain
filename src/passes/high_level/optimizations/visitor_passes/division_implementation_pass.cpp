@@ -36,11 +36,11 @@ namespace fcore {
 
     std::vector<std::shared_ptr<hl_ast_node>>
     division_implementation_pass::process_expression(std::shared_ptr<hl_expression_node> exp) {
-        if (exp->get_type() == hl_expression_node::expr_div) {
+        if (exp->get_type() == hl_expression_node::DIV) {
             std::shared_ptr<hl_ast_node> lhs = exp->get_lhs().value();
-            std::shared_ptr<hl_expression_node> modulo_expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_reciprocal);
+            std::shared_ptr<hl_expression_node> modulo_expr = std::make_shared<hl_expression_node>(hl_expression_node::RECIPROCAL);
             modulo_expr->set_rhs(exp->get_rhs());
-            std::shared_ptr<hl_expression_node> mult_expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
+            std::shared_ptr<hl_expression_node> mult_expr = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
             mult_expr->set_lhs(exp->get_lhs().value());
             mult_expr->set_rhs(modulo_expr);
             return {mult_expr};

@@ -37,38 +37,38 @@ namespace fcore{
 
 
     std::shared_ptr<hl_expression_node>
-    operating_assignment_implementation_pass::create_top_expression(hl_expression_node::assignment_type_t a) {
+    operating_assignment_implementation_pass::create_top_expression(hl_expression_node::assignment_type a) {
         std::shared_ptr<hl_expression_node> retval;
         switch (a) {
             case hl_expression_node::addition_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
+                retval = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
                 break;
             case hl_expression_node::subtraction_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::expr_sub);
+                retval = std::make_shared<hl_expression_node>(hl_expression_node::SUB);
                 break;
             case hl_expression_node::multiplication_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
+                retval = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
                 break;
             case hl_expression_node::division_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::expr_div);
+                retval = std::make_shared<hl_expression_node>(hl_expression_node::DIV);
                 break;
             case hl_expression_node::modulo_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::expr_modulo);
+                retval = std::make_shared<hl_expression_node>(hl_expression_node::MODULO);
                 break;
             case hl_expression_node::and_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::expr_and_b);
+                retval = std::make_shared<hl_expression_node>(hl_expression_node::AND_B);
                 break;
             case hl_expression_node::or_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::expr_or_b);
+                retval = std::make_shared<hl_expression_node>(hl_expression_node::OR_B);
                 break;
             case hl_expression_node::xor_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::expr_xor_b);
+                retval = std::make_shared<hl_expression_node>(hl_expression_node::XOR_B);
                 break;
             case hl_expression_node::lsh_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::expr_lsh);
+                retval = std::make_shared<hl_expression_node>(hl_expression_node::LSH);
                 break;
             case hl_expression_node::rsh_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::expr_rsh);
+                retval = std::make_shared<hl_expression_node>(hl_expression_node::RSH);
                 break;
         }
         return retval;
@@ -76,8 +76,8 @@ namespace fcore{
 
     std::vector<std::shared_ptr<hl_ast_node>>
     operating_assignment_implementation_pass::process_expression(std::shared_ptr<hl_expression_node> element) {
-        if(element->get_type() == hl_expression_node::expr_assign && element->get_assignment_type() != hl_expression_node::regular_assignment ){
-            std::shared_ptr<hl_expression_node> outer_exp = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
+        if(element->get_type() == hl_expression_node::ASSIGN && element->get_assignment_type() != hl_expression_node::regular_assignment ){
+            std::shared_ptr<hl_expression_node> outer_exp = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
             outer_exp->set_lhs(element->get_lhs().value());
             std::shared_ptr<hl_expression_node> inner_exp = create_top_expression(element->get_assignment_type());
             inner_exp->set_lhs(element->get_lhs().value());
