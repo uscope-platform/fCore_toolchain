@@ -22,12 +22,12 @@ namespace fcore{
     class inline_constant_extraction : public pass_base {
     public:
         inline_constant_extraction();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
-        std::vector<std::shared_ptr<hl_ast_node>> process_node(const std::shared_ptr<hl_expression_node> &element);
-        std::vector<std::shared_ptr<hl_ast_node>> process_node(const std::shared_ptr<hl_definition_node> &element);
+        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
+        std::vector<std::shared_ptr<ast_node>> process_node(const std::shared_ptr<ast_expression> &element);
+        std::vector<std::shared_ptr<ast_node>> process_node(const std::shared_ptr<ast_definition> &element);
 
-        std::vector<std::shared_ptr<hl_ast_node>> process_expression(const std::shared_ptr<hl_expression_node>& element);
-        std::vector<std::shared_ptr<hl_ast_node>> process_operand(const std::shared_ptr<hl_ast_operand>& element);
+        std::vector<std::shared_ptr<ast_node>> process_expression(const std::shared_ptr<ast_expression>& element);
+        std::vector<std::shared_ptr<ast_node>> process_operand(const std::shared_ptr<ast_operand>& element);
     private:
         int n_var;
     };

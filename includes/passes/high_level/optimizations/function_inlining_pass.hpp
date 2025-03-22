@@ -24,29 +24,29 @@ namespace fcore{
     class function_inlining_pass :public pass_base{
     public:
         function_inlining_pass();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
+        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
 
-        std::vector<std::shared_ptr<hl_ast_node>> process_element(std::shared_ptr<hl_ast_node> element);
-        std::shared_ptr<hl_ast_loop_node> process_loop(std::shared_ptr<hl_ast_loop_node> element);
-        std::shared_ptr<hl_ast_conditional_node> process_conditional(std::shared_ptr<hl_ast_conditional_node> element);
-        std::vector<std::shared_ptr<hl_ast_node>> process_expression(std::shared_ptr<hl_expression_node> element);
-        std::vector<std::shared_ptr<hl_ast_node>> process_definition(std::shared_ptr<hl_definition_node> element);
-        std::shared_ptr<hl_function_def_node> process_function_def(std::shared_ptr<hl_function_def_node> element);
-        std::shared_ptr<hl_ast_operand> process_operand(std::shared_ptr<hl_ast_operand> element);
-        std::vector<std::shared_ptr<hl_ast_node>> process_function_call(std::shared_ptr<hl_function_call_node> element);
+        std::vector<std::shared_ptr<ast_node>> process_element(std::shared_ptr<ast_node> element);
+        std::shared_ptr<ast_loop> process_loop(std::shared_ptr<ast_loop> element);
+        std::shared_ptr<ast_conditional> process_conditional(std::shared_ptr<ast_conditional> element);
+        std::vector<std::shared_ptr<ast_node>> process_expression(std::shared_ptr<ast_expression> element);
+        std::vector<std::shared_ptr<ast_node>> process_definition(std::shared_ptr<ast_definition> element);
+        std::shared_ptr<ast_function_def> process_function_def(std::shared_ptr<ast_function_def> element);
+        std::shared_ptr<ast_operand> process_operand(std::shared_ptr<ast_operand> element);
+        std::vector<std::shared_ptr<ast_node>> process_function_call(std::shared_ptr<ast_call> element);
 
 
-        std::shared_ptr<hl_ast_node> substitute_arguments(const std::shared_ptr<hl_ast_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
-        std::shared_ptr<hl_ast_node> substitute_loop_arguments(const std::shared_ptr<hl_ast_loop_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
-        std::shared_ptr<hl_ast_node> substitute_conditional_arguments(const std::shared_ptr<hl_ast_conditional_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
-        std::shared_ptr<hl_ast_node> substitute_expression_arguments(const std::shared_ptr<hl_expression_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
-        std::shared_ptr<hl_ast_node> substitute_definition_arguments(const std::shared_ptr<hl_definition_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
-        std::shared_ptr<hl_ast_node> substitute_operand_arguments(const std::shared_ptr<hl_ast_operand> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
-        std::shared_ptr<hl_ast_node> substitute_code_block(const std::shared_ptr<hl_code_block> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
-        std::shared_ptr<hl_ast_node> substitute_call_arguments(const std::shared_ptr<hl_function_call_node> &statement, std::unordered_map<std::string, std::shared_ptr<hl_ast_node>> parameters);
+        std::shared_ptr<ast_node> substitute_arguments(const std::shared_ptr<ast_node> &statement, std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters);
+        std::shared_ptr<ast_node> substitute_loop_arguments(const std::shared_ptr<ast_loop> &statement, std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters);
+        std::shared_ptr<ast_node> substitute_conditional_arguments(const std::shared_ptr<ast_conditional> &statement, std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters);
+        std::shared_ptr<ast_node> substitute_expression_arguments(const std::shared_ptr<ast_expression> &statement, std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters);
+        std::shared_ptr<ast_node> substitute_definition_arguments(const std::shared_ptr<ast_definition> &statement, std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters);
+        std::shared_ptr<ast_node> substitute_operand_arguments(const std::shared_ptr<ast_operand> &statement, std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters);
+        std::shared_ptr<ast_node> substitute_code_block(const std::shared_ptr<ast_code_block> &statement, std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters);
+        std::shared_ptr<ast_node> substitute_call_arguments(const std::shared_ptr<ast_call> &statement, std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters);
 
     private:
-        std::unordered_map<std::string, std::shared_ptr<hl_function_def_node>> functions_map;
+        std::unordered_map<std::string, std::shared_ptr<ast_function_def>> functions_map;
     };
 }
 

@@ -103,50 +103,50 @@ namespace fcore{
         void exitStructSpecifier(C_parser::C_grammarParser::StructSpecifierContext *ctx) override;
 
         void set_dma_specs(std::unordered_map<std::string, variable_class_t> ds) {dma_specs = std::move(ds);};
-        std::shared_ptr<hl_code_block> get_ast(){
+        std::shared_ptr<ast_code_block> get_ast(){
             return root;
         };
 
-        std::vector<std::shared_ptr<hl_definition_node>> get_globals(){return globals;};
-        std::vector<std::shared_ptr<hl_ast_node>> get_functions(){return functions;};
+        std::vector<std::shared_ptr<ast_definition>> get_globals(){return globals;};
+        std::vector<std::shared_ptr<ast_node>> get_functions(){return functions;};
     private:
 
         template<typename T>
-        void processExpression(unsigned int expression_size, const T& operands_array, std::map<std::string, hl_expression_node::expression_type> &expr_map);
+        void processExpression(unsigned int expression_size, const T& operands_array, std::map<std::string, ast_expression::expression_type> &expr_map);
         void save_current_block_context();
         std::string restore_current_block_context();
 
-        std::vector<std::shared_ptr<hl_definition_node>> globals;
-        std::vector<std::shared_ptr<hl_definition_node>> parameters_list;
-        std::vector<std::shared_ptr<hl_ast_node>> functions;
-        std::vector<std::shared_ptr<hl_ast_node>> function_body;
+        std::vector<std::shared_ptr<ast_definition>> globals;
+        std::vector<std::shared_ptr<ast_definition>> parameters_list;
+        std::vector<std::shared_ptr<ast_node>> functions;
+        std::vector<std::shared_ptr<ast_node>> function_body;
 
-        std::stack<std::shared_ptr<hl_ast_node>> expressions_stack;
-        std::vector<std::shared_ptr<hl_ast_node>> argument_vector;
-        std::vector<std::shared_ptr<hl_ast_node>> array_dimentions;
+        std::stack<std::shared_ptr<ast_node>> expressions_stack;
+        std::vector<std::shared_ptr<ast_node>> argument_vector;
+        std::vector<std::shared_ptr<ast_node>> array_dimentions;
 
         std::unordered_map<std::string, std::vector<int>> array_shapes_map;
 
-        std::shared_ptr<hl_function_def_node> current_function;
+        std::shared_ptr<ast_function_def> current_function;
 
-        std::shared_ptr<hl_ast_node> current_initializer;
-        std::shared_ptr<hl_ast_node> current_block_item;
+        std::shared_ptr<ast_node> current_initializer;
+        std::shared_ptr<ast_node> current_block_item;
 
-        std::shared_ptr<hl_ast_conditional_node> conditional;
-        std::vector<std::shared_ptr<hl_ast_node>> conditional_body;
+        std::shared_ptr<ast_conditional> conditional;
+        std::vector<std::shared_ptr<ast_node>> conditional_body;
 
         std::vector<std::pair<std::string, std::string>> struct_fields;
 
 
-        std::shared_ptr<hl_ast_loop_node> loop;
-        std::vector<std::shared_ptr<hl_ast_node>> loop_body;
+        std::shared_ptr<ast_loop> loop;
+        std::vector<std::shared_ptr<ast_node>> loop_body;
 
-        std::shared_ptr<hl_code_block> root;
+        std::shared_ptr<ast_code_block> root;
 
-        std::stack<std::shared_ptr<hl_ast_node>> outer_block_nodes;
-        std::stack<std::vector<std::shared_ptr<hl_ast_node>>> outer_block_contents;
+        std::stack<std::shared_ptr<ast_node>> outer_block_nodes;
+        std::stack<std::vector<std::shared_ptr<ast_node>>> outer_block_contents;
 
-        std::stack<std::shared_ptr<hl_ast_node>> outer_block_current_item;
+        std::stack<std::shared_ptr<ast_node>> outer_block_current_item;
 
         std::stack<std::string> outer_block_types;
         std::unordered_map<std::string, variable_class_t> dma_specs;
@@ -159,7 +159,7 @@ namespace fcore{
         bool in_conditional_block;
         bool in_initializer_list;
 
-        std::vector<std::shared_ptr<hl_ast_node>> array_initializer_data;
+        std::vector<std::shared_ptr<ast_node>> array_initializer_data;
         int initializer_array_level;
     };
 

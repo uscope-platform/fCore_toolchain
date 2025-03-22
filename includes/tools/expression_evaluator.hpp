@@ -18,25 +18,25 @@
 #define FCORE_TOOLCHAIN_EXPRESSION_EVALUATOR_H
 
 
-#include "data_structures/high_level_ast/hl_expression_node.hpp"
+#include "data_structures/high_level_ast/ast_expression.hpp"
 
 namespace fcore {
     class expression_evaluator {
     public:
         expression_evaluator() = default;
-        static std::shared_ptr<hl_ast_operand> evaluate_expression(std::shared_ptr<hl_expression_node> expression);
+        static std::shared_ptr<ast_operand> evaluate_expression(std::shared_ptr<ast_expression> expression);
     private:
-        static bool is_constant_subexpr(const std::shared_ptr<hl_ast_node>& subex);
-        static std::shared_ptr<hl_ast_operand> evaluate_regular_expression(std::shared_ptr<hl_expression_node> expression);
-        static std::shared_ptr<hl_ast_operand> evaluate_ternary_expression(std::shared_ptr<hl_expression_node> expression);
-        static std::shared_ptr<hl_ast_operand> evaluate_unary_expression(std::shared_ptr<hl_expression_node> expression);
-        static std::shared_ptr<hl_ast_operand> evaluate_expression_side(const std::shared_ptr<hl_ast_node>& side);
-        static int evaluate_regular_expr_i(int operand_a, int operand_b, hl_expression_node::expression_type operation);
-        static float evaluate_regular_expr_f(float operand_a, float operand_b, hl_expression_node::expression_type operation);
+        static bool is_constant_subexpr(const std::shared_ptr<ast_node>& subex);
+        static std::shared_ptr<ast_operand> evaluate_regular_expression(std::shared_ptr<ast_expression> expression);
+        static std::shared_ptr<ast_operand> evaluate_ternary_expression(std::shared_ptr<ast_expression> expression);
+        static std::shared_ptr<ast_operand> evaluate_unary_expression(std::shared_ptr<ast_expression> expression);
+        static std::shared_ptr<ast_operand> evaluate_expression_side(const std::shared_ptr<ast_node>& side);
+        static int evaluate_regular_expr_i(int operand_a, int operand_b, ast_expression::expression_type operation);
+        static float evaluate_regular_expr_f(float operand_a, float operand_b, ast_expression::expression_type operation);
         static int evaluate_ternary_expr_i(int operand_a, int operand_b,  int operand_c);
         static float evaluate_ternary_expr_f(float operand_a, float operand_b, float operand_c);
-        static int evaluate_unary_expr_i(int operand, hl_expression_node::expression_type operation);
-        static float evaluate_unary_expr_f(float operand, hl_expression_node::expression_type operation);
+        static int evaluate_unary_expr_i(int operand, ast_expression::expression_type operation);
+        static float evaluate_unary_expr_f(float operand, ast_expression::expression_type operation);
     };
 }
 

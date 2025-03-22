@@ -14,7 +14,7 @@
 // limitations under the License.
 #include <gtest/gtest.h>
 #include <fstream>
-#include <data_structures/high_level_ast/hl_ast_struct.hpp>
+#include <data_structures/high_level_ast/ast_struct.hpp>
 
 #include "tools/define_map.hpp"
 #include "frontend/C/C_language_parser.hpp"
@@ -36,59 +36,59 @@ namespace fcore{
         parser.pre_process({});
 
         parser.parse(std::unordered_map<std::string, variable_class_t>());
-        std::vector<std::shared_ptr<hl_definition_node>> results = parser.get_globals();
+        std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
 
-        std::shared_ptr<hl_expression_node> res_1 = std::static_pointer_cast<hl_expression_node>(
+        std::shared_ptr<ast_expression> res_1 = std::static_pointer_cast<ast_expression>(
                 results[0]->get_scalar_initializer());
-        std::shared_ptr<hl_expression_node> res_2 = std::static_pointer_cast<hl_expression_node>(
+        std::shared_ptr<ast_expression> res_2 = std::static_pointer_cast<ast_expression>(
                 results[1]->get_scalar_initializer());
-        std::shared_ptr<hl_expression_node> res_3 = std::static_pointer_cast<hl_expression_node>(
+        std::shared_ptr<ast_expression> res_3 = std::static_pointer_cast<ast_expression>(
                 results[2]->get_scalar_initializer());
 
 
-        std::stack<std::shared_ptr<hl_expression_node>> gold_standard;
+        std::stack<std::shared_ptr<ast_expression>> gold_standard;
         // a = !b;
 
         auto var = std::make_shared<variable>( "b");
-        auto op = std::make_shared<hl_ast_operand>(var);
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::NOT_L);
+        auto op = std::make_shared<ast_operand>(var);
+        auto gs_1 = std::make_shared<ast_expression>(ast_expression::NOT_L);
         gs_1->set_rhs(op);
 
         // c = -~d;
         var = std::make_shared<variable>( "d");
-        op = std::make_shared<hl_ast_operand>(var);
+        op = std::make_shared<ast_operand>(var);
 
-        auto exp = std::make_shared<hl_expression_node>(hl_expression_node::NOT_B);
+        auto exp = std::make_shared<ast_expression>(ast_expression::NOT_B);
         exp->set_rhs(op);
-        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::NEG);
+        auto gs_2 = std::make_shared<ast_expression>(ast_expression::NEG);
         gs_2->set_rhs(exp);
 
 
         // e = !(~f);
 
         var = std::make_shared<variable>( "f");
-        op = std::make_shared<hl_ast_operand>(var);
+        op = std::make_shared<ast_operand>(var);
 
-        exp = std::make_shared<hl_expression_node>(hl_expression_node::NOT_B);
+        exp = std::make_shared<ast_expression>(ast_expression::NOT_B);
         exp->set_rhs(op);
-        auto gs_3 = std::make_shared<hl_expression_node>(hl_expression_node::NOT_L);
+        auto gs_3 = std::make_shared<ast_expression>(ast_expression::NOT_L);
         gs_3->set_rhs(exp);
 
 
         EXPECT_EQ(*res_1, *gs_1);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res_1)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_1)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_expression>(res_1)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_expression>(gs_1)->pretty_print()<< std::endl;
         }
         EXPECT_EQ(*res_2, *gs_2);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res_2)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_2)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_expression>(res_2)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_expression>(gs_2)->pretty_print()<< std::endl;
         }
         EXPECT_EQ(*res_3, *gs_3);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res_3)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_3)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_expression>(res_3)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_expression>(gs_3)->pretty_print()<< std::endl;
         }
     }
 
@@ -105,9 +105,9 @@ namespace fcore{
         parser.pre_process({});
 
         parser.parse(std::unordered_map<std::string, variable_class_t>());
-        std::vector<std::shared_ptr<hl_definition_node>> results = parser.get_globals();
+        std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
 
-        auto res = std::static_pointer_cast<hl_ast_operand>(results[0]->get_scalar_initializer())->get_int_value();
+        auto res = std::static_pointer_cast<ast_operand>(results[0]->get_scalar_initializer())->get_int_value();
 
         EXPECT_EQ(res, 0xff);
     }
@@ -130,39 +130,39 @@ namespace fcore{
         // a = !b;
 
         auto var = std::make_shared<variable>( "c");
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant",5);
-        auto op_2= std::make_shared<hl_ast_operand>(var);
+        auto op_2= std::make_shared<ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
+        auto gs_1 = std::make_shared<ast_expression>(ast_expression::MULT);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
-        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::DIV);
+        auto gs_2 = std::make_shared<ast_expression>(ast_expression::DIV);
         gs_2->set_lhs(gs_1);
         var = std::make_shared<variable>("constant",6);
-        op_2= std::make_shared<hl_ast_operand>(var);
+        op_2= std::make_shared<ast_operand>(var);
 
         gs_2->set_rhs(op_2);
 
-        auto gs_3 = std::make_shared<hl_expression_node>(hl_expression_node::MODULO);
+        auto gs_3 = std::make_shared<ast_expression>(ast_expression::MODULO);
         gs_3->set_lhs(gs_2);
 
         var = std::make_shared<variable>("constant", 3);
-        op_2= std::make_shared<hl_ast_operand>(var);
+        op_2= std::make_shared<ast_operand>(var);
         gs_3->set_rhs(op_2);
 
-        std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(
-                std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
+        std::shared_ptr<ast_expression> res = std::static_pointer_cast<ast_expression>(
+                std::static_pointer_cast<ast_definition>(results[0])->get_scalar_initializer());
 
 
 
         EXPECT_EQ(*res, *gs_3);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_3)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_expression>(res)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_expression>(gs_3)->pretty_print()<< std::endl;
         }
     }
 
@@ -185,30 +185,30 @@ namespace fcore{
 
 
         auto var = std::make_shared<variable>("c");
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant",5);
-        auto op_2= std::make_shared<hl_ast_operand>(var);
+        auto op_2= std::make_shared<ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
+        auto gs_1 = std::make_shared<ast_expression>(ast_expression::ADD);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
-        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::SUB);
+        auto gs_2 = std::make_shared<ast_expression>(ast_expression::SUB);
         gs_2->set_lhs(gs_1);
         var = std::make_shared<variable>("constant",6);
-        op_2= std::make_shared<hl_ast_operand>(var);
+        op_2= std::make_shared<ast_operand>(var);
 
         gs_2->set_rhs(op_2);
 
-        auto res = std::static_pointer_cast<hl_expression_node>(
-                std::static_pointer_cast<hl_definition_node>(results[0])->get_scalar_initializer());
+        auto res = std::static_pointer_cast<ast_expression>(
+                std::static_pointer_cast<ast_definition>(results[0])->get_scalar_initializer());
 
         EXPECT_EQ(*res, *gs_2);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_2)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_expression>(res)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_expression>(gs_2)->pretty_print()<< std::endl;
         }
     }
 
@@ -225,35 +225,35 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::vector<std::shared_ptr<hl_definition_node>> results =  parser.get_globals();
+        std::vector<std::shared_ptr<ast_definition>> results =  parser.get_globals();
 
 
 
         auto var = std::make_shared<variable>("c");
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant",5);
-        auto op_2= std::make_shared<hl_ast_operand>(var);
+        auto op_2= std::make_shared<ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::RSH);
+        auto gs_1 = std::make_shared<ast_expression>(ast_expression::RSH);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
-        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::LSH);
+        auto gs_2 = std::make_shared<ast_expression>(ast_expression::LSH);
         gs_2->set_lhs(gs_1);
 
         var = std::make_shared<variable>("constant",6);
-        op_2= std::make_shared<hl_ast_operand>(var);
+        op_2= std::make_shared<ast_operand>(var);
 
         gs_2->set_rhs(op_2);
 
-        auto res = std::static_pointer_cast<hl_expression_node>(results[0]->get_scalar_initializer());
+        auto res = std::static_pointer_cast<ast_expression>(results[0]->get_scalar_initializer());
 
         EXPECT_EQ(*res, *gs_2);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_2)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_expression>(res)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_expression>(gs_2)->pretty_print()<< std::endl;
         }
     }
 
@@ -270,47 +270,47 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::vector<std::shared_ptr<hl_definition_node>> results =  parser.get_globals();
+        std::vector<std::shared_ptr<ast_definition>> results =  parser.get_globals();
 
 
         auto var = std::make_shared<variable>("c");
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant",5);
-        auto op_2= std::make_shared<hl_ast_operand>(var);
+        auto op_2= std::make_shared<ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::GT);
+        auto gs_1 = std::make_shared<ast_expression>(ast_expression::GT);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
-        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::LT);
+        auto gs_2 = std::make_shared<ast_expression>(ast_expression::LT);
         gs_2->set_lhs(gs_1);
 
         var = std::make_shared<variable>("constant", 6);
-        op_2= std::make_shared<hl_ast_operand>(var);
+        op_2= std::make_shared<ast_operand>(var);
         gs_2->set_rhs(op_2);
 
-        auto gs_3 = std::make_shared<hl_expression_node>(hl_expression_node::GTE);
+        auto gs_3 = std::make_shared<ast_expression>(ast_expression::GTE);
         gs_3->set_lhs(gs_2);
 
         var = std::make_shared<variable>("constant",3);
-        op_2= std::make_shared<hl_ast_operand>(var);
+        op_2= std::make_shared<ast_operand>(var);
         gs_3->set_rhs(op_2);
 
-        auto gs_4 = std::make_shared<hl_expression_node>(hl_expression_node::LTE);
+        auto gs_4 = std::make_shared<ast_expression>(ast_expression::LTE);
         gs_4->set_lhs(gs_3);
 
         var = std::make_shared<variable>("constant",7);
-        op_2= std::make_shared<hl_ast_operand>(var);
+        op_2= std::make_shared<ast_operand>(var);
         gs_4->set_rhs(op_2);
-        std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(
+        std::shared_ptr<ast_expression> res = std::static_pointer_cast<ast_expression>(
                 results[0]->get_scalar_initializer());
 
         EXPECT_EQ(*res, *gs_4);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_4)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_expression>(res)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_expression>(gs_4)->pretty_print()<< std::endl;
         }
     }
 
@@ -327,36 +327,36 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::vector<std::shared_ptr<hl_definition_node>> results =  parser.get_globals();
+        std::vector<std::shared_ptr<ast_definition>> results =  parser.get_globals();
 
 
 
         auto var = std::make_shared<variable>("c");
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant", 5);
-        auto op_2= std::make_shared<hl_ast_operand>(var);
+        auto op_2= std::make_shared<ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::EQ);
+        auto gs_1 = std::make_shared<ast_expression>(ast_expression::EQ);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
-        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::NEQ);
+        auto gs_2 = std::make_shared<ast_expression>(ast_expression::NEQ);
         gs_2->set_lhs(gs_1);
 
         var = std::make_shared<variable>("constant",6);
-        op_2= std::make_shared<hl_ast_operand>(var);
+        op_2= std::make_shared<ast_operand>(var);
 
         gs_2->set_rhs(op_2);
 
-        auto res = std::static_pointer_cast<hl_expression_node>(
+        auto res = std::static_pointer_cast<ast_expression>(
                 results[0]->get_scalar_initializer());
 
         EXPECT_EQ(*res, *gs_2);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_2)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_expression>(res)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_expression>(gs_2)->pretty_print()<< std::endl;
         }
     }
 
@@ -374,26 +374,26 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::vector<std::shared_ptr<hl_definition_node>> results = parser.get_globals();
+        std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
 
         auto var = std::make_shared<variable>("c");
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
         var = std::make_shared<variable>("constant", 5);
-        auto op_2= std::make_shared<hl_ast_operand>(var);
+        auto op_2= std::make_shared<ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::AND_B);
+        auto gs_1 = std::make_shared<ast_expression>(ast_expression::AND_B);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
 
-        std::shared_ptr<hl_expression_node> res = std::static_pointer_cast<hl_expression_node>(
+        std::shared_ptr<ast_expression> res = std::static_pointer_cast<ast_expression>(
                 results[0]->get_scalar_initializer());
 
         EXPECT_EQ(*res, *gs_1);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_1)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_expression>(res)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_expression>(gs_1)->pretty_print()<< std::endl;
         }
     }
 
@@ -411,28 +411,28 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::vector<std::shared_ptr<hl_definition_node>> results = parser.get_globals();
+        std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
 
 
 
         auto var = std::make_shared<variable>("c");
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant", 5);
-        auto op_2= std::make_shared<hl_ast_operand>(var);
+        auto op_2= std::make_shared<ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::XOR_B);
+        auto gs_1 = std::make_shared<ast_expression>(ast_expression::XOR_B);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
 
-        auto res = std::static_pointer_cast<hl_expression_node>(results[0]->get_scalar_initializer());
+        auto res = std::static_pointer_cast<ast_expression>(results[0]->get_scalar_initializer());
 
         EXPECT_EQ(*res, *gs_1);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_1)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_expression>(res)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_expression>(gs_1)->pretty_print()<< std::endl;
         }
     }
 
@@ -450,27 +450,27 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::vector<std::shared_ptr<hl_definition_node>> results = parser.get_globals();
+        std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
 
 
 
         auto var = std::make_shared<variable>("c");
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant", 5);
-        auto op_2= std::make_shared<hl_ast_operand>(var);
+        auto op_2= std::make_shared<ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::OR_L);
+        auto gs_1 = std::make_shared<ast_expression>(ast_expression::OR_L);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
-        auto res = std::static_pointer_cast<hl_expression_node>(results[0]->get_scalar_initializer());
+        auto res = std::static_pointer_cast<ast_expression>(results[0]->get_scalar_initializer());
 
         EXPECT_EQ(*res, *gs_1);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_1)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_expression>(res)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_expression>(gs_1)->pretty_print()<< std::endl;
         }
     }
 
@@ -488,28 +488,28 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::vector<std::shared_ptr<hl_definition_node>> results = parser.get_globals();
+        std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
 
 
 
         auto var = std::make_shared<variable>("c");
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant", 5);
-        auto op_2= std::make_shared<hl_ast_operand>(var);
+        auto op_2= std::make_shared<ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::AND_L);
+        auto gs_1 = std::make_shared<ast_expression>(ast_expression::AND_L);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
 
-        auto res = std::static_pointer_cast<hl_expression_node>(results[0]->get_scalar_initializer());
+        auto res = std::static_pointer_cast<ast_expression>(results[0]->get_scalar_initializer());
 
         EXPECT_EQ(*res, *gs_1);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_1)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_expression>(res)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_expression>(gs_1)->pretty_print()<< std::endl;
         }
     }
 
@@ -539,51 +539,51 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::vector<std::shared_ptr<hl_ast_node>> func_body;
+        std::vector<std::shared_ptr<ast_node>> func_body;
 
         auto var = std::make_shared<variable>("c");
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant", 5);
-        auto op_2= std::make_shared<hl_ast_operand>(var);
+        auto op_2= std::make_shared<ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::XOR_B);
+        auto gs_1 = std::make_shared<ast_expression>(ast_expression::XOR_B);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
         var = std::make_shared<variable>("test");
-        auto op_3 = std::make_shared<hl_ast_operand>(var);
+        auto op_3 = std::make_shared<ast_operand>(var);
 
-        auto assignment = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
+        auto assignment = std::make_shared<ast_expression>(ast_expression::ASSIGN);
         assignment->set_lhs(op_3);
         assignment->set_rhs(gs_1);
 
         func_body.push_back(assignment);
 
         std::vector assignment_types = {
-            hl_expression_node::addition_assignment,
-            hl_expression_node::subtraction_assignment,
-            hl_expression_node::multiplication_assignment,
-            hl_expression_node::division_assignment,
-            hl_expression_node::modulo_assignment,
-            hl_expression_node::and_assignment,
-            hl_expression_node::or_assignment,
-            hl_expression_node::xor_assignment,
-            hl_expression_node::lsh_assignment,
-            hl_expression_node::rsh_assignment
+            ast_expression::addition_assignment,
+            ast_expression::subtraction_assignment,
+            ast_expression::multiplication_assignment,
+            ast_expression::division_assignment,
+            ast_expression::modulo_assignment,
+            ast_expression::and_assignment,
+            ast_expression::or_assignment,
+            ast_expression::xor_assignment,
+            ast_expression::lsh_assignment,
+            ast_expression::rsh_assignment
         };
         for(auto item:assignment_types){
-            assignment = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
+            assignment = std::make_shared<ast_expression>(ast_expression::ASSIGN);
             assignment->set_assignment_type(item);
             assignment->set_lhs(op_3);
             assignment->set_rhs(gs_1);
             func_body.push_back(assignment);
         }
 
-        auto gold_standard = std::make_shared<hl_function_def_node>();
+        auto gold_standard = std::make_shared<ast_function_def>();
 
-        std::vector<std::shared_ptr<hl_ast_node>> res_body;
+        std::vector<std::shared_ptr<ast_node>> res_body;
 
         gold_standard->set_body(func_body);
         std::string f_name = "main";
@@ -591,11 +591,11 @@ namespace fcore{
         gold_standard->set_return_type(c_type_int);
 
 
-        std::shared_ptr<hl_function_def_node> result = std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0]);
+        std::shared_ptr<ast_function_def> result = std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0]);
         EXPECT_EQ(*result, *gold_standard);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_function_def_node>(result)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_function_def_node>(gold_standard)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_function_def>(result)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_function_def>(gold_standard)->pretty_print()<< std::endl;
         }
     }
 
@@ -615,32 +615,32 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::shared_ptr<hl_function_def_node> results = std::static_pointer_cast<hl_function_def_node>(parser.get_functions()[0]);
+        std::shared_ptr<ast_function_def> results = std::static_pointer_cast<ast_function_def>(parser.get_functions()[0]);
 
 
 
         auto var = std::make_shared<variable>("c");
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant", 5);
-        auto op_2= std::make_shared<hl_ast_operand>(var);
+        auto op_2= std::make_shared<ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::XOR_B);
+        auto gs_1 = std::make_shared<ast_expression>(ast_expression::XOR_B);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
 
         var = std::make_shared<variable>("test");
-        auto op_3 = std::make_shared<hl_ast_operand>(var);
+        auto op_3 = std::make_shared<ast_operand>(var);
 
-        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
+        auto gs_2 = std::make_shared<ast_expression>(ast_expression::ASSIGN);
         gs_2->set_lhs(op_3);
         gs_2->set_rhs(gs_1);
 
-        auto gs_3 = std::make_shared<hl_function_def_node>();
+        auto gs_3 = std::make_shared<ast_function_def>();
 
-        std::vector<std::shared_ptr<hl_ast_node>> res_body;
+        std::vector<std::shared_ptr<ast_node>> res_body;
         res_body.push_back(gs_2);
 
         gs_3->set_body(res_body);
@@ -648,12 +648,12 @@ namespace fcore{
         gs_3->set_name(f_name);
         gs_3->set_return_type(c_type_int);
 
-        std::shared_ptr<hl_function_def_node> res = std::static_pointer_cast<hl_function_def_node>(parser.get_functions()[0]);
+        std::shared_ptr<ast_function_def> res = std::static_pointer_cast<ast_function_def>(parser.get_functions()[0]);
 
         EXPECT_EQ(*res, *gs_3);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_function_def_node>(res)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_function_def_node>(gs_3)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_function_def>(res)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_function_def>(gs_3)->pretty_print()<< std::endl;
         }
     }
 
@@ -673,33 +673,33 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::shared_ptr<hl_function_def_node> result = std::static_pointer_cast<hl_function_def_node>(parser.get_functions()[0]);
+        std::shared_ptr<ast_function_def> result = std::static_pointer_cast<ast_function_def>(parser.get_functions()[0]);
 
         auto var = std::make_shared<variable>("c");
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
         var = std::make_shared<variable>("constant", 4);
-        auto op_2= std::make_shared<hl_ast_operand>(var);
+        auto op_2= std::make_shared<ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
+        auto gs_1 = std::make_shared<ast_expression>(ast_expression::ADD);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
         var = std::make_shared<variable>("constant", 5);
-        auto op_3 = std::make_shared<hl_ast_operand>(var);
+        auto op_3 = std::make_shared<ast_operand>(var);
 
         std::string func_name = "test";
-        std::vector<std::shared_ptr<hl_ast_node>> args = {gs_1, op_3};
-        auto gs_3 = std::make_shared<hl_function_call_node>(func_name, args);
+        std::vector<std::shared_ptr<ast_node>> args = {gs_1, op_3};
+        auto gs_3 = std::make_shared<ast_call>(func_name, args);
 
 
-        std::shared_ptr<hl_function_call_node> res = std::static_pointer_cast<hl_function_call_node>(result->get_body()[0]);
+        std::shared_ptr<ast_call> res = std::static_pointer_cast<ast_call>(result->get_body()[0]);
 
 
         EXPECT_EQ(*res, *gs_3);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_function_call_node>(res)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_function_call_node>(gs_3)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_call>(res)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_call>(gs_3)->pretty_print()<< std::endl;
         }
     }
 
@@ -718,25 +718,25 @@ namespace fcore{
         parser.parse(io_spec);
 
         auto var = std::make_shared<variable>("c");
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant", 5);
-        auto op_2= std::make_shared<hl_ast_operand>(var);
+        auto op_2= std::make_shared<ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::XOR_B);
+        auto gs_1 = std::make_shared<ast_expression>(ast_expression::XOR_B);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
         var = std::make_shared<variable>("test");
-        auto def = std::make_shared<hl_definition_node>("test",c_type_int, var);
+        auto def = std::make_shared<ast_definition>("test",c_type_int, var);
         def->set_scalar_initializer(gs_1);
-        auto res = std::static_pointer_cast<hl_definition_node>(parser.get_globals()[0]);
+        auto res = std::static_pointer_cast<ast_definition>(parser.get_globals()[0]);
 
         EXPECT_EQ(*res, *def);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_definition_node>(res)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_definition_node>(def)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_definition>(res)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_definition>(def)->pretty_print()<< std::endl;
         }
     }
 
@@ -757,32 +757,32 @@ namespace fcore{
         parser.parse(io_spec);
 
 
-        auto func_def = std::static_pointer_cast<hl_function_def_node>(parser.get_functions()[0]);
-        auto res = std::static_pointer_cast<hl_expression_node>(func_def->get_return());
+        auto func_def = std::static_pointer_cast<ast_function_def>(parser.get_functions()[0]);
+        auto res = std::static_pointer_cast<ast_expression>(func_def->get_return());
 
         auto var = std::make_shared<variable>("c");
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant", 5);
-        auto op_2= std::make_shared<hl_ast_operand>(var);
+        auto op_2= std::make_shared<ast_operand>(var);
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::XOR_B);
+        auto gs_1 = std::make_shared<ast_expression>(ast_expression::XOR_B);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
         var = std::make_shared<variable>("test");
-        auto op_3 = std::make_shared<hl_ast_operand>(var);
+        auto op_3 = std::make_shared<ast_operand>(var);
 
-        auto gs_2 = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
+        auto gs_2 = std::make_shared<ast_expression>(ast_expression::ASSIGN);
         gs_2->set_lhs(op_3);
         gs_2->set_rhs(gs_1);
 
 
         EXPECT_EQ(*res, *gs_2);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_2)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_expression>(res)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_expression>(gs_2)->pretty_print()<< std::endl;
         }
 
     }
@@ -807,35 +807,35 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        auto result = std::static_pointer_cast<hl_ast_conditional_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
+        auto result = std::static_pointer_cast<ast_conditional>(std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body()[0]);
 
-        auto gold_standard = std::make_shared<hl_ast_conditional_node>();
+        auto gold_standard = std::make_shared<ast_conditional>();
         auto var = std::make_shared<variable>("a");
-        auto def_node = std::make_shared<hl_definition_node>("a", c_type_int, var);
+        auto def_node = std::make_shared<ast_definition>("a", c_type_int, var);
 
         var = std::make_shared<variable>("constant",2);
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
         def_node->set_scalar_initializer(op_1);
         gold_standard->set_if_block({def_node});
         var = std::make_shared<variable>("a");
-        def_node = std::make_shared<hl_definition_node>("a", c_type_int, var);
+        def_node = std::make_shared<ast_definition>("a", c_type_int, var);
 
         var = std::make_shared<variable>("constant",3);
-        op_1 = std::make_shared<hl_ast_operand>(var);
+        op_1 = std::make_shared<ast_operand>(var);
 
         def_node->set_scalar_initializer(op_1);
         gold_standard->set_else_block({def_node});
 
 
         var = std::make_shared<variable>("i");
-        auto op_2 = std::make_shared<hl_ast_operand>(var);
+        auto op_2 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant",0);
-        op_1 = std::make_shared<hl_ast_operand>(var);
+        op_1 = std::make_shared<ast_operand>(var);
 
-        auto condition = std::make_shared<hl_expression_node>(hl_expression_node::EQ);
+        auto condition = std::make_shared<ast_expression>(ast_expression::EQ);
         condition->set_lhs(op_2);
         condition->set_rhs(op_1);
         gold_standard->set_condition(condition);
@@ -874,29 +874,29 @@ namespace fcore{
         parser.pre_process({});
         parser.parse(io_spec);
 
-        std::shared_ptr<hl_ast_loop_node> result = std::static_pointer_cast<hl_ast_loop_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[3]);
+        std::shared_ptr<ast_loop> result = std::static_pointer_cast<ast_loop>(std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body()[3]);
 
 
-        auto gold_standard = std::make_shared<hl_ast_loop_node>();
+        auto gold_standard = std::make_shared<ast_loop>();
 
         // LOOP BODY
-        auto loop_body = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
+        auto loop_body = std::make_shared<ast_expression>(ast_expression::ASSIGN);
 
         auto var = std::make_shared<variable>("j");
         var->set_variable_class({variable_output_type, false});
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
         loop_body->set_lhs(op_1);
-        auto body_add_expr = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
+        auto body_add_expr = std::make_shared<ast_expression>(ast_expression::ADD);
 
         var = std::make_shared<variable>( "a");
         var->set_variable_class({variable_input_type, false});
-        op_1 = std::make_shared<hl_ast_operand>(var);
+        op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("h");
         var->set_variable_class({variable_input_type, false});
-        auto op_2 = std::make_shared<hl_ast_operand>(var);
+        auto op_2 = std::make_shared<ast_operand>(var);
 
         body_add_expr->set_lhs(op_1);
         body_add_expr->set_rhs(op_2);
@@ -904,31 +904,31 @@ namespace fcore{
         gold_standard->set_loop_content({loop_body});
         // LOOP INIT CONDITION
         var = std::make_shared<variable>( "i");
-        auto init_def = std::make_shared<hl_definition_node>("i", c_type_int, var);
+        auto init_def = std::make_shared<ast_definition>("i", c_type_int, var);
 
         var = std::make_shared<variable>("constant",0);
-        auto def_val = std::make_shared<hl_ast_operand>(var);
+        auto def_val = std::make_shared<ast_operand>(var);
 
         init_def->set_scalar_initializer(def_val);
         gold_standard->set_init_statement(init_def);
         // LOOP CONDITION
-        auto loop_cond = std::make_shared<hl_expression_node>(hl_expression_node::LT);
+        auto loop_cond = std::make_shared<ast_expression>(ast_expression::LT);
 
         var = std::make_shared<variable>("i");
-        op_1 = std::make_shared<hl_ast_operand>(var);
+        op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant",4);
-        op_2 = std::make_shared<hl_ast_operand>(var);
+        op_2 = std::make_shared<ast_operand>(var);
 
         loop_cond->set_rhs(op_2);
         loop_cond->set_lhs(op_1);
         gold_standard->set_condition(loop_cond);
         // LOOP ITERATION EXPR
-        auto loop_iter = std::make_shared<hl_expression_node>(hl_expression_node::PRE_INCR);
+        auto loop_iter = std::make_shared<ast_expression>(ast_expression::PRE_INCR);
 
         var = std::make_shared<variable>("i");
-        op_1 = std::make_shared<hl_ast_operand>(var);
+        op_1 = std::make_shared<ast_operand>(var);
 
         loop_iter->set_rhs(op_1);
         gold_standard->set_iteration_expr(loop_iter);
@@ -970,28 +970,28 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
         parser.parse(io_spec);
-        std::shared_ptr<hl_ast_loop_node> result = std::static_pointer_cast<hl_ast_loop_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[3]);
+        std::shared_ptr<ast_loop> result = std::static_pointer_cast<ast_loop>(std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body()[3]);
 
 
         // CONTENT EXPRESSION
 
-        auto content_expr = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
+        auto content_expr = std::make_shared<ast_expression>(ast_expression::ASSIGN);
 
         auto var = std::make_shared<variable>("j");
         var->set_variable_class({variable_output_type, false});
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
         content_expr->set_lhs(op_1);
-        auto body_add_expr = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
+        auto body_add_expr = std::make_shared<ast_expression>(ast_expression::ADD);
 
         var = std::make_shared<variable>( "a");
         var->set_variable_class({variable_input_type, false});
-        op_1 = std::make_shared<hl_ast_operand>(var);
+        op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("h");
         var->set_variable_class({variable_input_type, false});
-        auto op_2 = std::make_shared<hl_ast_operand>(var);
+        auto op_2 = std::make_shared<ast_operand>(var);
 
         body_add_expr->set_lhs(op_1);
         body_add_expr->set_rhs(op_2);
@@ -999,31 +999,31 @@ namespace fcore{
 
 
         // INNER LOOP
-        auto inner_loop = std::make_shared<hl_ast_loop_node>();
+        auto inner_loop = std::make_shared<ast_loop>();
 
         inner_loop->set_loop_content({content_expr});
 
         //      LOOP INIT
 
         var = std::make_shared<variable>( "k");
-        auto init_def = std::make_shared<hl_definition_node>("k", c_type_int, var);
+        auto init_def = std::make_shared<ast_definition>("k", c_type_int, var);
 
         var = std::make_shared<variable>("constant",0);
-        auto def_val = std::make_shared<hl_ast_operand>(var);
+        auto def_val = std::make_shared<ast_operand>(var);
 
         init_def->set_scalar_initializer(def_val);
         inner_loop->set_init_statement(init_def);
 
         //       LOOP CONDITION
 
-        auto loop_cond = std::make_shared<hl_expression_node>(hl_expression_node::LT);
+        auto loop_cond = std::make_shared<ast_expression>(ast_expression::LT);
 
         var = std::make_shared<variable>("k");
-        op_1 = std::make_shared<hl_ast_operand>(var);
+        op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant",4);
-        op_2 = std::make_shared<hl_ast_operand>(var);
+        op_2 = std::make_shared<ast_operand>(var);
 
         loop_cond->set_rhs(op_2);
         loop_cond->set_lhs(op_1);
@@ -1031,15 +1031,15 @@ namespace fcore{
 
         //       LOOP ITERATION EXPR
 
-        auto loop_iter = std::make_shared<hl_expression_node>(hl_expression_node::PRE_INCR);
+        auto loop_iter = std::make_shared<ast_expression>(ast_expression::PRE_INCR);
 
         var = std::make_shared<variable>("k");
-        op_1 = std::make_shared<hl_ast_operand>(var);
+        op_1 = std::make_shared<ast_operand>(var);
 
         loop_iter->set_rhs(op_1);
         inner_loop->set_iteration_expr(loop_iter);
 
-        auto outer_loop = std::make_shared<hl_ast_loop_node>();
+        auto outer_loop = std::make_shared<ast_loop>();
 
         // LOOP BODY
 
@@ -1047,32 +1047,32 @@ namespace fcore{
 
         // LOOP INIT CONDITION
         var = std::make_shared<variable>( "i");
-        init_def = std::make_shared<hl_definition_node>("i", c_type_int, var);
+        init_def = std::make_shared<ast_definition>("i", c_type_int, var);
 
         var = std::make_shared<variable>("constant",0);
-        def_val = std::make_shared<hl_ast_operand>(var);
+        def_val = std::make_shared<ast_operand>(var);
 
         init_def->set_scalar_initializer(def_val);
         outer_loop->set_init_statement(init_def);
 
         // LOOP CONDITION
-        loop_cond = std::make_shared<hl_expression_node>(hl_expression_node::LT);
+        loop_cond = std::make_shared<ast_expression>(ast_expression::LT);
 
         var = std::make_shared<variable>("i");
-        op_1 = std::make_shared<hl_ast_operand>(var);
+        op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant",4);
-        op_2 = std::make_shared<hl_ast_operand>(var);
+        op_2 = std::make_shared<ast_operand>(var);
 
         loop_cond->set_rhs(op_2);
         loop_cond->set_lhs(op_1);
         outer_loop->set_condition(loop_cond);
         // LOOP ITERATION EXPR
-        loop_iter = std::make_shared<hl_expression_node>(hl_expression_node::PRE_INCR);
+        loop_iter = std::make_shared<ast_expression>(ast_expression::PRE_INCR);
 
         var = std::make_shared<variable>("i");
-        op_1 = std::make_shared<hl_ast_operand>(var);
+        op_1 = std::make_shared<ast_operand>(var);
 
         loop_iter->set_rhs(op_1);
         outer_loop->set_iteration_expr(loop_iter);
@@ -1104,44 +1104,44 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
         parser.parse(io_spec);
-        std::vector<std::shared_ptr<hl_ast_node>> result = std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body();
+        std::vector<std::shared_ptr<ast_node>> result = std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body();
 
-        std::vector<std::shared_ptr<hl_ast_node>> gold_standard;
+        std::vector<std::shared_ptr<ast_node>> gold_standard;
         auto var = std::make_shared<variable>("array_test");
         var->set_type(var_type_array);
-        auto def_1 = std::make_shared<hl_definition_node>("array_test", c_type_int, var);
+        auto def_1 = std::make_shared<ast_definition>("array_test", c_type_int, var);
 
 
         var = std::make_shared<variable>("constant", 5);
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
         std::vector<int> shape = {5};
         def_1->set_array_shape(shape);
         def_1->set_array_index({op_1});
         var = std::make_shared<variable>("test_matrix");
         var->set_type(var_type_array);
-        auto def_2 = std::make_shared<hl_definition_node>("test_matrix", c_type_int, var);
+        auto def_2 = std::make_shared<ast_definition>("test_matrix", c_type_int, var);
 
         var = std::make_shared<variable>("constant",2);
-        op_1 = std::make_shared<hl_ast_operand>(var);
+        op_1 = std::make_shared<ast_operand>(var);
 
         def_2->set_array_index({op_1, op_1});
         shape = {2,2};
         def_2->set_array_shape(shape);
         var = std::make_shared<variable>( "b");
         var->set_variable_class({variable_output_type, false});
-        auto def_3 = std::make_shared<hl_definition_node>("b", c_type_int, var);
+        auto def_3 = std::make_shared<ast_definition>("b", c_type_int, var);
 
-        auto ex = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
+        auto ex = std::make_shared<ast_expression>(ast_expression::ADD);
 
         var = std::make_shared<variable>( "array_test");
         var->set_type(var_type_array);
         var->set_array_shape({5});
-        op_1 = std::make_shared<hl_ast_operand>(var);
+        op_1 = std::make_shared<ast_operand>(var);
 
         //lhs
 
         var = std::make_shared<variable>("constant",0);
-        auto op_2 = std::make_shared<hl_ast_operand>(var);
+        auto op_2 = std::make_shared<ast_operand>(var);
         op_1->set_array_index({op_2});
         ex->set_lhs(op_1);
         //rhs
@@ -1149,11 +1149,11 @@ namespace fcore{
         var = std::make_shared<variable>( "test_matrix");
         var->set_type(var_type_array);
         var->set_array_shape({2,2});
-        op_1 = std::make_shared<hl_ast_operand>(var);
+        op_1 = std::make_shared<ast_operand>(var);
 
 
         var = std::make_shared<variable>("constant", 1);
-        op_2 = std::make_shared<hl_ast_operand>(var);
+        op_2 = std::make_shared<ast_operand>(var);
 
         op_1->set_array_index({op_2});
         ex->set_rhs(op_1);
@@ -1163,7 +1163,7 @@ namespace fcore{
         gold_standard.push_back(def_2);
         gold_standard.push_back(def_3);
 
-        ASSERT_TRUE(hl_ast_node::compare_vectors(result, gold_standard));
+        ASSERT_TRUE(ast_node::compare_vectors(result, gold_standard));
 
     }
 
@@ -1186,25 +1186,25 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        std::vector<std::shared_ptr<hl_ast_node>> result = std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body();
+        std::vector<std::shared_ptr<ast_node>> result = std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body();
 
-        std::vector<std::shared_ptr<hl_ast_node>> gold_standard;
+        std::vector<std::shared_ptr<ast_node>> gold_standard;
 
 
-        std::vector<std::shared_ptr<hl_ast_node>> init;
+        std::vector<std::shared_ptr<ast_node>> init;
         std::shared_ptr<variable> var;
-        std::shared_ptr<hl_ast_operand> op;
+        std::shared_ptr<ast_operand> op;
         for(int i = 1; i<6;++i){
             var = std::make_shared<variable>("constant", i);
-            op = std::make_shared<hl_ast_operand>(var);
+            op = std::make_shared<ast_operand>(var);
             init.push_back(op);
         }
 
         var = std::make_shared<variable>("array_test");
         var->set_type(var_type_array);
-        auto def = std::make_shared<hl_definition_node>("array_test", c_type_int, var);
+        auto def = std::make_shared<ast_definition>("array_test", c_type_int, var);
         var = std::make_shared<variable>("constant", 5);
-        op = std::make_shared<hl_ast_operand>(var);
+        op = std::make_shared<ast_operand>(var);
         def->set_array_index({op});
 
         std::vector<int> shape = {5};
@@ -1217,13 +1217,13 @@ namespace fcore{
 
         for(int i = 1; i<5;++i){
             var = std::make_shared<variable>("constant", i);
-            op = std::make_shared<hl_ast_operand>(var);
+            op = std::make_shared<ast_operand>(var);
             init.push_back(op);
         }
 
         var = std::make_shared<variable>("test_matrix");
         var->set_type(var_type_array);
-        def = std::make_shared<hl_definition_node>("test_matrix", c_type_int, var);
+        def = std::make_shared<ast_definition>("test_matrix", c_type_int, var);
 
         def->set_array_initializer(init);
 
@@ -1231,12 +1231,12 @@ namespace fcore{
         def->set_array_shape(shape);
 
         var = std::make_shared<variable>("constant", 2);
-        op = std::make_shared<hl_ast_operand>(var);
+        op = std::make_shared<ast_operand>(var);
         def->set_array_index({op, op});
 
         gold_standard.push_back(def);
 
-        ASSERT_TRUE(hl_ast_node::compare_vectors(result, gold_standard));
+        ASSERT_TRUE(ast_node::compare_vectors(result, gold_standard));
 
     }
 
@@ -1256,12 +1256,12 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
-        auto def = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
-        auto result = std::static_pointer_cast<hl_ast_operand>(def->get_scalar_initializer());
+        auto def = std::static_pointer_cast<ast_definition>(std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body()[0]);
+        auto result = std::static_pointer_cast<ast_operand>(def->get_scalar_initializer());
 
 
         auto var = std::make_shared<variable>("constant", 20.47f);
-        auto gold_standard = std::make_shared<hl_ast_operand>(var);
+        auto gold_standard = std::make_shared<ast_operand>(var);
 
         ASSERT_EQ(*result,*gold_standard);
 
@@ -1282,33 +1282,33 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
         auto fun = parser.AST->get_content()[0];
-        auto result = std::static_pointer_cast<hl_function_def_node>(fun)->get_body()[0];
+        auto result = std::static_pointer_cast<ast_function_def>(fun)->get_body()[0];
 
-        auto cond =  std::make_shared<hl_ast_conditional_node>();
+        auto cond =  std::make_shared<ast_conditional>();
 
         auto var = std::make_shared<variable>( "a");
-        auto op = std::make_shared<hl_ast_operand>(var);
+        auto op = std::make_shared<ast_operand>(var);
 
-        auto expr = std::make_shared<hl_expression_node>(hl_expression_node::GT);
+        auto expr = std::make_shared<ast_expression>(ast_expression::GT);
         expr->set_lhs(op);
 
         var = std::make_shared<variable>("constant", 0);
-        op = std::make_shared<hl_ast_operand>(var);
+        op = std::make_shared<ast_operand>(var);
         expr->set_rhs(op);
 
         cond->set_condition(expr);
 
         var = std::make_shared<variable>("constant", 100);
-        op = std::make_shared<hl_ast_operand>(var);
+        op = std::make_shared<ast_operand>(var);
         cond->set_if_block({op});
 
         var = std::make_shared<variable>("constant", 200);
-        op = std::make_shared<hl_ast_operand>(var);
+        op = std::make_shared<ast_operand>(var);
         cond->set_if_block({op});
         cond->set_ternary(true);
 
          var = std::make_shared<variable>("b");
-        auto gold_standard = std::make_shared<hl_definition_node>("b", c_type_int, var);
+        auto gold_standard = std::make_shared<ast_definition>("b", c_type_int, var);
         gold_standard->set_scalar_initializer(cond);
 
 
@@ -1334,28 +1334,28 @@ namespace fcore{
         parser.parse(io_spec);
 
         auto fun = parser.AST->get_content()[0];
-        auto result = std::static_pointer_cast<hl_function_def_node>(fun)->get_body()[0];
+        auto result = std::static_pointer_cast<ast_function_def>(fun)->get_body()[0];
 
 
-        auto cond =  std::make_shared<hl_ast_conditional_node>();
+        auto cond =  std::make_shared<ast_conditional>();
 
         auto var = std::make_shared<variable>( "angle_overrange");
-        auto op = std::make_shared<hl_ast_operand>(var);
+        auto op = std::make_shared<ast_operand>(var);
 
         cond->set_condition(op);
 
         var = std::make_shared<variable>("constant", 0);
-        op = std::make_shared<hl_ast_operand>(var);
+        op = std::make_shared<ast_operand>(var);
         cond->set_if_block({op});
 
         var = std::make_shared<variable>("theta");
-        op = std::make_shared<hl_ast_operand>(var);
+        op = std::make_shared<ast_operand>(var);
         cond->set_if_block({op});
         cond->set_ternary(true);
 
         var = std::make_shared<variable>("theta");
-        op = std::make_shared<hl_ast_operand>(var);
-        auto gold_standard = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
+        op = std::make_shared<ast_operand>(var);
+        auto gold_standard = std::make_shared<ast_expression>(ast_expression::ASSIGN);
         gold_standard->set_lhs(op);
         gold_standard->set_rhs(cond);
 
@@ -1384,16 +1384,16 @@ namespace fcore{
         ASSERT_EQ(globals.size(), 1);
         auto result = globals[0];
 
-        auto struct_def = std::make_shared<hl_ast_struct>("parameters");
+        auto struct_def = std::make_shared<ast_struct>("parameters");
         auto var = std::make_shared<variable>("gain");
-        auto def = std::make_shared<hl_definition_node>("gain", c_type_float, var);
+        auto def = std::make_shared<ast_definition>("gain", c_type_float, var);
         struct_def->add_definition(def);
 
         var = std::make_shared<variable>("phase");
-        def = std::make_shared<hl_definition_node>("phase", c_type_float, var);
+        def = std::make_shared<ast_definition>("phase", c_type_float, var);
         struct_def->add_definition(def);
 
-        def = std::make_shared<hl_definition_node>("parameters", struct_def);
+        def = std::make_shared<ast_definition>("parameters", struct_def);
 
         EXPECT_EQ(*def, *result);
 
@@ -1415,18 +1415,18 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
         auto fun = parser.AST->get_content()[0];
-        auto result = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(fun)->get_body()[0]);
+        auto result = std::static_pointer_cast<ast_definition>(std::static_pointer_cast<ast_function_def>(fun)->get_body()[0]);
 
-        auto struct_def = std::make_shared<hl_ast_struct>("parameters");
+        auto struct_def = std::make_shared<ast_struct>("parameters");
 
-        std::vector<std::shared_ptr<hl_ast_node>> init_list;
+        std::vector<std::shared_ptr<ast_node>> init_list;
         auto var = std::make_shared<variable>("constant", 1.0f);
-        init_list.emplace_back(std::make_shared<hl_ast_operand>(var));
+        init_list.emplace_back(std::make_shared<ast_operand>(var));
         var = std::make_shared<variable>("constant", 5.0f);
-        init_list.emplace_back(std::make_shared<hl_ast_operand>(var));
+        init_list.emplace_back(std::make_shared<ast_operand>(var));
         struct_def->add_initializers(init_list);
 
-        auto def = std::make_shared<hl_definition_node>("p", struct_def);
+        auto def = std::make_shared<ast_definition>("p", struct_def);
 
         ASSERT_EQ(*result, *def);
     }
@@ -1446,20 +1446,20 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
         auto fun = parser.AST->get_content()[0];
-        auto res_def = std::static_pointer_cast<hl_function_def_node>(fun)->get_body()[0];
+        auto res_def = std::static_pointer_cast<ast_function_def>(fun)->get_body()[0];
 
-        auto res_expr = std::static_pointer_cast<hl_expression_node>(std::static_pointer_cast<hl_definition_node>(res_def)->get_scalar_initializer());
+        auto res_expr = std::static_pointer_cast<ast_expression>(std::static_pointer_cast<ast_definition>(res_def)->get_scalar_initializer());
 
         auto var = std::make_shared<variable>("p");
-        auto op_1 = std::make_shared<hl_ast_operand>(var);
+        auto op_1 = std::make_shared<ast_operand>(var);
 
         var = std::make_shared<variable>("p");
-        auto op_2= std::make_shared<hl_ast_operand>(var);
+        auto op_2= std::make_shared<ast_operand>(var);
 
         op_1->get_variable()->add_struct_accessors({"gain", "a1"});
         op_2->get_variable()->add_struct_accessors({"phase", "a2"});
 
-        auto gs_1 = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
+        auto gs_1 = std::make_shared<ast_expression>(ast_expression::ADD);
         gs_1->set_lhs(op_1);
         gs_1->set_rhs(op_2);
 
@@ -1467,8 +1467,8 @@ namespace fcore{
 
         EXPECT_EQ(*res_expr, *gs_1);
         if(HasFailure()){
-            std::cout << "TEST RESULT: " << std::static_pointer_cast<hl_expression_node>(res_expr)->pretty_print()<< std::endl;
-            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<hl_expression_node>(gs_1)->pretty_print()<< std::endl;
+            std::cout << "TEST RESULT: " << std::static_pointer_cast<ast_expression>(res_expr)->pretty_print()<< std::endl;
+            std::cout << "GOLD STANDARD: " << std::static_pointer_cast<ast_expression>(gs_1)->pretty_print()<< std::endl;
         }
 
     }
@@ -1490,35 +1490,35 @@ namespace fcore{
 
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
-        auto result = std::static_pointer_cast<hl_function_def_node>( parser.AST->get_content()[0]);
+        auto result = std::static_pointer_cast<ast_function_def>( parser.AST->get_content()[0]);
 
         EXPECT_TRUE(parser.get_globals().empty());
 
-        auto ref_fcn = std::make_shared<hl_function_def_node>();
+        auto ref_fcn = std::make_shared<ast_function_def>();
         ref_fcn->set_name("test");
         ref_fcn->set_return_type(c_type_float);
         auto var = std::make_shared<variable>("err");
-        auto def = std::make_shared<hl_definition_node>("err", c_type_float, var);
-        auto struct_def = std::make_shared<hl_ast_struct>("parameters");
-        auto def2 = std::make_shared<hl_definition_node>("p", struct_def);
+        auto def = std::make_shared<ast_definition>("err", c_type_float, var);
+        auto struct_def = std::make_shared<ast_struct>("parameters");
+        auto def2 = std::make_shared<ast_definition>("p", struct_def);
         ref_fcn->set_parameters_list({def, def2});
 
 
-        auto exp = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
+        auto exp = std::make_shared<ast_expression>(ast_expression::MULT);
         var = std::make_shared<variable>("err");
-        auto op = std::make_shared<hl_ast_operand>(var);
+        auto op = std::make_shared<ast_operand>(var);
         exp->set_lhs(op);
 
         var = std::make_shared<variable>("p");
         var->add_struct_accessors({"gain"});
-        op = std::make_shared<hl_ast_operand>(var);
+        op = std::make_shared<ast_operand>(var);
         exp->set_rhs(op);
 
-        auto exp2 = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
+        auto exp2 = std::make_shared<ast_expression>(ast_expression::ADD);
         exp2->set_lhs(exp);
         var = std::make_shared<variable>("p");
         var->add_struct_accessors({"phase"});
-        op = std::make_shared<hl_ast_operand>(var);
+        op = std::make_shared<ast_operand>(var);
         exp2->set_rhs(op);
         ref_fcn->set_return(exp2);
 
@@ -1548,41 +1548,41 @@ namespace fcore{
         std::unordered_map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
         auto fun = parser.AST->get_content()[0];
-        auto result = std::static_pointer_cast<hl_function_def_node>(fun)->get_body();
+        auto result = std::static_pointer_cast<ast_function_def>(fun)->get_body();
 
-        auto struct_def = std::make_shared<hl_ast_struct>("parameters");
+        auto struct_def = std::make_shared<ast_struct>("parameters");
 
 
-        auto reference_def = std::make_shared<hl_definition_node>("p", struct_def);
+        auto reference_def = std::make_shared<ast_definition>("p", struct_def);
 
-         std::vector<std::shared_ptr<hl_ast_node>> reference;
+         std::vector<std::shared_ptr<ast_node>> reference;
         reference.push_back(reference_def);
 
 
 
-        auto expr = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
+        auto expr = std::make_shared<ast_expression>(ast_expression::ASSIGN);
         auto var = std::make_shared<variable>("constant",1.0f);
-        auto op = std::make_shared<hl_ast_operand>(var);
+        auto op = std::make_shared<ast_operand>(var);
         expr->set_rhs(op);
         var = std::make_shared<variable>("p");
         var->add_struct_accessors({"gain"});
-        op = std::make_shared<hl_ast_operand>(var);
+        op = std::make_shared<ast_operand>(var);
         expr->set_lhs(op);
 
         reference.push_back(expr);
 
-        expr = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
+        expr = std::make_shared<ast_expression>(ast_expression::ASSIGN);
         var = std::make_shared<variable>("constant",4.0f);
-        op = std::make_shared<hl_ast_operand>(var);
+        op = std::make_shared<ast_operand>(var);
         expr->set_rhs(op);
         var = std::make_shared<variable>("p");
         var->add_struct_accessors({"phase"});
-        op = std::make_shared<hl_ast_operand>(var);
+        op = std::make_shared<ast_operand>(var);
         expr->set_lhs(op);
 
         reference.push_back(expr);
 
-        ASSERT_TRUE(hl_ast_node::compare_vectors(reference, result));
+        ASSERT_TRUE(ast_node::compare_vectors(reference, result));
     }
 
 

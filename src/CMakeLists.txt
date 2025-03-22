@@ -31,7 +31,7 @@ set(FCORE_COMMON_SRCS_I
         passes/instruction_stream/uninitialized_variable_detection.cpp
         passes/instruction_stream/virtual_operations_implementation.cpp
         instrumentation/instrumentation_core.cpp
-        data_structures/high_level_ast/hl_code_block.cpp
+        data_structures/high_level_ast/ast_code_block.cpp
         passes/high_level/infrastructure/hl_acting_visitor.cpp
         passes/high_level/infrastructure/hl_observing_visitor.cpp
 )
@@ -42,16 +42,16 @@ set(FCORE_CC_SRCS
         frontend/C/C_pre_processor.cpp
         frontend/C/C_ErrorHandling.cpp
         frontend/C/C_Tree_visitor.cpp
-        data_structures/high_level_ast/hl_ast_node.cpp
+        data_structures/high_level_ast/ast_node.cpp
         data_structures/high_level_ast/hl_ast_node_variant.cpp
-        data_structures/high_level_ast/hl_definition_node.cpp
-        data_structures/high_level_ast/hl_function_def_node.cpp
-        data_structures/high_level_ast/hl_ast_loop_node.cpp
-        data_structures/high_level_ast/hl_ast_conditional_node.cpp
-        data_structures/high_level_ast/hl_expression_node.cpp
-        data_structures/high_level_ast/hl_function_call_node.cpp
-        data_structures/high_level_ast/hl_ast_operand.cpp
-        data_structures/high_level_ast/hl_ast_struct.cpp
+        data_structures/high_level_ast/ast_definition.cpp
+        data_structures/high_level_ast/ast_function_def.cpp
+        data_structures/high_level_ast/ast_loop.cpp
+        data_structures/high_level_ast/ast_conditional.cpp
+        data_structures/high_level_ast/ast_expression.cpp
+        data_structures/high_level_ast/ast_call.cpp
+        data_structures/high_level_ast/ast_operand.cpp
+        data_structures/high_level_ast/ast_struct.cpp
         data_structures/constants_tracker.cpp
         passes/high_level/optimizations/dead_load_elimination.cpp
         passes/high_level/optimizations/constant_propagation.cpp

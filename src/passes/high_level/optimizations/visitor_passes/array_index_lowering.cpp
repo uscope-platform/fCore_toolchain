@@ -22,7 +22,7 @@ namespace fcore{
     }
 
 
-    std::shared_ptr<hl_code_block> array_index_lowering::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
+    std::shared_ptr<ast_code_block> array_index_lowering::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
 
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;
@@ -33,11 +33,11 @@ namespace fcore{
     }
 
 
-    std::shared_ptr<hl_ast_node> array_index_lowering::process_operand(const std::shared_ptr<hl_ast_operand> &op) {
+    std::shared_ptr<ast_node> array_index_lowering::process_operand(const std::shared_ptr<ast_operand> &op) {
         if(op->get_type()==var_type_array){
             std::vector<int> array_idx;
             for(auto&item:op->get_array_index()){
-                auto idx_op = std::static_pointer_cast<hl_ast_operand>(item);
+                auto idx_op = std::static_pointer_cast<ast_operand>(item);
                 array_idx.push_back(idx_op->get_int_value());
             }
             op->get_variable()->set_array_index(array_idx);

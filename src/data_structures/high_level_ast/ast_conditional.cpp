@@ -13,75 +13,75 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "data_structures/high_level_ast/hl_ast_conditional_node.hpp"
+#include "data_structures/high_level_ast/ast_conditional.hpp"
 
 namespace fcore{
 
-    hl_ast_conditional_node::hl_ast_conditional_node() : hl_ast_node(hl_ast_node_type_conditional) {
+    ast_conditional::ast_conditional() : ast_node(hl_ast_node_type_conditional) {
     }
 
-    void hl_ast_conditional_node::set_if_block(std::vector<std::shared_ptr<hl_ast_node>> node) {
+    void ast_conditional::set_if_block(std::vector<std::shared_ptr<ast_node>> node) {
         if_block = std::move(node);
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>> hl_ast_conditional_node::get_if_block() {
+    std::vector<std::shared_ptr<ast_node>> ast_conditional::get_if_block() {
         return if_block;
     }
 
-    void hl_ast_conditional_node::set_else_block(std::vector<std::shared_ptr<hl_ast_node>> node) {
+    void ast_conditional::set_else_block(std::vector<std::shared_ptr<ast_node>> node) {
         else_block = std::move(node);
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>> hl_ast_conditional_node::get_else_block() {
+    std::vector<std::shared_ptr<ast_node>> ast_conditional::get_else_block() {
         return else_block;
     }
 
-    std::string hl_ast_conditional_node::pretty_print() {
+    std::string ast_conditional::pretty_print() {
 
         std::ostringstream ss;
 
-        ss << "if (" << hl_ast_node::pretty_print(condition)<< ") {" << std::endl;
+        ss << "if (" << ast_node::pretty_print(condition)<< ") {" << std::endl;
         if(!if_block.empty()){
             for(const auto& item:if_block){
-                ss << hl_ast_node::pretty_print(item) << ";" << std::endl;
+                ss << ast_node::pretty_print(item) << ";" << std::endl;
             }
         }
         if(!else_block.empty()){
             ss << "} else {" << std::endl;
             for(const auto& item:else_block){
-                ss << hl_ast_node::pretty_print(item) << ";" << std::endl;
+                ss << ast_node::pretty_print(item) << ";" << std::endl;
             }
         }
         ss<< "}";
         return ss.str();
     }
 
-    void hl_ast_conditional_node::set_condition(std::shared_ptr<hl_ast_node> node) {
+    void ast_conditional::set_condition(std::shared_ptr<ast_node> node) {
         condition = std::move(node);
     }
 
-    std::shared_ptr<hl_ast_node> hl_ast_conditional_node::get_condition() {
+    std::shared_ptr<ast_node> ast_conditional::get_condition() {
         return condition;
     }
 
-    std::shared_ptr<hl_ast_conditional_node>
-    hl_ast_conditional_node::deep_copy(const std::shared_ptr<hl_ast_conditional_node> &orig) {
-        std::shared_ptr<hl_ast_conditional_node> copied_obj = std::make_shared<hl_ast_conditional_node>();
+    std::shared_ptr<ast_conditional>
+    ast_conditional::deep_copy(const std::shared_ptr<ast_conditional> &orig) {
+        std::shared_ptr<ast_conditional> copied_obj = std::make_shared<ast_conditional>();
 
 
-        std::shared_ptr<hl_ast_node> cond = hl_ast_node::deep_copy(orig->get_condition());
+        std::shared_ptr<ast_node> cond = ast_node::deep_copy(orig->get_condition());
         copied_obj->set_condition(cond);
 
 
-        std::vector<std::shared_ptr<hl_ast_node>> block;
+        std::vector<std::shared_ptr<ast_node>> block;
         for(const auto& i:orig->get_if_block()){
-            block.push_back(hl_ast_node::deep_copy(i));
+            block.push_back(ast_node::deep_copy(i));
         }
         copied_obj->set_if_block(block);
 
         block.clear();
         for(const auto& i:orig->get_else_block()){
-            block.push_back(hl_ast_node::deep_copy(i));
+            block.push_back(ast_node::deep_copy(i));
         }
         copied_obj->set_else_block(block);
 

@@ -22,7 +22,7 @@ namespace fcore {
 
     }
 
-    std::shared_ptr<hl_code_block> undefined_variables::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
+    std::shared_ptr<ast_code_block> undefined_variables::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
         hl_observing_visitor_operations pre_ops;
         hl_observing_visitor_operations post_ops;
         hl_observing_visitor visitor;
@@ -49,18 +49,18 @@ namespace fcore {
     }
 
 
-    void undefined_variables::process_definition(const std::shared_ptr<hl_definition_node> &def) {
+    void undefined_variables::process_definition(const std::shared_ptr<ast_definition> &def) {
         current_stack.insert(def->get_name());
     }
 
-    void undefined_variables::process_function_def(const std::shared_ptr<hl_function_def_node> &def) {
+    void undefined_variables::process_function_def(const std::shared_ptr<ast_function_def> &def) {
         push_stack();
         for(const auto &arg:def->get_parameters_list()) {
             current_stack.insert(arg->get_name());
         }
     }
 
-    void undefined_variables::process_operand(const std::shared_ptr<hl_ast_operand> &op) const {
+    void undefined_variables::process_operand(const std::shared_ptr<ast_operand> &op) const {
         if(!current_stack.contains(op->get_name())) {
             auto type = op->get_type();
             if(type != var_type_float_const && type != var_type_int_const) {

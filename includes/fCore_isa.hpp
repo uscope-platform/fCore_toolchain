@@ -16,7 +16,7 @@
 #ifndef FCORE_TOOLCHAIN_FCORE_ISA_HPP
 #define FCORE_TOOLCHAIN_FCORE_ISA_HPP
 
-#include "data_structures/high_level_ast/hl_expression_node.hpp"
+#include "data_structures/high_level_ast/ast_expression.hpp"
 
 #include <map>
 
@@ -197,46 +197,46 @@ namespace fcore{
     };
 
 
-    static std::map <hl_expression_node::expression_type, bool> fcore_implemented_operations {
-            std::make_pair(hl_expression_node::ADD, true),
-            std::make_pair(hl_expression_node::SUB, true),
-            std::make_pair(hl_expression_node::MULT, true),
-            std::make_pair(hl_expression_node::DIV, false),
-            std::make_pair(hl_expression_node::PRE_INCR, true),
-            std::make_pair(hl_expression_node::POST_INCR, true),
-            std::make_pair(hl_expression_node::PRE_DECR, true),
-            std::make_pair(hl_expression_node::POST_DECR, true),
-            std::make_pair(hl_expression_node::MODULO, false),
-            std::make_pair(hl_expression_node::AND_L, false),
-            std::make_pair(hl_expression_node::AND_B, true),
-            std::make_pair(hl_expression_node::OR_L, false),
-            std::make_pair(hl_expression_node::OR_B, true),
-            std::make_pair(hl_expression_node::NOT_L, false),
-            std::make_pair(hl_expression_node::NOT_B, true),
-            std::make_pair(hl_expression_node::XOR_B, true),
-            std::make_pair(hl_expression_node::LSH, false),
-            std::make_pair(hl_expression_node::RSH, false),
-            std::make_pair(hl_expression_node::EQ, true),
-            std::make_pair(hl_expression_node::NEQ, true),
-            std::make_pair(hl_expression_node::NEG, true),
-            std::make_pair(hl_expression_node::LT, true),
-            std::make_pair(hl_expression_node::GT, true),
-            std::make_pair(hl_expression_node::LTE, true),
-            std::make_pair(hl_expression_node::GTE, true),
-            std::make_pair(hl_expression_node::RECIPROCAL, true),
-            std::make_pair(hl_expression_node::ASSIGN, false),
-            std::make_pair(hl_expression_node::CALL, false),
-            std::make_pair(hl_expression_node::FTI, true),
-            std::make_pair(hl_expression_node::ITF, true),
-            std::make_pair(hl_expression_node::SATP, true),
-            std::make_pair(hl_expression_node::SATN, true),
-            std::make_pair(hl_expression_node::POPCNT, true),
-            std::make_pair(hl_expression_node::EFI, true),
-            std::make_pair(hl_expression_node::ABS, true),
-            std::make_pair(hl_expression_node::BSET, true),
-            std::make_pair(hl_expression_node::BSEL, true),
-            std::make_pair(hl_expression_node::NOP, true),
-            std::make_pair(hl_expression_node::CSEL, true)
+    static std::map fcore_implemented_operations {
+            std::make_pair(ast_expression::ADD, true),
+            std::make_pair(ast_expression::SUB, true),
+            std::make_pair(ast_expression::MULT, true),
+            std::make_pair(ast_expression::DIV, false),
+            std::make_pair(ast_expression::PRE_INCR, true),
+            std::make_pair(ast_expression::POST_INCR, true),
+            std::make_pair(ast_expression::PRE_DECR, true),
+            std::make_pair(ast_expression::POST_DECR, true),
+            std::make_pair(ast_expression::MODULO, false),
+            std::make_pair(ast_expression::AND_L, false),
+            std::make_pair(ast_expression::AND_B, true),
+            std::make_pair(ast_expression::OR_L, false),
+            std::make_pair(ast_expression::OR_B, true),
+            std::make_pair(ast_expression::NOT_L, false),
+            std::make_pair(ast_expression::NOT_B, true),
+            std::make_pair(ast_expression::XOR_B, true),
+            std::make_pair(ast_expression::LSH, false),
+            std::make_pair(ast_expression::RSH, false),
+            std::make_pair(ast_expression::EQ, true),
+            std::make_pair(ast_expression::NEQ, true),
+            std::make_pair(ast_expression::NEG, true),
+            std::make_pair(ast_expression::LT, true),
+            std::make_pair(ast_expression::GT, true),
+            std::make_pair(ast_expression::LTE, true),
+            std::make_pair(ast_expression::GTE, true),
+            std::make_pair(ast_expression::RECIPROCAL, true),
+            std::make_pair(ast_expression::ASSIGN, false),
+            std::make_pair(ast_expression::CALL, false),
+            std::make_pair(ast_expression::FTI, true),
+            std::make_pair(ast_expression::ITF, true),
+            std::make_pair(ast_expression::SATP, true),
+            std::make_pair(ast_expression::SATN, true),
+            std::make_pair(ast_expression::POPCNT, true),
+            std::make_pair(ast_expression::EFI, true),
+            std::make_pair(ast_expression::ABS, true),
+            std::make_pair(ast_expression::BSET, true),
+            std::make_pair(ast_expression::BSEL, true),
+            std::make_pair(ast_expression::NOP, true),
+            std::make_pair(ast_expression::CSEL, true)
     };
 
     static std::map <std::string, std::string>  fcore_pseudo_op {

@@ -22,24 +22,24 @@ using namespace fcore;
 
 TEST(hl_expression, successful_const_testing) {
 
-    auto e_add = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
+    auto e_add = std::make_shared<ast_expression>(ast_expression::ADD);
     auto var = std::make_shared<variable>("constant", 2.9f);
-    auto op = std::make_shared<hl_ast_operand>(var);
+    auto op = std::make_shared<ast_operand>(var);
     e_add->set_lhs(op);
     var = std::make_shared<variable>("constant", 5.1f);
-    op = std::make_shared<hl_ast_operand>(var);
+    op = std::make_shared<ast_operand>(var);
     e_add->set_rhs(op);
 
-    auto e_mul = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
+    auto e_mul = std::make_shared<ast_expression>(ast_expression::MULT);
     e_mul->set_rhs(e_add);
     var = std::make_shared<variable>("constant", 3.3f);
-    op = std::make_shared<hl_ast_operand>(var);
+    op = std::make_shared<ast_operand>(var);
     e_mul->set_lhs(op);
 
-    auto e_div = std::make_shared<hl_expression_node>(hl_expression_node::DIV);
+    auto e_div = std::make_shared<ast_expression>(ast_expression::DIV);
     e_div->set_lhs(e_mul);
     var = std::make_shared<variable>("constant", 7.0f);
-    op = std::make_shared<hl_ast_operand>(var);
+    op = std::make_shared<ast_operand>(var);
     e_div->set_rhs(op);
 
     EXPECT_TRUE(e_div->is_constant());
@@ -48,24 +48,24 @@ TEST(hl_expression, successful_const_testing) {
 
 TEST(hl_expression, failed_const_testing) {
 
-    auto e_add = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
+    auto e_add = std::make_shared<ast_expression>(ast_expression::ADD);
     auto var = std::make_shared<variable>("constant", 2.9f);
-    auto op = std::make_shared<hl_ast_operand>(var);
+    auto op = std::make_shared<ast_operand>(var);
     e_add->set_lhs(op);
     var = std::make_shared<variable>("variable");
-    op = std::make_shared<hl_ast_operand>(var);
+    op = std::make_shared<ast_operand>(var);
     e_add->set_rhs(op);
 
-    auto e_mul = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
+    auto e_mul = std::make_shared<ast_expression>(ast_expression::MULT);
     e_mul->set_rhs(e_add);
     var = std::make_shared<variable>("constant", 3.3f);
-    op = std::make_shared<hl_ast_operand>(var);
+    op = std::make_shared<ast_operand>(var);
     e_mul->set_lhs(op);
 
-    auto e_div = std::make_shared<hl_expression_node>(hl_expression_node::DIV);
+    auto e_div = std::make_shared<ast_expression>(ast_expression::DIV);
     e_div->set_lhs(e_mul);
     var = std::make_shared<variable>("constant", 7.0f);
-    op = std::make_shared<hl_ast_operand>(var);
+    op = std::make_shared<ast_operand>(var);
     e_div->set_rhs(op);
 
     EXPECT_FALSE(e_div->is_constant());
@@ -74,29 +74,29 @@ TEST(hl_expression, failed_const_testing) {
 
 TEST(hl_expression, expression_evaluation) {
 
-    auto e_add = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
+    auto e_add = std::make_shared<ast_expression>(ast_expression::ADD);
     auto var = std::make_shared<variable>("constant", 2.9f);
-    auto op = std::make_shared<hl_ast_operand>(var);
+    auto op = std::make_shared<ast_operand>(var);
     e_add->set_lhs(op);
     var = std::make_shared<variable>("constant", 5.1f);
-    op = std::make_shared<hl_ast_operand>(var);
+    op = std::make_shared<ast_operand>(var);
     e_add->set_rhs(op);
 
-    auto e_mul = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
+    auto e_mul = std::make_shared<ast_expression>(ast_expression::MULT);
     e_mul->set_rhs(e_add);
     var = std::make_shared<variable>("constant", 3.3f);
-    op = std::make_shared<hl_ast_operand>(var);
+    op = std::make_shared<ast_operand>(var);
     e_mul->set_lhs(op);
 
-    auto e_div = std::make_shared<hl_expression_node>(hl_expression_node::DIV);
+    auto e_div = std::make_shared<ast_expression>(ast_expression::DIV);
     e_div->set_lhs(e_mul);
     var = std::make_shared<variable>("constant", 7.0f);
-    op = std::make_shared<hl_ast_operand>(var);
+    op = std::make_shared<ast_operand>(var);
     e_div->set_rhs(op);
 
-    auto result = hl_expression_node::evaluate(e_div);
+    auto result = ast_expression::evaluate(e_div);
 
     var = std::make_shared<variable>("constant", 3.7714285f);
-    auto reference = std::make_shared<hl_ast_operand>(var);
+    auto reference = std::make_shared<ast_operand>(var);
     EXPECT_EQ(*result, *reference);
 }

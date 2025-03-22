@@ -25,15 +25,15 @@ namespace fcore{
     class contiguous_array_identification : public pass_base{
     public:
         contiguous_array_identification();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
+        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
     private:
-        std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_node> element);
-        std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_expression_node> element);
-        std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_definition_node> element);
-        std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_operand> element);
-        std::shared_ptr<hl_ast_node> process_element(std::shared_ptr<hl_ast_conditional_node> element);
+        std::shared_ptr<ast_node> process_element(std::shared_ptr<ast_node> element);
+        std::shared_ptr<ast_node> process_element(std::shared_ptr<ast_expression> element);
+        std::shared_ptr<ast_node> process_element(std::shared_ptr<ast_definition> element);
+        std::shared_ptr<ast_node> process_element(std::shared_ptr<ast_operand> element);
+        std::shared_ptr<ast_node> process_element(std::shared_ptr<ast_conditional> element);
 
-        void process_efi_arguments(std::shared_ptr<hl_expression_node> element);
+        void process_efi_arguments(std::shared_ptr<ast_expression> element);
 
         std::set<std::string> contiguous_arrays;
     };

@@ -29,18 +29,18 @@ namespace fcore {
     class function_calls_checks : public pass_base{
     public:
         function_calls_checks();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
+        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
     private:
 
         void push_stack();
         void pop_stack();
         void reset_conditional_stack();
 
-        void map_definition(const std::shared_ptr<hl_function_def_node> &def);
+        void map_definition(const std::shared_ptr<ast_function_def> &def);
 
-        void process_definition(const std::shared_ptr<hl_definition_node> &def);
-        void process_function_def(const std::shared_ptr<hl_function_def_node> &f_def);
-        void process_function_call(const std::shared_ptr<hl_function_call_node> &call);
+        void process_definition(const std::shared_ptr<ast_definition> &def);
+        void process_function_def(const std::shared_ptr<ast_function_def> &f_def);
+        void process_function_call(const std::shared_ptr<ast_call> &call);
 
         std::stack<std::unordered_map<std::string, c_types_t>> scopes_stack;
         std::unordered_map<std::string, c_types_t> current_scope;

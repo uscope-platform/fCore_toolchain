@@ -14,7 +14,7 @@
 // limitations under the License.01/07/2021.
 //
 
-#include "data_structures/high_level_ast/hl_expression_node.hpp"
+#include "data_structures/high_level_ast/ast_expression.hpp"
 
 #include <unordered_set>
 
@@ -22,7 +22,7 @@
 
 namespace fcore{
 
-    hl_expression_node::hl_expression_node(expression_type et) : hl_ast_node(hl_ast_node_type_expr) {
+    ast_expression::ast_expression(expression_type et) : ast_node(hl_ast_node_type_expr) {
         expression_t = et;
         assignment_t = regular_assignment;
         type_print = {
@@ -70,15 +70,15 @@ namespace fcore{
         };
     }
 
-    std::string hl_expression_node::pretty_print() {
+    std::string ast_expression::pretty_print() {
         std::ostringstream ss;
         if (lhs.has_value()) {
             if (lhs.value()->node_type == hl_ast_node_type_operand) {
-                std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(lhs.value());
+                std::shared_ptr<ast_operand> op = std::static_pointer_cast<ast_operand>(lhs.value());
                 std::string tmp_lhs = *op;
                 ss << tmp_lhs;
             } else {
-                ss << "(" <<std::static_pointer_cast<hl_expression_node>(lhs.value())->pretty_print() << ")";
+                ss << "(" <<std::static_pointer_cast<ast_expression>(lhs.value())->pretty_print() << ")";
             }
 
         }
@@ -87,20 +87,20 @@ namespace fcore{
 
         if (rhs->node_type == hl_ast_node_type_operand) {
 
-            std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(rhs);
+            std::shared_ptr<ast_operand> op = std::static_pointer_cast<ast_operand>(rhs);
             std::string tmp_rhs = *op;
             ss << tmp_rhs;
         } else if(rhs->node_type == hl_ast_node_type_function_call){
-            ss << std::static_pointer_cast<hl_function_call_node>(rhs)->pretty_print();
+            ss << std::static_pointer_cast<ast_call>(rhs)->pretty_print();
         }else{
-            ss << "(" <<std::static_pointer_cast<hl_expression_node>(rhs)->pretty_print() << ")";
+            ss << "(" <<std::static_pointer_cast<ast_expression>(rhs)->pretty_print() << ")";
         }
         std::string ret = ss.str();
         return ret;
     }
 
 
-    bool hl_expression_node::is_unary() {
+    bool ast_expression::is_unary() {
         std::unordered_set<expression_type> unaries = {
             RECIPROCAL,
             NOT_B,
@@ -120,13 +120,13 @@ namespace fcore{
         return unaries.contains(expression_t);
     }
 
-    bool hl_expression_node::is_immediate() {
+    bool ast_expression::is_immediate() {
         bool res  = false;
         res |= expression_t == NOP;
         return res;
     }
 
-    void hl_expression_node::swap_operands() {
+    void ast_expression::swap_operands() {
         if(!is_unary() && !is_immediate() && !is_ternary()){
             auto lhs_tmp = lhs.value();
             lhs = rhs;
@@ -134,40 +134,40 @@ namespace fcore{
         }
     }
 
-    bool hl_expression_node::is_constant() {
+    bool ast_expression::is_constant() {
         bool res  = true;
         if(rhs->node_type == hl_ast_node_type_operand) {
-            res &= std::static_pointer_cast<hl_ast_operand>(rhs)->is_constant();
+            res &= std::static_pointer_cast<ast_operand>(rhs)->is_constant();
         } else {
-            res &= std::static_pointer_cast<hl_expression_node>(rhs)->is_constant();
+            res &= std::static_pointer_cast<ast_expression>(rhs)->is_constant();
         }
 
         if(lhs.has_value()) {
             auto lhs_val = lhs.value();
             if(lhs_val->node_type == hl_ast_node_type_operand) {
-                res &= std::static_pointer_cast<hl_ast_operand>(lhs_val)->is_constant();
+                res &= std::static_pointer_cast<ast_operand>(lhs_val)->is_constant();
             } else {
-                res &= std::static_pointer_cast<hl_expression_node>(lhs_val)->is_constant();
+                res &= std::static_pointer_cast<ast_expression>(lhs_val)->is_constant();
             }
         }
 
         if(is_ternary()) {
             auto ths_val = ths.value();
             if(ths_val->node_type == hl_ast_node_type_operand) {
-                res &= std::static_pointer_cast<hl_ast_operand>(ths_val)->is_constant();
+                res &= std::static_pointer_cast<ast_operand>(ths_val)->is_constant();
             } else {
-                res &= std::static_pointer_cast<hl_expression_node>(ths_val)->is_constant();
+                res &= std::static_pointer_cast<ast_expression>(ths_val)->is_constant();
             }
         }
 
         return res;
     }
 
-    std::shared_ptr<hl_ast_operand> hl_expression_node::evaluate(const std::shared_ptr<hl_expression_node> &node) {
+    std::shared_ptr<ast_operand> ast_expression::evaluate(const std::shared_ptr<ast_expression> &node) {
         return expression_evaluator::evaluate_expression(node);
     }
 
-    bool hl_expression_node::is_ternary() {
+    bool ast_expression::is_ternary() {
         bool res  = false;
         res |= expression_t == CSEL;
         return res;
@@ -175,18 +175,18 @@ namespace fcore{
 
 
 
-    bool operator==(const hl_expression_node &l_ex, const hl_expression_node &r_ex){
+    bool operator==(const ast_expression &l_ex, const ast_expression &r_ex){
         bool ret_val = true;
 
 
         if(l_ex.lhs.has_value() && r_ex.lhs.has_value()){
             if(l_ex.lhs.value()->node_type == hl_ast_node_type_expr && r_ex.lhs.value()->node_type ==  hl_ast_node_type_expr){
-                std::shared_ptr<hl_expression_node> ex_1 = std::static_pointer_cast<hl_expression_node>(l_ex.lhs.value());
-                std::shared_ptr<hl_expression_node> ex_2 = std::static_pointer_cast<hl_expression_node>(r_ex.lhs.value());
+                std::shared_ptr<ast_expression> ex_1 = std::static_pointer_cast<ast_expression>(l_ex.lhs.value());
+                std::shared_ptr<ast_expression> ex_2 = std::static_pointer_cast<ast_expression>(r_ex.lhs.value());
                 ret_val &= *ex_1 == *ex_2;
             }else if(l_ex.lhs.value()->node_type == hl_ast_node_type_operand && r_ex.lhs.value()->node_type ==  hl_ast_node_type_operand){
-                std::shared_ptr<hl_ast_operand> ex_1 = std::static_pointer_cast<hl_ast_operand>(l_ex.lhs.value());
-                std::shared_ptr<hl_ast_operand> ex_2 = std::static_pointer_cast<hl_ast_operand>(r_ex.lhs.value());
+                std::shared_ptr<ast_operand> ex_1 = std::static_pointer_cast<ast_operand>(l_ex.lhs.value());
+                std::shared_ptr<ast_operand> ex_2 = std::static_pointer_cast<ast_operand>(r_ex.lhs.value());
                 ret_val &= *ex_1 == *ex_2;
             } else {
                 return false;
@@ -196,20 +196,20 @@ namespace fcore{
 
         if(l_ex.rhs != nullptr && r_ex.rhs != nullptr){
             if((l_ex.rhs->node_type == hl_ast_node_type_expr) && (r_ex.rhs->node_type ==  hl_ast_node_type_expr)){
-                auto ex_1 = std::static_pointer_cast<hl_expression_node>(l_ex.rhs);
-                auto ex_2 = std::static_pointer_cast<hl_expression_node>(r_ex.rhs);
+                auto ex_1 = std::static_pointer_cast<ast_expression>(l_ex.rhs);
+                auto ex_2 = std::static_pointer_cast<ast_expression>(r_ex.rhs);
                 ret_val &= *ex_1 == *ex_2;
             }else if((l_ex.rhs->node_type == hl_ast_node_type_operand) && (r_ex.rhs->node_type ==  hl_ast_node_type_operand)){
-                auto ex_1 = std::static_pointer_cast<hl_ast_operand>(l_ex.rhs);
-                auto ex_2 = std::static_pointer_cast<hl_ast_operand>(r_ex.rhs);
+                auto ex_1 = std::static_pointer_cast<ast_operand>(l_ex.rhs);
+                auto ex_2 = std::static_pointer_cast<ast_operand>(r_ex.rhs);
                 ret_val &= *ex_1 == *ex_2;
             }else if((l_ex.rhs->node_type == hl_ast_node_type_function_call) && (r_ex.rhs->node_type ==  hl_ast_node_type_function_call)){
-                auto ex_1 = std::static_pointer_cast<hl_function_call_node>(l_ex.rhs);
-                auto ex_2 = std::static_pointer_cast<hl_function_call_node>(r_ex.rhs);
+                auto ex_1 = std::static_pointer_cast<ast_call>(l_ex.rhs);
+                auto ex_2 = std::static_pointer_cast<ast_call>(r_ex.rhs);
                 ret_val &= *ex_1 == *ex_2;
             }else if((l_ex.rhs->node_type == hl_ast_node_type_conditional) && (r_ex.rhs->node_type ==  hl_ast_node_type_conditional)){
-                auto ex_1 = std::static_pointer_cast<hl_ast_conditional_node>(l_ex.rhs);
-                auto ex_2 = std::static_pointer_cast<hl_ast_conditional_node>(r_ex.rhs);
+                auto ex_1 = std::static_pointer_cast<ast_conditional>(l_ex.rhs);
+                auto ex_2 = std::static_pointer_cast<ast_conditional>(r_ex.rhs);
                 ret_val &= *ex_1 == *ex_2;
             }  else {
                 return false;
@@ -221,16 +221,16 @@ namespace fcore{
 
         if(l_ex.ths.has_value() && r_ex.ths.has_value()){
             if((l_ex.ths.value()->node_type == hl_ast_node_type_expr) && (r_ex.ths.value()->node_type ==  hl_ast_node_type_expr)){
-                std::shared_ptr<hl_expression_node> ex_1 = std::static_pointer_cast<hl_expression_node>(r_ex.ths.value());
-                std::shared_ptr<hl_expression_node> ex_2 = std::static_pointer_cast<hl_expression_node>(r_ex.ths.value());
+                std::shared_ptr<ast_expression> ex_1 = std::static_pointer_cast<ast_expression>(r_ex.ths.value());
+                std::shared_ptr<ast_expression> ex_2 = std::static_pointer_cast<ast_expression>(r_ex.ths.value());
                 ret_val &= *ex_1 == *ex_2;
             }else if((l_ex.ths.value()->node_type == hl_ast_node_type_operand) && (r_ex.ths.value()->node_type ==  hl_ast_node_type_operand)){
-                std::shared_ptr<hl_ast_operand> ex_1 = std::static_pointer_cast<hl_ast_operand>(r_ex.ths.value());
-                std::shared_ptr<hl_ast_operand> ex_2 = std::static_pointer_cast<hl_ast_operand>(r_ex.ths.value());
+                std::shared_ptr<ast_operand> ex_1 = std::static_pointer_cast<ast_operand>(r_ex.ths.value());
+                std::shared_ptr<ast_operand> ex_2 = std::static_pointer_cast<ast_operand>(r_ex.ths.value());
                 ret_val &= *ex_1 == *ex_2;
             }else if((l_ex.ths.value()->node_type == hl_ast_node_type_function_call) && (r_ex.ths.value()->node_type ==  hl_ast_node_type_function_call)){
-                std::shared_ptr<hl_function_call_node> ex_1 = std::static_pointer_cast<hl_function_call_node>(r_ex.ths.value());
-                std::shared_ptr<hl_function_call_node> ex_2 = std::static_pointer_cast<hl_function_call_node>(r_ex.ths.value());
+                std::shared_ptr<ast_call> ex_1 = std::static_pointer_cast<ast_call>(r_ex.ths.value());
+                std::shared_ptr<ast_call> ex_2 = std::static_pointer_cast<ast_call>(r_ex.ths.value());
                 ret_val &= *ex_1 == *ex_2;
             } else {
                 return false;
@@ -245,11 +245,11 @@ namespace fcore{
         return ret_val;
     }
 
-    std::shared_ptr<hl_expression_node> hl_expression_node::deep_copy(const std::shared_ptr<hl_expression_node> &orig) {
-        std::shared_ptr<hl_expression_node> copied_obj = std::make_shared<hl_expression_node>(orig->get_type());
+    std::shared_ptr<ast_expression> ast_expression::deep_copy(const std::shared_ptr<ast_expression> &orig) {
+        std::shared_ptr<ast_expression> copied_obj = std::make_shared<ast_expression>(orig->get_type());
 
-        if(orig->lhs.has_value()) copied_obj->set_lhs(hl_ast_node::deep_copy(orig->get_lhs().value()));
-        copied_obj->set_rhs(hl_ast_node::deep_copy(orig->get_rhs()));
+        if(orig->lhs.has_value()) copied_obj->set_lhs(ast_node::deep_copy(orig->get_lhs().value()));
+        copied_obj->set_rhs(ast_node::deep_copy(orig->get_rhs()));
         if(orig->ths.has_value()) copied_obj->set_ths(orig->get_ths().value());
 
         copied_obj->set_assignment_type(orig->get_assignment_type());

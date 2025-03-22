@@ -19,7 +19,7 @@
 
 namespace fcore{
 
-    void constants_tracker::add_constant(const std::string &s, std::shared_ptr<hl_ast_operand> op, int instr_idx,
+    void constants_tracker::add_constant(const std::string &s, std::shared_ptr<ast_operand> op, int instr_idx,
                                                 std::vector<uint32_t> array_idx) {
 
         auto idx = stringify_index(array_idx);
@@ -49,7 +49,7 @@ namespace fcore{
     }
 
 
-    std::shared_ptr<hl_ast_operand> constants_tracker::get_constant(const std::string &s, int instr_idx, std::vector<uint32_t> array_idx) {
+    std::shared_ptr<ast_operand> constants_tracker::get_constant(const std::string &s, int instr_idx, std::vector<uint32_t> array_idx) {
         auto idx = stringify_index(array_idx);
         for(auto &item:constants_map[s][idx]){
             if(instr_idx>=item.validity_range.first && (instr_idx<item.validity_range.second || item.validity_range.second == -1)) {

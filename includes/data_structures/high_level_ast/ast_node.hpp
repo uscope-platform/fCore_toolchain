@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FCORE_TOOLCHAIN_HL_AST_NODE_HPP
-#define FCORE_TOOLCHAIN_HL_AST_NODE_HPP
+#ifndef FCORE_TOOLCHAIN_AST_NODE_HPP
+#define FCORE_TOOLCHAIN_AST_NODE_HPP
 
 #include <string>
 
@@ -72,18 +72,18 @@ namespace fcore{
         }
     }
 
-    class hl_ast_node {
+    class ast_node {
 
     public:
-        virtual ~hl_ast_node() = default;
+        virtual ~ast_node() = default;
 
-        explicit hl_ast_node(hl_ast_node_type_t t);
+        explicit ast_node(hl_ast_node_type_t t);
         static c_types_t string_to_type(const std::string& t);
         static std::string  type_to_string(const c_types_t &t);
 
-        virtual std::string pretty_print(const std::shared_ptr<hl_ast_node> &node);
+        virtual std::string pretty_print(const std::shared_ptr<ast_node> &node);
 
-        friend bool operator==(const hl_ast_node& lhs, const hl_ast_node& rhs){
+        friend bool operator==(const ast_node& lhs, const ast_node& rhs){
             bool ret_val = true;
             ret_val &= lhs.node_type == rhs.node_type;
 
@@ -91,10 +91,10 @@ namespace fcore{
             return ret_val;
         };
 
-        static  bool compare_content_by_type(const std::shared_ptr<hl_ast_node>& lhs, const std::shared_ptr<hl_ast_node>& rhs);
+        static  bool compare_content_by_type(const std::shared_ptr<ast_node>& lhs, const std::shared_ptr<ast_node>& rhs);
 
-        static std::shared_ptr<hl_ast_node> deep_copy(const std::shared_ptr<hl_ast_node> &node);
-        static bool compare_vectors(const std::vector<std::shared_ptr<hl_ast_node>>& lhs, const std::vector<std::shared_ptr<hl_ast_node>>& rhs);
+        static std::shared_ptr<ast_node> deep_copy(const std::shared_ptr<ast_node> &node);
+        static bool compare_vectors(const std::vector<std::shared_ptr<ast_node>>& lhs, const std::vector<std::shared_ptr<ast_node>>& rhs);
 
         hl_ast_node_type_t node_type;
 
@@ -104,4 +104,4 @@ namespace fcore{
 
 
 
-#endif //FCORE_TOOLCHAIN_HL_AST_NODE_HPP
+#endif //FCORE_TOOLCHAIN_AST_NODE_HPP

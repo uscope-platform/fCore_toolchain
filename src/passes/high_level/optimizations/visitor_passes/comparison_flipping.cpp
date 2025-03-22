@@ -23,7 +23,7 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<hl_code_block> comparison_flipping::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
+    std::shared_ptr<ast_code_block> comparison_flipping::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
 
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;
@@ -35,14 +35,14 @@ namespace fcore{
     }
 
 
-    std::vector<std::shared_ptr<hl_ast_node>>  comparison_flipping::process_expression(std::shared_ptr<hl_expression_node> exp) {
-        if(exp->get_type() == hl_expression_node::GTE){
-            exp->set_type(hl_expression_node::LTE);
+    std::vector<std::shared_ptr<ast_node>>  comparison_flipping::process_expression(std::shared_ptr<ast_expression> exp) {
+        if(exp->get_type() == ast_expression::GTE){
+            exp->set_type(ast_expression::LTE);
             auto lhs = exp->get_lhs();
             exp->set_lhs(exp->get_rhs());
             exp->set_rhs(lhs.value());
-        } else if (exp->get_type() == hl_expression_node::LT) {
-            exp->set_type(hl_expression_node::GT);
+        } else if (exp->get_type() == ast_expression::LT) {
+            exp->set_type(ast_expression::GT);
             auto lhs = exp->get_lhs();
             exp->set_lhs(exp->get_rhs());
             exp->set_rhs(lhs.value());

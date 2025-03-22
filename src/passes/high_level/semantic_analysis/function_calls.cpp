@@ -23,7 +23,7 @@ namespace fcore {
 
     }
 
-    std::shared_ptr<hl_code_block> function_calls_checks::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
+    std::shared_ptr<ast_code_block> function_calls_checks::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
 
         hl_observing_visitor visitor;
 
@@ -58,22 +58,22 @@ namespace fcore {
     }
 
 
-    void function_calls_checks::process_definition(const std::shared_ptr<hl_definition_node> &def) {
+    void function_calls_checks::process_definition(const std::shared_ptr<ast_definition> &def) {
         current_scope[def->get_name()] = def->get_type();
     }
 
-    void function_calls_checks::process_function_def(const std::shared_ptr<hl_function_def_node> &f_def) {
+    void function_calls_checks::process_function_def(const std::shared_ptr<ast_function_def> &f_def) {
         push_stack();
         for(const auto &arg:f_def->get_parameters_list()) {
             current_scope[arg->get_name()] = arg->get_type();
         }
     }
 
-    void function_calls_checks::process_function_call(const std::shared_ptr<hl_function_call_node> &call) {
+    void function_calls_checks::process_function_call(const std::shared_ptr<ast_call> &call) {
         const auto arguments = call->get_arguments();
         for(int i = 0; i<arguments.size(); i++) {
             if(arguments[i]->node_type == hl_ast_node_type_operand) {
-                auto arg_type = current_scope[std::static_pointer_cast<hl_ast_operand>(arguments[i])->get_name()];
+                auto arg_type = current_scope[std::static_pointer_cast<ast_operand>(arguments[i])->get_name()];
                 if(arg_type != definitions[call->get_name()][i].second) {
                     const std::string error = fmt::format("Argument #{0} of a call to {1} is of the wrong type", i, call->get_name());
                     throw std::runtime_error(error);
@@ -95,7 +95,7 @@ namespace fcore {
         current_scope = scopes_stack.top();
     }
 
-    void function_calls_checks::map_definition(const std::shared_ptr<hl_function_def_node> &def) {
+    void function_calls_checks::map_definition(const std::shared_ptr<ast_function_def> &def) {
         for(const auto &arg:def->get_parameters_list()) {
             definitions[def->get_name()].emplace_back(arg->get_name(), arg->get_type());
         }

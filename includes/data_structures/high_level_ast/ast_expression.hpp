@@ -13,21 +13,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FCORE_TOOLCHAIN_HL_EXPRESSION_NODE_HPP
-#define FCORE_TOOLCHAIN_HL_EXPRESSION_NODE_HPP
+#ifndef FCORE_TOOLCHAIN_AST_EXPRESSION_HPP
+#define FCORE_TOOLCHAIN_AST_EXPRESSION_HPP
 
 
-#include "hl_ast_operand.hpp"
-#include "hl_ast_node.hpp"
-#include "hl_function_call_node.hpp"
-#include "hl_ast_conditional_node.hpp"
+#include "ast_operand.hpp"
+#include "ast_node.hpp"
+#include "ast_call.hpp"
+#include "ast_conditional.hpp"
 
 namespace fcore{
 
     // FORWARD DECLARATIONS
     class expression_evaluator;
 
-    class hl_expression_node : public hl_ast_node{
+    class ast_expression : public ast_node{
     public:
 
          enum assignment_type{
@@ -88,14 +88,14 @@ namespace fcore{
 
 
 
-        hl_expression_node( expression_type et);
-        void set_lhs(const std::shared_ptr<hl_ast_node> &node) {lhs = node;};
-        void set_rhs(const std::shared_ptr<hl_ast_node> &node) {rhs = node;};
-        void set_ths(const std::shared_ptr<hl_ast_node> &node) {ths = node;};
+        ast_expression( expression_type et);
+        void set_lhs(const std::shared_ptr<ast_node> &node) {lhs = node;};
+        void set_rhs(const std::shared_ptr<ast_node> &node) {rhs = node;};
+        void set_ths(const std::shared_ptr<ast_node> &node) {ths = node;};
 
-        std::optional<std::shared_ptr<hl_ast_node>> get_lhs(){return lhs;};
-        std::shared_ptr<hl_ast_node> get_rhs(){return rhs;};
-        std::optional<std::shared_ptr<hl_ast_node>> get_ths(){return ths;};
+        std::optional<std::shared_ptr<ast_node>> get_lhs(){return lhs;};
+        std::shared_ptr<ast_node> get_rhs(){return rhs;};
+        std::optional<std::shared_ptr<ast_node>> get_ths(){return ths;};
 
         void set_assignment_type(assignment_type a) { assignment_t = a;};
         assignment_type get_assignment_type() {return assignment_t;};
@@ -110,19 +110,19 @@ namespace fcore{
         void swap_operands();
 
         bool is_constant();
-        static std::shared_ptr<hl_ast_operand> evaluate(const std::shared_ptr<hl_expression_node> &node);
+        static std::shared_ptr<ast_operand> evaluate(const std::shared_ptr<ast_expression> &node);
 
-        friend bool operator==(const hl_expression_node& lhs, const hl_expression_node& rhs);
+        friend bool operator==(const ast_expression& lhs, const ast_expression& rhs);
 
-        static std::shared_ptr<hl_expression_node> deep_copy (const std::shared_ptr<hl_expression_node> &node);
+        static std::shared_ptr<ast_expression> deep_copy (const std::shared_ptr<ast_expression> &node);
 
     private:
         expression_type expression_t;
         assignment_type assignment_t;
 
-        std::optional<std::shared_ptr<hl_ast_node>> lhs;
-        std::shared_ptr<hl_ast_node> rhs;
-        std::optional<std::shared_ptr<hl_ast_node>> ths;
+        std::optional<std::shared_ptr<ast_node>> lhs;
+        std::shared_ptr<ast_node> rhs;
+        std::optional<std::shared_ptr<ast_node>> ths;
 
         std::map<expression_type, std::string> type_print;
         std::map<assignment_type, std::string> assign_prefix_print;
@@ -130,4 +130,4 @@ namespace fcore{
 }
 
 
-#endif //FCORE_TOOLCHAIN_HL_EXPRESSION_NODE_HPP
+#endif //FCORE_TOOLCHAIN_AST_EXPRESSION_HPP

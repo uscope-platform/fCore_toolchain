@@ -20,7 +20,7 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<hl_code_block> dead_variable_elimination::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
+    std::shared_ptr<ast_code_block> dead_variable_elimination::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
 
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;
@@ -36,25 +36,25 @@ namespace fcore{
     }
 
 
-    std::vector<std::shared_ptr<hl_ast_node>>
-    dead_variable_elimination::process_definition(const std::shared_ptr<hl_definition_node> &def) {
+    std::vector<std::shared_ptr<ast_node>>
+    dead_variable_elimination::process_definition(const std::shared_ptr<ast_definition> &def) {
         if(defined_variables.count(def->get_name())>0){
-            return {hl_ast_node::deep_copy(def)};
+            return {ast_node::deep_copy(def)};
         }
         return {};
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>>
-    dead_variable_elimination::detect_definition(const std::shared_ptr<hl_definition_node> &def) {
+    std::vector<std::shared_ptr<ast_node>>
+    dead_variable_elimination::detect_definition(const std::shared_ptr<ast_definition> &def) {
         if(def->is_initialized())
             defined_variables.insert(std::make_pair(def->get_name(), true));
         return {def};
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>>
-    dead_variable_elimination::detect_expression(const std::shared_ptr<hl_expression_node> &expr) {
-        if(expr->get_type() == hl_expression_node::ASSIGN){
-            std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(expr->get_lhs().value());
+    std::vector<std::shared_ptr<ast_node>>
+    dead_variable_elimination::detect_expression(const std::shared_ptr<ast_expression> &expr) {
+        if(expr->get_type() == ast_expression::ASSIGN){
+            std::shared_ptr<ast_operand> lhs = std::static_pointer_cast<ast_operand>(expr->get_lhs().value());
             defined_variables.insert(std::make_pair(lhs->get_name(), true));
         }
         return {expr};

@@ -13,33 +13,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FCORE_TOOLCHAIN_HL_FUNCTION_DEF_NODE_HPP
-#define FCORE_TOOLCHAIN_HL_FUNCTION_DEF_NODE_HPP
+#ifndef FCORE_TOOLCHAIN_AST_FUNCTION_DEF_HPP
+#define FCORE_TOOLCHAIN_AST_FUNCTION_DEF_HPP
 
 #include <string>
 
-#include "data_structures/high_level_ast/hl_ast_node.hpp"
-#include "data_structures/high_level_ast/hl_definition_node.hpp"
-#include "data_structures/high_level_ast/hl_expression_node.hpp"
+#include "data_structures/high_level_ast/ast_node.hpp"
+#include "data_structures/high_level_ast/ast_definition.hpp"
+#include "data_structures/high_level_ast/ast_expression.hpp"
 
 namespace fcore{
-    class hl_function_def_node : public hl_ast_node{
+    class ast_function_def : public ast_node{
     public:
-        hl_function_def_node();
+        ast_function_def();
         void set_return_type(c_types_t ret_val);
         c_types_t get_return_type() {return return_type;};
         void set_name(std::string n);
-        void set_parameters_list(std::vector<std::shared_ptr<hl_definition_node>> list);
-        std::vector<std::shared_ptr<hl_definition_node>> get_parameters_list() { return parameters_list;};
-        void set_body(std::vector<std::shared_ptr<hl_ast_node>> b);
-        void set_return(std::shared_ptr<hl_ast_node> r);
+        void set_parameters_list(std::vector<std::shared_ptr<ast_definition>> list);
+        std::vector<std::shared_ptr<ast_definition>> get_parameters_list() { return parameters_list;};
+        void set_body(std::vector<std::shared_ptr<ast_node>> b);
+        void set_return(std::shared_ptr<ast_node> r);
         std::string get_name();
-        std::shared_ptr<hl_ast_node> get_return();
+        std::shared_ptr<ast_node> get_return();
         bool has_return(){ return return_expression != nullptr;};
-        std::vector<std::shared_ptr<hl_ast_node>> get_body();
+        std::vector<std::shared_ptr<ast_node>> get_body();
         std::string pretty_print();
 
-        friend bool operator==(const hl_function_def_node& lhs, const hl_function_def_node& rhs){
+        friend bool operator==(const ast_function_def& lhs, const ast_function_def& rhs){
             bool ret_val = true;
 
             ret_val &= lhs.name == rhs.name;
@@ -70,17 +70,17 @@ namespace fcore{
             return ret_val;
         };
 
-        static std::shared_ptr<hl_function_def_node> deep_copy(const std::shared_ptr<hl_function_def_node> &node);
+        static std::shared_ptr<ast_function_def> deep_copy(const std::shared_ptr<ast_function_def> &node);
 
     protected:
         c_types_t return_type;
         std::string name;
-        std::vector<std::shared_ptr<hl_definition_node>> parameters_list;
-        std::vector<std::shared_ptr<hl_ast_node>> function_body;
-        std::shared_ptr<hl_ast_node> return_expression;
+        std::vector<std::shared_ptr<ast_definition>> parameters_list;
+        std::vector<std::shared_ptr<ast_node>> function_body;
+        std::shared_ptr<ast_node> return_expression;
     };
 }
 
 
 
-#endif //FCORE_TOOLCHAIN_HL_FUNCTION_DEF_NODE_HPP
+#endif //FCORE_TOOLCHAIN_AST_FUNCTION_DEF_HPP

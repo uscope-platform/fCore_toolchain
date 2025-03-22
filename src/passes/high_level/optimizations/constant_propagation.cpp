@@ -19,12 +19,12 @@ namespace fcore{
     constant_propagation::constant_propagation() : pass_base("Constant Propagation Pass"){
     }
 
-    std::shared_ptr<hl_code_block> constant_propagation::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
+    std::shared_ptr<ast_code_block> constant_propagation::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
 
         tracker.clear();
 
-        std::vector<std::shared_ptr<hl_ast_node>> new_content;
-        std::vector<std::shared_ptr<hl_ast_node>> content = element->get_content();
+        std::vector<std::shared_ptr<ast_node>> new_content;
+        std::vector<std::shared_ptr<ast_node>> content = element->get_content();
         int instr_idx = 0;
 
         for(auto & i : content){
@@ -34,7 +34,7 @@ namespace fcore{
                 instr_idx++;
             } else {
                 if(i->node_type == hl_ast_node_type_definition){
-                    auto def_class = std::static_pointer_cast<hl_definition_node>(i)->get_variable()->get_variable_class();
+                    auto def_class = std::static_pointer_cast<ast_definition>(i)->get_variable()->get_variable_class();
                     if( def_class.iom_spec == variable_memory_type || def_class.iom_spec == variable_output_type){
                         new_content.push_back(i);
                         instr_idx++;
@@ -63,9 +63,9 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<hl_ast_node> constant_propagation::purge_definition(std::shared_ptr<hl_ast_node> element) {
+    std::shared_ptr<ast_node> constant_propagation::purge_definition(std::shared_ptr<ast_node> element) {
         if(element->node_type==hl_ast_node_type_definition){
-            auto def = std::static_pointer_cast<hl_definition_node>(element);
+            auto def = std::static_pointer_cast<ast_definition>(element);
             if(def->is_scalar()){
                 if(tracker.needs_purging(def->get_name(), {0})){
                     if(def->get_variable()->get_variable_class().iom_spec != variable_output_type && def->get_variable()->get_variable_class().iom_spec != variable_memory_type){
@@ -88,45 +88,45 @@ namespace fcore{
     }
 
 
-    std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::shared_ptr<hl_ast_node> element, int instr_idx) {
+    std::shared_ptr<ast_node> constant_propagation::propagate_constant(std::shared_ptr<ast_node> element, int instr_idx) {
 
         if(element->node_type == hl_ast_node_type_expr){
-            return propagate_constant(std::static_pointer_cast<hl_expression_node>(element), instr_idx);
+            return propagate_constant(std::static_pointer_cast<ast_expression>(element), instr_idx);
         } else if(element->node_type == hl_ast_node_type_definition){
-            return propagate_constant(std::static_pointer_cast<hl_definition_node>(element), instr_idx);
+            return propagate_constant(std::static_pointer_cast<ast_definition>(element), instr_idx);
         } else if(element->node_type == hl_ast_node_type_operand){
-            return propagate_constant(std::static_pointer_cast<hl_ast_operand>(element), instr_idx);
+            return propagate_constant(std::static_pointer_cast<ast_operand>(element), instr_idx);
         } else{
             return element;
         }
     }
 
-    std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::shared_ptr<hl_expression_node> element, int instr_idx) {
+    std::shared_ptr<ast_node> constant_propagation::propagate_constant(std::shared_ptr<ast_expression> element, int instr_idx) {
         if(element->is_immediate()){
             return element;
         }
 
-        std::shared_ptr<hl_ast_node> new_rhs;
+        std::shared_ptr<ast_node> new_rhs;
 
         if(element->get_rhs()->node_type == hl_ast_node_type_operand) {
-            new_rhs = propagate_constant(std::static_pointer_cast<hl_ast_operand>(element->get_rhs()), instr_idx);
+            new_rhs = propagate_constant(std::static_pointer_cast<ast_operand>(element->get_rhs()), instr_idx);
         } else {
             new_rhs = propagate_constant(element->get_rhs(), instr_idx);
         }
         element->set_rhs(new_rhs);
 
         if(auto lhs = element->get_lhs()){
-            if(element->get_type() != hl_expression_node::ASSIGN){
-                std::shared_ptr<hl_ast_node> new_lhs;
+            if(element->get_type() != ast_expression::ASSIGN){
+                std::shared_ptr<ast_node> new_lhs;
                 if(lhs.value()->node_type == hl_ast_node_type_operand) {
-                    new_lhs = propagate_constant( std::static_pointer_cast<hl_ast_operand>(lhs.value()), instr_idx);
+                    new_lhs = propagate_constant( std::static_pointer_cast<ast_operand>(lhs.value()), instr_idx);
                 } else {
                     new_lhs = propagate_constant(lhs.value(), instr_idx);
                 }
                 element->set_lhs(new_lhs);
             } else{
-                auto op = std::static_pointer_cast<hl_ast_operand>(lhs.value());
-                std::vector<std::shared_ptr<hl_ast_node>> new_idx;
+                auto op = std::static_pointer_cast<ast_operand>(lhs.value());
+                std::vector<std::shared_ptr<ast_node>> new_idx;
                 for (auto &item: op->get_array_index()) {
                     new_idx.push_back(propagate_constant(item, instr_idx));
                 }
@@ -138,23 +138,23 @@ namespace fcore{
         return element;
     }
 
-    std::shared_ptr<hl_ast_node> constant_propagation::propagate_constant(std::shared_ptr<hl_definition_node> element, int instr_idx) {
+    std::shared_ptr<ast_node> constant_propagation::propagate_constant(std::shared_ptr<ast_definition> element, int instr_idx) {
         if(element->is_initialized()){
-            std::shared_ptr<hl_ast_node> initializer = element->get_scalar_initializer();
-            std::shared_ptr<hl_ast_node> new_init = propagate_constant(initializer, instr_idx);
+            std::shared_ptr<ast_node> initializer = element->get_scalar_initializer();
+            std::shared_ptr<ast_node> new_init = propagate_constant(initializer, instr_idx);
             element->set_scalar_initializer(new_init);
 
         }
         return element;
     }
 
-    std::shared_ptr<hl_ast_operand> constant_propagation::propagate_constant(std::shared_ptr<hl_ast_operand> element, int instr_idx) {
+    std::shared_ptr<ast_operand> constant_propagation::propagate_constant(std::shared_ptr<ast_operand> element, int instr_idx) {
 
-        std::shared_ptr<hl_ast_operand> ret_operand;
+        std::shared_ptr<ast_operand> ret_operand;
 
         if(element->get_type() != var_type_int_const && element->get_type() != var_type_float_const){
             if(element->get_type()==var_type_array){
-                std::vector<std::shared_ptr<hl_ast_node>> new_idx;
+                std::vector<std::shared_ptr<ast_node>> new_idx;
                 for (auto &item: element->get_array_index()) {
                     new_idx.push_back(propagate_constant(item, instr_idx));
                 }
@@ -164,7 +164,7 @@ namespace fcore{
                 if(!indices.empty()){
                     if(tracker.is_constant(element->get_name(), instr_idx, indices)){
 
-                        std::shared_ptr<hl_ast_operand> new_const = tracker.get_constant(element->get_name(), instr_idx,
+                        std::shared_ptr<ast_operand> new_const = tracker.get_constant(element->get_name(), instr_idx,
                                                                                          indices);
                         new_const->get_variable()->set_variable_class(element->get_variable()->get_variable_class());
                         std::string var_name = element->get_name();
@@ -179,7 +179,7 @@ namespace fcore{
 
             } else{
                 if(tracker.is_constant(element->get_name(), instr_idx , {0})){
-                    std::shared_ptr<hl_ast_operand> new_const = tracker.get_constant(element->get_name(), instr_idx, {0});
+                    std::shared_ptr<ast_operand> new_const = tracker.get_constant(element->get_name(), instr_idx, {0});
                     new_const->set_name(element->get_name());
                     new_const->get_variable()->set_variable_class(element->get_variable()->get_variable_class());
                     ret_operand =  new_const;
@@ -198,25 +198,25 @@ namespace fcore{
         return ret_operand;
     }
 
-    bool constant_propagation::map_constants(const std::shared_ptr<hl_ast_node>& element, int instr_idx) {
+    bool constant_propagation::map_constants(const std::shared_ptr<ast_node>& element, int instr_idx) {
 
         if(element->node_type == hl_ast_node_type_definition) {
-            return map_constants(std::static_pointer_cast<hl_definition_node>(element), instr_idx);
+            return map_constants(std::static_pointer_cast<ast_definition>(element), instr_idx);
         } else if(element->node_type == hl_ast_node_type_expr){
-            return map_constants(std::static_pointer_cast<hl_expression_node>(element), instr_idx);
+            return map_constants(std::static_pointer_cast<ast_expression>(element), instr_idx);
         } else
             return false;
 
     }
 
-    bool constant_propagation::map_constants(const std::shared_ptr<hl_definition_node>& element, int instr_idx) {
+    bool constant_propagation::map_constants(const std::shared_ptr<ast_definition>& element, int instr_idx) {
         if (
                 element->get_variable()->get_variable_class().iom_spec != variable_input_type &&
                 element->is_initialized() &&
                 element->get_scalar_initializer()->node_type == hl_ast_node_type_operand
                 ) {
             if(element->is_scalar()){
-                std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(element->get_scalar_initializer());
+                std::shared_ptr<ast_operand> op = std::static_pointer_cast<ast_operand>(element->get_scalar_initializer());
                 if (op->get_type() == var_type_float_const || op->get_type() == var_type_int_const){
                     tracker.add_constant(element->get_name(), op, instr_idx, {0});
                     return true;
@@ -224,7 +224,7 @@ namespace fcore{
             } else {
                 auto array_init = element->get_array_initializer();
                 for(uint32_t i = 0; i<array_init.size(); i++){
-                    std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(array_init[i]);
+                    std::shared_ptr<ast_operand> op = std::static_pointer_cast<ast_operand>(array_init[i]);
                     if (op->get_type() == var_type_float_const || op->get_type() == var_type_int_const){
                         tracker.add_constant(element->get_name(), op, instr_idx, {i});
                     }
@@ -237,18 +237,18 @@ namespace fcore{
         return false;
     }
 
-    bool constant_propagation::map_constants(const std::shared_ptr<hl_expression_node> &element, int instr_idx) {
+    bool constant_propagation::map_constants(const std::shared_ptr<ast_expression> &element, int instr_idx) {
 
 
-        if(element->get_type() == hl_expression_node::ASSIGN){
-            std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs().value());
+        if(element->get_type() == ast_expression::ASSIGN){
+            std::shared_ptr<ast_operand> lhs = std::static_pointer_cast<ast_operand>(element->get_lhs().value());
             analyze_assignment(element, instr_idx);
             if(
                     !lhs->get_contiguity()
                     ){
                 if(element->get_rhs()->node_type == hl_ast_node_type_operand){
-                    std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(element->get_rhs());
-                    std::shared_ptr<hl_ast_operand> target = std::static_pointer_cast<hl_ast_operand>(element->get_lhs().value());
+                    std::shared_ptr<ast_operand> op = std::static_pointer_cast<ast_operand>(element->get_rhs());
+                    std::shared_ptr<ast_operand> target = std::static_pointer_cast<ast_operand>(element->get_lhs().value());
                     return map_constants(op, target, instr_idx);
                 }
             }
@@ -257,7 +257,7 @@ namespace fcore{
     }
 
 
-    bool constant_propagation::map_constants(const std::shared_ptr<hl_ast_operand> &op, const std::shared_ptr<hl_ast_operand> &target, int instr_idx) {
+    bool constant_propagation::map_constants(const std::shared_ptr<ast_operand> &op, const std::shared_ptr<ast_operand> &target, int instr_idx) {
         if(op->get_type() == var_type_float_const || op->get_type() == var_type_int_const){
             if(target->is_scalar()){
                 tracker.add_constant(target->get_name(), op, instr_idx, {0});
@@ -277,12 +277,12 @@ namespace fcore{
         return false;
     }
 
-    std::vector<uint32_t> constant_propagation::get_index_array(const std::shared_ptr<hl_ast_operand> &target) {
+    std::vector<uint32_t> constant_propagation::get_index_array(const std::shared_ptr<ast_operand> &target) {
         std::vector<uint32_t> indices = {};
         for(auto &item: target->get_array_index()){
             if(item->node_type == hl_ast_node_type_operand){
-                if(std::static_pointer_cast<hl_ast_operand>(item)->get_variable()->is_constant()){
-                    indices.push_back(std::static_pointer_cast<hl_ast_operand>(item)->get_int_value());
+                if(std::static_pointer_cast<ast_operand>(item)->get_variable()->is_constant()){
+                    indices.push_back(std::static_pointer_cast<ast_operand>(item)->get_int_value());
                 }
             }
         }
@@ -295,8 +295,8 @@ namespace fcore{
 
 
 
-    void constant_propagation::analyze_assignment(const std::shared_ptr<hl_expression_node> &element, int instr_idx) {
-        std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs().value());
+    void constant_propagation::analyze_assignment(const std::shared_ptr<ast_expression> &element, int instr_idx) {
+        std::shared_ptr<ast_operand> lhs = std::static_pointer_cast<ast_operand>(element->get_lhs().value());
 
         if(needs_termination(element, instr_idx)){
             if(!lhs->get_array_index().empty()){
@@ -315,10 +315,10 @@ namespace fcore{
     }
 
 
-    bool constant_propagation::needs_termination(const std::shared_ptr<hl_expression_node> &element, int instr_idx) {
+    bool constant_propagation::needs_termination(const std::shared_ptr<ast_expression> &element, int instr_idx) {
         bool needs_termination = false;
         bool analyze_rhs;
-        auto dest = std::static_pointer_cast<hl_ast_operand>(element->get_lhs().value());
+        auto dest = std::static_pointer_cast<ast_operand>(element->get_lhs().value());
 
         if(dest->get_variable()->get_type() == var_type_array){
             std::vector<uint32_t> indices = get_index_array(dest);
@@ -337,7 +337,7 @@ namespace fcore{
                 // ONLY OPERANDS CAN BE CONSTANT, THUS TERMINATE THE RANGE
                 needs_termination = true;
             } else {
-                if(!std::static_pointer_cast<hl_ast_operand>(element->get_rhs())->get_variable()->is_constant()){
+                if(!std::static_pointer_cast<ast_operand>(element->get_rhs())->get_variable()->is_constant()){
                     // TERMINATE THE RANGE AS THE ASSIGNMENT IS NOT CONSTANT
                     needs_termination = true;
                 }

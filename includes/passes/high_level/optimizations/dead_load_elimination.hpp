@@ -30,15 +30,15 @@ namespace fcore{
     class dead_load_elimination : public pass_base{
     public:
         explicit dead_load_elimination();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
+        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
     private:
         int idx;
-        void search_usages(std::shared_ptr<hl_ast_node> element);
-        void search_usages(std::shared_ptr<hl_expression_node> element);
-        void search_usages(std::shared_ptr<hl_definition_node> element);
-        void search_usages(std::shared_ptr<hl_ast_operand> element);
-        void search_constants(std::shared_ptr<hl_ast_node> element);
-        std::shared_ptr<hl_ast_node> purge_dead_loads(std::shared_ptr<hl_ast_node> element);
+        void search_usages(std::shared_ptr<ast_node> element);
+        void search_usages(std::shared_ptr<ast_expression> element);
+        void search_usages(std::shared_ptr<ast_definition> element);
+        void search_usages(std::shared_ptr<ast_operand> element);
+        void search_constants(std::shared_ptr<ast_node> element);
+        std::shared_ptr<ast_node> purge_dead_loads(std::shared_ptr<ast_node> element);
         std::unordered_map<std::string, load_t> last_loads_map;
         bool efi_mode;
     };

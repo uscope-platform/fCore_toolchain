@@ -25,15 +25,15 @@ namespace fcore {
     class destructuring_pass : public pass_base{
     public:
         destructuring_pass();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
+        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
 
-        std::vector<std::shared_ptr<hl_ast_node>> process_definition(const std::shared_ptr<hl_definition_node> &def);
-        std::vector<std::shared_ptr<hl_ast_node>> process_expression(std::shared_ptr<hl_expression_node> exp);
-        std::shared_ptr<hl_ast_node> process_operand(std::shared_ptr<hl_ast_operand> op);
+        std::vector<std::shared_ptr<ast_node>> process_definition(const std::shared_ptr<ast_definition> &def);
+        std::vector<std::shared_ptr<ast_node>> process_expression(std::shared_ptr<ast_expression> exp);
+        std::shared_ptr<ast_node> process_operand(std::shared_ptr<ast_operand> op);
     private:
 
-        std::map<std::string, std::shared_ptr<hl_ast_struct>> struct_definitions;
-        std::map<std::string, std::shared_ptr<hl_ast_struct>> struct_instances;
+        std::map<std::string, std::shared_ptr<ast_struct>> struct_definitions;
+        std::map<std::string, std::shared_ptr<ast_struct>> struct_instances;
 
     };
 }

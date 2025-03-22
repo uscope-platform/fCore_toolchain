@@ -24,16 +24,16 @@ namespace fcore{
     class fuction_mangling_pass  : public pass_base{
     public:
         fuction_mangling_pass();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
+        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
     private:
-        std::shared_ptr<hl_ast_node> mangle_node(const std::shared_ptr<hl_ast_node>& node, const std::string &function);
-        std::shared_ptr<hl_expression_node> mangle_node(std::shared_ptr<hl_expression_node> node, const std::string& function);
-        std::shared_ptr<hl_ast_conditional_node> mangle_node(std::shared_ptr<hl_ast_conditional_node> node, const std::string& function);
-        std::shared_ptr<hl_function_call_node> mangle_node(const std::shared_ptr<hl_function_call_node>& node, const std::string& function);
-        std::shared_ptr<hl_definition_node> mangle_node(const std::shared_ptr<hl_definition_node>& node, const std::string& function);
-        std::shared_ptr<hl_ast_loop_node> mangle_node(std::shared_ptr<hl_ast_loop_node> node, const std::string& function);
-        std::shared_ptr<hl_ast_operand> mangle_node(const std::shared_ptr<hl_ast_operand>& node, const std::string& function);
-        std::vector<std::shared_ptr<hl_ast_node>> mangle_vector(const std::vector<std::shared_ptr<hl_ast_node>> &v, const std::string& function);
+        std::shared_ptr<ast_node> mangle_node(const std::shared_ptr<ast_node>& node, const std::string &function);
+        std::shared_ptr<ast_expression> mangle_node(std::shared_ptr<ast_expression> node, const std::string& function);
+        std::shared_ptr<ast_conditional> mangle_node(std::shared_ptr<ast_conditional> node, const std::string& function);
+        std::shared_ptr<ast_call> mangle_node(const std::shared_ptr<ast_call>& node, const std::string& function);
+        std::shared_ptr<ast_definition> mangle_node(const std::shared_ptr<ast_definition>& node, const std::string& function);
+        std::shared_ptr<ast_loop> mangle_node(std::shared_ptr<ast_loop> node, const std::string& function);
+        std::shared_ptr<ast_operand> mangle_node(const std::shared_ptr<ast_operand>& node, const std::string& function);
+        std::vector<std::shared_ptr<ast_node>> mangle_vector(const std::vector<std::shared_ptr<ast_node>> &v, const std::string& function);
         std::shared_ptr<variable> mangle_variable(const std::shared_ptr<variable> &v, const std::string &function);
         std::string mangle_string(const std::string& s, const std::string& function);
     };

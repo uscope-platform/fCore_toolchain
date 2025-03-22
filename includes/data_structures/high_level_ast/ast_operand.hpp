@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FCORE_TOOLCHAIN_HL_AST_OPERAND_HPP
-#define FCORE_TOOLCHAIN_HL_AST_OPERAND_HPP
+#ifndef FCORE_TOOLCHAIN_AST_OPERAND_HPP
+#define FCORE_TOOLCHAIN_AST_OPERAND_HPP
 
-#include "hl_ast_node.hpp"
+#include "ast_node.hpp"
 #include "data_structures/common/variable.hpp"
 #include <nlohmann/json.hpp>
 
@@ -24,9 +24,9 @@
 
 namespace fcore{
 
-    class hl_ast_operand : public hl_ast_node{
+    class ast_operand : public ast_node{
     public:
-        explicit hl_ast_operand(std::shared_ptr<variable> iv);
+        explicit ast_operand(std::shared_ptr<variable> iv);
         // VARIABLE NAME
         void set_name(const std::string &name)  {inner_variable->set_name(name);}
         std::string get_name() { return inner_variable->get_name();}
@@ -43,8 +43,8 @@ namespace fcore{
         variable_type_t get_type(){return inner_variable->get_type();}
         void set_type(variable_type_t type) {inner_variable->set_type(type);}
         // ARRAY INDEX
-        std::vector<std::shared_ptr<hl_ast_node>> get_array_index(){return array_index;}
-        void set_array_index(std::vector<std::shared_ptr<hl_ast_node>> idx){array_index = std::move(idx);}
+        std::vector<std::shared_ptr<ast_node>> get_array_index(){return array_index;}
+        void set_array_index(std::vector<std::shared_ptr<ast_node>> idx){array_index = std::move(idx);}
 
         // ARRAY CONTIGUITY
         void set_contiguity(bool c) { inner_variable->set_contiguity(c);}
@@ -61,7 +61,7 @@ namespace fcore{
         std::string pretty_print();
         operator std::string(){return pretty_print();}
 
-        friend bool operator==(const hl_ast_operand& lhs, const hl_ast_operand& rhs){
+        friend bool operator==(const ast_operand& lhs, const ast_operand& rhs){
             bool ret_val = true;
             ret_val &= lhs.node_type == rhs.node_type;
 
@@ -74,14 +74,14 @@ namespace fcore{
             return ret_val;
         };
 
-        static std::shared_ptr<hl_ast_operand> deep_copy(const std::shared_ptr<hl_ast_operand> &node);
+        static std::shared_ptr<ast_operand> deep_copy(const std::shared_ptr<ast_operand> &node);
 
     private:
 
-        std::vector<std::shared_ptr<hl_ast_node>> array_index;
+        std::vector<std::shared_ptr<ast_node>> array_index;
         std::shared_ptr<variable> inner_variable;
     };
 }
 
 
-#endif //FCORE_TOOLCHAIN_HL_AST_OPERAND_HPP
+#endif //FCORE_TOOLCHAIN_AST_OPERAND_HPP

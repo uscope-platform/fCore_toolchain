@@ -21,7 +21,7 @@ namespace fcore {
             "intrinsics implementation pass") {
     }
 
-    std::shared_ptr<hl_code_block> intrinsics_implementation_pass::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
+    std::shared_ptr<ast_code_block> intrinsics_implementation_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
 
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;
@@ -32,21 +32,21 @@ namespace fcore {
     }
 
 
-    std::vector<std::shared_ptr<hl_ast_node>>
-    intrinsics_implementation_pass::process_function_call(const std::shared_ptr<hl_function_call_node> &element) {
+    std::vector<std::shared_ptr<ast_node>>
+    intrinsics_implementation_pass::process_function_call(const std::shared_ptr<ast_call> &element) {
 
 
-        static std::map<std::string, hl_expression_node::expression_type> substitutions= {
-                std::make_pair("itf", hl_expression_node::ITF),
-                std::make_pair("fti", hl_expression_node::FTI),
-                std::make_pair("satp", hl_expression_node::SATP),
-                std::make_pair("satn", hl_expression_node::SATN),
-                std::make_pair("abs", hl_expression_node::ABS),
-                std::make_pair("popcnt", hl_expression_node::POPCNT),
-                std::make_pair("efi", hl_expression_node::EFI),
-                std::make_pair("bset", hl_expression_node::BSET),
-                std::make_pair("bsel", hl_expression_node::BSEL),
-                std::make_pair("nop", hl_expression_node::NOP)
+        static std::map<std::string, ast_expression::expression_type> substitutions= {
+                std::make_pair("itf", ast_expression::ITF),
+                std::make_pair("fti", ast_expression::FTI),
+                std::make_pair("satp", ast_expression::SATP),
+                std::make_pair("satn", ast_expression::SATN),
+                std::make_pair("abs", ast_expression::ABS),
+                std::make_pair("popcnt", ast_expression::POPCNT),
+                std::make_pair("efi", ast_expression::EFI),
+                std::make_pair("bset", ast_expression::BSET),
+                std::make_pair("bsel", ast_expression::BSEL),
+                std::make_pair("nop", ast_expression::NOP)
         };
         static std::map<std::string, int> n_arguments= {
                 std::make_pair("itf", 1),
@@ -68,12 +68,12 @@ namespace fcore {
             return {element};
         }
 
-        std::shared_ptr<hl_expression_node> retval = std::make_shared<hl_expression_node>(substitutions[element->get_name()]);
+        std::shared_ptr<ast_expression> retval = std::make_shared<ast_expression>(substitutions[element->get_name()]);
 
         if(n_arguments[element->get_name()]== 3){
-            retval = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
+            retval = std::make_shared<ast_expression>(ast_expression::ASSIGN);
             retval->set_lhs(element->get_arguments()[2]);
-            std::shared_ptr<hl_expression_node> rhs = std::make_shared<hl_expression_node>(substitutions[element->get_name()]);
+            std::shared_ptr<ast_expression> rhs = std::make_shared<ast_expression>(substitutions[element->get_name()]);
             rhs->set_lhs(element->get_arguments()[0]);
             rhs->set_rhs(element->get_arguments()[1]);
             retval->set_rhs(rhs);

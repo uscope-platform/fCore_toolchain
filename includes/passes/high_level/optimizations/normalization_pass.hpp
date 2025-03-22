@@ -22,19 +22,19 @@
 namespace fcore{
 
 
-    typedef std::pair<std::shared_ptr<hl_ast_node>, std::vector<std::shared_ptr<hl_ast_node>>> norm_pair_t;
+    typedef std::pair<std::shared_ptr<ast_node>, std::vector<std::shared_ptr<ast_node>>> norm_pair_t;
 
     class normalization_pass : public pass_base {
     public:
         normalization_pass();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
-        bool is_normal(const std::shared_ptr<hl_ast_node>& element);
+        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
+        bool is_normal(const std::shared_ptr<ast_node>& element);
 
-        norm_pair_t process_node_by_type(std::shared_ptr<hl_ast_node> n);
-        norm_pair_t process_node_def(const std::shared_ptr<hl_definition_node>& n);
-        norm_pair_t process_node_exp(const std::shared_ptr<hl_expression_node>& n);
+        norm_pair_t process_node_by_type(std::shared_ptr<ast_node> n);
+        norm_pair_t process_node_def(const std::shared_ptr<ast_definition>& n);
+        norm_pair_t process_node_exp(const std::shared_ptr<ast_expression>& n);
 
-        c_types_t get_expression_type(std::shared_ptr<hl_expression_node> expr);
+        c_types_t get_expression_type(std::shared_ptr<ast_expression> expr);
     private:
         int intermediate_ordinal = 0;
     };

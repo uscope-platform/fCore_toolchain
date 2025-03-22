@@ -16,7 +16,7 @@
 #include "frontend/C/C_Tree_visitor.hpp"
 
 #include <utility>
-#include <data_structures/high_level_ast/hl_ast_struct.hpp>
+#include <data_structures/high_level_ast/ast_struct.hpp>
 
 namespace fcore{
 
@@ -35,7 +35,7 @@ namespace fcore{
 
     void C_Tree_visitor::enterFunctionDefinition(C_parser::C_grammarParser::FunctionDefinitionContext *) {
         in_function_declaration = true;
-        current_function = std::make_shared<hl_function_def_node>();
+        current_function = std::make_shared<ast_function_def>();
     }
 
 
@@ -59,7 +59,7 @@ namespace fcore{
         }
         std::string type = ctx->typeSpecifier()->getText();
 
-        current_function->set_return_type(hl_ast_node::string_to_type(type));
+        current_function->set_return_type(ast_node::string_to_type(type));
         current_function->set_name(func_name);
         current_function->set_parameters_list(parameters_list);
         current_function->set_body(function_body);
@@ -81,11 +81,11 @@ namespace fcore{
             n_dimensions = ctx->declarator()->directDeclarator()->arrayDeclarator().size();
         }
 
-        std::shared_ptr<hl_definition_node> identifier;
+        std::shared_ptr<ast_definition> identifier;
 
         if(ctx->typeSpecifier()->structSpecifier() != nullptr) {
-            auto struct_def = std::make_shared<hl_ast_struct>(ctx->typeSpecifier()->structSpecifier()->Identifier()->getText());
-            identifier = std::make_shared<hl_definition_node>(id_name, struct_def);
+            auto struct_def = std::make_shared<ast_struct>(ctx->typeSpecifier()->structSpecifier()->Identifier()->getText());
+            identifier = std::make_shared<ast_definition>(id_name, struct_def);
         }else {
 
             std::string type = ctx->typeSpecifier()->getText();
@@ -96,13 +96,13 @@ namespace fcore{
                 var->set_variable_class(dma_specs[id_name]);
             }
 
-            identifier = std::make_shared<hl_definition_node>(id_name, hl_ast_node::string_to_type(type), var);
+            identifier = std::make_shared<ast_definition>(id_name, ast_node::string_to_type(type), var);
             if(n_dimensions>0){
                 std::vector<int> shape;
 
-                std::vector<std::shared_ptr<hl_ast_node>> idx_array;
+                std::vector<std::shared_ptr<ast_node>> idx_array;
                 for(unsigned int i = 0; i< n_dimensions; ++i){
-                    shape.insert(shape.begin(), std::static_pointer_cast<hl_ast_operand>(expressions_stack.top())->get_int_value());
+                    shape.insert(shape.begin(), std::static_pointer_cast<ast_operand>(expressions_stack.top())->get_int_value());
                     idx_array.insert(idx_array.begin(), expressions_stack.top());
                     expressions_stack.pop();
                 }
@@ -129,7 +129,7 @@ namespace fcore{
         bool is_const = ctx->Const() != nullptr;
         std::string type_name = ctx->typeSpecifier()->getText();
 
-        std::shared_ptr<hl_definition_node> node;
+        std::shared_ptr<ast_definition> node;
         if(ctx->typeSpecifier()->structSpecifier() == nullptr) {
             std::string raw_name = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->getText();
             std::string name = raw_name.substr(0, raw_name.find('['));
@@ -142,7 +142,7 @@ namespace fcore{
 
             if(in_array_declaration)
                 var->set_type(var_type_array);
-            node = std::make_shared<hl_definition_node>(name, hl_ast_node::string_to_type(type_name), var);
+            node = std::make_shared<ast_definition>(name, ast_node::string_to_type(type_name), var);
             node->set_constant(is_const);
 
             if(in_array_declaration){
@@ -151,9 +151,9 @@ namespace fcore{
                 unsigned int d = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->arrayDeclarator().size();
                 std::vector<int> shape;
 
-                std::vector<std::shared_ptr<hl_ast_node>> idx_array;
+                std::vector<std::shared_ptr<ast_node>> idx_array;
                 for(unsigned int i = 0; i< d; ++i){
-                    shape.insert(shape.begin(), std::static_pointer_cast<hl_ast_operand>(expressions_stack.top())->get_int_value());
+                    shape.insert(shape.begin(), std::static_pointer_cast<ast_operand>(expressions_stack.top())->get_int_value());
                     idx_array.insert(idx_array.begin(), expressions_stack.top());
                     expressions_stack.pop();
                 }
@@ -179,9 +179,9 @@ namespace fcore{
             std::string name = ctx->initDeclaratorList()->initDeclarator()[0]->declarator()->directDeclarator()->getText();
 
             std::string type = ctx->typeSpecifier()->structSpecifier()->Identifier()->getText();
-            auto struct_def = std::make_shared<hl_ast_struct>(type);
+            auto struct_def = std::make_shared<ast_struct>(type);
             struct_def->add_initializers(array_initializer_data);
-            node = std::make_shared<hl_definition_node>(name, struct_def);
+            node = std::make_shared<ast_definition>(name, struct_def);
             array_initializer_data.clear();
         }
         if(in_function_body | in_conditional_block | in_foor_loop_block){
@@ -197,12 +197,12 @@ namespace fcore{
 
     void C_Tree_visitor::exitArrayAccessExpression(C_parser::C_grammarParser::ArrayAccessExpressionContext *ctx) {
 
-        std::vector<std::shared_ptr<hl_ast_node>> idx_array;
+        std::vector<std::shared_ptr<ast_node>> idx_array;
         for(unsigned int i = 0; i< ctx->primaryExpression().size(); ++i){
             idx_array.insert(idx_array.begin(), expressions_stack.top());
             expressions_stack.pop();
         }
-        std::shared_ptr<hl_ast_operand> operand = std::static_pointer_cast<hl_ast_operand>(idx_array[0]);
+        std::shared_ptr<ast_operand> operand = std::static_pointer_cast<ast_operand>(idx_array[0]);
         idx_array.erase(idx_array.begin());
         operand->set_type(var_type_array);
         operand->set_array_index(idx_array);
@@ -238,21 +238,21 @@ namespace fcore{
 
     void C_Tree_visitor::exitUnaryExpression(C_parser::C_grammarParser::UnaryExpressionContext *ctx) {
         if(ctx->unaryExpression() != nullptr|| !ctx->PlusPlus().empty() || !ctx->MinusMinus().empty()){
-            hl_expression_node::expression_type expr;
+            ast_expression::expression_type expr;
 
             if( !ctx->PlusPlus().empty()){
-                expr = hl_expression_node::PRE_INCR;
+                expr = ast_expression::PRE_INCR;
             } else if(!ctx->MinusMinus().empty()){
-                expr =hl_expression_node:: PRE_DECR;
+                expr =ast_expression:: PRE_DECR;
             } else if(ctx->unaryOperator()->getText() == "!"){
-                expr = hl_expression_node::NOT_L;
+                expr = ast_expression::NOT_L;
             } else if(ctx->unaryOperator()->getText() == "~"){
-                expr = hl_expression_node::NOT_B;
+                expr = ast_expression::NOT_B;
             } else if(ctx->unaryOperator()->getText() == "-"){
-                expr = hl_expression_node::NEG;
+                expr = ast_expression::NEG;
             }
 
-            const auto expression = std::make_shared<hl_expression_node>(expr);
+            const auto expression = std::make_shared<ast_expression>(expr);
             expression->set_rhs(expressions_stack.top());
             expressions_stack.pop();
             expressions_stack.push(expression);
@@ -262,7 +262,7 @@ namespace fcore{
     }
 
     void C_Tree_visitor::exitPrimaryExpression(C_parser::C_grammarParser::PrimaryExpressionContext *ctx) {
-        std::shared_ptr<hl_ast_operand> operand;
+        std::shared_ptr<ast_operand> operand;
 
         if(ctx->expression() != nullptr){
             return;
@@ -275,7 +275,7 @@ namespace fcore{
                 var->set_variable_class(dma_specs[var_name]);
             }
 
-            operand = std::make_shared<hl_ast_operand>(var);
+            operand = std::make_shared<ast_operand>(var);
             operand->get_variable()->set_array_shape(array_shapes_map[var_name]);
 
 
@@ -289,7 +289,7 @@ namespace fcore{
                     const_value = -const_value;
                 }
                 std::shared_ptr<variable> var = std::make_shared<variable>("constant",const_value);
-                operand = std::make_shared<hl_ast_operand>( var);
+                operand = std::make_shared<ast_operand>( var);
 
             } else if(ctx->constant()->IntegerConstant() != nullptr){
 
@@ -310,7 +310,7 @@ namespace fcore{
                     const_value = -const_value;
                 }
                 std::shared_ptr<variable> var = std::make_shared<variable>("constant", const_value);
-                operand = std::make_shared<hl_ast_operand>( var);
+                operand = std::make_shared<ast_operand>( var);
 
             } else if(ctx->constant()->CharacterConstant() != nullptr){
                 throw std::runtime_error("character literals are not supported by the fCore toolchain");
@@ -330,12 +330,12 @@ namespace fcore{
 
     void C_Tree_visitor::exitMultiplicativeExpression(C_parser::C_grammarParser::MultiplicativeExpressionContext *ctx) {
 
-        std::shared_ptr<hl_expression_node> expression;
+        std::shared_ptr<ast_expression> expression;
 
-        std::map<std::string, hl_expression_node::expression_type> expr_map = {
-                {"*", hl_expression_node::MULT},
-                {"/", hl_expression_node::DIV},
-                {"%", hl_expression_node::MODULO}
+        std::map<std::string, ast_expression::expression_type> expr_map = {
+                {"*", ast_expression::MULT},
+                {"/", ast_expression::DIV},
+                {"%", ast_expression::MODULO}
         };
 
         if(ctx->unaryExpression().size()>1){
@@ -346,11 +346,11 @@ namespace fcore{
 
     void C_Tree_visitor::exitAdditiveExpression(C_parser::C_grammarParser::AdditiveExpressionContext *ctx) {
 
-        std::shared_ptr<hl_expression_node> expression;
+        std::shared_ptr<ast_expression> expression;
 
-        std::map<std::string, hl_expression_node::expression_type> expr_map = {
-                {"+", hl_expression_node::ADD},
-                {"-", hl_expression_node::SUB}
+        std::map<std::string, ast_expression::expression_type> expr_map = {
+                {"+", ast_expression::ADD},
+                {"-", ast_expression::SUB}
         };
 
         if(ctx->multiplicativeExpression().size()>1){
@@ -359,11 +359,11 @@ namespace fcore{
     }
 
     void C_Tree_visitor::exitShiftExpression(C_parser::C_grammarParser::ShiftExpressionContext *ctx) {
-        std::shared_ptr<hl_expression_node> expression;
+        std::shared_ptr<ast_expression> expression;
 
-        std::map<std::string, hl_expression_node::expression_type> expr_map = {
-                {"<<", hl_expression_node::LSH},
-                {">>", hl_expression_node::RSH}
+        std::map<std::string, ast_expression::expression_type> expr_map = {
+                {"<<", ast_expression::LSH},
+                {">>", ast_expression::RSH}
         };
 
         if(ctx->additiveExpression().size()>1){
@@ -372,11 +372,11 @@ namespace fcore{
     }
 
     void C_Tree_visitor::exitEqualityExpression(C_parser::C_grammarParser::EqualityExpressionContext *ctx) {
-        std::shared_ptr<hl_expression_node> expression;
+        std::shared_ptr<ast_expression> expression;
 
-        std::map<std::string, hl_expression_node::expression_type> expr_map = {
-                {"==", hl_expression_node::EQ},
-                {"!=", hl_expression_node::NEQ}
+        std::map<std::string, ast_expression::expression_type> expr_map = {
+                {"==", ast_expression::EQ},
+                {"!=", ast_expression::NEQ}
         };
 
         if(ctx->relationalExpression().size()>1){
@@ -385,13 +385,13 @@ namespace fcore{
     }
 
     void C_Tree_visitor::exitRelationalExpression(C_parser::C_grammarParser::RelationalExpressionContext *ctx) {
-        std::shared_ptr<hl_expression_node> expression;
+        std::shared_ptr<ast_expression> expression;
 
-        std::map<std::string, hl_expression_node::expression_type> expr_map = {
-                {"<", hl_expression_node::LT},
-                {">", hl_expression_node::GT},
-                {"<=", hl_expression_node::LTE},
-                {">=", hl_expression_node::GTE}
+        std::map<std::string, ast_expression::expression_type> expr_map = {
+                {"<", ast_expression::LT},
+                {">", ast_expression::GT},
+                {"<=", ast_expression::LTE},
+                {">=", ast_expression::GTE}
         };
 
         if(ctx->shiftExpression().size()>1){
@@ -401,10 +401,10 @@ namespace fcore{
 
 
     void C_Tree_visitor::exitInclusiveOrExpression(C_parser::C_grammarParser::InclusiveOrExpressionContext *ctx) {
-        std::shared_ptr<hl_expression_node> expression;
+        std::shared_ptr<ast_expression> expression;
 
-        std::map<std::string, hl_expression_node::expression_type> expr_map = {
-                {"|", hl_expression_node::OR_B},
+        std::map<std::string, ast_expression::expression_type> expr_map = {
+                {"|", ast_expression::OR_B},
         };
 
         if(ctx->exclusiveOrExpression().size()>1){
@@ -413,10 +413,10 @@ namespace fcore{
     }
 
     void C_Tree_visitor::exitExclusiveOrExpression(C_parser::C_grammarParser::ExclusiveOrExpressionContext *ctx) {
-        std::shared_ptr<hl_expression_node> expression;
+        std::shared_ptr<ast_expression> expression;
 
-        std::map<std::string, hl_expression_node::expression_type> expr_map = {
-                {"^", hl_expression_node::XOR_B},
+        std::map<std::string, ast_expression::expression_type> expr_map = {
+                {"^", ast_expression::XOR_B},
         };
 
         if(ctx->andExpression().size()>1){
@@ -425,10 +425,10 @@ namespace fcore{
     }
 
     void C_Tree_visitor::exitAndExpression(C_parser::C_grammarParser::AndExpressionContext *ctx) {
-        std::shared_ptr<hl_expression_node> expression;
+        std::shared_ptr<ast_expression> expression;
 
-        std::map<std::string, hl_expression_node::expression_type> expr_map = {
-                {"&", hl_expression_node::AND_B},
+        std::map<std::string, ast_expression::expression_type> expr_map = {
+                {"&", ast_expression::AND_B},
         };
 
         if(ctx->equalityExpression().size()>1){
@@ -437,10 +437,10 @@ namespace fcore{
     }
 
     void C_Tree_visitor::exitLogicalOrExpression(C_parser::C_grammarParser::LogicalOrExpressionContext *ctx) {
-        std::shared_ptr<hl_expression_node> expression;
+        std::shared_ptr<ast_expression> expression;
 
-        std::map<std::string, hl_expression_node::expression_type> expr_map = {
-                {"||", hl_expression_node::OR_L},
+        std::map<std::string, ast_expression::expression_type> expr_map = {
+                {"||", ast_expression::OR_L},
         };
 
         if(ctx->logicalAndExpression().size()>1){
@@ -449,10 +449,10 @@ namespace fcore{
     }
 
     void C_Tree_visitor::exitLogicalAndExpression(C_parser::C_grammarParser::LogicalAndExpressionContext *ctx) {
-        std::shared_ptr<hl_expression_node> expression;
+        std::shared_ptr<ast_expression> expression;
 
-        std::map<std::string, hl_expression_node::expression_type> expr_map = {
-                {"&&", hl_expression_node::AND_L},
+        std::map<std::string, ast_expression::expression_type> expr_map = {
+                {"&&", ast_expression::AND_L},
         };
 
         if(ctx->inclusiveOrExpression().size()>1){
@@ -464,7 +464,7 @@ namespace fcore{
     void C_Tree_visitor::exitConditionalExpression(C_parser::C_grammarParser::ConditionalExpressionContext *ctx) {
 
         if(ctx->Question() != nullptr){
-            auto c = std::make_shared<hl_ast_conditional_node>();
+            auto c = std::make_shared<ast_conditional>();
             c->set_else_block({expressions_stack.top()});
             expressions_stack.pop();
             c->set_if_block({expressions_stack.top()});
@@ -481,54 +481,54 @@ namespace fcore{
     void C_Tree_visitor::exitAssignmentExpression(C_parser::C_grammarParser::AssignmentExpressionContext *ctx) {
         std::string dbg = ctx->getText();
         if(ctx->unaryExpression()!= nullptr){
-            hl_expression_node::assignment_type operator_type;
+            ast_expression::assignment_type operator_type;
             if(ctx->assignmentOperator()!= nullptr){
                 std::string raw_operator = ctx->assignmentOperator()->getText();
                 if(raw_operator.size()==1)
-                    operator_type = hl_expression_node::regular_assignment;
+                    operator_type = ast_expression::regular_assignment;
                 else{
                     char assignment_qualifier = raw_operator.at(0);
                     switch (assignment_qualifier) {
                         case '+':
-                            operator_type = hl_expression_node::addition_assignment;
+                            operator_type = ast_expression::addition_assignment;
                             break;
                         case '-':
-                            operator_type = hl_expression_node::subtraction_assignment;
+                            operator_type = ast_expression::subtraction_assignment;
                             break;
                         case '*':
-                            operator_type = hl_expression_node::multiplication_assignment;
+                            operator_type = ast_expression::multiplication_assignment;
                             break;
                         case '/':
-                            operator_type = hl_expression_node::division_assignment;
+                            operator_type = ast_expression::division_assignment;
                             break;
                         case '%':
-                            operator_type = hl_expression_node::modulo_assignment;
+                            operator_type = ast_expression::modulo_assignment;
                             break;
                         case '&':
-                            operator_type = hl_expression_node::and_assignment;
+                            operator_type = ast_expression::and_assignment;
                             break;
                         case '|':
-                            operator_type = hl_expression_node::or_assignment;
+                            operator_type = ast_expression::or_assignment;
                             break;
                         case '^':
-                            operator_type = hl_expression_node::xor_assignment;
+                            operator_type = ast_expression::xor_assignment;
                             break;
                         case '<':
-                            operator_type = hl_expression_node::lsh_assignment;
+                            operator_type = ast_expression::lsh_assignment;
                             break;
                         case '>':
-                            operator_type = hl_expression_node::rsh_assignment;
+                            operator_type = ast_expression::rsh_assignment;
                             break;
                         default:
                             throw std::runtime_error("ERORR: unknown assignment qualifier.");
                     }
                 }
             }
-            std::shared_ptr<hl_ast_node> value = expressions_stack.top();
+            std::shared_ptr<ast_node> value = expressions_stack.top();
             expressions_stack.pop();
-            std::shared_ptr<hl_ast_node> target = expressions_stack.top();
+            std::shared_ptr<ast_node> target = expressions_stack.top();
             expressions_stack.pop();
-            std::shared_ptr<hl_expression_node> assignment = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
+            std::shared_ptr<ast_expression> assignment = std::make_shared<ast_expression>(ast_expression::ASSIGN);
             assignment->set_lhs(target);
             assignment->set_rhs(value);
             assignment->set_assignment_type(operator_type);
@@ -561,7 +561,7 @@ namespace fcore{
     }
 
     void C_Tree_visitor::exitCompilationUnit(C_parser::C_grammarParser::CompilationUnitContext *) {
-        root = std::make_shared<hl_code_block>();
+        root = std::make_shared<ast_code_block>();
 
         root->set_content(functions);
 
@@ -575,14 +575,14 @@ namespace fcore{
 
     void C_Tree_visitor::exitStructSpecifier(C_parser::C_grammarParser::StructSpecifierContext *ctx) {
         auto struct_name = ctx->Identifier()->getText();
-        auto struct_def = std::make_shared<hl_ast_struct>(struct_name);
+        auto struct_def = std::make_shared<ast_struct>(struct_name);
 
         for(auto &[field_type, field_name]:struct_fields) {
             auto var = std::make_shared<variable>(field_name);
-            auto def = std::make_shared<hl_definition_node>(field_name, hl_ast_node::string_to_type(field_type), var);
+            auto def = std::make_shared<ast_definition>(field_name, ast_node::string_to_type(field_type), var);
             struct_def->add_definition(def);
         }
-        auto def = std::make_shared<hl_definition_node>(struct_name, struct_def);
+        auto def = std::make_shared<ast_definition>(struct_name, struct_def);
 
         if(in_function_body | in_conditional_block | in_foor_loop_block){
             current_block_item = def;
@@ -599,7 +599,7 @@ namespace fcore{
             auto id = item->getText();
             accessors.push_back(id);
         }
-        const auto base_expr = std::static_pointer_cast<hl_ast_operand>(expressions_stack.top());
+        const auto base_expr = std::static_pointer_cast<ast_operand>(expressions_stack.top());
         base_expr->get_variable()->add_struct_accessors(accessors);
 
 
@@ -607,11 +607,11 @@ namespace fcore{
 
     template<typename T>
     void C_Tree_visitor::processExpression(unsigned int expression_size, const T& operands_array,
-                                                  std::map<std::string, hl_expression_node::expression_type> &expr_map) {
-        std::shared_ptr<hl_expression_node> expression;
+                                                  std::map<std::string, ast_expression::expression_type> &expr_map) {
+        std::shared_ptr<ast_expression> expression;
 
         std::stack<std::string> operations;
-        std::stack<std::shared_ptr<hl_ast_node>> reversed_operands;
+        std::stack<std::shared_ptr<ast_node>> reversed_operands;
 
         for(uint32_t i = 0; i <= expression_size; ++i){
             reversed_operands.push(expressions_stack.top());
@@ -620,8 +620,8 @@ namespace fcore{
 
         bool first_op = true;
         for(auto item: operands_array){
-            hl_expression_node::expression_type type = expr_map[item->getText()];
-            std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(type);
+            ast_expression::expression_type type = expr_map[item->getText()];
+            std::shared_ptr<ast_expression> ex = std::make_shared<ast_expression>(type);
             if(first_op){
                 ex->set_lhs(reversed_operands.top());
                 reversed_operands.pop();
@@ -649,7 +649,7 @@ namespace fcore{
 
     void C_Tree_visitor::exitFunctionCallExpression(C_parser::C_grammarParser::FunctionCallExpressionContext *ctx) {
         std::string name = ctx->typedefName()->getText();
-        std::shared_ptr<hl_function_call_node> node = std::make_shared<hl_function_call_node>(name, argument_vector);
+        std::shared_ptr<ast_call> node = std::make_shared<ast_call>(name, argument_vector);
         argument_vector.clear();
         expressions_stack.push(node);
 
@@ -682,7 +682,7 @@ namespace fcore{
 
     void C_Tree_visitor::enterSelectionStatement(C_parser::C_grammarParser::SelectionStatementContext *) {
         save_current_block_context();
-        conditional = std::make_shared<hl_ast_conditional_node>();
+        conditional = std::make_shared<ast_conditional>();
         in_conditional_block = true;
         in_foor_loop_block = false;
         in_function_body = false;
@@ -695,7 +695,7 @@ namespace fcore{
 
     void C_Tree_visitor::enterIterationStatement(C_parser::C_grammarParser::IterationStatementContext *) {
         save_current_block_context();
-        loop = std::make_shared<hl_ast_loop_node>();
+        loop = std::make_shared<ast_loop>();
         loop_body.clear();
         in_function_body = false;
         in_foor_loop_block = true;
@@ -720,7 +720,7 @@ namespace fcore{
             in_foor_loop_block = true;
             in_conditional_block = false;
             in_function_body = false;
-            loop = std::static_pointer_cast<hl_ast_loop_node>(outer_block_nodes.top());
+            loop = std::static_pointer_cast<ast_loop>(outer_block_nodes.top());
             outer_block_nodes.pop();
             loop_body = outer_block_contents.top();
             outer_block_contents.pop();
@@ -728,7 +728,7 @@ namespace fcore{
             in_foor_loop_block = false;
             in_conditional_block = true;
             in_function_body = false;
-            conditional = std::static_pointer_cast<hl_ast_conditional_node>(outer_block_nodes.top());
+            conditional = std::static_pointer_cast<ast_conditional>(outer_block_nodes.top());
             outer_block_nodes.pop();
             conditional_body = outer_block_contents.top();
             outer_block_contents.pop();
@@ -753,17 +753,17 @@ namespace fcore{
     }
 
     void C_Tree_visitor::exitForExitCondition(C_parser::C_grammarParser::ForExitConditionContext *) {
-        loop->set_condition(std::static_pointer_cast<hl_expression_node>(expressions_stack.top()));
+        loop->set_condition(std::static_pointer_cast<ast_expression>(expressions_stack.top()));
         expressions_stack.pop();
     }
 
     void C_Tree_visitor::exitForDeclaration(C_parser::C_grammarParser::ForDeclarationContext *) {
-        loop->set_init_statement(std::static_pointer_cast<hl_definition_node>(current_block_item));
+        loop->set_init_statement(std::static_pointer_cast<ast_definition>(current_block_item));
         globals.clear();
     }
 
     void C_Tree_visitor::exitForIterationExpression(C_parser::C_grammarParser::ForIterationExpressionContext *) {
-        loop->set_iteration_expr(std::static_pointer_cast<hl_expression_node>(expressions_stack.top()));
+        loop->set_iteration_expr(std::static_pointer_cast<ast_expression>(expressions_stack.top()));
         expressions_stack.pop();
     }
 

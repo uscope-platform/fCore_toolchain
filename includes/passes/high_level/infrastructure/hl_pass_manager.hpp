@@ -54,20 +54,20 @@ namespace fcore{
 
         void add_analysis_pass(const std::string&name, const std::shared_ptr<pass_base>& pass, uint8_t repetitions);
 
-        [[nodiscard]] std::shared_ptr<hl_code_block> run_optimizations(
-            const std::shared_ptr<hl_code_block>& AST,
-            const std::vector<std::shared_ptr<hl_definition_node>> &globals
+        [[nodiscard]] std::shared_ptr<ast_code_block> run_optimizations(
+            const std::shared_ptr<ast_code_block>& AST,
+            const std::vector<std::shared_ptr<ast_definition>> &globals
         );
 
         void run_semantic_analysis(
-            std::shared_ptr<hl_code_block> AST,
-            const std::vector<std::shared_ptr<hl_definition_node>> &globals
+            std::shared_ptr<ast_code_block> AST,
+            const std::vector<std::shared_ptr<ast_definition>> &globals
         );
 
-        std::shared_ptr<hl_code_block> run_repeating_pass_group(
-            std::shared_ptr<hl_code_block> &subtree,
+        std::shared_ptr<ast_code_block> run_repeating_pass_group(
+            std::shared_ptr<ast_code_block> &subtree,
             const std::vector<std::shared_ptr<pass_base>>& group,
-            const std::vector<std::shared_ptr<hl_definition_node>> &globals
+            const std::vector<std::shared_ptr<ast_definition>> &globals
         );
 
         void disable_all();

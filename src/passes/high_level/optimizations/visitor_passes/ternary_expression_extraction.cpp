@@ -22,8 +22,8 @@ namespace fcore{
         ternary_progressive = 1;
     }
 
-    std::shared_ptr<hl_code_block>
-    ternary_expression_extraction::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
+    std::shared_ptr<ast_code_block>
+    ternary_expression_extraction::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;
 
@@ -34,21 +34,21 @@ namespace fcore{
 
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>>
-    ternary_expression_extraction::process_expression(std::shared_ptr<hl_expression_node> element) {
-        std::vector<std::shared_ptr<hl_ast_node>> ret_val;
+    std::vector<std::shared_ptr<ast_node>>
+    ternary_expression_extraction::process_expression(std::shared_ptr<ast_expression> element) {
+        std::vector<std::shared_ptr<ast_node>> ret_val;
 
-        if(element->get_type() == hl_expression_node::ASSIGN){
+        if(element->get_type() == ast_expression::ASSIGN){
             if(element->get_rhs()->node_type == hl_ast_node_type_expr){
-                auto expr_r = std::static_pointer_cast<hl_expression_node>(element->get_rhs());
-                if(expr_r->get_type() == hl_expression_node::CSEL){
-                    auto lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs().value());
+                auto expr_r = std::static_pointer_cast<ast_expression>(element->get_rhs());
+                if(expr_r->get_type() == ast_expression::CSEL){
+                    auto lhs = std::static_pointer_cast<ast_operand>(element->get_lhs().value());
                     auto def_name = "ternary_output_" + lhs->get_identifier();
 
                     auto var = std::make_shared<variable>(def_name);
-                    auto intermediate_def = std::make_shared<hl_definition_node>(def_name, c_type_float, var);
+                    auto intermediate_def = std::make_shared<ast_definition>(def_name, c_type_float, var);
                     intermediate_def->set_scalar_initializer(expr_r);
-                    auto op = std::make_shared<hl_ast_operand>(var);
+                    auto op = std::make_shared<ast_operand>(var);
                     element->set_rhs(op);
                     ret_val.push_back(intermediate_def);
                 }

@@ -22,9 +22,9 @@ namespace fcore {
 
     }
 
-    std::shared_ptr<hl_code_block> destructuring_pass::process_global(
-        std::shared_ptr<hl_code_block> element,
-        const std::vector<std::shared_ptr<hl_definition_node>> &globals
+    std::shared_ptr<ast_code_block> destructuring_pass::process_global(
+        std::shared_ptr<ast_code_block> element,
+        const std::vector<std::shared_ptr<ast_definition>> &globals
     ) {
 
         for(const auto& g : globals){
@@ -44,27 +44,27 @@ namespace fcore {
         return result;
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>> destructuring_pass::process_definition(
-        const std::shared_ptr<hl_definition_node> &def) {
+    std::vector<std::shared_ptr<ast_node>> destructuring_pass::process_definition(
+        const std::shared_ptr<ast_definition> &def) {
         if(def->is_struct()) {
             auto name = def->get_name();
             auto inst = def->get_struct_specs();
             inst->set_definitions(struct_definitions[inst->get_name()]->get_definitions());
-            if(inst->get_initializers().empty()) inst->add_initializers(std::vector<std::shared_ptr<hl_ast_node>>(inst->get_definitions().size()));
+            if(inst->get_initializers().empty()) inst->add_initializers(std::vector<std::shared_ptr<ast_node>>(inst->get_definitions().size()));
             struct_instances.insert({name, inst});
         }
         return {def};
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>> destructuring_pass::process_expression(std::shared_ptr<hl_expression_node> exp) {
-        if(exp->get_type() == hl_expression_node::ASSIGN) {
-            auto lhs = std::static_pointer_cast<hl_ast_operand>(exp->get_lhs().value());
+    std::vector<std::shared_ptr<ast_node>> destructuring_pass::process_expression(std::shared_ptr<ast_expression> exp) {
+        if(exp->get_type() == ast_expression::ASSIGN) {
+            auto lhs = std::static_pointer_cast<ast_operand>(exp->get_lhs().value());
             if(!lhs->get_variable()->get_struct_accessors().empty()) {
                 auto raw_rhs = exp->get_rhs();
                 auto inst =  struct_instances[lhs->get_name()];
                 auto defs = inst->get_definitions();
                 if(raw_rhs->node_type == hl_ast_node_type_operand) {
-                    auto rhs = std::static_pointer_cast<hl_ast_operand>(raw_rhs);
+                    auto rhs = std::static_pointer_cast<ast_operand>(raw_rhs);
                     if(rhs->get_variable()->is_constant()) {
                         auto old_inits = inst->get_initializers();
                         for(int i = 0; i< defs.size(); i++) {
@@ -76,12 +76,12 @@ namespace fcore {
                         return {};
                     }
                 } else if(raw_rhs->node_type==hl_ast_node_type_expr) {
-                    auto rhs = std::static_pointer_cast<hl_expression_node>(raw_rhs);
+                    auto rhs = std::static_pointer_cast<ast_expression>(raw_rhs);
                     if(rhs->is_constant()) {
                         auto old_inits = inst->get_initializers();
                         for(int i = 0; i< defs.size(); i++) {
                             if(defs[i]->get_name() == lhs->get_variable()->get_struct_accessors()[0]) {
-                                old_inits[i] = hl_expression_node::evaluate(rhs);
+                                old_inits[i] = ast_expression::evaluate(rhs);
                             }
                         }
                         inst->add_initializers(old_inits);
@@ -94,7 +94,7 @@ namespace fcore {
     }
 
 
-    std::shared_ptr<hl_ast_node> destructuring_pass::process_operand(std::shared_ptr<hl_ast_operand> op) {
+    std::shared_ptr<ast_node> destructuring_pass::process_operand(std::shared_ptr<ast_operand> op) {
         auto var = op->get_variable();
 
         if(var->get_struct_accessors().empty()) return {op};
@@ -108,7 +108,7 @@ namespace fcore {
         for(int i = 0; i< defs.size(); i++) {
             if(defs[i]->get_name() == op->get_variable()->get_struct_accessors()[0]) {
                 if(inits[i] != nullptr) {
-                    op->set_variable(std::static_pointer_cast<hl_ast_operand>(inits[i])->get_variable());
+                    op->set_variable(std::static_pointer_cast<ast_operand>(inits[i])->get_variable());
                     return {op};
                 } else {
                     return op;

@@ -42,13 +42,13 @@ TEST( cFrontend, preprocessor_define) {
 
     parser.parse(io_spec);
 
-    std::shared_ptr<hl_definition_node> result = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
+    std::shared_ptr<ast_definition> result = std::static_pointer_cast<ast_definition>(std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body()[0]);
 
     std::shared_ptr<variable> var = std::make_shared<variable>("a");
     var->set_variable_class({variable_input_type, false});
-    std::shared_ptr<hl_definition_node> gold_standard = std::make_shared<hl_definition_node>("a", c_type_int, var);
+    std::shared_ptr<ast_definition> gold_standard = std::make_shared<ast_definition>("a", c_type_int, var);
     var = std::make_shared<variable>("constant", 15);
-    std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
+    std::shared_ptr<ast_operand> op = std::make_shared<ast_operand>(var);
     gold_standard->set_scalar_initializer(op);
 
     ASSERT_EQ(*result, *gold_standard);
@@ -65,13 +65,13 @@ TEST( cFrontend, preprocessor_include) {
     parser.pre_process({});
     parser.parse(io_spec);
 
-    std::shared_ptr<hl_definition_node> result = std::static_pointer_cast<hl_definition_node>(std::static_pointer_cast<hl_function_def_node>(parser.AST->get_content()[0])->get_body()[0]);
+    std::shared_ptr<ast_definition> result = std::static_pointer_cast<ast_definition>(std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body()[0]);
 
     std::shared_ptr<variable> var = std::make_shared<variable>("a");
     var->set_variable_class({variable_input_type, false});
-    std::shared_ptr<hl_definition_node> gold_standard = std::make_shared<hl_definition_node>("a", c_type_int, var);
+    std::shared_ptr<ast_definition> gold_standard = std::make_shared<ast_definition>("a", c_type_int, var);
     var = std::make_shared<variable>("constant", 42);
-    std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
+    std::shared_ptr<ast_operand> op = std::make_shared<ast_operand>(var);
     gold_standard->set_scalar_initializer(op);
 
 

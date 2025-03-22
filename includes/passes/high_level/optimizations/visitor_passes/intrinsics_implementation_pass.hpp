@@ -25,8 +25,8 @@ namespace fcore{
     class intrinsics_implementation_pass : public  pass_base {
     public:
         intrinsics_implementation_pass();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
-        static std::vector<std::shared_ptr<hl_ast_node>> process_function_call(const std::shared_ptr<hl_function_call_node>& element);
+        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
+        static std::vector<std::shared_ptr<ast_node>> process_function_call(const std::shared_ptr<ast_call>& element);
 
     private:
     };

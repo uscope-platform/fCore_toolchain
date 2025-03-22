@@ -18,8 +18,8 @@ namespace fcore{
     contiguous_array_identification::contiguous_array_identification() : pass_base("contiguous_array_identification"){
     }
 
-    std::shared_ptr<hl_code_block> contiguous_array_identification::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
-        std::vector<std::shared_ptr<hl_ast_node>> new_loop_content;
+    std::shared_ptr<ast_code_block> contiguous_array_identification::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
+        std::vector<std::shared_ptr<ast_node>> new_loop_content;
         for(auto &item:element->get_content()){
             new_loop_content.push_back(process_element(item));
         }
@@ -36,16 +36,16 @@ namespace fcore{
     }
 
 
-    std::shared_ptr<hl_ast_node> contiguous_array_identification::process_element(std::shared_ptr<hl_ast_node> element) {
+    std::shared_ptr<ast_node> contiguous_array_identification::process_element(std::shared_ptr<ast_node> element) {
         switch (element->node_type) {
             case hl_ast_node_type_conditional:
-                return process_element(std::static_pointer_cast<hl_ast_conditional_node>(element));
+                return process_element(std::static_pointer_cast<ast_conditional>(element));
             case hl_ast_node_type_expr:
-                return process_element(std::static_pointer_cast<hl_expression_node>(element));
+                return process_element(std::static_pointer_cast<ast_expression>(element));
             case hl_ast_node_type_definition:
-                return process_element(std::static_pointer_cast<hl_definition_node>(element));
+                return process_element(std::static_pointer_cast<ast_definition>(element));
             case hl_ast_node_type_operand:
-                return process_element(std::static_pointer_cast<hl_ast_operand>(element));
+                return process_element(std::static_pointer_cast<ast_operand>(element));
             case hl_ast_node_type_code_block:
                 throw std::runtime_error("unexpected code block in contiguous array identification pass");
             default:
@@ -55,22 +55,22 @@ namespace fcore{
     }
 
 
-    std::shared_ptr<hl_ast_node>
-    contiguous_array_identification::process_element(std::shared_ptr<hl_expression_node> element) {
+    std::shared_ptr<ast_node>
+    contiguous_array_identification::process_element(std::shared_ptr<ast_expression> element) {
         if(element->is_immediate()) return element;
 
-        if(element->get_type() == hl_expression_node::ASSIGN){
+        if(element->get_type() == ast_expression::ASSIGN){
             if(element->get_rhs()->node_type == hl_ast_node_type_expr){
-                auto rhs = std::static_pointer_cast<hl_expression_node>(element->get_rhs());
-                if(rhs->get_type()==hl_expression_node::EFI){
+                auto rhs = std::static_pointer_cast<ast_expression>(element->get_rhs());
+                if(rhs->get_type()==ast_expression::EFI){
 
                     process_efi_arguments(rhs);
 
-                    auto efi_return = std::static_pointer_cast<hl_ast_operand>(element->get_lhs().value());
+                    auto efi_return = std::static_pointer_cast<ast_operand>(element->get_lhs().value());
                     if(!efi_return->get_variable()->get_array_shape().empty()){
                         std::shared_ptr<variable> var = std::make_shared<variable>("constant", 0);
-                        std::shared_ptr<hl_ast_operand> idx = std::make_shared<hl_ast_operand>(var);
-                        std::vector<std::shared_ptr<hl_ast_node>> new_idx;
+                        std::shared_ptr<ast_operand> idx = std::make_shared<ast_operand>(var);
+                        std::vector<std::shared_ptr<ast_node>> new_idx;
                         auto shape = efi_return->get_variable()->get_array_shape();
                         for(uint32_t i  = 0; i<shape.size(); i++){
                             new_idx.push_back(idx);
@@ -88,7 +88,7 @@ namespace fcore{
                     return element;
                 }
             }
-        } else if(element->get_type()==hl_expression_node::EFI){
+        } else if(element->get_type()==ast_expression::EFI){
             process_efi_arguments(element);
         }
 
@@ -104,16 +104,16 @@ namespace fcore{
 
 
     void
-    contiguous_array_identification::process_efi_arguments(std::shared_ptr<hl_expression_node> element) {
-        auto efi_arg = std::static_pointer_cast<hl_ast_operand>(element->get_lhs().value());
+    contiguous_array_identification::process_efi_arguments(std::shared_ptr<ast_expression> element) {
+        auto efi_arg = std::static_pointer_cast<ast_operand>(element->get_lhs().value());
         efi_arg->set_contiguity(true);
         if(!contiguous_arrays.contains(efi_arg->get_name())){
             contiguous_arrays.insert(efi_arg->get_name());
         }
         if(!efi_arg->get_variable()->get_array_shape().empty()){
             std::shared_ptr<variable> var = std::make_shared<variable>("constant", 0);
-            std::shared_ptr<hl_ast_operand> idx = std::make_shared<hl_ast_operand>(var);
-            std::vector<std::shared_ptr<hl_ast_node>> new_idx;
+            std::shared_ptr<ast_operand> idx = std::make_shared<ast_operand>(var);
+            std::vector<std::shared_ptr<ast_node>> new_idx;
             auto shape = efi_arg->get_variable()->get_array_shape();
             for(uint32_t i = 0; i<shape.size(); i++) {
                 new_idx.push_back(idx);
@@ -125,14 +125,14 @@ namespace fcore{
     }
 
 
-    std::shared_ptr<hl_ast_node>
-    contiguous_array_identification::process_element(std::shared_ptr<hl_definition_node> element) {
-        std::vector<std::shared_ptr<hl_ast_node>> new_initializer;
+    std::shared_ptr<ast_node>
+    contiguous_array_identification::process_element(std::shared_ptr<ast_definition> element) {
+        std::vector<std::shared_ptr<ast_node>> new_initializer;
         for(auto &item:element->get_array_initializer()){
             auto processed_item = process_element(item);
             if(processed_item->node_type == hl_ast_node_type_expr){
-                auto expr = std::static_pointer_cast<hl_expression_node>(processed_item);
-                if(expr->get_type() == hl_expression_node::EFI){
+                auto expr = std::static_pointer_cast<ast_expression>(processed_item);
+                if(expr->get_type() == ast_expression::EFI){
                     if(!element->is_scalar()){ // SCALARS ARE CONTIGUOUS BY DEFINITION, THUS THEY SHOULD BE TREATED NORMALLY
                         element->get_variable()->set_contiguity(true);
                         contiguous_arrays.insert(element->get_name());
@@ -151,23 +151,23 @@ namespace fcore{
     }
 
 
-    std::shared_ptr<hl_ast_node> contiguous_array_identification::process_element(std::shared_ptr<hl_ast_operand> element) {
+    std::shared_ptr<ast_node> contiguous_array_identification::process_element(std::shared_ptr<ast_operand> element) {
         if(contiguous_arrays.contains(element->get_name())){
             element->set_contiguity(true);
         }
         return element;
     }
 
-    std::shared_ptr<hl_ast_node> contiguous_array_identification::process_element(std::shared_ptr<hl_ast_conditional_node> element) {
-        element->set_condition(process_element(std::static_pointer_cast<hl_expression_node>(element->get_condition())));
+    std::shared_ptr<ast_node> contiguous_array_identification::process_element(std::shared_ptr<ast_conditional> element) {
+        element->set_condition(process_element(std::static_pointer_cast<ast_expression>(element->get_condition())));
 
-        std::vector<std::shared_ptr<hl_ast_node>> new_if_block;
+        std::vector<std::shared_ptr<ast_node>> new_if_block;
         for(auto &item:element->get_if_block()) {
             new_if_block.push_back(process_element(item));
         }
         element->set_if_block(new_if_block);
 
-        std::vector<std::shared_ptr<hl_ast_node>> new_else_block;
+        std::vector<std::shared_ptr<ast_node>> new_else_block;
         for(auto &item:element->get_else_block()) {
             new_else_block.push_back(process_element(item));
         }

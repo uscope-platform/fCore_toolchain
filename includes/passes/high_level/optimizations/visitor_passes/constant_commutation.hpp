@@ -25,16 +25,16 @@ namespace fcore {
     class constant_commutation : public pass_base{
     public:
         constant_commutation();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
+        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
     private:
-        static std::vector<std::shared_ptr<hl_ast_node>> process_expression(const std::shared_ptr<hl_expression_node>& exp);
-        static std::vector<std::shared_ptr<hl_ast_node>> process_expression_by_type(
-            const std::shared_ptr<hl_expression_node>& exp,
-            hl_expression_node::expression_type type,
-            hl_expression_node::expression_type additional_type
+        static std::vector<std::shared_ptr<ast_node>> process_expression(const std::shared_ptr<ast_expression>& exp);
+        static std::vector<std::shared_ptr<ast_node>> process_expression_by_type(
+            const std::shared_ptr<ast_expression>& exp,
+            ast_expression::expression_type type,
+            ast_expression::expression_type additional_type
         );
-        static std::pair<std::shared_ptr<hl_ast_operand>, std::shared_ptr<hl_ast_operand>>  process_left_expression(std::shared_ptr<hl_expression_node> exp);
-        static std::pair<std::shared_ptr<hl_ast_operand>, std::shared_ptr<hl_ast_operand>> process_right_expression(std::shared_ptr<hl_expression_node> exp);
+        static std::pair<std::shared_ptr<ast_operand>, std::shared_ptr<ast_operand>>  process_left_expression(std::shared_ptr<ast_expression> exp);
+        static std::pair<std::shared_ptr<ast_operand>, std::shared_ptr<ast_operand>> process_right_expression(std::shared_ptr<ast_expression> exp);
     };
 
 }

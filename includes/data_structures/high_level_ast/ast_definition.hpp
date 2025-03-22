@@ -13,12 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FCORE_TOOLCHAIN_HL_DEFINITION_NODE_HPP
-#define FCORE_TOOLCHAIN_HL_DEFINITION_NODE_HPP
+#ifndef FCORE_TOOLCHAIN_AST_DEFINITION_HPP
+#define FCORE_TOOLCHAIN_AST_DEFINITION_HPP
 
-#include "data_structures/high_level_ast/hl_ast_node.hpp"
-#include "data_structures/high_level_ast/hl_expression_node.hpp"
-#include "data_structures/high_level_ast/hl_ast_struct.hpp"
+#include "data_structures/high_level_ast/ast_node.hpp"
+#include "data_structures/high_level_ast/ast_expression.hpp"
+#include "data_structures/high_level_ast/ast_struct.hpp"
 #include "data_structures/common/variable.hpp"
 
 #include <utility>
@@ -29,10 +29,10 @@
 namespace fcore{
 
 
-    class hl_definition_node : public hl_ast_node{
+    class ast_definition : public ast_node{
     public:
-        hl_definition_node(std::string n, c_types_t ct, std::shared_ptr<variable> v);
-        hl_definition_node(std::string n, std::shared_ptr<hl_ast_struct> s);
+        ast_definition(std::string n, c_types_t ct, std::shared_ptr<variable> v);
+        ast_definition(std::string n, std::shared_ptr<ast_struct> s);
         void set_name(std::string name);
         std::string get_name(){ return name;};
         c_types_t get_type(){ return type;};
@@ -44,17 +44,17 @@ namespace fcore{
         bool is_struct() {return struct_specs != nullptr;}
 
 
-        std::shared_ptr<hl_ast_struct> get_struct_specs(){return struct_specs;}
+        std::shared_ptr<ast_struct> get_struct_specs(){return struct_specs;}
 
-        std::vector<std::shared_ptr<hl_ast_node>> get_array_index() {return array_index;};
-        void set_array_index(std::vector<std::shared_ptr<hl_ast_node>> i) {array_index = std::move(i);};
+        std::vector<std::shared_ptr<ast_node>> get_array_index() {return array_index;};
+        void set_array_index(std::vector<std::shared_ptr<ast_node>> i) {array_index = std::move(i);};
 
-        std::shared_ptr<hl_ast_node> get_scalar_initializer();
-        void set_scalar_initializer(const std::shared_ptr<hl_ast_node>& init);
-        void set_scalar_initializer(const std::shared_ptr<hl_ast_node>& init, uint32_t idx);
+        std::shared_ptr<ast_node> get_scalar_initializer();
+        void set_scalar_initializer(const std::shared_ptr<ast_node>& init);
+        void set_scalar_initializer(const std::shared_ptr<ast_node>& init, uint32_t idx);
 
-        std::vector<std::shared_ptr<hl_ast_node>> get_array_initializer() {return initializer;};
-        void set_array_initializer(const std::vector<std::shared_ptr<hl_ast_node>> &init) {initializer = init;};
+        std::vector<std::shared_ptr<ast_node>> get_array_initializer() {return initializer;};
+        void set_array_initializer(const std::vector<std::shared_ptr<ast_node>> &init) {initializer = init;};
 
         std::shared_ptr<variable> get_variable() {return inner_variable;};
         void set_variable(std::shared_ptr<variable> var) {inner_variable = std::move(var);};
@@ -65,7 +65,7 @@ namespace fcore{
 
         std::string pretty_print();
 
-        friend bool operator==(const hl_definition_node& lhs, const hl_definition_node& rhs){
+        friend bool operator==(const ast_definition& lhs, const ast_definition& rhs){
             bool ret_val = true;
 
             ret_val &= lhs.constant == rhs.constant;
@@ -87,17 +87,17 @@ namespace fcore{
             return ret_val;
         };
 
-        static std::shared_ptr<hl_definition_node> deep_copy(const std::shared_ptr<hl_definition_node> &node);
+        static std::shared_ptr<ast_definition> deep_copy(const std::shared_ptr<ast_definition> &node);
 
 
     protected:
         bool constant;
         std::string name;
         c_types_t type;
-        std::shared_ptr<hl_ast_struct> struct_specs;
+        std::shared_ptr<ast_struct> struct_specs;
 
-        std::vector<std::shared_ptr<hl_ast_node>> initializer;
-        std::vector<std::shared_ptr<hl_ast_node>> array_index;
+        std::vector<std::shared_ptr<ast_node>> initializer;
+        std::vector<std::shared_ptr<ast_node>> array_index;
         std::shared_ptr<variable> inner_variable;
 
     };
@@ -105,4 +105,4 @@ namespace fcore{
 
 
 
-#endif //FCORE_TOOLCHAIN_HL_DEFINITION_NODE_HPP
+#endif //FCORE_TOOLCHAIN_AST_DEFINITION_HPP

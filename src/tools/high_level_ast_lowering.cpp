@@ -20,37 +20,37 @@ namespace fcore{
     high_level_ast_lowering::high_level_ast_lowering() {
 
         expr_instruction_mapping = {
-                {hl_expression_node::ADD, "add"},
-                {hl_expression_node::SUB, "sub"},
-                {hl_expression_node::MULT, "mul"},
-                {hl_expression_node::PRE_INCR, "add"},
-                {hl_expression_node::POST_INCR, "add"},
-                {hl_expression_node::PRE_DECR, "sub"},
-                {hl_expression_node::POST_DECR, "sub"},
-                {hl_expression_node::AND_B, "and"},
-                {hl_expression_node::OR_B, "or"},
-                {hl_expression_node::NOT_B, "not"},
-                {hl_expression_node::XOR_B, "xor"},
-                {hl_expression_node::EQ, "beq"},
-                {hl_expression_node::NEQ, "bne"},
-                {hl_expression_node::NEG, "neg"},
-                {hl_expression_node::LT, "bgt"},
-                {hl_expression_node::GT, "bgt"},
-                {hl_expression_node::LTE, "ble"},
-                {hl_expression_node::GTE, "ble"},
-                {hl_expression_node::RECIPROCAL, "rec"},
-                {hl_expression_node::ITF, "itf"},
-                {hl_expression_node::FTI, "fti"},
-                {hl_expression_node::SATP, "satp"},
-                {hl_expression_node::SATN, "satn"},
-                {hl_expression_node::POPCNT, "popcnt"},
-                {hl_expression_node::ABS, "abs"},
-                {hl_expression_node::EFI, "efi"},
-                {hl_expression_node::BSEL, "bsel"},
-                {hl_expression_node::BSET, "bset"},
-                {hl_expression_node::NOP, "nop"},
-                {hl_expression_node::XOR_B, "xor"},
-                {hl_expression_node::CSEL, "csel"}
+                {ast_expression::ADD, "add"},
+                {ast_expression::SUB, "sub"},
+                {ast_expression::MULT, "mul"},
+                {ast_expression::PRE_INCR, "add"},
+                {ast_expression::POST_INCR, "add"},
+                {ast_expression::PRE_DECR, "sub"},
+                {ast_expression::POST_DECR, "sub"},
+                {ast_expression::AND_B, "and"},
+                {ast_expression::OR_B, "or"},
+                {ast_expression::NOT_B, "not"},
+                {ast_expression::XOR_B, "xor"},
+                {ast_expression::EQ, "beq"},
+                {ast_expression::NEQ, "bne"},
+                {ast_expression::NEG, "neg"},
+                {ast_expression::LT, "bgt"},
+                {ast_expression::GT, "bgt"},
+                {ast_expression::LTE, "ble"},
+                {ast_expression::GTE, "ble"},
+                {ast_expression::RECIPROCAL, "rec"},
+                {ast_expression::ITF, "itf"},
+                {ast_expression::FTI, "fti"},
+                {ast_expression::SATP, "satp"},
+                {ast_expression::SATN, "satn"},
+                {ast_expression::POPCNT, "popcnt"},
+                {ast_expression::ABS, "abs"},
+                {ast_expression::EFI, "efi"},
+                {ast_expression::BSEL, "bsel"},
+                {ast_expression::BSET, "bset"},
+                {ast_expression::NOP, "nop"},
+                {ast_expression::XOR_B, "xor"},
+                {ast_expression::CSEL, "csel"}
         };
     }
 
@@ -80,25 +80,25 @@ namespace fcore{
         return out;
     }
 
-    std::optional<instruction_variant> high_level_ast_lowering::translate_node(const std::shared_ptr<hl_ast_node>& input) {
+    std::optional<instruction_variant> high_level_ast_lowering::translate_node(const std::shared_ptr<ast_node>& input) {
         switch (input->node_type) {
             case hl_ast_node_type_definition:{
-                std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(input);
+                std::shared_ptr<ast_definition> node = std::static_pointer_cast<ast_definition>(input);
                 std::shared_ptr<variable> dest = node->get_variable();
                 return translate_node(node, dest);
             }
             case hl_ast_node_type_expr:{
-                std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(input);
-                if(node->get_type() == hl_expression_node::ASSIGN){
+                std::shared_ptr<ast_expression> node = std::static_pointer_cast<ast_expression>(input);
+                if(node->get_type() == ast_expression::ASSIGN){
                     if(node->get_lhs().value()->node_type != hl_ast_node_type_operand){
                         throw std::runtime_error("Invalid assignment expression detected  the lowering stage as the LHS is an expression and not a variable");
                     }
                     if(node->get_rhs()->node_type == hl_ast_node_type_expr){
-                        std::shared_ptr<variable> dest = std::static_pointer_cast<hl_ast_operand>(node->get_lhs().value())->get_variable();
-                        return translate_node(std::static_pointer_cast<hl_expression_node>(node->get_rhs()), dest);
+                        std::shared_ptr<variable> dest = std::static_pointer_cast<ast_operand>(node->get_lhs().value())->get_variable();
+                        return translate_node(std::static_pointer_cast<ast_expression>(node->get_rhs()), dest);
                     } else if(node->get_rhs()->node_type == hl_ast_node_type_operand){
-                        std::shared_ptr<variable> dest = std::static_pointer_cast<hl_ast_operand>(node->get_lhs().value())->get_variable();
-                        return translate_node(std::static_pointer_cast<hl_ast_operand>(node->get_rhs()), dest);
+                        std::shared_ptr<variable> dest = std::static_pointer_cast<ast_operand>(node->get_lhs().value())->get_variable();
+                        return translate_node(std::static_pointer_cast<ast_operand>(node->get_rhs()), dest);
                     } else{
                         throw std::runtime_error("Invalid assignment expression detected at the lowering stage as the RHS is neither an expression nor an operand");
                     }
@@ -120,7 +120,7 @@ namespace fcore{
 
     }
 
-    std::optional<instruction_variant> high_level_ast_lowering::translate_node(const std::shared_ptr<hl_expression_node>& input, const std::shared_ptr<variable>& dest) {
+    std::optional<instruction_variant> high_level_ast_lowering::translate_node(const std::shared_ptr<ast_expression>& input, const std::shared_ptr<variable>& dest) {
         if(input->is_immediate()){
             return process_immediate_expression(input);
         }else if(input->is_unary()) {
@@ -132,12 +132,12 @@ namespace fcore{
         }
     }
 
-    std::optional<instruction_variant> high_level_ast_lowering::translate_node(const std::shared_ptr<hl_definition_node>& input, const std::shared_ptr<variable>& dest) {
+    std::optional<instruction_variant> high_level_ast_lowering::translate_node(const std::shared_ptr<ast_definition>& input, const std::shared_ptr<variable>& dest) {
         if(input->is_initialized()){
             if(input->get_scalar_initializer()->node_type == hl_ast_node_type_expr){
-                return translate_node(std::static_pointer_cast<hl_expression_node>(input->get_scalar_initializer()), dest);
+                return translate_node(std::static_pointer_cast<ast_expression>(input->get_scalar_initializer()), dest);
             } else if(input->get_scalar_initializer()->node_type == hl_ast_node_type_operand){
-                return translate_node(std::static_pointer_cast<hl_ast_operand>(input->get_scalar_initializer()), dest);
+                return translate_node(std::static_pointer_cast<ast_operand>(input->get_scalar_initializer()), dest);
             } else{
                 throw std::runtime_error("unexpected high level ast node encountered during the lowering phase");
             }
@@ -147,55 +147,55 @@ namespace fcore{
     }
 
     std::optional<instruction_variant>
-    high_level_ast_lowering::process_unary_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest) {
+    high_level_ast_lowering::process_unary_expression(std::shared_ptr<ast_expression> input, std::shared_ptr<variable> dest) {
 
 
-        hl_expression_node::expression_type op_type = input->get_type();
+        ast_expression::expression_type op_type = input->get_type();
         std::string opcode = expr_instruction_mapping[op_type];
         if(!fcore_implemented_operations[op_type]){
             throw std::runtime_error("The required operation is not implementable on the fCore hardware");
         }
 
-        std::shared_ptr<variable> op_b = std::static_pointer_cast<hl_ast_operand>(input->get_rhs())->get_variable();
+        std::shared_ptr<variable> op_b = std::static_pointer_cast<ast_operand>(input->get_rhs())->get_variable();
         std::vector<std::shared_ptr<variable>> args = {op_b, dest};
         return create_ast_node(fcore_op_types[opcode], args, opcode);
     }
 
     std::optional<instruction_variant>
-    high_level_ast_lowering::process_regular_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest) {
+    high_level_ast_lowering::process_regular_expression(std::shared_ptr<ast_expression> input, std::shared_ptr<variable> dest) {
 
 
-        hl_expression_node::expression_type op_type = input->get_type();
+        ast_expression::expression_type op_type = input->get_type();
         std::string opcode = expr_instruction_mapping[op_type];
         if(!fcore_implemented_operations[op_type]) {
             throw std::runtime_error("The required operation is not implementable on the fCore hardware");
         }
 
-        std::shared_ptr<variable> op_a = std::static_pointer_cast<hl_ast_operand>(input->get_lhs().value())->get_variable();
-        std::shared_ptr<variable> op_b = std::static_pointer_cast<hl_ast_operand>(input->get_rhs())->get_variable();
+        std::shared_ptr<variable> op_a = std::static_pointer_cast<ast_operand>(input->get_lhs().value())->get_variable();
+        std::shared_ptr<variable> op_b = std::static_pointer_cast<ast_operand>(input->get_rhs())->get_variable();
         std::vector<std::shared_ptr<variable>> args = {op_a, op_b, std::move(dest)};
         return create_ast_node(fcore_op_types[opcode], args, opcode);
     }
 
     std::optional<instruction_variant>
-    high_level_ast_lowering::process_ternary_expression(std::shared_ptr<hl_expression_node> input,
+    high_level_ast_lowering::process_ternary_expression(std::shared_ptr<ast_expression> input,
                                                                std::shared_ptr<variable> dest) {
 
-        hl_expression_node::expression_type op_type = input->get_type();
+        ast_expression::expression_type op_type = input->get_type();
         std::string opcode = expr_instruction_mapping[op_type];
         if(!fcore_implemented_operations[op_type]) {
             throw std::runtime_error("The required operation is not implementable on the fCore hardware");
         }
 
-        std::shared_ptr<variable> op_a = std::static_pointer_cast<hl_ast_operand>(input->get_lhs().value())->get_variable();
-        std::shared_ptr<variable> op_b = std::static_pointer_cast<hl_ast_operand>(input->get_rhs())->get_variable();
-        std::shared_ptr<variable> op_c = std::static_pointer_cast<hl_ast_operand>(input->get_ths().value())->get_variable();
+        std::shared_ptr<variable> op_a = std::static_pointer_cast<ast_operand>(input->get_lhs().value())->get_variable();
+        std::shared_ptr<variable> op_b = std::static_pointer_cast<ast_operand>(input->get_rhs())->get_variable();
+        std::shared_ptr<variable> op_c = std::static_pointer_cast<ast_operand>(input->get_ths().value())->get_variable();
         std::vector<std::shared_ptr<variable>> args = {op_a, op_b, op_c, dest};
         return create_ast_node(fcore_op_types[opcode], args, opcode);
     }
 
     std::optional<instruction_variant>
-    high_level_ast_lowering::translate_node(const std::shared_ptr<hl_ast_operand>& input, std::shared_ptr<variable> dest) {
+    high_level_ast_lowering::translate_node(const std::shared_ptr<ast_operand>& input, std::shared_ptr<variable> dest) {
 
 
         std::shared_ptr<variable> var;
@@ -243,9 +243,9 @@ namespace fcore{
     }
 
     std::optional<instruction_variant>
-    high_level_ast_lowering::process_immediate_expression(std::shared_ptr<hl_expression_node> input) {
+    high_level_ast_lowering::process_immediate_expression(std::shared_ptr<ast_expression> input) {
 
-        hl_expression_node::expression_type op_type = input->get_type();
+        ast_expression::expression_type op_type = input->get_type();
         std::string opcode = expr_instruction_mapping[op_type];
         if(!fcore_implemented_operations[op_type]){
             throw std::runtime_error("The required operation is not implementable on the fCore hardware");

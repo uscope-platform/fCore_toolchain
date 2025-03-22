@@ -23,16 +23,16 @@ namespace fcore{
     class code_block_inlining_pass : public pass_base{
     public:
         code_block_inlining_pass();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
-        std::vector<std::shared_ptr<hl_ast_node>> process_element_by_type(std::shared_ptr<hl_ast_node> element);
+        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
+        std::vector<std::shared_ptr<ast_node>> process_element_by_type(std::shared_ptr<ast_node> element);
     private:
-        std::vector<std::shared_ptr<hl_ast_node>> process_vector(const std::vector<std::shared_ptr<hl_ast_node>>& elements);
-        std::vector<std::shared_ptr<hl_ast_node>> process_expression(const std::shared_ptr<hl_expression_node>& expr);
-        std::vector<std::shared_ptr<hl_ast_node>> process_function_definition(const std::shared_ptr<hl_function_def_node>& expr);
-        std::shared_ptr<hl_ast_node> process_loop(std::shared_ptr<hl_ast_loop_node> element);
-        std::shared_ptr<hl_ast_node> process_definition(std::shared_ptr<hl_definition_node> element);
-        std::shared_ptr<hl_ast_node> process_conditional(std::shared_ptr<hl_ast_conditional_node> element);
-        std::vector<std::shared_ptr<hl_ast_node>> process_code_block(const std::shared_ptr<hl_code_block>& element);
+        std::vector<std::shared_ptr<ast_node>> process_vector(const std::vector<std::shared_ptr<ast_node>>& elements);
+        std::vector<std::shared_ptr<ast_node>> process_expression(const std::shared_ptr<ast_expression>& expr);
+        std::vector<std::shared_ptr<ast_node>> process_function_definition(const std::shared_ptr<ast_function_def>& expr);
+        std::shared_ptr<ast_node> process_loop(std::shared_ptr<ast_loop> element);
+        std::shared_ptr<ast_node> process_definition(std::shared_ptr<ast_definition> element);
+        std::shared_ptr<ast_node> process_conditional(std::shared_ptr<ast_conditional> element);
+        std::vector<std::shared_ptr<ast_node>> process_code_block(const std::shared_ptr<ast_code_block>& element);
     };
 }
 

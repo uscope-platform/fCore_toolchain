@@ -54,7 +54,7 @@ namespace fcore {
         void write_json(const std::string& output_file);
         nlohmann::json get_dump() {return dump;};
 
-        std::pair<std::shared_ptr<hl_code_block>, std::vector<std::shared_ptr<hl_definition_node>>> get_hl_ast();
+        std::pair<std::shared_ptr<ast_code_block>, std::vector<std::shared_ptr<ast_definition>>> get_hl_ast();
 
         void set_dma_map(std::unordered_map<std::string, core_iom> &map){dma_spec = map;};
         void set_core_info(core_info &i) {info = i;};
@@ -63,8 +63,8 @@ namespace fcore {
         static nlohmann::json dump_iom_map(std::unordered_map<std::string, core_iom> &map);
         static std::unordered_map<std::string, core_iom> load_iom_map(const nlohmann::json &raw_map);
     private:
-        void merge_includes(const std::vector<std::shared_ptr<hl_code_block>>& i);
-        std::shared_ptr<hl_code_block>  parse_include(std::istream &file, std::shared_ptr<define_map> def_map);
+        void merge_includes(const std::vector<std::shared_ptr<ast_code_block>>& i);
+        std::shared_ptr<ast_code_block>  parse_include(std::istream &file, std::shared_ptr<define_map> def_map);
         void parse(std::unordered_map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map);
         void optimize(std::unordered_map<std::string, std::vector<uint32_t >> &dma_map);
         void analyze_program_length(std::shared_ptr<instruction_count> c);
@@ -77,8 +77,8 @@ namespace fcore {
 
         std::unordered_map<std::string, core_iom> dma_spec;
 
-        std::shared_ptr<hl_code_block> hl_ast;
-        std::vector<std::shared_ptr<hl_definition_node>> globals;
+        std::shared_ptr<ast_code_block> hl_ast;
+        std::vector<std::shared_ptr<ast_definition>> globals;
 
         binary_generator writer;
         hl_pass_manager  hl_manager;

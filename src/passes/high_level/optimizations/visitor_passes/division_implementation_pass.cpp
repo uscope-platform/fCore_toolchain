@@ -22,8 +22,8 @@ namespace fcore {
 
     }
 
-    std::shared_ptr<hl_code_block>
-    division_implementation_pass::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
+    std::shared_ptr<ast_code_block>
+    division_implementation_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
 
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;
@@ -34,13 +34,13 @@ namespace fcore {
         return visitor.visit(ops, element);
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>>
-    division_implementation_pass::process_expression(std::shared_ptr<hl_expression_node> exp) {
-        if (exp->get_type() == hl_expression_node::DIV) {
-            std::shared_ptr<hl_ast_node> lhs = exp->get_lhs().value();
-            std::shared_ptr<hl_expression_node> modulo_expr = std::make_shared<hl_expression_node>(hl_expression_node::RECIPROCAL);
+    std::vector<std::shared_ptr<ast_node>>
+    division_implementation_pass::process_expression(std::shared_ptr<ast_expression> exp) {
+        if (exp->get_type() == ast_expression::DIV) {
+            std::shared_ptr<ast_node> lhs = exp->get_lhs().value();
+            std::shared_ptr<ast_expression> modulo_expr = std::make_shared<ast_expression>(ast_expression::RECIPROCAL);
             modulo_expr->set_rhs(exp->get_rhs());
-            std::shared_ptr<hl_expression_node> mult_expr = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
+            std::shared_ptr<ast_expression> mult_expr = std::make_shared<ast_expression>(ast_expression::MULT);
             mult_expr->set_lhs(exp->get_lhs().value());
             mult_expr->set_rhs(modulo_expr);
             return {mult_expr};

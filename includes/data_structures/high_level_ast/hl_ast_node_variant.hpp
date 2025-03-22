@@ -41,13 +41,13 @@ namespace fcore{
     private:
         std::vector<hl_ast_node_variant> children;
         std::variant<
-                hl_ast_conditional_node,
-                hl_ast_loop_node,
-                hl_ast_operand,
-                hl_definition_node,
-                hl_expression_node,
-                hl_function_call_node,
-                hl_function_def_node
+                ast_conditional,
+                ast_loop,
+                ast_operand,
+                ast_definition,
+                ast_expression,
+                ast_call,
+                ast_function_def
         > content;
     };
 }

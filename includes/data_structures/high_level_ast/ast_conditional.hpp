@@ -13,26 +13,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FCORE_TOOLCHAIN_HL_AST_CONDITIONAL_NODE_HPP
-#define FCORE_TOOLCHAIN_HL_AST_CONDITIONAL_NODE_HPP
+#ifndef FCORE_TOOLCHAIN_AST_CONDITIONAL_HPP
+#define FCORE_TOOLCHAIN_AST_CONDITIONAL_HPP
 
-#include "data_structures/high_level_ast/hl_ast_node.hpp"
+#include "data_structures/high_level_ast/ast_node.hpp"
 
 
 namespace fcore{
-    class hl_ast_conditional_node : public hl_ast_node{
+    class ast_conditional : public ast_node{
     public:
-        hl_ast_conditional_node();
-        void set_if_block(std::vector<std::shared_ptr<hl_ast_node>> node);
-        std::vector<std::shared_ptr<hl_ast_node>> get_if_block();
-        void set_else_block(std::vector<std::shared_ptr<hl_ast_node>> node);
-        std::vector<std::shared_ptr<hl_ast_node>> get_else_block();
-        void set_condition(std::shared_ptr<hl_ast_node> node);
-        std::shared_ptr<hl_ast_node> get_condition();
+        ast_conditional();
+        void set_if_block(std::vector<std::shared_ptr<ast_node>> node);
+        std::vector<std::shared_ptr<ast_node>> get_if_block();
+        void set_else_block(std::vector<std::shared_ptr<ast_node>> node);
+        std::vector<std::shared_ptr<ast_node>> get_else_block();
+        void set_condition(std::shared_ptr<ast_node> node);
+        std::shared_ptr<ast_node> get_condition();
         std::string pretty_print();
         void set_ternary(bool t){ternary_flag = t;};
         bool is_ternary() const{return ternary_flag;};
-        friend bool operator==(const hl_ast_conditional_node& lhs, const hl_ast_conditional_node& rhs){
+        friend bool operator==(const ast_conditional& lhs, const ast_conditional& rhs){
             bool ret_val = true;
 
             ret_val &= compare_vectors(lhs.if_block, rhs.if_block);
@@ -46,17 +46,17 @@ namespace fcore{
 
         bool has_else() {return !else_block.empty();};
 
-        static std::shared_ptr<hl_ast_conditional_node> deep_copy(const std::shared_ptr<hl_ast_conditional_node> &node);
+        static std::shared_ptr<ast_conditional> deep_copy(const std::shared_ptr<ast_conditional> &node);
 
     private:
 
-        std::vector<std::shared_ptr<hl_ast_node>> if_block;
-        std::vector<std::shared_ptr<hl_ast_node>> else_block;
-        std::shared_ptr<hl_ast_node> condition;
+        std::vector<std::shared_ptr<ast_node>> if_block;
+        std::vector<std::shared_ptr<ast_node>> else_block;
+        std::shared_ptr<ast_node> condition;
         bool ternary_flag = false;
     };
 }
 
 
 
-#endif //FCORE_TOOLCHAIN_HL_AST_CONDITIONAL_NODE_HPP
+#endif //FCORE_TOOLCHAIN_AST_CONDITIONAL_HPP

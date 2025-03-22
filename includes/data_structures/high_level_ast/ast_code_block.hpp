@@ -18,14 +18,14 @@
 #define FCORE_TOOLCHAIN_HL_CODE_BLOCK_HPP
 
 
-#include "hl_ast_node.hpp"
+#include "ast_node.hpp"
 
 namespace fcore{
-    class hl_code_block : public hl_ast_node {
+    class ast_code_block : public ast_node {
     public:
-        hl_code_block();
+        ast_code_block();
 
-        friend bool operator==(const hl_code_block& lhs, const hl_code_block& rhs){
+        friend bool operator==(const ast_code_block& lhs, const ast_code_block& rhs){
             bool ret_val = true;
 
             if(lhs.content.empty() && rhs.content.empty()){
@@ -37,7 +37,7 @@ namespace fcore{
                 if(lhs.content.size() != rhs.content.size()) return false;
 
                 for(uint32_t i = 0; i<lhs.content.size(); i++){
-                    body_equal &=  hl_ast_node::compare_content_by_type(lhs.content[i], rhs.content[i]);
+                    body_equal &=  ast_node::compare_content_by_type(lhs.content[i], rhs.content[i]);
                 }
                 ret_val &= body_equal;
             }
@@ -45,19 +45,19 @@ namespace fcore{
             return ret_val;
         };
 
-        static std::shared_ptr<hl_code_block> deep_copy(const std::shared_ptr<hl_code_block> &node);
+        static std::shared_ptr<ast_code_block> deep_copy(const std::shared_ptr<ast_code_block> &node);
 
         std::string pretty_print();
 
         // CONTENT MANIPULATION
-        void add_content(const std::shared_ptr<hl_ast_node>& element) { content.push_back(element);};
-        void set_content(const std::vector<std::shared_ptr<hl_ast_node>>& c) {content = c;};
+        void add_content(const std::shared_ptr<ast_node>& element) { content.push_back(element);};
+        void set_content(const std::vector<std::shared_ptr<ast_node>>& c) {content = c;};
 
         // CONTENT ACCESS
-        virtual std::vector<std::shared_ptr<hl_ast_node>> get_content() {return content;};
+        virtual std::vector<std::shared_ptr<ast_node>> get_content() {return content;};
 
     private:
-        std::vector<std::shared_ptr<hl_ast_node>> content;
+        std::vector<std::shared_ptr<ast_node>> content;
 
     };
 }

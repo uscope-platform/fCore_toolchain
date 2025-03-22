@@ -23,7 +23,7 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<hl_code_block> constant_folding_pass::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
+    std::shared_ptr<ast_code_block> constant_folding_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
 
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;
@@ -35,9 +35,9 @@ namespace fcore{
     }
 
 
-    std::vector<std::shared_ptr<hl_ast_node>>  constant_folding_pass::process_expression(std::shared_ptr<hl_expression_node> exp) {
+    std::vector<std::shared_ptr<ast_node>>  constant_folding_pass::process_expression(std::shared_ptr<ast_expression> exp) {
         if(exp->is_constant()){
-            return {hl_expression_node::evaluate(exp)};
+            return {ast_expression::evaluate(exp)};
         } else return {exp};
     }
 

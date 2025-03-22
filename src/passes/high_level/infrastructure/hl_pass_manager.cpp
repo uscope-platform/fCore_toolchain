@@ -21,28 +21,28 @@
 namespace fcore{
 
 
-    std::shared_ptr<hl_code_block>  hl_pass_manager::run_repeating_pass_group(
-        std::shared_ptr<hl_code_block> &subtree,
+    std::shared_ptr<ast_code_block>  hl_pass_manager::run_repeating_pass_group(
+        std::shared_ptr<ast_code_block> &subtree,
         const std::vector<std::shared_ptr<pass_base>> &group,
-        const std::vector<std::shared_ptr<hl_definition_node>> &globals
+        const std::vector<std::shared_ptr<ast_definition>> &globals
     ) {
 
-        auto working_tree =  std::static_pointer_cast<hl_code_block>(hl_ast_node::deep_copy(subtree));
+        auto working_tree =  std::static_pointer_cast<ast_code_block>(ast_node::deep_copy(subtree));
         int run_number = 1;
 
-        std::shared_ptr<hl_ast_node> old_tree;
+        std::shared_ptr<ast_node> old_tree;
         do{
-            old_tree = hl_ast_node::deep_copy(working_tree);
+            old_tree = ast_node::deep_copy(working_tree);
             for(auto &pass:group){
 
                 if(ic != nullptr) ic->start_event(pass->get_name(), false);
-                auto pass_res = pass->process_global(std::static_pointer_cast<hl_code_block>(subtree), globals);
+                auto pass_res = pass->process_global(std::static_pointer_cast<ast_code_block>(subtree), globals);
                 working_tree =  pass_res;
                 if(ic != nullptr) ic->end_event(pass->get_name());
 
             }
             ++run_number;
-        } while (!hl_ast_node::compare_content_by_type(old_tree, working_tree));
+        } while (!ast_node::compare_content_by_type(old_tree, working_tree));
         return working_tree;
     }
 
@@ -74,8 +74,8 @@ namespace fcore{
         analysis_passes.push_back(p);
     }
 
-    std::shared_ptr<hl_code_block> hl_pass_manager::run_optimizations(const std::shared_ptr<hl_code_block>& AST,const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
-        auto working_ast = std::static_pointer_cast<hl_code_block>(hl_ast_node::deep_copy(AST));
+    std::shared_ptr<ast_code_block> hl_pass_manager::run_optimizations(const std::shared_ptr<ast_code_block>& AST,const std::vector<std::shared_ptr<ast_definition>> &globals) {
+        auto working_ast = std::static_pointer_cast<ast_code_block>(ast_node::deep_copy(AST));
 
         for(auto& p:optimization_passes){
             if(p.type == single_pass){
@@ -83,7 +83,7 @@ namespace fcore{
                     std::shared_ptr<pass_base> pass = p.pass[0];
 
                     if (ic != nullptr) ic->start_event(pass->get_name(), false);
-                    auto pass_res = pass->process_global(std::static_pointer_cast<hl_code_block>(working_ast), globals);
+                    auto pass_res = pass->process_global(std::static_pointer_cast<ast_code_block>(working_ast), globals);
                     working_ast =  pass_res;
                     if (ic != nullptr) ic->end_event(pass->get_name());
                 }
@@ -96,7 +96,7 @@ namespace fcore{
                     for(auto &pass:p.pass){
 
                         if(ic != nullptr) ic->start_event(pass->get_name(), false);
-                        working_ast =  pass->process_global(std::static_pointer_cast<hl_code_block>(working_ast), globals);
+                        working_ast =  pass->process_global(std::static_pointer_cast<ast_code_block>(working_ast), globals);
                         if(ic != nullptr) ic->end_event(pass->get_name());
                     }
                 }
@@ -110,10 +110,10 @@ namespace fcore{
     }
 
     void hl_pass_manager::run_semantic_analysis(
-        std::shared_ptr<hl_code_block> AST,
-        const std::vector<std::shared_ptr<hl_definition_node>> &globals
+        std::shared_ptr<ast_code_block> AST,
+        const std::vector<std::shared_ptr<ast_definition>> &globals
     ) {
-        const auto working_ast = std::static_pointer_cast<hl_code_block>(hl_ast_node::deep_copy(AST));
+        const auto working_ast = std::static_pointer_cast<ast_code_block>(ast_node::deep_copy(AST));
 
         for(const auto& p:analysis_passes) {
             for(int i = 0; i<p.repetitions; i++) {

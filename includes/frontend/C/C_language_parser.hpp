@@ -38,11 +38,11 @@ namespace fcore{
 
         void pre_process(const std::vector<std::string> &abs_includes);
         void parse(std::unordered_map<std::string, variable_class_t> dma_specs);
-        std::shared_ptr<hl_code_block> AST;
+        std::shared_ptr<ast_code_block> AST;
         std::string error;
 
-        std::vector<std::shared_ptr<hl_definition_node>> get_globals(){return visitor.get_globals();}
-        std::vector<std::shared_ptr<hl_ast_node>> get_functions(){return visitor.get_functions();}
+        std::vector<std::shared_ptr<ast_definition>> get_globals(){return visitor.get_globals();}
+        std::vector<std::shared_ptr<ast_node>> get_functions(){return visitor.get_functions();}
     private:
 
         C_Tree_visitor visitor;

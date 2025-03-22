@@ -23,7 +23,7 @@ namespace fcore {
     assignments_checks::assignments_checks() :pass_base("assignments checks") {
     }
 
-    std::shared_ptr<hl_code_block> assignments_checks::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
+    std::shared_ptr<ast_code_block> assignments_checks::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
         hl_observing_visitor visitor;
 
         hl_observing_visitor_operations functions_mapping_ops;
@@ -35,11 +35,11 @@ namespace fcore {
         return element;
     }
 
-    void assignments_checks::process_definition(const std::shared_ptr<hl_definition_node> &def) {
+    void assignments_checks::process_definition(const std::shared_ptr<ast_definition> &def) {
         auto def_type = def->get_type();
         for(auto &val: def->get_array_initializer()) {
             if(val->node_type == hl_ast_node_type_operand) {
-                auto op = std::static_pointer_cast<hl_ast_operand>(val);
+                auto op = std::static_pointer_cast<ast_operand>(val);
                 if(op->get_variable()->get_type() != var_type_float_const) {
                     if(def_type == c_type_float) {
                         auto var = fmt::format("Assignment of an integer ({0}) to the float variable ({1}) is prohibited",op->get_float_val(), def->get_name());

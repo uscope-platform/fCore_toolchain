@@ -22,8 +22,8 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<hl_code_block>
-    operating_assignment_implementation_pass::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
+    std::shared_ptr<ast_code_block>
+    operating_assignment_implementation_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
 
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;
@@ -36,50 +36,50 @@ namespace fcore{
     }
 
 
-    std::shared_ptr<hl_expression_node>
-    operating_assignment_implementation_pass::create_top_expression(hl_expression_node::assignment_type a) {
-        std::shared_ptr<hl_expression_node> retval;
+    std::shared_ptr<ast_expression>
+    operating_assignment_implementation_pass::create_top_expression(ast_expression::assignment_type a) {
+        std::shared_ptr<ast_expression> retval;
         switch (a) {
-            case hl_expression_node::addition_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::ADD);
+            case ast_expression::addition_assignment:
+                retval = std::make_shared<ast_expression>(ast_expression::ADD);
                 break;
-            case hl_expression_node::subtraction_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::SUB);
+            case ast_expression::subtraction_assignment:
+                retval = std::make_shared<ast_expression>(ast_expression::SUB);
                 break;
-            case hl_expression_node::multiplication_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::MULT);
+            case ast_expression::multiplication_assignment:
+                retval = std::make_shared<ast_expression>(ast_expression::MULT);
                 break;
-            case hl_expression_node::division_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::DIV);
+            case ast_expression::division_assignment:
+                retval = std::make_shared<ast_expression>(ast_expression::DIV);
                 break;
-            case hl_expression_node::modulo_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::MODULO);
+            case ast_expression::modulo_assignment:
+                retval = std::make_shared<ast_expression>(ast_expression::MODULO);
                 break;
-            case hl_expression_node::and_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::AND_B);
+            case ast_expression::and_assignment:
+                retval = std::make_shared<ast_expression>(ast_expression::AND_B);
                 break;
-            case hl_expression_node::or_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::OR_B);
+            case ast_expression::or_assignment:
+                retval = std::make_shared<ast_expression>(ast_expression::OR_B);
                 break;
-            case hl_expression_node::xor_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::XOR_B);
+            case ast_expression::xor_assignment:
+                retval = std::make_shared<ast_expression>(ast_expression::XOR_B);
                 break;
-            case hl_expression_node::lsh_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::LSH);
+            case ast_expression::lsh_assignment:
+                retval = std::make_shared<ast_expression>(ast_expression::LSH);
                 break;
-            case hl_expression_node::rsh_assignment:
-                retval = std::make_shared<hl_expression_node>(hl_expression_node::RSH);
+            case ast_expression::rsh_assignment:
+                retval = std::make_shared<ast_expression>(ast_expression::RSH);
                 break;
         }
         return retval;
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>>
-    operating_assignment_implementation_pass::process_expression(std::shared_ptr<hl_expression_node> element) {
-        if(element->get_type() == hl_expression_node::ASSIGN && element->get_assignment_type() != hl_expression_node::regular_assignment ){
-            std::shared_ptr<hl_expression_node> outer_exp = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
+    std::vector<std::shared_ptr<ast_node>>
+    operating_assignment_implementation_pass::process_expression(std::shared_ptr<ast_expression> element) {
+        if(element->get_type() == ast_expression::ASSIGN && element->get_assignment_type() != ast_expression::regular_assignment ){
+            std::shared_ptr<ast_expression> outer_exp = std::make_shared<ast_expression>(ast_expression::ASSIGN);
             outer_exp->set_lhs(element->get_lhs().value());
-            std::shared_ptr<hl_expression_node> inner_exp = create_top_expression(element->get_assignment_type());
+            std::shared_ptr<ast_expression> inner_exp = create_top_expression(element->get_assignment_type());
             inner_exp->set_lhs(element->get_lhs().value());
             inner_exp->set_rhs(element->get_rhs());
             outer_exp->set_rhs(inner_exp);

@@ -21,7 +21,7 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<hl_code_block> array_initialization_substitution::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
+    std::shared_ptr<ast_code_block> array_initialization_substitution::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
 
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;
@@ -33,11 +33,11 @@ namespace fcore{
 
 
 
-    std::shared_ptr<hl_expression_node> array_initialization_substitution::build_initialization_expr(const std::shared_ptr<hl_definition_node>& def, int index) {
-        std::shared_ptr<hl_expression_node> init_expr = std::make_shared<hl_expression_node>(hl_expression_node::ASSIGN);
+    std::shared_ptr<ast_expression> array_initialization_substitution::build_initialization_expr(const std::shared_ptr<ast_definition>& def, int index) {
+        std::shared_ptr<ast_expression> init_expr = std::make_shared<ast_expression>(ast_expression::ASSIGN);
         init_expr->set_rhs(def->get_array_initializer()[index]);
         std::shared_ptr<variable> var = std::make_shared<variable>(def->get_name());
-        std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);
+        std::shared_ptr<ast_operand> op = std::make_shared<ast_operand>(var);
 
 
         auto array_shape = def->get_array_shape();
@@ -48,10 +48,10 @@ namespace fcore{
             indices = {index};
         }
 
-        std::vector<std::shared_ptr<hl_ast_node>> index_operands;
+        std::vector<std::shared_ptr<ast_node>> index_operands;
         for(auto &i:indices){
             var = std::make_shared<variable>("index", i);
-            index_operands.push_back(std::make_shared<hl_ast_operand>(var));
+            index_operands.push_back(std::make_shared<ast_operand>(var));
         }
 
         op->set_array_index(index_operands);
@@ -59,16 +59,16 @@ namespace fcore{
         return init_expr;
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>>
-    array_initialization_substitution::process_definition(const std::shared_ptr<hl_definition_node> &def) {
+    std::vector<std::shared_ptr<ast_node>>
+    array_initialization_substitution::process_definition(const std::shared_ptr<ast_definition> &def) {
         if(!def->is_scalar()){
             if(def->is_initialized()){
-                std::vector<std::shared_ptr<hl_ast_node>> ret;
+                std::vector<std::shared_ptr<ast_node>> ret;
                 for(uint32_t i = 0; i<def->get_array_initializer().size(); ++i){
 
                     auto init_expr = build_initialization_expr(def, i);
 
-                    auto lhs = std::static_pointer_cast<hl_ast_operand>(init_expr->get_lhs().value());
+                    auto lhs = std::static_pointer_cast<ast_operand>(init_expr->get_lhs().value());
                     lhs->get_variable()->set_array_shape(def->get_variable()->get_array_shape());
                     lhs->get_variable()->set_bound_reg_array(def->get_variable()->get_bound_reg_array());
                     lhs->get_variable()->set_variable_class(def->get_variable()->get_variable_class());

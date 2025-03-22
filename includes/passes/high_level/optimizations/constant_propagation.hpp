@@ -27,26 +27,26 @@ namespace fcore{
     class constant_propagation :public pass_base {
     public:
         explicit constant_propagation();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
+        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
 
     private:
-        std::shared_ptr<hl_ast_node> propagate_constant(std::shared_ptr<hl_ast_node> element, int instr_idx);
-        std::shared_ptr<hl_ast_node> propagate_constant(std::shared_ptr<hl_expression_node> element, int instr_idx);
-        std::shared_ptr<hl_ast_node> propagate_constant(std::shared_ptr<hl_definition_node> element, int instr_idx);
-        std::shared_ptr<hl_ast_operand> propagate_constant(std::shared_ptr<hl_ast_operand> element, int instr_idx);
+        std::shared_ptr<ast_node> propagate_constant(std::shared_ptr<ast_node> element, int instr_idx);
+        std::shared_ptr<ast_node> propagate_constant(std::shared_ptr<ast_expression> element, int instr_idx);
+        std::shared_ptr<ast_node> propagate_constant(std::shared_ptr<ast_definition> element, int instr_idx);
+        std::shared_ptr<ast_operand> propagate_constant(std::shared_ptr<ast_operand> element, int instr_idx);
 
-        bool map_constants(const std::shared_ptr<hl_ast_node>& element, int instr_idx);
-        bool map_constants(const std::shared_ptr<hl_expression_node>& element, int instr_idx);
-        bool map_constants(const std::shared_ptr<hl_definition_node>& element, int instr_idx);
-        bool map_constants(const std::shared_ptr<hl_ast_operand>& element, const std::shared_ptr<hl_ast_operand> &target, int instr_idx);
+        bool map_constants(const std::shared_ptr<ast_node>& element, int instr_idx);
+        bool map_constants(const std::shared_ptr<ast_expression>& element, int instr_idx);
+        bool map_constants(const std::shared_ptr<ast_definition>& element, int instr_idx);
+        bool map_constants(const std::shared_ptr<ast_operand>& element, const std::shared_ptr<ast_operand> &target, int instr_idx);
 
-        std::vector<uint32_t> get_index_array(const std::shared_ptr<hl_ast_operand> &target);
+        std::vector<uint32_t> get_index_array(const std::shared_ptr<ast_operand> &target);
 
-        void analyze_assignment(const std::shared_ptr<hl_expression_node> &element, int instr_idx);
-        bool needs_termination(const std::shared_ptr<hl_expression_node> &element, int instr_idx);
+        void analyze_assignment(const std::shared_ptr<ast_expression> &element, int instr_idx);
+        bool needs_termination(const std::shared_ptr<ast_expression> &element, int instr_idx);
         constants_tracker tracker;
 
-        std::shared_ptr<hl_ast_node> purge_definition(std::shared_ptr<hl_ast_node> element);
+        std::shared_ptr<ast_node> purge_definition(std::shared_ptr<ast_node> element);
 
     };
 }

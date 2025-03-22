@@ -22,7 +22,7 @@ namespace fcore{
         entry_point = std::move(entry_point_name);
     }
 
-    std::shared_ptr<hl_code_block> inlined_function_elimination::process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
+    std::shared_ptr<ast_code_block> inlined_function_elimination::process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) {
 
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;
@@ -32,11 +32,11 @@ namespace fcore{
         return visitor.visit(ops, element);
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>>
-    inlined_function_elimination::process_function_definition(std::shared_ptr<hl_function_def_node> element) {
-        std::vector<std::shared_ptr<hl_ast_node>> new_content;
+    std::vector<std::shared_ptr<ast_node>>
+    inlined_function_elimination::process_function_definition(std::shared_ptr<ast_function_def> element) {
+        std::vector<std::shared_ptr<ast_node>> new_content;
         if(element->get_name() == entry_point){
-            std::vector<std::shared_ptr<hl_ast_node>> main_body = element->get_body();
+            std::vector<std::shared_ptr<ast_node>> main_body = element->get_body();
             new_content.insert(new_content.end(), main_body.begin(), main_body.end());
         }
         return new_content;

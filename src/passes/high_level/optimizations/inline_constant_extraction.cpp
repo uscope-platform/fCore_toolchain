@@ -20,18 +20,18 @@ namespace fcore{
         n_var = 0;
     }
 
-    std::shared_ptr<hl_code_block>
-    inline_constant_extraction::process_global(std::shared_ptr<hl_code_block> element, const std::vector<std::shared_ptr<hl_definition_node>> &globals) {
-        auto retval = std::make_shared<hl_code_block>();
-        std::vector<std::shared_ptr<hl_ast_node>> new_content;
+    std::shared_ptr<ast_code_block>
+    inline_constant_extraction::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
+        auto retval = std::make_shared<ast_code_block>();
+        std::vector<std::shared_ptr<ast_node>> new_content;
 
         for(const auto& item:element->get_content()){
             if(item->node_type == hl_ast_node_type_definition){
-                std::shared_ptr<hl_definition_node> node = std::static_pointer_cast<hl_definition_node>(item);
+                std::shared_ptr<ast_definition> node = std::static_pointer_cast<ast_definition>(item);
                 auto res = process_node(node);
                 new_content.insert(new_content.end(), res.begin(), res.end());
             } else if(item->node_type == hl_ast_node_type_expr){
-                std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(item);
+                std::shared_ptr<ast_expression> node = std::static_pointer_cast<ast_expression>(item);
                 auto res = process_node(node);
                 new_content.insert(new_content.end(), res.begin(), res.end());
             } else{
@@ -44,15 +44,15 @@ namespace fcore{
 
 
 
-    std::vector<std::shared_ptr<hl_ast_node>> inline_constant_extraction::process_node(const std::shared_ptr<hl_expression_node> &element) {
-        std::vector<std::shared_ptr<hl_ast_node>> ret_val;
-        if(!element->is_immediate() && element->get_type()!=hl_expression_node::ASSIGN){
+    std::vector<std::shared_ptr<ast_node>> inline_constant_extraction::process_node(const std::shared_ptr<ast_expression> &element) {
+        std::vector<std::shared_ptr<ast_node>> ret_val;
+        if(!element->is_immediate() && element->get_type()!=ast_expression::ASSIGN){
             throw std::runtime_error("Non assignment top level expressions should not reach inline constant extraction pass");
         }
 
-        if(element->get_type()==hl_expression_node::ASSIGN){
+        if(element->get_type()==ast_expression::ASSIGN){
             if(element->get_rhs()->node_type != hl_ast_node_type_operand){
-                std::vector<std::shared_ptr<hl_ast_node>> res = process_expression(std::static_pointer_cast<hl_expression_node>(element->get_rhs()));
+                std::vector<std::shared_ptr<ast_node>> res = process_expression(std::static_pointer_cast<ast_expression>(element->get_rhs()));
                 if(res.size()>1){
                     element->set_rhs(res[0]);
                     ret_val.push_back(res[1]);
@@ -64,15 +64,15 @@ namespace fcore{
         return ret_val;
     }
 
-    std::vector<std::shared_ptr<hl_ast_node>>
-    inline_constant_extraction::process_node(const std::shared_ptr<hl_definition_node> &element) {
+    std::vector<std::shared_ptr<ast_node>>
+    inline_constant_extraction::process_node(const std::shared_ptr<ast_definition> &element) {
 
-        std::vector<std::shared_ptr<hl_ast_node>> ret_val;
+        std::vector<std::shared_ptr<ast_node>> ret_val;
         if(element->is_initialized()){
             if(element->get_scalar_initializer()->node_type == hl_ast_node_type_expr){
-                std::shared_ptr<hl_expression_node> expr = std::static_pointer_cast<hl_expression_node>(
+                std::shared_ptr<ast_expression> expr = std::static_pointer_cast<ast_expression>(
                         element->get_scalar_initializer());
-                std::vector<std::shared_ptr<hl_ast_node>> res = process_expression(expr);
+                std::vector<std::shared_ptr<ast_node>> res = process_expression(expr);
                 element->set_scalar_initializer(res[0]);
                 if(res.size()>1)
                     ret_val.insert(ret_val.end(), res.begin()+1, res.end());
@@ -84,29 +84,29 @@ namespace fcore{
     }
 
 
-    std::vector<std::shared_ptr<hl_ast_node>>
-    inline_constant_extraction::process_expression(const std::shared_ptr<hl_expression_node> &element) {
-        std::vector<std::shared_ptr<hl_ast_node>> retval;
+    std::vector<std::shared_ptr<ast_node>>
+    inline_constant_extraction::process_expression(const std::shared_ptr<ast_expression> &element) {
+        std::vector<std::shared_ptr<ast_node>> retval;
 
-        std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
+        std::shared_ptr<ast_expression> node = std::static_pointer_cast<ast_expression>(element);
 
-        if(node->get_type()==hl_expression_node::EFI){
+        if(node->get_type()==ast_expression::EFI){
             retval.push_back(element);
         } else {
-            std::vector<std::shared_ptr<hl_ast_node>> rhs_result = process_operand(std::static_pointer_cast<hl_ast_operand>(node->get_rhs()));
+            std::vector<std::shared_ptr<ast_node>> rhs_result = process_operand(std::static_pointer_cast<ast_operand>(node->get_rhs()));
             node->set_rhs(rhs_result[0]);
             if(rhs_result.size()==2){
                 retval.push_back(rhs_result[1]);
             }
 
             if(auto lhs = node->get_lhs()){
-                std::vector<std::shared_ptr<hl_ast_node>> lhs_result = process_operand(std::static_pointer_cast<hl_ast_operand>(lhs.value()));
+                std::vector<std::shared_ptr<ast_node>> lhs_result = process_operand(std::static_pointer_cast<ast_operand>(lhs.value()));
                 node->set_lhs(lhs_result[0]);
                 if(lhs_result.size()==2)
                     retval.push_back(lhs_result[1]);
             }
             if(auto ths = node->get_ths()){
-                std::vector<std::shared_ptr<hl_ast_node>> ths_result = process_operand(std::static_pointer_cast<hl_ast_operand>(ths.value()));
+                std::vector<std::shared_ptr<ast_node>> ths_result = process_operand(std::static_pointer_cast<ast_operand>(ths.value()));
                 node->set_ths(ths_result[0]);
                 if(ths_result.size()==2)
                     retval.push_back(ths_result[1]);
@@ -118,10 +118,10 @@ namespace fcore{
     }
 
 
-    std::vector<std::shared_ptr<hl_ast_node>>
-    inline_constant_extraction::process_operand(const std::shared_ptr<hl_ast_operand>& element) {
+    std::vector<std::shared_ptr<ast_node>>
+    inline_constant_extraction::process_operand(const std::shared_ptr<ast_operand>& element) {
 
-        std::vector<std::shared_ptr<hl_ast_node>> retval;
+        std::vector<std::shared_ptr<ast_node>> retval;
 
         if(element->get_type() != var_type_float_const && element->get_type() != var_type_int_const ){
             retval.push_back(element);
@@ -132,9 +132,9 @@ namespace fcore{
 
         std::string var_name = "inlined_variable_"+std::to_string(n_var);
         std::shared_ptr<variable> var = std::make_shared<variable>( var_name);
-        std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>(var_name, selected_type, var);
+        std::shared_ptr<ast_definition> def = std::make_shared<ast_definition>(var_name, selected_type, var);
         def->set_scalar_initializer(element);
-        std::shared_ptr<hl_ast_operand> var_op = std::make_shared<hl_ast_operand>(std::make_shared<variable>(var_name));
+        std::shared_ptr<ast_operand> var_op = std::make_shared<ast_operand>(std::make_shared<variable>(var_name));
 
         auto bound_reg = element->get_variable()->get_bound_reg();
         if(bound_reg != -1){

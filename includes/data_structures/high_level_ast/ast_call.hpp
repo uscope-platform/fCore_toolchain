@@ -13,27 +13,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FCORE_TOOLCHAIN_HL_FUNCTION_CALL_NODE_HPP
-#define FCORE_TOOLCHAIN_HL_FUNCTION_CALL_NODE_HPP
+#ifndef FCORE_TOOLCHAIN_AST_CALL_HPP
+#define FCORE_TOOLCHAIN_AST_CALL_HPP
 
-#include "data_structures/high_level_ast/hl_ast_node.hpp"
-#include "data_structures/high_level_ast/hl_expression_node.hpp"
-#include "data_structures/high_level_ast/hl_ast_operand.hpp"
+#include "data_structures/high_level_ast/ast_node.hpp"
+#include "data_structures/high_level_ast/ast_expression.hpp"
+#include "data_structures/high_level_ast/ast_operand.hpp"
 
 #include <string>
 #include <utility>
 
 namespace fcore{
 
-    class hl_function_call_node : public hl_ast_node {
+    class ast_call : public ast_node {
     public:
-        hl_function_call_node(std::string n, std::vector<std::shared_ptr<hl_ast_node>> a);
+        ast_call(std::string n, std::vector<std::shared_ptr<ast_node>> a);
         std::string get_name() {return name;};
         std::string pretty_print();
-        std::vector<std::shared_ptr<hl_ast_node>> get_arguments() { return arguments;};
-        void set_arguments(std::vector<std::shared_ptr<hl_ast_node>> args) {arguments = std::move(args);};
+        std::vector<std::shared_ptr<ast_node>> get_arguments() { return arguments;};
+        void set_arguments(std::vector<std::shared_ptr<ast_node>> args) {arguments = std::move(args);};
 
-        friend bool operator==(const hl_function_call_node& lhs, const hl_function_call_node& rhs){
+        friend bool operator==(const ast_call& lhs, const ast_call& rhs){
             bool ret_val = true;
 
             ret_val &= lhs.name == rhs.name;
@@ -44,13 +44,13 @@ namespace fcore{
         };
 
 
-        static std::shared_ptr<hl_function_call_node> deep_copy(const std::shared_ptr<hl_function_call_node> &node);
+        static std::shared_ptr<ast_call> deep_copy(const std::shared_ptr<ast_call> &node);
 
     protected:
         std::string name;
-        std::vector<std::shared_ptr<hl_ast_node>> arguments;
+        std::vector<std::shared_ptr<ast_node>> arguments;
     };
 }
 
 
-#endif //FCORE_TOOLCHAIN_HL_FUNCTION_CALL_NODE_HPP
+#endif //FCORE_TOOLCHAIN_AST_CALL_HPP

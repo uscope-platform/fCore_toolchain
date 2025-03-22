@@ -14,20 +14,20 @@
 // limitations under the License.01/07/2021.
 //
 
-#include "data_structures/high_level_ast/hl_definition_node.hpp"
-#include "data_structures/high_level_ast/hl_ast_struct.hpp"
+#include "data_structures/high_level_ast/ast_definition.hpp"
+#include "data_structures/high_level_ast/ast_struct.hpp"
 #include <utility>
 
 namespace fcore {
 
-    hl_definition_node::hl_definition_node(std::string n, c_types_t ct, std::shared_ptr<variable> v) : hl_ast_node(hl_ast_node_type_definition) {
+    ast_definition::ast_definition(std::string n, c_types_t ct, std::shared_ptr<variable> v) : ast_node(hl_ast_node_type_definition) {
         name = std::move(n);
         type = ct;
         constant = false;
         inner_variable = std::move(v);
     }
 
-    hl_definition_node::hl_definition_node(std::string n, std::shared_ptr<hl_ast_struct> s): hl_ast_node(hl_ast_node_type_definition) {
+    ast_definition::ast_definition(std::string n, std::shared_ptr<ast_struct> s): ast_node(hl_ast_node_type_definition) {
         name = std::move(n);
         type = c_type_struct;
         constant = false;
@@ -35,50 +35,50 @@ namespace fcore {
         inner_variable = std::make_shared<variable>(n);
     }
 
-    bool hl_definition_node::is_initialized() const {
+    bool ast_definition::is_initialized() const {
         return !initializer.empty();
     }
 
-    void hl_definition_node::set_scalar_initializer(const std::shared_ptr<hl_ast_node>& init) {
+    void ast_definition::set_scalar_initializer(const std::shared_ptr<ast_node>& init) {
         initializer.clear();
         initializer.push_back(init);
 
     }
 
-    void hl_definition_node::set_constant(bool c) {
+    void ast_definition::set_constant(bool c) {
         constant = c;
     }
 
-    bool hl_definition_node::is_constant() const {
+    bool ast_definition::is_constant() const {
         return constant;
     }
 
-    std::shared_ptr<hl_ast_node> hl_definition_node::get_scalar_initializer() {
+    std::shared_ptr<ast_node> ast_definition::get_scalar_initializer() {
         return initializer[0];
     }
 
-    void hl_definition_node::set_scalar_initializer(const std::shared_ptr<hl_ast_node> &init, uint32_t idx) {
+    void ast_definition::set_scalar_initializer(const std::shared_ptr<ast_node> &init, uint32_t idx) {
         if(initializer.size()<idx) throw std::runtime_error("Error: Attempt to set undefined initializer");
         initializer[idx] = init;
     }
 
-    std::string hl_definition_node::pretty_print() {
+    std::string ast_definition::pretty_print() {
 
 
         std::ostringstream ss;
         if(constant) ss << "const ";
-        ss << hl_ast_node::type_to_string(type);
+        ss << ast_node::type_to_string(type);
         if(struct_specs != nullptr) ss << " " << struct_specs->get_name();
         ss << " " << name;
 
         if(!initializer.empty()){
             ss << " = ";
             if(is_scalar()){
-                ss << hl_ast_node::pretty_print(initializer[0]);
+                ss << ast_node::pretty_print(initializer[0]);
             } else {
                 ss << "{";
                 for(int i = 0; i< initializer.size(); i++){
-                    ss << hl_ast_node::pretty_print(initializer[i]);
+                    ss << ast_node::pretty_print(initializer[i]);
                     if(i != initializer.size()-1) ss << ", ";
                 }
                 ss << "}";
@@ -93,42 +93,42 @@ namespace fcore {
 
     }
 
-    void hl_definition_node::set_name(std::string n) {
+    void ast_definition::set_name(std::string n) {
         name = std::move(n);
     }
 
-    bool hl_definition_node::is_scalar() {
+    bool ast_definition::is_scalar() {
         return inner_variable->get_type() != var_type_array;
     }
 
-    std::shared_ptr<hl_definition_node> hl_definition_node::deep_copy(const std::shared_ptr<hl_definition_node> &orig) {
-        std::shared_ptr<hl_definition_node> copied_obj;
+    std::shared_ptr<ast_definition> ast_definition::deep_copy(const std::shared_ptr<ast_definition> &orig) {
+        std::shared_ptr<ast_definition> copied_obj;
         if(orig->struct_specs != nullptr) {
-            auto new_struct =  std::static_pointer_cast<hl_ast_struct>(hl_ast_node::deep_copy(orig->struct_specs));
-            copied_obj = std::make_shared<hl_definition_node>(orig->get_name(), new_struct);
+            auto new_struct =  std::static_pointer_cast<ast_struct>(ast_node::deep_copy(orig->struct_specs));
+            copied_obj = std::make_shared<ast_definition>(orig->get_name(), new_struct);
 
             if(orig->inner_variable != nullptr) {
                 copied_obj->set_variable(variable::deep_copy(orig->get_variable()));
             }
         } else {
             std::shared_ptr<variable> new_var = variable::deep_copy(orig->get_variable());
-            copied_obj = std::make_shared<hl_definition_node>(orig->get_name(), orig->get_type(), new_var);
+            copied_obj = std::make_shared<ast_definition>(orig->get_name(), orig->get_type(), new_var);
 
         }
         copied_obj->set_constant(orig->is_constant());
         if(orig->is_initialized()){
-            std::vector<std::shared_ptr<hl_ast_node>> old_initializer = orig->get_array_initializer();
-            std::vector<std::shared_ptr<hl_ast_node>> new_initializer;
+            std::vector<std::shared_ptr<ast_node>> old_initializer = orig->get_array_initializer();
+            std::vector<std::shared_ptr<ast_node>> new_initializer;
             for(auto &item:old_initializer){
-                new_initializer.push_back(hl_ast_node::deep_copy(item));
+                new_initializer.push_back(ast_node::deep_copy(item));
             }
             copied_obj->set_array_initializer(new_initializer);
         }
 
 
-        std::vector<std::shared_ptr<hl_ast_node>> index;
+        std::vector<std::shared_ptr<ast_node>> index;
         for(const auto& i:orig->get_array_index()){
-            index.push_back(hl_ast_node::deep_copy(i));
+            index.push_back(ast_node::deep_copy(i));
         }
         copied_obj->set_array_index(index);
 

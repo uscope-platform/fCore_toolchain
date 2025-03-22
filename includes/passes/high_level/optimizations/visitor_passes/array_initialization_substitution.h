@@ -24,11 +24,11 @@ namespace fcore{
     class array_initialization_substitution : public pass_base{
     public:
         array_initialization_substitution();
-        std::shared_ptr<hl_code_block> process_global(std::shared_ptr<hl_code_block> element,const std::vector<std::shared_ptr<hl_definition_node>> &globals) override;
+        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
 
     private:
-        static std::vector<std::shared_ptr<hl_ast_node>> process_definition(const std::shared_ptr<hl_definition_node> &node);
-        static std::shared_ptr<hl_expression_node> build_initialization_expr(const std::shared_ptr<hl_definition_node>& var_name, int index);
+        static std::vector<std::shared_ptr<ast_node>> process_definition(const std::shared_ptr<ast_definition> &node);
+        static std::shared_ptr<ast_expression> build_initialization_expr(const std::shared_ptr<ast_definition>& var_name, int index);
     };
 }
 
