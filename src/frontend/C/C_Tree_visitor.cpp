@@ -238,18 +238,18 @@ namespace fcore{
 
     void C_Tree_visitor::exitUnaryExpression(C_parser::C_grammarParser::UnaryExpressionContext *ctx) {
         if(ctx->unaryExpression() != nullptr|| !ctx->PlusPlus().empty() || !ctx->MinusMinus().empty()){
-            expression_type_t expr;
+            hl_expression_node::expression_type_t expr;
 
             if( !ctx->PlusPlus().empty()){
-                expr = expr_incr_pre;
+                expr = hl_expression_node::expr_incr_pre;
             } else if(!ctx->MinusMinus().empty()){
-                expr = expr_decr_pre;
+                expr =hl_expression_node:: expr_decr_pre;
             } else if(ctx->unaryOperator()->getText() == "!"){
-                expr = expr_not_l;
+                expr = hl_expression_node::expr_not_l;
             } else if(ctx->unaryOperator()->getText() == "~"){
-                expr = expr_not_b;
+                expr = hl_expression_node::expr_not_b;
             } else if(ctx->unaryOperator()->getText() == "-"){
-                expr = expr_neg;
+                expr = hl_expression_node::expr_neg;
             }
 
             const auto expression = std::make_shared<hl_expression_node>(expr);
@@ -332,10 +332,10 @@ namespace fcore{
 
         std::shared_ptr<hl_expression_node> expression;
 
-        std::map<std::string, expression_type_t> expr_map = {
-                {"*", expr_mult},
-                {"/", expr_div},
-                {"%", expr_modulo}
+        std::map<std::string, hl_expression_node::expression_type_t> expr_map = {
+                {"*", hl_expression_node::expr_mult},
+                {"/", hl_expression_node::expr_div},
+                {"%", hl_expression_node::expr_modulo}
         };
 
         if(ctx->unaryExpression().size()>1){
@@ -348,9 +348,9 @@ namespace fcore{
 
         std::shared_ptr<hl_expression_node> expression;
 
-        std::map<std::string, expression_type_t> expr_map = {
-                {"+", expr_add},
-                {"-", expr_sub}
+        std::map<std::string, hl_expression_node::expression_type_t> expr_map = {
+                {"+", hl_expression_node::expr_add},
+                {"-", hl_expression_node::expr_sub}
         };
 
         if(ctx->multiplicativeExpression().size()>1){
@@ -361,9 +361,9 @@ namespace fcore{
     void C_Tree_visitor::exitShiftExpression(C_parser::C_grammarParser::ShiftExpressionContext *ctx) {
         std::shared_ptr<hl_expression_node> expression;
 
-        std::map<std::string, expression_type_t> expr_map = {
-                {"<<", expr_lsh},
-                {">>", expr_rsh}
+        std::map<std::string, hl_expression_node::expression_type_t> expr_map = {
+                {"<<", hl_expression_node::expr_lsh},
+                {">>", hl_expression_node::expr_rsh}
         };
 
         if(ctx->additiveExpression().size()>1){
@@ -374,9 +374,9 @@ namespace fcore{
     void C_Tree_visitor::exitEqualityExpression(C_parser::C_grammarParser::EqualityExpressionContext *ctx) {
         std::shared_ptr<hl_expression_node> expression;
 
-        std::map<std::string, expression_type_t> expr_map = {
-                {"==", expr_eq},
-                {"!=", expr_neq}
+        std::map<std::string, hl_expression_node::expression_type_t> expr_map = {
+                {"==", hl_expression_node::expr_eq},
+                {"!=", hl_expression_node::expr_neq}
         };
 
         if(ctx->relationalExpression().size()>1){
@@ -387,11 +387,11 @@ namespace fcore{
     void C_Tree_visitor::exitRelationalExpression(C_parser::C_grammarParser::RelationalExpressionContext *ctx) {
         std::shared_ptr<hl_expression_node> expression;
 
-        std::map<std::string, expression_type_t> expr_map = {
-                {"<", expr_lt},
-                {">", expr_gt},
-                {"<=", expr_lte},
-                {">=", expr_gte}
+        std::map<std::string, hl_expression_node::expression_type_t> expr_map = {
+                {"<", hl_expression_node::expr_lt},
+                {">", hl_expression_node::expr_gt},
+                {"<=", hl_expression_node::expr_lte},
+                {">=", hl_expression_node::expr_gte}
         };
 
         if(ctx->shiftExpression().size()>1){
@@ -403,8 +403,8 @@ namespace fcore{
     void C_Tree_visitor::exitInclusiveOrExpression(C_parser::C_grammarParser::InclusiveOrExpressionContext *ctx) {
         std::shared_ptr<hl_expression_node> expression;
 
-        std::map<std::string, expression_type_t> expr_map = {
-                {"|", expr_or_b},
+        std::map<std::string, hl_expression_node::expression_type_t> expr_map = {
+                {"|", hl_expression_node::expr_or_b},
         };
 
         if(ctx->exclusiveOrExpression().size()>1){
@@ -415,8 +415,8 @@ namespace fcore{
     void C_Tree_visitor::exitExclusiveOrExpression(C_parser::C_grammarParser::ExclusiveOrExpressionContext *ctx) {
         std::shared_ptr<hl_expression_node> expression;
 
-        std::map<std::string, expression_type_t> expr_map = {
-                {"^", expr_xor_b},
+        std::map<std::string, hl_expression_node::expression_type_t> expr_map = {
+                {"^", hl_expression_node::expr_xor_b},
         };
 
         if(ctx->andExpression().size()>1){
@@ -427,8 +427,8 @@ namespace fcore{
     void C_Tree_visitor::exitAndExpression(C_parser::C_grammarParser::AndExpressionContext *ctx) {
         std::shared_ptr<hl_expression_node> expression;
 
-        std::map<std::string, expression_type_t> expr_map = {
-                {"&", expr_and_b},
+        std::map<std::string, hl_expression_node::expression_type_t> expr_map = {
+                {"&", hl_expression_node::expr_and_b},
         };
 
         if(ctx->equalityExpression().size()>1){
@@ -439,8 +439,8 @@ namespace fcore{
     void C_Tree_visitor::exitLogicalOrExpression(C_parser::C_grammarParser::LogicalOrExpressionContext *ctx) {
         std::shared_ptr<hl_expression_node> expression;
 
-        std::map<std::string, expression_type_t> expr_map = {
-                {"||", expr_or_l},
+        std::map<std::string, hl_expression_node::expression_type_t> expr_map = {
+                {"||", hl_expression_node::expr_or_l},
         };
 
         if(ctx->logicalAndExpression().size()>1){
@@ -451,8 +451,8 @@ namespace fcore{
     void C_Tree_visitor::exitLogicalAndExpression(C_parser::C_grammarParser::LogicalAndExpressionContext *ctx) {
         std::shared_ptr<hl_expression_node> expression;
 
-        std::map<std::string, expression_type_t> expr_map = {
-                {"&&", expr_and_l},
+        std::map<std::string, hl_expression_node::expression_type_t> expr_map = {
+                {"&&", hl_expression_node::expr_and_l},
         };
 
         if(ctx->inclusiveOrExpression().size()>1){
@@ -481,43 +481,43 @@ namespace fcore{
     void C_Tree_visitor::exitAssignmentExpression(C_parser::C_grammarParser::AssignmentExpressionContext *ctx) {
         std::string dbg = ctx->getText();
         if(ctx->unaryExpression()!= nullptr){
-            assignment_type_t operator_type;
+            hl_expression_node::assignment_type_t operator_type;
             if(ctx->assignmentOperator()!= nullptr){
                 std::string raw_operator = ctx->assignmentOperator()->getText();
                 if(raw_operator.size()==1)
-                    operator_type = regular_assignment;
+                    operator_type = hl_expression_node::regular_assignment;
                 else{
                     char assignment_qualifier = raw_operator.at(0);
                     switch (assignment_qualifier) {
                         case '+':
-                            operator_type = addition_assignment;
+                            operator_type = hl_expression_node::addition_assignment;
                             break;
                         case '-':
-                            operator_type = subtraction_assignment;
+                            operator_type = hl_expression_node::subtraction_assignment;
                             break;
                         case '*':
-                            operator_type = multiplication_assignment;
+                            operator_type = hl_expression_node::multiplication_assignment;
                             break;
                         case '/':
-                            operator_type = division_assignment;
+                            operator_type = hl_expression_node::division_assignment;
                             break;
                         case '%':
-                            operator_type = modulo_assignment;
+                            operator_type = hl_expression_node::modulo_assignment;
                             break;
                         case '&':
-                            operator_type = and_assignment;
+                            operator_type = hl_expression_node::and_assignment;
                             break;
                         case '|':
-                            operator_type = or_assignment;
+                            operator_type = hl_expression_node::or_assignment;
                             break;
                         case '^':
-                            operator_type = xor_assignment;
+                            operator_type = hl_expression_node::xor_assignment;
                             break;
                         case '<':
-                            operator_type = lsh_assignment;
+                            operator_type = hl_expression_node::lsh_assignment;
                             break;
                         case '>':
-                            operator_type = rsh_assignment;
+                            operator_type = hl_expression_node::rsh_assignment;
                             break;
                         default:
                             throw std::runtime_error("ERORR: unknown assignment qualifier.");
@@ -528,7 +528,7 @@ namespace fcore{
             expressions_stack.pop();
             std::shared_ptr<hl_ast_node> target = expressions_stack.top();
             expressions_stack.pop();
-            std::shared_ptr<hl_expression_node> assignment = std::make_shared<hl_expression_node>(expr_assign);
+            std::shared_ptr<hl_expression_node> assignment = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
             assignment->set_lhs(target);
             assignment->set_rhs(value);
             assignment->set_assignment_type(operator_type);
@@ -607,7 +607,7 @@ namespace fcore{
 
     template<typename T>
     void C_Tree_visitor::processExpression(unsigned int expression_size, const T& operands_array,
-                                                  std::map<std::string, expression_type_t> &expr_map) {
+                                                  std::map<std::string, hl_expression_node::expression_type_t> &expr_map) {
         std::shared_ptr<hl_expression_node> expression;
 
         std::stack<std::string> operations;
@@ -620,7 +620,7 @@ namespace fcore{
 
         bool first_op = true;
         for(auto item: operands_array){
-            expression_type_t type = expr_map[item->getText()];
+            hl_expression_node::expression_type_t type = expr_map[item->getText()];
             std::shared_ptr<hl_expression_node> ex = std::make_shared<hl_expression_node>(type);
             if(first_op){
                 ex->set_lhs(reversed_operands.top());

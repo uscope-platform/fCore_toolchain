@@ -37,12 +37,12 @@ namespace fcore {
     std::vector<std::shared_ptr<hl_ast_node>> constant_commutation::process_expression(
         const std::shared_ptr<hl_expression_node>& exp) {
         switch(exp->get_type()) {
-            case expr_add:
-                return process_expression_by_type(exp, expr_add, expr_sub);
-            case expr_sub:
-                return process_expression_by_type(exp, expr_sub, expr_add);
-            case expr_mult:
-                return process_expression_by_type(exp, expr_mult, expr_mult);
+            case hl_expression_node::expr_add:
+                return process_expression_by_type(exp, hl_expression_node::expr_add, hl_expression_node::expr_sub);
+            case hl_expression_node::expr_sub:
+                return process_expression_by_type(exp, hl_expression_node::expr_sub, hl_expression_node::expr_add);
+            case hl_expression_node::expr_mult:
+                return process_expression_by_type(exp, hl_expression_node::expr_mult, hl_expression_node::expr_mult);
             default:
                 return {exp};
         }
@@ -50,15 +50,15 @@ namespace fcore {
 
     std::vector<std::shared_ptr<hl_ast_node>> constant_commutation::process_expression_by_type(
         const std::shared_ptr<hl_expression_node>& exp,
-        expression_type_t main_type,
-        expression_type_t additional_type
+        hl_expression_node::expression_type_t main_type,
+        hl_expression_node::expression_type_t additional_type
     ) {
         if(exp->get_type() != main_type) return {exp};
         if(exp->get_rhs()->node_type  == exp->get_lhs().value()->node_type) return {exp};
 
         std::shared_ptr<hl_ast_operand> lhs_op, rhs_op, parent_op;
 
-        expression_type_t child_type;
+        hl_expression_node::expression_type_t child_type;
 
         if(exp->get_rhs()->node_type == hl_ast_node_type_operand) {
             auto child_exp = std::static_pointer_cast<hl_expression_node>(exp->get_lhs().value());

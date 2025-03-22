@@ -57,7 +57,7 @@ TEST( hl_pretty_print, operand){
 TEST( hl_pretty_print, expression){
     std::vector<std::shared_ptr<hl_ast_node>> init;
 
-    std::shared_ptr<hl_expression_node> gold_standard = std::make_shared<hl_expression_node>(expr_add);
+    std::shared_ptr<hl_expression_node> gold_standard = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
 
     std::shared_ptr<variable> var = std::make_shared<variable>("constant", 5);
     std::shared_ptr<hl_ast_operand> op_l = std::make_shared<hl_ast_operand>(var);
@@ -150,7 +150,7 @@ TEST( hl_pretty_print, conditional){
 
     std::shared_ptr<hl_ast_conditional_node> gold_standard = std::make_shared<hl_ast_conditional_node>();
 
-    std::shared_ptr<hl_expression_node> expr = std::make_shared<hl_expression_node>(expr_add);
+    std::shared_ptr<hl_expression_node> expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
     std::shared_ptr<variable> var = std::make_shared<variable>("constant", 5);
     std::shared_ptr<hl_ast_operand> op_l = std::make_shared<hl_ast_operand>(var);
 
@@ -162,14 +162,14 @@ TEST( hl_pretty_print, conditional){
 
     gold_standard->set_condition(expr);
 
-    expr = std::make_shared<hl_expression_node>(expr_add);
+    expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
     var = std::make_shared<variable>("constant", 7);
     op_r = std::make_shared<hl_ast_operand>(var);
     expr->set_lhs(op_l);
     expr->set_rhs(op_r);
     gold_standard->set_if_block({expr});
 
-    expr = std::make_shared<hl_expression_node>(expr_add);
+    expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
     var = std::make_shared<variable>("constant", 8);
     op_r = std::make_shared<hl_ast_operand>(var);
     expr->set_lhs(op_l);
@@ -185,7 +185,7 @@ TEST( hl_pretty_print, loop){
 
     std::shared_ptr<hl_ast_loop_node> gold_standard = std::make_shared<hl_ast_loop_node>();
 
-    std::shared_ptr<hl_expression_node> expr = std::make_shared<hl_expression_node>(expr_add);
+    std::shared_ptr<hl_expression_node> expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
     std::shared_ptr<variable> var = std::make_shared<variable>("constant", 5);
     std::shared_ptr<hl_ast_operand> op_l = std::make_shared<hl_ast_operand>(var);
 
@@ -197,14 +197,14 @@ TEST( hl_pretty_print, loop){
 
     gold_standard->set_condition(expr);
 
-    expr = std::make_shared<hl_expression_node>(expr_add);
+    expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
     var = std::make_shared<variable>("constant", 7);
     op_r = std::make_shared<hl_ast_operand>(var);
     expr->set_lhs(op_l);
     expr->set_rhs(op_r);
     gold_standard->set_iteration_expr(expr);
 
-    expr = std::make_shared<hl_expression_node>(expr_add);
+    expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
     var = std::make_shared<variable>("constant", 8);
     op_r = std::make_shared<hl_ast_operand>(var);
     expr->set_lhs(op_l);
@@ -246,7 +246,7 @@ TEST( hl_pretty_print, function_def){
     std::shared_ptr<hl_definition_node> def = std::make_shared<hl_definition_node>("array_test", c_type_int, var);
     gold_standard->set_parameters_list({def});
 
-    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(expr_mult);
+    std::shared_ptr<hl_expression_node> exp = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
     var = std::make_shared<variable>("constant", 5);
     std::shared_ptr<hl_ast_operand> op_l = std::make_shared<hl_ast_operand>(var);
     var = std::make_shared<variable>("constant", 6);
@@ -256,7 +256,7 @@ TEST( hl_pretty_print, function_def){
     gold_standard->set_body({exp});
 
 
-    exp = std::make_shared<hl_expression_node>(expr_mult);
+    exp = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
     var = std::make_shared<variable>("constant", 7);
     op_l = std::make_shared<hl_ast_operand>(var);
     var = std::make_shared<variable>("constant", 8);
@@ -294,7 +294,7 @@ TEST( hl_pretty_print, struct_def){
 
 TEST(hl_pretty_print, complex_expression) {
 
-    auto e_add = std::make_shared<hl_expression_node>(expr_add);
+    auto e_add = std::make_shared<hl_expression_node>(hl_expression_node::expr_add);
     auto var = std::make_shared<variable>("constant", 2.9f);
     auto op = std::make_shared<hl_ast_operand>(var);
     e_add->set_lhs(op);
@@ -302,13 +302,13 @@ TEST(hl_pretty_print, complex_expression) {
     op = std::make_shared<hl_ast_operand>(var);
     e_add->set_rhs(op);
 
-    auto e_mul = std::make_shared<hl_expression_node>(expr_mult);
+    auto e_mul = std::make_shared<hl_expression_node>(hl_expression_node::expr_mult);
     e_mul->set_rhs(e_add);
     var = std::make_shared<variable>("constant", 3.3f);
     op = std::make_shared<hl_ast_operand>(var);
     e_mul->set_lhs(op);
 
-    auto e_div = std::make_shared<hl_expression_node>(expr_div);
+    auto e_div = std::make_shared<hl_expression_node>(hl_expression_node::expr_div);
     e_div->set_lhs(e_mul);
     var = std::make_shared<variable>("constant", 7.0f);
     op = std::make_shared<hl_ast_operand>(var);

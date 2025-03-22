@@ -5,6 +5,7 @@ valijson/1.0.1
 spdlog/1.12.0
 cli11/2.3.2
 gtest/1.14.0
+magic_enum/0.9.6
 
 [generators]
 CMakeDeps

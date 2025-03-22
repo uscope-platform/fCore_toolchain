@@ -54,7 +54,7 @@ namespace fcore{
 
         } else if(element->node_type == hl_ast_node_type_expr){
             std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
-            if(node->get_type() == expr_assign){
+            if(node->get_type() == hl_expression_node::expr_assign){
                 std::shared_ptr<hl_ast_operand> op = std::static_pointer_cast<hl_ast_operand>(node->get_lhs().value());
                 if(last_loads_map.contains(op->get_identifier())){
                     last_loads_map[op->get_identifier()].last_assignment = idx;
@@ -95,7 +95,7 @@ namespace fcore{
         }
 
         if(auto lhs = element->get_lhs()){
-            if(element->get_type() != expr_assign){
+            if(element->get_type() != hl_expression_node::expr_assign){
                 if(lhs.value()->node_type == hl_ast_node_type_operand){
                     search_usages(std::static_pointer_cast<hl_ast_operand>(lhs.value()));
                 }
@@ -106,7 +106,7 @@ namespace fcore{
             search_usages(std::static_pointer_cast<hl_ast_operand>(element->get_rhs()));
         } else if(element->get_rhs()->node_type == hl_ast_node_type_expr){
             auto rhs_expr = std::static_pointer_cast<hl_expression_node>(element->get_rhs());
-            if(rhs_expr->get_type() == expr_efi){
+            if(rhs_expr->get_type() == hl_expression_node::expr_efi){
                 efi_mode = true;
                 search_usages(rhs_expr);
                 efi_mode = false;
@@ -151,7 +151,7 @@ namespace fcore{
             }
         } else if(element->node_type == hl_ast_node_type_expr){
             std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(element);
-            if(node->get_type() == expr_assign){
+            if(node->get_type() == hl_expression_node::expr_assign){
                 if(node->get_rhs()->node_type != hl_ast_node_type_operand){
                     return element;
                 }

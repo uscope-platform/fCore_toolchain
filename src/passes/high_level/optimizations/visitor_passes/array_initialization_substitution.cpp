@@ -34,7 +34,7 @@ namespace fcore{
 
 
     std::shared_ptr<hl_expression_node> array_initialization_substitution::build_initialization_expr(const std::shared_ptr<hl_definition_node>& def, int index) {
-        std::shared_ptr<hl_expression_node> init_expr = std::make_shared<hl_expression_node>(expr_assign);
+        std::shared_ptr<hl_expression_node> init_expr = std::make_shared<hl_expression_node>(hl_expression_node::expr_assign);
         init_expr->set_rhs(def->get_array_initializer()[index]);
         std::shared_ptr<variable> var = std::make_shared<variable>(def->get_name());
         std::shared_ptr<hl_ast_operand> op = std::make_shared<hl_ast_operand>(var);

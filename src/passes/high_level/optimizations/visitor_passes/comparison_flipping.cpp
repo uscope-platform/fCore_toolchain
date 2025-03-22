@@ -36,13 +36,13 @@ namespace fcore{
 
 
     std::vector<std::shared_ptr<hl_ast_node>>  comparison_flipping::process_expression(std::shared_ptr<hl_expression_node> exp) {
-        if(exp->get_type() == expr_gte){
-            exp->set_type(expr_lte);
+        if(exp->get_type() == hl_expression_node::expr_gte){
+            exp->set_type(hl_expression_node::expr_lte);
             auto lhs = exp->get_lhs();
             exp->set_lhs(exp->get_rhs());
             exp->set_rhs(lhs.value());
-        } else if (exp->get_type() == expr_lt) {
-            exp->set_type(expr_gt);
+        } else if (exp->get_type() == hl_expression_node::expr_lt) {
+            exp->set_type(hl_expression_node::expr_gt);
             auto lhs = exp->get_lhs();
             exp->set_lhs(exp->get_rhs());
             exp->set_rhs(lhs.value());

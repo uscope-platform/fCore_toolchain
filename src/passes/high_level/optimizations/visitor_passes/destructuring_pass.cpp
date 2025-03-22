@@ -57,7 +57,7 @@ namespace fcore {
     }
 
     std::vector<std::shared_ptr<hl_ast_node>> destructuring_pass::process_expression(std::shared_ptr<hl_expression_node> exp) {
-        if(exp->get_type() == expr_assign) {
+        if(exp->get_type() == hl_expression_node::expr_assign) {
             auto lhs = std::static_pointer_cast<hl_ast_operand>(exp->get_lhs().value());
             if(!lhs->get_variable()->get_struct_accessors().empty()) {
                 auto raw_rhs = exp->get_rhs();

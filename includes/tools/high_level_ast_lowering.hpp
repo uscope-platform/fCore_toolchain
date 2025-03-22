@@ -41,7 +41,7 @@ namespace fcore {
         std::shared_ptr<hl_code_block> input_ast;
 
         std::optional<instruction_variant> create_ast_node(isa_instruction_type t, std::vector<std::shared_ptr<variable>> args, const std::string& op);
-        std::map<expression_type_t, std::string> expr_instruction_mapping;
+        std::map<hl_expression_node::expression_type_t, std::string> expr_instruction_mapping;
 
     };
 }

@@ -48,11 +48,11 @@ namespace fcore{
         c_types_t expr_type = c_type_int;
         //In order for the result type to be flating point either the operand is a float or the expression is reciprocal, which
         //always results in a float
-        if(rhs->get_type() == var_type_float_const || expression->get_type() == expr_reciprocal){
+        if(rhs->get_type() == var_type_float_const || expression->get_type() == hl_expression_node::expr_reciprocal){
             expr_type = c_type_float;
         }
 
-        if(expression->get_type() != expr_fti && expression->get_type() != expr_itf  ){
+        if(expression->get_type() != hl_expression_node::expr_fti && expression->get_type() != hl_expression_node::expr_itf  ){
             if(expr_type == c_type_float){
                 float operand = rhs->get_float_val();
 
@@ -158,21 +158,21 @@ namespace fcore{
     }
 
 
-    float expression_evaluator::evaluate_unary_expr_f(float operand, expression_type_t operation) {
+    float expression_evaluator::evaluate_unary_expr_f(float operand, hl_expression_node::expression_type_t operation) {
         switch (operation) {
-            case expr_reciprocal:
+            case hl_expression_node::expr_reciprocal:
                 return 1/operand;
-            case expr_not_b:
+            case hl_expression_node::expr_not_b:
                 return (float)~(unsigned int)operand;
-            case expr_neg:
+            case hl_expression_node::expr_neg:
                 return -operand;
-            case expr_incr_pre:
-            case expr_incr_post:
+            case hl_expression_node::expr_incr_pre:
+            case hl_expression_node::expr_incr_post:
                 return operand+1;
-            case expr_decr_post:
-            case expr_decr_pre:
+            case hl_expression_node::expr_decr_post:
+            case hl_expression_node::expr_decr_pre:
                 return operand-1;
-            case expr_fti:
+            case hl_expression_node::expr_fti:
                 return operand;
             default:
                 throw std::runtime_error("Internal error: this condition should not have been possible");
@@ -180,21 +180,21 @@ namespace fcore{
         }
     }
 
-    int expression_evaluator::evaluate_unary_expr_i(int operand, expression_type_t operation) {
+    int expression_evaluator::evaluate_unary_expr_i(int operand, hl_expression_node::expression_type_t operation) {
         switch (operation) {
-            case expr_reciprocal:
+            case hl_expression_node::expr_reciprocal:
                 return 1/operand;
-            case expr_not_b:
+            case hl_expression_node::expr_not_b:
                 return ~operand;
-            case expr_neg:
+            case hl_expression_node::expr_neg:
                 return -operand;
-            case expr_incr_pre:
-            case expr_incr_post:
+            case hl_expression_node::expr_incr_pre:
+            case hl_expression_node::expr_incr_post:
                 return operand+1;
-            case expr_decr_post:
-            case expr_decr_pre:
+            case hl_expression_node::expr_decr_post:
+            case hl_expression_node::expr_decr_pre:
                 return operand-1;
-            case expr_itf:
+            case hl_expression_node::expr_itf:
                 return operand;
             default:
                 throw std::runtime_error("Internal error: this condition should not have been possible");
@@ -203,78 +203,78 @@ namespace fcore{
     }
 
 
-    float expression_evaluator::evaluate_regular_expr_f(float operand_a, float operand_b, expression_type_t operation) {
+    float expression_evaluator::evaluate_regular_expr_f(float operand_a, float operand_b, hl_expression_node::expression_type_t operation) {
         switch (operation) {
-            case expr_add:
+            case hl_expression_node::expr_add:
                 return operand_a+operand_b;
-            case expr_sub:
+            case hl_expression_node::expr_sub:
                 return operand_a-operand_b;
-            case expr_mult:
+            case hl_expression_node::expr_mult:
                 return operand_a*operand_b;
-            case expr_div:
+            case hl_expression_node::expr_div:
                 return operand_a/operand_b;
-            case expr_eq:
+            case hl_expression_node::expr_eq:
                 return operand_a==operand_b?1:0;
-            case expr_neq:
+            case hl_expression_node::expr_neq:
                 return operand_a!=operand_b?1:0;
-            case expr_lt:
+            case hl_expression_node::expr_lt:
                 return operand_a<operand_b?1:0;
-            case expr_gt:
+            case hl_expression_node::expr_gt:
                 return operand_a>operand_b?1:0;
-            case expr_lte:
+            case hl_expression_node::expr_lte:
                 return operand_a<=operand_b?1:0;
-            case expr_gte:
+            case hl_expression_node::expr_gte:
                 return operand_a>=operand_b?1:0;
-            case expr_satp:
+            case hl_expression_node::expr_satp:
                 return operand_a>operand_b?operand_b:operand_a;
-            case expr_satn:
+            case hl_expression_node::expr_satn:
                 return operand_a<operand_b?operand_b:operand_a;
             default:
                 throw std::runtime_error("Internal Unexpected constant expression");
         }
     }
 
-    int expression_evaluator::evaluate_regular_expr_i(int operand_a, int operand_b, expression_type_t operation) {
+    int expression_evaluator::evaluate_regular_expr_i(int operand_a, int operand_b, hl_expression_node::expression_type_t operation) {
         switch (operation) {
-            case expr_add:
+            case hl_expression_node::expr_add:
                 return operand_a+operand_b;
-            case expr_sub:
+            case hl_expression_node::expr_sub:
                 return operand_a-operand_b;
-            case expr_mult:
+            case hl_expression_node::expr_mult:
                 return operand_a*operand_b;
-            case expr_div:
+            case hl_expression_node::expr_div:
                 return operand_a/operand_b;
-            case expr_modulo:
+            case hl_expression_node::expr_modulo:
                 return operand_a%operand_b;
-            case expr_and_l:
+            case hl_expression_node::expr_and_l:
                 return operand_a&&operand_b;
-            case expr_and_b:
+            case hl_expression_node::expr_and_b:
                 return operand_a&operand_b;
-            case expr_or_l:
+            case hl_expression_node::expr_or_l:
                 return operand_a||operand_b;
-            case expr_or_b:
+            case hl_expression_node::expr_or_b:
                 return operand_a|operand_b;
-            case expr_xor_b:
+            case hl_expression_node::expr_xor_b:
                 return operand_a^operand_b;
-            case expr_lsh:
+            case hl_expression_node::expr_lsh:
                 return operand_a<<operand_b;
-            case expr_rsh:
+            case hl_expression_node::expr_rsh:
                 return operand_a>>operand_b;
-            case expr_eq:
+            case hl_expression_node::expr_eq:
                 return operand_a==operand_b?1:0;
-            case expr_neq:
+            case hl_expression_node::expr_neq:
                 return operand_a!=operand_b?1:0;
-            case expr_lt:
+            case hl_expression_node::expr_lt:
                 return operand_a<operand_b?1:0;
-            case expr_gt:
+            case hl_expression_node::expr_gt:
                 return operand_a>operand_b?1:0;
-            case expr_lte:
+            case hl_expression_node::expr_lte:
                 return operand_a<=operand_b?1:0;
-            case expr_gte:
+            case hl_expression_node::expr_gte:
                 return operand_a>=operand_b?1:0;
-            case expr_satp:
+            case hl_expression_node::expr_satp:
                 return operand_a>operand_b?operand_b:operand_a;
-            case expr_satn:
+            case hl_expression_node::expr_satn:
                 return operand_a<operand_b?operand_b:operand_a;
             default:
                 throw std::runtime_error("Internal Unexpected constant expression");

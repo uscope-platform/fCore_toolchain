@@ -112,7 +112,7 @@ namespace fcore{
     private:
 
         template<typename T>
-        void processExpression(unsigned int expression_size, const T& operands_array, std::map<std::string, expression_type_t> &expr_map);
+        void processExpression(unsigned int expression_size, const T& operands_array, std::map<std::string, hl_expression_node::expression_type_t> &expr_map);
         void save_current_block_context();
         std::string restore_current_block_context();
 

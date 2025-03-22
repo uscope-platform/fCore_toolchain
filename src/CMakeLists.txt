@@ -125,6 +125,7 @@ add_library(common_srcs ${FCORE_COMMON_SRCS_I})
 target_link_libraries(common_srcs PUBLIC
         nlohmann_json::nlohmann_json
         ValiJSON::valijson
+        magic_enum::magic_enum
 )
 
 add_library(fcore_has_lib ${FCORE_AS_SRCS} ${ASM_PARSER_SRCS})

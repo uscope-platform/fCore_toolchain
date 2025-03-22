@@ -20,37 +20,37 @@ namespace fcore{
     high_level_ast_lowering::high_level_ast_lowering() {
 
         expr_instruction_mapping = {
-                {expr_add, "add"},
-                {expr_sub, "sub"},
-                {expr_mult, "mul"},
-                {expr_incr_pre, "add"},
-                {expr_incr_post, "add"},
-                {expr_decr_pre, "sub"},
-                {expr_decr_post, "sub"},
-                {expr_and_b, "and"},
-                {expr_or_b, "or"},
-                {expr_not_b, "not"},
-                {expr_xor_b, "xor"},
-                {expr_eq, "beq"},
-                {expr_neq, "bne"},
-                {expr_neg, "neg"},
-                {expr_lt, "bgt"},
-                {expr_gt, "bgt"},
-                {expr_lte, "ble"},
-                {expr_gte, "ble"},
-                {expr_reciprocal, "rec"},
-                {expr_itf, "itf"},
-                {expr_fti, "fti"},
-                {expr_satp, "satp"},
-                {expr_satn, "satn"},
-                {expr_popcnt, "popcnt"},
-                {expr_abs, "abs"},
-                {expr_efi, "efi"},
-                {expr_bsel, "bsel"},
-                {expr_bset, "bset"},
-                {expr_nop, "nop"},
-                {expr_xor_b, "xor"},
-                {expr_csel, "csel"}
+                {hl_expression_node::expr_add, "add"},
+                {hl_expression_node::expr_sub, "sub"},
+                {hl_expression_node::expr_mult, "mul"},
+                {hl_expression_node::expr_incr_pre, "add"},
+                {hl_expression_node::expr_incr_post, "add"},
+                {hl_expression_node::expr_decr_pre, "sub"},
+                {hl_expression_node::expr_decr_post, "sub"},
+                {hl_expression_node::expr_and_b, "and"},
+                {hl_expression_node::expr_or_b, "or"},
+                {hl_expression_node::expr_not_b, "not"},
+                {hl_expression_node::expr_xor_b, "xor"},
+                {hl_expression_node::expr_eq, "beq"},
+                {hl_expression_node::expr_neq, "bne"},
+                {hl_expression_node::expr_neg, "neg"},
+                {hl_expression_node::expr_lt, "bgt"},
+                {hl_expression_node::expr_gt, "bgt"},
+                {hl_expression_node::expr_lte, "ble"},
+                {hl_expression_node::expr_gte, "ble"},
+                {hl_expression_node::expr_reciprocal, "rec"},
+                {hl_expression_node::expr_itf, "itf"},
+                {hl_expression_node::expr_fti, "fti"},
+                {hl_expression_node::expr_satp, "satp"},
+                {hl_expression_node::expr_satn, "satn"},
+                {hl_expression_node::expr_popcnt, "popcnt"},
+                {hl_expression_node::expr_abs, "abs"},
+                {hl_expression_node::expr_efi, "efi"},
+                {hl_expression_node::expr_bsel, "bsel"},
+                {hl_expression_node::expr_bset, "bset"},
+                {hl_expression_node::expr_nop, "nop"},
+                {hl_expression_node::expr_xor_b, "xor"},
+                {hl_expression_node::expr_csel, "csel"}
         };
     }
 
@@ -89,7 +89,7 @@ namespace fcore{
             }
             case hl_ast_node_type_expr:{
                 std::shared_ptr<hl_expression_node> node = std::static_pointer_cast<hl_expression_node>(input);
-                if(node->get_type() == expr_assign){
+                if(node->get_type() == hl_expression_node::expr_assign){
                     if(node->get_lhs().value()->node_type != hl_ast_node_type_operand){
                         throw std::runtime_error("Invalid assignment expression detected  the lowering stage as the LHS is an expression and not a variable");
                     }
@@ -150,7 +150,7 @@ namespace fcore{
     high_level_ast_lowering::process_unary_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest) {
 
 
-        expression_type_t op_type = input->get_type();
+        hl_expression_node::expression_type_t op_type = input->get_type();
         std::string opcode = expr_instruction_mapping[op_type];
         if(!fcore_implemented_operations[op_type]){
             throw std::runtime_error("The required operation is not implementable on the fCore hardware");
@@ -165,7 +165,7 @@ namespace fcore{
     high_level_ast_lowering::process_regular_expression(std::shared_ptr<hl_expression_node> input, std::shared_ptr<variable> dest) {
 
 
-        expression_type_t op_type = input->get_type();
+        hl_expression_node::expression_type_t op_type = input->get_type();
         std::string opcode = expr_instruction_mapping[op_type];
         if(!fcore_implemented_operations[op_type]) {
             throw std::runtime_error("The required operation is not implementable on the fCore hardware");
@@ -181,7 +181,7 @@ namespace fcore{
     high_level_ast_lowering::process_ternary_expression(std::shared_ptr<hl_expression_node> input,
                                                                std::shared_ptr<variable> dest) {
 
-        expression_type_t op_type = input->get_type();
+        hl_expression_node::expression_type_t op_type = input->get_type();
         std::string opcode = expr_instruction_mapping[op_type];
         if(!fcore_implemented_operations[op_type]) {
             throw std::runtime_error("The required operation is not implementable on the fCore hardware");
@@ -245,7 +245,7 @@ namespace fcore{
     std::optional<instruction_variant>
     high_level_ast_lowering::process_immediate_expression(std::shared_ptr<hl_expression_node> input) {
 
-        expression_type_t op_type = input->get_type();
+        hl_expression_node::expression_type_t op_type = input->get_type();
         std::string opcode = expr_instruction_mapping[op_type];
         if(!fcore_implemented_operations[op_type]){
             throw std::runtime_error("The required operation is not implementable on the fCore hardware");

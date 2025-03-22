@@ -105,7 +105,7 @@ namespace fcore{
             ret_val.second.insert(ret_val.second.end(), np_r.second.begin(), np_r.second.end());
         }
 
-        if(n->get_type() == expr_assign){
+        if(n->get_type() == hl_expression_node::expr_assign){
             std::static_pointer_cast<hl_expression_node>(ret_val.first)->set_lhs(np_l.first);
             std::static_pointer_cast<hl_expression_node>(ret_val.first)->set_rhs(np_r.first);
             n->set_rhs(np_r.first);

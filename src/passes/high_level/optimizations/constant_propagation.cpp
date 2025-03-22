@@ -116,7 +116,7 @@ namespace fcore{
         element->set_rhs(new_rhs);
 
         if(auto lhs = element->get_lhs()){
-            if(element->get_type() != expr_assign){
+            if(element->get_type() != hl_expression_node::expr_assign){
                 std::shared_ptr<hl_ast_node> new_lhs;
                 if(lhs.value()->node_type == hl_ast_node_type_operand) {
                     new_lhs = propagate_constant( std::static_pointer_cast<hl_ast_operand>(lhs.value()), instr_idx);
@@ -240,7 +240,7 @@ namespace fcore{
     bool constant_propagation::map_constants(const std::shared_ptr<hl_expression_node> &element, int instr_idx) {
 
 
-        if(element->get_type() == expr_assign){
+        if(element->get_type() == hl_expression_node::expr_assign){
             std::shared_ptr<hl_ast_operand> lhs = std::static_pointer_cast<hl_ast_operand>(element->get_lhs().value());
             analyze_assignment(element, instr_idx);
             if(
