@@ -113,12 +113,12 @@ namespace fcore{
         std::shared_ptr<ast_code_block> AST,
         const std::vector<std::shared_ptr<ast_definition>> &globals
     ) {
-        const auto working_ast = std::static_pointer_cast<ast_code_block>(ast_node::deep_copy(AST));
+
 
         for(const auto& p:analysis_passes) {
             for(int i = 0; i<p.repetitions; i++) {
                 if (ic != nullptr) ic->start_event(p.pass->get_name(), false);
-                p.pass->process_global(working_ast, globals);
+                p.pass->process_global(AST, globals);
                 if (ic != nullptr) ic->end_event(p.pass->get_name());
             }
         }

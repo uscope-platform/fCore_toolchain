@@ -67,7 +67,7 @@ namespace fcore {
 
         std::ostringstream ss;
         if(constant) ss << "const ";
-        ss << ast_node::type_to_string(type);
+        ss << variable::type_to_string(type);
         if(struct_specs != nullptr) ss << " " << struct_specs->get_name();
         ss << " " << name;
 

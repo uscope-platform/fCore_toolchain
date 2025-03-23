@@ -50,7 +50,7 @@ namespace fcore{
     std::string ast_function_def::pretty_print() {
         std::ostringstream ss;
 
-        ss << type_to_string(return_type) << " " << name << "(";
+        ss << variable::type_to_string(return_type) << " " << name << "(";
         if(!parameters_list.empty()){
             for(int i = 0; i<parameters_list.size(); i++){
                 ss << parameters_list[i]->pretty_print();

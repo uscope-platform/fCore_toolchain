@@ -75,20 +75,6 @@ namespace fcore{
         }
     }
 
-    std::string ast_node::type_to_string(const c_types_t &t) {
-        std::map <c_types_t,std::string>  translator {
-                {c_type_void, "void"},
-                {c_type_char, "char"},
-                {c_type_short, "short"},
-                {c_type_int, "int"},
-                {c_type_long, "long"},
-                {c_type_float, "float"},
-                {c_type_struct, "struct"}
-        };
-
-        return translator[t];
-    }
-
     std::shared_ptr<ast_node> ast_node::deep_copy(const std::shared_ptr<ast_node> &node) {
         if(node == nullptr){
             return nullptr;

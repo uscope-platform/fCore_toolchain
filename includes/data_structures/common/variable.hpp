@@ -26,6 +26,16 @@
 
 namespace fcore{
     typedef enum {
+        c_type_void = 1,
+        c_type_char = 2,
+        c_type_short = 3,
+        c_type_int = 4,
+        c_type_long = 5,
+        c_type_float = 6,
+        c_type_struct = 7
+    } c_types_t;
+
+    typedef enum {
         variable_input_type = 0,
         variable_output_type = 1,
         variable_memory_type = 2,
@@ -64,6 +74,8 @@ namespace fcore{
         int get_linear_index(const std::vector<int>& idx);
         float get_float_val() const;
         int get_int_value() const;
+
+        static std::string  type_to_string(const c_types_t &t);
 
         void set_immediate(const float f) {
             if(variable_type == var_type_float_const){
@@ -123,6 +135,7 @@ namespace fcore{
             cond &= lhs.array_index == rhs.array_index;
             cond &= lhs.array_shape == rhs.array_shape;
             cond &= lhs.struct_accessors == rhs.struct_accessors;
+            cond &= lhs.c_type == rhs.c_type;
             return cond;
         };
 
@@ -153,6 +166,9 @@ namespace fcore{
 
         static std::shared_ptr<variable> deep_copy(const std::shared_ptr<variable>& original);
 
+        void set_c_type(c_types_t type){c_type = type;};
+        c_types_t get_c_type(){ return c_type;};
+
     private:
         std::vector<std::string> struct_accessors;
         variable_class_t variable_class;
@@ -174,6 +190,7 @@ namespace fcore{
         std::vector<int> array_shape;
         std::vector<int> array_index;
 
+        c_types_t c_type;
     };
 }
 

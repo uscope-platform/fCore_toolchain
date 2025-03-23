@@ -65,6 +65,7 @@ namespace fcore{
         }
         cond->set_if_block(new_block);
 
+        if(ops.pre.visit_conditional) ops.pre.before_else(cond);
         new_block.clear();
 
         for(const auto &item:cond->get_else_block()){

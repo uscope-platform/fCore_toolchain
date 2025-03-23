@@ -26,6 +26,7 @@ namespace fcore{
         last_occurrence = 0;
         bound_register.push_back(-1);
         contiguity = false;
+        c_type = c_type_void;
     }
 
     variable::variable(const std::string &n, float value) {
@@ -39,6 +40,7 @@ namespace fcore{
         bound_register.push_back(-1);
         const_i = 0;
         contiguity = false;
+        c_type = c_type_float;
     }
 
     variable::variable(const std::string &n, int value) {
@@ -52,6 +54,7 @@ namespace fcore{
         bound_register.push_back(-1);
         const_f = 0;
         contiguity = false;
+        c_type = c_type_int;
     }
 
 
@@ -66,6 +69,7 @@ namespace fcore{
         bound_register.push_back(-1);
         const_f = 0;
         contiguity = false;
+        c_type = c_type_char;
     }
 
 
@@ -143,6 +147,7 @@ namespace fcore{
         copied_var->array_shape = original->array_shape;
         copied_var->array_index = original->array_index;
         copied_var->struct_accessors = original->struct_accessors;
+        copied_var->c_type = original->c_type;
         return copied_var;
     }
 
@@ -182,9 +187,6 @@ namespace fcore{
         return ret;
     }
 
-
-
-
     int variable::get_linear_index() {
         return get_linear_index(array_index);
     }
@@ -220,6 +222,20 @@ namespace fcore{
                                                                 s.end(), [](unsigned char c) { return !std::isdigit(c); }) == s.end();
         }
         return is_register_handle;
+    }
+
+    std::string variable::type_to_string(const c_types_t &t) {
+        std::map <c_types_t,std::string>  translator {
+                    {c_type_void, "void"},
+                    {c_type_char, "char"},
+                    {c_type_short, "short"},
+                    {c_type_int, "int"},
+                    {c_type_long, "long"},
+                    {c_type_float, "float"},
+                    {c_type_struct, "struct"}
+        };
+
+        return translator[t];
     }
 
 }

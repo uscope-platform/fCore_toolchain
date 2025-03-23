@@ -171,6 +171,72 @@ TEST(semantic_analysis, undefined_variable_in_expression) {
 }
 
 
+TEST(semantic_analysis, type_propagation) {
+    std::vector<std::string> input =  {R"(
+        float add(int a, float b){
+            return a + b;
+        }
+        void main(){
+            int a = 0;
+            int b;
+            if(2>3){
+                float a = 21.0;
+                float b;
+                b = a + 24.0;
+            } else {
+                long a = 11;
+                long b;
+                b = a + 5;
+            }
+             b = a + 3;
+        }
+    )"};
+
+    auto includes = std::vector<std::string>();
+    auto engine = create_type_checking_engine();
+
+    fcore_cc compiler(input, includes);
+    auto [ast, globals] = compiler.get_hl_ast();
+
+
+    engine.run_semantic_analysis(ast, globals);
+
+
+    auto fcn = std::static_pointer_cast<ast_function_def>(ast->get_content()[0]);
+
+
+    auto op = std::static_pointer_cast<ast_operand>(
+    std::static_pointer_cast<ast_expression>(fcn->get_return())->get_lhs().value());
+
+    EXPECT_EQ(op->get_c_type(), c_type_int);
+
+    op = std::static_pointer_cast<ast_operand>(
+    std::static_pointer_cast<ast_expression>(fcn->get_return())->get_rhs());
+
+    EXPECT_EQ(op->get_c_type(), c_type_float);
+
+    fcn = std::static_pointer_cast<ast_function_def>(ast->get_content()[1]);
+
+    auto conditional = std::static_pointer_cast<ast_conditional>(fcn->get_body()[2]);
+    op= std::static_pointer_cast<ast_operand>(
+            std::static_pointer_cast<ast_expression>(conditional->get_if_block()[2]
+        )->get_lhs().value()
+    );
+    EXPECT_EQ(op->get_c_type(), c_type_float);
+
+    op = std::static_pointer_cast<ast_operand>(
+            std::static_pointer_cast<ast_expression>(conditional->get_else_block()[2]
+        )->get_lhs().value()
+    );
+    EXPECT_EQ(op->get_c_type(), c_type_long);
+
+    op = std::static_pointer_cast<ast_operand>(std::static_pointer_cast<ast_expression>(fcn->get_body()[3])->get_lhs().value());
+    EXPECT_EQ(op->get_c_type(), c_type_int);
+
+
+    int i = 0;
+}
+
 TEST(semantic_analysis, mixed_type_operation_warning) {
     std::vector<std::string> input =  {R"(
 
@@ -193,7 +259,7 @@ TEST(semantic_analysis, mixed_type_operation_warning) {
         EXPECT_TRUE(false);
     } catch(const std::runtime_error &err) {
         std::string msg = err.what();
-        EXPECT_EQ(msg, "Undefined variable: ba");
+        EXPECT_EQ(msg, "Encountered expression with mixed types: a is float and constant is int");
     }
 
 }

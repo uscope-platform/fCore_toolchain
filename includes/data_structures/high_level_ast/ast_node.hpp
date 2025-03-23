@@ -17,8 +17,9 @@
 #define FCORE_TOOLCHAIN_AST_NODE_HPP
 
 #include <string>
-
 #include <nlohmann/json.hpp>
+
+#include "data_structures/common/variable.hpp"
 
 namespace fcore{
 
@@ -49,16 +50,6 @@ namespace fcore{
         }
     }
 
-    typedef enum {
-        c_type_void = 1,
-        c_type_char = 2,
-        c_type_short = 3,
-        c_type_int = 4,
-        c_type_long = 5,
-        c_type_float = 6,
-        c_type_struct = 7
-    } c_types_t;
-
     class ast_node {
 
     public:
@@ -66,7 +57,6 @@ namespace fcore{
 
         explicit ast_node(hl_ast_node_type_t t);
         static c_types_t string_to_type(const std::string& t);
-        static std::string  type_to_string(const c_types_t &t);
 
         virtual std::string pretty_print(const std::shared_ptr<ast_node> &node);
 

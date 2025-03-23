@@ -42,6 +42,10 @@ namespace fcore{
         // TYPE
         variable_type_t get_type(){return inner_variable->get_type();}
         void set_type(variable_type_t type) {inner_variable->set_type(type);}
+
+        void set_c_type(c_types_t type){inner_variable->set_c_type(type);}
+        c_types_t get_c_type(){return inner_variable->get_c_type();}
+
         // ARRAY INDEX
         std::vector<std::shared_ptr<ast_node>> get_array_index(){return array_index;}
         void set_array_index(std::vector<std::shared_ptr<ast_node>> idx){array_index = std::move(idx);}

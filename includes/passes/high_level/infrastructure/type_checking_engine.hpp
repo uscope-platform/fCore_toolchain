@@ -25,6 +25,8 @@
 #include "passes/high_level/semantic_analysis/assignments.hpp"
 #include "passes/high_level/semantic_analysis/undefined_variables.hpp"
 #include "passes/high_level/semantic_analysis/function_calls.hpp"
+#include "passes/high_level/semantic_analysis/type_propagation.hpp"
+#include "passes/high_level/semantic_analysis/mixed_type_operations.hpp"
 
 #include "passes/high_level/infrastructure/hl_pass_manager.hpp"
 
@@ -36,7 +38,8 @@ namespace fcore{
         engine.add_analysis_pass("Undefined Variables", std::make_shared<undefined_variables>(), 1);
         engine.add_analysis_pass("Function calls",  std::make_shared<function_calls_checks>(), 1);
         engine.add_analysis_pass("Assignments", std::make_shared<assignments_checks>(), 1);
-
+        engine.add_analysis_pass("Type propagation", std::make_shared<type_propagation>(), 1);
+        engine.add_analysis_pass("Mixed Operation checking", std::make_shared<mixed_type_operations>(), 1);
 
         return engine;
     }
