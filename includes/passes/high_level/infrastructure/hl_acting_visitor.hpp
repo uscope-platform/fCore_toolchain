@@ -25,28 +25,19 @@
 
 namespace fcore{
 
+
     struct hl_acting_visitor_operations{
-        std::function<
-            std::shared_ptr<ast_node> (const std::shared_ptr<ast_conditional> &cond)
-        > visit_conditional;
-        std::function<
-            std::shared_ptr<ast_node> (const std::shared_ptr<ast_loop> &cond)
-        > visit_loop;
-        std::function<
-            std::shared_ptr<ast_node> (const std::shared_ptr<ast_operand> &cond)
-        > visit_operand;
-        std::function<
-            std::vector<std::shared_ptr<ast_node>> (const std::shared_ptr<ast_definition> & def)
-        > visit_definition;
-        std::function<
-            std::vector<std::shared_ptr<ast_node>>  (const std::shared_ptr<ast_expression> &cond)
-        > visit_expression;
-        std::function<
-            std::vector<std::shared_ptr<ast_node>> (const std::shared_ptr<ast_function_def> &cond)
-        > visit_function_def;
-        std::function<
-            std::vector<std::shared_ptr<ast_node>>  (const std::shared_ptr<ast_call> &cond)
-        > visit_function_call;
+        struct operations{
+            std::function<std::shared_ptr<ast_node> (const std::shared_ptr<ast_conditional> &cond)> visit_conditional;
+            std::function<std::shared_ptr<ast_node> (const std::shared_ptr<ast_loop> &cond)> visit_loop;
+            std::function<std::shared_ptr<ast_node> (const std::shared_ptr<ast_operand> &cond)> visit_operand;
+            std::function<std::vector<std::shared_ptr<ast_node>> (const std::shared_ptr<ast_definition> & def)> visit_definition;
+            std::function<std::vector<std::shared_ptr<ast_node>> (const std::shared_ptr<ast_expression> &cond)> visit_expression;
+            std::function<std::vector<std::shared_ptr<ast_node>> (const std::shared_ptr<ast_function_def> &cond)> visit_function_def;
+            std::function<std::vector<std::shared_ptr<ast_node>>  (const std::shared_ptr<ast_call> &cond)> visit_function_call;
+        };
+        operations pre;
+        operations post;
     };
 
     class hl_acting_visitor {

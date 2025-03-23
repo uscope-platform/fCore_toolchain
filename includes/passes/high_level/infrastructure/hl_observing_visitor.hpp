@@ -24,18 +24,23 @@
 namespace fcore {
 
     struct hl_observing_visitor_operations{
-        std::function<void (const std::shared_ptr<ast_conditional> &cond)> visit_conditional;
-        std::function<void ()> before_else;
-        std::function<void (const std::shared_ptr<ast_loop> &cond)> visit_loop;
-        std::function<void (const std::shared_ptr<ast_operand> &cond)> visit_operand;
-        std::function<void (const std::shared_ptr<ast_definition> & def)> visit_definition;
-        std::function<void (const std::shared_ptr<ast_expression> &cond)> visit_expression;
-        std::function<void (const std::shared_ptr<ast_function_def> &cond)> visit_function_def;
-        std::function<void (const std::shared_ptr<ast_call> &cond)> visit_function_call;
+        struct operations {
+            std::function<void (const std::shared_ptr<ast_conditional> &cond)> visit_conditional;
+            std::function<void ()> before_else;
+            std::function<void (const std::shared_ptr<ast_loop> &cond)> visit_loop;
+            std::function<void (const std::shared_ptr<ast_operand> &cond)> visit_operand;
+            std::function<void (const std::shared_ptr<ast_definition> & def)> visit_definition;
+            std::function<void (const std::shared_ptr<ast_expression> &cond)> visit_expression;
+            std::function<void (const std::shared_ptr<ast_function_def> &cond)> visit_function_def;
+            std::function<void (const std::shared_ptr<ast_call> &cond)> visit_function_call;
+        };
+
+        operations pre;
+        operations post;
     };
     class hl_observing_visitor {
     public:
-        void visit(const std::pair<hl_observing_visitor_operations,hl_observing_visitor_operations>&operations,const std::shared_ptr<ast_code_block> &node);
+        void visit(const hl_observing_visitor_operations &operations,const std::shared_ptr<ast_code_block> &node);
     private:
         void process_node_by_type(const std::shared_ptr<ast_node> &node);
         void process_nodes_vector(const std::vector<std::shared_ptr<ast_node>> &node);
@@ -47,8 +52,7 @@ namespace fcore {
         void process_node(const std::shared_ptr<ast_call> &cond);
         void process_node(const std::shared_ptr<ast_function_def> &def);
         void process_node(const std::shared_ptr<ast_code_block> &block);
-        hl_observing_visitor_operations preorder_ops;
-        hl_observing_visitor_operations postorder_ops;
+        hl_observing_visitor_operations ops;
 
     };
 

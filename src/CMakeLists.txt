@@ -56,7 +56,7 @@ set(FCORE_CC_SRCS
         passes/high_level/optimizations/dead_load_elimination.cpp
         passes/high_level/optimizations/constant_propagation.cpp
         passes/high_level/infrastructure/hl_pass_manager.cpp
-        passes/high_level/infrastructure/inlined_function_elimination.cpp
+        passes/high_level/optimizations/visitor_passes/inlined_function_elimination.cpp
         passes/high_level/optimizations/visitor_passes/array_initialization_substitution.cpp
         passes/high_level/optimizations/visitor_passes/operating_assignment_implementation_pass.cpp
         passes/high_level/optimizations/visitor_passes/intrinsics_implementation_pass.cpp
@@ -79,6 +79,8 @@ set(FCORE_CC_SRCS
         passes/high_level/semantic_analysis/assignments.cpp
         passes/high_level/semantic_analysis/undefined_variables.cpp
         passes/high_level/semantic_analysis/function_calls.cpp
+        passes/high_level/semantic_analysis/mixed_type_operations.cpp
+        passes/high_level/semantic_analysis/type_propagation.cpp
         fcore_cc.cpp
         tools/high_level_ast_lowering.cpp
         tools/expression_evaluator.cpp

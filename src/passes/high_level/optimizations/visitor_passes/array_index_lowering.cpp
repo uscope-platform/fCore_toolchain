@@ -27,7 +27,7 @@ namespace fcore{
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;
 
-        ops.visit_operand = process_operand;
+        ops.post.visit_operand = process_operand;
 
         return visitor.visit(ops, element);
     }

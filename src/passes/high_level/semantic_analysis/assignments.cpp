@@ -28,9 +28,9 @@ namespace fcore {
 
         hl_observing_visitor_operations functions_mapping_ops;
 
-        functions_mapping_ops.visit_definition = [this]<typename T0>(T0 && placeholder) { process_definition(std::forward<T0>(placeholder)); };
+        functions_mapping_ops.pre.visit_definition = [this]<typename T0>(T0 && placeholder) { process_definition(std::forward<T0>(placeholder)); };
 
-        visitor.visit({functions_mapping_ops, {}}, element);
+        visitor.visit(functions_mapping_ops, element);
 
         return element;
     }

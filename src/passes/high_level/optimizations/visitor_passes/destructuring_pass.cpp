@@ -34,12 +34,12 @@ namespace fcore {
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;
 
-        ops.visit_definition = [this](auto && arg) { return process_definition(std::forward<decltype(arg)>(arg));};
-        ops.visit_expression = [this](auto && arg) { return process_expression(std::forward<decltype(arg)>(arg));};
+        ops.post.visit_definition = [this](auto && arg) { return process_definition(std::forward<decltype(arg)>(arg));};
+        ops.post.visit_expression = [this](auto && arg) { return process_expression(std::forward<decltype(arg)>(arg));};
         visitor.visit(ops, element);
 
         hl_acting_visitor_operations ops2;
-        ops2.visit_operand    = [this](auto && arg) { return process_operand(std::forward<decltype(arg)>(arg));};
+        ops2.post.visit_operand    = [this](auto && arg) { return process_operand(std::forward<decltype(arg)>(arg));};
         auto result =  visitor.visit(ops2, element);
         return result;
     }

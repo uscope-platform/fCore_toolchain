@@ -29,30 +29,29 @@ namespace fcore {
 
         hl_observing_visitor_operations functions_mapping_ops;
 
-        functions_mapping_ops.visit_function_def = [this]<typename T0>(T0 && placeholder) { map_definition(std::forward<T0>(placeholder)); };
+        functions_mapping_ops.pre.visit_function_def = [this]<typename T0>(T0 && placeholder) { map_definition(std::forward<T0>(placeholder)); };
 
-        visitor.visit({functions_mapping_ops, {}}, element);
+        visitor.visit(functions_mapping_ops, element);
 
-        hl_observing_visitor_operations pre_ops;
-        hl_observing_visitor_operations post_ops;
+        hl_observing_visitor_operations ops;
 
         //stack handling
-        pre_ops.visit_function_def = [this]<typename T0>(T0 && placeholder) { process_function_def(std::forward<T0>(placeholder)); };
-        pre_ops.visit_loop = [this]<typename T0>(T0 && placeholder) { push_stack(); };
-        pre_ops.visit_conditional = [this]<typename T0>(T0 && placeholder) { push_stack(); };
+        ops.pre.visit_function_def = [this]<typename T0>(T0 && placeholder) { process_function_def(std::forward<T0>(placeholder)); };
+        ops.pre.visit_loop = [this]<typename T0>(T0 && placeholder) { push_stack(); };
+        ops.pre.visit_conditional = [this]<typename T0>(T0 && placeholder) { push_stack(); };
 
-        pre_ops.before_else = [this] { reset_conditional_stack(); };
+        ops.pre.before_else = [this] { reset_conditional_stack(); };
 
-        post_ops.visit_function_def = [this]<typename T0>(T0 && placeholder) { pop_stack(); };
-        post_ops.visit_function_call = [this]<typename T0>(T0 && placeholder) { process_function_call(std::forward<T0>(placeholder)); };
-        post_ops.visit_loop = [this]<typename T0>(T0 && placeholder) { pop_stack(); };
-        post_ops.visit_conditional = [this]<typename T0>(T0 && placeholder) { pop_stack(); };
+        ops.post.visit_function_def = [this]<typename T0>(T0 && placeholder) { pop_stack(); };
+        ops.post.visit_function_call = [this]<typename T0>(T0 && placeholder) { process_function_call(std::forward<T0>(placeholder)); };
+        ops.post.visit_loop = [this]<typename T0>(T0 && placeholder) { pop_stack(); };
+        ops.post.visit_conditional = [this]<typename T0>(T0 && placeholder) { pop_stack(); };
 
         // analysis
-        post_ops.visit_definition = [this]<typename T0>(T0 && placeholder) { process_definition(std::forward<T0>(placeholder)); };
+        ops.post.visit_definition = [this]<typename T0>(T0 && placeholder) { process_definition(std::forward<T0>(placeholder)); };
 
 
-        visitor.visit({pre_ops,post_ops}, element);
+        visitor.visit(ops, element);
 
         return element;
     }

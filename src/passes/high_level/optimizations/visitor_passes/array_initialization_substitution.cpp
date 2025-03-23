@@ -26,7 +26,7 @@ namespace fcore{
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;
 
-        ops.visit_definition = process_definition;
+        ops.post.visit_definition = process_definition;
 
         return visitor.visit(ops, element);
     }

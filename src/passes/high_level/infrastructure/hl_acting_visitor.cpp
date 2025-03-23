@@ -58,7 +58,7 @@ namespace fcore{
         cond->set_condition(get_expected_scalar_element(process_node_by_type(cond->get_condition())));
 
         std::vector<std::shared_ptr<ast_node>> new_block;
-
+        if(ops.pre.visit_conditional) ops.pre.visit_conditional(cond);
         for(const auto &item:cond->get_if_block()){
             auto ret_block = process_node_by_type(item);
             new_block.insert(new_block.end(), ret_block.begin(), ret_block.end());
@@ -73,8 +73,8 @@ namespace fcore{
         }
         cond->set_else_block(new_block);
 
-        if(ops.visit_conditional){
-            return ops.visit_conditional(cond);
+        if(ops.post.visit_conditional){
+            return ops.post.visit_conditional(cond);
         }
         return cond;
     }
@@ -82,7 +82,7 @@ namespace fcore{
     std::shared_ptr<ast_node> hl_acting_visitor::process_node(const std::shared_ptr<ast_loop> &loop) {
 
         std::vector<std::shared_ptr<ast_node>> new_block;
-
+        if(ops.pre.visit_loop) ops.pre.visit_loop(loop);
         for(const auto &item:loop->get_loop_content()){
             auto ret_content = process_node_by_type(item);
             new_block.insert(new_block.end(), ret_content.begin(), ret_content.end());
@@ -102,15 +102,16 @@ namespace fcore{
         ));
 
 
-        if(ops.visit_loop){
-            return ops.visit_loop(loop);
+        if(ops.post.visit_loop){
+            return ops.post.visit_loop(loop);
         }
         return loop;
     }
 
     std::shared_ptr<ast_node> hl_acting_visitor::process_node(const std::shared_ptr<ast_operand> &op) {
-        if(ops.visit_operand){
-            return ops.visit_operand(op);
+        if(ops.pre.visit_operand) ops.pre.visit_operand(op);
+        if(ops.post.visit_operand){
+            return ops.post.visit_operand(op);
         }
         return op;
     }
@@ -118,7 +119,7 @@ namespace fcore{
     std::vector<std::shared_ptr<ast_node>> hl_acting_visitor::process_node(const std::shared_ptr<ast_definition> &def) {
 
         std::vector<std::shared_ptr<ast_node>> new_block;
-
+        if(ops.pre.visit_definition) ops.pre.visit_definition(def);
         for(const auto &item:def->get_array_initializer()){
             auto new_array = process_node_by_type(item);
             new_block.insert(new_block.end(), new_array.begin(), new_array.end());
@@ -133,21 +134,22 @@ namespace fcore{
         }
         def->set_array_index(new_block);
 
-        if(ops.visit_definition){
-            return ops.visit_definition(def);
+        if(ops.post.visit_definition){
+            return ops.post.visit_definition(def);
         }
         return {def};
     }
 
     std::vector<std::shared_ptr<ast_node>>  hl_acting_visitor::process_node(const std::shared_ptr<ast_expression> &ex) {
+        if(ops.pre.visit_expression) ops.pre.visit_expression(ex);
         if(const auto ths = ex->get_ths())
             ex->set_ths(get_expected_scalar_element(process_node_by_type(*ths)));
         if(const auto lhs = ex->get_lhs())
             ex->set_lhs(get_expected_scalar_element(process_node_by_type(*lhs)));
         ex->set_rhs(get_expected_scalar_element(process_node_by_type(ex->get_rhs())));
 
-        if(ops.visit_expression){
-            return ops.visit_expression(ex);
+        if(ops.post.visit_expression){
+            return ops.post.visit_expression(ex);
         }
         return {ex};
     }
@@ -155,22 +157,22 @@ namespace fcore{
     std::vector<std::shared_ptr<ast_node>> hl_acting_visitor::process_node(const std::shared_ptr<ast_call> &call) {
 
         std::vector<std::shared_ptr<ast_node>> new_block;
-
+        if(ops.pre.visit_function_call) ops.pre.visit_function_call(call);
         for(const auto &item:call->get_arguments()){
             auto ret_args = process_node_by_type(item);
             new_block.insert(new_block.end(), ret_args.begin(), ret_args.end());
         }
         call->set_arguments(new_block);
 
-        if(ops.visit_function_call){
-            return ops.visit_function_call(call);
+        if(ops.post.visit_function_call){
+            return ops.post.visit_function_call(call);
         }
         return {call};
     }
 
     std::vector<std::shared_ptr<ast_node>> hl_acting_visitor::process_node(const std::shared_ptr<ast_function_def> &def) {
         std::vector<std::shared_ptr<ast_node>> new_block;
-
+        if(ops.pre.visit_function_def) ops.pre.visit_function_def(def);
         for(const auto &item:def->get_body()){
             auto ret_body = process_node_by_type(item);
             new_block.insert(new_block.end(), ret_body.begin(), ret_body.end());
@@ -179,8 +181,8 @@ namespace fcore{
 
         def->set_return(get_expected_scalar_element(process_node_by_type(def->get_return())));
 
-        if(ops.visit_function_def){
-            return ops.visit_function_def(def);
+        if(ops.post.visit_function_def){
+            return ops.post.visit_function_def(def);
         }
         return {def};
     }
