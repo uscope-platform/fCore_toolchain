@@ -93,6 +93,9 @@ namespace fcore {
                         input_val = emulator_backend::float_to_uint32(value);
 
                     } else  {
+                        if(in.data.size() <= channel) {
+                            throw std::runtime_error(" The series input for channel " + std::to_string(channel) + " was not found");
+                        }
                         std::vector<float> in_vect = std::get<std::vector<float>>(in.data[channel]);
                         input_val = emulator_backend::float_to_uint32(in_vect[info.step_n]);
                     }
