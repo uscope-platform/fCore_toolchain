@@ -23,6 +23,7 @@ namespace fcore{
 
 
     std::optional<instruction_variant> ternary_reduction::apply_mutable_pass(instruction_variant &element, uint32_t n) {
+        //TODO: Make if the condition is in its own variable this thing fucks up big time
         if(last_pass != n)
             instr_ctr = 0;
         else {

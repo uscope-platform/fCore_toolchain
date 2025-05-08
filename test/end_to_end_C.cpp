@@ -1790,7 +1790,8 @@ TEST(EndToEndC, sub_add_commutation) {
     ASSERT_EQ(gold_standard, result);
 
 }
-TEST(EndToEndC, multi_csel_crash) {
+
+TEST(EndToEndC, csel_crash) {
 
     std::vector<std::string> file_content = {R""""(
 
@@ -1828,6 +1829,47 @@ TEST(EndToEndC, multi_csel_crash) {
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
+    std::vector<uint32_t> gold_standard = {0x40005, 0xc, 0x3000C, 0x2000D, 0x1000E, 0x10032, 0xc, 0xc, 0x8002b, 0x4189b, 0x2008e, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
+
+TEST(EndToEndC, multi_csel_wrong_condition) {
+
+    std::vector<std::string> file_content = {R""""(
+
+        void main(){
+            //inputs
+            float i_out, i_load, v_cross, v_in, fault;
+            //outputs
+            float i_cross, v_out, i_in;
+
+            bool fault_condition = fault != 0;
+
+            v_out = fault_condition ? v_cross : v_in;
+            i_in = fault_condition ? 0 : v_in;
+        }
+
+    )""""};
+
+    std::vector<std::string> includes;
+
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["v_cross"] = {core_iom_input, {12}, false};
+    dma_map["v_in"]    = {core_iom_input, {13}, false};
+    dma_map["fault"]   = {core_iom_input, {14}, false};
+    dma_map["v_out"]    = {core_iom_output, {50}, false};
+    dma_map["i_in"]   = {core_iom_output, {50}, false};
+
+    fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
+    compiler.set_dma_map(dma_map);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+    ASSERT_TRUE(false);
     std::vector<uint32_t> gold_standard = {0x40005, 0xc, 0x3000C, 0x2000D, 0x1000E, 0x10032, 0xc, 0xc, 0x8002b, 0x4189b, 0x2008e, 0xc};
 
     ASSERT_EQ(gold_standard, result);
