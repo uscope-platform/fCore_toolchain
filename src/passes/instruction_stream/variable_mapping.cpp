@@ -57,7 +57,7 @@ namespace fcore{
     void variable_mapping::map_ternary_instr(const ternary_instruction& instr) {
         std::string op_a = instr.get_operand_a()->get_linear_identifier();
         std::string op_b = instr.get_operand_b()->get_linear_identifier();
-        std::string op_c = instr.get_operand_b()->get_linear_identifier();
+        std::string op_c = instr.get_operand_c()->get_linear_identifier();
         std::string dst = instr.get_destination()->get_linear_identifier();
 
         vmap->insert(op_a, instr.get_operand_a());
