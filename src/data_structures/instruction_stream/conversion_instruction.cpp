@@ -39,8 +39,11 @@ namespace fcore{
     }
 
     void conversion_instruction::print() const {
-        std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << opcode <<
-                  " SOURCE: " << source->to_str() << " DESTINATION: " << destination->to_str()<<std::endl;
+        std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> " << to_string() <<std::endl;
+    }
+
+    std::string conversion_instruction::to_string() const {
+        return "OPCODE: " + opcode + " SOURCE: " + source->to_str() + " DESTINATION: " + destination->to_str();
     }
 
     int conversion_instruction::instruction_count() const{

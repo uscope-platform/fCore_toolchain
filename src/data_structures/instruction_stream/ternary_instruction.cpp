@@ -58,9 +58,12 @@ namespace fcore{
     }
 
     void ternary_instruction::print() const{
-        std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << opcode <<
-                  " OPERAND A: " << operand_a->to_str() << " OPERAND B: " << operand_b->to_str() <<
-                  " OPERAND C: " << operand_c->to_str() << " DESTINATION: " << destination->to_str() <<std::endl;
+        std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> " << to_string() <<std::endl;
+    }
+
+    std::string ternary_instruction::to_string() const {
+        return "OPCODE: " + opcode +  " OPERAND A: " + operand_a->to_str() + " OPERAND B: " + operand_b->to_str() +
+        " OPERAND C: " + operand_c->to_str() + " DESTINATION: " + destination->to_str();
     }
 
     void ternary_instruction::set_arguments(const std::vector<std::shared_ptr<variable>> &a) {

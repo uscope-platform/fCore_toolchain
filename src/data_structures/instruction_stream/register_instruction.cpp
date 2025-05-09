@@ -54,9 +54,12 @@ namespace fcore{
     }
 
     void register_instruction::print() const{
-        std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << opcode <<
-                  " OPERAND A: " << operand_a->to_str() << " OPERAND B: " << operand_b->to_str() <<
-                  " DESTINATION: " << destination->to_str() <<std::endl;
+        std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> " << to_string() <<std::endl;
+    }
+
+    std::string register_instruction::to_string() const {
+        return "OPCODE: " + opcode + " OPERAND A: " + operand_a->to_str() + " OPERAND B: " + operand_b->to_str() +
+                  " DESTINATION: " + destination->to_str();
     }
 
     int register_instruction::instruction_count()const {

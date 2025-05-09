@@ -29,6 +29,7 @@ namespace fcore{
         uint32_t emit() const;
         std::string disassemble() const;
         void print() const;
+        std::string to_string() const;
         int instruction_count() const;
 
         friend bool operator==(const ternary_instruction& lhs, const ternary_instruction& rhs){

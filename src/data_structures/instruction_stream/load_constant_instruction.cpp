@@ -34,8 +34,11 @@ namespace fcore {
     }
 
     void load_constant_instruction::print() const {
-        std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> OPCODE: " << opcode <<
-                  " DESTINATION: " << destination->to_str() << " CONSTANT(NEXT INSTRUCTION): " << constant->to_str()<<std::endl;
+        std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> " <<  to_string() <<std::endl;
+    }
+
+    std::string load_constant_instruction::to_string() const {
+        return "OPCODE: " + opcode + " DESTINATION: " + destination->to_str() + " CONSTANT(NEXT INSTRUCTION): " + constant->to_str();
     }
 
     int load_constant_instruction::instruction_count() const {

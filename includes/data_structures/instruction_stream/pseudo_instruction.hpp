@@ -32,8 +32,9 @@ namespace fcore{
         int instruction_count() const;
 
         uint32_t emit() const{ return 0;};
-        void print() const {};
-        std::string disassemble() const{return "";};
+        std::string to_string() const {return "";}
+        void print() const {}
+        std::string disassemble() const{return "";}
 
         friend bool operator==(const pseudo_instruction& lhs, const pseudo_instruction& rhs){
             bool retval = true;

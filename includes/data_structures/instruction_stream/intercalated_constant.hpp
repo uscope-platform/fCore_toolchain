@@ -29,6 +29,7 @@ namespace fcore{
         explicit intercalated_constant(uint32_t constant);
         uint32_t emit() const;
         void print() const;
+        std::string to_string() const;
         std::string disassemble() const;
         int instruction_count() const;
 

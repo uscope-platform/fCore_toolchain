@@ -43,6 +43,10 @@ namespace fcore {
     void intercalated_constant::print() const{
     }
 
+    std::string intercalated_constant::to_string() const {
+        return "";
+    }
+
     int intercalated_constant::instruction_count()const {
         return 1;
     }

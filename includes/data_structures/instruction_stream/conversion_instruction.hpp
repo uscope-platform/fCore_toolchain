@@ -33,6 +33,7 @@ namespace fcore{
         conversion_instruction(std::string op, std::shared_ptr<variable> s, std::shared_ptr<variable> d);
         uint32_t emit() const;
         void print() const;
+        std::string to_string() const;
         std::string disassemble() const;
         int instruction_count() const;
 

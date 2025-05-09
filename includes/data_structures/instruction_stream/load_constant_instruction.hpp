@@ -32,6 +32,7 @@ namespace fcore{
         load_constant_instruction(std::string op, std::shared_ptr<variable> dest, std::shared_ptr<variable> c);
         uint32_t emit() const;
         void print() const;
+        std::string to_string() const;
         std::string disassemble() const;
 
         int instruction_count() const;

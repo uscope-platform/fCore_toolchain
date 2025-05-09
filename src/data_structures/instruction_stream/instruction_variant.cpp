@@ -25,6 +25,12 @@ namespace fcore{
 
     }
 
+    std::string instruction_variant::to_string() const {
+        return std::visit([this](auto &var) -> std::string {
+            return var.to_string();
+        }, content);
+    }
+
     void fcore::instruction_variant::print() const{
         std::visit([](auto &var) -> void {
             var.print();
