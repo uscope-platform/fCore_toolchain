@@ -81,41 +81,61 @@ namespace fcore{
 
     std::optional<instruction_variant>
     ternary_reduction::reduce_register_instr(register_instruction &element) {
-        if(conditions_map.contains(element.get_destination()->get_name())){
-            if(conditions_map[element.get_destination()->get_name()] == instr_ctr){
-                element.set_destination(substitution_map[element.get_destination()->get_name()]);
+        std::vector<std::shared_ptr<variable>> new_arguments;
+
+        for(auto &arg : element.get_arguments()) {
+            if(substitution_map.contains(arg->get_name())) {
+                new_arguments.push_back(substitution_map[arg->get_name()]);
+            } else {
+                new_arguments.push_back(arg);
             }
         }
+        element.set_arguments(new_arguments);
         return instruction_variant(element);
     }
 
     std::optional<instruction_variant>
     ternary_reduction::reduce_conversion_instr(conversion_instruction &element) {
-        if(conditions_map.contains(element.get_destination()->get_name())){
-            if(conditions_map[element.get_destination()->get_name()] == instr_ctr){
-                element.set_destination(substitution_map[element.get_destination()->get_name()]);
+        std::vector<std::shared_ptr<variable>> new_arguments;
+
+        for(auto &arg : element.get_arguments()) {
+            if(substitution_map.contains(arg->get_name())) {
+                new_arguments.push_back(substitution_map[arg->get_name()]);
+            } else {
+                new_arguments.push_back(arg);
             }
         }
+        element.set_arguments(new_arguments);
         return instruction_variant(element);
     }
 
     std::optional<instruction_variant>
     ternary_reduction::reduce_load_instr(load_constant_instruction &element) {
-        if(conditions_map.contains(element.get_destination()->get_name())){
-            if(conditions_map[element.get_destination()->get_name()] == instr_ctr){
-                element.set_destination(substitution_map[element.get_destination()->get_name()]);
+        std::vector<std::shared_ptr<variable>> new_arguments;
+
+        for(auto &arg : element.get_arguments()) {
+            if(substitution_map.contains(arg->get_name())) {
+                new_arguments.push_back(substitution_map[arg->get_name()]);
+            } else {
+                new_arguments.push_back(arg);
             }
         }
+        element.set_arguments(new_arguments);
         return instruction_variant(element);
     }
 
     std::optional<instruction_variant>
     ternary_reduction::reduce_ternary_instr(ternary_instruction &element) {
-        if(conditions_map.contains(element.get_destination()->get_name())){
-            if(conditions_map[element.get_destination()->get_name()] == instr_ctr){
-                element.set_destination(substitution_map[element.get_destination()->get_name()]);
+        std::vector<std::shared_ptr<variable>> new_arguments;
+
+        for(auto &arg : element.get_arguments()) {
+            if(substitution_map.contains(arg->get_name())) {
+                new_arguments.push_back(substitution_map[arg->get_name()]);
+            } else {
+                new_arguments.push_back(arg);
             }
         }
+        element.set_arguments(new_arguments);
         element.set_operand_a(element.get_destination());
         return instruction_variant(element);
     }

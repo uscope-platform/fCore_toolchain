@@ -34,6 +34,7 @@ namespace fcore{
             this->name = std::move(name);
             this->n_scans = n_scans;
             this->is_mutable = is_mutable;
+            this->is_vector = false;
             this->pass_type= type;
         }
 
@@ -41,6 +42,10 @@ namespace fcore{
 
         virtual std::optional<instruction_variant> apply_mutable_pass(instruction_variant &element, uint32_t n) {
             return element;
+        }
+
+        virtual std::vector<instruction_variant> apply_vector_mutable_pass(instruction_variant &element, uint32_t n) {
+            return {element};
         }
 
         virtual std::optional<instruction_variant> apply_pass(const instruction_variant &element, uint32_t n) {
@@ -55,6 +60,7 @@ namespace fcore{
 
         uint32_t n_scans;
         bool is_mutable;
+        bool is_vector;
     private:
         std::string name;
     };

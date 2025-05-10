@@ -34,6 +34,8 @@ set(FCORE_COMMON_SRCS_I
         data_structures/high_level_ast/ast_code_block.cpp
         passes/high_level/infrastructure/hl_acting_visitor.cpp
         passes/high_level/infrastructure/hl_observing_visitor.cpp
+        passes/instruction_stream/ternary_deconfliction.cpp
+        passes/instruction_stream/ternary_deconfliction.hpp
 )
 
 

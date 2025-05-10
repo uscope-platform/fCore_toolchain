@@ -51,6 +51,7 @@ namespace fcore{
         auto  io_assignment_map = std::make_shared<std::unordered_map<std::string, std::pair<int, int>>>();
         passes.push_back(std::make_shared<virtual_operations_implementation>());
         passes.push_back(std::make_shared<uninitialized_variable_detection>());
+        passes.push_back(std::make_shared<ternary_deconfliction>());
         passes.push_back(std::make_shared<ternary_reduction>());
         passes.push_back(std::make_shared<io_constant_tracking>(io_assignment_map));
         passes.push_back(std::make_shared<constant_merging>(io_assignment_map));
@@ -91,8 +92,13 @@ namespace fcore{
         for(int i = 0; i<pass->n_scans;i++){
             for(auto &instr:in_stream){
                 if(pass->is_mutable){
-                    if(auto proc_val = pass->apply_mutable_pass(instr, i))
-                        retval.push_back(proc_val.value());
+                    if(pass->is_vector) {
+                        auto pass_result = pass->apply_vector_mutable_pass(instr, i);
+                        for(auto &item:pass_result) retval.push_back(item);
+                    } else {
+                        if(auto proc_val = pass->apply_mutable_pass(instr, i))
+                            retval.push_back(proc_val.value());
+                    }
                 } else {
                     if(auto proc_val = pass->apply_pass(instr, i))
                         retval.push_back(proc_val.value());

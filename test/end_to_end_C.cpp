@@ -1861,7 +1861,7 @@ TEST(EndToEndC, multi_csel_wrong_condition) {
     dma_map["v_in"]    = {core_iom_input, {13}, false};
     dma_map["fault"]   = {core_iom_input, {14}, false};
     dma_map["v_out"]    = {core_iom_output, {50}, false};
-    dma_map["i_in"]   = {core_iom_output, {50}, false};
+    dma_map["i_in"]   = {core_iom_output, {51}, false};
 
     fcore_cc compiler(file_content, includes);
     compiler.enable_logging();
@@ -1869,8 +1869,11 @@ TEST(EndToEndC, multi_csel_wrong_condition) {
     compiler.compile();
     std::vector<uint32_t> result =  compiler.get_executable();
 
-    ASSERT_TRUE(false);
-    std::vector<uint32_t> gold_standard = {0x40005, 0xc, 0x3000C, 0x2000D, 0x1000E, 0x10032, 0xc, 0xc, 0x8002b, 0x4189b, 0x2008e, 0xc};
+    std::vector<uint32_t> gold_standard = {0x70006, 0xc,
+        0x3000C, 0x2000D, 0x1000E, 0x30032, 0x10033,
+        0xc, 0xc,
+        0x8002b, 0x2008e, 0x4183b, 0x6002e, 0x4009b, 0x2008e,
+        0xc};
 
     ASSERT_EQ(gold_standard, result);
 

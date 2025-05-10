@@ -29,5 +29,6 @@
 #include "passes/instruction_stream/ternary_reduction.hpp"
 #include "passes/instruction_stream/instruction_counting_pass.hpp"
 #include "passes/instruction_stream/virtual_operations_implementation.hpp"
+#include "passes/instruction_stream/ternary_deconfliction.hpp"
 
 #endif //STREAM_PASSES_HPP
