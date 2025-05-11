@@ -48,6 +48,8 @@ namespace fcore {
 
     void type_propagation::enter_loop(const std::shared_ptr<ast_loop> &node) {
         setup_frame();
+        auto def = std::static_pointer_cast<ast_definition>(node->get_init_statement());
+        current_scope[def->get_name()] = def->get_type();
     }
 
     std::shared_ptr<ast_node> type_propagation::exit_loop(const std::shared_ptr<ast_loop> &node) {
