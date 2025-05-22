@@ -35,7 +35,6 @@ set(FCORE_COMMON_SRCS_I
         passes/high_level/infrastructure/hl_acting_visitor.cpp
         passes/high_level/infrastructure/hl_observing_visitor.cpp
         passes/instruction_stream/ternary_deconfliction.cpp
-        passes/instruction_stream/ternary_deconfliction.hpp
 )
 
 
