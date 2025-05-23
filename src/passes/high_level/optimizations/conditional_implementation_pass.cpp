@@ -128,8 +128,28 @@ namespace fcore{
         std::vector<std::shared_ptr<ast_node>> result_body;
 
         std::shared_ptr<ast_expression> condition = std::static_pointer_cast<ast_expression>(node->get_condition());
-        std::shared_ptr<ast_operand> lhs_op = get_operands(condition->get_lhs().value(), node, subtree->get_content());
-        std::shared_ptr<ast_operand> rhs_op = get_operands(condition->get_rhs(), node, subtree->get_content());
+        std::shared_ptr<ast_operand> lhs_op, rhs_op;
+        auto raw_lhs = get_operands(condition->get_lhs().value(), node, subtree->get_content());
+        auto raw_rhs = get_operands(condition->get_rhs(), node, subtree->get_content());
+
+        bool ternarize_loop = false;
+        if(raw_lhs.has_value()) {
+            lhs_op = raw_lhs.value();
+        } else {
+            ternarize_loop = true;
+
+        }
+
+        if(raw_rhs.has_value()) {
+            rhs_op = raw_rhs.value();
+        } else {
+            ternarize_loop = true;
+        }
+
+        if(ternarize_loop) {
+            return conditional_to_ternary(node, subtree);
+        }
+
 
         std::shared_ptr<ast_expression> const_cond_expr = std::make_shared<ast_expression>(condition->get_type());
         const_cond_expr->set_lhs(lhs_op);
@@ -151,8 +171,7 @@ namespace fcore{
     }
 
 
-    std::shared_ptr<ast_operand>
-    conditional_implementation_pass::find_variable_definition(const std::shared_ptr<ast_node>& subexpr,
+    std::optional<std::shared_ptr<ast_operand>> conditional_implementation_pass::find_variable_definition(const std::shared_ptr<ast_node>& subexpr,
                                                                      const std::shared_ptr<ast_node>& item,
                                                                      const std::vector<std::shared_ptr<ast_node>>& prog_content) {
         std::shared_ptr<ast_operand> retval;
@@ -162,7 +181,7 @@ namespace fcore{
             std::shared_ptr<ast_operand> variable = std::static_pointer_cast<ast_operand>(subexpr);
             for(const auto& i: prog_content){
                 if(i == item){
-                    throw std::runtime_error("The value of all variables in a conditional condition must be defined before the expression itself");
+                    return {};
                 } else if (i->node_type == hl_ast_node_type_definition){
                     std::shared_ptr<ast_definition> def = std::static_pointer_cast<ast_definition>(i);
                     if(def->get_name() == variable->get_name()){
@@ -182,17 +201,28 @@ namespace fcore{
     }
 
 
-    std::shared_ptr<ast_operand>
+    std::optional<std::shared_ptr<ast_operand>>
     conditional_implementation_pass::get_operands(const std::shared_ptr<ast_node> &subexpr,
                                                          const std::shared_ptr<ast_node> &item,
                                                          const std::vector<std::shared_ptr<ast_node>> &prog_content) {
         std::shared_ptr<ast_operand> retval;
         if(subexpr->node_type != hl_ast_node_type_operand){
-            retval = find_variable_definition(subexpr, item, prog_content);
+            auto def = find_variable_definition(subexpr, item, prog_content);
+            if(def.has_value()) {
+                retval = def.value();
+            } else {
+                throw std::runtime_error("Variable not found in conditional processing");
+            }
         } else{
             variable_type_t vt = std::static_pointer_cast<ast_operand>(subexpr)->get_type();
             if(vt == var_type_scalar || vt == var_type_array){
-                retval = find_variable_definition(subexpr, item, prog_content);
+                auto def = find_variable_definition(subexpr, item, prog_content);
+                if(def.has_value()) {
+                    retval = def.value();
+                } else {
+                    return {};
+                }
+
             } else {
                 retval = std::static_pointer_cast<ast_operand>(subexpr);
             }
@@ -208,6 +238,75 @@ namespace fcore{
         ret->set_rhs(node->get_if_block()[0]);
         ret->set_ths(node->get_else_block()[0]);
         return ret;
+    }
+
+    std::vector<std::shared_ptr<ast_node>> conditional_implementation_pass::conditional_to_ternary(
+        const std::shared_ptr<ast_conditional> &node, const std::shared_ptr<ast_code_block> &subtree) {
+        std::vector<std::shared_ptr<ast_node>> ret_val;
+
+        auto cond_name = "ternarized_selector_" +  std::to_string(ternarization_index);
+        auto var = std::make_shared<variable>(cond_name);
+        std::shared_ptr<ast_definition> condition_def = std::make_shared<ast_definition>(cond_name,c_type_int, var);
+        condition_def->set_scalar_initializer(node->get_condition());
+        ret_val.push_back(condition_def);
+
+        struct ternary_map_t{
+            std::shared_ptr<ast_node> target;
+            std::shared_ptr<ast_node> if_block;
+            std::shared_ptr<ast_node> else_block;
+        };
+        std::unordered_map<std::string, ternary_map_t> ternary_map;
+        for(auto &raw_expr: node->get_if_block()) {
+            if(raw_expr->node_type != hl_ast_node_type_expr) {
+                throw("Encountered conditional block which can't be implemented with ternary");
+            }
+            auto expr = std::static_pointer_cast<ast_expression>(raw_expr);
+            if(expr->get_type() != ast_expression::ASSIGN) {
+                throw("Encountered conditional block which can't be implemented with ternary");
+            }
+            ternary_map[std::static_pointer_cast<ast_operand>(expr->get_lhs().value())->get_name()] = {
+                expr->get_lhs().value(), expr->get_rhs(), nullptr};
+        }
+
+        for(auto &raw_expr: node->get_else_block()) {
+            if(raw_expr->node_type != hl_ast_node_type_expr) {
+                throw("Encountered conditional block which can't be implemented with ternary");
+            }
+            auto expr = std::static_pointer_cast<ast_expression>(raw_expr);
+            if(expr->get_type() != ast_expression::ASSIGN) {
+                throw("Encountered conditional block which can't be implemented with ternary");
+            }
+            auto name = std::static_pointer_cast<ast_operand>(expr->get_lhs().value())->get_name();
+            if(ternary_map.contains(name)) {
+                ternary_map[name].else_block = expr->get_rhs();
+            } else {
+                ternary_map[name] = {expr->get_lhs().value(), nullptr, expr->get_rhs()};
+            }
+        }
+
+
+        for(auto &conditional: ternary_map | std::views::values) {
+
+            auto assignment = std::make_shared<ast_expression>(ast_expression::ASSIGN);
+            assignment->set_lhs(conditional.target);
+
+
+            auto  ternary = std::make_shared<ast_expression>(ast_expression::CSEL);
+            ternary->set_lhs(std::make_shared<ast_operand>(var));
+
+            if(conditional.if_block != nullptr) ternary->set_rhs(conditional.if_block);
+            else ternary->set_rhs(conditional.target);
+
+            if(conditional.else_block != nullptr) ternary->set_ths(conditional.else_block);
+            else ternary->set_ths(conditional.target);
+
+            assignment->set_rhs(ternary);
+
+            ret_val.push_back(assignment);
+        }
+
+        ternarization_index++;
+        return ret_val;
     }
 }
 

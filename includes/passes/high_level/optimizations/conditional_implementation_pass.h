@@ -27,9 +27,9 @@ namespace fcore{
         std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
 
     private:
-        std::shared_ptr<ast_operand> find_variable_definition(const std::shared_ptr<ast_node>& subexpr, const std::shared_ptr<ast_node>& item,
+        std::optional<std::shared_ptr<ast_operand>> find_variable_definition(const std::shared_ptr<ast_node>& subexpr, const std::shared_ptr<ast_node>& item,
                                                                  const std::vector<std::shared_ptr<ast_node>>& prog_content);
-        std::shared_ptr<ast_operand> get_operands(const std::shared_ptr<ast_node>& subexpr, const std::shared_ptr<ast_node>& item,
+        std::optional<std::shared_ptr<ast_operand>> get_operands(const std::shared_ptr<ast_node>& subexpr, const std::shared_ptr<ast_node>& item,
                                                      const std::vector<std::shared_ptr<ast_node>>& prog_content);
 
         std::vector<std::shared_ptr<ast_node>> process_block_by_type(const std::shared_ptr<ast_node>& node, const std::shared_ptr<ast_code_block>& subtree);
@@ -38,6 +38,9 @@ namespace fcore{
         std::vector<std::shared_ptr<ast_node>> process_definition(const std::shared_ptr<ast_definition> &node, const std::shared_ptr<ast_code_block>& subtree);
         std::vector<std::shared_ptr<ast_node>> process_expression(const std::shared_ptr<ast_expression> &node, const std::shared_ptr<ast_code_block>& subtree);
         std::shared_ptr<ast_node> process_ternary(const std::shared_ptr<ast_conditional>& node);
+
+        std::vector<std::shared_ptr<ast_node>> conditional_to_ternary(const std::shared_ptr<ast_conditional>& node, const std::shared_ptr<ast_code_block>& subtree);
+        uint32_t ternarization_index;
     };
 }
 

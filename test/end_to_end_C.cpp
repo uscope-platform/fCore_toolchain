@@ -1878,3 +1878,53 @@ TEST(EndToEndC, multi_csel_wrong_condition) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+
+TEST(EndToEndC, conditional_cselization) {
+
+    std::vector<std::string> file_content = {R""""(
+
+
+        void main(){
+
+            //inputs
+            float i_load, i_out, mode;
+            //outputs
+            float i_in, i_if, i_else;
+
+            if(mode==0){
+                i_in = i_out;
+                i_if = 52.5;
+            } else {
+                i_in = i_load;
+                i_else = 52.5;
+            }
+        }
+
+    )""""};
+
+    std::vector<std::string> includes;
+
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["i_load"] = {core_iom_input, {12}, false};
+    dma_map["i_out"]    = {core_iom_input, {13}, false};
+    dma_map["mode"]   = {core_iom_input, {14}, false};
+    dma_map["i_in"]   = {core_iom_output, {50}, false};
+    dma_map["i_if"]   = {core_iom_memory, {51}, false};
+    dma_map["i_else"]   = {core_iom_memory, {52}, false};
+
+
+    fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
+    compiler.set_dma_map(dma_map);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+    auto dbg = compiler.get_io_map();
+
+    std::vector<uint32_t> gold_standard = {0xC0007, 0xc, 0x3000C, 0x2000D, 0x1000E, 0x10032, 0x3e0033, 0x3f0034, 0xc, 0xc,
+        0x8002a, 0x26, 0x42520000, 0xa008e, 0x7c08bb, 0x7c00ae, 0xa008e, 0x3f8bb, 0x7e00ae, 0x6109b, 0x2008e, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
