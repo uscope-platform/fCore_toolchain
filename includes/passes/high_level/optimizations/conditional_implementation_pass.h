@@ -40,7 +40,8 @@ namespace fcore{
         std::shared_ptr<ast_node> process_ternary(const std::shared_ptr<ast_conditional>& node);
 
         std::vector<std::shared_ptr<ast_node>> conditional_to_ternary(const std::shared_ptr<ast_conditional>& node, const std::shared_ptr<ast_code_block>& subtree);
-        uint32_t ternarization_index;
+        uint32_t ternarization_index = 0;
+        uint32_t ternary_extraction = 0;
     };
 }
 

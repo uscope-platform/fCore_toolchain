@@ -137,13 +137,16 @@ namespace fcore{
             lhs_op = raw_lhs.value();
         } else {
             ternarize_loop = true;
-
         }
 
         if(raw_rhs.has_value()) {
             rhs_op = raw_rhs.value();
         } else {
             ternarize_loop = true;
+        }
+
+        if(node->is_ternary()) {
+            return {process_ternary(node)};
         }
 
         if(ternarize_loop) {
@@ -264,8 +267,12 @@ namespace fcore{
             if(expr->get_type() != ast_expression::ASSIGN) {
                 throw("Encountered conditional block which can't be implemented with ternary");
             }
+            auto if_block = process_block_by_type(expr->get_rhs() ,subtree);
+            if(if_block.size() != 1) {
+                throw("nested if/else ternarization is not supported");
+            }
             ternary_map[std::static_pointer_cast<ast_operand>(expr->get_lhs().value())->get_name()] = {
-                expr->get_lhs().value(), expr->get_rhs(), nullptr};
+                expr->get_lhs().value(), if_block[0], nullptr};
         }
 
         for(auto &raw_expr: node->get_else_block()) {
@@ -277,10 +284,29 @@ namespace fcore{
                 throw("Encountered conditional block which can't be implemented with ternary");
             }
             auto name = std::static_pointer_cast<ast_operand>(expr->get_lhs().value())->get_name();
+
+            auto else_block = process_block_by_type(expr->get_rhs() ,subtree);
+            if(else_block.size() != 1) {
+                throw("nested if/else ternarization is not supported");
+            }
+
+            if(else_block[0]->node_type == hl_ast_node_type_expr) {
+                if(std::static_pointer_cast<ast_expression>(else_block[0])->get_type() == ast_expression::CSEL) {
+
+                    auto var_name = "extracted_ternary_" +  std::to_string(ternary_extraction);
+                    std::shared_ptr<ast_definition> extracted_def = std::make_shared<ast_definition>(var_name,c_type_int, std::make_shared<variable>(var_name));
+                    extracted_def->set_scalar_initializer(else_block[0]);
+                    ret_val.insert(ret_val.begin(), extracted_def);
+
+                    else_block[0] = std::make_shared<ast_operand>(std::make_shared<variable>(var_name));
+                    ternary_extraction++;
+                }
+            }
+
             if(ternary_map.contains(name)) {
-                ternary_map[name].else_block = expr->get_rhs();
+                ternary_map[name].else_block = else_block[0];
             } else {
-                ternary_map[name] = {expr->get_lhs().value(), nullptr, expr->get_rhs()};
+                ternary_map[name] = {expr->get_lhs().value(), nullptr, else_block[0]};
             }
         }
 
