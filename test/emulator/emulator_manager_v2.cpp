@@ -62,60 +62,32 @@ TEST(emulator_manager_bulk, emulator_compile_error) {
 TEST(emulator_manager_bulk, emulator_asm) {
 
 
-    nlohmann::json specs = nlohmann::json::parse( R"({
-        "version": 1,
-        "cores": [
-            {
-                "id": "test",
-                "order": 1,
-                "input_data": [],
-                "inputs": [],
-                "outputs": [
-                    {
-                        "name": "r12",
-                        "type": "float",
-                        "metadata":{
-                            "type": "float",
-                            "width": 12,
-                            "signed":true
-                        },
-                        "reg_n": [12]
-                    }
-                ],
-                "memory_init": [],
-                "channels": 1,
-                "options": {
-                    "comparators": "reducing",
-                    "efi_implementation": "none"
-                },
-                "program": {
-                    "content": "ldc r42, 12.5000\nldc r3, 3.2000\nadd r3, r42, r12\nstop\n",
-                    "build_settings": { "io": {"inputs": [],"memories": [],"outputs": [] } },
-                    "type":"asm",
-                    "headers": []
-                },
-                "sampling_frequency": 1,
-                "deployment": {
-                    "has_reciprocal": false,
-                    "control_address": 18316525568,
-                    "rom_address": 17179869184
-                }
-            }
-        ],
-        "interconnect": [],
-        "emulation_time": 1,
-        "deployment_mode": false
-    })");
+    auto program = "ldc r42, 12.5000\nldc r3, 3.2000\nadd r3, r42, r12\nstop\n";
+
+
+    auto spec = prepare_spec(program, 1, 1,
+                             {}, {},{});
+
+
+    spec["cores"][0]["program"]["type"] = "asm";
+
+    auto out = nlohmann::json();
+    out["name"] = "r12";
+    out["metadata"]["type"] = "float";
+    out["metadata"]["width"] = 12;
+    out["metadata"]["signed"] = true;
+    out["reg_n"] = std::vector<uint32_t>({12});
+    out["type"] = "float";
+    spec["cores"][0]["outputs"].push_back(out);
+
+
+    spec["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("out");
 
 
     emulator_manager manager;
-    manager.set_specs(specs);
+    manager.set_specs(spec);
     manager.process();
     manager.emulate();
-
-    auto res_obj = manager.get_results();
-
-
     auto dbg = manager.get_results().dump(4);
     float res = manager.get_results()["test"]["outputs"]["r12"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, 15.7f);
@@ -125,103 +97,68 @@ TEST(emulator_manager_bulk, emulator_asm) {
 
 TEST(emulator_manager_bulk, emulator_inputs) {
 
-    nlohmann::json specs = nlohmann::json::parse( R"({
-        "version": 1,
-        "cores": [
-            {
-                "id": "test",
-                "order": 1,
-                "input_data": [
-                    {
-                        "name": "data_file_1",
-                        "data":
-                            {
-                                "input_1": [15.7,67.4],
-                                "input_2": [42.92,-5.8]
-                            }
-                    }
-                ],
-                "inputs": [
-                    {
-                        "name": "input_1",
-                        "metadata":{
-                            "type": "float",
-                            "width": 12,
-                            "signed":true,
-                            "common_io": false
-                        },
-                        "source": {
-                            "type": "file",
-                            "file": "data_file_1",
-                            "series": "input_1"
-                        },
-                        "reg_n": 1,
-                        "channel": [0]
-                    },
-                    {
-                        "name": "input_2",
-                        "metadata":{
-                            "type": "float",
-                            "width": 12,
-                            "signed":true,
-                            "common_io": false
-                        },
-                        "source": {
-                            "type": "file",
-                            "file": "data_file_1",
-                            "series": "input_2"
-                        },
-                        "reg_n": 2,
-                        "channel": [0]
-                    }
-                ],
-                "outputs": [
-                    {
-                        "name": "out",
-                        "type": "integer",
-                        "metadata":{
-                            "type": "integer",
-                            "width": 12,
-                            "signed":true
-                        },
-                        "reg_n": [4]
-                    }
-                ],
-                "memory_init": [],
-                "channels": 1,
-                "options": {
-                    "comparators": "reducing",
-                    "efi_implementation": "efi_sort"
-                },
-                "program": {
-                    "content": "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal + out;}",
-                    "build_settings": { "io": {"inputs": ["input_1","input_2"],"memories": ["out"],"outputs": [] } },
-                    "type":"c",
-                    "headers": []
-                },
-                "sampling_frequency": 1,
-                "deployment": {
-                    "has_reciprocal": false,
-                    "control_address": 18316525568,
-                    "rom_address": 17179869184
-                }
-            }
-        ],
-        "interconnect": [],
-        "emulation_time": 2,
-        "deployment_mode": false
-    })");
+
+    auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal + out;}";
+
+
+    auto spec = prepare_spec(program, 2, 1,
+                             {}, {},{});
+
+
+    spec["cores"][0]["efi_implementation"] = "efi_sort";
+    spec["cores"][0]["input_data"] = std::vector<nlohmann::json>();
+    spec["cores"][0]["input_data"].push_back(nlohmann::json());
+    spec["cores"][0]["input_data"][0]["name"] = "data_file_1";
+    spec["cores"][0]["input_data"][0]["data"] = nlohmann::json();
+    spec["cores"][0]["input_data"][0]["data"]["input_1"] = {15.7,67.4};
+    spec["cores"][0]["input_data"][0]["data"]["input_2"] = {42.92,-5.8};
+    spec["cores"][0]["inputs"] = std::vector<nlohmann::json>();
+
+    auto in = nlohmann::json();
+    in["name"] = "input_1";
+
+    in["metadata"] = nlohmann::json();
+    in["metadata"]["type"] = "float";
+    in["metadata"]["width"] = 12;
+    in["metadata"]["signed"] = true;
+    in["metadata"]["common_io"] = false;
+    in["reg_n"] = 1;
+    in["source"] = nlohmann::json();
+    in["source"]["type"] = "file";
+    in["source"]["file"] = "data_file_1";
+    in["source"]["series"] = "input_1";
+    in["channel"] = 0;
+    spec["cores"][0]["inputs"].push_back(in);
+
+    in["name"] = "input_2";
+    in["reg_n"] = 2;
+    in["source"] = nlohmann::json();
+    in["source"]["type"] = "file";
+    in["source"]["file"] = "data_file_1";
+    in["source"]["series"] = "input_2";
+    spec["cores"][0]["inputs"].push_back(in);
+
+    auto out = nlohmann::json();
+    out["name"] = "out";
+    out["metadata"]["type"] = "integer";
+    out["metadata"]["width"] = 12;
+    out["metadata"]["signed"] = true;
+    out["reg_n"] = std::vector<uint32_t>({4});
+    out["type"] = "integer";
+    spec["cores"][0]["outputs"].push_back(out);
+
+
+    spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_1");
+    spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_2");
+    spec["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("out");
 
 
     emulator_manager manager;
-    manager.set_specs(specs);
+    manager.set_specs(spec);
     manager.process();
     manager.emulate();
-
-    auto res_obj = manager.get_results();
-
-    auto dbg = res_obj.dump(4);
-    uint32_t res = res_obj["test"]["outputs"]["out"]["0"][0][1];
+    auto dbg = manager.get_results().dump(4);
+    uint32_t res = manager.get_results()["test"]["outputs"]["out"]["0"][0][1];
 
     ASSERT_EQ(res, 0x42f070a4);
 
@@ -231,105 +168,69 @@ TEST(emulator_manager_bulk, emulator_inputs) {
 
 TEST(emulator_manager_bulk, emulator_consecutive_runs) {
 
-    nlohmann::json specs = nlohmann::json::parse( R"({
-        "version": 1,
-        "cores": [
-            {
-                "id": "test",
-                "order": 1,
-                "input_data": [
-                    {
-                        "name": "data_file_1",
-                        "data":
-                            {
-                                "input_1": [15.7,67.4],
-                                "input_2": [42.92,-5.8]
-                            }
-                    }
-                ],
-                "inputs": [
-                    {
-                        "name": "input_1",
-                        "metadata":{
-                            "type": "float",
-                            "width": 12,
-                            "signed":true,
-                            "common_io": false
-                        },
-                        "source": {
-                            "type": "file",
-                            "file": "data_file_1",
-                            "series": "input_1"
-                        },
-                        "reg_n": 1,
-                        "channel": [0]
-                    },
-                    {
-                        "name": "input_2",
-                        "metadata":{
-                            "type": "float",
-                            "width": 12,
-                            "signed":true,
-                            "common_io": false
-                        },
-                        "source": {
-                            "type": "file",
-                            "file": "data_file_1",
-                            "series": "input_2"
-                        },
-                        "reg_n": 2,
-                        "channel": [0]
-                    }
-                ],
-                "outputs": [
-                    {
-                        "name": "out",
-                        "type": "integer",
-                        "metadata":{
-                            "type": "integer",
-                            "width": 12,
-                            "signed":true
-                        },
-                        "reg_n": [4]
-                    }
-                ],
-                "memory_init": [],
-                "channels": 1,
-                "options": {
-                    "comparators": "reducing",
-                    "efi_implementation": "efi_sort"
-                },
-                "program": {
-                    "content": "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal + out;}",
-                    "build_settings": { "io": {"inputs": ["input_1","input_2"],"memories": ["out"],"outputs": [] } },
-                    "type":"c",
-                    "headers": []
-                },
-                "sampling_frequency": 1,
-                "deployment": {
-                    "has_reciprocal": false,
-                    "control_address": 18316525568,
-                    "rom_address": 17179869184
-                }
-            }
-        ],
-        "interconnect": [],
-        "emulation_time": 2,
-        "deployment_mode": false
-    })");
 
+    auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal + out;}";
+
+
+    auto spec = prepare_spec(program, 2, 1,
+                             {}, {},{});
+
+
+    spec["cores"][0]["efi_implementation"] = "efi_sort";
+    spec["cores"][0]["input_data"] = std::vector<nlohmann::json>();
+    spec["cores"][0]["input_data"].push_back(nlohmann::json());
+    spec["cores"][0]["input_data"][0]["name"] = "data_file_1";
+    spec["cores"][0]["input_data"][0]["data"] = nlohmann::json();
+    spec["cores"][0]["input_data"][0]["data"]["input_1"] = {15.7,67.4};
+    spec["cores"][0]["input_data"][0]["data"]["input_2"] = {42.92,-5.8};
+    spec["cores"][0]["inputs"] = std::vector<nlohmann::json>();
+
+    auto in = nlohmann::json();
+    in["name"] = "input_1";
+
+    in["metadata"] = nlohmann::json();
+    in["metadata"]["type"] = "float";
+    in["metadata"]["width"] = 12;
+    in["metadata"]["signed"] = true;
+    in["metadata"]["common_io"] = false;
+    in["reg_n"] = 1;
+    in["source"] = nlohmann::json();
+    in["source"]["type"] = "file";
+    in["source"]["file"] = "data_file_1";
+    in["source"]["series"] = "input_1";
+    in["channel"] = 0;
+    spec["cores"][0]["inputs"].push_back(in);
+
+    in["name"] = "input_2";
+    in["reg_n"] = 2;
+    in["source"] = nlohmann::json();
+    in["source"]["type"] = "file";
+    in["source"]["file"] = "data_file_1";
+    in["source"]["series"] = "input_2";
+    spec["cores"][0]["inputs"].push_back(in);
+
+    auto out = nlohmann::json();
+    out["name"] = "out";
+    out["metadata"]["type"] = "integer";
+    out["metadata"]["width"] = 12;
+    out["metadata"]["signed"] = true;
+    out["reg_n"] = std::vector<uint32_t>({4});
+    out["type"] = "integer";
+    spec["cores"][0]["outputs"].push_back(out);
+
+
+    spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_1");
+    spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_2");
+    spec["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("out");
 
 
     emulator_manager manager;
-    manager.set_specs(specs);
+    manager.set_specs(spec);
     manager.process();
     manager.emulate();
 
-    auto res_obj = manager.get_results();
-
-
-    auto dbg = res_obj.dump(4);
-    std::vector<uint32_t> res = res_obj["test"]["outputs"]["out"]["0"][0];
+    auto dbg = manager.get_results().dump(4);
+    std::vector<uint32_t> res = manager.get_results()["test"]["outputs"]["out"]["0"][0];
     std::vector<uint32_t> check_vector = {0x426a7ae1, 0x42f070a4};
 
     std::vector<float> res_f = {0, 0};
@@ -342,7 +243,7 @@ TEST(emulator_manager_bulk, emulator_consecutive_runs) {
     check_f[1] = emulator_backend::uint32_to_float(check_vector[1]);
     ASSERT_EQ(res, check_vector);
 
-    manager.set_specs(specs);
+    manager.set_specs(spec);
     manager.process();
     manager.emulate();
 
@@ -382,106 +283,70 @@ TEST(emulator_manager_bulk, emulator_outputs) {
 TEST(emulator_manager_bulk, emulator_memory) {
 
 
-    nlohmann::json specs = nlohmann::json::parse( R"({
-        "version": 1,
-        "cores": [
-            {
-                "id": "test",
-                "order": 1,
-                "input_data": [
-                    {
-                        "name": "data_file_1",
-                        "data":
-                            {
-                                "input_1": [15.7,67.4],
-                                "input_2": [42.92,-5.8]
-                            }
-                    }
-                ],
-                "inputs": [
-                    {
-                        "name": "input_1",
-                        "metadata":{
-                            "type": "float",
-                            "width": 12,
-                            "signed":true,
-                            "common_io": false
-                        },
-                        "source": {
-                            "type": "file",
-                            "file": "data_file_1",
-                            "series": "input_1"
-                        },
-                        "reg_n": 1,
-                        "channel": [0]
-                    },
-                    {
-                        "name": "input_2",
-                        "metadata":{
-                            "type": "float",
-                            "width": 12,
-                            "signed":true,
-                            "common_io": false
-                        },
-                        "source": {
-                            "type": "file",
-                            "file": "data_file_1",
-                            "series": "input_2"
-                        },
-                        "reg_n": 2,
-                        "channel": [0]
-                    }
-                ],
-                "outputs": [
-                    {
-                        "name": "out",
-                        "type": "integer",
-                        "metadata":{
-                            "type": "integer",
-                            "width": 12,
-                            "signed":true
-                        },
-                        "reg_n": [4]
-                    }
-                ],
-                "memory_init": [
-                    {
-                        "name": "mem",
-                        "metadata":{
-                            "type": "float",
-                            "width": 12,
-                            "signed":true
-                        },
-                        "reg_n": 12,
-                        "is_output":true,
-                        "value":2
-                    }
-                ],
-                "channels": 1,
-                "options": {
-                    "comparators": "reducing",
-                    "efi_implementation": "efi_sort"
-                },
-                "program": {
-                    "content": "int main(){float input_1;float input_2;float internal = input_1 + input_2;float mem =  internal + mem; float out=mem*1.0;}",
-                    "build_settings": { "io": {"inputs": ["input_1","input_2"],"memories": ["mem"],"outputs": ["out"] } },
-                    "type":"c",
-                    "headers": []
-                },
-                "sampling_frequency": 1,
-                "deployment": {
-                    "has_reciprocal": false,
-                    "control_address": 18316525568,
-                    "rom_address": 17179869184
-                }
-            }
-        ],
-        "interconnect": [],
-        "emulation_time": 2,
-        "deployment_mode": false
-    })");
+    auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float mem =  internal + mem; float out=mem*1.0;}";
 
 
+    auto specs = prepare_spec(program, 2, 1,
+                             {}, {},{});
+
+
+    specs["cores"][0]["efi_implementation"] = "efi_sort";
+    specs["cores"][0]["input_data"] = std::vector<nlohmann::json>();
+    specs["cores"][0]["input_data"].push_back(nlohmann::json());
+    specs["cores"][0]["input_data"][0]["name"] = "data_file_1";
+    specs["cores"][0]["input_data"][0]["data"] = nlohmann::json();
+    specs["cores"][0]["input_data"][0]["data"]["input_1"] = {15.7,67.4};
+    specs["cores"][0]["input_data"][0]["data"]["input_2"] = {42.92,-5.8};
+    specs["cores"][0]["inputs"] = std::vector<nlohmann::json>();
+
+    auto in = nlohmann::json();
+    in["name"] = "input_1";
+
+    in["metadata"] = nlohmann::json();
+    in["metadata"]["type"] = "float";
+    in["metadata"]["width"] = 12;
+    in["metadata"]["signed"] = true;
+    in["metadata"]["common_io"] = false;
+    in["reg_n"] = 1;
+    in["source"] = nlohmann::json();
+    in["source"]["type"] = "file";
+    in["source"]["file"] = "data_file_1";
+    in["source"]["series"] = "input_1";
+    in["channel"] = 0;
+    specs["cores"][0]["inputs"].push_back(in);
+
+    in["name"] = "input_2";
+    in["reg_n"] = 2;
+    in["source"] = nlohmann::json();
+    in["source"]["type"] = "file";
+    in["source"]["file"] = "data_file_1";
+    in["source"]["series"] = "input_2";
+    specs["cores"][0]["inputs"].push_back(in);
+
+    auto MEM = nlohmann::json();
+    in["name"] = "mem";
+    in["metadata"]["type"] = "float";
+    in["metadata"]["width"] = 12;
+    in["metadata"]["signed"] = true;
+    in["reg_n"] = 4;
+    in["is_output"] = true;
+    in["value"] = 2;
+    specs["cores"][0]["memory_init"].push_back(in);
+
+
+    auto out = nlohmann::json();
+    out["name"] = "out";
+    out["metadata"]["type"] = "integer";
+    out["metadata"]["width"] = 12;
+    out["metadata"]["signed"] = true;
+    out["reg_n"] = std::vector<uint32_t>({12});
+    out["type"] = "integer";
+    specs["cores"][0]["outputs"].push_back(out);
+
+    specs["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_1");
+    specs["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_2");
+    specs["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("mem");
+    specs["cores"][0]["program"]["build_settings"]["io"]["outputs"].push_back("out");
 
     emulator_manager manager;
     manager.set_specs(specs);
@@ -1765,100 +1630,64 @@ TEST(emulator_manager_bulk, emulator_multichannel_input) {
 TEST(emulator_manager_bulk, emulator_memory_as_output) {
 
 
+    auto program = "int main(){float input_1;float input_2;float internal = input_1 + input_2;float mem =  internal + mem;}";
 
-    nlohmann::json specs = nlohmann::json::parse( R"({
-        "version": 1,
-        "cores": [
-            {
-                "id": "test",
-                "order": 1,
-                "input_data": [
-                    {
-                        "name": "data_file_1",
-                        "data":
-                            {
-                                "input_1": [15.7,67.4],
-                                "input_2": [42.92,-5.8]
-                            }
-                    }
-                ],
-                "inputs": [
-                    {
-                        "name": "input_1",
-                        "metadata":{
-                            "type": "float",
-                            "width": 12,
-                            "signed":true,
-                            "common_io": false
-                        },
-                        "source": {
-                            "type": "file",
-                            "file": "data_file_1",
-                            "series": "input_1"
-                        },
-                        "reg_n": 1,
-                        "channel": [0]
-                    },
-                    {
-                        "name": "input_2",
-                        "metadata":{
-                            "type": "float",
-                            "width": 12,
-                            "signed":true,
-                            "common_io": false
-                        },
-                        "source": {
-                            "type": "file",
-                            "file": "data_file_1",
-                            "series": "input_2"
-                        },
-                        "reg_n": 2,
-                        "channel": [0]
-                    }
-                ],
-                "outputs": [],
-                "memory_init": [
-                    {
-                        "name": "mem",
-                        "metadata":{
-                            "type": "float",
-                            "width": 12,
-                            "signed":true
-                        },
-                        "reg_n": 4,
-                        "is_output":true,
-                        "value":2
-                    }
-                ],
-                "channels": 1,
-                "options": {
-                    "comparators": "reducing",
-                    "efi_implementation": "efi_sort"
-                },
-                "program": {
-                    "content": "int main(){float input_1;float input_2;float internal = input_1 + input_2;float mem =  internal + mem;}",
-                    "build_settings": { "io": {"inputs": ["input_1","input_2"],"memories": ["mem"],"outputs": [] } },
-                    "type":"c",
-                    "headers": []
-                },
-                "sampling_frequency": 1,
-                "deployment": {
-                    "has_reciprocal": false,
-                    "control_address": 18316525568,
-                    "rom_address": 17179869184
-                }
-            }
-        ],
-        "interconnect": [],
-        "emulation_time": 2,
-        "deployment_mode": false
-    })");
+
+    auto spec = prepare_spec(program, 2, 1,
+                             {}, {},{});
+
+
+    spec["cores"][0]["efi_implementation"] = "efi_sort";
+    spec["cores"][0]["input_data"] = std::vector<nlohmann::json>();
+    spec["cores"][0]["input_data"].push_back(nlohmann::json());
+    spec["cores"][0]["input_data"][0]["name"] = "data_file_1";
+    spec["cores"][0]["input_data"][0]["data"] = nlohmann::json();
+    spec["cores"][0]["input_data"][0]["data"]["input_1"] = {15.7,67.4};
+    spec["cores"][0]["input_data"][0]["data"]["input_2"] = {42.92,-5.8};
+    spec["cores"][0]["inputs"] = std::vector<nlohmann::json>();
+
+    auto in = nlohmann::json();
+    in["name"] = "input_1";
+
+    in["metadata"] = nlohmann::json();
+    in["metadata"]["type"] = "float";
+    in["metadata"]["width"] = 12;
+    in["metadata"]["signed"] = true;
+    in["metadata"]["common_io"] = false;
+    in["reg_n"] = 1;
+    in["source"] = nlohmann::json();
+    in["source"]["type"] = "file";
+    in["source"]["file"] = "data_file_1";
+    in["source"]["series"] = "input_1";
+    in["channel"] = 0;
+    spec["cores"][0]["inputs"].push_back(in);
+
+    in["name"] = "input_2";
+    in["reg_n"] = 2;
+    in["source"] = nlohmann::json();
+    in["source"]["type"] = "file";
+    in["source"]["file"] = "data_file_1";
+    in["source"]["series"] = "input_2";
+    spec["cores"][0]["inputs"].push_back(in);
+
+    auto MEM = nlohmann::json();
+    in["name"] = "mem";
+    in["metadata"]["type"] = "float";
+    in["metadata"]["width"] = 12;
+    in["metadata"]["signed"] = true;
+    in["reg_n"] = 4;
+    in["is_output"] = true;
+    in["value"] = 2;
+    spec["cores"][0]["memory_init"].push_back(in);
 
 
 
+    spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_1");
+    spec["cores"][0]["program"]["build_settings"]["io"]["inputs"].push_back("input_2");
+    spec["cores"][0]["program"]["build_settings"]["io"]["memories"].push_back("mem");
 
     emulator_manager manager;
-    manager.set_specs(specs);
+    manager.set_specs(spec);
     manager.process();
     manager.emulate();
 

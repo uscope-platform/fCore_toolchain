@@ -24,7 +24,7 @@
 #include "emulator/backend/emulator_backend.hpp"
 #include "emulation_sequencer.hpp"
 #include "data_structures/emulation/hil_bus_map.hpp"
-#include "data_structures/emulation/specs/emulator_specs.hpp"
+#include "../data_structures/emulation/specs/v1/emulator_specs.hpp"
 #include "emulator/backend/emulation_outputs_manager.hpp"
 #include "data_structures/emulation/emulator_metadata.hpp"
 #include "emulator/interconnect_manager.hpp"

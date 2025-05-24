@@ -20,8 +20,8 @@
 #include <string>
 #include <nlohmann/json.hpp>
 
-#include "data_structures/emulation/specs/emulator_core.hpp"
-#include "data_structures/emulation/specs/emulator_interconnect.hpp"
+#include "emulator_core.hpp"
+#include "emulator_interconnect.hpp"
 #include "frontend/schema_validators/schema_validator_base.h"
 
 

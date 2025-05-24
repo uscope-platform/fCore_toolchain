@@ -21,7 +21,7 @@
 #include <map>
 #include <spdlog/spdlog.h>
 
-#include "data_structures/emulation/specs/emulator_specs.hpp"
+#include "specs/v1/emulator_specs.hpp"
 #include "emulator/backend/emulator_backend.hpp"
 
 

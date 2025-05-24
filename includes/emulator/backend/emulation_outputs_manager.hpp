@@ -21,7 +21,7 @@
 #include <string>
 #include <nlohmann/json.hpp>
 
-#include "data_structures/emulation/specs/emulator_specs.hpp"
+#include "../../data_structures/emulation/specs/v1/emulator_specs.hpp"
 #include "data_structures/emulation/emulator_output.hpp"
 #include "data_structures/emulation/emulator_metadata.hpp"
 #include "data_structures/common/io_map_entry.hpp"
