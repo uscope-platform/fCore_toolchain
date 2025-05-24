@@ -27,12 +27,17 @@ const std::string emulator_schema = R"~(
   "type": "object",
   "title": "Root Schema",
   "required": [
+    "version",
     "cores",
     "interconnect",
     "emulation_time",
     "deployment_mode"
   ],
   "properties": {
+    "version":{
+      "type": "integer",
+      "title": "input file schema version"
+    },
     "cores": {
       "type": "array",
       "title": "Array of core objects describing one or more cores in a multicore cluster",

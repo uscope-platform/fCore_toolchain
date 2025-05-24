@@ -432,6 +432,7 @@ TEST(emulator_manager_bulk, emulator_header) {
 
     nlohmann::json specs = nlohmann::json::parse(
             R"({
+    "version": 1,
     "cores": [
         {
             "id": "test",
@@ -536,6 +537,7 @@ TEST(emulator_manager_bulk, emulator_multichannel) {
 
     nlohmann::json specs = nlohmann::json::parse(
             R"({
+    "version": 1,
     "cores": [
         {
             "id": "test",
@@ -670,8 +672,8 @@ TEST(emulator_manager_bulk, emulator_multichannel_input_file) {
 
 
     nlohmann::json specs = nlohmann::json::parse(
-            R"(
-{
+            R"({
+    "version": 1,
     "cores": [
         {
             "order": 1,
@@ -801,8 +803,8 @@ TEST(emulator_manager_bulk, emulator_multichannel_gather_transfer) {
 
 
     nlohmann::json specs = nlohmann::json::parse(
-            R"(
-    {
+            R"({
+    "version": 1,
     "cores": [
         {
             "order": 1,
@@ -948,8 +950,8 @@ TEST(emulator_manager_bulk, emulator_multichannel_scatter_transfer) {
 
 
     nlohmann::json specs = nlohmann::json::parse(
-            R"(
-    {
+    R"({
+    "version": 1,
         "cores": [
             {
                 "order": 1,
@@ -1058,8 +1060,8 @@ TEST(emulator_manager_bulk, emulator_multichannel_transfer_error) {
 
 
     nlohmann::json specs = nlohmann::json::parse(
-            R"(
-    {
+    R"({
+    "version": 1,
         "cores": [
             {
                 "order": 1,
@@ -1178,8 +1180,8 @@ TEST(emulator_manager_bulk, emulator_multichannel_transfer_error) {
 
 TEST(emulator_manager_bulk, emulator_multichannel_vector_transfer) {
     nlohmann::json specs = nlohmann::json::parse(
-            R"(
-    {
+    R"({
+    "version": 1,
         "cores": [
             {
                 "order": 1,
@@ -1311,8 +1313,8 @@ TEST(emulator_manager_bulk, emulator_multichannel_vector_transfer) {
 
 TEST(emulator_manager_bulk, emulator_multichannel_2d_vector_transfer) {
     nlohmann::json specs = nlohmann::json::parse(
-            R"(
-    {
+    R"({
+    "version": 1,
         "cores": [
             {
                 "order": 1,
@@ -1431,7 +1433,8 @@ TEST(emulator_manager_bulk, emulator_common_io) {
 
 
     nlohmann::json specs = nlohmann::json::parse(
-            R"({
+    R"({
+    "version": 1,
     "cores": [
         {
             "id": "test",
@@ -1531,8 +1534,8 @@ TEST(emulator_manager_bulk, emulator_common_io) {
 
 TEST(emulator_manager_bulk, emulator_multichannel_input) {
     nlohmann::json specs = nlohmann::json::parse(
-            R"(
-    {
+    R"({
+    "version": 1,
         "cores": [
             {
                 "order": 1,
@@ -1704,8 +1707,8 @@ TEST(emulator_manager_bulk, emulator_disassemble) {
 
 
     nlohmann::json specs = nlohmann::json::parse(
-            R"(
-    {
+    R"({
+    "version": 1,
     "cores": [
         {
             "order": 1,

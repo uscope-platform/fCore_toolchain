@@ -25,6 +25,7 @@ using namespace fcore;
 nlohmann::json prepare_asm_spec(std::vector<std::string> pv, uint32_t n_steps, std::vector<uint32_t> output_regs, uint32_t n_channels){
 
     nlohmann::json spec;
+    spec["version"] = 1;
     spec["cores"] = std::vector<nlohmann::json>();
     spec["emulation_time"] = n_steps;
 

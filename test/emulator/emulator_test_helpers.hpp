@@ -42,6 +42,7 @@ static nlohmann::json prepare_spec(
         std::vector<memory_struct> memories
 ){
     nlohmann::json spec;
+    spec["version"] = 1;
     spec["cores"] = std::vector<nlohmann::json>();
     spec["emulation_time"] = emulation_time;
 

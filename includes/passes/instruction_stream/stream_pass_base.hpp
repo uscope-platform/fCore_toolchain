@@ -20,7 +20,6 @@
 
 namespace fcore{
 
-
     enum stream_pass_type {
         high_level_pass =0,
         asm_pass = 1,
