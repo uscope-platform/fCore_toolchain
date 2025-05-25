@@ -1,6 +1,6 @@
 
 
-//  Copyright 2024 Filippo Savi <filssavi@gmail.com>
+//  Copyright 2025 Filippo Savi <filssavi@gmail.com>
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FCORE_TOOLCHAIN_EMULATOR_SCHEMA_CPP_HPP
-#define FCORE_TOOLCHAIN_EMULATOR_SCHEMA_CPP_HPP
+#ifndef FCORE_TOOLCHAIN_EMULATOR_SCHEMA_HPP
+#define FCORE_TOOLCHAIN_EMULATOR_SCHEMA_HPP
 
 
 #include <string>
 
 
-const std::string emulator_schema = R"~(
+const std::string emulator_schema_v1 = R"~(
 {
   "$schema": "https://json-schema.org/draft/2019-09/schema",
   "type": "object",
@@ -599,4 +599,4 @@ const std::string emulator_schema = R"~(
 )~";
 
 
-#endif //FCORE_TOOLCHAIN_EMULATOR_SCHEMA_CPP_HPP
+#endif //FCORE_TOOLCHAIN_EMULATOR_SCHEMA_HPP

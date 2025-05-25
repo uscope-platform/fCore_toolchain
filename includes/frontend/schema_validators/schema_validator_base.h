@@ -24,8 +24,11 @@
 #include <valijson/schema_parser.hpp>
 #include <valijson/validator.hpp>
 
-#include "schemas/compiler_schema.hpp"
-#include "schemas/emulator_schema.hpp"
+#include "schemas/v1/compiler_schema.hpp"
+#include "schemas/v1/emulator_schema.hpp"
+
+#include "schemas/v2/compiler_schema.hpp"
+#include "schemas/v2/emulator_schema.hpp"
 
 namespace fcore{
 
@@ -36,7 +39,7 @@ namespace fcore{
 
     class schema_validator_base {
     public:
-        schema_validator_base(const json_type& schema_file);
+        schema_validator_base(const json_type& schema_file, int version );
         void validate(const nlohmann::json &spec_file);
     private:
         valijson::Schema schema;

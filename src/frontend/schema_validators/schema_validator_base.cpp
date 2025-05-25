@@ -17,16 +17,18 @@
 
 namespace fcore{
 
-    schema_validator_base::schema_validator_base(const json_type& schema_type) {
+    schema_validator_base::schema_validator_base(const json_type& schema_type, int version ) {
 
         nlohmann::json chosen_schema_doc;
 
         switch (schema_type) {
             case compiler_input:
-                chosen_schema_doc = nlohmann::json::parse(compiler_schema);
+                if(version == 1) chosen_schema_doc = nlohmann::json::parse(compiler_schema_v1);
+                else chosen_schema_doc = nlohmann::json::parse(compiler_schema_v2);
                 break;
             case emulator_input:
-                chosen_schema_doc = nlohmann::json::parse(emulator_schema);
+                if(version == 1) chosen_schema_doc = nlohmann::json::parse(emulator_schema_v1);
+                else chosen_schema_doc = nlohmann::json::parse(emulator_schema_v2);
                 break;
 
         }
