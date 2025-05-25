@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "../../../includes/data_structures/emulation/v1/emulator_output.hpp"
-namespace fcore{
+#include "data_structures/emulation/v1/emulator_output.hpp"
+namespace fcore::emulator{
 
     emulator_output::emulator_output(const emulator::emulator_output_specs &s, uint32_t n_channels) {
         for(int i=0; i<n_channels; i++){

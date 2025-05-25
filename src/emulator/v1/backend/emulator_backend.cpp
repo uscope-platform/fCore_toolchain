@@ -15,7 +15,7 @@
 
 #include "emulator/v1/backend/emulator_backend.hpp"
 
-namespace fcore{
+namespace fcore::emulator{
 
     bool operator==(const debug_checkpoint& lhs, const debug_checkpoint& rhs) {
         bool ret = true;

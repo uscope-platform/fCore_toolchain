@@ -25,7 +25,7 @@
 #include "emulator/v1/backend/emulator_backend.hpp"
 
 
-namespace fcore{
+namespace fcore::emulator{
 
 
     class emulator_output {

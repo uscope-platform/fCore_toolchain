@@ -16,7 +16,7 @@
 
 #include "emulator/v1/backend/emulation_outputs_manager.hpp"
 
-namespace fcore{
+namespace fcore::emulator{
 
     void emulation_outputs_manager::add_specs(const std::string& id, const std::vector<emulator::emulator_output_specs>& specs, uint32_t active_channels) {
         for(const auto &spec:specs){

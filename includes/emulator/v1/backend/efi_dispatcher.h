@@ -26,7 +26,7 @@
 
 #include "data_structures/emulation/v1/emulator_metadata.hpp"
 
-namespace fcore{
+namespace fcore::emulator{
 
     class cell {
     public:

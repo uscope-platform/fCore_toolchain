@@ -32,7 +32,7 @@
 #endif
 
 
-namespace fcore{
+namespace fcore::emulator{
 
     class debug_checkpoint{
     public:

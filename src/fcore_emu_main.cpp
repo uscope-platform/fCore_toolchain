@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
 
     nlohmann::json profiling_data;
     try{
-        fcore::emulator_manager emu_manager;
+        fcore::emulator::emulator_manager emu_manager;
         emu_manager.set_specs(specs);
         if(debug_autogen) emu_manager.enable_debug_mode();
         emu_manager.set_profiler(profiler);

@@ -16,7 +16,7 @@
 
 #include "emulator/v1/interconnect_manager.hpp"
 
-namespace fcore {
+namespace fcore::emulator {
 
     void interconnect_manager::run_interconnect(const emulator::emulator_interconnect &ic, std::unordered_map<std::string, bool> enabled_cores) {
         for(auto &ch:ic.channels){

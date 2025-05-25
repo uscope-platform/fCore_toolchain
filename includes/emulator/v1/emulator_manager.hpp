@@ -30,7 +30,7 @@
 #include "emulator/v1/interconnect_manager.hpp"
 #include "emulator/v1/emulator_runner.hpp"
 
-namespace fcore{
+namespace fcore::emulator{
 
 
     class emulator_manager {

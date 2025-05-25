@@ -28,7 +28,7 @@
 #include "fcore_has.hpp"
 
 
-namespace fcore {
+namespace fcore::emulator {
 
     class emulator_builder {
     public:

@@ -16,7 +16,7 @@
 
 #include "emulator/v1/emulator_runner.hpp"
 
-namespace fcore {
+namespace fcore::emulator {
 
 
     emulator_runner::emulator_runner(program_bundle &prog) {

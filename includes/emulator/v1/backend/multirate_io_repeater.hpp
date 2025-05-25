@@ -21,7 +21,7 @@
 #include <cstdint>
 #include <string>
 
-namespace fcore {
+namespace fcore::emulator {
     class multirate_io_repeater {
     public:
         void add_output(const std::string &core, uint32_t addr,uint32_t channel, uint32_t value) { working_map[core][channel][addr] = value; };

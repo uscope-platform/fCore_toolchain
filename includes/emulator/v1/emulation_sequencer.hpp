@@ -1,4 +1,4 @@
-//  Copyright 2022 Filippo Savi <filssavi@gmail.com>
+//  Copyright 2025 Filippo Savi <filssavi@gmail.com>
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
 
 #include "data_structures/common/program_metadata.hpp"
 
-namespace fcore {
+namespace fcore::emulator {
     struct core_metadata {
         std::string id;
         uint32_t n_skips;

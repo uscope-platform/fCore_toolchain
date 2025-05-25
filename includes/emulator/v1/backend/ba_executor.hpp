@@ -23,7 +23,7 @@
 
 #include "floating_point_v7_1_bitacc_cmodel.h"
 
-namespace fcore{
+namespace fcore::emulator{
     class ba_executor {
     public:
         ba_executor();

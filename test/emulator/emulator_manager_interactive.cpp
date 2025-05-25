@@ -19,7 +19,7 @@
 #include "emulator_test_helpers.hpp"
 #include "../../includes/emulator/v1/emulator_manager.hpp"
 
-using namespace fcore;
+using namespace fcore::emulator;
 
 
 nlohmann::json prepare_asm_spec(std::vector<std::string> pv, uint32_t n_steps, std::vector<uint32_t> output_regs, uint32_t n_channels){

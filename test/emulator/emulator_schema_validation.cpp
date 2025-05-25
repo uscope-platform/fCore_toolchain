@@ -17,6 +17,7 @@
 #include "data_structures/emulation/v1/specs/emulator_specs.hpp"
 #include "frontend/schema_validators/schema_validator_base.h"
 
+using namespace fcore::emulator;
 using namespace fcore;
 
 TEST(emulator_schema, validation_success) {

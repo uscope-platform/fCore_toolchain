@@ -14,7 +14,7 @@
 
 
 #include "emulator/backend/gp_executor.hpp"
-namespace fcore{
+namespace fcore::emulator{
 
     uint32_t gp_executor::execute_add(uint32_t a, uint32_t b) {
         auto op_a = uint32_to_float(a);

@@ -14,11 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "../../../includes/data_structures/emulation/v1/emulation_program.hpp"
+#include "data_structures/emulation/v1/emulation_program.hpp"
 
 
 
-namespace fcore{
+namespace fcore::emulator{
 
     void emulation_program::process_raw_program(std::vector<uint32_t> &raw_program) {
 

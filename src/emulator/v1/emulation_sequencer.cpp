@@ -1,4 +1,4 @@
-//  Copyright 2022 Filippo Savi <filssavi@gmail.com>
+//  Copyright 2025 Filippo Savi <filssavi@gmail.com>
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "../../../includes/emulator/v1/emulation_sequencer.hpp"
+#include "emulator/v1/emulation_sequencer.hpp"
 
 #include <cmath>
 
 
-namespace fcore{
+namespace fcore::emulator{
 
     void emulation_sequencer::add_core(const std::string& core_id, uint32_t frequency, uint32_t order, uint32_t n_channels) {
         if(order==0){

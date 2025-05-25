@@ -19,7 +19,7 @@
 #include "emulator_test_helpers.hpp"
 #include "../../includes/emulator/v1/emulator_manager.hpp"
 
-using namespace fcore;
+using namespace fcore::emulator;
 
 
 TEST(Emulator_execution, emulator_load) {

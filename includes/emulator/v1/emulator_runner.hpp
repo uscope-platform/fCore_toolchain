@@ -22,7 +22,7 @@
 #include "data_structures/emulation/v1/program_bundle.hpp"
 #include "emulator/v1/emulator_builder.hpp"
 
-namespace fcore {
+namespace fcore::emulator {
 
 
     class emulator_runner {

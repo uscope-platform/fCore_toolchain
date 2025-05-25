@@ -23,7 +23,7 @@
 
 
 
-namespace fcore {
+namespace fcore::emulator {
 
     class interconnect_manager {
     public:

@@ -20,6 +20,7 @@
 #include "fcore_has.hpp"
 
 using namespace fcore;
+using namespace fcore::emulator;
 
 program_bundle prepare_test_bundle(std::vector<uint32_t> program){
 

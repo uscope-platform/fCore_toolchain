@@ -15,7 +15,7 @@
 
 #include "emulator/v1/backend/ba_executor.hpp"
 
-namespace fcore{
+namespace fcore::emulator{
 
     ba_executor::ba_executor() {
         xip_fpo_init2(xil_a, 8, 24);

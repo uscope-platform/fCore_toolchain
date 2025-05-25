@@ -28,7 +28,7 @@
 
 #include "emulator/v1/emulator_runner.hpp"
 
-namespace fcore{
+namespace fcore::emulator{
 
     class emulation_outputs_manager {
     public:

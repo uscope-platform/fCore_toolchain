@@ -15,7 +15,7 @@
 
 #include "emulator/v1/backend/efi_dispatcher.h"
 
-namespace fcore{
+namespace fcore::emulator{
 
     void efi_dispatcher::emulate_efi(efi_implementation_t function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
         if(function == efi_sort){

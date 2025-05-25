@@ -1,4 +1,4 @@
-//  Copyright 2022 Filippo Savi <filssavi@gmail.com>
+//  Copyright 2025 Filippo Savi <filssavi@gmail.com>
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "../../../includes/emulator/v1/emulator_builder.hpp"
+#include "emulator/v1/emulator_builder.hpp"
 
-namespace fcore{
+namespace fcore::emulator{
 
     emulator_builder::emulator_builder(bool dbg) {
         debug_autogen = dbg;

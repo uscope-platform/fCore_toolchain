@@ -19,7 +19,7 @@
 #include "emulator_test_helpers.hpp"
 #include "../../includes/emulator/v1/emulator_manager.hpp"
 
-using namespace fcore;
+using namespace fcore::emulator;
 
 TEST(emulator_manager_bulk, emulator_executable_format) {
 
@@ -2011,7 +2011,7 @@ TEST(emulator_manager_bulk, emulator_disassemble) {
     emulator_manager manager;
     manager.set_specs(specs);
     auto res = manager.disassemble();
-    std::unordered_map<std::string, disassembled_program> expected = {
+    std::unordered_map<std::string, fcore::disassembled_program> expected = {
             {"test_producer", {{{5,3}, {4,1}, {3,2}}, "add r2, r1, r3\nstop\n"}},
             {"test_reducer",  {{{5,3}, {4,2}, {3,1}}, "mul r1, r2, r3\nstop\n"}}
     };

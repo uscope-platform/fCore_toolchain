@@ -1,6 +1,6 @@
 
 
-//  Copyright 2024 Filippo Savi <filssavi@gmail.com>
+//  Copyright 2025 Filippo Savi <filssavi@gmail.com>
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
 #include "emulator_metadata.hpp"
 #include "specs/emulator_specs.hpp"
 
-namespace fcore {
+namespace fcore::emulator {
 
     class program_bundle{
     public:

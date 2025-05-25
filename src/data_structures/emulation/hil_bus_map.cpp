@@ -14,9 +14,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "../../../includes/data_structures/emulation/v1/hil_bus_map.hpp"
+#include "data_structures/emulation/v1/hil_bus_map.hpp"
 
-namespace fcore{
+namespace fcore::emulator{
 
     bool hil_bus_map::check_duplicates() {
         std::map<uint32_t, hil_bus_map_entry> working_set;
