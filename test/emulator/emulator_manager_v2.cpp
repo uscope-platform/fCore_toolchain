@@ -17,9 +17,9 @@
 #include <fstream>
 
 #include "emulator_test_helpers.hpp"
-#include "emulator/v1/emulator_manager.hpp"
+#include "emulator/v2/emulator_manager.hpp"
 
-using namespace fcore::emulator;
+using namespace fcore::emulator_v2;
 
 TEST(emulator_manager_v2, emulator_executable_format) {
 
