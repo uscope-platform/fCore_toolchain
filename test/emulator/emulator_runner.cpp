@@ -1,4 +1,4 @@
-//  Copyright 2024 Filippo Savi <filssavi@gmail.com>
+//  Copyright 2025 Filippo Savi <filssavi@gmail.com>
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 #include <gtest/gtest.h>
 
-#include "emulator/emulator_runner.hpp"
+#include "emulator/v1/emulator_runner.hpp"
 #include "fcore_has.hpp"
 
 using namespace fcore;

@@ -17,7 +17,7 @@
 #include <fstream>
 
 #include "emulator_test_helpers.hpp"
-#include "emulator/emulator_manager.hpp"
+#include "../../includes/emulator/v1/emulator_manager.hpp"
 
 using namespace fcore;
 

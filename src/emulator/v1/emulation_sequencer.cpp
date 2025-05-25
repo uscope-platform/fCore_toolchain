@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "emulator/emulation_sequencer.hpp"
+#include "../../../includes/emulator/v1/emulation_sequencer.hpp"
 
 #include <cmath>
 

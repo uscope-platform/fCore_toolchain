@@ -20,15 +20,15 @@
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 
-#include "emulator_builder.hpp"
-#include "emulator/backend/emulator_backend.hpp"
-#include "emulation_sequencer.hpp"
-#include "data_structures/emulation/hil_bus_map.hpp"
-#include "../data_structures/emulation/specs/v1/emulator_specs.hpp"
-#include "emulator/backend/emulation_outputs_manager.hpp"
-#include "data_structures/emulation/emulator_metadata.hpp"
-#include "emulator/interconnect_manager.hpp"
-#include "emulator_runner.hpp"
+#include "emulator/v1/emulator_builder.hpp"
+#include "emulator/v1/backend/emulator_backend.hpp"
+#include "emulator/v1/emulation_sequencer.hpp"
+#include "data_structures/emulation/v1/hil_bus_map.hpp"
+#include "data_structures/emulation/v1/specs/emulator_specs.hpp"
+#include "emulator/v1/backend/emulation_outputs_manager.hpp"
+#include "data_structures/emulation/v1/emulator_metadata.hpp"
+#include "emulator/v1/interconnect_manager.hpp"
+#include "emulator/v1/emulator_runner.hpp"
 
 namespace fcore{
 

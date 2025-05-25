@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "data_structures/emulation/specs/v1/emulator_specs.hpp"
+#include "data_structures/emulation/v1/specs/emulator_specs.hpp"
 
 namespace fcore::emulator {
 

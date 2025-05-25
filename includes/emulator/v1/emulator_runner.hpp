@@ -1,6 +1,6 @@
 
 
-//  Copyright 2024 Filippo Savi <filssavi@gmail.com>
+//  Copyright 2025 Filippo Savi <filssavi@gmail.com>
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 #ifndef FCORE_TOOLCHAIN_EMULATOR_RUNNER_HPP
 #define FCORE_TOOLCHAIN_EMULATOR_RUNNER_HPP
 
-#include "emulator/backend/emulator_backend.hpp"
-#include "emulation_sequencer.hpp"
-#include "data_structures/emulation/program_bundle.hpp"
-#include "emulator_builder.hpp"
+#include "emulator/v1/backend/emulator_backend.hpp"
+#include "emulator/v1/emulation_sequencer.hpp"
+#include "data_structures/emulation/v1/program_bundle.hpp"
+#include "emulator/v1/emulator_builder.hpp"
 
 namespace fcore {
 

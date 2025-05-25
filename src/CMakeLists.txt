@@ -106,17 +106,17 @@ set(FCORE_EMU_SRCS
         frontend/schema_validators/schema_validator_base.cpp
         data_structures/emulation/hil_bus_map.cpp
         data_structures/emulation/emulator_output.cpp
-        data_structures/emulation/specs/v1/emulator_specs.cpp
+        data_structures/emulation/specs/emulator_specs.cpp
         data_structures/emulation/emulation_program.cpp
-        emulator/backend/emulator_backend.cpp
-        emulator/backend/emulation_outputs_manager.cpp
-        emulator/backend/efi_dispatcher.cpp
-        emulator/emulator_builder.cpp
-        emulator/emulation_sequencer.cpp
-        emulator/emulator_manager.cpp
-        emulator/emulator_runner.cpp
-        emulator/backend/multirate_io_repeater.cpp
-        emulator/interconnect_manager.cpp
+        emulator/v1/backend/emulator_backend.cpp
+        emulator/v1/backend/emulation_outputs_manager.cpp
+        emulator/v1/backend/efi_dispatcher.cpp
+        emulator/v1/emulator_builder.cpp
+        emulator/v1/emulation_sequencer.cpp
+        emulator/v1/emulator_manager.cpp
+        emulator/v1/emulator_runner.cpp
+        emulator/v1/backend/multirate_io_repeater.cpp
+        emulator/v1/interconnect_manager.cpp
         )
 
 
@@ -175,10 +175,10 @@ add_executable(fCore_emu fcore_emu_main.cpp)
 
 if(${INCLUDE_EMULATOR})
 
-    add_library(fcore_emu_lib ${FCORE_EMU_SRCS} emulator/backend/ba_executor.cpp)
+    add_library(fcore_emu_lib ${FCORE_EMU_SRCS} emulator/v1/backend/ba_executor.cpp)
     target_compile_definitions(fcore_emu_lib PUBLIC GENERAL_PURPOSE_EMULATION=0)
 
-    add_library(fcore_emu_lib_gp ${FCORE_EMU_SRCS} emulator/backend/gp_executor.cpp)
+    add_library(fcore_emu_lib_gp ${FCORE_EMU_SRCS} emulator/v1/backend/gp_executor.cpp)
     target_compile_definitions(fcore_emu_lib_gp PUBLIC GENERAL_PURPOSE_EMULATION=1)
     target_link_libraries(fcore_emu_lib_gp PUBLIC
             fcore_dis_lib
@@ -198,7 +198,7 @@ if(${INCLUDE_EMULATOR})
     install(FILES ../third_party/fp_ip_cmodel/lib/libIp_floating_point_v7_1_bitacc_cmodel.so
             DESTINATION ${CMAKE_INSTALL_LIBDIR})
 else ()
-    add_library(fcore_emu_lib ${FCORE_EMU_SRCS} emulator/backend/gp_executor.cpp)
+    add_library(fcore_emu_lib ${FCORE_EMU_SRCS} emulator/v1/backend/gp_executor.cpp)
     target_compile_definitions(fcore_emu_lib PUBLIC GENERAL_PURPOSE_EMULATION=1)
 
 endif(${INCLUDE_EMULATOR})

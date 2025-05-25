@@ -23,7 +23,7 @@
 
 #include <CLI/CLI.hpp>
 
-#include "emulator/emulator_manager.hpp"
+#include "emulator/v1/emulator_manager.hpp"
 #include "instrumentation/instrumentation_core.hpp"
 
 int main(int argc, char **argv) {

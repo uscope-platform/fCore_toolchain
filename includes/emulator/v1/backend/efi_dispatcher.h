@@ -24,7 +24,7 @@
 #include <cstring>
 #include <algorithm>
 
-#include "data_structures/emulation/emulator_metadata.hpp"
+#include "data_structures/emulation/v1/emulator_metadata.hpp"
 
 namespace fcore{
 

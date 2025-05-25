@@ -23,8 +23,8 @@
 #include <cstdint>
 
 #include "data_structures/common/io_map_entry.hpp"
-#include "data_structures/emulation/emulator_metadata.hpp"
-#include "specs/v1/emulator_specs.hpp"
+#include "emulator_metadata.hpp"
+#include "specs/emulator_specs.hpp"
 
 namespace fcore {
 

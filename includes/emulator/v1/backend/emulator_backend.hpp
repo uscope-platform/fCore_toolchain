@@ -21,14 +21,14 @@
 #include <spdlog/spdlog.h>
 
 #include "efi_dispatcher.h"
-#include "data_structures/emulation/emulation_program.hpp"
-#include "data_structures/emulation/emulator_metadata.hpp"
+#include "data_structures/emulation/v1/emulation_program.hpp"
+#include "data_structures/emulation/v1/emulator_metadata.hpp"
 #include "fCore_isa.hpp"
 
 #if GENERAL_PURPOSE_EMULATION==1
-    #include "emulator/backend/gp_executor.hpp"
+    #include "emulator/v1/backend/gp_executor.hpp"
 #else
-    #include "emulator/backend/ba_executor.hpp"
+    #include "emulator/v1/backend/ba_executor.hpp"
 #endif
 
 

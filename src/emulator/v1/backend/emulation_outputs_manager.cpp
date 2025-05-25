@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "emulator/backend/emulation_outputs_manager.hpp"
+#include "emulator/v1/backend/emulation_outputs_manager.hpp"
 
 namespace fcore{
 

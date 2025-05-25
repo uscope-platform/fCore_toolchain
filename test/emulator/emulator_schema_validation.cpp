@@ -14,7 +14,7 @@
 
 #include <gtest/gtest.h>
 #include <fstream>
-#include "../../includes/data_structures/emulation/specs/v1/emulator_specs.hpp"
+#include "data_structures/emulation/v1/specs/emulator_specs.hpp"
 #include "frontend/schema_validators/schema_validator_base.h"
 
 using namespace fcore;

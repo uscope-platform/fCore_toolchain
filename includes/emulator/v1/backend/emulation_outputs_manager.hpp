@@ -21,12 +21,12 @@
 #include <string>
 #include <nlohmann/json.hpp>
 
-#include "../../data_structures/emulation/specs/v1/emulator_specs.hpp"
-#include "data_structures/emulation/emulator_output.hpp"
-#include "data_structures/emulation/emulator_metadata.hpp"
+#include "data_structures/emulation/v1/specs/emulator_specs.hpp"
+#include "data_structures/emulation/v1/emulator_output.hpp"
+#include "data_structures/emulation/v1/emulator_metadata.hpp"
 #include "data_structures/common/io_map_entry.hpp"
 
-#include "emulator/emulator_runner.hpp"
+#include "emulator/v1/emulator_runner.hpp"
 
 namespace fcore{
 

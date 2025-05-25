@@ -17,8 +17,8 @@
 #ifndef INTERCONNECT_MANAGER_HPP
 #define INTERCONNECT_MANAGER_HPP
 
-#include "emulator_runner.hpp"
-#include "emulator/backend/multirate_io_repeater.hpp"
+#include "emulator/v1/emulator_runner.hpp"
+#include "emulator/v1/backend/multirate_io_repeater.hpp"
 #include <spdlog/spdlog.h>
 
 
