@@ -789,7 +789,21 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
         },
         {
           "id": "test_consumer",
-          "inputs": [],
+          "inputs": [
+            {
+              "name": "input_1",
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type":"external"
+              },
+              "channel": 0
+            }
+          ],
           "input_data": [],
           "memory_init": [],
           "outputs": [
