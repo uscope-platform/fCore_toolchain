@@ -28,42 +28,6 @@ TEST(emulator_manager_v2, emulator_executable_format) {
       "cores": [
         {
           "id": "test",
-          "input_data": [
-            {
-              "name": "file_a",
-              "data": {
-                "input_1": [
-                  15.7,
-                  67.4
-                ],
-                "input_2": [
-                  42.92,
-                  -5.8
-                ],
-                "spurious": [
-                  123.5,
-                  5278.6
-                ]
-              }
-            },
-            {
-              "name": "file_b",
-              "data": {
-                "input_1": [
-                  135.7,
-                  672.4
-                ],
-                "input_2": [
-                  423.92,
-                  -35.8
-                ],
-                "spurious": [
-                  1213.5,
-                  52378.6
-                ]
-              }
-            }
-          ],
           "inputs": [
             {
               "name": "input_1",
@@ -75,9 +39,8 @@ TEST(emulator_manager_v2, emulator_executable_format) {
               },
               "reg_n": 15,
               "source": {
-                "type": "file",
-                "series": "input_1",
-                "file": "file_a"
+                "type": "series",
+                "value": [15.7,67.4]
               },
               "channel": 0
             },
@@ -91,9 +54,8 @@ TEST(emulator_manager_v2, emulator_executable_format) {
               },
               "reg_n": 38,
               "source": {
-                "type": "file",
-                "series": "input_2",
-                "file": "file_a"
+                "type": "series",
+                "value": [42.92,-5.8]
               },
               "channel": 0
             }

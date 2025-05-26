@@ -51,11 +51,9 @@ const std::string emulator_schema_v2 = R"~(
           "channels",
           "options",
           "sampling_frequency",
-          "input_data",
           "deployment"
         ],
         "properties": {
-
           "id": {
             "type": "string",
             "title": "Identification string of the core"
@@ -180,7 +178,7 @@ const std::string emulator_schema_v2 = R"~(
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": ["constant", "file", "external"],
+                      "enum": ["constant", "series", "external"],
                       "title": "Type of source"
                     },
                     "value": {
@@ -199,36 +197,6 @@ const std::string emulator_schema_v2 = R"~(
                         {
                           "type": "string",
                           "value": ""
-                        }
-                      ]
-                    },
-                    "file": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "title": "name of the file containing the data series source"
-                        },
-                        {
-                          "type": "array",
-                          "title": "names of the files containing the data series source (one per channel)",
-                          "items": {
-                            "type": "string"
-                          }
-                        }
-                      ]
-                    },
-                    "series": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "title": "name of the data series chosen"
-                        },
-                        {
-                          "type": "array",
-                          "title": "names of the data series chosen (one per channel)",
-                          "items": {
-                            "type": "string"
-                          }
                         }
                       ]
                     }
@@ -436,21 +404,6 @@ const std::string emulator_schema_v2 = R"~(
               "headers",
               "build_settings"
             ]
-          },
-          "input_data": {
-            "type": "array",
-            "title": "Array of object containing possible input data series",
-            "items": {
-              "type": "object",
-              "title": "input series collections object",
-              "required": [
-                "data",
-                "name"
-              ],
-              "data":{
-                "type": "object"
-              }
-            }
           },
           "deployment": {
             "title": "options for custom deployment",

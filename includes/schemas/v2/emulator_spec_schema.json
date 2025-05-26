@@ -27,11 +27,9 @@
           "channels",
           "options",
           "sampling_frequency",
-          "input_data",
           "deployment"
         ],
         "properties": {
-
           "id": {
             "type": "string",
             "title": "Identification string of the core"
@@ -156,7 +154,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": ["constant", "file", "external"],
+                      "enum": ["constant", "series", "external"],
                       "title": "Type of source"
                     },
                     "value": {
@@ -175,36 +173,6 @@
                         {
                           "type": "string",
                           "value": ""
-                        }
-                      ]
-                    },
-                    "file": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "title": "name of the file containing the data series source"
-                        },
-                        {
-                          "type": "array",
-                          "title": "names of the files containing the data series source (one per channel)",
-                          "items": {
-                            "type": "string"
-                          }
-                        }
-                      ]
-                    },
-                    "series": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "title": "name of the data series chosen"
-                        },
-                        {
-                          "type": "array",
-                          "title": "names of the data series chosen (one per channel)",
-                          "items": {
-                            "type": "string"
-                          }
                         }
                       ]
                     }
@@ -372,6 +340,10 @@
                 "type": "string",
                 "title": "source code of the selected program"
               },
+              "type":{
+                "type": "string",
+                "enum": ["c", "asm"]
+              },
               "io": {
                 "type": "object",
                 "title": "Object listing input, output and memories for the program",
@@ -401,10 +373,6 @@
                     }
                   }
                 }
-              },
-              "type":{
-                "type": "string",
-                "enum": ["c", "asm"]
               }
             },
             "required": [
@@ -413,31 +381,16 @@
               "build_settings"
             ]
           },
-          "input_data": {
-            "type": "array",
-            "title": "Array of object containing possible input data series",
-            "items": {
-              "type": "object",
-              "title": "input series collections object",
-              "required": [
-                "data",
-                "name"
-              ],
-              "data":{
-                "type": "object"
-              }
-            }
-          },
           "deployment": {
             "title": "options for custom deployment",
             "type": "object",
             "properties": {
               "rom_address":{
-                "type": "integer",
+                "type": "number",
                 "title": "Address of the target core complex ROM bus"
               },
               "control_address": {
-                "type": "integer",
+                "type": "number",
                 "title": "Address of the target core complex control bus"
               },
               "has_reciprocal": {
@@ -564,7 +517,7 @@
     },
     "emulation_time": {
       "type": "number",
-      "title": "Length of time to emulate"
+      "title": "Length of time to emulation_phase"
     },
     "deployment_mode": {
       "type": "boolean",
