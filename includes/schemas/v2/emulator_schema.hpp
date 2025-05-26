@@ -195,6 +195,13 @@ const std::string emulator_schema_v2 = R"~(
                           }
                         },
                         {
+                          "type": "array",
+                          "title": "Constants to be used as input",
+                          "items": {
+                            "type": "array"
+                          }
+                        },
+                        {
                           "type": "string",
                           "value": ""
                         }

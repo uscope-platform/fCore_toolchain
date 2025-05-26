@@ -44,9 +44,8 @@ namespace fcore::emulator_v2 {
         emulator_core process_core(const nlohmann::json &o);
         emulator_interconnect process_interconnect(const nlohmann::json &ic);
         emulator_output_specs process_output(const nlohmann::json &o);
-        emulator_input_specs process_input(const nlohmann::json &i, const nlohmann::json &in_data);
+        emulator_input_specs process_input(const nlohmann::json &i);
         emulator_memory_specs process_memory(const nlohmann::json &m);
-        nlohmann::json get_input_series(const nlohmann::json &input_data_obj, const std::string& file, const std::string &series);
 
 
         bool check_float_intness(double d){

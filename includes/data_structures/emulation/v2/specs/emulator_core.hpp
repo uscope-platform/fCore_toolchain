@@ -75,7 +75,7 @@ namespace fcore::emulator_v2 {
 
     static std::unordered_map<std::string, input_type > input_type_map = {
             {"constant", constant_input},
-            {"file", time_series_input},
+            {"series", time_series_input},
             {"external", external_input},
     };
 

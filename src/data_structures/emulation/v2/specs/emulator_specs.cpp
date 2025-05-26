@@ -69,7 +69,7 @@ namespace fcore::emulator_v2 {
         return out;
     }
 
-    emulator_input_specs emulator_specs::process_input(const nlohmann::json &i, const nlohmann::json &in_data) {
+    emulator_input_specs emulator_specs::process_input(const nlohmann::json &i) {
         emulator_input_specs in;
 
 
@@ -82,27 +82,19 @@ namespace fcore::emulator_v2 {
             in.data = {};
         } else if(in.source_type == time_series_input){
             std::vector<std::string> series;
-            std::vector<std::string> files;
-            if(i["source"]["series"].size() != i["source"]["file"].size()){
-                throw std::runtime_error("source.series and source.file fields need to have the same dimensions for input "+ in.name);
-            }
-            if(i["source"]["series"].is_array()) {
-                series = i["source"]["series"];
-                files = i["source"]["file"];
-            } else {
-                series = {i["source"]["series"]};
-                files = {i["source"]["file"]};
-            }
-            for(int j = 0; j<files.size(); j++){
-                auto sel_series =get_input_series(in_data, files[j], series[j]);
-                auto dbg = sel_series.dump();
-                if(in.metadata.type== type_float){
-                    std::vector<float> ds = sel_series;
-                    in.data.emplace_back(ds);
+            if(in.metadata.type== type_float){
+                if(i["source"]["value"][0].is_array()) {
+                    for(auto &item:i["source"]["value"]) {
+                        std::vector<float> ds = item;
+                        in.data.emplace_back(ds);
+                    }
                 } else {
-                    std::vector<uint32_t> ds = sel_series;
+                    std::vector<float> ds = i["source"]["value"];
                     in.data.emplace_back(ds);
                 }
+            } else {
+                std::vector<uint32_t> ds = i["source"]["value"];
+                in.data.emplace_back(ds);
             }
         } else {
             std::vector<std::variant<std::vector<unsigned int>, std::vector<float>>> ds;
@@ -196,7 +188,7 @@ namespace fcore::emulator_v2 {
 
 
         for(auto &i: core_obj["inputs"]){
-            c.inputs.push_back(process_input(i, core_obj["input_data"]));
+            c.inputs.push_back(process_input(i));
         }
 
         double rom_address = core_obj["deployment"]["rom_address"];
@@ -303,17 +295,6 @@ namespace fcore::emulator_v2 {
         }
 
         return mem;
-    }
-
-    nlohmann::json
-    emulator_specs::get_input_series(const nlohmann::json &input_data_obj, const std::string& file, const std::string& series) {
-        for(auto &d : input_data_obj){
-            std::string name = d["name"];
-            if(name == file){
-                return d["data"][series];
-            }
-        }
-        throw std::runtime_error("Data series not found: " + file + "." + series);
     }
 
 } // fcore

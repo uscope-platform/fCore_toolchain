@@ -132,43 +132,6 @@ TEST(emulator_manager_v2, emulator_compile_error) {
   "cores": [
     {
       "id": "test",
-      "input_data": [
-        {
-          "name": "file_a",
-          "data": {
-            "input_1": [
-              15.7,
-              67.4
-            ],
-            "input_2": [
-              42.92,
-              -5.8
-            ],
-            "spurious": [
-              123.5,
-              5278.6
-            ]
-          }
-        },
-        {
-          "name": "file_b",
-          "data": {
-            "input_1": [
-              135.7,
-              672.4
-            ],
-            "input_2": [
-              423.92,
-              -35.8
-            ],
-            "spurious": [
-              1213.5,
-              52378.6
-            ]
-          }
-
-        }
-      ],
       "inputs": [
         {
           "name": "input_1",
@@ -181,9 +144,8 @@ TEST(emulator_manager_v2, emulator_compile_error) {
           "type": "float",
           "reg_n": 15,
           "source": {
-            "type":"file",
-            "series": "input_1",
-            "file": "file_a"
+            "type":"series",
+            "value": [15.7,67.4]
           },
           "channel": 0
         },
@@ -197,9 +159,8 @@ TEST(emulator_manager_v2, emulator_compile_error) {
           },
           "reg_n": 38,
           "source": {
-            "type":"file",
-            "series": "input_2",
-            "file": "file_a"
+            "type":"series",
+            "value": [42.92,5.8]
           },
           "channel": 0
         }
@@ -275,7 +236,6 @@ TEST(emulator_manager_v2, emulator_asm) {
             {
                 "id": "test",
                 "order": 1,
-                "input_data": [],
                 "inputs": [],
                 "outputs": [
                     {
@@ -337,16 +297,6 @@ TEST(emulator_manager_v2, emulator_inputs) {
             {
                 "id": "test",
                 "order": 1,
-                "input_data": [
-                    {
-                        "name": "data_file_1",
-                        "data":
-                            {
-                                "input_1": [15.7,67.4],
-                                "input_2": [42.92,-5.8]
-                            }
-                    }
-                ],
                 "inputs": [
                     {
                         "name": "input_1",
@@ -357,9 +307,8 @@ TEST(emulator_manager_v2, emulator_inputs) {
                             "common_io": false
                         },
                         "source": {
-                            "type": "file",
-                            "file": "data_file_1",
-                            "series": "input_1"
+                            "type": "series",
+                            "value": [15.7,67.4]
                         },
                         "reg_n": 1,
                         "channel": [0]
@@ -373,9 +322,8 @@ TEST(emulator_manager_v2, emulator_inputs) {
                             "common_io": false
                         },
                         "source": {
-                            "type": "file",
-                            "file": "data_file_1",
-                            "series": "input_2"
+                            "type": "series",
+                            "value": [42.92,-5.8]
                         },
                         "reg_n": 2,
                         "channel": [0]
@@ -441,16 +389,6 @@ TEST(emulator_manager_v2, emulator_consecutive_runs) {
             {
                 "id": "test",
                 "order": 1,
-                "input_data": [
-                    {
-                        "name": "data_file_1",
-                        "data":
-                            {
-                                "input_1": [15.7,67.4],
-                                "input_2": [42.92,-5.8]
-                            }
-                    }
-                ],
                 "inputs": [
                     {
                         "name": "input_1",
@@ -461,9 +399,8 @@ TEST(emulator_manager_v2, emulator_consecutive_runs) {
                             "common_io": false
                         },
                         "source": {
-                            "type": "file",
-                            "file": "data_file_1",
-                            "series": "input_1"
+                            "type": "series",
+                            "value": [15.7,67.4]
                         },
                         "reg_n": 1,
                         "channel": [0]
@@ -477,9 +414,8 @@ TEST(emulator_manager_v2, emulator_consecutive_runs) {
                             "common_io": false
                         },
                         "source": {
-                            "type": "file",
-                            "file": "data_file_1",
-                            "series": "input_2"
+                            "type": "series",
+                            "value": [42.92,-5.8]
                         },
                         "reg_n": 2,
                         "channel": [0]
@@ -571,25 +507,6 @@ TEST(emulator_manager_v2, emulator_outputs) {
       "cores": [
         {
           "id": "test",
-          "input_data": [
-            {
-              "name": "file_1",
-              "data": {
-                "input_1": [
-                  15.7,
-                  67.4
-                ],
-                "input_2": [
-                  42.92,
-                  -5.8
-                ],
-                "spurious": [
-                  123.5,
-                  5278.6
-                ]
-              }
-            }
-          ],
           "inputs": [
             {
               "name": "input_1",
@@ -601,9 +518,8 @@ TEST(emulator_manager_v2, emulator_outputs) {
               },
               "reg_n": 1,
               "source": {
-                "type":"file",
-                "file": "file_1",
-                "series": "input_1"
+                "type":"series",
+                "value": [15.7,67.4]
               },
               "channel": 0
             },
@@ -617,9 +533,8 @@ TEST(emulator_manager_v2, emulator_outputs) {
               },
               "reg_n": 2,
               "source": {
-                "type":"file",
-                "file": "file_1",
-                "series": "input_2"
+                "type":"series",
+                "value": [42.92,-5.8]
               },
               "channel": 0
             }
@@ -709,16 +624,6 @@ TEST(emulator_manager_v2, emulator_memory) {
             {
                 "id": "test",
                 "order": 1,
-                "input_data": [
-                    {
-                        "name": "data_file_1",
-                        "data":
-                            {
-                                "input_1": [15.7,67.4],
-                                "input_2": [42.92,-5.8]
-                            }
-                    }
-                ],
                 "inputs": [
                     {
                         "name": "input_1",
@@ -729,9 +634,8 @@ TEST(emulator_manager_v2, emulator_memory) {
                             "common_io": false
                         },
                         "source": {
-                            "type": "file",
-                            "file": "data_file_1",
-                            "series": "input_1"
+                            "type": "series",
+                            "value": [15.7,67.4]
                         },
                         "reg_n": 1,
                         "channel": [0]
@@ -745,9 +649,8 @@ TEST(emulator_manager_v2, emulator_memory) {
                             "common_io": false
                         },
                         "source": {
-                            "type": "file",
-                            "file": "data_file_1",
-                            "series": "input_2"
+                            "type": "series",
+                            "value": [42.92,-5.8]
                         },
                         "reg_n": 2,
                         "channel": [0]
@@ -822,25 +725,6 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
   "cores": [
     {
       "id": "test_producer",
-      "input_data":[
-        {
-          "name": "file_1",
-          "data": {
-            "input_1": [
-              15.7,
-              67.4
-            ],
-            "input_2": [
-              42.92,
-              -5.8
-            ],
-            "spurious": [
-              123.5,
-              5278.6
-            ]
-          }
-        }
-      ],
       "inputs": [
         {
           "name": "input_1",
@@ -852,9 +736,8 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
           },
           "reg_n": 1,
           "source": {
-            "type":"file",
-            "file": "file_1",
-            "series": "input_1"
+            "type":"series",
+            "value": [15.7,67.4]
           },
           "channel": 0
         },
@@ -868,9 +751,8 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
           },
           "reg_n": 2,
           "source": {
-            "type":"file",
-            "file": "file_1",
-            "series": "input_2"
+            "type":"series",
+            "value": [42.92,-5.8]
           },
           "channel": 0
         }
@@ -1013,25 +895,6 @@ TEST(emulator_manager_v2, emulator_compilation) {
   "cores": [
     {
       "id": "test",
-      "input_data": [
-        {
-          "name": "file_1",
-          "data": {
-            "input_1": [
-              15.7,
-              67.4
-            ],
-            "input_2": [
-              42.92,
-              -5.8
-            ],
-            "spurious": [
-              123.5,
-              5278.6
-            ]
-          }
-        }
-      ],
       "inputs": [
         {
           "name": "input_1",
@@ -1043,9 +906,8 @@ TEST(emulator_manager_v2, emulator_compilation) {
           },
           "reg_n": 1,
           "source": {
-            "type":"file",
-            "file": "file_1",
-            "series": "input_1"
+            "type":"series",
+            "value": [15.7,67.4]
           },
           "channel": 0
         },
@@ -1059,9 +921,8 @@ TEST(emulator_manager_v2, emulator_compilation) {
           },
           "reg_n": 2,
           "source": {
-            "type":"file",
-            "file": "file_1",
-            "series": "input_2"
+            "type":"series",
+            "value": [42.92, -5.8]
           },
           "channel": 0
         }
@@ -1127,8 +988,160 @@ TEST(emulator_manager_v2, emulator_compilation) {
 
 TEST(emulator_manager_v2, emulator_compilation_interconnect) {
 
-    std::ifstream ifs("emu/test_compilation_interconnect.json");
-    nlohmann::json specs = nlohmann::json::parse(ifs);
+    nlohmann::json specs = nlohmann::json::parse( R"(
+        {
+          "version": 1,
+          "cores": [
+            {
+              "id": "test",
+              "inputs": [
+                {
+                  "name": "input_1",
+                  "metadata": {
+                    "type": "float",
+                    "width": 32,
+                    "signed": false,
+                    "common_io": false
+                  },
+                  "reg_n": 1,
+                  "source": {
+                    "type":"series",
+                    "value": [15.7,67.4]
+                  },
+                  "channel": 0
+                },
+                {
+                  "name": "input_2",
+                  "metadata": {
+                    "type": "float",
+                    "width": 32,
+                    "signed": false,
+                    "common_io": false
+                  },
+                  "source": {
+                    "type":"series",
+                    "value": [42.92,-5.8]
+                  },
+                  "reg_n": 2,
+                  "channel": 0
+                }
+              ],
+              "outputs": [
+                {
+                  "reg_n":[4],
+                  "type": "integer",
+                  "metadata": {
+                    "type": "integer",
+                    "width": 24,
+                    "signed": false
+                  },
+                  "name":"out"
+                }
+              ],
+              "memory_init": [],
+              "program":{
+                "content": "int main(){float input_1; float input_2; float out; out = fti(input_1 + input_2); out2=out;}",
+                "build_settings": {
+                  "io": {
+                    "inputs": [
+                      "input_1",
+                      "input_2"
+                    ],
+                    "outputs": [
+                      "out",
+                      "out2"
+                    ],
+                    "memories": []
+                  }
+                },
+                "headers": []
+              },
+              "order": 1,
+              "options":{
+                "comparators":"reducing",
+                "efi_implementation":"efi_sort"
+              },
+              "channels":1,
+              "sampling_frequency": 1,
+              "deployment": {
+                "has_reciprocal": false,
+                "control_address": 18316525568,
+                "rom_address": 17179869184
+              }
+            },
+            {
+              "id": "test_move",
+              "input_file": "emu/test_inputs.csv",
+              "inputs": [],
+              "outputs": [
+                {
+                  "reg_n":[5],
+                  "type": "integer",
+                  "metadata": {
+                    "type": "integer",
+                    "width": 15,
+                    "signed": false
+                  },
+                  "name":"out"
+                }
+              ],
+              "memory_init": [],
+              "program":{
+                "content": "int main(){float input; float out; float val = itf(input); out = fti(val+1.0);}",
+                "build_settings": {
+                  "io": {
+                    "inputs": [
+                      "input"
+                    ],
+                    "outputs": [
+                      "out"
+                    ],
+                    "memories": []
+                  }
+                },
+                "headers": []
+              },
+              "order": 2,
+              "options":{
+                "comparators":"reducing",
+                "efi_implementation":"efi_sort"
+              },
+              "channels":1,
+              "sampling_frequency": 1,
+              "deployment": {
+                "has_reciprocal": false,
+                "control_address": 18316525568,
+                "rom_address": 17179869184
+              }
+            }
+          ],
+          "interconnect":[
+            {
+              "source":"test",
+              "destination":"test_move",
+              "channels":[
+                {
+                  "name": "interconnect_name",
+                  "length": 1,
+                  "type": "scalar_transfer",
+                  "source_output":"out2",
+                  "source": {
+                    "channel": 0,
+                    "register": 6
+                  },
+                  "destination_input": "input",
+                  "destination": {
+                    "channel": 0,
+                    "register": 1
+                  }
+                }
+              ]
+            }
+          ],
+          "emulation_time": 2,
+          "deployment_mode": false
+        }
+    )");
     emulator_manager manager;
     manager.set_specs(specs);
     manager.process();
@@ -1151,25 +1164,6 @@ TEST(emulator_manager_v2, emulator_compilation_memory) {
   "cores": [
     {
       "id": "test",
-      "input_data": [
-        {
-          "name": "file_1",
-          "data": {
-            "input_1": [
-              15.7,
-              67.4
-            ],
-            "input_2": [
-              42.92,
-              -5.8
-            ],
-            "spurious": [
-              123.5,
-              5278.6
-            ]
-          }
-        }
-      ],
       "inputs": [
         {
           "name": "input_1",
@@ -1180,9 +1174,8 @@ TEST(emulator_manager_v2, emulator_compilation_memory) {
             "common_io": false
           },
           "source": {
-            "type":"file",
-            "file": "file_1",
-            "series":"input_1"
+            "type":"series",
+            "value": [15.7,67.4]
           },
           "reg_n": 1,
           "channel": 0
@@ -1257,7 +1250,6 @@ TEST(emulator_manager_v2, emulator_header) {
         {
             "id": "test",
             "order": 1,
-            "input_data": [],
             "inputs": [
                 {
                     "name": "input_1",
@@ -1361,7 +1353,6 @@ TEST(emulator_manager_v2, emulator_multichannel) {
         {
             "id": "test",
             "order": 1,
-            "input_data": [],
             "inputs": [
                 {
                     "name": "input_1",
@@ -1501,27 +1492,6 @@ TEST(emulator_manager_v2, emulator_multichannel_input_file) {
                 "efi_implementation":"none"
             },
             "sampling_frequency":1,
-            "input_data":[{
-                "name": "test_data",
-                    "data": {
-                        "input_a": [
-                            31.2,
-                            31.3
-                        ],
-                        "input_b": [
-                            32.7,
-                            32.8
-                        ],
-                        "input_c":[
-                            62.1,
-                            62.2
-                        ],
-                        "input_d":[
-                            64.0,
-                            64.1
-                        ]
-                    }
-            }],
             "inputs":[
                 {
                     "name": "input_1",
@@ -1534,9 +1504,8 @@ TEST(emulator_manager_v2, emulator_multichannel_input_file) {
                     "reg_n": 3,
                     "channel":[0,1,2,3],
                     "source":{
-                        "type": "file",
-                        "file": ["test_data", "test_data", "test_data", "test_data"],
-                        "series": ["input_a", "input_b", "input_c", "input_d"]
+                        "type": "series",
+                        "value": [[31.2,31.3], [32.7,32.8], [62.1,62.2], [64.0,64.1]]
                     }
                 },
                 {
@@ -1631,7 +1600,6 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
                 "efi_implementation":"none"
             },
             "sampling_frequency":1,
-            "input_data":[],
             "inputs":[
                 {
                     "name": "input_1",
@@ -1691,7 +1659,6 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
                 "efi_implementation":"none"
             },
             "sampling_frequency":1,
-            "input_data":[],
             "inputs":[],
             "outputs":[
                 {
@@ -1777,7 +1744,6 @@ TEST(emulator_manager_v2, emulator_multichannel_scatter_transfer) {
                     "efi_implementation":"none"
                 },
                 "sampling_frequency":1,
-                "input_data":[],
                 "inputs":[],
                 "outputs":[],
                 "memory_init":[],
@@ -1801,7 +1767,6 @@ TEST(emulator_manager_v2, emulator_multichannel_scatter_transfer) {
                     "efi_implementation":"none"
                 },
                 "sampling_frequency":1,
-                "input_data":[],
                 "inputs":[],
                 "outputs":[
                     {
@@ -1886,7 +1851,6 @@ TEST(emulator_manager_v2, emulator_multichannel_transfer_error) {
                     "efi_implementation":"none"
                 },
                 "sampling_frequency":1,
-                "input_data":[],
                 "inputs":[],
                 "outputs":[
                     {
@@ -1921,7 +1885,6 @@ TEST(emulator_manager_v2, emulator_multichannel_transfer_error) {
                     "efi_implementation":"none"
                 },
                 "sampling_frequency":1,
-                "input_data":[],
                 "inputs":[],
                 "outputs":[
                     {
@@ -2005,7 +1968,6 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
                     "efi_implementation":"none"
                 },
                 "sampling_frequency":1,
-                "input_data":[],
                 "inputs":[
                     {
                         "name": "input_1",
@@ -2054,7 +2016,6 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
                     "efi_implementation":"none"
                 },
                 "sampling_frequency":1,
-                "input_data":[],
                 "inputs":[],
                 "outputs":[
                     {
@@ -2137,7 +2098,6 @@ TEST(emulator_manager_v2, emulator_multichannel_2d_vector_transfer) {
                     "efi_implementation":"none"
                 },
                 "sampling_frequency":1,
-                "input_data":[],
                 "inputs":[],
                 "outputs":[],
                 "memory_init":[],
@@ -2161,7 +2121,6 @@ TEST(emulator_manager_v2, emulator_multichannel_2d_vector_transfer) {
                     "efi_implementation":"none"
                 },
                 "sampling_frequency":1,
-                "input_data":[],
                 "inputs":[],
                 "outputs":[
                     {
@@ -2249,7 +2208,6 @@ TEST(emulator_manager_v2, emulator_common_io) {
         {
             "id": "test",
             "order": 1,
-            "input_data": [],
             "inputs": [
                 {
                     "name": "a",
@@ -2356,7 +2314,6 @@ TEST(emulator_manager_v2, emulator_multichannel_input) {
                     "efi_implementation":"none"
                 },
                 "sampling_frequency":1,
-                "input_data":[],
                 "inputs":[
                     {
                         "name": "a",
@@ -2446,16 +2403,6 @@ TEST(emulator_manager_v2, emulator_memory_as_output) {
             {
                 "id": "test",
                 "order": 1,
-                "input_data": [
-                    {
-                        "name": "data_file_1",
-                        "data":
-                            {
-                                "input_1": [15.7,67.4],
-                                "input_2": [42.92,-5.8]
-                            }
-                    }
-                ],
                 "inputs": [
                     {
                         "name": "input_1",
@@ -2466,9 +2413,8 @@ TEST(emulator_manager_v2, emulator_memory_as_output) {
                             "common_io": false
                         },
                         "source": {
-                            "type": "file",
-                            "file": "data_file_1",
-                            "series": "input_1"
+                            "type": "series",
+                            "value": [15.7,67.4]
                         },
                         "reg_n": 1,
                         "channel": [0]
@@ -2482,9 +2428,8 @@ TEST(emulator_manager_v2, emulator_memory_as_output) {
                             "common_io": false
                         },
                         "source": {
-                            "type": "file",
-                            "file": "data_file_1",
-                            "series": "input_2"
+                            "type": "series",
+                            "value": [42.92,-5.8]
                         },
                         "reg_n": 2,
                         "channel": [0]
@@ -2562,7 +2507,6 @@ TEST(emulator_manager_v2, emulator_disassemble) {
                 "efi_implementation":"none"
             },
             "sampling_frequency":1,
-            "input_data":[],
             "inputs":[
                 {
                     "name": "input_1",
@@ -2622,7 +2566,6 @@ TEST(emulator_manager_v2, emulator_disassemble) {
                 "efi_implementation":"none"
             },
             "sampling_frequency":1,
-            "input_data":[],
             "inputs":[
                 {
                     "name": "input_data_1",
