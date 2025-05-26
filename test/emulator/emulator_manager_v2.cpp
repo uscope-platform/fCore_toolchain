@@ -237,6 +237,7 @@ TEST(emulator_manager_v2, emulator_asm) {
                         "name": "r12",
                         "type": "float",
                         "metadata":{
+                            "io_address": 12,
                             "type": "float",
                             "width": 12,
                             "signed":true,

@@ -25,7 +25,7 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
         for(auto &in:core.inputs) {
             for(int i = 0; i<core.channels; i++) {
                 bus_slot s;
-                s.address = allocate_slot();
+                s.address = allocate_slot(in.metadata.io_address);
                 s.source.core_name = core.id;
                 s.source.type = in.metadata.type;
                 s.source.channel = i;
@@ -42,7 +42,7 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
         for(auto &out:core.outputs) {
             for(int i = 0; i<core.channels; i++) {
                 bus_slot s;
-                s.address = allocate_slot();
+                s.address = allocate_slot(out.metadata.io_address);
                 s.source.core_name = core.id;
                 s.source.channel = i;
                 if(core.channels > 1) {
@@ -59,7 +59,7 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
         for(auto &mem:core.memories) {
             for(int i = 0; i<core.channels; i++) {
                 bus_slot s;
-                s.address = allocate_slot();
+                s.address = allocate_slot(mem.metadata.io_address);
                 s.source.core_name = core.id;
                 s.source.channel = i;
                 if(core.channels > 1) {
@@ -83,8 +83,27 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
     }
 }
 
-uint32_t bus_allocator::allocate_slot() {
+uint32_t bus_allocator::allocate_slot(uint16_t d_a) {
+    if(allocated_addresses.contains(d_a) && !desired_addresses.contains(d_a)) {
+        for(auto &slot:bus_map) {
+            if(slot.address == d_a) {
+                allocated_addresses.insert(current_index);
+                slot.address = current_index;
+                allocated_addresses.erase(d_a);
+            }
+        }
+    }
+
+    if(!allocated_addresses.contains(d_a)) {
+        allocated_addresses.insert(d_a);
+        desired_addresses.insert(d_a);
+        return d_a;
+    } else if(d_a != 0) {
+        throw std::runtime_error("Conflict between two signals for desired address " + std::to_string(d_a));
+    }
+    while(allocated_addresses.contains(current_index)) current_index++;
     auto address = current_index;
+    allocated_addresses.insert(address);
     current_index++;
     return address;
 }
@@ -115,6 +134,7 @@ uint32_t bus_allocator::get_address(const std::string &core, const std::string &
             return slot.address;
         }
     }
+    throw std::runtime_error("No slot found for core " + core + " input " + input + " channel " + std::to_string(channel));
 }
 
 void bus_allocator::clear() {

@@ -63,6 +63,9 @@ namespace fcore::emulator_v2 {
         out.metadata.width = o["metadata"]["width"];
         out.metadata.is_signed = o["metadata"]["signed"];
         out.metadata.is_common_io = o["metadata"]["common_io"];
+        if(o["metadata"].contains("io_address")) {
+            out.metadata.io_address = o["metadata"]["io_address"];
+        }
         out.name = o["name"];
         out.output_type = data_type_map[o["type"]];
 
@@ -77,6 +80,9 @@ namespace fcore::emulator_v2 {
         in.metadata.type = data_type_map[i["metadata"]["type"]];
         in.metadata.width = i["metadata"]["width"];
         in.metadata.is_signed = i["metadata"]["signed"];
+        if(i["metadata"].contains("io_address")) {
+            in.metadata.io_address = i["metadata"]["io_address"];
+        }
         in.metadata.is_common_io = i["metadata"]["common_io"];
         in.source_type = input_type_map[i["source"]["type"]];
         if(in.source_type == external_input) {
@@ -221,7 +227,9 @@ namespace fcore::emulator_v2 {
         mem.metadata.type = data_type_map[m["metadata"]["type"]];
         mem.metadata.width = m["metadata"]["width"];
         mem.metadata.is_signed = m["metadata"]["signed"];
-
+        if(m["metadata"].contains("io_address")) {
+            mem.metadata.io_address = m["metadata"]["io_address"];
+        }
         mem.is_output = m["is_output"];
 
         if(mem.metadata.type == type_float){
