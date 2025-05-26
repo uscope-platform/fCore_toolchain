@@ -37,7 +37,6 @@ TEST(emulator_manager_v2, emulator_executable_format) {
                 "signed": false,
                 "common_io": false
               },
-              "reg_n": 15,
               "source": {
                 "type": "series",
                 "value": [15.7,67.4]
@@ -52,7 +51,6 @@ TEST(emulator_manager_v2, emulator_executable_format) {
                 "signed": false,
                 "common_io": false
               },
-              "reg_n": 38,
               "source": {
                 "type": "series",
                 "value": [42.92,-5.8]
@@ -62,14 +60,13 @@ TEST(emulator_manager_v2, emulator_executable_format) {
           ],
           "outputs": [
             {
-              "reg_n": [
-                42
-              ],
+
               "type": "float",
               "metadata": {
                 "type": "float",
                 "width": 32,
-                "signed": false
+                "signed": false,
+                "common_io": false
               },
               "name": "test_out"
             }
@@ -142,7 +139,6 @@ TEST(emulator_manager_v2, emulator_compile_error) {
             "common_io": false
           },
           "type": "float",
-          "reg_n": 15,
           "source": {
             "type":"series",
             "value": [15.7,67.4]
@@ -157,7 +153,6 @@ TEST(emulator_manager_v2, emulator_compile_error) {
             "signed": false,
             "common_io": false
           },
-          "reg_n": 38,
           "source": {
             "type":"series",
             "value": [42.92,5.8]
@@ -167,12 +162,12 @@ TEST(emulator_manager_v2, emulator_compile_error) {
       ],
       "outputs": [
         {
-          "reg_n":[42],
           "type": "float",
           "metadata": {
             "type": "float",
             "width": 32,
-            "signed": false
+            "signed": false,
+            "common_io": false
           },
           "name":"test_out"
         }
@@ -244,9 +239,9 @@ TEST(emulator_manager_v2, emulator_asm) {
                         "metadata":{
                             "type": "float",
                             "width": 12,
-                            "signed":true
-                        },
-                        "reg_n": [12]
+                            "signed":true,
+                            "common_io": false
+                        }
                     }
                 ],
                 "memory_init": [],
@@ -310,7 +305,6 @@ TEST(emulator_manager_v2, emulator_inputs) {
                             "type": "series",
                             "value": [15.7,67.4]
                         },
-                        "reg_n": 1,
                         "channel": [0]
                     },
                     {
@@ -325,7 +319,6 @@ TEST(emulator_manager_v2, emulator_inputs) {
                             "type": "series",
                             "value": [42.92,-5.8]
                         },
-                        "reg_n": 2,
                         "channel": [0]
                     }
                 ],
@@ -336,9 +329,9 @@ TEST(emulator_manager_v2, emulator_inputs) {
                         "metadata":{
                             "type": "integer",
                             "width": 12,
-                            "signed":true
-                        },
-                        "reg_n": [4]
+                            "signed":true,
+                            "common_io": false
+                        }
                     }
                 ],
                 "memory_init": [],
@@ -348,7 +341,7 @@ TEST(emulator_manager_v2, emulator_inputs) {
                     "efi_implementation": "efi_sort"
                 },
                 "program": {
-                    "content": "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal + out;}",
+                    "content": "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal;}",
                     "build_settings": { "io": {"inputs": ["input_1","input_2"],"memories": ["out"],"outputs": [] } },
                     "type":"c",
                     "headers": []
@@ -375,9 +368,10 @@ TEST(emulator_manager_v2, emulator_inputs) {
     auto res_obj = manager.get_results();
 
     auto dbg = res_obj.dump(4);
-    uint32_t res = res_obj["test"]["outputs"]["out"]["0"][0][1];
 
-    ASSERT_EQ(res, 0x42f070a4);
+    std::vector<uint32_t> res = res_obj["test"]["outputs"]["out"]["0"][0];
+    std::vector<uint32_t> reference = {0x426a7ae1, 0x42766667};
+    ASSERT_EQ(res, reference);
 
 }
 
@@ -402,7 +396,6 @@ TEST(emulator_manager_v2, emulator_consecutive_runs) {
                             "type": "series",
                             "value": [15.7,67.4]
                         },
-                        "reg_n": 1,
                         "channel": [0]
                     },
                     {
@@ -417,23 +410,21 @@ TEST(emulator_manager_v2, emulator_consecutive_runs) {
                             "type": "series",
                             "value": [42.92,-5.8]
                         },
-                        "reg_n": 2,
                         "channel": [0]
                     }
                 ],
-                "outputs": [
-                    {
+                "outputs": [],
+                "memory_init": [{
                         "name": "out",
-                        "type": "integer",
                         "metadata":{
                             "type": "integer",
                             "width": 12,
                             "signed":true
                         },
-                        "reg_n": [4]
-                    }
-                ],
-                "memory_init": [],
+                        "reg_n": 4,
+                        "is_output":true,
+                        "value":0
+                    }],
                 "channels": 1,
                 "options": {
                     "comparators": "reducing",
@@ -516,7 +507,6 @@ TEST(emulator_manager_v2, emulator_outputs) {
                 "signed": false,
                 "common_io": false
               },
-              "reg_n": 1,
               "source": {
                 "type":"series",
                 "value": [15.7,67.4]
@@ -531,7 +521,6 @@ TEST(emulator_manager_v2, emulator_outputs) {
                 "signed": false,
                 "common_io": false
               },
-              "reg_n": 2,
               "source": {
                 "type":"series",
                 "value": [42.92,-5.8]
@@ -541,12 +530,12 @@ TEST(emulator_manager_v2, emulator_outputs) {
           ],
           "outputs": [
             {
-              "reg_n":[4],
               "type": "float",
               "metadata": {
                 "type": "float",
                 "width": 16,
-                "signed": true
+                "signed": true,
+                "common_io": false
               },
               "name":"out"
             }
@@ -578,7 +567,6 @@ TEST(emulator_manager_v2, emulator_outputs) {
                 "signed": false
               },
               "is_output": true,
-              "reg_n": 4,
               "value": 0
             }
           ],
@@ -637,7 +625,6 @@ TEST(emulator_manager_v2, emulator_memory) {
                             "type": "series",
                             "value": [15.7,67.4]
                         },
-                        "reg_n": 1,
                         "channel": [0]
                     },
                     {
@@ -652,7 +639,6 @@ TEST(emulator_manager_v2, emulator_memory) {
                             "type": "series",
                             "value": [42.92,-5.8]
                         },
-                        "reg_n": 2,
                         "channel": [0]
                     }
                 ],
@@ -663,9 +649,9 @@ TEST(emulator_manager_v2, emulator_memory) {
                         "metadata":{
                             "type": "integer",
                             "width": 12,
-                            "signed":true
-                        },
-                        "reg_n": [4]
+                            "signed":true,
+                            "common_io": false
+                        }
                     }
                 ],
                 "memory_init": [
@@ -676,7 +662,6 @@ TEST(emulator_manager_v2, emulator_memory) {
                             "width": 12,
                             "signed":true
                         },
-                        "reg_n": 12,
                         "is_output":true,
                         "value":2
                     }
@@ -720,161 +705,144 @@ TEST(emulator_manager_v2, emulator_memory) {
 
 TEST(emulator_manager_v2, emulator_inteconnect) {
 
-    nlohmann::json specs = nlohmann::json::parse( R"({
-  "version": 1,
-  "cores": [
+    nlohmann::json specs = nlohmann::json::parse( R"(
     {
-      "id": "test_producer",
-      "inputs": [
+      "version": 1,
+      "cores": [
         {
-          "name": "input_1",
-          "metadata": {
-            "type": "float",
-            "width": 32,
-            "signed": false,
-            "common_io": false
+          "id": "test_producer",
+          "inputs": [
+            {
+              "name": "input_1",
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type":"series",
+                "value": [15.7,67.4]
+              },
+              "channel": 0
+            },
+            {
+              "name": "input_2",
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type":"series",
+                "value": [42.92,-5.8]
+              },
+              "channel": 0
+            }
+          ],
+          "order": 1,
+          "outputs": [
+          ],
+          "program":{
+            "content": "void main(){float input_1,input_2; float c = input_1 + input_2; float producer_out = producer_out + c;}",
+            "build_settings": {
+              "io": {
+                "inputs": [
+                  "input_1",
+                  "input_2"
+                ],
+                "outputs": [
+                ],
+                "memories": [
+                  "producer_out"
+                ]
+              }
+            },
+            "headers": []
           },
-          "reg_n": 1,
-          "source": {
-            "type":"series",
-            "value": [15.7,67.4]
+          "memory_init": [
+            {
+              "name": "producer_out",
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "is_output": true,
+              "value": 0
+            }
+          ],
+          "options":{
+            "comparators":"reducing",
+            "efi_implementation":"efi_sort"
           },
-          "channel": 0
-        },
-        {
-          "name": "input_2",
-          "metadata": {
-            "type": "float",
-            "width": 32,
-            "signed": false,
-            "common_io": false
-          },
-          "reg_n": 2,
-          "source": {
-            "type":"series",
-            "value": [42.92,-5.8]
-          },
-          "channel": 0
-        }
-      ],
-      "order": 1,
-      "outputs": [
-      ],
-      "program":{
-        "content": "void main(){float input_1,input_2; float c = input_1 + input_2; float producer_out = producer_out + c;}",
-        "build_settings": {
-          "io": {
-            "inputs": [
-              "input_1",
-              "input_2"
-            ],
-            "outputs": [
-            ],
-            "memories": [
-              "producer_out"
-            ]
+          "channels":1,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
           }
         },
-        "headers": []
-      },
-      "memory_init": [
         {
-          "name": "producer_out",
-          "metadata": {
-            "type": "float",
-            "width": 32,
-            "signed": false
+          "id": "test_consumer",
+          "inputs": [],
+          "input_data": [],
+          "memory_init": [],
+          "outputs": [
+            {
+              "type": "integer",
+              "metadata": {
+                "type": "integer",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "name":"consumer_out"
+            }
+          ],
+          "order": 2,
+          "program":{
+            "content": "void main(){float input_1; float consumer_out = input_1;}",
+            "build_settings": {
+              "io": {
+                "inputs": [
+                  "input_1"
+                ],
+                "outputs": [
+                  "consumer_out"
+                ],
+                "memories": [
+                ]
+              }
+            },
+            "headers": []
           },
-          "is_output": true,
-          "reg_n": 4,
-          "value": 0
-        }
-      ],
-      "options":{
-        "comparators":"reducing",
-        "efi_implementation":"efi_sort"
-      },
-      "channels":1,
-      "sampling_frequency": 1,
-      "deployment": {
-        "has_reciprocal": false,
-        "control_address": 18316525568,
-        "rom_address": 17179869184
-      }
-    },
-    {
-      "id": "test_consumer",
-      "inputs": [],
-      "input_data": [],
-      "memory_init": [],
-      "outputs": [
-        {
-          "reg_n":[8],
-          "type": "integer",
-          "metadata": {
-            "type": "integer",
-            "width": 32,
-            "signed": false
+          "options":{
+            "comparators":"reducing",
+            "efi_implementation":"efi_sort"
           },
-          "name":"consumer_out"
-        }
-      ],
-      "order": 2,
-      "program":{
-        "content": "void main(){float input_1; float consumer_out = input_1;}",
-        "build_settings": {
-          "io": {
-            "inputs": [
-              "input_1"
-            ],
-            "outputs": [
-              "consumer_out"
-            ],
-            "memories": [
-            ]
+          "channels":1,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
           }
-        },
-        "headers": []
-      },
-      "options":{
-        "comparators":"reducing",
-        "efi_implementation":"efi_sort"
-      },
-      "channels":1,
-      "sampling_frequency": 1,
-      "deployment": {
-        "has_reciprocal": false,
-        "control_address": 18316525568,
-        "rom_address": 17179869184
-      }
+        }
+      ],
+      "interconnect":[
+        {
+          "source":"test_producer.producer_out",
+          "destination":"test_consumer.input_1"
+        }
+      ],
+      "emulation_time": 2,
+      "deployment_mode": false
     }
-  ],
-  "interconnect":[
-    {
-      "source":"test_producer",
-      "destination":"test_consumer",
-      "channels":[
-        {
-          "name": "interconnect_name",
-          "type": "scalar_transfer",
-          "length": 1,
-          "source_output": "producer_out",
-          "source": {
-            "channel": 0,
-            "register": 4
-          },
-          "destination_input": "input_1",
-          "destination": {
-            "channel": 0,
-            "register": 6
-          }
-        }
-      ]
-    }
-  ],
-  "emulation_time": 2,
-  "deployment_mode": false
-})");
+)");
 
 
     emulator_manager manager;
@@ -904,7 +872,6 @@ TEST(emulator_manager_v2, emulator_compilation) {
             "signed": false,
             "common_io": false
           },
-          "reg_n": 1,
           "source": {
             "type":"series",
             "value": [15.7,67.4]
@@ -919,7 +886,6 @@ TEST(emulator_manager_v2, emulator_compilation) {
             "signed": false,
             "common_io": false
           },
-          "reg_n": 2,
           "source": {
             "type":"series",
             "value": [42.92, -5.8]
@@ -929,12 +895,12 @@ TEST(emulator_manager_v2, emulator_compilation) {
       ],
       "outputs": [
         {
-          "reg_n":[4],
           "type": "integer",
           "metadata": {
             "type": "integer",
             "width": 15,
-            "signed": false
+            "signed": false,
+            "common_io": false
           },
           "name":"out"
         }
@@ -1003,7 +969,6 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
                     "signed": false,
                     "common_io": false
                   },
-                  "reg_n": 1,
                   "source": {
                     "type":"series",
                     "value": [15.7,67.4]
@@ -1022,18 +987,17 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
                     "type":"series",
                     "value": [42.92,-5.8]
                   },
-                  "reg_n": 2,
                   "channel": 0
                 }
               ],
               "outputs": [
                 {
-                  "reg_n":[4],
                   "type": "integer",
                   "metadata": {
                     "type": "integer",
                     "width": 24,
-                    "signed": false
+                    "signed": false,
+                    "common_io": false
                   },
                   "name":"out"
                 }
@@ -1075,12 +1039,12 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
               "inputs": [],
               "outputs": [
                 {
-                  "reg_n":[5],
                   "type": "integer",
                   "metadata": {
                     "type": "integer",
                     "width": 15,
-                    "signed": false
+                    "signed": false,
+                    "common_io": false
                   },
                   "name":"out"
                 }
@@ -1177,20 +1141,19 @@ TEST(emulator_manager_v2, emulator_compilation_memory) {
             "type":"series",
             "value": [15.7,67.4]
           },
-          "reg_n": 1,
           "channel": 0
         }
       ],
       "outputs": [
         {
-          "reg_n":[4],
+          "name":"out",
           "type": "float",
           "metadata": {
             "type": "float",
             "width": 32,
-            "signed": false
-          },
-          "name":"out"
+            "signed": false,
+            "common_io": false
+          }
         }
       ],
       "memory_init": [],
@@ -1263,7 +1226,6 @@ TEST(emulator_manager_v2, emulator_header) {
                         "type": "constant",
                         "value": [5]
                     },
-                    "reg_n": 3,
                     "channel": [0]
                 },
                 {
@@ -1278,7 +1240,6 @@ TEST(emulator_manager_v2, emulator_header) {
                         "type": "constant",
                         "value": [4]
                     },
-                    "reg_n": 4,
                     "channel": [0]
                 }
             ],
@@ -1289,9 +1250,9 @@ TEST(emulator_manager_v2, emulator_header) {
                     "metadata":{
                         "type": "float",
                         "width": 24,
-                        "signed":false
-                    },
-                    "reg_n": [5]
+                        "signed":false,
+                        "common_io": false
+                    }
                 }
             ],
             "memory_init": [],
@@ -1371,7 +1332,6 @@ TEST(emulator_manager_v2, emulator_multichannel) {
                             64
                         ]
                     },
-                    "reg_n": 3,
                     "channel": [
                         0,
                         1,
@@ -1396,7 +1356,6 @@ TEST(emulator_manager_v2, emulator_multichannel) {
                             12
                         ]
                     },
-                    "reg_n": 4,
                     "channel": [
                         0,
                         1,
@@ -1412,11 +1371,9 @@ TEST(emulator_manager_v2, emulator_multichannel) {
                     "metadata":{
                         "type": "float",
                         "width": 24,
-                        "signed":false
-                    },
-                    "reg_n": [
-                        5
-                    ]
+                        "signed":false,
+                        "common_io": false
+                    }
                 }
             ],
             "memory_init": [],
@@ -1501,7 +1458,6 @@ TEST(emulator_manager_v2, emulator_multichannel_input_file) {
                         "signed":false,
                         "common_io": false
                     },
-                    "reg_n": 3,
                     "channel":[0,1,2,3],
                     "source":{
                         "type": "series",
@@ -1516,7 +1472,6 @@ TEST(emulator_manager_v2, emulator_multichannel_input_file) {
                         "signed":false,
                         "common_io": false
                     },
-                    "reg_n": 4,
                     "channel":[0,1,2,3],
                     "source":{
                         "type": "constant",
@@ -1531,9 +1486,9 @@ TEST(emulator_manager_v2, emulator_multichannel_input_file) {
                     "metadata": {
                         "type": "float",
                         "width": 32,
-                        "signed": false
-                    },
-                    "reg_n":[5]
+                        "signed": false,
+                        "common_io": false
+                    }
                 }
             ],
             "memory_init":[],
@@ -1609,7 +1564,6 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
                         "signed":false,
                         "common_io": false
                     },
-                    "reg_n": 3,
                     "channel":[0,1],
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 },
@@ -1621,7 +1575,6 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
                         "signed":false,
                         "common_io": false
                     },
-                    "reg_n": 4,
                     "channel":[0,1],
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 }
@@ -1633,9 +1586,9 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
                     "metadata": {
                         "type": "float",
                         "width": 32,
-                        "signed": false
-                    },
-                    "reg_n":[5]
+                        "signed": false,
+                        "common_io": false
+                    }
                 }
             ],
             "memory_init":[],
@@ -1667,9 +1620,9 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
                     "metadata": {
                         "type": "float",
                         "width": 32,
-                        "signed": false
-                    },
-                    "reg_n":[5]
+                        "signed": false,
+                        "common_io": false
+                    }
                 }
             ],
             "memory_init":[],
@@ -1775,9 +1728,9 @@ TEST(emulator_manager_v2, emulator_multichannel_scatter_transfer) {
                         "metadata": {
                             "type": "float",
                             "width": 32,
-                            "signed": false
-                        },
-                        "reg_n":[5]
+                            "signed": false,
+                            "common_io": false
+                        }
                     }
                 ],
                 "memory_init":[],
@@ -1859,9 +1812,9 @@ TEST(emulator_manager_v2, emulator_multichannel_transfer_error) {
                         "metadata": {
                             "type": "float",
                             "width": 32,
-                            "signed": false
-                        },
-                        "reg_n":[5,6]
+                            "signed": false,
+                            "common_io": false
+                        }
                     }
                 ],
                 "memory_init":[],
@@ -1893,9 +1846,9 @@ TEST(emulator_manager_v2, emulator_multichannel_transfer_error) {
                         "metadata": {
                             "type": "float",
                             "width": 32,
-                            "signed": false
-                        },
-                        "reg_n":[5]
+                            "signed": false,
+                            "common_io": false
+                        }
                     }
                 ],
                 "memory_init":[],
@@ -1977,7 +1930,6 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
                             "signed":false,
                             "common_io": false
                         },
-                        "reg_n": 3,
                         "channel":[0,1],
                         "source":{"type": "constant","value": [31.2, 32.7]}
                     },
@@ -1989,7 +1941,6 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
                             "signed":false,
                             "common_io": false
                         },
-                        "reg_n": 4,
                         "channel":[0,1],
                         "source":{"type": "constant","value": [31.2, 32.7]}
                     }
@@ -2024,9 +1975,9 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
                         "metadata": {
                             "type": "float",
                             "width": 32,
-                            "signed": false
-                        },
-                        "reg_n":[7]
+                            "signed": false,
+                            "common_io": false
+                        }
                     }
                 ],
                 "memory_init":[],
@@ -2129,9 +2080,9 @@ TEST(emulator_manager_v2, emulator_multichannel_2d_vector_transfer) {
                         "metadata": {
                             "type": "float",
                             "width": 32,
-                            "signed": false
-                        },
-                        "reg_n":[7,8]
+                            "signed": false,
+                            "common_io": false
+                        }
                     }
                 ],
                 "memory_init":[],
@@ -2221,7 +2172,6 @@ TEST(emulator_manager_v2, emulator_common_io) {
                         "type": "constant",
                         "value": [5]
                     },
-                    "reg_n": 3,
                     "channel": [0]
                 },
                 {
@@ -2236,7 +2186,6 @@ TEST(emulator_manager_v2, emulator_common_io) {
                         "type": "constant",
                         "value": [1]
                     },
-                    "reg_n": 4,
                     "channel": [0]
                 }
             ],
@@ -2247,9 +2196,9 @@ TEST(emulator_manager_v2, emulator_common_io) {
                     "metadata":{
                         "type": "float",
                         "width": 24,
-                        "signed":false
-                    },
-                    "reg_n": [5]
+                        "signed":false,
+                        "common_io": false
+                    }
                 }
             ],
             "memory_init": [],
@@ -2327,7 +2276,6 @@ TEST(emulator_manager_v2, emulator_multichannel_input) {
                             "type": "constant",
                             "value": [5]
                         },
-                        "reg_n": 3,
                         "channel": [0]
                     },
                     {
@@ -2342,7 +2290,6 @@ TEST(emulator_manager_v2, emulator_multichannel_input) {
                             "type": "constant",
                             "value": [1]
                         },
-                        "reg_n": 4,
                         "channel": [0]
                     }
                 ],
@@ -2353,9 +2300,9 @@ TEST(emulator_manager_v2, emulator_multichannel_input) {
                         "metadata": {
                             "type": "float",
                             "width": 32,
-                            "signed": false
-                        },
-                        "reg_n":[7]
+                            "signed": false,
+                            "common_io": false
+                        }
                     }
                 ],
                 "memory_init":[],
@@ -2416,7 +2363,6 @@ TEST(emulator_manager_v2, emulator_memory_as_output) {
                             "type": "series",
                             "value": [15.7,67.4]
                         },
-                        "reg_n": 1,
                         "channel": [0]
                     },
                     {
@@ -2431,7 +2377,6 @@ TEST(emulator_manager_v2, emulator_memory_as_output) {
                             "type": "series",
                             "value": [42.92,-5.8]
                         },
-                        "reg_n": 2,
                         "channel": [0]
                     }
                 ],
@@ -2444,7 +2389,6 @@ TEST(emulator_manager_v2, emulator_memory_as_output) {
                             "width": 12,
                             "signed":true
                         },
-                        "reg_n": 4,
                         "is_output":true,
                         "value":2
                     }
@@ -2516,7 +2460,6 @@ TEST(emulator_manager_v2, emulator_disassemble) {
                         "signed":false,
                         "common_io": false
                     },
-                    "reg_n": 3,
                     "channel":[0,1],
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 },
@@ -2528,7 +2471,6 @@ TEST(emulator_manager_v2, emulator_disassemble) {
                         "signed":false,
                         "common_io": false
                     },
-                    "reg_n": 4,
                     "channel":[0,1],
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 }
@@ -2540,9 +2482,9 @@ TEST(emulator_manager_v2, emulator_disassemble) {
                     "metadata": {
                         "type": "float",
                         "width": 32,
-                        "signed": false
-                    },
-                    "reg_n":[5]
+                        "signed": false,
+                        "common_io": false
+                    }
                 }
             ],
             "memory_init":[],
@@ -2575,7 +2517,6 @@ TEST(emulator_manager_v2, emulator_disassemble) {
                         "signed":false,
                         "common_io": false
                     },
-                    "reg_n": 3,
                     "channel":[0,1],
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 },
@@ -2587,7 +2528,6 @@ TEST(emulator_manager_v2, emulator_disassemble) {
                         "signed":false,
                         "common_io": false
                     },
-                    "reg_n": 4,
                     "channel":[0,1],
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 }
@@ -2599,9 +2539,9 @@ TEST(emulator_manager_v2, emulator_disassemble) {
                     "metadata": {
                         "type": "float",
                         "width": 32,
-                        "signed": false
-                    },
-                    "reg_n":[5]
+                        "signed": false,
+                        "common_io": false
+                    }
                 }
             ],
             "memory_init":[],
@@ -2625,14 +2565,17 @@ TEST(emulator_manager_v2, emulator_disassemble) {
 
     emulator_manager manager;
     manager.set_specs(specs);
-    auto res = manager.disassemble();
+    //auto res = manager.disassemble();
     std::unordered_map<std::string, fcore::disassembled_program> expected = {
             {"test_producer", {{{5,3}, {4,1}, {3,2}}, "add r2, r1, r3\nstop\n"}},
             {"test_reducer",  {{{5,3}, {4,2}, {3,1}}, "mul r1, r2, r3\nstop\n"}}
     };
+    EXPECT_FALSE(true);
+    /*
     EXPECT_EQ(res["test_producer"].program, expected["test_producer"].program);
     EXPECT_EQ(res["test_producer"].translation_table, expected["test_producer"].translation_table);
     EXPECT_EQ(res["test_reducer"].program, expected["test_reducer"].program);
     EXPECT_EQ(res["test_reducer"].translation_table, expected["test_reducer"].translation_table);
+    */
 
 }

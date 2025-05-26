@@ -18,51 +18,20 @@
 
 namespace fcore::emulator_v2{
 
-    void emulation_outputs_manager::add_specs(const std::string& id, const std::vector<emulator_output_specs>& specs, uint32_t active_channels) {
-        for(const auto &spec:specs){
-            output_specs[id][spec.name]= spec;
-            auto data = emulator_output(spec, active_channels);
-            data_section[id].insert({spec.name, data});
-        }
-        output_specs[id];
-    }
+    void emulation_outputs_manager::process_specs(const bus_allocator &bus_engine) {
+        auto slots =bus_engine.get_bus_map();
+        for(auto &slot:slots) {
+            if(slot.source.endpoint_class == core_iom_output) {
+                output_slots[slot.source.core_name][slot.source.source_name] = slot;
 
-    void emulation_outputs_manager::add_interconnect_outputs(const emulator_interconnect &spec,const std::vector<emulator_core> &cores) {
-        for(auto &c:spec.channels){
-            auto stride = c.stride != 0 ? c.stride : 1;
-            auto length = c.length != 0 ? c.length : 1;
+                auto data = emulator_output(slot.source.source_name, 1);
+                data_section[slot.source.core_name].insert({slot.source.source_name, data});
+            }else if(slot.source.endpoint_class == core_iom_memory) {
+                output_slots[slot.source.core_name][slot.source.source_name] = slot;
 
-            emulator_output_specs out_spec;
-            out_spec.name = c.source.io_name;
-
-            if(c.type == dma_link_scalar || c.type == dma_link_gather || c.type == dma_link_vector){
-
-                out_spec.address.push_back(c.source.address[0]);
-
-            } else {
-                for(int i = 0; i< stride; i++){
-                    out_spec.address.push_back(c.source.address[0] + i);
-                }
+                auto data = emulator_output(slot.source.source_name, 1);
+                data_section[slot.source.core_name].insert({slot.source.source_name, data});
             }
-
-            for(auto &ch:cores){
-                if(ch.id == spec.source_core_id){
-                    for(auto &o:ch.outputs){
-                        if(c.source.io_name == o.name){
-                            out_spec.output_type = o.output_type;
-                        }
-                    }
-                }
-            }
-            // TODO: ALLOW USER TO CHOSE THIS
-            out_spec.output_type = type_float;
-            out_spec.metadata.type = type_float;
-            out_spec.metadata.width = 32;
-            out_spec.metadata.is_signed = true;
-
-            output_specs[spec.source_core_id][c.source.io_name] =  out_spec;
-            auto data = emulator_output(out_spec, length);
-            data_section[spec.source_core_id].insert({c.source.io_name, data});
         }
     }
 
@@ -70,25 +39,20 @@ namespace fcore::emulator_v2{
     void emulation_outputs_manager::process_outputs(
         const std::vector<core_step_metadata> &metadata
     ) {
-        for(const auto &s:output_specs){
+        for(const auto &[core_name, slots]:output_slots){
             core_step_metadata m;
             for(auto &m_temp:metadata){
-                if(s.first == m_temp.id) m = m_temp;
+                if(core_name == m_temp.id) m = m_temp;
             }
             if(!m.running){
                 // carry over previous outputs
-                for(auto &out: data_section[s.first]){
+                for(auto &out: data_section[core_name]){
 
                     out.second.repeat_last_data_point();
                 }
             } else {
-                for(auto &out: data_section[s.first]){
-                    auto spec = output_specs[s.first][out.first];
-                    if(spec.address.size()>1){
-                        process_vector_output(s.first, out.second, spec ,m.n_channels);
-                    } else {
-                        process_scalar_output(s.first, out.second, spec ,m.n_channels);
-                    }
+                for(auto &[slot_name,output]: data_section[core_name]){
+                    process_scalar_output(core_name, output,  slots.at(slot_name).address,m.n_channels);
                 }
 
             }
@@ -109,13 +73,13 @@ namespace fcore::emulator_v2{
     nlohmann::json emulation_outputs_manager::get_emulation_output(const std::string& core_id) {
         nlohmann::json res;
 
-        for(auto &s: output_specs[core_id]){
-            auto out_data = data_section[core_id].at(s.second.name);
+        for(auto &[slot_name, slot]: output_slots[core_id]){
+            auto out_data = data_section[core_id].at(slot_name);
             nlohmann::json output_obj;
-            if(s.second.output_type == type_uint){
-                res[s.second.name] = out_data.get_integer_data();
-            } else if(s.second.output_type == type_float){
-                res[s.second.name] = out_data.get_float_data();
+            if(slot.source.type == type_uint){
+                res[slot_name] = out_data.get_integer_data();
+            } else if(slot.source.type == type_float){
+                res[slot_name] = out_data.get_float_data();
             } else {
                 throw std::runtime_error("unknown output type");
             }
@@ -152,14 +116,12 @@ namespace fcore::emulator_v2{
     void emulation_outputs_manager::process_scalar_output(
             std::string core_id,
             emulator_output &out,
-            const emulator_output_specs &spec,
+            uint32_t address,
             uint32_t active_channels
     ){
-        uint16_t io_address = spec.address[0];
-
 
         for(int i = 0; i<active_channels; i++){
-            auto val = runners->at(core_id).dma_read(io_address, i);
+            auto val = runners->at(core_id).dma_read(address, i);
             out.add_data_point(val, i);
         }
     }
@@ -172,12 +134,14 @@ namespace fcore::emulator_v2{
     ){
         for(int  j= 0; j<active_channels; j++){
             std::vector<uint32_t> data_point;
-            for(int i = 0; i<spec.address.size(); i++){
+           /*
+            * for(int i = 0; i<spec.address.size(); i++){
                 uint16_t io_address = spec.address[i];
 
                 auto val = runners->at(core_id).dma_read(io_address, j);
                 data_point.push_back(val);
             }
+            */
             out.add_data_point(data_point, j);
         }
 
@@ -186,7 +150,7 @@ namespace fcore::emulator_v2{
 
     void emulation_outputs_manager::clear() {
         data_section.clear();
-        output_specs.clear();
+        output_slots.clear();
     }
 
 }

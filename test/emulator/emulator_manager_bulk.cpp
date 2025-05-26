@@ -194,8 +194,8 @@ TEST(emulator_manager_bulk, emulator_inputs) {
                     "efi_implementation": "efi_sort"
                 },
                 "program": {
-                    "content": "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal + out;}",
-                    "build_settings": { "io": {"inputs": ["input_1","input_2"],"memories": ["out"],"outputs": [] } },
+                    "content": "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal;}",
+                    "build_settings": { "io": {"inputs": ["input_1","input_2"],"memories": [],"outputs": ["out"] } },
                     "type":"c",
                     "headers": []
                 },
@@ -221,10 +221,9 @@ TEST(emulator_manager_bulk, emulator_inputs) {
     auto res_obj = manager.get_results();
 
     auto dbg = res_obj.dump(4);
-    uint32_t res = res_obj["test"]["outputs"]["out"]["0"][0][1];
-
-    ASSERT_EQ(res, 0x42f070a4);
-
+    std::vector<uint32_t> res = res_obj["test"]["outputs"]["out"]["0"][0];
+    std::vector<uint32_t> reference = {0x426a7ae1, 0x42766667};
+    ASSERT_EQ(res, reference);
 }
 
 
@@ -281,19 +280,18 @@ TEST(emulator_manager_bulk, emulator_consecutive_runs) {
                         "channel": [0]
                     }
                 ],
-                "outputs": [
-                    {
+                "outputs": [],
+                "memory_init": [{
                         "name": "out",
-                        "type": "integer",
                         "metadata":{
                             "type": "integer",
                             "width": 12,
                             "signed":true
                         },
-                        "reg_n": [4]
-                    }
-                ],
-                "memory_init": [],
+                        "reg_n": 4,
+                        "is_output":true,
+                        "value":0
+                    }],
                 "channels": 1,
                 "options": {
                     "comparators": "reducing",

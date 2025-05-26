@@ -44,30 +44,23 @@ namespace fcore::emulator_v2 {
         }
 
         for(auto &core:emu_spec.cores){
-
-            outputs_manager.add_specs(core.id,  core.outputs, core.channels);
-
             sequencer.add_core(core.id, core.sampling_frequency, core.order, core.channels);
 
         }
-
-        for(auto &ic:emu_spec.interconnects){
-            outputs_manager.add_interconnect_outputs(ic, emu_spec.cores);
-        }
-
+        outputs_manager.process_specs(ic_manager.get_bus_engine());
         sequencer.setup_run(emu_spec.emulation_time);
 
         check_bus_duplicates();
 
         for(auto &p:programs){
-            emulator_runner r(p);
+            emulator_runner r(p, ic_manager.get_bus_engine());
             runners->insert({p.name, r});
         }
     }
 
     std::vector<program_bundle> emulator_manager::get_programs() {
         bus_map.clear();
-        emulator_builder e_b(debug_autogen);
+        emulator_builder e_b(debug_autogen, ic_manager.get_bus_engine());
         e_b.set_profiler(profiler);
         std::vector<program_bundle> res;
 
@@ -211,11 +204,13 @@ namespace fcore::emulator_v2 {
 
 
     void emulator_manager::interconnects_phase(const std::vector<emulator_interconnect> &specs, const core_step_metadata& info) {
-        for(auto &conn:specs){
+        /*
+         for(auto &conn:specs){
             if(info.id == conn.source_core_id){
                 ic_manager.run_interconnect(conn, sequencer.get_enabled_cores());
             }
         }
+        */
     }
 
 
@@ -267,7 +262,8 @@ namespace fcore::emulator_v2 {
         sequencer.clear();
         outputs_manager.clear();
         bus_map.clear();
-        emu_spec.set_specs(spec_file);
+        emu_spec.parse(spec_file);
+        ic_manager.set_emulation_specs(emu_spec);
     }
 
     std::set<uint32_t> emulator_manager::get_breakpoints(const std::string &id) {

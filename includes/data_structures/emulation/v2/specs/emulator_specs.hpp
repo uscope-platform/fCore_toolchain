@@ -31,7 +31,7 @@ namespace fcore::emulator_v2 {
     class emulator_specs {
     public:
         emulator_specs() = default;
-        void set_specs(const nlohmann::json &spec_obj);
+        void parse(const nlohmann::json &spec_obj);
         emulator_core get_core_by_id(const std::string &id);
 
 

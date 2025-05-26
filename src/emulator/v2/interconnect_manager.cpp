@@ -19,9 +19,11 @@
 namespace fcore::emulator_v2 {
 
     void interconnect_manager::run_interconnect(const emulator_interconnect &ic, std::unordered_map<std::string, bool> enabled_cores) {
+        /*
         for(auto &ch:ic.channels){
             run_transfer(ch, ic.source_core_id, ic.destination_core_id, enabled_cores[ic.source_core_id]);
         }
+        */
     }
 
 
@@ -122,6 +124,7 @@ namespace fcore::emulator_v2 {
 
     void interconnect_manager::run_transfer(const dma_channel &c, const std::string &src_core,
                                             const std::string &dst_core, bool enabled) {
+        /*
         switch (c.type) {
             case dma_link_scalar:
                 run_scalar_transfer(c, src_core, dst_core, enabled);
@@ -139,10 +142,16 @@ namespace fcore::emulator_v2 {
                 run_2d_vector_transfer(c, src_core, dst_core, enabled);
                 break;
         }
+        */
+    }
+
+    void interconnect_manager::set_emulation_specs(const emulator_specs &specs) {
+        bus_engine.set_emulation_specs(specs);
     }
 
     void interconnect_manager::clear_repeater() {
         output_repeater.clear();
+        bus_engine.clear();
     }
 
 

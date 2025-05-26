@@ -18,6 +18,7 @@
 #define INTERCONNECT_MANAGER_V2_HPP
 
 #include "emulator/v2/emulator_runner.hpp"
+#include "emulator/v2/bus_allocator.hpp"
 #include "emulator/v2/backend/multirate_io_repeater.hpp"
 #include <spdlog/spdlog.h>
 
@@ -27,8 +28,9 @@ namespace fcore::emulator_v2 {
 
     class interconnect_manager {
     public:
+        void set_emulation_specs(const emulator_specs &specs);
         void set_runners(const std::shared_ptr<std::unordered_map<std::string, emulator_runner>> &r){runners = r;};
-
+        bus_allocator get_bus_engine(){ return bus_engine;}
         void clear_repeater();
 
         void run_interconnect(const emulator_interconnect &ic, std::unordered_map<std::string, bool> enabled_cores);
@@ -48,6 +50,8 @@ namespace fcore::emulator_v2 {
                                bool src_enabled
         );
 
+
+        bus_allocator bus_engine;
 
         std::shared_ptr<std::unordered_map<std::string, emulator_runner>> runners;
         multirate_io_repeater output_repeater;

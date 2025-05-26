@@ -50,6 +50,7 @@ namespace fcore::emulator_v2 {
         register_data_type type;
         uint16_t width;
         bool is_signed;
+        bool is_common_io;
     };
 
     static std::unordered_map<std::string, register_data_type > data_type_map = {
@@ -83,7 +84,6 @@ namespace fcore::emulator_v2 {
         std::string name;
         register_data_type output_type;
         iom_metadata metadata;
-        std::vector<uint32_t> address;
     };
 
     struct emulator_input_specs {
@@ -91,7 +91,6 @@ namespace fcore::emulator_v2 {
         iom_metadata metadata;
         input_type source_type;
         std::vector<std::variant<std::vector<uint32_t>, std::vector<float>>> data;
-        std::vector<uint32_t> address;
         std::vector<uint32_t> channel;
         std::vector<std::string> vector_labels;
     };
@@ -100,7 +99,6 @@ namespace fcore::emulator_v2 {
         std::string name;
         iom_metadata metadata;
         bool is_output;
-        std::vector<uint32_t> address;
         std::variant<std::vector<float>, std::vector<uint32_t>> value;
     };
 

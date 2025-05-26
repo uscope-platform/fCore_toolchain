@@ -72,7 +72,6 @@
               "type": "object",
               "title": "Object describing a single external input",
               "required": [
-                "reg_n",
                 "channel",
                 "metadata",
                 "source",
@@ -88,21 +87,6 @@
                     {
                       "type": "array",
                       "title": "Channels to push the input to",
-                      "items": {
-                        "type": "integer"
-                      }
-                    }
-                  ]
-                },
-                "reg_n": {
-                  "anyOf": [
-                    {
-                      "type": "integer",
-                      "title": "IO address (or register address if remapping is not active) to push the input to"
-                    },
-                    {
-                      "type": "array",
-                      "title": "array of IO addresses (or register addresses if remapping is not active) to push the input to",
                       "items": {
                         "type": "integer"
                       }
@@ -206,26 +190,19 @@
               "type": "object",
               "title": "Object describing a single emulation output",
               "required": [
-                "reg_n",
                 "type",
                 "metadata",
                 "name"
               ],
               "properties": {
-                "reg_n":{
-                  "type": "array",
-                  "title": "array register address of the vector output variable",
-                  "items": {
-                    "type": "integer"
-                  }
-                },
                 "metadata": {
                   "type": "object",
                   "title": "Object describing the raw data format on the wire",
                   "required": [
                     "type",
                     "width",
-                    "signed"
+                    "signed",
+                    "common_io"
                   ],
                   "properties": {
                     "type": {
@@ -243,6 +220,10 @@
                     "signed": {
                       "type": "boolean",
                       "title": "flag indicating whether the data is signed"
+                    },
+                    "common_io": {
+                      "type": "boolean",
+                      "title": "flag indicating whether the data is in common io"
                     }
                   }
                 },
@@ -261,7 +242,6 @@
               "type": "object",
               "title": "Object describing the initial value for a single state variable",
               "required": [
-                "reg_n",
                 "value",
                 "metadata",
                 "name"
@@ -278,21 +258,6 @@
                       "title": "register address of the state variable to initialize",
                       "items": {
                         "type": "number"
-                      }
-                    }
-                  ]
-                },
-                "reg_n": {
-                  "anyOf": [
-                    {
-                      "type": "integer",
-                      "title": "register address of the state variable to initialize"
-                    },
-                    {
-                      "type": "array",
-                      "title": "register address of the state variable to initialize",
-                      "items": {
-                        "type": "integer"
                       }
                     }
                   ]
@@ -422,102 +387,38 @@
         "title": "Object describing the connection between two cores",
         "required": [
           "source",
-          "destination",
-          "channels"
+          "destination"
         ],
         "properties": {
           "source": {
-            "type": "string",
-            "title": "source core id"
-          },
-          "destination": {
-            "type": "string",
-            "title": "Destination core id"
-          },
-          "channels": {
-            "type": "array",
-            "title": "Array specifying the data for each dma channel",
-            "items": {
-              "type": "object",
-              "title": "Object that specifies the data for a single dma channel",
-              "required": [
-                "name",
-                "source",
-                "length",
-                "destination",
-                "type"
-              ],
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "scalar_transfer",
-                    "scatter_transfer",
-                    "vector_transfer",
-                    "gather_transfer",
-                    "2d_vector_transfer"
-                  ]
-                },
-                "length": {
-                  "type": "integer",
-                  "title": "Size of the vector transfer"
-                },
-                "stride": {
-                  "type": "integer",
-                  "title": "Second dimension for the 2d vector transfer"
-                },
-                "name": {
-                  "type": "string",
-                  "title": "Name of the connection"
-                },
-                "source": {
-                  "type": "object",
-                  "default": [],
-                  "title": "array that specifies the channel and address of the source data",
-                  "items": {
-                    "type": "object",
-                    "title": "Object describing the source",
-                    "required": [
-                      "register",
-                      "channel"
-                    ],
-                    "properties": {
-                      "channel": {
-                        "type": "integer",
-                        "title": "Number of the source channel"
-                      },
-                      "register": {
-                        "type": "integer",
-                        "title": "Address of the source register"
-                      }
-                    }
-                  }
-                },
-                "destination": {
-                  "type": "object",
-                  "default": [],
-                  "title": "array that specifies the channel and address of the destination data",
-                  "items": {
-                    "type": "object",
-                    "title": "Object describing the destination",
-                    "required": [
-                      "register",
-                      "channel"
-                    ],
-                    "properties": {
-                      "channel": {
-                        "type": "integer",
-                        "title": "Number of the destination channel"
-                      },
-                      "register": {
-                        "type": "integer",
-                        "title": "Address of the destination register"
-                      }
-                    }
-                  }
+            "anyOf": [
+              {
+                "type": "string",
+                "title": "source endpoint id"
+              },
+              {
+                "type": "array",
+                "title": "array of source endpoint ids",
+                "items": {
+                  "type": "string"
                 }
               }
-            }
+            ]
+          },
+          "destination": {
+            "anyOf": [
+              {
+                "type": "string",
+                "title": "source endpoint id"
+              },
+              {
+                "type": "array",
+                "title": "array of source endpoint ids",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
           }
         }
       }

@@ -27,15 +27,14 @@
 #include "data_structures/common/io_map_entry.hpp"
 
 #include "emulator/v2/emulator_runner.hpp"
+#include "emulator/v2/bus_allocator.hpp"
 
 namespace fcore::emulator_v2{
 
     class emulation_outputs_manager {
     public:
-        void set_runners(const std::shared_ptr<std::unordered_map<std::string, emulator_runner>> &r){runners = r;};
-        void add_specs(const std::string& id, const std::vector<emulator_output_specs>& specs, uint32_t active_channels);
-        void add_interconnect_outputs(const emulator_interconnect &spec, const std::vector<emulator_core> &cores);
-
+        void set_runners(const std::shared_ptr<std::unordered_map<std::string, emulator_runner>> &r){runners = r;}
+        void process_specs(const bus_allocator &bus_engine);
         void process_outputs(
             const std::vector<core_step_metadata> &metadata
         );
@@ -43,7 +42,7 @@ namespace fcore::emulator_v2{
         void process_scalar_output(
                 std::string core_id,
                 emulator_output &out,
-                const emulator_output_specs &spec,
+                uint32_t address,
                 uint32_t active_channels
         );
 
@@ -63,7 +62,7 @@ namespace fcore::emulator_v2{
         std::shared_ptr<std::unordered_map<std::string, emulator_runner>> runners;
 
         std::unordered_map<std::string,std::unordered_map<std::string, emulator_output>> data_section;
-        std::unordered_map<std::string, std::unordered_map<std::string, emulator_output_specs>> output_specs;
+        std::unordered_map<std::string, std::unordered_map<std::string, bus_slot>> output_slots;
     };
 }
 

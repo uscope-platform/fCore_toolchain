@@ -83,6 +83,8 @@ namespace fcore::emulator_v2{
 
         void set_debugging(bool value) {debugging_enabled = value;};
 
+        static std::vector<uint32_t> float_to_uint32_v(const std::vector<float> &f);
+
         static uint32_t float_to_uint32(float f);
         static float uint32_to_float(uint32_t u);
 
@@ -150,6 +152,14 @@ namespace fcore::emulator_v2{
         std::set<uint32_t> breakpoints;
 
     };
+
+    inline std::vector<uint32_t> emulator_backend::float_to_uint32_v(const std::vector<float> &f) {
+        std::vector<uint32_t> res;
+            for(auto &x:f) {
+                res.push_back(float_to_uint32(x));
+            }
+        return res;
+    }
 }
 
 

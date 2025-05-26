@@ -16,8 +16,9 @@
 
 namespace fcore::emulator_v2{
 
-    emulator_builder::emulator_builder(bool dbg) {
+    emulator_builder::emulator_builder(bool dbg, const bus_allocator &bus_engine) {
         debug_autogen = dbg;
+        engine = bus_engine;
     }
 
     std::unordered_map<std::string, core_iom> emulator_builder::process_ioms(
@@ -36,7 +37,7 @@ namespace fcore::emulator_v2{
         std::set<uint32_t> assigned_outputs;
         std::set<std::string> memory_names;
 
-
+        /*
         //////////////////////////////////////////////////////////////
         //                        PROCESS INTERCONNECTS
         /////////////////////////////////////////////////////////////
@@ -94,7 +95,7 @@ namespace fcore::emulator_v2{
                 result[output_name] = spec;
             }
         }
-
+        */
 
         //////////////////////////////////////////////////////////////
         //                        PROCESS INPUTS
@@ -103,8 +104,6 @@ namespace fcore::emulator_v2{
         for(auto &item: inputs){
             core_iom spec;
             spec.type = core_iom_input;
-            spec.address  = item.address;
-            assigned_inputs.insert(item.address.begin(), item.address.end());
             spec.common_io = false;
             result[item.name] = spec;
         }
@@ -118,9 +117,7 @@ namespace fcore::emulator_v2{
             if(!result.contains(item.name)){
                 core_iom spec;
                 spec.type = core_iom_memory;
-                spec.address  = item.address;
                 memory_names.insert(item.name);
-                assigned_inputs.insert(item.address.begin(), item.address.end());
                 spec.common_io = false;
                 result[item.name] = spec;
             }
@@ -151,16 +148,7 @@ namespace fcore::emulator_v2{
         for(auto &item:outputs){
             core_iom spec;
             spec.type = core_iom_output;
-            // TODO: ass support for vector outputs on different addresses?
-            if(!assigned_outputs.contains(item.address[0])){
-                spec.address  = item.address;
-                spec.common_io = false;
-                if(!memory_names.contains(item.name)){
-                    result[item.name] = spec;
-                } else{
-                    result[item.name].address = item.address;
-                }
-            }
+
         }
 
         return result;
@@ -173,24 +161,7 @@ namespace fcore::emulator_v2{
             std::set<io_map_entry> &am
     ) {
 
-        std::vector<emulator_interconnect> src = {};
-        std::vector<emulator_interconnect> dst = {};
-        for(const auto &ic:interconnect_spec){
-            if(core_spec.id == ic.source_core_id) src.push_back(ic);
-            if(core_spec.id == ic.destination_core_id) dst.push_back(ic);
-        }
-
-        std::set<std::string> memories = core_spec.program.io.memories;
-
-        std::unordered_map<std::string, core_iom> dma_io = process_ioms(
-                dst,
-                src,
-                core_spec.inputs,
-                core_spec.outputs,
-                core_spec.memories,
-                memories
-        );
-
+        std::unordered_map<std::string, core_iom> dma_io = engine.get_dma_io(core_spec.id);
         std::vector<std::string> content = {core_spec.program.content};
 
 

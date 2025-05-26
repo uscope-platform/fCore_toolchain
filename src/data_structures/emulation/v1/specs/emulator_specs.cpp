@@ -189,7 +189,7 @@ namespace fcore::emulator {
                 os.name = mem.name;
                 os.address = mem.address;
                 os.metadata = mem.metadata;
-                os.output_type = type_float;
+                os.output_type = mem.metadata.type;
                 c.outputs.push_back(os);
             }
         }

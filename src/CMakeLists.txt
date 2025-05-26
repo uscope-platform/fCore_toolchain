@@ -128,6 +128,7 @@ set(FCORE_EMU_SRCS
         emulator/v2/emulation_sequencer.cpp
         emulator/v2/emulator_manager.cpp
         emulator/v2/emulator_runner.cpp
+        emulator/v2/bus_allocator.cpp
         emulator/v2/backend/multirate_io_repeater.cpp
         emulator/v2/interconnect_manager.cpp
         )

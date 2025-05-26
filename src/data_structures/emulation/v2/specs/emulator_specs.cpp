@@ -18,7 +18,7 @@
 
 namespace fcore::emulator_v2 {
 
-    void emulator_specs::set_specs(const nlohmann::json &spec_obj) {
+    void emulator_specs::parse(const nlohmann::json &spec_obj) {
         std::set<uint32_t> current_orders;
 
         interconnects.clear();
@@ -62,10 +62,10 @@ namespace fcore::emulator_v2 {
         out.metadata.type = data_type_map[o["metadata"]["type"]];
         out.metadata.width = o["metadata"]["width"];
         out.metadata.is_signed = o["metadata"]["signed"];
+        out.metadata.is_common_io = o["metadata"]["common_io"];
         out.name = o["name"];
         out.output_type = data_type_map[o["type"]];
-        std::vector<uint32_t> addrs =  o["reg_n"];
-        out.address = addrs;
+
         return out;
     }
 
@@ -77,6 +77,7 @@ namespace fcore::emulator_v2 {
         in.metadata.type = data_type_map[i["metadata"]["type"]];
         in.metadata.width = i["metadata"]["width"];
         in.metadata.is_signed = i["metadata"]["signed"];
+        in.metadata.is_common_io = i["metadata"]["common_io"];
         in.source_type = input_type_map[i["source"]["type"]];
         if(in.source_type == external_input) {
             in.data = {};
@@ -120,14 +121,6 @@ namespace fcore::emulator_v2 {
                 }
             }
             in.data = ds;
-        }
-
-
-        if(i["reg_n"].is_array()){
-            std::vector<uint32_t> addresses = i["reg_n"];
-            in.address = addresses;
-        } else {
-            in.address = {i["reg_n"]};
         }
 
         if(i["channel"].is_array()){
@@ -176,14 +169,6 @@ namespace fcore::emulator_v2 {
         for(auto &m: core_obj["memory_init"]){
             auto mem = process_memory(m);
             c.memories.push_back(mem);
-            if(mem.is_output){
-                emulator_output_specs os;
-                os.name = mem.name;
-                os.address = mem.address;
-                os.metadata = mem.metadata;
-                os.output_type = type_float;
-                c.outputs.push_back(os);
-            }
         }
 
 
@@ -207,56 +192,24 @@ namespace fcore::emulator_v2 {
     emulator_interconnect emulator_specs::process_interconnect(const nlohmann::json &ic) {
         emulator_interconnect interconnect;
 
-        interconnect.source_core_id = ic["source"];
-        interconnect.destination_core_id = ic["destination"];
 
-
-        for(auto &ch_obj:ic["channels"]){
-            dma_channel ch;
-            ch.name = ch_obj["name"];
-            ch.source.io_name = ch_obj["source_output"];
-            ch.destination.io_name = ch_obj["destination_input"];
-
-            if(ch_obj["source"]["channel"].is_array()){
-                for(auto &item:ch_obj["source"]["channel"]){
-                    ch.source.channel.push_back(item);
-                }
-            } else {
-                ch.source.channel = {ch_obj["source"]["channel"]};
-            }
-
-            if(ch_obj["source"]["register"].is_array()){
-                for(auto &item:ch_obj["source"]["register"]){
-                    ch.source.address.push_back(item);
-                }
-            } else {
-                ch.source.address = {ch_obj["source"]["register"]};
-            }
-
-            if(ch_obj["destination"]["channel"].is_array()){
-                for(auto &item:ch_obj["destination"]["channel"]){
-                    ch.destination.channel.push_back(item);
-                }
-            } else {
-                ch.destination.channel = { ch_obj["destination"]["channel"] };
-            }
-
-            if(ch_obj["destination"]["register"].is_array()){
-                for(auto &item:ch_obj["destination"]["register"]){
-                    ch.destination.address.push_back(item);
-                }
-            } else {
-                ch.destination.address = {ch_obj["destination"]["register"]};
-            }
-
-            ch.length = ch_obj["length"];
-            if(ch_obj.contains("stride")){
-                ch.stride = ch_obj["stride"];
-            }
-            ch.type = interconnect_type_map[ch_obj["type"]];
-
-            interconnect.channels.push_back(ch);
+        if(ic["source"].is_array()) {
+            interconnect.source_core_id = ic["source"];
+        } else {
+            interconnect.source_core_id = {ic["source"]};
         }
+
+        if(ic["destination"].is_array()) {
+            interconnect.destination_core_id = ic["destination"];
+        } else {
+            interconnect.destination_core_id = {ic["destination"]};
+        }
+        uint32_t src_size = interconnect.source_core_id.size();
+        uint32_t dst_size = interconnect.destination_core_id.size();
+        if(src_size == 1 && dst_size == 1) interconnect.type = dma_link_scalar;
+        if(src_size == 1 && dst_size > 1) interconnect.type = dma_link_scatter;
+        if(src_size > 1 && dst_size == 1) interconnect.type = dma_link_gather;
+        if(src_size > 1 && dst_size > 1) interconnect.type = dma_link_2d_vector;
         return interconnect;
     }
 
@@ -270,11 +223,6 @@ namespace fcore::emulator_v2 {
         mem.metadata.is_signed = m["metadata"]["signed"];
 
         mem.is_output = m["is_output"];
-        if(m["reg_n"].is_array()){
-            mem.address = static_cast<std::vector<uint32_t>>(m["reg_n"]);
-        } else{
-            mem.address = {m["reg_n"]};
-        }
 
         if(mem.metadata.type == type_float){
             std::vector<float> value;

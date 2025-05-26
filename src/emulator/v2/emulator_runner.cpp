@@ -19,9 +19,10 @@
 namespace fcore::emulator_v2 {
 
 
-    emulator_runner::emulator_runner(program_bundle &prog) {
+    emulator_runner::emulator_runner(program_bundle &prog, const bus_allocator &engine) {
         core_name = prog.name;
         multichannel_debug = false;
+        bus_engine = engine;
         backend.set_core_name(core_name);
         program = prog;
         backend.set_program(sanitize_program(prog.program.binary));
@@ -33,15 +34,9 @@ namespace fcore::emulator_v2 {
         }
 
 
-        for(auto &init_val: prog.memories){
+        for(auto &init_val: bus_engine.get_memories()){
             for(int i = 0; i< prog.active_channels; i++){
-                if(std::holds_alternative<std::vector<float>>(init_val.value)){
-                    float val =  emulator_backend::float_to_uint32(std::get<std::vector<float>>(init_val.value)[0]);
-                    dma_write(init_val.address[0], i, val);
-                } else {
-                    uint32_t val =  std::get<std::vector<uint32_t>>(init_val.value)[0];
-                    dma_write(init_val.address[0], i, val);
-                }
+                dma_write(init_val.address, i, init_val.source.initial_value[0]);
             }
         }
 
@@ -114,7 +109,7 @@ namespace fcore::emulator_v2 {
                     sel_ch = in.channel[channel];
                 }
                 current_inputs[in.name] = input_val;
-                dma_write(in.address[0], sel_ch, input_val);
+                dma_write(bus_engine.get_address(info.id,in.name, channel), sel_ch, input_val);
             }
         }
     }
