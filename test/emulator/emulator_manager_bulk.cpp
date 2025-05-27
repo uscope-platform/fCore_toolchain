@@ -644,6 +644,8 @@ nlohmann::json specs = nlohmann::json::parse(
     std::vector<float> result = res["outputs"]["out"]["0"][0];
     ASSERT_EQ(result, reference);
 }
+
+
 TEST(emulator_manager_bulk, emulator_header) {
 
 
