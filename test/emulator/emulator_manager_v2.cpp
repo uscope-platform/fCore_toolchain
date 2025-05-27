@@ -1728,7 +1728,21 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
                 "efi_implementation":"none"
             },
             "sampling_frequency":1,
-            "inputs":[],
+            "inputs":[
+                {
+                  "name": "input_data",
+                  "metadata": {
+                    "type": "float",
+                    "width": 32,
+                    "signed": false,
+                    "common_io": false
+                  },
+                  "source": {
+                    "type":"external"
+                  },
+                  "channel": 0
+                }
+            ],
             "outputs":[
                 {
                     "name":"out",
@@ -1756,27 +1770,10 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
     ],
     "interconnect": [
         {
-            "source": "test_producer",
-            "destination": "test_reducer",
-            "channels": [
-                {
-                    "name": "test_channel",
-                    "type": "gather_transfer",
-                    "source": {
-                        "channel": 0,
-                        "register": 5
-                    },
-                    "source_output": "out",
-                    "destination": {
-                        "channel": 0,
-                        "register": 1
-                    },
-                    "destination_input": "input_data",
-                    "length": 2
-                }
-            ]
+          "source": "test_producer.out",
+          "destination": "test_reducer.input_data"
         }
-],
+    ],
     "emulation_time": 1,
     "deployment_mode": false
 })");
@@ -1836,7 +1833,21 @@ TEST(emulator_manager_v2, emulator_multichannel_scatter_transfer) {
                     "efi_implementation":"none"
                 },
                 "sampling_frequency":1,
-                "inputs":[],
+                "inputs":[
+                    {
+                      "name": "input",
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false
+                      },
+                      "source": {
+                        "type":"external"
+                      },
+                      "channel": 0
+                    }
+                ],
                 "outputs":[
                     {
                         "name":"out",
@@ -1864,27 +1875,10 @@ TEST(emulator_manager_v2, emulator_multichannel_scatter_transfer) {
         ],
         "interconnect": [
             {
-                "source": "test_producer",
-                "destination": "test_consumer",
-                "channels": [
-                    {
-                        "name": "test_channel",
-                        "type": "scatter_transfer",
-                        "source": {
-                            "channel": 0,
-                            "register": 5
-                        },
-                        "source_output": "out",
-                        "destination": {
-                            "channel": 0,
-                            "register": 1
-                        },
-                        "destination_input": "input",
-                        "length": 2
-                    }
-                ]
+              "source": "test_producer.out",
+              "destination": "test_consumer.input"
             }
-    ],
+        ],
         "emulation_time": 1,
     "deployment_mode": false
     })");
@@ -1954,7 +1948,20 @@ TEST(emulator_manager_v2, emulator_multichannel_transfer_error) {
                     "efi_implementation":"none"
                 },
                 "sampling_frequency":1,
-                "inputs":[],
+                "inputs":[
+                    {
+                      "name": "input",
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false
+                      },
+                      "source": {
+                        "type":"external"
+                      },
+                      "channel": 0
+                    }],
                 "outputs":[
                     {
                         "name":"out",
@@ -1982,25 +1989,8 @@ TEST(emulator_manager_v2, emulator_multichannel_transfer_error) {
         ],
         "interconnect": [
             {
-                "source": "test_producer",
-                "destination": "test_consumer",
-                "channels": [
-                    {
-                        "name": "test_channel",
-                        "type": "scatter_transfer",
-                        "source": {
-                            "channel": 0,
-                            "register": 5
-                        },
-                        "source_output": "out",
-                        "destination": {
-                            "channel": 0,
-                            "register": 1
-                        },
-                        "destination_input": "input",
-                        "length": 2
-                    }
-                ]
+              "source": "test_producer.out",
+              "destination": "test_consumer.input"
             }
     ],
         "emulation_time": 1,
@@ -2083,7 +2073,20 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
                     "efi_implementation":"none"
                 },
                 "sampling_frequency":1,
-                "inputs":[],
+                "inputs":[
+                    {
+                      "name": "input",
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false
+                      },
+                      "source": {
+                        "type":"external"
+                      },
+                      "channel": 0
+                    }],
                 "outputs":[
                     {
                         "name":"out",
@@ -2111,25 +2114,8 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
         ],
         "interconnect": [
             {
-                "source": "test_producer",
-                "destination": "test_consumer",
-                "channels": [
-                    {
-                        "name": "test_channel",
-                        "type": "vector_transfer",
-                        "source": {
-                            "channel": 0,
-                            "register": 5
-                        },
-                        "source_output": "out",
-                        "destination": {
-                            "channel": 0,
-                            "register": 1
-                        },
-                        "destination_input": "input",
-                        "length": 2
-                    }
-                ]
+              "source": "test_producer.out",
+              "destination": "test_consumer.input"
             }
         ],
         "emulation_time": 1,
@@ -2188,7 +2174,20 @@ TEST(emulator_manager_v2, emulator_multichannel_2d_vector_transfer) {
                     "efi_implementation":"none"
                 },
                 "sampling_frequency":1,
-                "inputs":[],
+                "inputs":[
+                    {
+                      "name": "input",
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false
+                      },
+                      "source": {
+                        "type":"external"
+                      },
+                      "channel": 0
+                    }],
                 "outputs":[
                     {
                         "name":"consumer_out",
@@ -2216,26 +2215,8 @@ TEST(emulator_manager_v2, emulator_multichannel_2d_vector_transfer) {
         ],
         "interconnect": [
             {
-                "source": "test_producer",
-                "destination": "test_consumer",
-                "channels": [
-                    {
-                        "name": "test_channel",
-                        "type": "2d_vector_transfer",
-                        "source": {
-                            "channel": 0,
-                            "register": [5,6]
-                        },
-                        "source_output": "out",
-                        "destination": {
-                            "channel": 0,
-                            "register": [1,2]
-                        },
-                        "destination_input": "input",
-                        "length": 2,
-                        "stride": 2
-                    }
-                ]
+              "source": "test_producer.out",
+              "destination": "test_consumer.input"
             }
         ],
         "emulation_time": 2,
