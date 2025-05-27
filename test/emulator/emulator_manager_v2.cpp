@@ -1225,6 +1225,102 @@ TEST(emulator_manager_v2, emulator_compilation_memory) {
     ASSERT_EQ(result, reference);
 }
 
+
+TEST(emulator_manager_v2, emulator_memory_as_output) {
+
+
+
+    nlohmann::json specs = nlohmann::json::parse( R"({
+        "version": 2,
+        "cores": [
+            {
+                "id": "test",
+                "order": 1,
+                "inputs": [
+                    {
+                        "name": "input_1",
+                        "metadata":{
+                            "type": "float",
+                            "width": 12,
+                            "signed":true,
+                            "common_io": false
+                        },
+                        "source": {
+                            "type": "series",
+                            "value": [15.7,67.4]
+                        },
+                        "channel": [0]
+                    },
+                    {
+                        "name": "input_2",
+                        "metadata":{
+                            "type": "float",
+                            "width": 12,
+                            "signed":true,
+                            "common_io": false
+                        },
+                        "source": {
+                            "type": "series",
+                            "value": [42.92,-5.8]
+                        },
+                        "channel": [0]
+                    }
+                ],
+                "outputs": [],
+                "memory_init": [
+                    {
+                        "name": "mem",
+                        "metadata":{
+                            "type": "float",
+                            "width": 12,
+                            "signed":true
+                        },
+                        "is_output":true,
+                        "value":2
+                    }
+                ],
+                "channels": 1,
+                "options": {
+                    "comparators": "reducing",
+                    "efi_implementation": "efi_sort"
+                },
+                "program": {
+                    "content": "int main(){float input_1;float input_2;float internal = input_1 + input_2;float mem =  internal + mem;}",
+                    "build_settings": { "io": {"inputs": ["input_1","input_2"],"memories": ["mem"],"outputs": [] } },
+                    "type":"c",
+                    "headers": []
+                },
+                "sampling_frequency": 1,
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 2,
+        "deployment_mode": false
+    })");
+
+
+
+
+    emulator_manager manager;
+    manager.set_specs(specs);
+    manager.process();
+    manager.emulate();
+
+    std::string dbg = manager.get_results().dump(4);
+
+    float res = manager.get_results()["test"]["outputs"]["mem"]["0"][0][0];
+
+    ASSERT_FLOAT_EQ(res, 60.62);
+    res = manager.get_results()["test"]["outputs"]["mem"]["0"][0][1];
+
+    ASSERT_FLOAT_EQ(res, 122.22);
+}
+
 TEST(emulator_manager_v2, emulator_header) {
 
     nlohmann::json specs = nlohmann::json::parse(
@@ -1326,7 +1422,6 @@ TEST(emulator_manager_v2, emulator_header) {
 }
 
 TEST(emulator_manager_v2, emulator_multichannel) {
-
 
     nlohmann::json specs = nlohmann::json::parse(
             R"({
@@ -2361,100 +2456,6 @@ TEST(emulator_manager_v2, emulator_multichannel_input) {
     ASSERT_FLOAT_EQ(res2[1], 6);
 }
 
-TEST(emulator_manager_v2, emulator_memory_as_output) {
-
-
-
-    nlohmann::json specs = nlohmann::json::parse( R"({
-        "version": 2,
-        "cores": [
-            {
-                "id": "test",
-                "order": 1,
-                "inputs": [
-                    {
-                        "name": "input_1",
-                        "metadata":{
-                            "type": "float",
-                            "width": 12,
-                            "signed":true,
-                            "common_io": false
-                        },
-                        "source": {
-                            "type": "series",
-                            "value": [15.7,67.4]
-                        },
-                        "channel": [0]
-                    },
-                    {
-                        "name": "input_2",
-                        "metadata":{
-                            "type": "float",
-                            "width": 12,
-                            "signed":true,
-                            "common_io": false
-                        },
-                        "source": {
-                            "type": "series",
-                            "value": [42.92,-5.8]
-                        },
-                        "channel": [0]
-                    }
-                ],
-                "outputs": [],
-                "memory_init": [
-                    {
-                        "name": "mem",
-                        "metadata":{
-                            "type": "float",
-                            "width": 12,
-                            "signed":true
-                        },
-                        "is_output":true,
-                        "value":2
-                    }
-                ],
-                "channels": 1,
-                "options": {
-                    "comparators": "reducing",
-                    "efi_implementation": "efi_sort"
-                },
-                "program": {
-                    "content": "int main(){float input_1;float input_2;float internal = input_1 + input_2;float mem =  internal + mem;}",
-                    "build_settings": { "io": {"inputs": ["input_1","input_2"],"memories": ["mem"],"outputs": [] } },
-                    "type":"c",
-                    "headers": []
-                },
-                "sampling_frequency": 1,
-                "deployment": {
-                    "has_reciprocal": false,
-                    "control_address": 18316525568,
-                    "rom_address": 17179869184
-                }
-            }
-        ],
-        "interconnect": [],
-        "emulation_time": 2,
-        "deployment_mode": false
-    })");
-
-
-
-
-    emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-
-    std::string dbg = manager.get_results().dump(4);
-
-    float res = manager.get_results()["test"]["outputs"]["mem"]["0"][0][0];
-
-    ASSERT_FLOAT_EQ(res, 60.62);
-    res = manager.get_results()["test"]["outputs"]["mem"]["0"][0][1];
-
-    ASSERT_FLOAT_EQ(res, 122.22);
-}
 
 TEST(emulator_manager_v2, emulator_disassemble) {
 

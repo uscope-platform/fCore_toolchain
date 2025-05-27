@@ -37,66 +37,6 @@ namespace fcore::emulator_v2{
         std::set<uint32_t> assigned_outputs;
         std::set<std::string> memory_names;
 
-        /*
-        //////////////////////////////////////////////////////////////
-        //                        PROCESS INTERCONNECTS
-        /////////////////////////////////////////////////////////////
-        for(auto  &conn:input_connections){
-            for(auto &item:conn.channels){
-                std::string  dma_name = item.destination.io_name;
-                core_iom spec;
-                spec.type = core_iom_input;
-                std::vector<uint32_t> addrs;
-                uint32_t transfer_length = item.length;
-
-                if(item.type == dma_link_scatter || item.type == dma_link_vector){
-                    transfer_length = 1;
-                } else if(item.type == dma_link_2d_vector){
-                    transfer_length = item.stride;
-                }
-
-                uint32_t addr_base = item.destination.address[0];
-                for(int i = 0; i< transfer_length; i++){
-                    assigned_inputs.insert(addr_base+i);
-                    addrs.push_back(addr_base+i);
-                }
-                spec.address  = addrs;
-                spec.common_io = false;
-                result[item.destination.io_name] = spec;
-            }
-        }
-
-        for(auto &conn:output_connections){
-            for(auto &item:conn.channels){
-                core_iom spec;
-                std::string output_name = item.source.io_name;
-                if(memories.contains(output_name)){
-                    spec.type = core_iom_memory;
-                    memory_names.insert(output_name);
-                } else {
-                    spec.type = core_iom_output;
-                }
-                std::vector<uint32_t> addrs;
-                uint32_t transfer_length = item.length;
-
-                if(item.type == dma_link_gather || item.type == dma_link_vector){
-                    transfer_length = 1;
-                } else if(item.type == dma_link_2d_vector){
-                    transfer_length = item.stride;
-                }
-
-                uint32_t addr_base = item.source.address[0];
-                for(int i = 0; i< transfer_length; i++){
-                    assigned_outputs.insert(addr_base+i);
-                    addrs.push_back(addr_base+i);
-                }
-                spec.address  = addrs;
-                spec.common_io = false;
-                result[output_name] = spec;
-            }
-        }
-        */
-
         //////////////////////////////////////////////////////////////
         //                        PROCESS INPUTS
         /////////////////////////////////////////////////////////////

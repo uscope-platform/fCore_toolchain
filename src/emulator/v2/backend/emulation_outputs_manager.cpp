@@ -18,18 +18,16 @@
 
 namespace fcore::emulator_v2{
 
-    void emulation_outputs_manager::process_specs(const std::shared_ptr<bus_allocator> &bus_engine) {
-        auto slots =bus_engine->get_bus_map();
+    void emulation_outputs_manager::process_specs(const std::shared_ptr<bus_allocator> &engine) {
+        bus_engine = engine;
+        auto slots = bus_engine->get_bus_map();
+
         for(auto &slot:slots) {
             if(slot.source.endpoint_class == core_iom_output) {
-                output_slots[slot.source.core_name][slot.source.source_name] = slot;
-
-                auto data = emulator_output(slot.source.source_name, 1);
+                auto data = emulator_output(slot.source.source_name, slot.source.channels, 1);
                 data_section[slot.source.core_name].insert({slot.source.source_name, data});
             }else if(slot.source.endpoint_class == core_iom_memory) {
-                output_slots[slot.source.core_name][slot.source.source_name] = slot;
-
-                auto data = emulator_output(slot.source.source_name, 1);
+                auto data = emulator_output(slot.source.source_name, slot.source.channels, 1);
                 data_section[slot.source.core_name].insert({slot.source.source_name, data});
             }
         }
@@ -39,20 +37,23 @@ namespace fcore::emulator_v2{
     void emulation_outputs_manager::process_outputs(
         const std::vector<core_step_metadata> &metadata
     ) {
-        for(const auto &[core_name, slots]:output_slots){
+        for(auto &[core_name, slots]:data_section){
             core_step_metadata m;
             for(auto &m_temp:metadata){
                 if(core_name == m_temp.id) m = m_temp;
             }
             if(!m.running){
                 // carry over previous outputs
-                for(auto &out: data_section[core_name]){
-
+                for(auto &out: slots){
                     out.second.repeat_last_data_point();
                 }
             } else {
-                for(auto &[slot_name,output]: data_section[core_name]){
-                    process_scalar_output(core_name, output,  slots.at(slot_name).address,m.n_channels);
+                for(auto &[slot_name,output]: slots){
+
+                    auto spec = bus_engine->get_slot_source(core_name, slot_name);
+                    auto address = bus_engine->get_output_address(core_name, slot_name, 0);
+                    process_scalar_output(core_name, output, address, m.n_channels);
+
                 }
 
             }
@@ -73,13 +74,13 @@ namespace fcore::emulator_v2{
     nlohmann::json emulation_outputs_manager::get_emulation_output(const std::string& core_id) {
         nlohmann::json res;
 
-        for(auto &[slot_name, slot]: output_slots[core_id]){
-            auto out_data = data_section[core_id].at(slot_name);
+        for(auto &[slot_name, data]: data_section[core_id]){
+            auto spec = bus_engine->get_slot_source(core_id, slot_name);
             nlohmann::json output_obj;
-            if(slot.source.type == type_uint){
-                res[slot_name] = out_data.get_integer_data();
-            } else if(slot.source.type == type_float){
-                res[slot_name] = out_data.get_float_data();
+            if(spec.type == type_uint){
+                res[slot_name] = data.get_integer_data();
+            } else if(spec.type == type_float){
+                res[slot_name] = data.get_float_data();
             } else {
                 throw std::runtime_error("unknown output type");
             }
@@ -129,7 +130,7 @@ namespace fcore::emulator_v2{
     void emulation_outputs_manager::process_vector_output(
             std::string core_id,
             emulator_output &out,
-            const emulator_output_specs &spec,
+            uint32_t address,
             uint32_t active_channels
     ){
         for(int  j= 0; j<active_channels; j++){
@@ -150,7 +151,6 @@ namespace fcore::emulator_v2{
 
     void emulation_outputs_manager::clear() {
         data_section.clear();
-        output_slots.clear();
     }
 
 }

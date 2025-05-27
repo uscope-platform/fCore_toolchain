@@ -31,8 +31,8 @@ namespace fcore::emulator_v2 {
                 transfer_register(
                     slot.source.core_name,
                     dest.core_name,
-                    slot.address,
-                    slot.address,
+                    slot.io_address,
+                    slot.io_address,
                     0,
                     0,
                     enabled_cores[slot.source.core_name]

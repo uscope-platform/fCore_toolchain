@@ -60,7 +60,8 @@ namespace fcore::emulator_v2 {
 
     std::vector<program_bundle> emulator_manager::get_programs() {
         bus_map.clear();
-        emulator_builder e_b(debug_autogen, ic_manager.get_bus_engine());
+        auto bus_engine = ic_manager.get_bus_engine();
+        emulator_builder e_b(debug_autogen, bus_engine);
         e_b.set_profiler(profiler);
         std::vector<program_bundle> res;
 

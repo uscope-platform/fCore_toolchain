@@ -31,54 +31,36 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
 
     for(auto &core:specs.cores) {
         for(auto &in:core.inputs) {
-            for(int i = 0; i<core.channels; i++) {
-                core_endpoint ep;
-                ep.core_name = core.id;
-                ep.type = in.metadata.type;
-                ep.channel = i;
-                if(core.channels > 1) {
-                    ep.source_name = in.name + "_" + std::to_string(i);
-                } else {
-                    ep.source_name = in.name;
-                }
-                ep.endpoint_class = core_iom_input;
-                ep.common_io = in.metadata.is_common_io;
-                destinations_map[core.id][in.name] = ep;
-            }
+            core_endpoint ep;
+            ep.core_name = core.id;
+            ep.type = in.metadata.type;
+            ep.source_name = in.name;
+            ep.channels = core.channels;
+            ep.endpoint_class = core_iom_input;
+            ep.common_io = in.metadata.is_common_io;
+            destinations_map[core.id][in.name] = ep;
         }
         for(auto &out:core.outputs) {
-            for(int i = 0; i<core.channels; i++) {
-                core_endpoint ep;
-                ep.core_name = core.id;
-                ep.channel = i;
-                if(core.channels > 1) {
-                    ep.source_name = out.name + "_" + std::to_string(i);
-                } else {
-                    ep.source_name = out.name;
-                }
-                ep.type = out.metadata.type;
-                ep.endpoint_class = core_iom_output;
-                ep.common_io = out.metadata.is_common_io;
-                sources_map[core.id][out.name] = ep;
+            core_endpoint ep;
+            ep.core_name = core.id;
+            ep.source_name = out.name;
+            ep.channels = core.channels;
+            ep.type = out.metadata.type;
+            ep.endpoint_class = core_iom_output;
+            ep.common_io = out.metadata.is_common_io;
+            sources_map[core.id][out.name] = ep;
 
-                bus_slot s;
-                s.address = allocate_slot(out.metadata.io_address);
-                s.source = ep;
-                bus_map.push_back(s);
-            }
+            bus_slot s;
+            s.io_address = allocate_slot(out.metadata.io_address);
+            s.n_channels = core.channels;
+            s.source = ep;
+            bus_map.push_back(s);
         }
         for(auto &mem:core.memories) {
             for(int i = 0; i<core.channels; i++) {
                 core_endpoint ep;
                 ep.core_name = core.id;
-
-                ep.channel = i;
-                if(core.channels > 1) {
-                    ep.source_name = mem.name + "_" + std::to_string(i);
-                } else {
-                    ep.source_name = mem.name;
-                }
-
+                ep.source_name = mem.name;
                 if(std::holds_alternative<std::vector<float>>(mem.value)) {
                     ep.type = type_float;
                     ep.initial_value = emulator_backend::float_to_uint32_v(std::get<std::vector<float>>(mem.value));
@@ -88,10 +70,11 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
                 }
                 ep.endpoint_class = core_iom_memory;
                 ep.common_io = false;
+                ep.channels = core.channels;
                 sources_map[core.id][mem.name] = ep;
 
                 bus_slot s;
-                s.address = allocate_slot(mem.metadata.io_address);
+                s.io_address = allocate_slot(mem.metadata.io_address);
                 s.source = ep;
                 bus_map.push_back(s);
             }
@@ -109,7 +92,7 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
 
         for(auto &slot:bus_map) {
             if(slot.source.core_name == src_core && slot.source.source_name == src_port) {
-                inputs_address_mapping[dst_core][dst_port] = slot.address;
+                inputs_address_mapping[dst_core][dst_port] = slot.io_address;
                 slot.destination.push_back(destination);
             }
         }
@@ -120,9 +103,9 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
 uint32_t bus_allocator::allocate_slot(uint16_t d_a) {
     if(allocated_addresses.contains(d_a) && !desired_addresses.contains(d_a)) {
         for(auto &slot:bus_map) {
-            if(slot.address == d_a) {
+            if(slot.io_address == d_a) {
                 allocated_addresses.insert(current_index);
-                slot.address = current_index;
+                slot.io_address = current_index;
                 allocated_addresses.erase(d_a);
             }
         }
@@ -131,7 +114,7 @@ uint32_t bus_allocator::allocate_slot(uint16_t d_a) {
     if(!allocated_addresses.contains(d_a) && d_a != 0) {
         allocated_addresses.insert(d_a);
         desired_addresses.insert(d_a);
-        return d_a;
+        return {d_a};
     } else if(d_a != 0) {
         throw std::runtime_error("Conflict between two signals for desired address " + std::to_string(d_a));
     }
@@ -139,7 +122,7 @@ uint32_t bus_allocator::allocate_slot(uint16_t d_a) {
     auto address = current_index;
     allocated_addresses.insert(address);
     current_index++;
-    return address;
+    return {address};
 }
 
 std::unordered_map<std::string, core_iom> bus_allocator::get_dma_io(std::string core_name) {
@@ -151,7 +134,7 @@ std::unordered_map<std::string, core_iom> bus_allocator::get_dma_io(std::string 
 
             } else {
                 core_iom iom;
-                iom.address = {item.address};
+                iom.address = {item.io_address};
                 iom.common_io = item.source.common_io;
                 iom.type = item.source.endpoint_class;
                 ret_val[item.source.source_name] = iom;
@@ -162,7 +145,7 @@ std::unordered_map<std::string, core_iom> bus_allocator::get_dma_io(std::string 
 
     for(auto &item:destinations_map[core_name] | std::views::values) {
         core_iom iom;
-        iom.address = {get_inputs_address(core_name, item.source_name, item.channel) };
+        iom.address = {allocate_inputs_address(core_name, item.source_name) };
         iom.common_io = item.common_io;
         iom.type = item.endpoint_class;
         ret_val[item.source_name] = iom;
@@ -170,11 +153,20 @@ std::unordered_map<std::string, core_iom> bus_allocator::get_dma_io(std::string 
     return ret_val;
 }
 
-uint32_t bus_allocator::get_bus_address(const std::string &core, const std::string &input, uint32_t channel) {
+uint32_t bus_allocator::get_input_address(const std::string &core, const std::string &input, uint32_t channel) {
     return inputs_address_mapping[core][input];
 }
 
-uint32_t bus_allocator::get_inputs_address(const std::string &core, const std::string &input, uint32_t channel) {
+uint32_t bus_allocator::get_output_address(const std::string &core, const std::string &input, uint32_t channel) {
+    for(auto &slot:bus_map) {
+        if(slot.source.core_name == core && slot.source.source_name == input) {
+            return slot.io_address;
+        }
+    }
+    throw std::runtime_error("Output " + input + " not found in core " + core);
+}
+
+uint32_t bus_allocator::allocate_inputs_address(const std::string &core, const std::string &input) {
     uint32_t tentative_address = 1;
     if(inputs_address_mapping.contains(core)) {
         if(inputs_address_mapping[core].contains(input)) {
@@ -189,6 +181,10 @@ uint32_t bus_allocator::get_inputs_address(const std::string &core, const std::s
     inputs_address_mapping[core][ input] = tentative_address;
     used_input_addresses.insert(tentative_address);
     return tentative_address;
+}
+
+ core_endpoint bus_allocator::get_slot_source(const std::string &core, const std::string &slot_name) {
+    return sources_map[core][slot_name];
 }
 
 

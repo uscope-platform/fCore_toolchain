@@ -27,13 +27,15 @@ namespace fcore::emulator_v2 {
         core_iom_type endpoint_class;
         register_data_type type;
         std::vector<uint32_t> initial_value;
-        uint32_t channel;
+        uint32_t channels;
         bool common_io;
     };
 
     struct bus_slot {
 
-        uint32_t address;
+        std::vector<uint32_t> bus_address;
+        uint32_t io_address;
+        uint32_t n_channels;
         core_endpoint source;
         std::vector<core_endpoint> destination;
     };
@@ -48,8 +50,11 @@ namespace fcore::emulator_v2 {
         std::unordered_map<std::string, core_iom> get_dma_io(std::string core_name);
         std::vector<bus_slot> get_bus_map() const {return bus_map;}
 
-        uint32_t get_bus_address(const std::string & core, const std::string & input, uint32_t channel);
-        uint32_t get_inputs_address(const std::string & core, const std::string & input, uint32_t channel);
+        uint32_t get_input_address(const std::string & core, const std::string & input, uint32_t channel);
+        uint32_t get_output_address(const std::string & core, const std::string & input, uint32_t channel);
+        uint32_t allocate_inputs_address(const std::string & core, const std::string & input);
+
+        core_endpoint get_slot_source(const std::string & core, const std::string & slot_name);
 
         bus_allocator(const bus_allocator &other) = delete;
 

@@ -49,7 +49,7 @@ namespace fcore::emulator_v2{
         void process_vector_output(
                 std::string core_id,
                 emulator_output &out,
-                const emulator_output_specs &spec,
+                uint32_t address,
                 uint32_t active_channels
         );
 
@@ -58,11 +58,10 @@ namespace fcore::emulator_v2{
         std::vector<double> get_timebase();
         void clear();
     private:
-
+        std::shared_ptr<bus_allocator> bus_engine;
         std::shared_ptr<std::unordered_map<std::string, emulator_runner>> runners;
 
         std::unordered_map<std::string,std::unordered_map<std::string, emulator_output>> data_section;
-        std::unordered_map<std::string, std::unordered_map<std::string, bus_slot>> output_slots;
     };
 }
 

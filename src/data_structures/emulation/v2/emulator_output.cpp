@@ -18,11 +18,18 @@
 
 namespace fcore::emulator_v2{
 
-    emulator_output::emulator_output(const std::string &name, uint32_t n_channels) {
+    emulator_output::emulator_output(const std::string &name, uint32_t n_channels, uint32_t vect_size) {
         for(int i=0; i<n_channels; i++){
-            id[0] = {name};
-            data[0].emplace_back();
-            vector_size = 1;
+            if(vect_size == 1){
+                id[i] = {name};
+                data[i].emplace_back();
+            } else {
+                for(int n = 0; n<vect_size; n++){
+                    id[i].push_back(name + std::to_string(n));
+                    data[i].emplace_back();
+                }
+            }
+            vector_size = vect_size;
         }
     }
 

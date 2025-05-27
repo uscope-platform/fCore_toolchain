@@ -31,7 +31,7 @@ namespace fcore::emulator_v2 {
     class emulator_output {
     public:
         emulator_output() = default;
-        emulator_output(const std::string &name, uint32_t n_channels);
+        emulator_output(const std::string &name, uint32_t n_channels, uint32_t vector_size);
         void set_sampling_period(double per){sampling_period = per;};
         void add_data_point(const std::vector<uint32_t>& dp, uint32_t channel);
         void add_data_point(uint32_t dp, uint32_t channel);
