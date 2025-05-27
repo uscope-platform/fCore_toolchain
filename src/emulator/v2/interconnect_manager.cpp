@@ -39,7 +39,6 @@ namespace fcore::emulator_v2 {
                 );
             }
         }
-            int i = 0;
     }
 
 

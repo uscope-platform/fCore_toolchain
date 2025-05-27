@@ -24,7 +24,7 @@ using namespace fcore::emulator_v2;
 TEST(emulator_manager_v2, emulator_executable_format) {
 
     nlohmann::json specs = nlohmann::json::parse( R"({
-      "version": 1,
+      "version": 2,
       "cores": [
         {
           "id": "test",
@@ -125,7 +125,7 @@ TEST(emulator_manager_v2, emulator_executable_format) {
 TEST(emulator_manager_v2, emulator_compile_error) {
 
     nlohmann::json specs = nlohmann::json::parse( R"({
-  "version": 1,
+  "version": 2,
   "cores": [
     {
       "id": "test",
@@ -226,7 +226,7 @@ TEST(emulator_manager_v2, emulator_asm) {
 
 
     nlohmann::json specs = nlohmann::json::parse( R"({
-        "version": 1,
+        "version": 2,
         "cores": [
             {
                 "id": "test",
@@ -288,7 +288,7 @@ TEST(emulator_manager_v2, emulator_asm) {
 TEST(emulator_manager_v2, emulator_inputs) {
 
     nlohmann::json specs = nlohmann::json::parse( R"({
-        "version": 1,
+        "version": 2,
         "cores": [
             {
                 "id": "test",
@@ -379,7 +379,7 @@ TEST(emulator_manager_v2, emulator_inputs) {
 TEST(emulator_manager_v2, emulator_consecutive_runs) {
 
     nlohmann::json specs = nlohmann::json::parse( R"({
-        "version": 1,
+        "version": 2,
         "cores": [
             {
                 "id": "test",
@@ -495,7 +495,7 @@ TEST(emulator_manager_v2, emulator_consecutive_runs) {
 TEST(emulator_manager_v2, emulator_outputs) {
 
     nlohmann::json specs = nlohmann::json::parse( R"({
-      "version": 1,
+      "version": 2,
       "cores": [
         {
           "id": "test",
@@ -608,7 +608,7 @@ TEST(emulator_manager_v2, emulator_outputs) {
 TEST(emulator_manager_v2, emulator_memory) {
 
     nlohmann::json specs = nlohmann::json::parse( R"({
-        "version": 1,
+        "version": 2,
         "cores": [
             {
                 "id": "test",
@@ -708,7 +708,7 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
 
     nlohmann::json specs = nlohmann::json::parse( R"(
     {
-      "version": 1,
+      "version": 2,
       "cores": [
         {
           "id": "test_producer",
@@ -874,7 +874,7 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
 TEST(emulator_manager_v2, emulator_compilation) {
 
     nlohmann::json specs = nlohmann::json::parse( R"({
-  "version": 1,
+  "version": 2,
   "cores": [
     {
       "id": "test",
@@ -970,156 +970,151 @@ TEST(emulator_manager_v2, emulator_compilation) {
 TEST(emulator_manager_v2, emulator_compilation_interconnect) {
 
     nlohmann::json specs = nlohmann::json::parse( R"(
-        {
-          "version": 1,
-          "cores": [
-            {
-              "id": "test",
-              "inputs": [
-                {
-                  "name": "input_1",
-                  "metadata": {
-                    "type": "float",
-                    "width": 32,
-                    "signed": false,
-                    "common_io": false
-                  },
-                  "source": {
-                    "type":"series",
-                    "value": [15.7,67.4]
-                  },
-                  "channel": 0
-                },
-                {
-                  "name": "input_2",
-                  "metadata": {
-                    "type": "float",
-                    "width": 32,
-                    "signed": false,
-                    "common_io": false
-                  },
-                  "source": {
-                    "type":"series",
-                    "value": [42.92,-5.8]
-                  },
-                  "channel": 0
-                }
-              ],
-              "outputs": [
-                {
-                  "type": "integer",
-                  "metadata": {
-                    "type": "integer",
-                    "width": 24,
-                    "signed": false,
-                    "common_io": false
-                  },
-                  "name":"out"
-                }
-              ],
-              "memory_init": [],
-              "program":{
-                "content": "int main(){float input_1; float input_2; float out; out = fti(input_1 + input_2); out2=out;}",
-                "build_settings": {
-                  "io": {
-                    "inputs": [
-                      "input_1",
-                      "input_2"
-                    ],
-                    "outputs": [
-                      "out",
-                      "out2"
-                    ],
-                    "memories": []
-                  }
-                },
-                "headers": []
-              },
-              "order": 1,
-              "options":{
-                "comparators":"reducing",
-                "efi_implementation":"efi_sort"
-              },
-              "channels":1,
-              "sampling_frequency": 1,
-              "deployment": {
-                "has_reciprocal": false,
-                "control_address": 18316525568,
-                "rom_address": 17179869184
-              }
+    {
+    "version": 2,
+    "cores": [
+      {
+        "id": "test",
+        "inputs": [
+          {
+            "name": "input_1",
+            "metadata": {
+              "type": "float",
+              "width": 32,
+              "signed": false,
+              "common_io": false
             },
-            {
-              "id": "test_move",
-              "input_file": "emu/test_inputs.csv",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "integer",
-                  "metadata": {
-                    "type": "integer",
-                    "width": 15,
-                    "signed": false,
-                    "common_io": false
-                  },
-                  "name":"out"
-                }
+            "source": {
+              "type":"series",
+              "value": [15.7,67.4]
+            },
+            "channel": 0
+          },
+          {
+            "name": "input_2",
+            "metadata": {
+              "type": "float",
+              "width": 32,
+              "signed": false,
+              "common_io": false
+            },
+            "source": {
+              "type":"series",
+              "value": [42.92,-5.8]
+            },
+            "channel": 0
+          }
+        ],
+        "outputs": [
+          {
+            "type": "integer",
+            "metadata": {
+              "type": "integer",
+              "width": 24,
+              "signed": false,
+              "common_io": false
+            },
+            "name":"out"
+          }
+        ],
+        "memory_init": [],
+        "program":{
+          "content": "int main(){float input_1; float input_2; float out; out = fti(input_1 + input_2);}",
+          "build_settings": {
+            "io": {
+              "inputs": [
+                "input_1",
+                "input_2"
               ],
-              "memory_init": [],
-              "program":{
-                "content": "int main(){float input; float out; float val = itf(input); out = fti(val+1.0);}",
-                "build_settings": {
-                  "io": {
-                    "inputs": [
-                      "input"
-                    ],
-                    "outputs": [
-                      "out"
-                    ],
-                    "memories": []
-                  }
-                },
-                "headers": []
-              },
-              "order": 2,
-              "options":{
-                "comparators":"reducing",
-                "efi_implementation":"efi_sort"
-              },
-              "channels":1,
-              "sampling_frequency": 1,
-              "deployment": {
-                "has_reciprocal": false,
-                "control_address": 18316525568,
-                "rom_address": 17179869184
-              }
+              "outputs": [
+                "out"
+              ],
+              "memories": []
             }
-          ],
-          "interconnect":[
-            {
-              "source":"test",
-              "destination":"test_move",
-              "channels":[
-                {
-                  "name": "interconnect_name",
-                  "length": 1,
-                  "type": "scalar_transfer",
-                  "source_output":"out2",
-                  "source": {
-                    "channel": 0,
-                    "register": 6
-                  },
-                  "destination_input": "input",
-                  "destination": {
-                    "channel": 0,
-                    "register": 1
-                  }
-                }
-              ]
-            }
-          ],
-          "emulation_time": 2,
-          "deployment_mode": false
+          },
+          "headers": []
+        },
+        "order": 1,
+        "options":{
+          "comparators":"reducing",
+          "efi_implementation":"efi_sort"
+        },
+        "channels":1,
+        "sampling_frequency": 1,
+        "deployment": {
+          "has_reciprocal": false,
+          "control_address": 18316525568,
+          "rom_address": 17179869184
         }
+      },
+      {
+        "id": "test_move",
+        "inputs": [
+            {
+              "name": "input",
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type":"external"
+              },
+              "channel": 0
+            }
+        ],
+        "outputs": [
+          {
+            "type": "integer",
+            "metadata": {
+              "type": "integer",
+              "width": 15,
+              "signed": false,
+              "common_io": false
+            },
+            "name":"out"
+          }
+        ],
+        "memory_init": [],
+        "program":{
+          "content": "int main(){float input; float out; float val = itf(input); out = fti(val+1.0);}",
+          "build_settings": {
+            "io": {
+              "inputs": [
+                "input"
+              ],
+              "outputs": [
+                "out"
+              ],
+              "memories": []
+            }
+          },
+          "headers": []
+        },
+        "order": 2,
+        "options":{
+          "comparators":"reducing",
+          "efi_implementation":"efi_sort"
+        },
+        "channels":1,
+        "sampling_frequency": 1,
+        "deployment": {
+          "has_reciprocal": false,
+          "control_address": 18316525568,
+          "rom_address": 17179869184
+        }
+      }
+    ],
+    "interconnect":[
+      {
+        "source": "test.out",
+        "destination": "test_move.input"
+      }
+    ],
+    "emulation_time": 2,
+    "deployment_mode": false
+    }
     )");
     emulator_manager manager;
     manager.set_specs(specs);
@@ -1139,7 +1134,7 @@ TEST(emulator_manager_v2, emulator_compilation_memory) {
 
 
     nlohmann::json specs = nlohmann::json::parse( R"({
-  "version": 1,
+  "version": 2,
   "cores": [
     {
       "id": "test",
@@ -1171,7 +1166,18 @@ TEST(emulator_manager_v2, emulator_compilation_memory) {
           }
         }
       ],
-      "memory_init": [],
+      "memory_init": [
+        {
+            "name": "mem",
+            "metadata":{
+                "type": "float",
+                "width": 12,
+                "signed":true
+            },
+            "is_output":true,
+            "value":0
+        }
+],
       "program":{
         "content": "int main(){float input_1; float mem; float out; mem = mem + input_1; out = mem;}",
         "build_settings": {
@@ -1223,7 +1229,7 @@ TEST(emulator_manager_v2, emulator_header) {
 
     nlohmann::json specs = nlohmann::json::parse(
             R"({
-    "version": 1,
+    "version": 2,
     "cores": [
         {
             "id": "test",
@@ -1324,7 +1330,7 @@ TEST(emulator_manager_v2, emulator_multichannel) {
 
     nlohmann::json specs = nlohmann::json::parse(
             R"({
-    "version": 1,
+    "version": 2,
     "cores": [
         {
             "id": "test",
@@ -1453,7 +1459,7 @@ TEST(emulator_manager_v2, emulator_multichannel_input_file) {
 
     nlohmann::json specs = nlohmann::json::parse(
             R"({
-    "version": 1,
+    "version": 2,
     "cores": [
         {
             "order": 1,
@@ -1559,7 +1565,7 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
 
     nlohmann::json specs = nlohmann::json::parse(
             R"({
-    "version": 1,
+    "version": 2,
     "cores": [
         {
             "order": 1,
@@ -1701,7 +1707,7 @@ TEST(emulator_manager_v2, emulator_multichannel_scatter_transfer) {
 
     nlohmann::json specs = nlohmann::json::parse(
     R"({
-    "version": 1,
+    "version": 2,
         "cores": [
             {
                 "order": 1,
@@ -1808,7 +1814,7 @@ TEST(emulator_manager_v2, emulator_multichannel_transfer_error) {
 
     nlohmann::json specs = nlohmann::json::parse(
     R"({
-    "version": 1,
+    "version": 2,
         "cores": [
             {
                 "order": 1,
@@ -1925,7 +1931,7 @@ TEST(emulator_manager_v2, emulator_multichannel_transfer_error) {
 TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
     nlohmann::json specs = nlohmann::json::parse(
     R"({
-    "version": 1,
+    "version": 2,
         "cores": [
             {
                 "order": 1,
@@ -2053,7 +2059,7 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
 TEST(emulator_manager_v2, emulator_multichannel_2d_vector_transfer) {
     nlohmann::json specs = nlohmann::json::parse(
     R"({
-    "version": 1,
+    "version": 2,
         "cores": [
             {
                 "order": 1,
@@ -2169,7 +2175,7 @@ TEST(emulator_manager_v2, emulator_common_io) {
 
     nlohmann::json specs = nlohmann::json::parse(
     R"({
-    "version": 1,
+    "version": 2,
     "cores": [
         {
             "id": "test",
@@ -2267,7 +2273,7 @@ TEST(emulator_manager_v2, emulator_common_io) {
 TEST(emulator_manager_v2, emulator_multichannel_input) {
     nlohmann::json specs = nlohmann::json::parse(
     R"({
-    "version": 1,
+    "version": 2,
         "cores": [
             {
                 "order": 1,
@@ -2360,7 +2366,7 @@ TEST(emulator_manager_v2, emulator_memory_as_output) {
 
 
     nlohmann::json specs = nlohmann::json::parse( R"({
-        "version": 1,
+        "version": 2,
         "cores": [
             {
                 "id": "test",
@@ -2455,7 +2461,7 @@ TEST(emulator_manager_v2, emulator_disassemble) {
 
     nlohmann::json specs = nlohmann::json::parse(
     R"({
-    "version": 1,
+    "version": 2,
     "cores": [
         {
             "order": 1,
