@@ -560,6 +560,90 @@ TEST(emulator_manager_bulk, emulator_compilation_memory) {
 }
 
 
+
+TEST(emulator_manager_bulk, emulator_array_input) {
+
+
+nlohmann::json specs = nlohmann::json::parse(
+    R"({
+    "version": 1,
+        "cores": [
+            {
+                "order": 1,
+                "id": "test",
+                "channels":1,
+                "options":{
+                    "comparators": "full",
+                    "efi_implementation":"none"
+                },
+                "sampling_frequency":1,
+                "input_data":[
+                    {
+                        "name": "data_file_1",
+                        "data":
+                            {
+                                "input_1": [15.7,67.4],
+                                "input_2": [42.92,-5.8]
+                            }
+                    }],
+                "inputs":[
+                {
+                  "name": "in",
+                  "metadata": {
+                    "type": "float",
+                    "width": 32,
+                    "signed": false,
+                    "common_io": false
+                  },
+                  "source": {
+                    "type":"file",
+                    "file": ["data_file_1","data_file_1"],
+                    "series": ["input_1", "input_2"]
+                  },
+                  "reg_n": [1,2],
+                  "channel": 0
+                }
+                ],
+                "outputs":[
+                {
+                    "name": "out",
+                    "type": "float",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false
+                    },
+                    "reg_n": [5],
+                  "channel": 0
+                }],
+                "memory_init":[],
+                "program": {
+                    "content": "int main(){\n  float in[2]; float out = in[0] + in[1];\n}",
+                    "build_settings":{"io":{"inputs":["in"],"outputs":["out"],"memories":[]}},
+                    "headers": []
+                },
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 2,
+    "deployment_mode": false
+    })");
+
+    emulator_manager manager;
+    manager.set_specs(specs);
+    manager.process();
+    manager.emulate();
+    auto res = manager.get_results()["test"];
+
+    std::vector<float> reference = {58.62,61.6000023};
+    std::vector<float> result = res["outputs"]["out"]["0"][0];
+    ASSERT_EQ(result, reference);
+}
 TEST(emulator_manager_bulk, emulator_header) {
 
 
