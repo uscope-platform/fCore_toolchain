@@ -18,12 +18,17 @@
 
 namespace fcore::emulator_v2 {
 
+    interconnect_manager::interconnect_manager() {
+        bus_engine = std::make_shared<bus_allocator>();
+    }
+
     void interconnect_manager::run_interconnect(const emulator_interconnect &ic, std::unordered_map<std::string, bool> enabled_cores) {
         /*
         for(auto &ch:ic.channels){
             run_transfer(ch, ic.source_core_id, ic.destination_core_id, enabled_cores[ic.source_core_id]);
         }
         */
+
     }
 
 
@@ -145,13 +150,14 @@ namespace fcore::emulator_v2 {
         */
     }
 
+
     void interconnect_manager::set_emulation_specs(const emulator_specs &specs) {
-        bus_engine.set_emulation_specs(specs);
+        bus_engine->set_emulation_specs(specs);
     }
 
     void interconnect_manager::clear_repeater() {
         output_repeater.clear();
-        bus_engine.clear();
+        bus_engine->clear();
     }
 
 

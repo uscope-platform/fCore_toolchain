@@ -56,9 +56,8 @@ namespace fcore::emulator_v2 {
     };
 
     struct emulator_interconnect {
-        std::vector<std::string> source_core_id;
-        std::vector<std::string> destination_core_id;
-        dma_channel_type type = dma_link_scalar;
+        std::string source_endpoint;
+        std::string destination_endpoint;
     };
 
 } // fcore

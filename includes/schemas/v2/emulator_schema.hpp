@@ -414,35 +414,13 @@ const std::string emulator_schema_v2 = R"~(
           "destination"
         ],
         "properties": {
-          "source": {
-            "anyOf": [
-              {
-                "type": "string",
-                "title": "source endpoint id"
-              },
-              {
-                "type": "array",
-                "title": "array of source endpoint ids",
-                "items": {
-                  "type": "string"
-                }
-              }
-            ]
+          "source":  {
+            "type": "string",
+            "title": "source endpoint id"
           },
-          "destination": {
-            "anyOf": [
-              {
-                "type": "string",
-                "title": "source endpoint id"
-              },
-              {
-                "type": "array",
-                "title": "array of source endpoint ids",
-                "items": {
-                  "type": "string"
-                }
-              }
-            ]
+          "destination":  {
+            "type": "string",
+            "title": "source endpoint id"
           }
         }
       }

@@ -198,24 +198,9 @@ namespace fcore::emulator_v2 {
     emulator_interconnect emulator_specs::process_interconnect(const nlohmann::json &ic) {
         emulator_interconnect interconnect;
 
+        interconnect.destination_endpoint = ic["destination"];
+        interconnect.source_endpoint = ic["source"];
 
-        if(ic["source"].is_array()) {
-            interconnect.source_core_id = ic["source"];
-        } else {
-            interconnect.source_core_id = {ic["source"]};
-        }
-
-        if(ic["destination"].is_array()) {
-            interconnect.destination_core_id = ic["destination"];
-        } else {
-            interconnect.destination_core_id = {ic["destination"]};
-        }
-        uint32_t src_size = interconnect.source_core_id.size();
-        uint32_t dst_size = interconnect.destination_core_id.size();
-        if(src_size == 1 && dst_size == 1) interconnect.type = dma_link_scalar;
-        if(src_size == 1 && dst_size > 1) interconnect.type = dma_link_scatter;
-        if(src_size > 1 && dst_size == 1) interconnect.type = dma_link_gather;
-        if(src_size > 1 && dst_size > 1) interconnect.type = dma_link_2d_vector;
         return interconnect;
     }
 

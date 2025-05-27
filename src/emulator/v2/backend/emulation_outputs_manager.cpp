@@ -18,8 +18,8 @@
 
 namespace fcore::emulator_v2{
 
-    void emulation_outputs_manager::process_specs(const bus_allocator &bus_engine) {
-        auto slots =bus_engine.get_bus_map();
+    void emulation_outputs_manager::process_specs(const std::shared_ptr<bus_allocator> &bus_engine) {
+        auto slots =bus_engine->get_bus_map();
         for(auto &slot:slots) {
             if(slot.source.endpoint_class == core_iom_output) {
                 output_slots[slot.source.core_name][slot.source.source_name] = slot;

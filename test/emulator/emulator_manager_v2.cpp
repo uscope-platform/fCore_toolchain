@@ -850,8 +850,8 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
       ],
       "interconnect":[
         {
-          "source":"test_producer.producer_out",
-          "destination":"test_consumer.input_1"
+          "source": "test_producer.producer_out",
+          "destination": "test_consumer.input_1"
         }
       ],
       "emulation_time": 2,

@@ -33,7 +33,7 @@ namespace fcore::emulator_v2 {
 
     class emulator_builder {
     public:
-        emulator_builder(bool dbg, const bus_allocator &bus_engine);
+        emulator_builder(bool dbg, const std::shared_ptr<bus_allocator> &bus_engine);
         void set_profiler(const std::shared_ptr<instrumentation_core> &prof) {profiler = prof;};
         fcore_program compile_program(
                 const emulator_core& core_spec,
@@ -76,7 +76,7 @@ namespace fcore::emulator_v2 {
         );
         static constexpr uint16_t code_section_index = 3;
         bool debug_autogen;
-        bus_allocator engine;
+         std::shared_ptr<bus_allocator> engine;
     };
 }
 

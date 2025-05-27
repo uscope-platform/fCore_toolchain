@@ -28,7 +28,7 @@ namespace fcore::emulator_v2 {
     class emulator_runner {
     public:
 
-        explicit emulator_runner(program_bundle &prog, const bus_allocator &engine);
+        explicit emulator_runner(program_bundle &prog, const std::shared_ptr<bus_allocator> &bus_engine);
 
         void add_breakpoint(uint32_t addr) {backend.add_breakpoint(addr);};
         void remove_breakpoint(uint32_t addr) {backend.remove_breakpoint(addr);};
@@ -61,7 +61,7 @@ namespace fcore::emulator_v2 {
         core_memory_pool_t emulators_memory;
         bool multichannel_debug;
 
-        bus_allocator bus_engine;
+        std::shared_ptr<bus_allocator> bus_engine;
         emulator_backend backend;
 
     };

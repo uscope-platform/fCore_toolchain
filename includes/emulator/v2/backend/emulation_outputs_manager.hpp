@@ -34,7 +34,7 @@ namespace fcore::emulator_v2{
     class emulation_outputs_manager {
     public:
         void set_runners(const std::shared_ptr<std::unordered_map<std::string, emulator_runner>> &r){runners = r;}
-        void process_specs(const bus_allocator &bus_engine);
+        void process_specs(const std::shared_ptr<bus_allocator> &bus_engine);
         void process_outputs(
             const std::vector<core_step_metadata> &metadata
         );

@@ -24,62 +24,85 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
     for(auto &core:specs.cores) {
         for(auto &in:core.inputs) {
             for(int i = 0; i<core.channels; i++) {
-                bus_slot s;
-                s.address = allocate_slot(in.metadata.io_address);
-                s.source.core_name = core.id;
-                s.source.type = in.metadata.type;
-                s.source.channel = i;
+                core_endpoint ep;
+                ep.core_name = core.id;
+                ep.type = in.metadata.type;
+                ep.channel = i;
                 if(core.channels > 1) {
-                    s.source.source_name = in.name + "_" + std::to_string(i);
+                    ep.source_name = in.name + "_" + std::to_string(i);
                 } else {
-                    s.source.source_name = in.name;
+                    ep.source_name = in.name;
                 }
-                s.source.endpoint_class = core_iom_input;
-                s.source.common_io = in.metadata.is_common_io;
-                bus_map.push_back(s);
+                ep.endpoint_class = core_iom_input;
+                ep.common_io = in.metadata.is_common_io;
+                sources_map[core.id][in.name] = ep;
             }
         }
         for(auto &out:core.outputs) {
             for(int i = 0; i<core.channels; i++) {
+                core_endpoint ep;
+                ep.core_name = core.id;
+                ep.channel = i;
+                if(core.channels > 1) {
+                    ep.source_name = out.name + "_" + std::to_string(i);
+                } else {
+                    ep.source_name = out.name;
+                }
+                ep.type = out.metadata.type;
+                ep.endpoint_class = core_iom_output;
+                ep.common_io = out.metadata.is_common_io;
+                destinations_map[core.id][out.name] = ep;
+
                 bus_slot s;
                 s.address = allocate_slot(out.metadata.io_address);
-                s.source.core_name = core.id;
-                s.source.channel = i;
-                if(core.channels > 1) {
-                    s.source.source_name = out.name + "_" + std::to_string(i);
-                } else {
-                    s.source.source_name = out.name;
-                }
-                s.source.type = out.metadata.type;
-                s.source.endpoint_class = core_iom_output;
-                s.source.common_io = out.metadata.is_common_io;
+                s.source = ep;
                 bus_map.push_back(s);
             }
         }
         for(auto &mem:core.memories) {
             for(int i = 0; i<core.channels; i++) {
-                bus_slot s;
-                s.address = allocate_slot(mem.metadata.io_address);
-                s.source.core_name = core.id;
-                s.source.channel = i;
+                core_endpoint ep;
+                ep.core_name = core.id;
+
+                ep.channel = i;
                 if(core.channels > 1) {
-                    s.source.source_name = mem.name + "_" + std::to_string(i);
+                    ep.source_name = mem.name + "_" + std::to_string(i);
                 } else {
-                    s.source.source_name = mem.name;
+                    ep.source_name = mem.name;
                 }
 
                 if(std::holds_alternative<std::vector<float>>(mem.value)) {
-                    s.source.type = type_float;
-                    s.source.initial_value = emulator_backend::float_to_uint32_v(std::get<std::vector<float>>(mem.value));
+                    ep.type = type_float;
+                    ep.initial_value = emulator_backend::float_to_uint32_v(std::get<std::vector<float>>(mem.value));
                 } else {
-                    s.source.type = type_uint;
-                    s.source.initial_value = std::get<std::vector<uint32_t>>(mem.value);
+                    ep.type = type_uint;
+                    ep.initial_value = std::get<std::vector<uint32_t>>(mem.value);
                 }
-                s.source.endpoint_class = core_iom_memory;
-                s.source.common_io = false;
+                ep.endpoint_class = core_iom_memory;
+                ep.common_io = false;
+                destinations_map[core.id][mem.name] = ep;
+
+                bus_slot s;
+                s.address = allocate_slot(mem.metadata.io_address);
+                s.source = ep;
                 bus_map.push_back(s);
             }
         }
+    }
+
+    for(auto &ic:specs.interconnects) {
+        auto src_core = ic.source_endpoint.substr(0, ic.source_endpoint.find('.'));\
+        auto src_port = ic.source_endpoint.substr(ic.source_endpoint.find('.')+1, ic.source_endpoint.size());
+        auto dst_core = ic.destination_endpoint.substr(0, ic.destination_endpoint.find('.'));\
+        auto dst_port = ic.destination_endpoint.substr(ic.destination_endpoint.find('.')+1, ic.destination_endpoint.size());
+        bus_slot source, destination;
+
+        for(auto &slot:bus_map) {
+            if(slot.source.core_name == src_core && slot.source.source_name == src_port) {
+                source = slot;
+            }
+        }
+
     }
 }
 
@@ -125,17 +148,26 @@ std::unordered_map<std::string, core_iom> bus_allocator::get_dma_io(std::string 
 
         }
     }
+    std::set<uint32_t> used_input_addresses;
+    for(auto &item:sources_map[core_name] | std::views::values) {
+        core_iom iom;
+
+        uint32_t tentative_address = 1;
+        while(allocated_addresses.contains(tentative_address) || used_input_addresses.contains(tentative_address)) tentative_address++;
+        inputs_address_mapping[core_name][ item.source_name] = tentative_address;
+        used_input_addresses.insert(tentative_address);
+        iom.address = {tentative_address};
+        iom.common_io = item.common_io;
+        iom.type = item.endpoint_class;
+        ret_val[item.source_name] = iom;
+    }
     return ret_val;
 }
 
-uint32_t bus_allocator::get_address(const std::string &core, const std::string &input, uint32_t channel) {
-    for(auto &slot:bus_map) {
-        if(slot.source.core_name == core && slot.source.source_name == input && slot.source.channel == channel) {
-            return slot.address;
-        }
-    }
-    throw std::runtime_error("No slot found for core " + core + " input " + input + " channel " + std::to_string(channel));
+uint32_t bus_allocator::get_bus_address(const std::string &core, const std::string &input, uint32_t channel) {
+    return inputs_address_mapping[core][input];
 }
+
 
 void bus_allocator::clear() {
     bus_map.clear();

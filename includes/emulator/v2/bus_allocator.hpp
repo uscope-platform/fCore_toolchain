@@ -48,7 +48,15 @@ namespace fcore::emulator_v2 {
         std::unordered_map<std::string, core_iom> get_dma_io(std::string core_name);
         std::vector<bus_slot> get_bus_map() const {return bus_map;}
 
-        uint32_t get_address(const std::string & core, const std::string & input, uint32_t channel);
+        uint32_t get_bus_address(const std::string & core, const std::string & input, uint32_t channel);
+
+        bus_allocator(const bus_allocator &other) = delete;
+
+        bus_allocator(bus_allocator &&other) noexcept = delete;
+
+        bus_allocator & operator=(const bus_allocator &other) = delete;
+
+        bus_allocator & operator=(bus_allocator &&other) noexcept = delete;
 
         void clear();
 
@@ -56,8 +64,11 @@ namespace fcore::emulator_v2 {
 
     private:
         std::vector<bus_slot> bus_map;
+        std::unordered_map<std::string, std::unordered_map<std::string, core_endpoint>> sources_map;
+        std::unordered_map<std::string, std::unordered_map<std::string, core_endpoint>> destinations_map;
         std::set<uint32_t> allocated_addresses;
         std::set<uint32_t> desired_addresses;
+        std::unordered_map<std::string, std::unordered_map<std::string, uint32_t>> inputs_address_mapping;
         uint32_t current_index = 1;
     };
 }

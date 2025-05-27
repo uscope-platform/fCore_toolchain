@@ -16,7 +16,7 @@
 
 namespace fcore::emulator_v2{
 
-    emulator_builder::emulator_builder(bool dbg, const bus_allocator &bus_engine) {
+    emulator_builder::emulator_builder(bool dbg, const std::shared_ptr<bus_allocator> &bus_engine)  {
         debug_autogen = dbg;
         engine = bus_engine;
     }
@@ -161,7 +161,7 @@ namespace fcore::emulator_v2{
             std::set<io_map_entry> &am
     ) {
 
-        std::unordered_map<std::string, core_iom> dma_io = engine.get_dma_io(core_spec.id);
+        std::unordered_map<std::string, core_iom> dma_io = engine->get_dma_io(core_spec.id);
         std::vector<std::string> content = {core_spec.program.content};
 
 

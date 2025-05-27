@@ -19,7 +19,7 @@
 namespace fcore::emulator_v2 {
 
 
-    emulator_runner::emulator_runner(program_bundle &prog, const bus_allocator &engine) {
+    emulator_runner::emulator_runner(program_bundle &prog, const std::shared_ptr<bus_allocator> &engine) {
         core_name = prog.name;
         multichannel_debug = false;
         bus_engine = engine;
@@ -34,7 +34,7 @@ namespace fcore::emulator_v2 {
         }
 
 
-        for(auto &init_val: bus_engine.get_memories()){
+        for(auto &init_val: bus_engine->get_memories()){
             for(int i = 0; i< prog.active_channels; i++){
                 dma_write(init_val.address, i, init_val.source.initial_value[0]);
             }
@@ -109,7 +109,7 @@ namespace fcore::emulator_v2 {
                     sel_ch = in.channel[channel];
                 }
                 current_inputs[in.name] = input_val;
-                dma_write(bus_engine.get_address(info.id,in.name, channel), sel_ch, input_val);
+                dma_write(bus_engine->get_bus_address(info.id,in.name, channel), sel_ch, input_val);
             }
         }
     }
