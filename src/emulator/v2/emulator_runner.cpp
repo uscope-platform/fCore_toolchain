@@ -77,8 +77,8 @@ namespace fcore::emulator_v2 {
 
         if(info.running){
             for(auto &in:program.input){
-
                 uint32_t input_val;
+                if(in.source_type == external_input) continue;
                 if(in.metadata.type==type_float){
                     if(in.source_type == constant_input){
                         float value = std::get<std::vector<float>>(in.data[0])[0];

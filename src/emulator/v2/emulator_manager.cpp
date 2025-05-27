@@ -205,11 +205,7 @@ namespace fcore::emulator_v2 {
 
     void emulator_manager::interconnects_phase(const std::vector<emulator_interconnect> &ic, const core_step_metadata& info) {
 
-         for(auto &conn:ic){
-            if(info.id == conn.source_endpoint){
-                ic_manager.run_interconnect(conn, sequencer.get_enabled_cores());
-            }
-        }
+        ic_manager.run_interconnect(info.id, sequencer.get_enabled_cores());
 
     }
 

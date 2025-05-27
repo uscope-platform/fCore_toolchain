@@ -34,7 +34,7 @@ namespace fcore::emulator_v2 {
         std::shared_ptr<bus_allocator> get_bus_engine(){ return bus_engine;}
         void clear_repeater();
 
-        void run_interconnect(const emulator_interconnect &ic, std::unordered_map<std::string, bool> enabled_cores);
+        void run_interconnect(const std::string &core_name, std::unordered_map<std::string, bool> enabled_cores);
 
     private:
 

@@ -49,6 +49,7 @@ namespace fcore::emulator_v2 {
         std::vector<bus_slot> get_bus_map() const {return bus_map;}
 
         uint32_t get_bus_address(const std::string & core, const std::string & input, uint32_t channel);
+        uint32_t get_inputs_address(const std::string & core, const std::string & input, uint32_t channel);
 
         bus_allocator(const bus_allocator &other) = delete;
 
@@ -58,9 +59,8 @@ namespace fcore::emulator_v2 {
 
         bus_allocator & operator=(bus_allocator &&other) noexcept = delete;
 
-        void clear();
-
         std::vector<bus_slot> get_memories();
+        std::vector<bus_slot> get_interconnects(const std::string &core_name);
 
     private:
         std::vector<bus_slot> bus_map;

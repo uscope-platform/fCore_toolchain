@@ -21,6 +21,14 @@ namespace fcore::emulator_v2 {
 
 void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
 
+    inputs_address_mapping.clear();
+    bus_map.clear();
+    sources_map.clear();
+    destinations_map.clear();
+    allocated_addresses.clear();
+    desired_addresses.clear();
+    current_index = 1;
+
     for(auto &core:specs.cores) {
         for(auto &in:core.inputs) {
             for(int i = 0; i<core.channels; i++) {
@@ -35,7 +43,7 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
                 }
                 ep.endpoint_class = core_iom_input;
                 ep.common_io = in.metadata.is_common_io;
-                sources_map[core.id][in.name] = ep;
+                destinations_map[core.id][in.name] = ep;
             }
         }
         for(auto &out:core.outputs) {
@@ -51,7 +59,7 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
                 ep.type = out.metadata.type;
                 ep.endpoint_class = core_iom_output;
                 ep.common_io = out.metadata.is_common_io;
-                destinations_map[core.id][out.name] = ep;
+                sources_map[core.id][out.name] = ep;
 
                 bus_slot s;
                 s.address = allocate_slot(out.metadata.io_address);
@@ -80,7 +88,7 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
                 }
                 ep.endpoint_class = core_iom_memory;
                 ep.common_io = false;
-                destinations_map[core.id][mem.name] = ep;
+                sources_map[core.id][mem.name] = ep;
 
                 bus_slot s;
                 s.address = allocate_slot(mem.metadata.io_address);
@@ -95,11 +103,14 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
         auto src_port = ic.source_endpoint.substr(ic.source_endpoint.find('.')+1, ic.source_endpoint.size());
         auto dst_core = ic.destination_endpoint.substr(0, ic.destination_endpoint.find('.'));\
         auto dst_port = ic.destination_endpoint.substr(ic.destination_endpoint.find('.')+1, ic.destination_endpoint.size());
-        bus_slot source, destination;
+
+
+        auto destination = destinations_map[dst_core][dst_port];
 
         for(auto &slot:bus_map) {
             if(slot.source.core_name == src_core && slot.source.source_name == src_port) {
-                source = slot;
+                inputs_address_mapping[dst_core][dst_port] = slot.address;
+                slot.destination.push_back(destination);
             }
         }
 
@@ -117,7 +128,7 @@ uint32_t bus_allocator::allocate_slot(uint16_t d_a) {
         }
     }
 
-    if(!allocated_addresses.contains(d_a)) {
+    if(!allocated_addresses.contains(d_a) && d_a != 0) {
         allocated_addresses.insert(d_a);
         desired_addresses.insert(d_a);
         return d_a;
@@ -148,15 +159,10 @@ std::unordered_map<std::string, core_iom> bus_allocator::get_dma_io(std::string 
 
         }
     }
-    std::set<uint32_t> used_input_addresses;
-    for(auto &item:sources_map[core_name] | std::views::values) {
-        core_iom iom;
 
-        uint32_t tentative_address = 1;
-        while(allocated_addresses.contains(tentative_address) || used_input_addresses.contains(tentative_address)) tentative_address++;
-        inputs_address_mapping[core_name][ item.source_name] = tentative_address;
-        used_input_addresses.insert(tentative_address);
-        iom.address = {tentative_address};
+    for(auto &item:destinations_map[core_name] | std::views::values) {
+        core_iom iom;
+        iom.address = {get_inputs_address(core_name, item.source_name, item.channel) };
         iom.common_io = item.common_io;
         iom.type = item.endpoint_class;
         ret_val[item.source_name] = iom;
@@ -168,16 +174,38 @@ uint32_t bus_allocator::get_bus_address(const std::string &core, const std::stri
     return inputs_address_mapping[core][input];
 }
 
-
-void bus_allocator::clear() {
-    bus_map.clear();
-    current_index = 1;
+uint32_t bus_allocator::get_inputs_address(const std::string &core, const std::string &input, uint32_t channel) {
+    uint32_t tentative_address = 1;
+    if(inputs_address_mapping.contains(core)) {
+        if(inputs_address_mapping[core].contains(input)) {
+            return inputs_address_mapping[core][input];
+        }
+    }
+    std::set<uint32_t> used_input_addresses;
+    for(auto &val : inputs_address_mapping[core] | std::views::values) {
+        used_input_addresses.insert(val);
+    }
+    while(allocated_addresses.contains(tentative_address) || used_input_addresses.contains(tentative_address)) tentative_address++;
+    inputs_address_mapping[core][ input] = tentative_address;
+    used_input_addresses.insert(tentative_address);
+    return tentative_address;
 }
+
 
 std::vector<bus_slot> bus_allocator::get_memories() {
     std::vector<bus_slot> retval;
     for(auto &slot:bus_map) {
         if(slot.source.endpoint_class == core_iom_memory) {
+            retval.push_back(slot);
+        }
+    }
+    return retval;
+}
+
+std::vector<bus_slot> bus_allocator::get_interconnects(const std::string &core_name) {
+    std::vector<bus_slot> retval;
+    for(auto &slot:bus_map) {
+        if(slot.source.core_name == core_name) {
             retval.push_back(slot);
         }
     }
