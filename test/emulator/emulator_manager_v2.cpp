@@ -1363,7 +1363,8 @@ nlohmann::json specs = nlohmann::json::parse(
                 "inputs":[
                 {
                   "name": "in",
-                  "type": "scalar",
+                  "type": "vector",
+                  "array_size": 2,
                   "metadata": {
                     "type": "float",
                     "width": 32,
@@ -1372,7 +1373,7 @@ nlohmann::json specs = nlohmann::json::parse(
                   },
                   "source": {
                     "type":"series",
-                    "value": [[15.7,67.4], [15.7,67.4]]
+                    "value": [[15.7,67.4], [42.92,-5.8]]
                   },
                   "channel": 0
                 }

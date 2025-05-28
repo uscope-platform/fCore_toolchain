@@ -111,6 +111,10 @@ const std::string emulator_schema_v2 = R"~(
                   ],
                   "title": "type of input"
                 },
+                "array_size": {
+                  "type": "integer",
+                  "title": "size of the array port"
+                },
                 "channel": {
                   "anyOf": [
                     {
@@ -212,7 +216,13 @@ const std::string emulator_schema_v2 = R"~(
                     }
                   ]
                 }
-              }
+              },
+              "allOf": [
+                {
+                  "if": {"properties": {"type": { "enum": ["vector"] }}},
+                  "then": { "required": ["array_size"] }
+                }
+              ]
             }
           },
           "outputs": {

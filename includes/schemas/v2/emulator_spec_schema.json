@@ -87,6 +87,10 @@
                   ],
                   "title": "type of input"
                 },
+                "array_size": {
+                  "type": "integer",
+                  "title": "size of the array port"
+                },
                 "channel": {
                   "anyOf": [
                     {
@@ -188,7 +192,13 @@
                     }
                   ]
                 }
-              }
+              },
+              "allOf": [
+                {
+                  "if": {"properties": {"type": { "enum": ["vector"] }}},
+                  "then": { "required": ["array_size"] }
+                }
+              ]
             }
           },
           "outputs": {
