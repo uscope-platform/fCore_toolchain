@@ -305,7 +305,8 @@ const std::string emulator_schema_v2 = R"~(
               "required": [
                 "value",
                 "metadata",
-                "name"
+                "name",
+                "type"
               ],
               "properties": {
                 "value": {
@@ -353,8 +354,26 @@ const std::string emulator_schema_v2 = R"~(
                 "name": {
                   "type": "string",
                   "title": "Name of the state variable (For documentation purposes only, not used internally)"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "scalar",
+                    "vector"
+                  ],
+                  "title": "type of input"
+                },
+                "vector_size": {
+                  "type": "integer",
+                  "title": "size of the array port"
                 }
-              }
+              },
+              "allOf": [
+                {
+                  "if": {"properties": {"type": { "enum": ["vector"] }}},
+                  "then": { "required": ["vector_size"] }
+                }
+              ]
             }
           },
           "program": {

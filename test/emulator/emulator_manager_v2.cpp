@@ -424,6 +424,7 @@ TEST(emulator_manager_v2, emulator_consecutive_runs) {
                 "outputs": [],
                 "memory_init": [{
                         "name": "out",
+                        "type": "scalar",
                         "metadata":{
                             "type": "integer",
                             "width": 12,
@@ -570,6 +571,7 @@ TEST(emulator_manager_v2, emulator_outputs) {
           "memory_init": [
             {
               "name": "test_out",
+              "type": "scalar",
               "metadata": {
                 "type": "float",
                 "width": 32,
@@ -668,6 +670,7 @@ TEST(emulator_manager_v2, emulator_memory) {
                 "memory_init": [
                     {
                         "name": "mem",
+                        "type": "scalar",
                         "metadata":{
                             "type": "float",
                             "width": 12,
@@ -777,6 +780,7 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
           "memory_init": [
             {
               "name": "producer_out",
+              "type": "scalar",
               "metadata": {
                 "type": "float",
                 "width": 32,
@@ -1188,6 +1192,7 @@ TEST(emulator_manager_v2, emulator_compilation_memory) {
       "memory_init": [
         {
             "name": "mem",
+            "type": "scalar",
             "metadata":{
                 "type": "float",
                 "width": 12,
@@ -1289,6 +1294,7 @@ TEST(emulator_manager_v2, emulator_memory_as_output) {
                 "memory_init": [
                     {
                         "name": "mem",
+                        "type": "scalar",
                         "metadata":{
                             "type": "float",
                             "width": 12,
