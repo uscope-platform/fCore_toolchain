@@ -43,11 +43,13 @@ namespace fcore::emulator_v2 {
                     spdlog::trace("GATHER TRANSFER");
 
                     for(int i = 0; i<dest.vector_size; i++){
+                        auto src_addr = bus_engine->get_output_address(slot.source.core_name, slot.source.source_name, 0);
+                        auto dst_addr = bus_engine->get_input_address(dest.core_name, dest.source_name, i);
                         transfer_register(
                         slot.source.core_name,
                         dest.core_name,
-                        bus_engine->get_output_address(slot.source.core_name, slot.source.source_name, 0),
-                        bus_engine->get_input_address(dest.core_name, dest.source_name, i),
+                        src_addr,
+                        dst_addr,
                         i,
                         0,
                         enabled_cores[slot.source.core_name]);

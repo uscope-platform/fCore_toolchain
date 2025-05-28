@@ -100,7 +100,11 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
 
         for(auto &slot:bus_map) {
             if(slot.source.core_name == src_core && slot.source.source_name == src_port) {
-                inputs_address_mapping[dst_core][dst_port] = slot.io_address;
+                if(slot.source.vector_size == destination.vector_size) {
+                    inputs_address_mapping[dst_core][dst_port] = slot.io_address;
+                } else {
+                    inputs_address_mapping[dst_core][dst_port] = allocate_inputs_address(dst_core, dst_port, destination.vector_size);
+                }
                 slot.destination.push_back(destination);
             }
         }
@@ -158,7 +162,7 @@ std::unordered_map<std::string, core_iom> bus_allocator::get_dma_io(std::string 
 
     for(auto &item:destinations_map[core_name] | std::views::values) {
         core_iom iom;
-        iom.address = {allocate_inputs_address(core_name, item.source_name, item.vector_size) };
+        iom.address = allocate_inputs_address(core_name, item.source_name, item.vector_size);
         iom.common_io = item.common_io;
         iom.type = item.endpoint_class;
         ret_val[item.source_name] = iom;
