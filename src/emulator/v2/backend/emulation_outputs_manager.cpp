@@ -24,10 +24,10 @@ namespace fcore::emulator_v2{
 
         for(auto &slot:slots) {
             if(slot.source.endpoint_class == core_iom_output) {
-                auto data = emulator_output(slot.source.source_name, slot.source.channels, 1);
+                auto data = emulator_output(slot.source.source_name, slot.source.channels, slot.source.vector_size);
                 data_section[slot.source.core_name].insert({slot.source.source_name, data});
             }else if(slot.source.endpoint_class == core_iom_memory) {
-                auto data = emulator_output(slot.source.source_name, slot.source.channels, 1);
+                auto data = emulator_output(slot.source.source_name, slot.source.channels, slot.source.vector_size);
                 data_section[slot.source.core_name].insert({slot.source.source_name, data});
             }
         }
@@ -51,8 +51,16 @@ namespace fcore::emulator_v2{
                 for(auto &[slot_name,output]: slots){
 
                     auto spec = bus_engine->get_slot_source(core_name, slot_name);
-                    auto address = bus_engine->get_output_address(core_name, slot_name, 0);
-                    process_scalar_output(core_name, output, address, m.n_channels);
+                    if(spec.is_vector) {
+                        std::vector<uint32_t> addresses;
+                        for(int i = 0; i<spec.vector_size; i++)
+                            addresses.push_back(bus_engine->get_output_address(core_name, slot_name, i));
+                        process_vector_output(core_name, output, addresses, m.n_channels);
+                    } else {
+                        auto address = bus_engine->get_output_address(core_name, slot_name, 0);
+                        process_scalar_output(core_name, output, address, m.n_channels);
+                    }
+
 
                 }
 
@@ -130,23 +138,19 @@ namespace fcore::emulator_v2{
     void emulation_outputs_manager::process_vector_output(
             std::string core_id,
             emulator_output &out,
-            uint32_t address,
+            std::vector<uint32_t> addresses,
             uint32_t active_channels
     ){
         for(int  j= 0; j<active_channels; j++){
             std::vector<uint32_t> data_point;
-           /*
-            * for(int i = 0; i<spec.address.size(); i++){
-                uint16_t io_address = spec.address[i];
 
-                auto val = runners->at(core_id).dma_read(io_address, j);
+             for(int i = 0; i<addresses.size(); i++){
+                auto val = runners->at(core_id).dma_read(addresses[i], j);
                 data_point.push_back(val);
             }
-            */
             out.add_data_point(data_point, j);
         }
-
-
+    int i = 0;
     }
 
     void emulation_outputs_manager::clear() {

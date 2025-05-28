@@ -1720,8 +1720,11 @@ nlohmann::json specs = nlohmann::json::parse(
     auto res = manager.get_results()["test"];
     auto dbg = res.dump(4);
     std::vector<float> reference = {58.62,61.6000023};
-    std::vector<float> result = res["outputs"]["out"]["0"];
+    std::vector<float> result = res["outputs"]["out"]["0"][0];
     ASSERT_EQ(result, reference);
+    std::vector<float> reference2 = {101.53999, 55.8000031};
+    std::vector<float> result2 = res["outputs"]["out"]["0"][1];
+    ASSERT_EQ(result2, reference2);
 }
 
 

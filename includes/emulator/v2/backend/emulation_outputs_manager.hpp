@@ -49,7 +49,7 @@ namespace fcore::emulator_v2{
         void process_vector_output(
                 std::string core_id,
                 emulator_output &out,
-                uint32_t address,
+            std::vector<uint32_t> addresses,
                 uint32_t active_channels
         );
 

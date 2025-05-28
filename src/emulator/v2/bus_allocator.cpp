@@ -48,14 +48,16 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
             ep.source_name = out.name;
             ep.channels = core.channels;
             ep.type = out.metadata.type;
-            ep.is_vector = false;
-            ep.vector_size = 1;
+            ep.is_vector = out.is_vector;
+            ep.vector_size = out.vector_size;
             ep.endpoint_class = core_iom_output;
             ep.common_io = out.metadata.is_common_io;
             sources_map[core.id][out.name] = ep;
 
             bus_slot s;
-            s.io_address = allocate_io_address({out.metadata.io_address});
+
+            s.io_address = allocate_io_address(out.metadata.io_address);
+
             s.n_channels = core.channels;
             s.source = ep;
             bus_map.push_back(s);
@@ -106,7 +108,7 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
     }
 }
 
-std::vector<uint32_t> bus_allocator::allocate_io_address(std::vector<uint32_t> desired_allocations) {
+std::vector<uint32_t> bus_allocator::allocate_io_address(std::vector<uint16_t> desired_allocations) {
     std::vector<uint32_t> ret_val;
     for(int i = 0; i< desired_allocations.size(); i++) {
         auto d_a = desired_allocations[i];

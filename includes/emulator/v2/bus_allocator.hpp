@@ -48,7 +48,7 @@ namespace fcore::emulator_v2 {
         bus_allocator() = default;
         void set_emulation_specs(const emulator_specs &specs);
 
-        std::vector<uint32_t> allocate_io_address(std::vector<uint32_t> desired_address);
+        std::vector<uint32_t> allocate_io_address(std::vector<uint16_t> desired_address);
         std::unordered_map<std::string, core_iom> get_dma_io(std::string core_name);
         std::vector<bus_slot> get_bus_map() const {return bus_map;}
 

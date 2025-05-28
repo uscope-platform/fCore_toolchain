@@ -67,16 +67,23 @@ namespace fcore::emulator_v2 {
         out.metadata.width = o["metadata"]["width"];
         out.metadata.is_signed = o["metadata"]["signed"];
         out.metadata.is_common_io = o["metadata"]["common_io"];
-        if(o["metadata"].contains("io_address")) {
-            out.metadata.io_address = o["metadata"]["io_address"];
-        }
         out.name = o["name"];
         if(o["type"] == "scalar") {
             out.is_vector = false;
-        out.vector_size = 1;
+            out.vector_size = 1;
         } else {
             out.is_vector = true;
-        out.vector_size = o["vector_size"];
+            out.vector_size = o["vector_size"];
+        }
+
+        if(o["metadata"].contains("io_address")) {
+            if(o["metadata"]["io_address"].is_array()) {
+                out.metadata.io_address = std::vector<uint16_t>(o["metadata"]["io_address"]);
+            } else {
+                out.metadata.io_address = {o["metadata"]["io_address"]};
+            }
+        } else if(out.is_vector) {
+            out.metadata.io_address = std::vector<uint16_t>(out.vector_size, 0);
         }
 
         return out;
@@ -90,11 +97,6 @@ namespace fcore::emulator_v2 {
         in.metadata.type = data_type_map[i["metadata"]["type"]];
         in.metadata.width = i["metadata"]["width"];
         in.metadata.is_signed = i["metadata"]["signed"];
-        if(i["metadata"].contains("io_address")) {
-            in.metadata.io_address = i["metadata"]["io_address"];
-        }
-        in.metadata.is_common_io = i["metadata"]["common_io"];
-        in.source_type = input_type_map[i["source"]["type"]];
         if(i["type"] == "scalar") {
             in.is_vector = false;
             in.vector_size = 1;
@@ -102,6 +104,18 @@ namespace fcore::emulator_v2 {
             in.is_vector = true;
             in.vector_size = i["vector_size"];
         }
+        if(i["metadata"].contains("io_address")) {
+            if(i["metadata"]["io_address"].is_array()) {
+                in.metadata.io_address = std::vector<uint16_t>(i["metadata"]["io_address"]);
+            } else {
+                in.metadata.io_address = {i["metadata"]["io_address"]};
+            }
+        }else if(in.is_vector) {
+            in.metadata.io_address = std::vector<uint16_t>(in.vector_size, 0);
+        }
+        in.metadata.is_common_io = i["metadata"]["common_io"];
+        in.source_type = input_type_map[i["source"]["type"]];
+
         if(in.source_type == external_input) {
             in.data = {};
         } else if(in.source_type == time_series_input){
@@ -237,9 +251,23 @@ namespace fcore::emulator_v2 {
         mem.metadata.type = data_type_map[m["metadata"]["type"]];
         mem.metadata.width = m["metadata"]["width"];
         mem.metadata.is_signed = m["metadata"]["signed"];
-        if(m["metadata"].contains("io_address")) {
-            mem.metadata.io_address = m["metadata"]["io_address"];
+        if(m["type"] == "scalar") {
+            mem.is_vector = false;
+            mem.vector_size = 1;
+        } else {
+            mem.is_vector = true;
+            mem.vector_size = m["vector_size"];
         }
+        if(m["metadata"].contains("io_address")) {
+            if(m["metadata"]["io_address"].is_array()) {
+                mem.metadata.io_address = std::vector<uint16_t>(m["metadata"]["io_address"]);
+            } else {
+                mem.metadata.io_address = {m["metadata"]["io_address"]};
+            }
+        }else if(mem.is_vector) {
+            mem.metadata.io_address = std::vector<uint16_t>(mem.vector_size, 0);
+        }
+
         mem.is_output = m["is_output"];
 
         if(mem.metadata.type == type_float){
