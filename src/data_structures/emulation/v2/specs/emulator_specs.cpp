@@ -111,8 +111,16 @@ namespace fcore::emulator_v2 {
                     in.data.emplace_back(ds);
                 }
             } else {
-                std::vector<uint32_t> ds = i["source"]["value"];
-                in.data.emplace_back(ds);
+                if(i["source"]["value"][0].is_array()) {
+                    for(auto &item:i["source"]["value"]) {
+                        std::vector<uint32_t> ds = item;
+                        in.data.emplace_back(ds);
+                    }
+                } else {
+                    std::vector<uint32_t> ds = i["source"]["value"];
+                    in.data.emplace_back(ds);
+                }
+
             }
         } else {
             std::vector<std::variant<std::vector<unsigned int>, std::vector<float>>> ds;

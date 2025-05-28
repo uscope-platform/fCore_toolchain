@@ -36,11 +36,6 @@
 
 namespace fcore::emulator{
 
-    bool operator==(const debug_checkpoint& lhs, const debug_checkpoint& rhs);
-    std::ostream& operator<<(std::ostream& os, const debug_checkpoint& cp);
-
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(debug_checkpoint, status, core_name, breakpoint, progress, memory_view, completed_round, next_program, inputs )
-
     class BreakpointException : public std::runtime_error {
     public:
         BreakpointException(const debug_checkpoint& checkpoint)

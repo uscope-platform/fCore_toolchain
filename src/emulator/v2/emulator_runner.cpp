@@ -81,11 +81,19 @@ namespace fcore::emulator_v2 {
                 if(in.source_type == external_input) continue;
                 if(in.metadata.type==type_float){
                     if(in.source_type == constant_input){
-                        float value = std::get<std::vector<float>>(in.data[0])[0];
-                        if(in.data.size() != 1){
-                            value = std::get<std::vector<float>>(in.data[channel])[0];
+                        if(in.is_vector) {
+                            for(int i = 0; i< in.vector_size; i++) {
+                                float value = std::get<std::vector<float>>(in.data[i])[channel];
+                                input_val.push_back(emulator_backend::float_to_uint32(value));
+                            }
+                        } else {
+                            float value = std::get<std::vector<float>>(in.data[0])[0];
+                            if(in.data.size() != 1){
+                                value = std::get<std::vector<float>>(in.data[channel])[0];
+                            }
+                            input_val = {emulator_backend::float_to_uint32(value)};
                         }
-                        input_val = {emulator_backend::float_to_uint32(value)};
+
                     } else  {
                         if(in.data.size() <= channel) {
                             throw std::runtime_error(" The series input for channel " + std::to_string(channel) + " was not found");
@@ -100,13 +108,24 @@ namespace fcore::emulator_v2 {
                         }
                     }
                 } else {
-
-                    std::vector<uint32_t> in_vect = std::get<std::vector<uint32_t>>(in.data[channel]);
-                    if(in.source_type == constant_input){
-                        input_val = {in_vect[0]};
-                    } else  {
-                        input_val = {in_vect[info.step_n]};
+                    if(in.is_vector) {
+                        for(int i = 0; i< in.vector_size; i++) {
+                            std::vector<uint32_t> in_vect = std::get<std::vector<uint32_t>>(in.data[i]);
+                            if(in.source_type == constant_input){
+                                input_val.push_back(in_vect[0]);
+                            } else  {
+                                input_val.push_back(in_vect[info.step_n]);
+                            }
+                        }
+                    } else {
+                        std::vector<uint32_t> in_vect = std::get<std::vector<uint32_t>>(in.data[channel]);
+                        if(in.source_type == constant_input){
+                            input_val = {in_vect[0]};
+                        } else  {
+                            input_val = {in_vect[info.step_n]};
+                        }
                     }
+
                 }
 
                 uint32_t sel_ch = channel;

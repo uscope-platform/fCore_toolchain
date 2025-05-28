@@ -17,51 +17,6 @@
 
 namespace fcore::emulator{
 
-    bool operator==(const debug_checkpoint& lhs, const debug_checkpoint& rhs) {
-        bool ret = true;
-
-        ret &= lhs.core_name == rhs.core_name;
-        ret &= lhs.breakpoint == rhs.breakpoint;
-        ret &= lhs.memory_view == rhs.memory_view;
-        ret &= lhs.inputs == rhs.inputs;
-        ret &= lhs.completed_round == rhs.completed_round;
-        ret &= lhs.next_program == rhs.next_program;
-        ret &= lhs.progress.period == rhs.progress.period;
-        ret &= lhs.progress.channel == rhs.progress.channel;
-        ret &= lhs.progress.total_steps == rhs.progress.total_steps;
-        ret &= lhs.progress.current == rhs.progress.current;
-        ret &= lhs.status == rhs.status;
-
-        return ret;
-    }
-
-    std::ostream& operator<<(std::ostream& os, const debug_checkpoint& cp){
-        os <<"\n\tcore name: " << cp.core_name<< std::endl;
-        os <<"\tstatus: " << cp.status<< std::endl;
-        os <<"\tline: " << cp.breakpoint<< std::endl;
-
-        os <<"\tcompleted round: " << (cp.completed_round ? "true" : "false")<< std::endl;
-        os <<"\tnext program: " << cp.next_program<< std::endl;
-        os <<"\tmemory view: ";
-        for(auto &v:cp.memory_view){
-            os << std::hex<< std::to_string(v);
-            if(&v != &cp.memory_view.back()) os  << ", ";
-        }
-
-        os <<"\n\tinputs: ";
-        for(auto &v:cp.inputs){
-            os << v.first << " = " << v.second << "        ";
-        }
-
-        os <<"\n\tprogress" << std::endl;
-        os << "\t\t period: " << cp.progress.period << std::endl;
-        os << "\t\t channel: " << cp.progress.channel << std::endl;
-        os << "\t\t total steps: " << cp.progress.total_steps << std::endl;
-        os << "\t\t current: " << cp.progress.current << std::endl;
-
-        return os;
-    }
-
     void emulator_backend::setup_memory(
             std::shared_ptr<std::vector<uint32_t>> channel_mem,
             const std::shared_ptr<std::vector<uint32_t>> &common_mem

@@ -1344,7 +1344,82 @@ TEST(emulator_manager_v2, emulator_memory_as_output) {
     ASSERT_FLOAT_EQ(res, 122.22);
 }
 
-TEST(emulator_manager_v2, emulator_array_constant_input) {
+TEST(emulator_manager_v2, emulator_array_constant_input_float) {
+
+nlohmann::json specs = nlohmann::json::parse(
+    R"({
+    "version": 2,
+        "cores": [
+            {
+                "order": 1,
+                "id": "test",
+                "channels":1,
+                "options":{
+                    "comparators": "full",
+                    "efi_implementation":"none"
+                },
+                "sampling_frequency":1,
+                "inputs":[
+                {
+                  "name": "in",
+                  "type": "vector",
+                  "vector_size": 2,
+                  "metadata": {
+                    "type": "float",
+                    "width": 32,
+                    "signed": false,
+                    "common_io": false
+                  },
+                  "source": {
+                    "type":"constant",
+                    "value": [42.92, 15.7]
+                  },
+                  "channel": 0
+                }
+                ],
+                "outputs":[
+                {
+                    "name": "out",
+                    "type": "float",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false,
+                        "common_io": false
+                    },
+                  "channel": 0
+                }],
+                "memory_init":[],
+                "program": {
+                    "content": "int main(){\n  float in[2]; float out = in[0] + in[1];\n}",
+                    "build_settings":{"io":{"inputs":["in"],"outputs":["out"],"memories":[]}},
+                    "headers": []
+                },
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 2,
+    "deployment_mode": false
+    })");
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+    manager.emulate();
+    auto res = manager.get_results()["test"];
+
+    std::vector<float> reference = {58.62,58.62};
+    std::vector<float> result = res["outputs"]["out"]["0"][0];
+    ASSERT_EQ(result, reference);
+}
+
+TEST(emulator_manager_v2, emulator_array_file_input_float) {
+
 
 nlohmann::json specs = nlohmann::json::parse(
     R"({
@@ -1418,8 +1493,9 @@ nlohmann::json specs = nlohmann::json::parse(
     ASSERT_EQ(result, reference);
 }
 
-TEST(emulator_manager_v2, emulator_array_file_input) {
 
+
+TEST(emulator_manager_v2, emulator_array_constant_input_int) {
 
 nlohmann::json specs = nlohmann::json::parse(
     R"({
@@ -1440,14 +1516,14 @@ nlohmann::json specs = nlohmann::json::parse(
                   "type": "vector",
                   "vector_size": 2,
                   "metadata": {
-                    "type": "float",
+                    "type": "integer",
                     "width": 32,
                     "signed": false,
                     "common_io": false
                   },
                   "source": {
-                    "type":"series",
-                    "value": [[15.7,67.4], [42.92,-5.8]]
+                    "type":"constant",
+                    "value": [42, 15]
                   },
                   "channel": 0
                 }
@@ -1466,7 +1542,7 @@ nlohmann::json specs = nlohmann::json::parse(
                 }],
                 "memory_init":[],
                 "program": {
-                    "content": "int main(){\n  float in[2]; float out = in[0] + in[1];\n}",
+                    "content": "int main(){\n  float in[2]; float out = itf(in[0]) + itf(in[1]);\n}",
                     "build_settings":{"io":{"inputs":["in"],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
@@ -1488,10 +1564,86 @@ nlohmann::json specs = nlohmann::json::parse(
     manager.emulate();
     auto res = manager.get_results()["test"];
 
-    std::vector<float> reference = {58.62,61.6000023};
+    std::vector<float> reference = {57.00,57.00};
     std::vector<float> result = res["outputs"]["out"]["0"][0];
     ASSERT_EQ(result, reference);
 }
+
+TEST(emulator_manager_v2, emulator_array_file_input_int) {
+
+
+nlohmann::json specs = nlohmann::json::parse(
+    R"({
+    "version": 2,
+        "cores": [
+            {
+                "order": 1,
+                "id": "test",
+                "channels":1,
+                "options":{
+                    "comparators": "full",
+                    "efi_implementation":"none"
+                },
+                "sampling_frequency":1,
+                "inputs":[
+                {
+                  "name": "in",
+                  "type": "vector",
+                  "vector_size": 2,
+                  "metadata": {
+                    "type": "integer",
+                    "width": 32,
+                    "signed": false,
+                    "common_io": false
+                  },
+                  "source": {
+                    "type":"series",
+                    "value": [[15,67], [42,-5]]
+                  },
+                  "channel": 0
+                }
+                ],
+                "outputs":[
+                {
+                    "name": "out",
+                    "type": "float",
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false,
+                        "common_io": false
+                    },
+                  "channel": 0
+                }],
+                "memory_init":[],
+                "program": {
+                    "content": "int main(){\n  float in[2]; float out = itf(in[0]) + itf(in[1]);\n}",
+                    "build_settings":{"io":{"inputs":["in"],"outputs":["out"],"memories":[]}},
+                    "headers": []
+                },
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 2,
+    "deployment_mode": false
+    })");
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+    manager.emulate();
+    auto res = manager.get_results()["test"];
+
+    std::vector<float> reference = {57.00,62};
+    std::vector<float> result = res["outputs"]["out"]["0"][0];
+    ASSERT_EQ(result, reference);
+}
+
 
 TEST(emulator_manager_v2, emulator_header) {
 
