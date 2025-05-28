@@ -39,9 +39,6 @@ namespace fcore::emulator_v2 {
     private:
 
         void run_transfer(const dma_channel &c, const std::string &src_core, const std::string &dst_core,bool enabled);
-        void run_scalar_transfer(const dma_channel &c, const std::string &src_core, const std::string &dst_core,bool enabled);
-        void run_scatter_transfer(const dma_channel &c, const std::string &src_core, const std::string &dst_core,bool enabled);
-        void run_gather_transfer(const dma_channel &c, const std::string &src_core, const std::string &dst_core,bool enabled);
         void run_vector_transfer(const dma_channel &c, const std::string &src_core, const std::string &dst_core,bool enabled);
         void run_2d_vector_transfer(const dma_channel &c, const std::string &src_core, const std::string &dst_core,bool enabled);
 

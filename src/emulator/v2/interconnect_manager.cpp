@@ -70,7 +70,11 @@ namespace fcore::emulator_v2 {
                         enabled_cores[slot.source.core_name]);
                     }
                 } else {// 1 or 2d vector transfer
-
+                    if(slot.source.vector_size == 1 && dest.vector_size == 1) {
+                        spdlog::trace("VECTOR TRANSFER");
+                    } else {
+                        spdlog::trace("2D VECTOR TRANSFER");
+                    }
                 }
 
             }
@@ -78,54 +82,12 @@ namespace fcore::emulator_v2 {
     }
 
 
-    void interconnect_manager::run_scalar_transfer(
-        const dma_channel &c,
-        const std::string &src_core,
-        const std::string &dst_core,
-        bool enabled
-    ) {
-        auto src_addr = c.source.address[0];
-        auto dst_addr = c.destination.address[0];
-        transfer_register(src_core, dst_core, src_addr, dst_addr, 0, 0, enabled);
-
-    }
-
-    void interconnect_manager::run_scatter_transfer(
-        const dma_channel &c,
-        const std::string &src_core,
-        const std::string &dst_core,
-        bool enabled
-    ) {
-
-        for(int i = 0; i<c.length; i++){
-            auto src_addr = c.source.address[0] + i;
-            auto dst_addr = c.destination.address[0];
-
-            transfer_register(src_core, dst_core, src_addr, dst_addr, 0, i, enabled);
-        }
-    }
-
-    void interconnect_manager::run_gather_transfer(
-        const dma_channel &c,
-        const std::string &src_core,
-        const std::string &dst_core,
-        bool enabled
-    ) {
-        for(int i = 0; i<c.length; i++){
-            auto src_addr = c.source.address[0];
-            auto dst_addr = c.destination.address[0] + i;
-
-            transfer_register(src_core, dst_core, src_addr, dst_addr, i, 0, enabled);
-        }
-    }
-
     void interconnect_manager::run_vector_transfer(
         const dma_channel &c,
         const std::string &src_core,
         const std::string &dst_core,
         bool enabled
     ) {
-        spdlog::trace("VECTOR TRANSFER");
         for(int i = 0; i<c.length; i++){
             auto src_addr = c.source.address[0];
             auto dst_addr = c.destination.address[0];
@@ -141,7 +103,6 @@ namespace fcore::emulator_v2 {
         bool enabled
     ) {
 
-        spdlog::trace("2D VECTOR TRANSFER");
         for(int j = 0; j<c.stride; j++){
             for(int i = 0; i<c.length; i++){
                 auto src_addr =c.source.address[0] + j;
