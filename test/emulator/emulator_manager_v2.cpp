@@ -1364,7 +1364,7 @@ nlohmann::json specs = nlohmann::json::parse(
                 {
                   "name": "in",
                   "type": "vector",
-                  "array_size": 2,
+                  "vector_size": 2,
                   "metadata": {
                     "type": "float",
                     "width": 32,

@@ -94,6 +94,8 @@ namespace fcore::emulator_v2 {
         input_type source_type;
         std::vector<std::variant<std::vector<uint32_t>, std::vector<float>>> data;
         std::vector<uint32_t> channel;
+        bool is_vector;
+        uint32_t vector_size;
         std::vector<std::string> vector_labels;
     };
 

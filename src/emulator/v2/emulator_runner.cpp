@@ -36,7 +36,7 @@ namespace fcore::emulator_v2 {
 
         for(auto &init_val: bus_engine->get_memories()){
             for(int i = 0; i< prog.active_channels; i++){
-                dma_write(init_val.io_address, i, init_val.source.initial_value[0]);
+                dma_write(init_val.io_address[0], i, init_val.source.initial_value[0]);
             }
         }
 
@@ -90,8 +90,14 @@ namespace fcore::emulator_v2 {
                         if(in.data.size() <= channel) {
                             throw std::runtime_error(" The series input for channel " + std::to_string(channel) + " was not found");
                         }
-                        std::vector<float> in_vect = std::get<std::vector<float>>(in.data[channel]);
-                        input_val = {emulator_backend::float_to_uint32(in_vect[info.step_n])};
+                        if(in.is_vector) {
+                            for(auto &i:in.data) {
+                                input_val.push_back(emulator_backend::float_to_uint32(std::get<std::vector<float>>(i)[info.step_n]));
+                            }
+                        } else {
+                            std::vector<float> in_vect = std::get<std::vector<float>>(in.data[channel]);
+                            input_val = {emulator_backend::float_to_uint32(in_vect[info.step_n])};
+                        }
                     }
                 } else {
 
@@ -108,7 +114,9 @@ namespace fcore::emulator_v2 {
                     sel_ch = in.channel[channel];
                 }
                 current_inputs[in.name] = input_val[0];
-                dma_write(bus_engine->get_input_address(info.id,in.name, channel), sel_ch, input_val[0]);
+                for(int i = 0; i< in.vector_size; i++) {
+                    dma_write(bus_engine->get_input_address(info.id,in.name, i), sel_ch, input_val[i]);
+                }
             }
         }
     }

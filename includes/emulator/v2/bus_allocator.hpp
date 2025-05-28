@@ -26,6 +26,8 @@ namespace fcore::emulator_v2 {
         std::string source_name;
         core_iom_type endpoint_class;
         register_data_type type;
+        bool is_vector;
+        uint32_t vector_size;
         std::vector<uint32_t> initial_value;
         uint32_t channels;
         bool common_io;
@@ -34,7 +36,7 @@ namespace fcore::emulator_v2 {
     struct bus_slot {
 
         std::vector<uint32_t> bus_address;
-        uint32_t io_address;
+        std::vector<uint32_t> io_address;
         uint32_t n_channels;
         core_endpoint source;
         std::vector<core_endpoint> destination;
@@ -46,13 +48,13 @@ namespace fcore::emulator_v2 {
         bus_allocator() = default;
         void set_emulation_specs(const emulator_specs &specs);
 
-        uint32_t allocate_slot(uint16_t desired_address);
+        std::vector<uint32_t> allocate_io_address(std::vector<uint32_t> desired_address);
         std::unordered_map<std::string, core_iom> get_dma_io(std::string core_name);
         std::vector<bus_slot> get_bus_map() const {return bus_map;}
 
-        uint32_t get_input_address(const std::string & core, const std::string & input, uint32_t channel);
-        uint32_t get_output_address(const std::string & core, const std::string & input, uint32_t channel);
-        uint32_t allocate_inputs_address(const std::string & core, const std::string & input);
+        uint32_t get_input_address(const std::string & core, const std::string & input, uint32_t array_index);
+        uint32_t get_output_address(const std::string & core, const std::string & input, uint32_t array_index);
+        std::vector<uint32_t> allocate_inputs_address(const std::string & core, const std::string & input, uint32_t allocation_size);
 
         core_endpoint get_slot_source(const std::string & core, const std::string & slot_name);
 
@@ -73,7 +75,9 @@ namespace fcore::emulator_v2 {
         std::unordered_map<std::string, std::unordered_map<std::string, core_endpoint>> destinations_map;
         std::set<uint32_t> allocated_addresses;
         std::set<uint32_t> desired_addresses;
-        std::unordered_map<std::string, std::unordered_map<std::string, uint32_t>> inputs_address_mapping;
+        std::unordered_map<std::string,
+            std::unordered_map<std::string,
+                std::vector<uint32_t>>> inputs_address_mapping;
         uint32_t current_index = 1;
     };
 }

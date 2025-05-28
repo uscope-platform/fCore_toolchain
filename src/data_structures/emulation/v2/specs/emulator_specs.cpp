@@ -85,6 +85,13 @@ namespace fcore::emulator_v2 {
         }
         in.metadata.is_common_io = i["metadata"]["common_io"];
         in.source_type = input_type_map[i["source"]["type"]];
+        if(i["type"] == "scalar") {
+            in.is_vector = false;
+            in.vector_size = 1;
+        } else {
+            in.is_vector = true;
+            in.vector_size = i["vector_size"];
+        }
         if(in.source_type == external_input) {
             in.data = {};
         } else if(in.source_type == time_series_input){
