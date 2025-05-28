@@ -131,6 +131,7 @@ set(FCORE_EMU_SRCS
         emulator/v2/bus_allocator.cpp
         emulator/v2/backend/multirate_io_repeater.cpp
         emulator/v2/interconnect_manager.cpp
+        emulator/emulator_dispatcher.cpp
         )
 
 

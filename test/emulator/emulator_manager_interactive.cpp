@@ -17,8 +17,9 @@
 #include <fstream>
 
 #include "emulator_test_helpers.hpp"
-#include "../../includes/emulator/v1/emulator_manager.hpp"
+#include "emulator/emulator_dispatcher.hpp"
 
+using namespace fcore;
 using namespace fcore::emulator;
 
 
@@ -99,7 +100,7 @@ TEST(emulator_manager_interactive, uninterrupted_run) {
 
     auto spec = prepare_asm_spec({program}, n_steps, {12, 42}, 1);
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
     manager.emulate();
@@ -122,7 +123,7 @@ TEST(emulator_manager_interactive, breakpoint) {
 
     auto spec = prepare_asm_spec({program}, n_steps, {12, 42}, 1);
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 2);
@@ -132,7 +133,7 @@ TEST(emulator_manager_interactive, breakpoint) {
     auto result = breakpoint.value();
 
 
-    debug_checkpoint expected;
+    fcore::debug_checkpoint expected;
     expected.status = "in_progress";
     expected.core_name = "test_0";
     expected.next_program = "test_0";
@@ -164,7 +165,7 @@ TEST(emulator_manager_interactive, continue_emulation) {
 
     auto spec = prepare_asm_spec({program}, n_steps, {12, 42}, 1);
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 2);
@@ -206,7 +207,7 @@ TEST(emulator_manager_interactive, step_over) {
 
     auto spec = prepare_asm_spec({program}, n_steps, {12, 42}, 1);
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 2);
@@ -248,7 +249,7 @@ TEST(emulator_manager_interactive, step_over_round_end) {
 
     auto spec = prepare_asm_spec({program}, n_steps, {12, 42}, 1);
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 3);
@@ -296,7 +297,7 @@ TEST(emulator_manager_interactive, two_programs_continue) {
 
     auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42}, 1);
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 3);
@@ -353,7 +354,7 @@ TEST(emulator_manager_interactive, second_program_breakpoint) {
 
     auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42}, 1);
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_1", 3);
@@ -409,7 +410,7 @@ TEST(emulator_manager_interactive, two_programs_step_over) {
 
     auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42}, 1);
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 3);
@@ -465,7 +466,7 @@ TEST(emulator_manager_interactive, first_core_correct_restart) {
 
     auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42}, 1);
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 2);
@@ -498,7 +499,7 @@ TEST(emulator_manager_interactive, continue_emulation_multichannel) {
 
     auto spec = prepare_asm_spec({program}, n_steps, {12}, 2);
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 2);
@@ -529,7 +530,7 @@ TEST(emulator_manager_interactive, multichannel_cross_channel_stepover) {
 
     auto spec = prepare_asm_spec({program}, n_steps, {12}, 2);
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 2);
@@ -561,7 +562,7 @@ TEST(emulator_manager_interactive, multichannel_stepover_restart) {
 
     auto spec = prepare_asm_spec({program}, n_steps, {12}, 2);
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
     manager.add_breakpoint("test_0", 1);
@@ -595,7 +596,7 @@ TEST(emulator_manager_interactive, multichannel_breakpoint) {
 
     auto spec = prepare_asm_spec({program}, n_steps, {12}, 2);
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_multichannel_debug(true);
     manager.set_specs(spec);
     manager.process();
@@ -637,7 +638,7 @@ TEST(emulator_manager_interactive, disable_multichannel_debug) {
 
     auto spec = prepare_asm_spec({program}, n_steps, {12}, 2);
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_multichannel_debug(false);
     manager.set_specs(spec);
     manager.process();

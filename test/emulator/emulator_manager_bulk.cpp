@@ -17,15 +17,16 @@
 #include <fstream>
 
 #include "emulator_test_helpers.hpp"
-#include "../../includes/emulator/v1/emulator_manager.hpp"
+#include "emulator/emulator_dispatcher.hpp"
 
+using namespace fcore;
 using namespace fcore::emulator;
 
 TEST(emulator_manager_bulk, emulator_executable_format) {
 
     std::ifstream ifs("emu/test_exec_format.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -46,7 +47,7 @@ TEST(emulator_manager_bulk, emulator_compile_error) {
 
     EXPECT_THROW({
         try{
-            emulator_manager manager;
+            emulator_dispatcher manager;
             manager.set_specs(specs);
             manager.process();
         }
@@ -108,7 +109,7 @@ TEST(emulator_manager_bulk, emulator_asm) {
     })");
 
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -213,7 +214,7 @@ TEST(emulator_manager_bulk, emulator_inputs) {
     })");
 
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -318,7 +319,7 @@ TEST(emulator_manager_bulk, emulator_consecutive_runs) {
 
 
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -362,7 +363,7 @@ TEST(emulator_manager_bulk, emulator_outputs) {
 
     std::ifstream ifs("emu/test_inputs_spec.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -481,7 +482,7 @@ TEST(emulator_manager_bulk, emulator_memory) {
 
 
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -497,7 +498,7 @@ TEST(emulator_manager_bulk, emulator_inteconnect) {
 
     std::ifstream ifs("emu/test_interconnect_spec.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -512,7 +513,7 @@ TEST(emulator_manager_bulk, emulator_compilation) {
 
     std::ifstream ifs("emu/test_compilation.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -529,7 +530,7 @@ TEST(emulator_manager_bulk, emulator_compilation_interconnect) {
 
     std::ifstream ifs("emu/test_compilation_interconnect.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -548,7 +549,7 @@ TEST(emulator_manager_bulk, emulator_compilation_memory) {
 
     std::ifstream ifs("emu/test_compilation_memory.json");
     nlohmann::json specs = nlohmann::json::parse(ifs);
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -634,7 +635,7 @@ nlohmann::json specs = nlohmann::json::parse(
     "deployment_mode": false
     })");
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -737,7 +738,7 @@ TEST(emulator_manager_bulk, emulator_header) {
 })");
 
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -864,7 +865,7 @@ TEST(emulator_manager_bulk, emulator_multichannel) {
 })");
 
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -995,7 +996,7 @@ TEST(emulator_manager_bulk, emulator_multichannel_input_file) {
 )");
 
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -1149,7 +1150,7 @@ TEST(emulator_manager_bulk, emulator_multichannel_gather_transfer) {
 })");
 
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -1260,7 +1261,7 @@ TEST(emulator_manager_bulk, emulator_multichannel_scatter_transfer) {
     })");
 
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -1381,7 +1382,7 @@ TEST(emulator_manager_bulk, emulator_multichannel_transfer_error) {
     })");
 
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
 
@@ -1515,7 +1516,7 @@ TEST(emulator_manager_bulk, emulator_multichannel_vector_transfer) {
     })");
 
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -1624,7 +1625,7 @@ TEST(emulator_manager_bulk, emulator_multichannel_2d_vector_transfer) {
     })");
 
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -1739,7 +1740,7 @@ TEST(emulator_manager_bulk, emulator_common_io) {
 })");
 
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -1829,7 +1830,7 @@ TEST(emulator_manager_bulk, emulator_multichannel_input) {
     })");
 
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -1941,7 +1942,7 @@ TEST(emulator_manager_bulk, emulator_memory_as_output) {
 
 
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
@@ -2092,7 +2093,7 @@ TEST(emulator_manager_bulk, emulator_disassemble) {
 })");
 
 
-    emulator_manager manager;
+    emulator_dispatcher manager;
     manager.set_specs(specs);
     auto res = manager.disassemble();
     std::unordered_map<std::string, fcore::disassembled_program> expected = {

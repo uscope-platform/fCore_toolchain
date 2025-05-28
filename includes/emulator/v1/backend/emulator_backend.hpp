@@ -32,20 +32,9 @@
 #endif
 
 
+#include "emulator/emulator_metadata_common.hpp"
+
 namespace fcore::emulator{
-
-    class debug_checkpoint{
-    public:
-        std::string status;
-        std::string core_name;
-        uint32_t breakpoint;
-        emulation_progress_stat progress;
-        std::vector<uint32_t> memory_view;
-        bool completed_round;
-        std::string next_program;
-        std::unordered_map<std::string, uint32_t> inputs;
-    };
-
 
     bool operator==(const debug_checkpoint& lhs, const debug_checkpoint& rhs);
     std::ostream& operator<<(std::ostream& os, const debug_checkpoint& cp);

@@ -31,6 +31,10 @@ namespace fcore::emulator_v2 {
             throw std::runtime_error("Failed to validate emulator schema");
         }
 
+        if(spec_obj["version"] != 2) {
+            throw std::runtime_error("Wrong emulator input schema version");
+        }
+
         for(auto &is: spec_obj["interconnect"]){
             auto i = process_interconnect(is);
             interconnects.push_back(i);
