@@ -29,19 +29,35 @@ namespace fcore::emulator_v2 {
         for(const auto &slot: interconnects) {
             for(const auto &dest:slot.destination) {
                 if(!slot.source.is_vector && !dest.is_vector) {
-                    spdlog::trace("SCALAR TRANSFER");
-                    transfer_register(
-                        slot.source.core_name,
-                        dest.core_name,
-                        slot.io_address[0],
-                        slot.io_address[0],
-                        0,
-                        0,
-                        enabled_cores[slot.source.core_name]
-                    );
+                    if(slot.source.channels ==1 && dest.channels == 1) {
+                        spdlog::trace("SCALAR TRANSFER");
+                        transfer_register(
+                            slot.source.core_name,
+                            dest.core_name,
+                            slot.io_address[0],
+                            slot.io_address[0],
+                            0,
+                            0,
+                            enabled_cores[slot.source.core_name]
+                        );
+                    } else {
+                        spdlog::trace("VECTOR TRANSFER");
+                        for(int i = 0; i< slot.source.channels; i++) {
+                            transfer_register(
+                                slot.source.core_name,
+                                dest.core_name,
+                                slot.io_address[0],
+                                slot.io_address[0],
+                                i,
+                                i,
+                                enabled_cores[slot.source.core_name]
+                            );
+                        }
+
+                    }
+
                 } else if(!slot.source.is_vector && dest.is_vector) {
                     spdlog::trace("GATHER TRANSFER");
-
                     for(int i = 0; i<dest.vector_size; i++){
                         auto src_addr = bus_engine->get_output_address(slot.source.core_name, slot.source.source_name, 0);
                         auto dst_addr = bus_engine->get_input_address(dest.core_name, dest.source_name, i);
@@ -70,10 +86,20 @@ namespace fcore::emulator_v2 {
                         enabled_cores[slot.source.core_name]);
                     }
                 } else {// 1 or 2d vector transfer
-                    if(slot.source.vector_size == 1 && dest.vector_size == 1) {
-                        spdlog::trace("VECTOR TRANSFER");
-                    } else {
-                        spdlog::trace("2D VECTOR TRANSFER");
+                    spdlog::trace("2D VECTOR TRANSFER");
+                    for(int j = 0; j<slot.source.vector_size; j++){
+                        for(int i = 0; i<slot.source.channels; i++){
+                            auto src_addr = bus_engine->get_output_address(slot.source.core_name, slot.source.source_name, j);
+                            auto dst_addr = bus_engine->get_input_address(dest.core_name, dest.source_name, j);
+                            transfer_register(
+                            slot.source.core_name,
+                            dest.core_name,
+                            src_addr,
+                            dst_addr,
+                            i,
+                            i,
+                            enabled_cores[slot.source.core_name]);
+                        }
                     }
                 }
 
@@ -81,20 +107,6 @@ namespace fcore::emulator_v2 {
         }
     }
 
-
-    void interconnect_manager::run_vector_transfer(
-        const dma_channel &c,
-        const std::string &src_core,
-        const std::string &dst_core,
-        bool enabled
-    ) {
-        for(int i = 0; i<c.length; i++){
-            auto src_addr = c.source.address[0];
-            auto dst_addr = c.destination.address[0];
-
-            transfer_register(src_core, dst_core, src_addr, dst_addr, i, i, enabled);
-        }
-    }
 
     void interconnect_manager::run_2d_vector_transfer(
         const dma_channel &c,

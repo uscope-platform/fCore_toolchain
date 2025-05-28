@@ -2483,7 +2483,18 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
                         "source":{"type": "constant","value": [31.2, 32.7]}
                     }
                 ],
-                "outputs":[],
+                "outputs":[
+                    {
+                        "name":"out",
+                        "type": "scalar",
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": false,
+                            "common_io": false
+                        }
+                    }
+                ],
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = input_1 + input_2;\n}",
@@ -2585,7 +2596,18 @@ TEST(emulator_manager_v2, emulator_multichannel_2d_vector_transfer) {
                 },
                 "sampling_frequency":1,
                 "inputs":[],
-                "outputs":[],
+                "outputs":[
+                    {
+                        "name":"out",
+                        "type": "vector",
+                        "vector_size": 2,
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": false,
+                            "common_io": false
+                        }
+                    }],
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float out[2] = {15.6, 17.2};\n}",
@@ -2610,7 +2632,8 @@ TEST(emulator_manager_v2, emulator_multichannel_2d_vector_transfer) {
                 "inputs":[
                     {
                       "name": "input",
-                      "type": "scalar",
+                      "type": "vector",
+                      "vector_size":2,
                       "metadata": {
                         "type": "float",
                         "width": 32,
@@ -2625,7 +2648,8 @@ TEST(emulator_manager_v2, emulator_multichannel_2d_vector_transfer) {
                 "outputs":[
                     {
                         "name":"consumer_out",
-                        "type": "scalar",
+                        "type": "vector",
+                        "vector_size": 2,
                         "metadata": {
                             "type": "float",
                             "width": 32,
