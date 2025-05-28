@@ -71,7 +71,13 @@ namespace fcore::emulator_v2 {
             out.metadata.io_address = o["metadata"]["io_address"];
         }
         out.name = o["name"];
-        out.output_type = data_type_map[o["type"]];
+        if(o["type"] == "scalar") {
+            out.is_vector = false;
+        out.vector_size = 1;
+        } else {
+            out.is_vector = true;
+        out.vector_size = o["vector_size"];
+        }
 
         return out;
     }

@@ -273,8 +273,26 @@ const std::string emulator_schema_v2 = R"~(
                 "name": {
                   "type": "string",
                   "title": "Name to give to this output"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "scalar",
+                    "vector"
+                  ],
+                  "title": "type of input"
+                },
+                "vector_size": {
+                  "type": "integer",
+                  "title": "size of the array port"
                 }
-              }
+              },
+              "allOf": [
+                {
+                  "if": {"properties": {"type": { "enum": ["vector"] }}},
+                  "then": { "required": ["vector_size"] }
+                }
+              ]
             }
           },
           "memory_init": {

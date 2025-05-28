@@ -63,15 +63,14 @@ TEST(emulator_manager_v2, emulator_executable_format) {
           ],
           "outputs": [
             {
-
-              "type": "float",
+              "name": "test_out",
+              "type": "scalar",
               "metadata": {
                 "type": "float",
                 "width": 32,
                 "signed": false,
                 "common_io": false
-              },
-              "name": "test_out"
+              }
             }
           ],
           "memory_init": [],
@@ -166,14 +165,14 @@ TEST(emulator_manager_v2, emulator_compile_error) {
       ],
       "outputs": [
         {
-          "type": "float",
+          "name":"test_out",
+          "type": "scalar",
           "metadata": {
             "type": "float",
             "width": 32,
             "signed": false,
             "common_io": false
-          },
-          "name":"test_out"
+          }
         }
       ],
       "memory_init": [],
@@ -240,7 +239,6 @@ TEST(emulator_manager_v2, emulator_asm) {
                     {
                         "name": "r12",
                         "type": "scalar",
-                        "type": "float",
                         "metadata":{
                             "io_address": 12,
                             "type": "float",
@@ -333,7 +331,7 @@ TEST(emulator_manager_v2, emulator_inputs) {
                 "outputs": [
                     {
                         "name": "out",
-                        "type": "integer",
+                        "type": "scalar",
                         "metadata":{
                             "type": "integer",
                             "width": 12,
@@ -541,14 +539,14 @@ TEST(emulator_manager_v2, emulator_outputs) {
           ],
           "outputs": [
             {
-              "type": "float",
+              "name":"out",
+              "type": "scalar",
               "metadata": {
                 "type": "float",
                 "width": 16,
                 "signed": true,
                 "common_io": false
-              },
-              "name":"out"
+              }
             }
           ],
           "program":{
@@ -658,7 +656,7 @@ TEST(emulator_manager_v2, emulator_memory) {
                 "outputs": [
                     {
                         "name": "out",
-                        "type": "integer",
+                        "type": "scalar",
                         "metadata":{
                             "type": "integer",
                             "width": 12,
@@ -823,14 +821,14 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
           "memory_init": [],
           "outputs": [
             {
-              "type": "integer",
+              "name":"consumer_out",
+              "type": "scalar",
               "metadata": {
                 "type": "integer",
                 "width": 32,
                 "signed": false,
                 "common_io": false
-              },
-              "name":"consumer_out"
+              }
             }
           ],
           "order": 2,
@@ -927,14 +925,14 @@ TEST(emulator_manager_v2, emulator_compilation) {
       ],
       "outputs": [
         {
-          "type": "integer",
+          "name":"out",
+          "type": "scalar",
           "metadata": {
             "type": "integer",
             "width": 15,
             "signed": false,
             "common_io": false
-          },
-          "name":"out"
+          }
         }
       ],
       "memory_init": [],
@@ -1026,14 +1024,14 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
         ],
         "outputs": [
           {
-            "type": "integer",
+            "name":"out",
+            "type": "scalar",
             "metadata": {
               "type": "integer",
               "width": 24,
               "signed": false,
               "common_io": false
-            },
-            "name":"out"
+            }
           }
         ],
         "memory_init": [],
@@ -1086,14 +1084,14 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
         ],
         "outputs": [
           {
-            "type": "integer",
+            "name":"out",
+            "type": "scalar",
             "metadata": {
               "type": "integer",
               "width": 15,
               "signed": false,
               "common_io": false
-            },
-            "name":"out"
+            }
           }
         ],
         "memory_init": [],
@@ -1178,7 +1176,7 @@ TEST(emulator_manager_v2, emulator_compilation_memory) {
       "outputs": [
         {
           "name":"out",
-          "type": "float",
+          "type": "scalar",
           "metadata": {
             "type": "float",
             "width": 32,
@@ -1248,8 +1246,6 @@ TEST(emulator_manager_v2, emulator_compilation_memory) {
 
 
 TEST(emulator_manager_v2, emulator_memory_as_output) {
-
-
 
     nlohmann::json specs = nlohmann::json::parse( R"({
         "version": 2,
@@ -1380,7 +1376,7 @@ nlohmann::json specs = nlohmann::json::parse(
                 "outputs":[
                 {
                     "name": "out",
-                    "type": "float",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -1455,7 +1451,7 @@ nlohmann::json specs = nlohmann::json::parse(
                 "outputs":[
                 {
                     "name": "out",
-                    "type": "float",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -1531,7 +1527,7 @@ nlohmann::json specs = nlohmann::json::parse(
                 "outputs":[
                 {
                     "name": "out",
-                    "type": "float",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -1606,7 +1602,7 @@ nlohmann::json specs = nlohmann::json::parse(
                 "outputs":[
                 {
                     "name": "out",
-                    "type": "float",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -1641,6 +1637,84 @@ nlohmann::json specs = nlohmann::json::parse(
 
     std::vector<float> reference = {57.00,62};
     std::vector<float> result = res["outputs"]["out"]["0"][0];
+    ASSERT_EQ(result, reference);
+}
+
+
+
+TEST(emulator_manager_v2, emulator_array_output) {
+
+
+nlohmann::json specs = nlohmann::json::parse(
+    R"({
+    "version": 2,
+        "cores": [
+            {
+                "order": 1,
+                "id": "test",
+                "channels":1,
+                "options":{
+                    "comparators": "full",
+                    "efi_implementation":"none"
+                },
+                "sampling_frequency":1,
+                "inputs":[
+                {
+                  "name": "in",
+                  "type": "vector",
+                  "vector_size": 2,
+                  "metadata": {
+                    "type": "float",
+                    "width": 32,
+                    "signed": false,
+                    "common_io": false
+                  },
+                  "source": {
+                    "type":"series",
+                    "value": [[15.7,67.4], [42.92,-5.8]]
+                  },
+                  "channel": 0
+                }
+                ],
+                "outputs":[
+                {
+                    "name": "out",
+                    "type": "vector",
+                    "vector_size": 2,
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false,
+                        "common_io": false
+                    },
+                  "channel": 0
+                }],
+                "memory_init":[],
+                "program": {
+                    "content": "int main(){\n  float in[2]; float out[2]; out[0] = in[0] + in[1]; out[1] = in[0] + 2.0*in[1];\n}",
+                    "build_settings":{"io":{"inputs":["in"],"outputs":["out"],"memories":[]}},
+                    "headers": []
+                },
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 2,
+    "deployment_mode": false
+    })");
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+    manager.emulate();
+    auto res = manager.get_results()["test"];
+    auto dbg = res.dump(4);
+    std::vector<float> reference = {58.62,61.6000023};
+    std::vector<float> result = res["outputs"]["out"]["0"];
     ASSERT_EQ(result, reference);
 }
 
@@ -1689,7 +1763,7 @@ TEST(emulator_manager_v2, emulator_header) {
             "outputs": [
                 {
                     "name": "out",
-                    "type": "float",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -1811,7 +1885,7 @@ TEST(emulator_manager_v2, emulator_multichannel) {
             "outputs": [
                 {
                     "name": "out",
-                    "type": "float",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -1928,7 +2002,7 @@ TEST(emulator_manager_v2, emulator_multichannel_input_file) {
             "outputs":[
                 {
                     "name":"out",
-                    "type": "float",
+                    "type": "scalar",
                     "metadata": {
                         "type": "float",
                         "width": 32,
@@ -2030,7 +2104,7 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
             "outputs":[
                 {
                     "name":"out",
-                    "type": "float",
+                    "type": "scalar",
                     "metadata": {
                         "type": "float",
                         "width": 32,
@@ -2079,7 +2153,7 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
             "outputs":[
                 {
                     "name":"out",
-                    "type": "float",
+                    "type": "scalar",
                     "metadata": {
                         "type": "float",
                         "width": 32,
@@ -2185,7 +2259,7 @@ TEST(emulator_manager_v2, emulator_multichannel_scatter_transfer) {
                 "outputs":[
                     {
                         "name":"out",
-                        "type": "float",
+                        "type": "scalar",
                         "metadata": {
                             "type": "float",
                             "width": 32,
@@ -2252,7 +2326,7 @@ TEST(emulator_manager_v2, emulator_multichannel_transfer_error) {
                 "outputs":[
                     {
                         "name":"out",
-                        "type": "float",
+                        "type": "scalar",
                         "metadata": {
                             "type": "float",
                             "width": 32,
@@ -2300,7 +2374,7 @@ TEST(emulator_manager_v2, emulator_multichannel_transfer_error) {
                 "outputs":[
                     {
                         "name":"out",
-                        "type": "float",
+                        "type": "scalar",
                         "metadata": {
                             "type": "float",
                             "width": 32,
@@ -2428,7 +2502,7 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
                 "outputs":[
                     {
                         "name":"out",
-                        "type": "float",
+                        "type": "scalar",
                         "metadata": {
                             "type": "float",
                             "width": 32,
@@ -2530,7 +2604,7 @@ TEST(emulator_manager_v2, emulator_multichannel_2d_vector_transfer) {
                 "outputs":[
                     {
                         "name":"consumer_out",
-                        "type": "float",
+                        "type": "scalar",
                         "metadata": {
                             "type": "float",
                             "width": 32,
@@ -2630,7 +2704,7 @@ TEST(emulator_manager_v2, emulator_common_io) {
             "outputs": [
                 {
                     "name": "c",
-                    "type": "float",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -2736,7 +2810,7 @@ TEST(emulator_manager_v2, emulator_multichannel_input) {
                 "outputs":[
                     {
                         "name":"out",
-                        "type": "float",
+                        "type": "scalar",
                         "metadata": {
                             "type": "float",
                             "width": 32,
@@ -2826,7 +2900,7 @@ TEST(emulator_manager_v2, emulator_disassemble) {
             "outputs":[
                 {
                     "name":"out",
-                    "type": "float",
+                    "type": "scalar",
                     "metadata": {
                         "type": "float",
                         "width": 32,
@@ -2885,7 +2959,7 @@ TEST(emulator_manager_v2, emulator_disassemble) {
             "outputs":[
                 {
                     "name":"out",
-                    "type": "float",
+                    "type": "scalar",
                     "metadata": {
                         "type": "float",
                         "width": 32,

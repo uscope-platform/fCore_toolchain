@@ -83,7 +83,8 @@ namespace fcore::emulator_v2 {
 
     struct emulator_output_specs {
         std::string name;
-        register_data_type output_type;
+        bool is_vector;
+        uint32_t vector_size;
         iom_metadata metadata;
 
     };
