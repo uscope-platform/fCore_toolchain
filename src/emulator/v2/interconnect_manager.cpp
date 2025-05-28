@@ -57,6 +57,18 @@ namespace fcore::emulator_v2 {
                 } else if(slot.source.is_vector && !dest.is_vector) {
                     spdlog::trace("SCATTER TRANSFER");
 
+                    for(int i = 0; i<slot.source.vector_size; i++){
+                        auto src_addr = bus_engine->get_output_address(slot.source.core_name, slot.source.source_name, i);
+                        auto dst_addr = bus_engine->get_input_address(dest.core_name, dest.source_name, 0);
+                        transfer_register(
+                        slot.source.core_name,
+                        dest.core_name,
+                        src_addr,
+                        dst_addr,
+                        0,
+                        i,
+                        enabled_cores[slot.source.core_name]);
+                    }
                 } else {// 1 or 2d vector transfer
 
                 }
