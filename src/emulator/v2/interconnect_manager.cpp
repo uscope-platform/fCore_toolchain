@@ -28,15 +28,37 @@ namespace fcore::emulator_v2 {
         auto interconnects = bus_engine->get_interconnects(core_name);
         for(const auto &slot: interconnects) {
             for(const auto &dest:slot.destination) {
-                transfer_register(
-                    slot.source.core_name,
-                    dest.core_name,
-                    slot.io_address[0],
-                    slot.io_address[0],
-                    0,
-                    0,
-                    enabled_cores[slot.source.core_name]
-                );
+                if(!slot.source.is_vector && !dest.is_vector) {
+                    spdlog::trace("SCALAR TRANSFER");
+                    transfer_register(
+                        slot.source.core_name,
+                        dest.core_name,
+                        slot.io_address[0],
+                        slot.io_address[0],
+                        0,
+                        0,
+                        enabled_cores[slot.source.core_name]
+                    );
+                } else if(!slot.source.is_vector && dest.is_vector) {
+                    spdlog::trace("GATHER TRANSFER");
+
+                    for(int i = 0; i<dest.vector_size; i++){
+                        transfer_register(
+                        slot.source.core_name,
+                        dest.core_name,
+                        bus_engine->get_output_address(slot.source.core_name, slot.source.source_name, 0),
+                        bus_engine->get_input_address(dest.core_name, dest.source_name, i),
+                        i,
+                        0,
+                        enabled_cores[slot.source.core_name]);
+                    }
+                } else if(slot.source.is_vector && !dest.is_vector) {
+                    spdlog::trace("SCATTER TRANSFER");
+
+                } else {// 1 or 2d vector transfer
+
+                }
+
             }
         }
     }
@@ -48,7 +70,6 @@ namespace fcore::emulator_v2 {
         const std::string &dst_core,
         bool enabled
     ) {
-        spdlog::trace("SCALAR TRANSFER");
         auto src_addr = c.source.address[0];
         auto dst_addr = c.destination.address[0];
         transfer_register(src_core, dst_core, src_addr, dst_addr, 0, 0, enabled);
@@ -62,7 +83,6 @@ namespace fcore::emulator_v2 {
         bool enabled
     ) {
 
-        spdlog::trace("SCATTER TRANSFER");
         for(int i = 0; i<c.length; i++){
             auto src_addr = c.source.address[0] + i;
             auto dst_addr = c.destination.address[0];
@@ -77,7 +97,6 @@ namespace fcore::emulator_v2 {
         const std::string &dst_core,
         bool enabled
     ) {
-        spdlog::trace("GATHER TRANSFER");
         for(int i = 0; i<c.length; i++){
             auto src_addr = c.source.address[0];
             auto dst_addr = c.destination.address[0] + i;

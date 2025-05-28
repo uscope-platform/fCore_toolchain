@@ -2146,7 +2146,8 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
             "inputs":[
                 {
                   "name": "input_data",
-                  "type": "scalar",
+                  "type": "vector",
+                  "vector_size": 2,
                   "metadata": {
                     "type": "float",
                     "width": 32,
@@ -2227,7 +2228,18 @@ TEST(emulator_manager_v2, emulator_multichannel_scatter_transfer) {
                 },
                 "sampling_frequency":1,
                 "inputs":[],
-                "outputs":[],
+                "outputs":[
+                    {
+                        "name":"out",
+                        "type": "vector",
+                        "vector_size":2,
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": false,
+                            "common_io": false
+                        }
+                    }],
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float out[2] = {15.6, 17.2};\n}",
