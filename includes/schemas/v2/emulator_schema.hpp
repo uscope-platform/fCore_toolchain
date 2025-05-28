@@ -99,9 +99,18 @@ const std::string emulator_schema_v2 = R"~(
                 "channel",
                 "metadata",
                 "source",
-                "name"
+                "name",
+                "type"
               ],
               "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "scalar",
+                    "vector"
+                  ],
+                  "title": "type of input"
+                },
                 "channel": {
                   "anyOf": [
                     {

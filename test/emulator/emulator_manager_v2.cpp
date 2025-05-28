@@ -31,6 +31,7 @@ TEST(emulator_manager_v2, emulator_executable_format) {
           "inputs": [
             {
               "name": "input_1",
+              "type": "scalar",
               "metadata": {
                 "type": "float",
                 "width": 32,
@@ -45,6 +46,7 @@ TEST(emulator_manager_v2, emulator_executable_format) {
             },
             {
               "name": "input_2",
+              "type": "scalar",
               "metadata": {
                 "type": "float",
                 "width": 32,
@@ -132,13 +134,13 @@ TEST(emulator_manager_v2, emulator_compile_error) {
       "inputs": [
         {
           "name": "input_1",
+          "type": "scalar",
           "metadata": {
             "type": "float",
             "width": 32,
             "signed": false,
             "common_io": false
           },
-          "type": "float",
           "source": {
             "type":"series",
             "value": [15.7,67.4]
@@ -147,6 +149,7 @@ TEST(emulator_manager_v2, emulator_compile_error) {
         },
         {
           "name": "input_2",
+          "type": "scalar",
           "metadata": {
             "type": "float",
             "width": 32,
@@ -235,6 +238,7 @@ TEST(emulator_manager_v2, emulator_asm) {
                 "outputs": [
                     {
                         "name": "r12",
+                        "type": "scalar",
                         "type": "float",
                         "metadata":{
                             "io_address": 12,
@@ -296,6 +300,7 @@ TEST(emulator_manager_v2, emulator_inputs) {
                 "inputs": [
                     {
                         "name": "input_1",
+                        "type": "scalar",
                         "metadata":{
                             "type": "float",
                             "width": 12,
@@ -310,6 +315,7 @@ TEST(emulator_manager_v2, emulator_inputs) {
                     },
                     {
                         "name": "input_2",
+                        "type": "scalar",
                         "metadata":{
                             "type": "float",
                             "width": 12,
@@ -387,6 +393,7 @@ TEST(emulator_manager_v2, emulator_consecutive_runs) {
                 "inputs": [
                     {
                         "name": "input_1",
+                        "type": "scalar",
                         "metadata":{
                             "type": "float",
                             "width": 12,
@@ -401,6 +408,7 @@ TEST(emulator_manager_v2, emulator_consecutive_runs) {
                     },
                     {
                         "name": "input_2",
+                        "type": "scalar",
                         "metadata":{
                             "type": "float",
                             "width": 12,
@@ -422,7 +430,6 @@ TEST(emulator_manager_v2, emulator_consecutive_runs) {
                             "width": 12,
                             "signed":true
                         },
-                        "reg_n": 4,
                         "is_output":true,
                         "value":0
                     }],
@@ -502,6 +509,7 @@ TEST(emulator_manager_v2, emulator_outputs) {
           "inputs": [
             {
               "name": "input_1",
+              "type": "scalar",
               "metadata": {
                 "type": "float",
                 "width": 32,
@@ -516,6 +524,7 @@ TEST(emulator_manager_v2, emulator_outputs) {
             },
             {
               "name": "input_2",
+              "type": "scalar",
               "metadata": {
                 "type": "float",
                 "width": 32,
@@ -616,6 +625,7 @@ TEST(emulator_manager_v2, emulator_memory) {
                 "inputs": [
                     {
                         "name": "input_1",
+                        "type": "scalar",
                         "metadata":{
                             "type": "float",
                             "width": 12,
@@ -630,6 +640,7 @@ TEST(emulator_manager_v2, emulator_memory) {
                     },
                     {
                         "name": "input_2",
+                        "type": "scalar",
                         "metadata":{
                             "type": "float",
                             "width": 12,
@@ -715,6 +726,7 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
           "inputs": [
             {
               "name": "input_1",
+              "type": "scalar",
               "metadata": {
                 "type": "float",
                 "width": 32,
@@ -729,6 +741,7 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
             },
             {
               "name": "input_2",
+              "type": "scalar",
               "metadata": {
                 "type": "float",
                 "width": 32,
@@ -792,6 +805,7 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
           "inputs": [
             {
               "name": "input_1",
+              "type": "scalar",
               "metadata": {
                 "type": "float",
                 "width": 32,
@@ -881,6 +895,7 @@ TEST(emulator_manager_v2, emulator_compilation) {
       "inputs": [
         {
           "name": "input_1",
+          "type": "scalar",
           "metadata": {
             "type": "float",
             "width": 32,
@@ -895,6 +910,7 @@ TEST(emulator_manager_v2, emulator_compilation) {
         },
         {
           "name": "input_2",
+          "type": "scalar",
           "metadata": {
             "type": "float",
             "width": 32,
@@ -978,6 +994,7 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
         "inputs": [
           {
             "name": "input_1",
+            "type": "scalar",
             "metadata": {
               "type": "float",
               "width": 32,
@@ -992,6 +1009,7 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
           },
           {
             "name": "input_2",
+            "type": "scalar",
             "metadata": {
               "type": "float",
               "width": 32,
@@ -1052,6 +1070,7 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
         "inputs": [
             {
               "name": "input",
+              "type": "scalar",
               "metadata": {
                 "type": "float",
                 "width": 32,
@@ -1141,6 +1160,7 @@ TEST(emulator_manager_v2, emulator_compilation_memory) {
       "inputs": [
         {
           "name": "input_1",
+          "type": "scalar",
           "metadata": {
             "type": "float",
             "width": 32,
@@ -1239,6 +1259,7 @@ TEST(emulator_manager_v2, emulator_memory_as_output) {
                 "inputs": [
                     {
                         "name": "input_1",
+                        "type": "scalar",
                         "metadata":{
                             "type": "float",
                             "width": 12,
@@ -1253,6 +1274,7 @@ TEST(emulator_manager_v2, emulator_memory_as_output) {
                     },
                     {
                         "name": "input_2",
+                        "type": "scalar",
                         "metadata":{
                             "type": "float",
                             "width": 12,
@@ -1341,6 +1363,7 @@ nlohmann::json specs = nlohmann::json::parse(
                 "inputs":[
                 {
                   "name": "in",
+                  "type": "scalar",
                   "metadata": {
                     "type": "float",
                     "width": 32,
@@ -1351,7 +1374,6 @@ nlohmann::json specs = nlohmann::json::parse(
                     "type":"series",
                     "value": [[15.7,67.4], [15.7,67.4]]
                   },
-                  "reg_n": [1,2],
                   "channel": 0
                 }
                 ],
@@ -1365,7 +1387,6 @@ nlohmann::json specs = nlohmann::json::parse(
                         "signed":false,
                         "common_io": false
                     },
-                    "reg_n": [5],
                   "channel": 0
                 }],
                 "memory_init":[],
@@ -1409,6 +1430,7 @@ TEST(emulator_manager_v2, emulator_header) {
             "inputs": [
                 {
                     "name": "input_1",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -1423,6 +1445,7 @@ TEST(emulator_manager_v2, emulator_header) {
                 },
                 {
                     "name": "input_2",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -1509,6 +1532,7 @@ TEST(emulator_manager_v2, emulator_multichannel) {
             "inputs": [
                 {
                     "name": "input_1",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -1533,6 +1557,7 @@ TEST(emulator_manager_v2, emulator_multichannel) {
                 },
                 {
                     "name": "input_2",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -1644,6 +1669,7 @@ TEST(emulator_manager_v2, emulator_multichannel_input_file) {
             "inputs":[
                 {
                     "name": "input_1",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -1658,6 +1684,7 @@ TEST(emulator_manager_v2, emulator_multichannel_input_file) {
                 },
                 {
                     "name": "input_2",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -1750,6 +1777,7 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
             "inputs":[
                 {
                     "name": "input_1",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -1761,6 +1789,7 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
                 },
                 {
                     "name": "input_2",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -1807,6 +1836,7 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
             "inputs":[
                 {
                   "name": "input_data",
+                  "type": "scalar",
                   "metadata": {
                     "type": "float",
                     "width": 32,
@@ -1912,6 +1942,7 @@ TEST(emulator_manager_v2, emulator_multichannel_scatter_transfer) {
                 "inputs":[
                     {
                       "name": "input",
+                      "type": "scalar",
                       "metadata": {
                         "type": "float",
                         "width": 32,
@@ -2027,6 +2058,7 @@ TEST(emulator_manager_v2, emulator_multichannel_transfer_error) {
                 "inputs":[
                     {
                       "name": "input",
+                      "type": "scalar",
                       "metadata": {
                         "type": "float",
                         "width": 32,
@@ -2106,6 +2138,7 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
                 "inputs":[
                     {
                         "name": "input_1",
+                        "type": "scalar",
                         "metadata":{
                             "type": "float",
                             "width": 24,
@@ -2117,6 +2150,7 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
                     },
                     {
                         "name": "input_2",
+                        "type": "scalar",
                         "metadata":{
                             "type": "float",
                             "width": 24,
@@ -2152,6 +2186,7 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
                 "inputs":[
                     {
                       "name": "input",
+                      "type": "scalar",
                       "metadata": {
                         "type": "float",
                         "width": 32,
@@ -2253,6 +2288,7 @@ TEST(emulator_manager_v2, emulator_multichannel_2d_vector_transfer) {
                 "inputs":[
                     {
                       "name": "input",
+                      "type": "scalar",
                       "metadata": {
                         "type": "float",
                         "width": 32,
@@ -2335,6 +2371,7 @@ TEST(emulator_manager_v2, emulator_common_io) {
             "inputs": [
                 {
                     "name": "a",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -2349,6 +2386,7 @@ TEST(emulator_manager_v2, emulator_common_io) {
                 },
                 {
                     "name": "b",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -2439,6 +2477,7 @@ TEST(emulator_manager_v2, emulator_multichannel_input) {
                 "inputs":[
                     {
                         "name": "a",
+                        "type": "scalar",
                         "metadata":{
                             "type": "float",
                             "width": 24,
@@ -2453,6 +2492,7 @@ TEST(emulator_manager_v2, emulator_multichannel_input) {
                     },
                     {
                         "name": "b",
+                        "type": "scalar",
                         "metadata":{
                             "type": "float",
                             "width": 24,
@@ -2533,6 +2573,7 @@ TEST(emulator_manager_v2, emulator_disassemble) {
             "inputs":[
                 {
                     "name": "input_1",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -2544,6 +2585,7 @@ TEST(emulator_manager_v2, emulator_disassemble) {
                 },
                 {
                     "name": "input_2",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -2590,6 +2632,7 @@ TEST(emulator_manager_v2, emulator_disassemble) {
             "inputs":[
                 {
                     "name": "input_data_1",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,
@@ -2601,6 +2644,7 @@ TEST(emulator_manager_v2, emulator_disassemble) {
                 },
                 {
                     "name": "input_data_2",
+                    "type": "scalar",
                     "metadata":{
                         "type": "float",
                         "width": 24,

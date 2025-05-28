@@ -77,7 +77,7 @@ namespace fcore::emulator_v2 {
 
         if(info.running){
             for(auto &in:program.input){
-                uint32_t input_val;
+                std::vector<uint32_t> input_val;
                 if(in.source_type == external_input) continue;
                 if(in.metadata.type==type_float){
                     if(in.source_type == constant_input){
@@ -85,22 +85,21 @@ namespace fcore::emulator_v2 {
                         if(in.data.size() != 1){
                             value = std::get<std::vector<float>>(in.data[channel])[0];
                         }
-                        input_val = emulator_backend::float_to_uint32(value);
-
+                        input_val = {emulator_backend::float_to_uint32(value)};
                     } else  {
                         if(in.data.size() <= channel) {
                             throw std::runtime_error(" The series input for channel " + std::to_string(channel) + " was not found");
                         }
                         std::vector<float> in_vect = std::get<std::vector<float>>(in.data[channel]);
-                        input_val = emulator_backend::float_to_uint32(in_vect[info.step_n]);
+                        input_val = {emulator_backend::float_to_uint32(in_vect[info.step_n])};
                     }
                 } else {
 
                     std::vector<uint32_t> in_vect = std::get<std::vector<uint32_t>>(in.data[channel]);
                     if(in.source_type == constant_input){
-                        input_val = in_vect[0];
+                        input_val = {in_vect[0]};
                     } else  {
-                        input_val = in_vect[info.step_n];
+                        input_val = {in_vect[info.step_n]};
                     }
                 }
 
@@ -108,8 +107,8 @@ namespace fcore::emulator_v2 {
                 if(in.source_type != constant_input || in.channel.size()!=1){
                     sel_ch = in.channel[channel];
                 }
-                current_inputs[in.name] = input_val;
-                dma_write(bus_engine->get_input_address(info.id,in.name, channel), sel_ch, input_val);
+                current_inputs[in.name] = input_val[0];
+                dma_write(bus_engine->get_input_address(info.id,in.name, channel), sel_ch, input_val[0]);
             }
         }
     }
