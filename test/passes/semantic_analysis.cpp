@@ -174,7 +174,7 @@ TEST(semantic_analysis, undefined_variable_in_expression) {
 TEST(semantic_analysis, type_propagation) {
     std::vector<std::string> input =  {R"(
         float add(int a, float b){
-            return a + b;
+            return itf(a) + b;
         }
         void main(){
             int a = 0;

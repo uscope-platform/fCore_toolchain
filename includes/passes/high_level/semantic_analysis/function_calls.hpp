@@ -46,6 +46,7 @@ namespace fcore {
         std::unordered_map<std::string, c_types_t> current_scope;
 
         std::unordered_map<std::string, std::vector<std::pair<std::string, c_types_t>>> definitions;
+        std::unordered_map<std::string, std::vector<c_types_t>> builtins;
     };
 }
 

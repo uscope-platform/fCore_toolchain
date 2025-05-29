@@ -20,7 +20,8 @@
 
 namespace fcore {
     function_calls_checks::function_calls_checks(): pass_base("function calls checks")  {
-
+        builtins.insert({"itf", {c_type_int}});
+        builtins.insert({"fti", {c_type_float}});
     }
 
     std::shared_ptr<ast_code_block> function_calls_checks::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
