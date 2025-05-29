@@ -597,8 +597,8 @@ TEST(emulator_manager_interactive, multichannel_breakpoint) {
     auto spec = prepare_asm_spec({program}, n_steps, {12}, 2);
 
     emulator_dispatcher manager;
-    manager.set_multichannel_debug(true);
     manager.set_specs(spec);
+    manager.set_multichannel_debug(true);
     manager.process();
     manager.add_breakpoint("test_0", 1);
     auto bp = manager.emulate();
@@ -639,8 +639,8 @@ TEST(emulator_manager_interactive, disable_multichannel_debug) {
     auto spec = prepare_asm_spec({program}, n_steps, {12}, 2);
 
     emulator_dispatcher manager;
-    manager.set_multichannel_debug(false);
     manager.set_specs(spec);
+    manager.set_multichannel_debug(false);
     manager.process();
     manager.add_breakpoint("test_0", 1);
     auto bp = manager.emulate();

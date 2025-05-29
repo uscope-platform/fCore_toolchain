@@ -17,8 +17,10 @@ namespace fcore {
     void emulator_dispatcher::enable_debug_mode() {
         if(version == 1) {
             v1.enable_debug_mode();
-        } else {
+        } else if(version == 2) {
             v2.enable_debug_mode();
+        } else {
+            throw std::runtime_error("Invalid version");
         }
     }
 
@@ -30,98 +32,149 @@ namespace fcore {
             throw std::runtime_error("Invalid spec file, version field must be 1 or 2");
         }
         version = spec_file["version"];
-        if(version == 1) {
-            v1.set_specs(spec_file);
-        } else {
-            v2.set_specs(spec_file);
+        switch(version) {
+            case 1:
+                v1.set_specs(spec_file);
+                break;
+            case 2:
+                v2.set_specs(spec_file);
+                break;
+            default:
+                throw std::runtime_error("Invalid version");
+                break;
         }
     }
 
     std::set<uint32_t> emulator_dispatcher::get_breakpoints(const std::string &id) {
-        if(version == 1) {
+        switch(version) {
+            case 1:
             return v1.get_breakpoints(id);
-        } else {
+            case 2:
             return v2.get_breakpoints(id);
+            default:
+                throw std::runtime_error("Invalid version");
         }
     }
 
     void emulator_dispatcher::process() {
-        if(version == 1) {
-            v1.process();
-        } else {
-            v2.process();
+        switch(version) {
+            case 1:
+                v1.process();
+                break;
+            case 2:
+                v2.process();
+                break;
+            default:
+                throw std::runtime_error("Invalid version");
         }
     }
 
     std::optional<debug_checkpoint> emulator_dispatcher::emulate() {
-        if(version == 1) {
+        switch(version) {
+            case 1:
             return v1.emulate();
-        } else {
-            return v2.emulate();
+            case 2:
+                return v2.emulate();
+            default:
+                throw std::runtime_error("Invalid version");
         }
+        
     }
 
     debug_checkpoint emulator_dispatcher::step_over() {
-        if(version == 1) {
+        switch(version) {
+            case 1:
             return v1.step_over();
-        } else {
+            case 2:
             return v2.step_over();
+            default:
+                throw std::runtime_error("Invalid version");
         }
+
     }
 
     std::optional<debug_checkpoint> emulator_dispatcher::continue_emulation() {
-        if(version == 1) {
+        switch(version) {
+            case 1:
             return v1.continue_emulation();
-        } else {
+            case 2:
             return v2.continue_emulation();
+            default:
+                throw std::runtime_error("Invalid version");
         }
     }
 
     void emulator_dispatcher::add_breakpoint(const std::string &s, uint32_t addr) {
-        if(version == 1) {
-            v1.add_breakpoint(s, addr);
-        } else {
-            v2.add_breakpoint(s, addr);
+        switch(version) {
+            case 1:
+                v1.add_breakpoint(s, addr);
+                break;
+            case 2:
+                v2.add_breakpoint(s, addr);
+                break;
+            default:
+                throw std::runtime_error("Invalid version");
         }
     }
 
     void emulator_dispatcher::remove_breakpoint(const std::string &s, uint32_t addr) {
-        if(version == 1) {
-            v1.remove_breakpoint(s, addr);
-        } else {
-            v2.remove_breakpoint(s, addr);
+        switch(version) {
+            case 1:
+                v1.remove_breakpoint(s, addr);
+                break;
+            case 2:
+                v2.remove_breakpoint(s, addr);
+                break;
+            default:
+                throw std::runtime_error("Invalid version");
         }
     }
 
     void emulator_dispatcher::set_multichannel_debug(bool mc) {
-        if(version  == 1) {
-            v1.set_multichannel_debug(mc);
-        } else {
-            v2.set_multichannel_debug(mc);
+        switch(version) {
+            case 1:
+                v1.set_multichannel_debug(mc);
+                break;
+            case 2:
+                v2.set_multichannel_debug(mc);
+                break;
+            default:
+                throw std::runtime_error("Invalid version");
         }
     }
 
     nlohmann::json emulator_dispatcher::get_results() {
-        if(version == 1) {
-            return v1.get_results();
-        } else {
-            return v2.get_results();
+        switch(version) {
+            case 1:
+                return v1.get_results();
+            case 2:
+                return v2.get_results();
+            default:
+                throw std::runtime_error("Invalid version");
         }
     }
 
     void emulator_dispatcher::set_profiler(const std::shared_ptr<instrumentation_core> &prof) {
-        if(version == 1) {
-            v1.set_profiler(prof);
-        } else {
-            v2.set_profiler(prof);
+        switch(version) {
+            case 1:
+                v1.set_profiler(prof);
+                break;
+            case 2:
+                v2.set_profiler(prof);
+                break;
+            default:
+                throw std::runtime_error("Invalid version");
         }
     }
 
     std::unordered_map<std::string, disassembled_program> emulator_dispatcher::disassemble() {
-        if(version == 1) {
-            return v1.disassemble();
-        } else {
-            return v2.disassemble();
+        switch(version) {
+            case 1:
+                return v1.disassemble();
+            case 2:
+                return v2.disassemble();
+            default:
+                throw std::runtime_error("Invalid version");
         }
     }
 }
