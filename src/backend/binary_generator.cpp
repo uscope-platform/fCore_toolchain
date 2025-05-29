@@ -125,6 +125,16 @@ namespace fcore{
         return ret;
     }
 
+    std::set<io_map_entry> binary_generator::get_io_mapping() {
+        std::set<io_map_entry> ret;
+        ret.insert(io_mapping.begin(), io_mapping.end());
+        for(auto item:common_io_mapping) {
+            item.common_io = true;
+            ret.insert(item);
+        }
+        return ret;
+    }
+
     std::vector<uint32_t> binary_generator::get_executable() {
         return ex.get_executable();
     }

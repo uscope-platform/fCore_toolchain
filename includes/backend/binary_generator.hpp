@@ -43,7 +43,7 @@ namespace fcore{
         void write_mem_file(const std::string& filename);
         std::vector<uint32_t> generate_hex(bool endian_swap);
         std::vector<std::string> generate_mem();
-        std::set<io_map_entry> get_io_mapping(){return io_mapping;};
+        std::set<io_map_entry> get_io_mapping();
     private:
         std::set<io_map_entry> io_mapping;
         std::set<io_map_entry> common_io_mapping;

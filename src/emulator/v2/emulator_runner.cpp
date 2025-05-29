@@ -29,6 +29,8 @@ namespace fcore::emulator_v2 {
         backend.set_efi_selector(prog.efi_selector);
         backend.set_comparator_type(prog.comparator_type);
 
+        common_io_memory = std::make_shared<std::vector<uint32_t>>(32, 0); // TODO: make the number of common io cells a parameter
+
         for(int i = 0; i<prog.active_channels; i++){
             emulators_memory[i] = std::make_shared<std::vector<uint32_t>>(2 << (fcore_register_address_width - 1), 0);
         }
