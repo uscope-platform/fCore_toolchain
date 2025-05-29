@@ -205,9 +205,9 @@ TEST(semantic_analysis, type_propagation) {
     auto fcn = std::static_pointer_cast<ast_function_def>(ast->get_content()[0]);
 
 
-    auto op = std::static_pointer_cast<ast_operand>(
+    auto call = std::static_pointer_cast<ast_call>(
     std::static_pointer_cast<ast_expression>(fcn->get_return())->get_lhs().value());
-
+    auto op = std::static_pointer_cast<ast_operand>(call->get_arguments()[0]);
     EXPECT_EQ(op->get_c_type(), c_type_int);
 
     op = std::static_pointer_cast<ast_operand>(
@@ -264,3 +264,29 @@ TEST(semantic_analysis, mixed_type_operation_warning) {
 
 }
 
+
+
+TEST(semantic_analysis, wrong_argument_for_builtin) {
+    std::vector<std::string> input =  {R"(
+
+        void main(){
+            float c = itf(14);
+        }
+    )"};
+
+    auto includes = std::vector<std::string>();
+    auto engine = create_type_checking_engine();
+
+    fcore_cc compiler(input, includes);
+    auto [ast, globals] = compiler.get_hl_ast();
+
+    try {
+        engine.run_semantic_analysis(ast, globals);
+        spdlog::critical("The undefined variable ba was not caught");
+        EXPECT_TRUE(false);
+    } catch(const std::runtime_error &err) {
+        std::string msg = err.what();
+        EXPECT_EQ(msg, "Argument #0 of a call to itf is of the wrong type");
+    }
+
+}

@@ -30,6 +30,7 @@ namespace fcore{
         std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
     private:
         static void process_expression(const std::shared_ptr<ast_expression> &exp);
+        static bool are_types_compatible(c_types_t lhs, c_types_t rhs);
     };
 
 }

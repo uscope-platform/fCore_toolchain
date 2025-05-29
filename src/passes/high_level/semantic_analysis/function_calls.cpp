@@ -70,14 +70,23 @@ namespace fcore {
     }
 
     void function_calls_checks::process_function_call(const std::shared_ptr<ast_call> &call) {
+
         const auto arguments = call->get_arguments();
         for(int i = 0; i<arguments.size(); i++) {
             if(arguments[i]->node_type == hl_ast_node_type_operand) {
                 auto arg_type = current_scope[std::static_pointer_cast<ast_operand>(arguments[i])->get_name()];
-                if(arg_type != definitions[call->get_name()][i].second) {
-                    const std::string error = fmt::format("Argument #{0} of a call to {1} is of the wrong type", i, call->get_name());
-                    throw std::runtime_error(error);
+                if(builtins.contains(call->get_name())) {
+                    if(arg_type != builtins[call->get_name()][i]) {
+                        const std::string error = fmt::format("Argument #{0} of a call to {1} is of the wrong type", i, call->get_name());
+                        throw std::runtime_error(error);
+                    }
+                } else {
+                    if(arg_type != definitions[call->get_name()][i].second) {
+                        const std::string error = fmt::format("Argument #{0} of a call to {1} is of the wrong type", i, call->get_name());
+                        throw std::runtime_error(error);
+                    }
                 }
+
             }
         }
     }

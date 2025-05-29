@@ -40,7 +40,7 @@ void fcore::mixed_type_operations::process_expression(const std::shared_ptr<ast_
         if(exp->get_lhs().value()->node_type == hl_ast_node_type_operand && exp->get_rhs()->node_type == hl_ast_node_type_operand) {
             auto lhs = std::static_pointer_cast<ast_operand>(exp->get_lhs().value());
             auto rhs = std::static_pointer_cast<ast_operand>(exp->get_rhs());
-            if(lhs->get_c_type() != rhs->get_c_type()) {
+            if(!are_types_compatible(lhs->get_c_type(), rhs->get_c_type())) {
                 const std::string error = fmt::format(
                     "Encountered expression with mixed types: {0} is {1} and {2} is {3}",
                     lhs->get_name(), variable::type_to_string(lhs->get_c_type()),
@@ -50,4 +50,18 @@ void fcore::mixed_type_operations::process_expression(const std::shared_ptr<ast_
             }
         }
     }
+}
+
+bool fcore::mixed_type_operations::are_types_compatible(c_types_t lhs, c_types_t rhs){
+    if(rhs == lhs) return true;
+    if(rhs == c_type_int && lhs == c_type_long) return true;
+    if(rhs == c_type_long && lhs == c_type_int) return true;
+
+    if(rhs == c_type_int && lhs == c_type_short) return true;
+    if(rhs == c_type_short && lhs == c_type_int) return true;
+
+    if(rhs == c_type_short && lhs == c_type_long) return true;
+    if(rhs == c_type_long && lhs == c_type_short) return true;
+
+    return false;
 }
