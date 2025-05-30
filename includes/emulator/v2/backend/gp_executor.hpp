@@ -18,7 +18,7 @@
 #include <cstdint>
 #include <spdlog/spdlog.h>
 
-namespace fcore::emulator{
+namespace fcore::emulator_v2{
     class gp_executor {
     public:
         uint32_t execute_add(uint32_t a, uint32_t b);
