@@ -24,6 +24,11 @@
 
 namespace fcore {
 
+    struct memory_init_value {
+        std::vector<uint32_t>  address;
+        std::variant<std::vector<float>, std::vector<uint32_t>> value;
+    };
+
     class emulator_dispatcher {
     public:
         void enable_debug_mode();
@@ -46,6 +51,7 @@ namespace fcore {
 
         std::unordered_map<std::string, fcore_program> get_programs();
         std::unordered_map<std::string, uint32_t> get_sampling_frequencies();
+        std::unordered_map<std::string, std::vector<memory_init_value>> get_memory_initializations();
 
     private:
         uint32_t version = 0;

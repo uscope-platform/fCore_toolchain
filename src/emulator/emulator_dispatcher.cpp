@@ -216,4 +216,33 @@ namespace fcore {
             throw std::runtime_error("Invalid version");
         }
     }
+
+    std::unordered_map<std::string, std::vector<memory_init_value>>  emulator_dispatcher::get_memory_initializations() {
+        std::unordered_map<std::string, std::vector<memory_init_value>> ret;
+        if(version == 1) {
+            auto bundles = v1.get_programs();
+            for(auto &bundle:bundles) {
+                for(auto mem_init: bundle.memories) {
+                    memory_init_value val;
+                    val.address = mem_init.address;
+                    val.value = mem_init.value;
+                    ret[bundle.name].push_back(val);
+                }
+            }
+            return ret;
+        } else if(version == 2) {
+            auto bundles = v2.get_programs();
+            for(auto &bundle:bundles) {
+                for(auto mem_init: bundle.memories) {
+                    memory_init_value val;
+                    val.address = {0};
+                    val.value = mem_init.value;
+                    ret[bundle.name].push_back(val);
+                }
+            }
+            return ret;
+        } else {
+            throw std::runtime_error("Invalid version");
+        }
+    }
 }
