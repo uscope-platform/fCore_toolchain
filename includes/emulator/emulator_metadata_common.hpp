@@ -87,6 +87,8 @@ namespace fcore {
     }
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(debug_checkpoint, status, core_name, breakpoint, progress, memory_view, completed_round, next_program, inputs )
 
+
+
 }
 
 

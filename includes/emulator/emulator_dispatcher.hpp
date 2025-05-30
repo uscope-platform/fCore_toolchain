@@ -44,11 +44,16 @@ namespace fcore {
         void set_profiler(const std::shared_ptr<instrumentation_core> &prof);
         std::unordered_map<std::string, disassembled_program>  disassemble();
 
+        std::unordered_map<std::string, fcore_program> get_programs();
+        std::unordered_map<std::string, uint32_t> get_sampling_frequencies();
+
     private:
         uint32_t version = 0;
         emulator::emulator_manager v1;
         emulator_v2::emulator_manager v2;
     };
+
+
 }
 
 

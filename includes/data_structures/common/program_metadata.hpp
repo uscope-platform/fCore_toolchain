@@ -69,7 +69,7 @@ namespace fcore {
 
     struct fcore_program{
         std::vector<uint32_t> binary;
-        struct program_info program_length;
+        program_info program_length;
     };
 }
 

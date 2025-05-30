@@ -33,8 +33,8 @@ namespace fcore::emulator {
         std::string name;
         fcore_program program;
         std::set<io_map_entry> io;
-        std::vector<emulator::emulator_memory_specs> memories;
-        std::vector<emulator::emulator_input_specs> input;
+        std::vector<emulator_memory_specs> memories;
+        std::vector<emulator_input_specs> input;
         uint32_t sampling_frequency;
         uint32_t execution_order;
         uint32_t active_channels;
