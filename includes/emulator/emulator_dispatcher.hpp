@@ -29,6 +29,12 @@ namespace fcore {
         std::variant<std::vector<float>, std::vector<uint32_t>> value;
     };
 
+    struct deployed_program {
+        std::string name;
+        uint16_t index;
+        fcore_program program;
+    };
+
     class emulator_dispatcher {
     public:
         void enable_debug_mode();
@@ -49,7 +55,7 @@ namespace fcore {
         void set_profiler(const std::shared_ptr<instrumentation_core> &prof);
         std::unordered_map<std::string, disassembled_program>  disassemble();
 
-        std::unordered_map<std::string, fcore_program> get_programs();
+        std::vector<deployed_program> get_programs();
         std::unordered_map<std::string, uint32_t> get_sampling_frequencies();
         std::unordered_map<std::string, std::vector<memory_init_value>> get_memory_initializations();
 

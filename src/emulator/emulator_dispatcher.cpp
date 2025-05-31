@@ -178,19 +178,27 @@ namespace fcore {
         }
     }
 
-    std::unordered_map<std::string, fcore_program> emulator_dispatcher::get_programs() {
+    std::vector<deployed_program> emulator_dispatcher::get_programs() {
         if(version == 1) {
             auto bundles = v1.get_programs();
-            std::unordered_map<std::string, fcore_program> ret;
-            for(auto &bundle:bundles) {
-                ret.insert({bundle.name, bundle.program});
+            std::vector<deployed_program> ret;
+            for(int i = 0; i<bundles.size(); i++) {
+                deployed_program dp;
+                dp.index = i;
+                dp.name = bundles[i].name;
+                dp.program = bundles[i].program;
+                ret.push_back(dp);
             }
             return ret;
         } else if(version == 2) {
             auto bundles = v2.get_programs();
-            std::unordered_map<std::string, fcore_program> ret;
-            for(auto &bundle:bundles) {
-                ret.insert({bundle.name, bundle.program});
+            std::vector<deployed_program> ret;
+            for(int i = 0; i<bundles.size(); i++) {
+                deployed_program dp;
+                dp.index = i;
+                dp.name = bundles[i].name;
+                dp.program = bundles[i].program;
+                ret.push_back(dp);
             }
             return ret;
         } else {
