@@ -57,7 +57,6 @@ namespace fcore {
         std::unordered_map<std::string, disassembled_program>  disassemble();
 
         std::vector<deployed_program> get_programs();
-        std::unordered_map<std::string, uint32_t> get_sampling_frequencies();
         std::unordered_map<std::string, std::vector<memory_init_value>> get_memory_initializations();
 
     private:

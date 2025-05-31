@@ -208,25 +208,6 @@ namespace fcore {
         }
     }
 
-    std::unordered_map<std::string, uint32_t> emulator_dispatcher::get_sampling_frequencies() {
-        std::unordered_map<std::string, uint32_t> ret;
-        if(version == 1) {
-            auto bundles = v1.get_programs();
-            for(auto &bundle:bundles) {
-                ret.insert({bundle.name, bundle.sampling_frequency});
-            }
-            return ret;
-        } else if(version == 2) {
-            auto bundles = v2.get_programs();
-            for(auto &bundle:bundles) {
-                ret.insert({bundle.name, bundle.sampling_frequency});
-            }
-            return ret;
-        } else {
-            throw std::runtime_error("Invalid version");
-        }
-    }
-
     std::unordered_map<std::string, std::vector<memory_init_value>>  emulator_dispatcher::get_memory_initializations() {
         std::unordered_map<std::string, std::vector<memory_init_value>> ret;
         if(version == 1) {
