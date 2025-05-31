@@ -32,6 +32,7 @@ namespace fcore {
     struct deployed_program {
         std::string name;
         uint16_t index;
+        uint32_t sampling_frequency;
         fcore_program program;
     };
 
