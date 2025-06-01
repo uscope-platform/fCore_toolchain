@@ -238,4 +238,35 @@ namespace fcore {
             throw std::runtime_error("Invalid version");
         }
     }
+
+    std::vector<deployed_core_inputs> emulator_dispatcher::get_inputs(const std::string &core) {
+        std::vector<deployed_core_inputs> ret;
+        if(version == 1) {
+            auto bundles = v1.get_programs();
+            for(auto prog:bundles) {
+                if(core == prog.name) {
+                    for(auto &in : prog.input) {
+                        deployed_core_inputs dci;
+                        dci.name = in.name;
+                        dci.address = in.address;
+                        dci.channel = in.channel;
+                        dci.data = in.data;
+                        dci.metadata.is_signed = in.metadata.is_signed;
+                        dci.metadata.type = in.metadata.type;
+                        dci.metadata.width = in.metadata.width;
+                        dci.source_type = in.source_type;
+                        ret.push_back(dci);
+                    }
+                    return ret;
+                }
+            }
+            return ret;
+        } else if(version == 2) {
+            auto bundles = v2.get_programs();
+
+            return ret;
+        } else {
+            throw std::runtime_error("Invalid version");
+        }
+    }
 }

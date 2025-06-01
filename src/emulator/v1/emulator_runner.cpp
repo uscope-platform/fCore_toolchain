@@ -84,8 +84,8 @@ namespace fcore::emulator {
             for(auto &in:program.input){
 
                 std::vector<uint32_t> input_val;
-                if(in.metadata.type==emulator::type_float){
-                    if(in.source_type == emulator::constant_input){
+                if(in.metadata.type==type_float){
+                    if(in.source_type == constant_input){
                         float value = std::get<std::vector<float>>(in.data[0])[0];
                         if(in.data.size() != 1){
                             value = std::get<std::vector<float>>(in.data[channel])[0];
@@ -108,7 +108,7 @@ namespace fcore::emulator {
                 } else {
 
                     std::vector<uint32_t> in_vect = std::get<std::vector<uint32_t>>(in.data[channel]);
-                    if(in.source_type == emulator::constant_input){
+                    if(in.source_type == constant_input){
                         input_val = {in_vect[0]};
                     } else  {
                         input_val = {in_vect[info.step_n]};
@@ -116,7 +116,7 @@ namespace fcore::emulator {
                 }
 
                 uint32_t sel_ch = channel;
-                if(in.source_type != emulator::constant_input || in.channel.size()!=1){
+                if(in.source_type != constant_input || in.channel.size()!=1){
                     sel_ch = in.channel[channel];
                 }
                 current_inputs[in.name] = input_val[0];

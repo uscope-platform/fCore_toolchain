@@ -55,8 +55,8 @@ namespace fcore::emulator{
                 }
             }
             // TODO: ALLOW USER TO CHOSE THIS
-            out_spec.output_type = emulator::type_float;
-            out_spec.metadata.type = emulator::type_float;
+            out_spec.output_type = type_float;
+            out_spec.metadata.type = type_float;
             out_spec.metadata.width = 32;
             out_spec.metadata.is_signed = true;
 
@@ -112,9 +112,9 @@ namespace fcore::emulator{
         for(auto &s: output_specs[core_id]){
             auto out_data = data_section[core_id].at(s.second.name);
             nlohmann::json output_obj;
-            if(s.second.output_type == emulator::type_uint){
+            if(s.second.output_type == type_uint){
                 res[s.second.name] = out_data.get_integer_data();
-            } else if(s.second.output_type == emulator::type_float){
+            } else if(s.second.output_type == type_float){
                 res[s.second.name] = out_data.get_float_data();
             } else {
                 throw std::runtime_error("unknown output type");

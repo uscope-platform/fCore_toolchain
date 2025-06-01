@@ -26,6 +26,30 @@
 
 namespace fcore {
 
+    typedef enum {
+        constant_input = 0,
+        time_series_input = 1,
+        external_input = 2
+    } source_type_t;
+
+    typedef enum {
+        type_float=0,
+        type_uint=1
+    } register_data_type;
+
+    struct iom_metadata {
+        register_data_type type;
+        uint16_t width;
+        bool is_signed;
+    };
+
+    static std::unordered_map<std::string, source_type_t > source_type_map = {
+        {"constant", constant_input},
+        {"file", time_series_input},
+        {"external", external_input},
+    };
+
+
     class debug_checkpoint{
     public:
         std::string status;

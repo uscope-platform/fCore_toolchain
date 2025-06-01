@@ -35,10 +35,10 @@ program_bundle prepare_test_bundle(std::vector<uint32_t> program){
 
     emulator::emulator_input_specs s;
     s.name = "a";
-    s.metadata.type = emulator::type_float;
+    s.metadata.type = type_float;
     s.metadata.width = 32;
     s.metadata.is_signed = true;
-    s.source_type = emulator::constant_input;
+    s.source_type = constant_input;
     s.data.emplace_back(std::vector<float>({2.3}));
     s.address = {0};
     s.channel = {0};
@@ -46,10 +46,10 @@ program_bundle prepare_test_bundle(std::vector<uint32_t> program){
 
     emulator::emulator_input_specs s2;
     s2.name = "b";
-    s2.metadata.type = emulator::type_float;
+    s2.metadata.type = type_float;
     s2.metadata.width = 32;
     s2.metadata.is_signed = true;
-    s2.source_type = emulator::constant_input;
+    s2.source_type = constant_input;
     s2.data.emplace_back(std::vector<float>({1.5}));
     s2.address = {1};
     s2.channel = {0};

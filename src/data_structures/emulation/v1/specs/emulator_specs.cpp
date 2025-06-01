@@ -81,7 +81,7 @@ namespace fcore::emulator {
         in.metadata.type = data_type_map[i["metadata"]["type"]];
         in.metadata.width = i["metadata"]["width"];
         in.metadata.is_signed = i["metadata"]["signed"];
-        in.source_type = input_type_map[i["source"]["type"]];
+        in.source_type = source_type_map[i["source"]["type"]];
         if(in.source_type == external_input) {
             in.data = {};
         } else if(in.source_type == time_series_input){
