@@ -185,6 +185,7 @@ namespace fcore {
             for(int i = 0; i<bundles.size(); i++) {
                 deployed_program dp;
                 dp.index = i;
+                dp.order = bundles[i].execution_order;
                 dp.sampling_frequency = bundles[i].sampling_frequency;
                 dp.name = bundles[i].name;
                 dp.program = bundles[i].program;
@@ -197,6 +198,7 @@ namespace fcore {
             for(int i = 0; i<bundles.size(); i++) {
                 deployed_program dp;
                 dp.index = i;
+                dp.order = bundles[i].execution_order;
                 dp.sampling_frequency = bundles[i].sampling_frequency;
                 dp.name = bundles[i].name;
                 dp.program = bundles[i].program;
