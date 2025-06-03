@@ -104,23 +104,28 @@ namespace fcore::emulator {
         std::vector<deployer_interconnect_slot> res;
         for(auto &i:emu_spec.interconnects) {
             for(auto &c:i.channels) {
+                std::vector<deployer_interconnect_slot> slots;
                 switch(c.type) {
                     case dma_link_scalar:
-                        process_scalar_channel(c,i.source_core_id);
+                        slots.push_back(process_scalar_channel(c,i.source_core_id));
                         break;
                     case dma_link_scatter:
                         process_scatter_channel(c,i.source_core_id);
+                        res.insert(res.end(), slots.begin(), slots.end());
                         break;
                     case dma_link_gather:
                         process_gather_channel(c,i.source_core_id);
+                        res.insert(res.end(), slots.begin(), slots.end());
                         break;
                     case dma_link_vector:
                         process_vector_channel(c,i.source_core_id);
+                        res.insert(res.end(), slots.begin(), slots.end());
                         break;
                     case dma_link_2d_vector:
                         process_2d_vector_channel(c,i.source_core_id);
                         break;
                 }
+                res.insert(res.end(), slots.begin(), slots.end());
             }
         }
         return res;
