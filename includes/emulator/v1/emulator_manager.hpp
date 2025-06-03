@@ -56,6 +56,8 @@ namespace fcore::emulator{
         nlohmann::json get_results();
         std::vector<program_bundle> get_programs();
         std::vector<deployer_interconnect_slot> get_interconnects();
+        uint16_t get_free_address(uint16_t original_addr, const std::vector<deployer_interconnect_slot> &bm);
+        bool is_bus_address_free(uint16_t addr, const std::vector<deployer_interconnect_slot> &bm);
 
 
         deployer_interconnect_slot process_scalar_channel(const fcore::emulator::dma_channel &c, const std::string& source_core);

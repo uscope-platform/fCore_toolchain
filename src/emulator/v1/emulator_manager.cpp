@@ -101,6 +101,9 @@ namespace fcore::emulator {
     }
 
     std::vector<deployer_interconnect_slot> emulator_manager::get_interconnects() {
+
+        std::map<std::string, std::set<std::string>> interconnect_exposed_outputs;
+
         std::vector<deployer_interconnect_slot> res;
         for(auto &i:emu_spec.interconnects) {
             for(auto &c:i.channels) {
@@ -122,10 +125,56 @@ namespace fcore::emulator {
                         slots = process_2d_vector_channel(c,i.source_core_id);
                         break;
                 }
+                interconnect_exposed_outputs[i.source_core_id].insert(c.source.io_name);
                 res.insert(res.end(), slots.begin(), slots.end());
             }
         }
+
+        for(auto &core:emu_spec.cores) {
+            for(auto &out: core.outputs) {
+                for(int j = 0; j<out.address.size(); j++){
+                    for(int i = 0; i<core.channels; i++){
+                        if(!interconnect_exposed_outputs[core.id].contains(out.name)){
+                            fcore::deployer_interconnect_slot e;
+                            e.source_id = core.id;
+                            e.destination_bus_address = get_free_address(out.address[j] + 1000*i, res);
+                            e.source_io_address = out.address[j];
+                            e.source_channel = i;
+                            e.destination_channel = 0;
+                            e.type = 'o';
+
+                            e.metadata.is_signed = out.metadata.is_signed;
+                            e.metadata.type = out.metadata.type;
+                            e.metadata.width = out.metadata.width;
+
+                            res.push_back(e);
+                        }
+                    }
+                }
+            }
+        }
         return res;
+    }
+
+    uint16_t emulator_manager::get_free_address(uint16_t original_addr, const std::vector<deployer_interconnect_slot> &bm) {
+        if(is_bus_address_free(original_addr, bm)){
+            return original_addr;
+        }
+
+        for(uint32_t i = bm.size(); i<(1<<16); i++){
+            if(is_bus_address_free(i, bm)){
+                return i;
+            }
+        }
+        throw std::runtime_error("Unable to find free bus address");
+    }
+
+    bool emulator_manager::is_bus_address_free(uint16_t addr, const std::vector<deployer_interconnect_slot> &bm) {
+        if (std::ranges::any_of(bm,  [&addr](const fcore::deployer_interconnect_slot& e) { return e.destination_bus_address == addr;})){
+            return false;
+        } else{
+            return true;
+        }
     }
 
     std::optional<debug_checkpoint> emulator_manager::emulate() {
