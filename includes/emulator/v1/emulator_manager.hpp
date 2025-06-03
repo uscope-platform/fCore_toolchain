@@ -66,9 +66,8 @@ namespace fcore::emulator{
         std::vector<deployer_interconnect_slot> process_vector_channel(const fcore::emulator::dma_channel &c, const std::string& source_core);
         std::vector<deployer_interconnect_slot> process_2d_vector_channel(const fcore::emulator::dma_channel &c, const std::string& source_core);
 
-        uint64_t get_rom_address(const std::string &core);
-        uint64_t get_control_address(const std::string &core);
 
+        deployment_options get_deployment_options(const std::string &core_id) {return emu_spec.get_deployment_options(core_id);}
 
     private:
         void check_bus_duplicates();

@@ -53,6 +53,12 @@ namespace fcore {
         iom_metadata metadata;
     };
 
+    struct deployment_options {
+        uint64_t rom_address;
+        uint64_t control_address;
+        bool has_reciprocal;
+    };
+
     static std::unordered_map<std::string, source_type_t > source_type_map = {
         {"constant", constant_input},
         {"file", time_series_input},
