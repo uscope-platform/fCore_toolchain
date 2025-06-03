@@ -445,6 +445,9 @@
           "source",
           "destination"
         ],
+        "not": {
+          "required": ["channels"]
+        },
         "properties": {
           "source":  {
             "type": "string",

@@ -469,6 +469,9 @@ const std::string emulator_schema_v2 = R"~(
           "source",
           "destination"
         ],
+        "not": {
+          "required": ["channels"]
+        },
         "properties": {
           "source":  {
             "type": "string",
