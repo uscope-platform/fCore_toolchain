@@ -187,6 +187,7 @@ namespace fcore {
                 dp.index = i;
                 dp.order = bundles[i].execution_order;
                 dp.sampling_frequency = bundles[i].sampling_frequency;
+                dp.n_channels = bundles[i].active_channels;
                 dp.name = bundles[i].name;
                 dp.program = bundles[i].program;
                 ret.push_back(dp);

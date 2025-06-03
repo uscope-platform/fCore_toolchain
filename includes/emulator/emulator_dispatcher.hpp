@@ -44,6 +44,7 @@ namespace fcore {
         std::string name;
         uint16_t index;
         uint32_t sampling_frequency;
+        uint32_t n_channels;
         uint32_t order;
         fcore_program program;
         std::vector<deployed_core_inputs> inputs;
