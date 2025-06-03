@@ -100,6 +100,32 @@ namespace fcore::emulator {
         return res;
     }
 
+    std::vector<deployer_interconnect_slot> emulator_manager::get_interconnects() {
+        std::vector<deployer_interconnect_slot> res;
+        for(auto &i:emu_spec.interconnects) {
+            for(auto &c:i.channels) {
+                switch(c.type) {
+                    case dma_link_scalar:
+                        process_scalar_channel(c,i.source_core_id);
+                        break;
+                    case dma_link_scatter:
+                        process_scatter_channel(c,i.source_core_id);
+                        break;
+                    case dma_link_gather:
+                        process_gather_channel(c,i.source_core_id);
+                        break;
+                    case dma_link_vector:
+                        process_vector_channel(c,i.source_core_id);
+                        break;
+                    case dma_link_2d_vector:
+                        process_2d_vector_channel(c,i.source_core_id);
+                        break;
+                }
+            }
+        }
+        return res;
+    }
+
     std::optional<debug_checkpoint> emulator_manager::emulate() {
         interactive_restart_point = 0;
         ic_manager.clear_repeater();
@@ -290,6 +316,96 @@ namespace fcore::emulator {
         d.progress.channel = current_channel;
         return d;
     }
+
+deployer_interconnect_slot emulator_manager::process_scalar_channel(const dma_channel &c, const std::string &source_core) {
+    deployer_interconnect_slot e;
+    e.source_id = source_core;
+    e.destination_bus_address =  c.destination.address[0];
+    e.destination_channel = c.destination.channel[0];
+    e.source_io_address = c.source.address[0];
+    e.source_channel = c.source.channel[0];
+    e.type = "o";
+    e.metadata.type = type_float;
+    e.metadata.is_signed = false;
+    e.metadata.width = 32;
+    return e;
+}
+
+std::vector<deployer_interconnect_slot> emulator_manager::process_scatter_channel(const dma_channel &c, const std::string &source_core) {
+    std::vector<deployer_interconnect_slot>ret;
+    for(uint32_t i = 0; i<c.length; i++){
+        deployer_interconnect_slot e;
+        e.source_id  = source_core;
+        e.source_io_address = c.source.address[0] + i;
+        e.source_channel = c.destination.channel[0];
+        e.destination_bus_address =  c.destination.address[0];
+        e.destination_channel = c.destination.channel[0] + i;
+        e.type = "o";
+        e.metadata.type = type_float;
+        e.metadata.is_signed = false;
+        e.metadata.width = 32;
+        ret.push_back(e);
+    }
+        return ret;
+}
+
+std::vector<deployer_interconnect_slot> emulator_manager::process_gather_channel(const fcore::emulator::dma_channel &c, const std::string &source_core) {
+        std::vector<deployer_interconnect_slot>ret;
+        for(uint32_t i = 0; i<c.length; i++){
+        deployer_interconnect_slot e;
+        e.source_id = source_core;
+        e.source_io_address = c.source.address[0];
+        e.source_channel =  c.destination.channel[0] + i;
+        e.destination_bus_address =  c.destination.address[0] + i;
+        e.destination_channel = c.destination.channel[0];
+        e.type = "o";
+        e.metadata.type = type_float;
+        e.metadata.is_signed = false;
+        e.metadata.width = 32;
+        ret.push_back(e);
+    }
+    return ret;
+}
+
+std::vector<deployer_interconnect_slot> emulator_manager::process_vector_channel(const fcore::emulator::dma_channel &c, const std::string &source_core) {
+    std::vector<deployer_interconnect_slot>ret;
+    for(uint32_t i = 0; i<c.length; i++){
+        deployer_interconnect_slot e;
+        e.source_id = source_core;
+        e.source_io_address = c.source.address[0];
+        e.source_channel = c.source.channel[0] + i;
+        e.destination_bus_address =  c.destination.address[0];
+        e.destination_channel = c.destination.channel[0] + i;
+        e.type = "o";
+        e.metadata.type = type_float;
+        e.metadata.is_signed = false;
+        e.metadata.width = 32;
+        ret.push_back(e);
+    }
+    return ret;
+}
+
+std::vector<deployer_interconnect_slot> emulator_manager::process_2d_vector_channel(const fcore::emulator::dma_channel &c, const std::string &source_core) {
+    std::vector<deployer_interconnect_slot>ret;
+    for(uint32_t j = 0; j<c.stride; j++){
+        for(uint32_t i = 0; i<c.length; i++){
+            deployer_interconnect_slot e;
+            e.source_id = source_core;
+            e.source_io_address = c.source.address[0] + j;
+            e.source_channel = c.source.channel[0] + i;
+            e.destination_bus_address =  c.destination.address[0] + j;
+            e.destination_channel = c.destination.channel[0] + i;
+            e.type = "o";
+            e.metadata.type = type_float;
+            e.metadata.is_signed = false;
+            e.metadata.width = 32;
+            ret.push_back(e);
+        }
+    }
+
+        return ret;
+
+}
 
 
 }

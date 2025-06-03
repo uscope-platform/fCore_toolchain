@@ -269,4 +269,16 @@ namespace fcore {
             throw std::runtime_error("Invalid version");
         }
     }
+
+    std::vector<deployer_interconnect_slot> emulator_dispatcher::get_interconnect_slots() {
+        std::vector<deployer_interconnect_slot> ret;
+        if(version == 1) {
+            return v1.get_interconnects();
+        } else if(version == 2) {
+            return ret;
+        } else {
+            throw std::runtime_error("Invalid version");
+        }
+    }
+
 }

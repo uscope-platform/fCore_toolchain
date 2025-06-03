@@ -43,6 +43,16 @@ namespace fcore {
         bool is_signed;
     };
 
+    struct deployer_interconnect_slot {
+        uint16_t source_io_address;
+        uint16_t destination_bus_address;
+        uint16_t source_channel;
+        uint16_t destination_channel;
+        std::string source_id;
+        std::string type;
+        iom_metadata metadata;
+    };
+
     static std::unordered_map<std::string, source_type_t > source_type_map = {
         {"constant", constant_input},
         {"file", time_series_input},

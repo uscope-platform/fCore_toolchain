@@ -55,6 +55,16 @@ namespace fcore::emulator{
 
         nlohmann::json get_results();
         std::vector<program_bundle> get_programs();
+        std::vector<deployer_interconnect_slot> get_interconnects();
+
+
+        deployer_interconnect_slot process_scalar_channel(const fcore::emulator::dma_channel &c, const std::string& source_core);
+        std::vector<deployer_interconnect_slot> process_scatter_channel(const fcore::emulator::dma_channel &c, const std::string& source_core);
+        std::vector<deployer_interconnect_slot> process_gather_channel(const fcore::emulator::dma_channel &c, const std::string& source_core);
+        std::vector<deployer_interconnect_slot> process_vector_channel(const fcore::emulator::dma_channel &c, const std::string& source_core);
+        std::vector<deployer_interconnect_slot> process_2d_vector_channel(const fcore::emulator::dma_channel &c, const std::string& source_core);
+
+
     private:
         void check_bus_duplicates();
 

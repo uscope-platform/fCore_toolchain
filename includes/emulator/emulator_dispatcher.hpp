@@ -24,10 +24,12 @@
 
 namespace fcore {
 
+
     struct memory_init_value {
         std::vector<uint32_t>  address;
         std::variant<std::vector<float>, std::vector<uint32_t>> value;
     };
+
 
     struct deployed_core_inputs {
         std::string name;
@@ -73,6 +75,8 @@ namespace fcore {
         std::unordered_map<std::string, std::vector<memory_init_value>> get_memory_initializations();
 
         std::vector<deployed_core_inputs> get_inputs(const std::string &core);
+
+        std::vector<deployer_interconnect_slot> get_interconnect_slots();
 
     private:
         uint32_t version = 0;
