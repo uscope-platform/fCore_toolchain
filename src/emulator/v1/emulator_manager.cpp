@@ -110,19 +110,16 @@ namespace fcore::emulator {
                         slots.push_back(process_scalar_channel(c,i.source_core_id));
                         break;
                     case dma_link_scatter:
-                        process_scatter_channel(c,i.source_core_id);
-                        res.insert(res.end(), slots.begin(), slots.end());
+                        slots = process_scatter_channel(c,i.source_core_id);
                         break;
                     case dma_link_gather:
-                        process_gather_channel(c,i.source_core_id);
-                        res.insert(res.end(), slots.begin(), slots.end());
+                        slots = process_gather_channel(c,i.source_core_id);
                         break;
                     case dma_link_vector:
-                        process_vector_channel(c,i.source_core_id);
-                        res.insert(res.end(), slots.begin(), slots.end());
+                        slots = process_vector_channel(c,i.source_core_id);
                         break;
                     case dma_link_2d_vector:
-                        process_2d_vector_channel(c,i.source_core_id);
+                        slots = process_2d_vector_channel(c,i.source_core_id);
                         break;
                 }
                 res.insert(res.end(), slots.begin(), slots.end());
