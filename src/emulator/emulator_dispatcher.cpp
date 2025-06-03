@@ -281,4 +281,14 @@ namespace fcore {
         }
     }
 
+    uint64_t emulator_dispatcher::get_rom_address(const std::string &core) {
+        std::vector<deployer_interconnect_slot> ret;
+        if(version == 1) {
+            return v1.get_rom_address(core);
+        } else if(version == 2) {
+            return 0;
+        } else {
+            throw std::runtime_error("Invalid version");
+        }
+    }
 }

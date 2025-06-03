@@ -77,7 +77,7 @@ namespace fcore {
         std::vector<deployed_core_inputs> get_inputs(const std::string &core);
 
         std::vector<deployer_interconnect_slot> get_interconnect_slots();
-
+        uint64_t get_rom_address(const std::string &core);
     private:
         uint32_t version = 0;
         emulator::emulator_manager v1;
