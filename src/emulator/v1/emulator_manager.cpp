@@ -467,4 +467,12 @@ uint64_t emulator_manager::get_rom_address(const std::string &core) {
     return 0;
 }
 
+uint64_t emulator_manager::get_control_address(const std::string &core) {
+    for(auto &p:emu_spec.cores) {
+        if(p.id == core) {
+            return p.deployment.rom_address;
+        }
+    }
+    return 0;
+}
 }
