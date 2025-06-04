@@ -111,11 +111,11 @@ namespace fcore::emulator_v2 {
     }
 
     std::vector<deployed_core_inputs> emulator_manager::get_inputs(const std::string &core) {
-        return {};
+        throw std::runtime_error("NOT IMPLEMENTED YET");
     }
 
     std::vector<deployer_interconnect_slot> emulator_manager::get_interconnects() {
-        return {};
+        throw std::runtime_error("NOT IMPLEMENTED YET");
     }
 
     std::optional<debug_checkpoint> emulator_manager::emulate() {
