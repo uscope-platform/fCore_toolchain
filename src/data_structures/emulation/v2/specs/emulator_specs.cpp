@@ -85,12 +85,12 @@ namespace fcore::emulator_v2 {
 
         if(o["metadata"].contains("io_address")) {
             if(o["metadata"]["io_address"].is_array()) {
-                out.metadata.io_address = std::vector<uint16_t>(o["metadata"]["io_address"]);
+                out.metadata.io_address = o["metadata"]["io_address"];
             } else {
-                out.metadata.io_address = {o["metadata"]["io_address"]};
+                out.metadata.io_address = {{o["metadata"]["io_address"]}};
             }
         } else if(out.is_vector) {
-            out.metadata.io_address = std::vector<uint16_t>(out.vector_size, 0);
+            out.metadata.io_address = std::vector<std::vector<uint32_t>>(out.vector_size, {0});
         }
 
         return out;
@@ -113,12 +113,12 @@ namespace fcore::emulator_v2 {
         }
         if(i["metadata"].contains("io_address")) {
             if(i["metadata"]["io_address"].is_array()) {
-                in.metadata.io_address = std::vector<uint16_t>(i["metadata"]["io_address"]);
+                in.metadata.io_address = i["metadata"]["io_address"];
             } else {
-                in.metadata.io_address = {i["metadata"]["io_address"]};
+                in.metadata.io_address = {{i["metadata"]["io_address"]}};
             }
         }else if(in.is_vector) {
-            in.metadata.io_address = std::vector<uint16_t>(in.vector_size, 0);
+            in.metadata.io_address = std::vector<std::vector<uint32_t>>(in.vector_size, {0});
         }
         in.metadata.is_common_io = i["metadata"]["common_io"];
         in.source_type = source_type_map[i["source"]["type"]];
@@ -267,12 +267,12 @@ namespace fcore::emulator_v2 {
         }
         if(m["metadata"].contains("io_address")) {
             if(m["metadata"]["io_address"].is_array()) {
-                mem.metadata.io_address = std::vector<uint16_t>(m["metadata"]["io_address"]);
+                mem.metadata.io_address = m["metadata"]["io_address"];
             } else {
-                mem.metadata.io_address = {m["metadata"]["io_address"]};
+                mem.metadata.io_address ={{m["metadata"]["io_address"]}};
             }
         }else if(mem.is_vector) {
-            mem.metadata.io_address = std::vector<uint16_t>(mem.vector_size, 0);
+            mem.metadata.io_address = std::vector<std::vector<uint32_t>>(mem.vector_size, {0});
         }
 
         mem.is_output = m["is_output"];

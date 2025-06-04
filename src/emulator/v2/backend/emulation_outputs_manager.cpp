@@ -20,16 +20,10 @@ namespace fcore::emulator_v2{
 
     void emulation_outputs_manager::process_specs(const std::shared_ptr<bus_allocator> &engine) {
         bus_engine = engine;
-        auto slots = bus_engine->get_bus_map();
 
-        for(auto &slot:slots) {
-            if(slot.source.endpoint_class == core_iom_output) {
-                auto data = emulator_output(slot.source.source_name, slot.source.channels, slot.source.vector_size);
-                data_section[slot.source.core_name].insert({slot.source.source_name, data});
-            }else if(slot.source.endpoint_class == core_iom_memory) {
-                auto data = emulator_output(slot.source.source_name, slot.source.channels, slot.source.vector_size);
-                data_section[slot.source.core_name].insert({slot.source.source_name, data});
-            }
+        for(auto &out: bus_engine->get_outputs()) {
+            auto data = emulator_output(out.port_name, out.channels, out.vector_size);
+            data_section[out.core_name].insert({out.port_name, data});
         }
     }
 

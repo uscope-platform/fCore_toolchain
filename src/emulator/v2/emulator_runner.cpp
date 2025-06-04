@@ -38,7 +38,7 @@ namespace fcore::emulator_v2 {
 
         for(auto &init_val: bus_engine->get_memories()){
             for(int i = 0; i< prog.active_channels; i++){
-                dma_write(init_val.io_address[0], i, init_val.source.initial_value[0]);
+                dma_write(init_val.bus_addresses[0][0], i, init_val.initial_value[0]);
             }
         }
 

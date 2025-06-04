@@ -99,7 +99,6 @@ TEST(bus_allocation, single_core) {
 
     emu_specs.parse(specs);
     bus_engine.set_emulation_specs(emu_specs);
-    auto bus_map = bus_engine.get_bus_map();
     EXPECT_TRUE(false);
 }
 
@@ -283,6 +282,5 @@ TEST(bus_allocation, scalar_interconnect) {
 
     emu_specs.parse(specs);
     bus_engine.set_emulation_specs(emu_specs);
-    auto bus_map = bus_engine.get_bus_map();
     EXPECT_TRUE(false);
 }

@@ -44,7 +44,7 @@ namespace fcore::emulator_v2 {
 
 
     struct iom_metadata {
-        std::vector<uint16_t> io_address = {0};
+        std::vector<std::vector<uint32_t>> io_address = {{0}};
         register_data_type type;
         uint16_t width;
         bool is_signed;
