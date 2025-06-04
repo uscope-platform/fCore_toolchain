@@ -42,10 +42,6 @@ namespace fcore::emulator_v2 {
         std::vector<std::string> headers;
     };
 
-    typedef enum {
-        type_float=0,
-        type_uint=1
-    } register_data_type;
 
     struct iom_metadata {
         std::vector<uint16_t> io_address = {0};
@@ -70,17 +66,6 @@ namespace fcore::emulator_v2 {
             {"vector", vector_endpoint}
     };
 
-    typedef enum {
-        constant_input = 0,
-        time_series_input = 1,
-        external_input = 2
-    } input_type;
-
-    static std::unordered_map<std::string, input_type > input_type_map = {
-            {"constant", constant_input},
-            {"series", time_series_input},
-            {"external", external_input},
-    };
 
     struct emulator_output_specs {
         std::string name;
@@ -93,7 +78,7 @@ namespace fcore::emulator_v2 {
     struct emulator_input_specs {
         std::string name;
         iom_metadata metadata;
-        input_type source_type;
+        source_type_t source_type;
         std::vector<std::variant<std::vector<uint32_t>, std::vector<float>>> data;
         std::vector<uint32_t> channel;
         bool is_vector;

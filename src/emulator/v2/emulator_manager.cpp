@@ -111,7 +111,28 @@ namespace fcore::emulator_v2 {
     }
 
     std::vector<deployed_core_inputs> emulator_manager::get_inputs(const std::string &core) {
-        throw std::runtime_error("NOT IMPLEMENTED YET");
+        std::vector<deployed_core_inputs> ret;
+        auto engine = ic_manager.get_bus_engine();
+        for(const auto& prog:emu_spec.cores) {
+            if(core == prog.id) {
+                for(auto &in : prog.inputs) {
+                    deployed_core_inputs dci;
+                    dci.name = in.name;
+                    for(int i = 0; i<in.channel.size(); i++) {
+                        dci.address.push_back(engine->get_input_address(core, in.name, in.channel[i]));
+                    }
+                    dci.channel = in.channel;
+                    dci.data = in.data;
+                    dci.metadata.is_signed = in.metadata.is_signed;
+                    dci.metadata.type = in.metadata.type;
+                    dci.metadata.width = in.metadata.width;
+                    dci.source_type = in. source_type;
+                    ret.push_back(dci);
+                }
+                return ret;
+            }
+        }
+        throw std::runtime_error("Could not find core " + core);
     }
 
     std::vector<deployer_interconnect_slot> emulator_manager::get_interconnects() {

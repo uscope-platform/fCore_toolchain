@@ -121,7 +121,7 @@ namespace fcore::emulator_v2 {
             in.metadata.io_address = std::vector<uint16_t>(in.vector_size, 0);
         }
         in.metadata.is_common_io = i["metadata"]["common_io"];
-        in.source_type = input_type_map[i["source"]["type"]];
+        in.source_type = source_type_map[i["source"]["type"]];
 
         if(in.source_type == external_input) {
             in.data = {};
