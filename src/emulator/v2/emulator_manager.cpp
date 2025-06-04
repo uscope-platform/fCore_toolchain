@@ -136,7 +136,57 @@ namespace fcore::emulator_v2 {
     }
 
     std::vector<deployer_interconnect_slot> emulator_manager::get_interconnects() {
-        throw std::runtime_error("NOT IMPLEMENTED YET");
+
+        auto engine = ic_manager.get_bus_engine();
+        std::map<std::string, std::set<std::string>> interconnect_exposed_outputs;
+
+        std::vector<deployer_interconnect_slot> res;
+        /*for(auto &i:emu_spec.interconnects) {
+            for(auto &c:i.channels) {
+                std::vector<deployer_interconnect_slot> slots;
+                switch(c.type) {
+                    case dma_link_scalar:
+                        slots.push_back(process_scalar_channel(c,i.source_core_id));
+                        break;
+                    case dma_link_scatter:
+                        slots = process_scatter_channel(c,i.source_core_id);
+                        break;
+                    case dma_link_gather:
+                        slots = process_gather_channel(c,i.source_core_id);
+                        break;
+                    case dma_link_vector:
+                        slots = process_vector_channel(c,i.source_core_id);
+                        break;
+                    case dma_link_2d_vector:
+                        slots = process_2d_vector_channel(c,i.source_core_id);
+                        break;
+                }
+                interconnect_exposed_outputs[i.source_core_id].insert(c.source.io_name);
+                res.insert(res.end(), slots.begin(), slots.end());
+            }
+        }
+        */
+
+        for(auto &core:emu_spec.cores) {
+            for(auto &out: core.outputs) {
+                std::vector<uint32_t> addresses;
+
+                deployer_interconnect_slot e;
+                e.source_id = core.id;
+                e.destination_bus_address =0;
+                e.source_io_address =00;
+                e.source_channel = 0;
+                e.destination_channel = 0;
+                e.type = 'o';
+
+                e.metadata.is_signed = out.metadata.is_signed;
+                e.metadata.type = out.metadata.type;
+                e.metadata.width = out.metadata.width;
+
+                res.push_back(e);
+            }
+        }
+        return res;
     }
 
     std::optional<debug_checkpoint> emulator_manager::emulate() {

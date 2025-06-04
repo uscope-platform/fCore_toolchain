@@ -18,6 +18,7 @@ set(TEST_SOURCES
         emulator/emulator_execution.cpp
         emulator/emulator_schema_validation.cpp
         emulator/emulator_runner.cpp
+        emulator/bus_allocation.cpp
         tools/length_analysis.cpp
         tools/deep_copy.cpp
         tools/expression_evaluator.cpp
