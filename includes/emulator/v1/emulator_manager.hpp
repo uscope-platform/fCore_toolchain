@@ -36,7 +36,9 @@ namespace fcore::emulator{
     class emulator_manager {
     public:
         emulator_manager();
-        void enable_debug_mode() {debug_autogen = true;};
+        void enable_debug_mode() {debug_autogen = true;}
+
+        std::unordered_map<std::string, std::vector<memory_init_value>> get_memory_init_values();;
         void set_profiler(const std::shared_ptr<instrumentation_core> &prof){ this->profiler = prof;};
         void set_specs(const nlohmann::json &spec_file);
         std::set<uint32_t> get_breakpoints(const std::string &id);
@@ -54,8 +56,11 @@ namespace fcore::emulator{
         std::unordered_map<std::string, disassembled_program>  disassemble();
 
         nlohmann::json get_results();
+
         std::vector<program_bundle> get_programs();
+        std::vector<deployed_program> deploy_programs();
         std::vector<deployer_interconnect_slot> get_interconnects();
+        std::vector<deployed_core_inputs> get_inputs(const std::string &core);
         uint16_t get_free_address(uint16_t original_addr, const std::vector<deployer_interconnect_slot> &bm);
         bool is_bus_address_free(uint16_t addr, const std::vector<deployer_interconnect_slot> &bm);
 

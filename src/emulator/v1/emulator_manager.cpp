@@ -27,6 +27,19 @@ namespace fcore::emulator {
         interactive_restart_point = 0;
     }
 
+    std::unordered_map<std::string, std::vector<memory_init_value>> emulator_manager::get_memory_init_values() {
+        std::unordered_map<std::string, std::vector<memory_init_value>> ret;
+        for(auto &core:emu_spec.cores) {
+            for(const auto& mem_init: core.memories) {
+                memory_init_value val;
+                val.address = mem_init.address;
+                val.value = mem_init.value;
+                ret[core.id].push_back(val);
+            }
+        }
+        return ret;
+    }
+
     void emulator_manager::process() {
         bus_map.clear();
 
@@ -86,7 +99,6 @@ namespace fcore::emulator {
             b.comparator_type = e_b.get_comparator_type(core.options["comparators"]);
 
             try{
-
                 b.program = e_b.compile_program(core, emu_spec.interconnects, b.io);
 
             } catch(std::runtime_error &e){
@@ -98,6 +110,22 @@ namespace fcore::emulator {
         }
         check_bus_duplicates();
         return res;
+    }
+
+    std::vector<deployed_program> emulator_manager::deploy_programs() {
+        std::vector<deployed_program> ret;
+        auto bundles = get_programs();
+        for(int i = 0; i<bundles.size(); i++) {
+            deployed_program dp;
+            dp.index = i;
+            dp.order = bundles[i].execution_order;
+            dp.sampling_frequency = bundles[i].sampling_frequency;
+            dp.n_channels = bundles[i].active_channels;
+            dp.name = bundles[i].name;
+            dp.program = bundles[i].program;
+            ret.push_back(dp);
+        }
+        return ret;
     }
 
     std::vector<deployer_interconnect_slot> emulator_manager::get_interconnects() {
@@ -154,6 +182,28 @@ namespace fcore::emulator {
             }
         }
         return res;
+    }
+
+    std::vector<deployed_core_inputs> emulator_manager::get_inputs(const std::string &core) {
+        std::vector<deployed_core_inputs> ret;
+        for(const auto& prog:emu_spec.cores) {
+            if(core == prog.id) {
+                for(auto &in : prog.inputs) {
+                    deployed_core_inputs dci;
+                    dci.name = in.name;
+                    dci.address = in.address;
+                    dci.channel = in.channel;
+                    dci.data = in.data;
+                    dci.metadata.is_signed = in.metadata.is_signed;
+                    dci.metadata.type = in.metadata.type;
+                    dci.metadata.width = in.metadata.width;
+                    dci.source_type = in.source_type;
+                    ret.push_back(dci);
+                }
+                return ret;
+            }
+        }
+        throw std::runtime_error("Could not find core " + core);
     }
 
     uint16_t emulator_manager::get_free_address(uint16_t original_addr, const std::vector<deployer_interconnect_slot> &bm) {

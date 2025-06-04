@@ -27,6 +27,22 @@ namespace fcore::emulator_v2 {
         interactive_restart_point = 0;
     }
 
+    std::vector<deployed_program> emulator_manager::deploy_programs() {
+        std::vector<deployed_program> ret;
+        auto bundles = get_programs();
+        for(int i = 0; i<bundles.size(); i++) {
+            deployed_program dp;
+            dp.index = i;
+            dp.order = bundles[i].execution_order;
+            dp.sampling_frequency = bundles[i].sampling_frequency;
+            dp.n_channels = bundles[i].active_channels;
+            dp.name = bundles[i].name;
+            dp.program = bundles[i].program;
+            ret.push_back(dp);
+        }
+        return ret;
+    }
+
     void emulator_manager::process() {
         bus_map.clear();
 
@@ -92,6 +108,14 @@ namespace fcore::emulator_v2 {
         }
         check_bus_duplicates();
         return res;
+    }
+
+    std::vector<deployed_core_inputs> emulator_manager::get_inputs(const std::string &core) {
+        return {};
+    }
+
+    std::vector<deployer_interconnect_slot> emulator_manager::get_interconnects() {
+        return {};
     }
 
     std::optional<debug_checkpoint> emulator_manager::emulate() {
@@ -228,6 +252,19 @@ namespace fcore::emulator_v2 {
         return res;
     }
 
+
+    std::unordered_map<std::string, std::vector<memory_init_value>> emulator_manager::get_memory_init_values() {
+        std::unordered_map<std::string, std::vector<memory_init_value>> ret;
+        for(auto &core:emu_spec.cores) {
+            for(const auto& mem_init: core.memories) {
+                memory_init_value val;
+                val.address = {0};
+                val.value = mem_init.value;
+                ret[core.id].push_back(val);
+            }
+        }
+        return ret;
+    }
 
     void emulator_manager::check_bus_duplicates() {
         if(bus_map.check_duplicates()){

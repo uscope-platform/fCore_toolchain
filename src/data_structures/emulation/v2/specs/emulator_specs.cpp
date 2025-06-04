@@ -61,6 +61,13 @@ namespace fcore::emulator_v2 {
         throw std::runtime_error("core with ID: " + id + " not found");
     }
 
+    deployment_options emulator_specs::get_deployment_options(const std::string &core_id) {
+        for(auto &c: cores) {
+            if(c.id == core_id) return c.deployment;
+        }
+        throw std::runtime_error("core with ID: " + core_id + " not found");
+    }
+
     emulator_output_specs emulator_specs::process_output(const nlohmann::json &o) {
         emulator_output_specs out;
         out.metadata.type = data_type_map[o["metadata"]["type"]];

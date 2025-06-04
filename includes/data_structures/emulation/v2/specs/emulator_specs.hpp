@@ -34,6 +34,7 @@ namespace fcore::emulator_v2 {
         void parse(const nlohmann::json &spec_obj);
         emulator_core get_core_by_id(const std::string &id);
 
+        deployment_options get_deployment_options(const std::string &core_id);
 
         std::vector<emulator_core> cores;
         std::vector<emulator_interconnect> interconnects;

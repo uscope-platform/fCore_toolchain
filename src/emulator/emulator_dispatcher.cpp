@@ -180,32 +180,10 @@ namespace fcore {
 
     std::vector<deployed_program> emulator_dispatcher::get_programs() {
         if(version == 1) {
-            auto bundles = v1.get_programs();
-            std::vector<deployed_program> ret;
-            for(int i = 0; i<bundles.size(); i++) {
-                deployed_program dp;
-                dp.index = i;
-                dp.order = bundles[i].execution_order;
-                dp.sampling_frequency = bundles[i].sampling_frequency;
-                dp.n_channels = bundles[i].active_channels;
-                dp.name = bundles[i].name;
-                dp.program = bundles[i].program;
-                ret.push_back(dp);
-            }
-            return ret;
+            return v1.deploy_programs();
         } else if(version == 2) {
-            auto bundles = v2.get_programs();
-            std::vector<deployed_program> ret;
-            for(int i = 0; i<bundles.size(); i++) {
-                deployed_program dp;
-                dp.index = i;
-                dp.order = bundles[i].execution_order;
-                dp.sampling_frequency = bundles[i].sampling_frequency;
-                dp.name = bundles[i].name;
-                dp.program = bundles[i].program;
-                ret.push_back(dp);
-            }
-            return ret;
+            return v2.deploy_programs();
+
         } else {
             throw std::runtime_error("Invalid version");
         }
@@ -214,27 +192,9 @@ namespace fcore {
     std::unordered_map<std::string, std::vector<memory_init_value>>  emulator_dispatcher::get_memory_initializations() {
         std::unordered_map<std::string, std::vector<memory_init_value>> ret;
         if(version == 1) {
-            auto bundles = v1.get_programs();
-            for(auto &bundle:bundles) {
-                for(auto mem_init: bundle.memories) {
-                    memory_init_value val;
-                    val.address = mem_init.address;
-                    val.value = mem_init.value;
-                    ret[bundle.name].push_back(val);
-                }
-            }
-            return ret;
+            return v1.get_memory_init_values();
         } else if(version == 2) {
-            auto bundles = v2.get_programs();
-            for(auto &bundle:bundles) {
-                for(auto mem_init: bundle.memories) {
-                    memory_init_value val;
-                    val.address = {0};
-                    val.value = mem_init.value;
-                    ret[bundle.name].push_back(val);
-                }
-            }
-            return ret;
+            return v2.get_memory_init_values();
         } else {
             throw std::runtime_error("Invalid version");
         }
@@ -243,40 +203,19 @@ namespace fcore {
     std::vector<deployed_core_inputs> emulator_dispatcher::get_inputs(const std::string &core) {
         std::vector<deployed_core_inputs> ret;
         if(version == 1) {
-            auto bundles = v1.get_programs();
-            for(auto prog:bundles) {
-                if(core == prog.name) {
-                    for(auto &in : prog.input) {
-                        deployed_core_inputs dci;
-                        dci.name = in.name;
-                        dci.address = in.address;
-                        dci.channel = in.channel;
-                        dci.data = in.data;
-                        dci.metadata.is_signed = in.metadata.is_signed;
-                        dci.metadata.type = in.metadata.type;
-                        dci.metadata.width = in.metadata.width;
-                        dci.source_type = in.source_type;
-                        ret.push_back(dci);
-                    }
-                    return ret;
-                }
-            }
-            return ret;
+            return v1.get_inputs(core);
         } else if(version == 2) {
-            auto bundles = v2.get_programs();
-
-            return ret;
+            return v2.get_inputs(core);
         } else {
             throw std::runtime_error("Invalid version");
         }
     }
 
     std::vector<deployer_interconnect_slot> emulator_dispatcher::get_interconnect_slots() {
-        std::vector<deployer_interconnect_slot> ret;
         if(version == 1) {
             return v1.get_interconnects();
         } else if(version == 2) {
-            return ret;
+            return v2.get_interconnects();
         } else {
             throw std::runtime_error("Invalid version");
         }
@@ -286,7 +225,7 @@ namespace fcore {
         if(version == 1) {
             return v1.get_deployment_options(core);
         } else if(version == 2) {
-            return{};
+            return v2.get_deployment_options(core);
         } else {
             throw std::runtime_error("Invalid version");
         }

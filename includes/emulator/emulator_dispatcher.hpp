@@ -24,34 +24,6 @@
 
 namespace fcore {
 
-
-    struct memory_init_value {
-        std::vector<uint32_t>  address;
-        std::variant<std::vector<float>, std::vector<uint32_t>> value;
-    };
-
-
-    struct deployed_core_inputs {
-        std::string name;
-        iom_metadata metadata;
-        source_type_t source_type;
-        std::vector<std::variant<std::vector<uint32_t>, std::vector<float>>> data;
-        std::vector<uint32_t> address;
-        std::vector<uint32_t> channel;
-    };
-
-    struct deployed_program {
-        std::string name;
-        uint16_t index;
-        uint32_t sampling_frequency;
-        uint32_t n_channels;
-        uint32_t order;
-        fcore_program program;
-        std::vector<deployed_core_inputs> inputs;
-    };
-
-
-
     class emulator_dispatcher {
     public:
         void enable_debug_mode();

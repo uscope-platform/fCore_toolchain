@@ -43,6 +43,15 @@ namespace fcore {
         bool is_signed;
     };
 
+    struct deployed_core_inputs {
+        std::string name;
+        iom_metadata metadata;
+        source_type_t source_type;
+        std::vector<std::variant<std::vector<uint32_t>, std::vector<float>>> data;
+        std::vector<uint32_t> address;
+        std::vector<uint32_t> channel;
+    };
+
     struct deployer_interconnect_slot {
         uint16_t source_io_address;
         uint16_t destination_bus_address;
@@ -51,6 +60,21 @@ namespace fcore {
         std::string source_id;
         std::string type;
         iom_metadata metadata;
+    };
+
+    struct memory_init_value {
+        std::vector<uint32_t>  address;
+        std::variant<std::vector<float>, std::vector<uint32_t>> value;
+    };
+
+    struct deployed_program {
+        std::string name;
+        uint16_t index;
+        uint32_t sampling_frequency;
+        uint32_t n_channels;
+        uint32_t order;
+        fcore_program program;
+        std::vector<deployed_core_inputs> inputs;
     };
 
     struct deployment_options {

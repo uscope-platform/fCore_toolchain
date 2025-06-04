@@ -19,6 +19,7 @@
 #include <variant>
 #include <cstdint>
 #include <set>
+#include <emulator/emulator_metadata_common.hpp>
 
 namespace fcore::emulator_v2 {
 
@@ -109,11 +110,6 @@ namespace fcore::emulator_v2 {
         std::variant<std::vector<float>, std::vector<uint32_t>> value;
     };
 
-    struct deployment_options {
-        uint64_t rom_address;
-        uint64_t control_address;
-        bool has_reciprocal;
-    };
 
     struct emulator_core {
         std::string id;
