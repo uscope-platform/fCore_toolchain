@@ -15,11 +15,274 @@
 #include <fstream>
 #include <gtest/gtest.h>
 
-#include "emulator/v1/emulator_manager.hpp"
+#include "emulator/v2/bus_allocator.hpp"
 
-using namespace fcore::emulator;
+using namespace fcore::emulator_v2;
 
 
 TEST(bus_allocation, single_core) {
+
+
+    nlohmann::json specs = nlohmann::json::parse( R"({
+      "version": 2,
+      "cores": [
+        {
+          "id": "test",
+          "inputs": [
+            {
+              "name": "input_1",
+              "type": "scalar",
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type": "series",
+                "value": [15.7,67.4]
+              },
+              "channel": 0
+            },
+            {
+              "name": "input_2",
+              "type": "scalar",
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type": "series",
+                "value": [42.92,-5.8]
+              },
+              "channel": 0
+            }
+          ],
+          "outputs": [
+            {
+              "name": "test_out",
+              "type": "scalar",
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              }
+            }
+          ],
+          "memory_init": [],
+          "program": {"content": "","build_settings": {"io": {"inputs": [],"outputs": [],"memories": []}},"headers": []},
+          "order": 1,
+          "options": {
+            "comparators": "reducing",
+            "efi_implementation": "efi_sort"
+          },
+          "channels": 1,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
+          }
+        }
+      ],
+      "interconnect": [],
+      "emulation_time": 2,
+      "deployment_mode": false
+    })");
+
+
+    bus_allocator bus_engine;
+    emulator_specs emu_specs;
+
+    emu_specs.parse(specs);
+    bus_engine.set_emulation_specs(emu_specs);
+    auto bus_map = bus_engine.get_bus_map();
+    EXPECT_TRUE(false);
+}
+
+
+TEST(bus_allocation, scalar_interconnect) {
+
+
+
+    nlohmann::json specs = nlohmann::json::parse( R"({
+      "version": 2,
+      "cores": [
+        {
+          "id": "test_producer",
+          "inputs": [
+            {
+              "name": "input_1",
+              "type": "scalar",
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type":"series",
+                "value": [15.7,67.4]
+              },
+              "channel": 0
+            },
+            {
+              "name": "input_2",
+              "type": "scalar",
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type":"series",
+                "value": [42.92,-5.8]
+              },
+              "channel": 0
+            },
+            {
+              "name": "input_3",
+              "type": "scalar",
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type":"external"
+              },
+              "channel": 0
+            }
+          ],
+          "order": 1,
+          "outputs": [
+            {
+              "name":"producer_out",
+              "type": "scalar",
+              "metadata": {
+                "type": "integer",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              }
+            }
+          ],
+          "program":{ "content": "void main(){float input_1,input_2; float c = input_1 + input_2; float producer_out = producer_out + c;}","build_settings": {"io": {"inputs": [], "outputs": [],"memories": []}},"headers": []},
+          "memory_init": [],
+          "options":{
+            "comparators":"reducing",
+            "efi_implementation":"efi_sort"
+          },
+          "channels":1,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
+          }
+        },
+        {
+          "id": "test_consumer",
+          "inputs": [
+            {
+              "name": "input_1",
+              "type": "scalar",
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type":"external"
+              },
+              "channel": 0
+            },
+            {
+              "name": "input_2c",
+              "type": "scalar",
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type":"constant",
+                "value": 32.1
+              },
+              "channel": 0
+            }
+          ],
+          "input_data": [],
+          "memory_init": [],
+          "outputs": [
+            {
+              "name":"consumer_out",
+              "type": "scalar",
+              "metadata": {
+                "type": "integer",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              }
+            }
+          ],
+          "order": 2,
+          "program":{
+            "content": "void main(){float input_1; float consumer_out = input_1;}",
+            "build_settings": {
+              "io": {
+                "inputs": [
+                  "input_1"
+                ],
+                "outputs": [
+                  "consumer_out"
+                ],
+                "memories": [
+                ]
+              }
+            },
+            "headers": []
+          },
+          "options":{
+            "comparators":"reducing",
+            "efi_implementation":"efi_sort"
+          },
+          "channels":1,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
+          }
+        }
+      ],
+      "interconnect":[
+        {
+          "source": "test_producer.producer_out",
+          "destination": "test_consumer.input_1"
+        },
+        {
+          "source": "test_consumer.consumer_out",
+          "destination": "test_producer.input_3"
+        }
+      ],
+      "emulation_time": 2,
+      "deployment_mode": false
+    })");
+
+
+    bus_allocator bus_engine;
+    emulator_specs emu_specs;
+
+    emu_specs.parse(specs);
+    bus_engine.set_emulation_specs(emu_specs);
+    auto bus_map = bus_engine.get_bus_map();
     EXPECT_TRUE(false);
 }

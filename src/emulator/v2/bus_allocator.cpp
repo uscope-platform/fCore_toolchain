@@ -89,12 +89,19 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
         }
     }
 
+    std::set<
+        std::pair<
+            std::pair<std::string, std::string>,
+            std::pair<std::string, std::string>
+        >
+    > bus_endpoints;
+
     for(auto &ic:specs.interconnects) {
         auto src_core = ic.source_endpoint.substr(0, ic.source_endpoint.find('.'));\
         auto src_port = ic.source_endpoint.substr(ic.source_endpoint.find('.')+1, ic.source_endpoint.size());
-        auto dst_core = ic.destination_endpoint.substr(0, ic.destination_endpoint.find('.'));\
+        auto dst_core = ic.destination_endpoint.substr(0, ic.destination_endpoint.find('.'));
         auto dst_port = ic.destination_endpoint.substr(ic.destination_endpoint.find('.')+1, ic.destination_endpoint.size());
-
+        bus_endpoints.insert({{src_core, src_port},{dst_core, dst_port}});
 
         auto destination = destinations_map[dst_core][dst_port];
 
@@ -108,8 +115,56 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
                 slot.destination.push_back(destination);
             }
         }
-
     }
+    std::vector<std::pair<std::pair<std::string, std::string>, std::vector<std::vector<uint32_t>>>> bus_allocations;
+    int bus_addresses = 1;
+    for(auto &[core_name, destinations]:destinations_map) {
+        for(auto &[dest_name, dest]: destinations) {
+            for(auto &[src, dst]: bus_endpoints) {
+                if(dst.first == core_name && dst.second == dest_name) {
+                    dest.bus_addresses = std::vector(dest.vector_size, std::vector<uint32_t>(dest.channels, 0));
+                    for(int i = 0; i<dest.vector_size; i++) {
+                        for(int j= 0; j<dest.channels; j++) {
+                            dest.bus_addresses[i][j] = bus_addresses;
+                            bus_addresses++;
+                        }
+                    }
+                    bus_allocations.push_back({{src.first, src.second}, dest.bus_addresses});
+                }
+            }
+        }
+    }
+
+    std::set<uint32_t> unavailable_addresses;
+    for(auto &[core_name, sources]: sources_map) {
+        for(auto &src:sources) {
+            bool allocated = false;
+            for(auto &ba:  bus_allocations) {
+                if(ba.first.first == core_name) {
+                    if( ba.first.second ==  src.first) {
+                        src.second.bus_addresses = ba.second;
+                        allocated = true;
+                    }
+                    for(auto vect: src.second.bus_addresses) unavailable_addresses.insert(vect.begin(), vect.end());
+                }
+            }
+            if(!allocated) {
+                //TODO: verify if this is really necessaty (for non interconnect sources for example) and add support for multichannel and vectors allocations
+                uint32_t proposed_address = 1;
+                while(unavailable_addresses.contains(proposed_address)) proposed_address++;
+                src.second.bus_addresses ={{proposed_address}};
+                unavailable_addresses.insert(proposed_address);
+            }
+        }
+    }
+    for(auto &[core_name, destinations]: destinations_map) {
+        for(auto &[dest_name, dest]: destinations) {
+            if(dest.bus_addresses.empty()) {
+                //TODO: allocate bus
+            }
+        }
+    }
+    int i = 0;
 }
 
 std::vector<uint32_t> bus_allocator::allocate_io_address(std::vector<uint16_t> desired_allocations) {

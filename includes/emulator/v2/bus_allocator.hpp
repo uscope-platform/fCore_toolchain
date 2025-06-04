@@ -31,6 +31,7 @@ namespace fcore::emulator_v2 {
         std::vector<uint32_t> initial_value;
         uint32_t channels;
         bool common_io;
+        std::vector<std::vector<uint32_t>> bus_addresses;
     };
 
     struct bus_slot {
@@ -59,20 +60,21 @@ namespace fcore::emulator_v2 {
         core_endpoint get_slot_source(const std::string & core, const std::string & slot_name);
 
         bus_allocator(const bus_allocator &other) = delete;
-
         bus_allocator(bus_allocator &&other) noexcept = delete;
-
         bus_allocator & operator=(const bus_allocator &other) = delete;
-
         bus_allocator & operator=(bus_allocator &&other) noexcept = delete;
 
         std::vector<bus_slot> get_memories();
         std::vector<bus_slot> get_interconnects(const std::string &core_name);
-
+        std::unordered_map<std::string, std::vector<std::pair<std::string, uint32_t>>> get_iputs_map();
     private:
-        std::vector<bus_slot> bus_map;
+
         std::unordered_map<std::string, std::unordered_map<std::string, core_endpoint>> sources_map;
         std::unordered_map<std::string, std::unordered_map<std::string, core_endpoint>> destinations_map;
+
+        std::unordered_map<std::string, std::unordered_map<std::string, uint32_t>> bus_allocations;
+
+        std::vector<bus_slot> bus_map;
         std::set<uint32_t> allocated_addresses;
         std::set<uint32_t> desired_addresses;
         std::unordered_map<std::string,
