@@ -131,12 +131,8 @@ namespace fcore::emulator_v2 {
         std::unordered_map<std::string, std::unordered_map<std::string, core_endpoint>> sources_map;
         std::unordered_map<std::string, std::unordered_map<std::string, core_endpoint>> destinations_map;
 
-        std::unordered_map<std::string, std::unordered_map<std::string, uint32_t>> bus_allocations;
 
-        std::set<uint32_t> allocated_addresses;
-        std::set<uint32_t> desired_addresses;
 
-        uint32_t current_index = 1;
     };
 
 }

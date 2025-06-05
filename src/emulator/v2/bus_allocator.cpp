@@ -23,9 +23,6 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
 
     sources_map.clear();
     destinations_map.clear();
-    allocated_addresses.clear();
-    desired_addresses.clear();
-    current_index = 1;
 
     for(auto &core:specs.cores) {
         for(auto &in:core.inputs) {
