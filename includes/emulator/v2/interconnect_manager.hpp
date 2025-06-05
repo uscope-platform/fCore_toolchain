@@ -38,7 +38,6 @@ namespace fcore::emulator_v2 {
 
     private:
 
-        void run_2d_vector_transfer(const dma_channel &c, const std::string &src_core, const std::string &dst_core,bool enabled);
 
         void transfer_register(const std::string& src_core, const std::string& dst_core,
                                uint32_t src_addr, uint32_t dst_addr,
