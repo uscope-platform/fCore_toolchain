@@ -94,10 +94,10 @@ namespace fcore::emulator_v2 {
         void allocate_independent_inputs(const std::vector<allocation> &current_allocations);
         std::vector<std::vector<uint32_t>> allocate_bus_address(uint32_t vector_size,
             uint32_t channels, std::set<uint32_t> local_forbidden_addresses,
-            std::vector<std::vector<uint32_t>> desired_addresses
-        );
+            const std::vector<std::vector<uint32_t>> &desired_addresses
+        ) const;
 
-        std::unordered_map<std::string, core_iom> get_dma_io(std::string core_name);
+        std::unordered_map<std::string, core_iom> get_dma_io(const std::string &core_name);
 
         uint32_t get_input_address(const std::string & core, const std::string & input, uint32_t array_index);
         uint32_t get_output_address(const std::string & core, const std::string & input, uint32_t array_index);

@@ -2919,10 +2919,11 @@ TEST(emulator_manager_v2, emulator_disassemble) {
 
     emulator_dispatcher manager;
     manager.set_specs(specs);
+    auto execs = manager.get_programs();
     auto res = manager.disassemble();
     std::unordered_map<std::string, fcore::disassembled_program> expected = {
-            {"test_producer", {{{4,2}, {3,1}, {1,3}}, "add r2, r1, r3\nstop\n"}},
-            {"test_reducer",  {{{4,1}, {3,2}, {2,3}}, "mul r1, r2, r3\nstop\n"}}
+            {"test_producer", {{{2,3},{3,1}, {5,2}}, "add r2, r1, r3\nstop\n"}},
+            {"test_reducer",  {{{1,3},{3,2}, {4,1}}, "mul r1, r2, r3\nstop\n"}}
     };
 
     EXPECT_EQ(res["test_producer"].program, expected["test_producer"].program);

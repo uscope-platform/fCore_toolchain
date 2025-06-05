@@ -152,18 +152,23 @@ void bus_allocator::allocate_independent_inputs(const std::vector<allocation> &c
 }
 
 std::vector<std::vector<uint32_t>> bus_allocator::allocate_bus_address(uint32_t vector_size, uint32_t channels,
-    std::set<uint32_t> local_forbidden_addresses, std::vector<std::vector<uint32_t>> desired_addresses) {
+    std::set<uint32_t> local_forbidden_addresses, const std::vector<std::vector<uint32_t>> &desired_addresses) const {
 
     auto  ret = std::vector(vector_size, std::vector<uint32_t>(channels, 0));
     uint32_t tentative_address = 1;
     for(int i = 0; i< vector_size; i++) {
         for(int j = 0; j< channels; j++) {
-            if(!global_forbidden_addresses.contains(desired_addresses[i][j]) && !local_forbidden_addresses.contains(desired_addresses[i][j])) {
+            if(
+                !global_forbidden_addresses.contains(desired_addresses[i][j]) &&
+                !local_forbidden_addresses.contains(desired_addresses[i][j]) &&
+                desired_addresses[i][j] != 0
+                ) {
                 ret[i][j] = desired_addresses[i][j];
                 local_forbidden_addresses.insert(desired_addresses[i][j]);
             }else {
                 while(global_forbidden_addresses.contains(tentative_address) || local_forbidden_addresses.contains(tentative_address)) tentative_address++;
                 ret[i][j] = tentative_address;
+                tentative_address++;
             }
         }
     }
@@ -171,7 +176,7 @@ std::vector<std::vector<uint32_t>> bus_allocator::allocate_bus_address(uint32_t 
 }
 
 
-std::unordered_map<std::string, core_iom> bus_allocator::get_dma_io(std::string core_name) {
+std::unordered_map<std::string, core_iom> bus_allocator::get_dma_io(const std::string &core_name) {
 
     std::unordered_map<std::string, core_iom> ret_val;
     for(auto &[port_name, endpoint]:sources_map[core_name]) {
@@ -229,7 +234,7 @@ uint32_t bus_allocator::get_output_address(const std::string &core, const std::s
  std::vector<core_endpoint> bus_allocator::get_memories() {
     std::vector<core_endpoint> retval;
     for(auto &sources:sources_map | std::views::values) {
-        for(auto &[port_name, endpoint]:sources) {
+        for(auto &endpoint: sources | std::views::values) {
             if(endpoint.endpoint_class == core_iom_memory) {
                 retval.push_back(endpoint);
             }
