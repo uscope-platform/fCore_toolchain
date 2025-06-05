@@ -100,10 +100,10 @@ namespace fcore::emulator_v2 {
         bus_allocator() = default;
         void set_emulation_specs(const emulator_specs &specs);
         std::vector<allocation> allocate_bus_addresses(std::vector<interconnect_descriptor> &interconnects);
+        void update_sources(std::vector<interconnect_descriptor> &interconnects);
         void allocate_additional_outputs(std::vector<allocation> &current_allocations);
         void allocate_independent_inputs(const std::vector<allocation> &current_allocations);
-        std::vector<uint32_t> allocate_bus_address(uint32_t vector_size,
-            uint32_t channels, std::set<uint32_t> local_forbidden_addresses,
+        std::vector<uint32_t> allocate_bus_address(uint32_t vector_size, std::set<uint32_t> local_forbidden_addresses,
             const std::vector<uint32_t> &desired_addresses
         ) const;
 

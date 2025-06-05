@@ -97,7 +97,6 @@ namespace fcore::emulator_v2{
 
     fcore_program emulator_builder::compile_program(
             const emulator_core& core_spec,
-            const std::vector<emulator_interconnect>& interconnect_spec,
             std::set<io_map_entry> &am
     ) {
 

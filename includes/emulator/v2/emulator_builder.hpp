@@ -37,7 +37,6 @@ namespace fcore::emulator_v2 {
         void set_profiler(const std::shared_ptr<instrumentation_core> &prof) {profiler = prof;};
         fcore_program compile_program(
                 const emulator_core& core_spec,
-                const std::vector<emulator_interconnect>& interconnect_spec,
                 std::set<io_map_entry> &am
         );
 

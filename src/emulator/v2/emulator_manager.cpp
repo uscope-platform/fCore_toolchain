@@ -97,7 +97,7 @@ namespace fcore::emulator_v2 {
 
             try{
 
-                b.program = e_b.compile_program(core, emu_spec.interconnects, b.io);
+                b.program = e_b.compile_program(core, b.io);
 
             } catch(std::runtime_error &e){
                 errors[core.id] = e.what();

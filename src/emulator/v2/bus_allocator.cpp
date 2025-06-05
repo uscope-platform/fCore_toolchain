@@ -96,7 +96,7 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
     }
 
     auto bus_allocations = allocate_bus_addresses(interconnect_mapping);
-
+    update_sources(interconnect_mapping);
     allocate_additional_outputs(bus_allocations);
     allocate_independent_inputs(bus_allocations);
 }
@@ -108,11 +108,23 @@ std::vector<allocation> bus_allocator::allocate_bus_addresses(std::vector<interc
         for(auto &[port_name, dest]: destinations) {
             for(auto &ic: interconnects) {
                 if(ic.destination.core_name == core_name && ic.destination.port_name== port_name) {
-                    dest.bus_addresses = allocate_bus_address(dest.vector_size, dest.channels, {}, dest.desired_address);
+                    if(ic.dest_vector_size > 1 && ic.source_vector_size == 1){
+                        dest.bus_addresses = allocate_bus_address(dest.vector_size, {}, dest.desired_address);
+                        ic.source_addresses = {dest.bus_addresses[0]};
+                        ic.destination_addresses = dest.bus_addresses;
+                    } else if (ic.source_vector_size > 1 && ic.dest_vector_size == 1) {
+                        ic.source_addresses = allocate_bus_address(ic.source_vector_size, {}, dest.desired_address);
+                        dest.bus_addresses = {ic.source_addresses[0]};
+                        ic.destination_addresses = dest.bus_addresses;
+                    } else {
+                        dest.bus_addresses = allocate_bus_address(dest.vector_size, {}, dest.desired_address);
+                        ic.source_addresses = dest.bus_addresses;
+                        ic.destination_addresses = dest.bus_addresses;
+                    }
+
                     global_forbidden_addresses.insert( dest.bus_addresses.begin(),  dest.bus_addresses.end());
                     bus_allocations.push_back({{ic.source.core_name, ic.source.port_name}, dest.bus_addresses});
-                    ic.source_addresses = dest.bus_addresses;
-                    ic.destination_addresses = dest.bus_addresses;
+
 
                 }
             }
@@ -121,24 +133,19 @@ std::vector<allocation> bus_allocator::allocate_bus_addresses(std::vector<interc
     return bus_allocations;
 }
 
+void bus_allocator::update_sources(std::vector<interconnect_descriptor> &interconnects) {
+    for(auto &ic:interconnects) {
+        sources_map[ic.source.core_name][ic.source.port_name].bus_addresses = ic.source_addresses;
+        global_forbidden_addresses.insert( ic.source_addresses.begin(),  ic.source_addresses.end());
+    }
+}
+
 void bus_allocator::allocate_additional_outputs(std::vector<allocation> &current_allocations) {
 
     for(auto &[core_name, sources]: sources_map) {
         for(auto &[port_name, src]:sources) {
-            for(auto &ba:  current_allocations) {
-                if(ba.endpoint.core_name == core_name) {
-                    if( ba.endpoint.port_name ==  port_name) {
-                        src.bus_addresses = ba.addresses;
-                        global_forbidden_addresses.insert(src.bus_addresses.begin(), src.bus_addresses.end());
-                    }
-                }
-            }
-        }
-    }
-    for(auto &[core_name, sources]: sources_map) {
-        for(auto &[port_name, src]:sources) {
             if(src.bus_addresses.empty()) {
-                src.bus_addresses = allocate_bus_address(src.vector_size, src.channels, {}, src.desired_address);
+                src.bus_addresses = allocate_bus_address(src.vector_size, {}, src.desired_address);
                 global_forbidden_addresses.insert(src.bus_addresses.begin(), src.bus_addresses.end());
             }
         }
@@ -151,7 +158,7 @@ void bus_allocator::allocate_independent_inputs(const std::vector<allocation> &c
     std::set<uint32_t> local_allocated_addresses;
         for(auto &dest: destinations | std::views::values) {
             if(dest.bus_addresses.empty()) {
-                dest.bus_addresses = allocate_bus_address(dest.vector_size, dest.channels, local_allocated_addresses, dest.desired_address);
+                dest.bus_addresses = allocate_bus_address(dest.vector_size, local_allocated_addresses, dest.desired_address);
                 local_allocated_addresses.insert( dest.bus_addresses.begin(),  dest.bus_addresses.end());
 
             }
@@ -159,7 +166,7 @@ void bus_allocator::allocate_independent_inputs(const std::vector<allocation> &c
     }
 }
 
-std::vector<uint32_t> bus_allocator::allocate_bus_address(uint32_t vector_size, uint32_t channels,
+std::vector<uint32_t> bus_allocator::allocate_bus_address(uint32_t vector_size,
     std::set<uint32_t> local_forbidden_addresses, const std::vector<uint32_t> &desired_addresses) const {
 
     auto  ret = std::vector<uint32_t>(vector_size, 0);
