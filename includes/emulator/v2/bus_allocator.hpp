@@ -66,11 +66,13 @@ namespace fcore::emulator_v2 {
         endpoint_descriptor destination;
         std::vector<std::vector<uint32_t>> source_addresses;
         std::vector<std::vector<uint32_t>> destination_addresses;
+        uint32_t source_vector_size;
+        uint32_t dest_vector_size;
         bool source_is_vector() const {
-            return source_addresses.size() > 1;
+            return source_vector_size > 1;
         }
         bool destination_is_vector() const {
-            return  destination_addresses.size() > 1;
+            return  dest_vector_size > 1;
         }
         bool source_is_multichannel() const {
             return source_addresses[0].size() > 1;

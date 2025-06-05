@@ -27,73 +27,75 @@ namespace fcore::emulator_v2 {
 
         auto interconnects = bus_engine->get_interconnects(core_name);
         for(const auto &ic: interconnects) {
-            if(!ic.source_is_vector() && !ic.destination_is_vector()) {
-                if(!ic.source_is_multichannel()&& !ic.destination_is_multichannel()) {
-                    spdlog::trace("SCALAR TRANSFER");
-                    transfer_register(
-                        ic.source.core_name,
-                        ic.destination.core_name,
-                        ic.source_addresses[0][0],
-                        ic.destination_addresses[0][0],
-                        0,
-                        0,
-                        enabled_cores[ic.source.core_name]
-                    );
-                } else {
-                    spdlog::trace("VECTOR TRANSFER");
-                    for(int i = 0; i<ic.source_addresses[0].size(); i++) {
+            if(ic.source.core_name == core_name) {
+                if(!ic.source_is_vector() && !ic.destination_is_vector()) {
+                    if(!ic.source_is_multichannel()&& !ic.destination_is_multichannel()) {
+                        spdlog::trace("SCALAR TRANSFER");
                         transfer_register(
                             ic.source.core_name,
                             ic.destination.core_name,
                             ic.source_addresses[0][0],
                             ic.destination_addresses[0][0],
-                            i,
-                            i,
+                            0,
+                            0,
                             enabled_cores[ic.source.core_name]
                         );
+                    } else {
+                        spdlog::trace("VECTOR TRANSFER");
+                        for(int i = 0; i<ic.source_addresses[0].size(); i++) {
+                            transfer_register(
+                                ic.source.core_name,
+                                ic.destination.core_name,
+                                ic.source_addresses[0][0],
+                                ic.destination_addresses[0][0],
+                                i,
+                                i,
+                                enabled_cores[ic.source.core_name]
+                            );
+                        }
+
                     }
-
-                }
-
-            } else if(!ic.source_is_vector() && ic.destination_is_vector()) {
-                spdlog::trace("GATHER TRANSFER");
-                for(int i = 0; i<ic.destination_addresses.size(); i++){
-                    transfer_register(
-                    ic.source.core_name,
-                    ic.destination.core_name,
-                    ic.source_addresses[0][0],
-                    ic.destination_addresses[i][0],
-                    i,
-                    0,
-                    enabled_cores[ic.source.core_name]);
-                }
-            } else if(ic.source_is_vector() && !ic.destination_is_vector()) {
-                spdlog::trace("SCATTER TRANSFER");
-                for(int i = 0; i<ic.source_addresses.size(); i++){
-                    transfer_register(
-                    ic.source.core_name,
-                    ic.destination.core_name,
-                    ic.source_addresses[i][0],
-                    ic.destination_addresses[0][0],
-                    0,
-                    i,
-                    enabled_cores[ic.source.core_name]);
-                }
-            } else {// 1 or 2d vector transfer
-                spdlog::trace("2D VECTOR TRANSFER");
-                for(int j = 0; j<ic.source_addresses.size(); j++){
-                    for(int i = 0; i<ic.source_addresses[0].size(); i++){
+                } else if(!ic.source_is_vector() && ic.destination_is_vector()) {
+                    spdlog::trace("GATHER TRANSFER");
+                    for(int i = 0; i<ic.destination_addresses.size(); i++){
                         transfer_register(
                         ic.source.core_name,
                         ic.destination.core_name,
-                        ic.source_addresses[j][0],
-                        ic.destination_addresses[j][0],
+                        ic.source_addresses[0][0],
+                        ic.destination_addresses[i][0],
                         i,
+                        0,
+                        enabled_cores[ic.source.core_name]);
+                    }
+                } else if(ic.source_is_vector() && !ic.destination_is_vector()) {
+                    spdlog::trace("SCATTER TRANSFER");
+                    for(int i = 0; i<ic.source_addresses.size(); i++){
+                        transfer_register(
+                        ic.source.core_name,
+                        ic.destination.core_name,
+                        ic.source_addresses[i][0],
+                        ic.destination_addresses[0][0],
+                        0,
                         i,
                         enabled_cores[ic.source.core_name]);
                     }
+                } else {// 1 or 2d vector transfer
+                    spdlog::trace("2D VECTOR TRANSFER");
+                    for(int j = 0; j<ic.source_addresses.size(); j++){
+                        for(int i = 0; i<ic.source_addresses[0].size(); i++){
+                            transfer_register(
+                            ic.source.core_name,
+                            ic.destination.core_name,
+                            ic.source_addresses[j][0],
+                            ic.destination_addresses[j][0],
+                            i,
+                            i,
+                            enabled_cores[ic.source.core_name]);
+                        }
+                    }
                 }
             }
+
         }
     }
 
@@ -131,29 +133,6 @@ namespace fcore::emulator_v2 {
             auto val = output_repeater.get_output(src_core, src_addr, src_channel);
             runners->at(dst_core).dma_write(dst_addr, dst_channel, val);
         }
-    }
-
-    void interconnect_manager::run_transfer(const dma_channel &c, const std::string &src_core,
-                                            const std::string &dst_core, bool enabled) {
-        /*
-        switch (c.type) {
-            case dma_link_scalar:
-                run_scalar_transfer(c, src_core, dst_core, enabled);
-                break;
-            case dma_link_scatter:
-                run_scatter_transfer(c, src_core, dst_core, enabled);
-                break;
-            case dma_link_gather:
-                run_gather_transfer(c, src_core, dst_core, enabled);
-                break;
-            case dma_link_vector:
-                run_vector_transfer(c, src_core, dst_core, enabled);
-                break;
-            case dma_link_2d_vector:
-                run_2d_vector_transfer(c, src_core, dst_core, enabled);
-                break;
-        }
-        */
     }
 
 

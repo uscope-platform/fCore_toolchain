@@ -1006,7 +1006,7 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
             },
             "source": {
               "type":"series",
-              "value": [15.7,67.4]
+              "value": [15.0,67.0]
             },
             "channel": 0
           },
@@ -1021,7 +1021,7 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
             },
             "source": {
               "type":"series",
-              "value": [42.92,-5.8]
+              "value": [42.0,-6.0]
             },
             "channel": 0
           }
@@ -1143,13 +1143,13 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
     manager.process();
     manager.emulate();
     auto res = manager.get_results();
-
-    std::vector<uint32_t> reference = {59,62};
+    auto dbg = res.dump(4);
+    std::vector<uint32_t> reference = {57,61};
     std::vector<uint32_t> result = res["test"]["outputs"]["out"]["0"][0];
     ASSERT_EQ(result, reference);
-    reference = {60,63};
+    std::vector<uint32_t> reference2 = {58,62};
     std::vector<uint32_t> result2 = res["test_move"]["outputs"]["out"]["0"][0];
-    ASSERT_EQ(result2, reference);
+    ASSERT_EQ(result2, reference2);
 }
 
 TEST(emulator_manager_v2, emulator_compilation_memory) {

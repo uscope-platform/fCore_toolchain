@@ -87,6 +87,8 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
         interconnect_descriptor id;
         id.source = {src_core, src_port};
         id.destination = {dst_core, dst_port};
+        id.source_vector_size = sources_map[src_core][src_port].vector_size;
+        id.dest_vector_size = destinations_map[dst_core][dst_port].vector_size;
         interconnect_mapping.push_back(id);
 
     }
@@ -109,6 +111,7 @@ std::vector<allocation> bus_allocator::allocate_bus_addresses(std::vector<interc
                     bus_allocations.push_back({{ic.source.core_name, ic.source.port_name}, dest.bus_addresses});
                     ic.source_addresses = dest.bus_addresses;
                     ic.destination_addresses = dest.bus_addresses;
+
                 }
             }
         }
