@@ -26,83 +26,73 @@ namespace fcore::emulator_v2 {
 
 
         auto interconnects = bus_engine->get_interconnects(core_name);
-        for(const auto &slot: interconnects) {
-            for(const auto &dest:slot.destination) {
-                if(!slot.source.is_vector && !dest.is_vector) {
-                    if(slot.source.channels ==1 && dest.channels == 1) {
-                        spdlog::trace("SCALAR TRANSFER");
+        for(const auto &ic: interconnects) {
+            if(!ic.source_is_vector() && !ic.destination_is_vector()) {
+                if(!ic.source_is_multichannel()&& !ic.destination_is_multichannel()) {
+                    spdlog::trace("SCALAR TRANSFER");
+                    transfer_register(
+                        ic.source.core_name,
+                        ic.destination.core_name,
+                        ic.source_addresses[0][0],
+                        ic.destination_addresses[0][0],
+                        0,
+                        0,
+                        enabled_cores[ic.source.core_name]
+                    );
+                } else {
+                    spdlog::trace("VECTOR TRANSFER");
+                    for(int i = 0; i<ic.source_addresses[0].size(); i++) {
                         transfer_register(
-                            slot.source.core_name,
-                            dest.core_name,
-                            slot.io_address[0],
-                            slot.io_address[0],
-                            0,
-                            0,
-                            enabled_cores[slot.source.core_name]
+                            ic.source.core_name,
+                            ic.destination.core_name,
+                            ic.source_addresses[0][0],
+                            ic.destination_addresses[0][0],
+                            i,
+                            i,
+                            enabled_cores[ic.source.core_name]
                         );
-                    } else {
-                        spdlog::trace("VECTOR TRANSFER");
-                        for(int i = 0; i< slot.source.channels; i++) {
-                            transfer_register(
-                                slot.source.core_name,
-                                dest.core_name,
-                                slot.io_address[0],
-                                slot.io_address[0],
-                                i,
-                                i,
-                                enabled_cores[slot.source.core_name]
-                            );
-                        }
-
                     }
 
-                } else if(!slot.source.is_vector && dest.is_vector) {
-                    spdlog::trace("GATHER TRANSFER");
-                    for(int i = 0; i<dest.vector_size; i++){
-                        auto src_addr = bus_engine->get_output_address(slot.source.core_name, slot.source.source_name, 0);
-                        auto dst_addr = bus_engine->get_input_address(dest.core_name, dest.source_name, i);
-                        transfer_register(
-                        slot.source.core_name,
-                        dest.core_name,
-                        src_addr,
-                        dst_addr,
-                        i,
-                        0,
-                        enabled_cores[slot.source.core_name]);
-                    }
-                } else if(slot.source.is_vector && !dest.is_vector) {
-                    spdlog::trace("SCATTER TRANSFER");
-
-                    for(int i = 0; i<slot.source.vector_size; i++){
-                        auto src_addr = bus_engine->get_output_address(slot.source.core_name, slot.source.source_name, i);
-                        auto dst_addr = bus_engine->get_input_address(dest.core_name, dest.source_name, 0);
-                        transfer_register(
-                        slot.source.core_name,
-                        dest.core_name,
-                        src_addr,
-                        dst_addr,
-                        0,
-                        i,
-                        enabled_cores[slot.source.core_name]);
-                    }
-                } else {// 1 or 2d vector transfer
-                    spdlog::trace("2D VECTOR TRANSFER");
-                    for(int j = 0; j<slot.source.vector_size; j++){
-                        for(int i = 0; i<slot.source.channels; i++){
-                            auto src_addr = bus_engine->get_output_address(slot.source.core_name, slot.source.source_name, j);
-                            auto dst_addr = bus_engine->get_input_address(dest.core_name, dest.source_name, j);
-                            transfer_register(
-                            slot.source.core_name,
-                            dest.core_name,
-                            src_addr,
-                            dst_addr,
-                            i,
-                            i,
-                            enabled_cores[slot.source.core_name]);
-                        }
-                    }
                 }
 
+            } else if(!ic.source_is_vector() && ic.destination_is_vector()) {
+                spdlog::trace("GATHER TRANSFER");
+                for(int i = 0; i<ic.destination_addresses.size(); i++){
+                    transfer_register(
+                    ic.source.core_name,
+                    ic.destination.core_name,
+                    ic.source_addresses[0][0],
+                    ic.destination_addresses[i][0],
+                    i,
+                    0,
+                    enabled_cores[ic.source.core_name]);
+                }
+            } else if(ic.source_is_vector() && !ic.destination_is_vector()) {
+                spdlog::trace("SCATTER TRANSFER");
+                for(int i = 0; i<ic.source_addresses.size(); i++){
+                    transfer_register(
+                    ic.source.core_name,
+                    ic.destination.core_name,
+                    ic.source_addresses[i][0],
+                    ic.destination_addresses[0][0],
+                    0,
+                    i,
+                    enabled_cores[ic.source.core_name]);
+                }
+            } else {// 1 or 2d vector transfer
+                spdlog::trace("2D VECTOR TRANSFER");
+                for(int j = 0; j<ic.source_addresses.size(); j++){
+                    for(int i = 0; i<ic.source_addresses[0].size(); i++){
+                        transfer_register(
+                        ic.source.core_name,
+                        ic.destination.core_name,
+                        ic.source_addresses[j][0],
+                        ic.destination_addresses[j][0],
+                        i,
+                        i,
+                        enabled_cores[ic.source.core_name]);
+                    }
+                }
             }
         }
     }

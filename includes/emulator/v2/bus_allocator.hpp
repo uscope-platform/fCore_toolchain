@@ -64,8 +64,22 @@ namespace fcore::emulator_v2 {
     struct interconnect_descriptor {
         endpoint_descriptor source;
         endpoint_descriptor destination;
+        std::vector<std::vector<uint32_t>> source_addresses;
+        std::vector<std::vector<uint32_t>> destination_addresses;
+        bool source_is_vector() const {
+            return source_addresses.size() > 1;
+        }
+        bool destination_is_vector() const {
+            return  destination_addresses.size() > 1;
+        }
+        bool source_is_multichannel() const {
+            return source_addresses[0].size() > 1;
+        }
+        bool destination_is_multichannel() const {
+            return destination_addresses[0].size() > 1;
+        }
         friend bool operator==(const interconnect_descriptor &lhs, const interconnect_descriptor &rhs) {
-            return std::tie(lhs.source, lhs.destination) == std::tie(rhs.source, rhs.destination);
+            return std::tie(lhs.source,lhs.source_addresses,lhs.destination_addresses, lhs.destination) == std::tie(rhs.source,rhs.source_addresses,rhs.destination_addresses, rhs.destination);
         }
 
         friend bool operator!=(const interconnect_descriptor &lhs, const interconnect_descriptor &rhs) {
@@ -85,11 +99,52 @@ namespace fcore::emulator_v2 {
         uint32_t channels;
     };
 
+}
+
+template<>
+struct std::hash<fcore::emulator_v2::endpoint_descriptor> {
+    std::size_t operator()(const fcore::emulator_v2::endpoint_descriptor& ep) const {
+        std::size_t h1 = std::hash<std::string>{}(ep.core_name);
+        std::size_t h2 = std::hash<std::string>{}(ep.port_name);
+        return h1 ^ (h2 << 1);  // Combine hashes
+    }
+};
+
+template<>
+struct std::hash<fcore::emulator_v2::interconnect_descriptor> {
+    std::size_t operator()(const fcore::emulator_v2::interconnect_descriptor& ic) const {
+        std::size_t h1 = std::hash<fcore::emulator_v2::endpoint_descriptor>{}(ic.source);
+        std::size_t h2 = std::hash<fcore::emulator_v2::endpoint_descriptor>{}(ic.destination);
+        // Hash the source_addresses vector
+        std::size_t h3 = 0;
+        for (const auto& addr_vec : ic.source_addresses) {
+            for (uint32_t addr : addr_vec) {
+                h3 ^= std::hash<uint32_t>{}(addr) + 0x9e3779b9 + (h3 << 6) + (h3 >> 2);
+            }
+        }
+
+        // Hash the destination_addresses vector
+        std::size_t h4 = 0;
+        for (const auto& addr_vec : ic.destination_addresses) {
+            for (uint32_t addr : addr_vec) {
+                h4 ^= std::hash<uint32_t>{}(addr) + 0x9e3779b9 + (h4 << 6) + (h4 >> 2);
+            }
+        }
+
+        // Combine all hash values
+        return h1 ^ (h2 << 1) ^ (h3 << 2) ^ (h4 << 3);
+
+    }
+};
+
+namespace fcore::emulator_v2 {
+
+
     class bus_allocator {
     public:
         bus_allocator() = default;
         void set_emulation_specs(const emulator_specs &specs);
-        std::vector<allocation> allocate_bus_addresses(const std::unordered_set<interconnect_descriptor> &interconnects);
+        std::vector<allocation> allocate_bus_addresses(std::vector<interconnect_descriptor> &interconnects);
         void allocate_additional_outputs(std::vector<allocation> &current_allocations);
         void allocate_independent_inputs(const std::vector<allocation> &current_allocations);
         std::vector<std::vector<uint32_t>> allocate_bus_address(uint32_t vector_size,
@@ -112,8 +167,9 @@ namespace fcore::emulator_v2 {
         bus_allocator & operator=(bus_allocator &&other) noexcept = delete;
 
         std::vector<core_endpoint> get_memories(const std::string &core_name);
-        std::vector<bus_slot> get_interconnects(const std::string &core_name);
+        std::vector<interconnect_descriptor> get_interconnects(const std::string &core_name);
     private:
+        std::vector<interconnect_descriptor> interconnect_mapping;
 
         std::vector<uint32_t> get_scalarized_addresses(const std::vector<std::vector<uint32_t>> &address);
         std::set<uint32_t> global_forbidden_addresses;
@@ -132,24 +188,5 @@ namespace fcore::emulator_v2 {
 }
 
 
-
-
-template<>
-struct std::hash<fcore::emulator_v2::endpoint_descriptor> {
-    std::size_t operator()(const fcore::emulator_v2::endpoint_descriptor& ep) const {
-        std::size_t h1 = std::hash<std::string>{}(ep.core_name);
-        std::size_t h2 = std::hash<std::string>{}(ep.port_name);
-        return h1 ^ (h2 << 1);  // Combine hashes
-    }
-};
-
-template<>
-struct std::hash<fcore::emulator_v2::interconnect_descriptor> {
-    std::size_t operator()(const fcore::emulator_v2::interconnect_descriptor& ic) const {
-        std::size_t h1 = std::hash<fcore::emulator_v2::endpoint_descriptor>{}(ic.source);
-        std::size_t h2 = std::hash<fcore::emulator_v2::endpoint_descriptor>{}(ic.destination);
-        return h1 ^ (h2 << 1);  // Combine hashes
-    }
-};
 
 #endif //BUS_ALLOCATOR_HPP

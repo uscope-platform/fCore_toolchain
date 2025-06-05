@@ -78,34 +78,37 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
         }
     }
 
-    std::unordered_set<interconnect_descriptor> bus_endpoints;
 
     for(auto &ic:specs.interconnects) {
         auto src_core = ic.source_endpoint.substr(0, ic.source_endpoint.find('.'));\
         auto src_port = ic.source_endpoint.substr(ic.source_endpoint.find('.')+1, ic.source_endpoint.size());
         auto dst_core = ic.destination_endpoint.substr(0, ic.destination_endpoint.find('.'));
         auto dst_port = ic.destination_endpoint.substr(ic.destination_endpoint.find('.')+1, ic.destination_endpoint.size());
-
-        bus_endpoints.insert({{src_core, src_port},{dst_core, dst_port}});
+        interconnect_descriptor id;
+        id.source = {src_core, src_port};
+        id.destination = {dst_core, dst_port};
+        interconnect_mapping.push_back(id);
 
     }
 
-    auto bus_allocations = allocate_bus_addresses(bus_endpoints);
+    auto bus_allocations = allocate_bus_addresses(interconnect_mapping);
 
     allocate_additional_outputs(bus_allocations);
     allocate_independent_inputs(bus_allocations);
 }
 
-std::vector<allocation> bus_allocator::allocate_bus_addresses(const std::unordered_set<interconnect_descriptor> &interconnects) {
+std::vector<allocation> bus_allocator::allocate_bus_addresses(std::vector<interconnect_descriptor> &interconnects) {
 
     std::vector<allocation> bus_allocations;
     for(auto &[core_name, destinations]:destinations_map) {
         for(auto &[port_name, dest]: destinations) {
             for(auto &ic: interconnects) {
-                if(ic.source.core_name == core_name && ic.source.port_name== port_name) {
+                if(ic.destination.core_name == core_name && ic.destination.port_name== port_name) {
                     dest.bus_addresses = allocate_bus_address(dest.vector_size, dest.channels, {}, dest.desired_address);
                     for(auto vect: dest.bus_addresses) global_forbidden_addresses.insert(vect.begin(), vect.end());
                     bus_allocations.push_back({{ic.source.core_name, ic.source.port_name}, dest.bus_addresses});
+                    ic.source_addresses = dest.bus_addresses;
+                    ic.destination_addresses = dest.bus_addresses;
                 }
             }
         }
@@ -244,10 +247,8 @@ uint32_t bus_allocator::get_output_address(const std::string &core, const std::s
     return retval;
 }
 
-std::vector<bus_slot> bus_allocator::get_interconnects(const std::string &core_name) {
-    std::vector<bus_slot> retval;
-
-    return retval;
+std::vector<interconnect_descriptor> bus_allocator::get_interconnects(const std::string &source_core_name) {
+    return interconnect_mapping;
 }
 
 std::vector<uint32_t> bus_allocator::get_scalarized_addresses(const std::vector<std::vector<uint32_t>> &address) {
