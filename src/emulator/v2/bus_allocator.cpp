@@ -231,11 +231,11 @@ uint32_t bus_allocator::get_output_address(const std::string &core, const std::s
  }
 
 
- std::vector<core_endpoint> bus_allocator::get_memories() {
+ std::vector<core_endpoint> bus_allocator::get_memories(const std::string &core_name) {
     std::vector<core_endpoint> retval;
-    for(auto &sources:sources_map | std::views::values) {
+    for(auto &[core, sources]:sources_map ) {
         for(auto &endpoint: sources | std::views::values) {
-            if(endpoint.endpoint_class == core_iom_memory) {
+            if(endpoint.endpoint_class == core_iom_memory && core == core_name) {
                 retval.push_back(endpoint);
             }
         }

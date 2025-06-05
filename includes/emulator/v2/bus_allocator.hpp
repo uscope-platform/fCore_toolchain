@@ -111,7 +111,7 @@ namespace fcore::emulator_v2 {
         bus_allocator & operator=(const bus_allocator &other) = delete;
         bus_allocator & operator=(bus_allocator &&other) noexcept = delete;
 
-        std::vector<core_endpoint> get_memories();
+        std::vector<core_endpoint> get_memories(const std::string &core_name);
         std::vector<bus_slot> get_interconnects(const std::string &core_name);
     private:
 
