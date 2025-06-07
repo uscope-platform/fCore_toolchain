@@ -135,32 +135,75 @@ namespace fcore::emulator_v2 {
         throw std::runtime_error("Could not find core " + core);
     }
 
+    std::vector<deployer_interconnect_slot> emulator_manager::process_scalar_channel(const interconnect_descriptor &ic) {
+        deployer_interconnect_slot e;
+        e.source_id = ic.source.core_name;
+        e.destination_bus_address = ic.destination_addresses[0];
+        e.source_io_address = ic.source_addresses[0];
+        e.source_channel = 0;
+        e.destination_channel =0;
+        e.type = 'o';
+        e.metadata = ic.source_metadata;
+        return {e};
+    }
+
+    std::vector<deployer_interconnect_slot> emulator_manager::process_scatter_channel(const interconnect_descriptor &ic) {
+        std::vector<deployer_interconnect_slot> ret;
+        for(int i = 0; i<ic.dest_channels; i++){
+
+        }
+        return ret;
+    }
+
+    std::vector<deployer_interconnect_slot> emulator_manager::process_gather_channel(const interconnect_descriptor &ic) {
+        std::vector<deployer_interconnect_slot> ret;
+        for(int i = 0; i<ic.source_channels; i++){
+
+        }
+        return ret;
+    }
+
+    std::vector<deployer_interconnect_slot> emulator_manager::process_vector_channel(const interconnect_descriptor &ic) {
+        std::vector<deployer_interconnect_slot> ret;
+        return ret;
+    }
+
+    std::vector<deployer_interconnect_slot> emulator_manager::process_2d_vector_channel(const interconnect_descriptor &ic) {
+        std::vector<deployer_interconnect_slot> ret;
+        return ret;
+    }
+
+
     std::vector<deployer_interconnect_slot> emulator_manager::get_interconnects() {
 
         auto engine = ic_manager.get_bus_engine();
         std::map<std::string, std::set<std::string>> interconnect_exposed_outputs;
 
-        std::vector<deployer_interconnect_slot> res;
+        std::vector<deployer_interconnect_slot> slots;
+        std::vector<deployer_interconnect_slot> s;
+        for(const auto& i: engine->get_interconnects()) {
+            switch(i.get_type()) {
+                case dma_link_scalar:
+                    s = process_scalar_channel(i);
+                    break;
+                case dma_link_scatter:
+                    s = process_scatter_channel(i);
+                    break;
+                case dma_link_gather:
+                    s = process_gather_channel(i);
+                    break;
+                case dma_link_vector:
+                    s = process_vector_channel(i);
+                    break;
+                case dma_link_2d_vector:
+                    s = process_2d_vector_channel(i);
+                    break;
+            }
+            slots.insert(slots.begin(), s.begin(), s.end());
+        }
         /*for(auto &i:emu_spec.interconnects) {
             for(auto &c:i.channels) {
-                std::vector<deployer_interconnect_slot> slots;
-                switch(c.type) {
-                    case dma_link_scalar:
-                        slots.push_back(process_scalar_channel(c,i.source_core_id));
-                        break;
-                    case dma_link_scatter:
-                        slots = process_scatter_channel(c,i.source_core_id);
-                        break;
-                    case dma_link_gather:
-                        slots = process_gather_channel(c,i.source_core_id);
-                        break;
-                    case dma_link_vector:
-                        slots = process_vector_channel(c,i.source_core_id);
-                        break;
-                    case dma_link_2d_vector:
-                        slots = process_2d_vector_channel(c,i.source_core_id);
-                        break;
-                }
+
                 interconnect_exposed_outputs[i.source_core_id].insert(c.source.io_name);
                 res.insert(res.end(), slots.begin(), slots.end());
             }
@@ -183,10 +226,10 @@ namespace fcore::emulator_v2 {
                 e.metadata.type = out.metadata.type;
                 e.metadata.width = out.metadata.width;
 
-                res.push_back(e);
+                slots.push_back(e);
             }
         }
-        return res;
+        return slots;
     }
 
     std::optional<debug_checkpoint> emulator_manager::emulate() {

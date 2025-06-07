@@ -28,14 +28,12 @@ namespace fcore::emulator_v2 {
         std::string core_name;
         std::string source_name;
         core_iom_type endpoint_class;
-        register_data_type type;
         bool is_vector;
         uint32_t vector_size;
         std::vector<uint32_t> initial_value;
         uint32_t channels;
-        bool common_io;
         std::vector<uint32_t> bus_addresses;
-        std::vector<uint32_t> desired_address;
+        iom_metadata metadata;
     };
 
 
@@ -61,18 +59,24 @@ namespace fcore::emulator_v2 {
         uint32_t dest_vector_size;
         uint32_t source_channels;
         uint32_t dest_channels;
-        bool source_is_vector() const {
-            return source_vector_size > 1;
-        }
-        bool destination_is_vector() const {
-            return  dest_vector_size > 1;
-        }
-        bool source_is_multichannel() const {
-            return source_channels > 1;
-        }
-        bool destination_is_multichannel() const {
-            return dest_channels > 1;
-        }
+        iom_metadata source_metadata;
+
+        dma_channel_type get_type() const {
+            if(source_vector_size == 1 && dest_vector_size == 1 ) {
+                if(source_channels == 1 && dest_channels == 1) {
+                    return dma_link_scalar;
+                }
+                return dma_link_vector;
+            }
+            if(source_vector_size == 1 && dest_vector_size > 1 ) {
+                return dma_link_gather;
+            }
+            if(source_vector_size >1 && dest_vector_size == 1) {
+                return dma_link_scatter;
+            }
+            return  dma_link_2d_vector;
+        };
+
         friend bool operator==(const interconnect_descriptor &lhs, const interconnect_descriptor &rhs) {
             return std::tie(lhs.source,lhs.source_addresses,lhs.destination_addresses, lhs.destination) == std::tie(rhs.source,rhs.source_addresses,rhs.destination_addresses, rhs.destination);
         }
@@ -122,7 +126,7 @@ namespace fcore::emulator_v2 {
         bus_allocator & operator=(bus_allocator &&other) noexcept = delete;
 
         std::vector<core_endpoint> get_memories(const std::string &core_name);
-        std::vector<interconnect_descriptor> get_interconnects(const std::string &core_name);
+        std::vector<interconnect_descriptor> get_interconnects();
     private:
         std::vector<interconnect_descriptor> interconnect_mapping;
 

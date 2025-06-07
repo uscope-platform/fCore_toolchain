@@ -58,6 +58,13 @@ namespace fcore::emulator_v2{
         nlohmann::json get_results();
         std::vector<program_bundle> get_programs();
         std::vector<deployed_core_inputs> get_inputs(const std::string &core);
+
+        std::vector<deployer_interconnect_slot> process_scalar_channel(const interconnect_descriptor & ic);
+        std::vector<deployer_interconnect_slot> process_scatter_channel(const interconnect_descriptor & ic);
+        std::vector<deployer_interconnect_slot> process_gather_channel(const interconnect_descriptor & ic);
+        std::vector<deployer_interconnect_slot> process_vector_channel(const interconnect_descriptor & ic);
+        std::vector<deployer_interconnect_slot> process_2d_vector_channel(const interconnect_descriptor & ic);
+
         std::vector<deployer_interconnect_slot> get_interconnects();
 
         deployment_options get_deployment_options(const std::string &core_id) {return emu_spec.get_deployment_options(core_id);}

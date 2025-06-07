@@ -79,9 +79,9 @@ namespace fcore::emulator_v2{
         for(auto &[slot_name, data]: data_section[core_id]){
             auto spec = bus_engine->get_slot_source(core_id, slot_name);
             nlohmann::json output_obj;
-            if(spec.type == type_uint){
+            if(spec.metadata.type == type_uint){
                 res[slot_name] = data.get_integer_data();
-            } else if(spec.type == type_float){
+            } else if(spec.metadata.type == type_float){
                 res[slot_name] = data.get_float_data();
             } else {
                 throw std::runtime_error("unknown output type");

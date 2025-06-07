@@ -43,14 +43,6 @@ namespace fcore::emulator_v2 {
     };
 
 
-    struct iom_metadata {
-        std::vector<uint32_t> io_address = {0};
-        register_data_type type;
-        uint16_t width;
-        bool is_signed;
-        bool is_common_io;
-    };
-
     static std::unordered_map<std::string, register_data_type > data_type_map = {
             {"float", type_float},
             {"integer", type_uint}

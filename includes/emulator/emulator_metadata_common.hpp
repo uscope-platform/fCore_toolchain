@@ -38,9 +38,11 @@ namespace fcore {
     } register_data_type;
 
     struct iom_metadata {
+        std::vector<uint32_t> io_address = {0};
         register_data_type type;
         uint16_t width;
         bool is_signed;
+        bool is_common_io = false;
     };
 
     struct deployed_core_inputs {

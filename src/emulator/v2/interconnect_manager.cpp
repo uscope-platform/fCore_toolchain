@@ -24,12 +24,11 @@ namespace fcore::emulator_v2 {
 
     void interconnect_manager::run_interconnect(const std::string &core_name, std::unordered_map<std::string, bool> enabled_cores) {
 
-
-        auto interconnects = bus_engine->get_interconnects(core_name);
+        auto interconnects = bus_engine->get_interconnects();
         for(const auto &ic: interconnects) {
             if(ic.source.core_name == core_name) {
-                if(!ic.source_is_vector() && !ic.destination_is_vector()) {
-                    if(!ic.source_is_multichannel()&& !ic.destination_is_multichannel()) {
+                switch(ic.get_type()) {
+                    case dma_link_scalar:
                         spdlog::trace("SCALAR TRANSFER");
                         transfer_register(
                             ic.source.core_name,
@@ -40,7 +39,36 @@ namespace fcore::emulator_v2 {
                             0,
                             enabled_cores[ic.source.core_name]
                         );
-                    } else {
+                        break;
+                    case dma_link_scatter:
+                        spdlog::trace("SCATTER TRANSFER");
+                        for(int i = 0; i<ic.dest_channels; i++){
+                            transfer_register(
+                            ic.source.core_name,
+                            ic.destination.core_name,
+                            ic.source_addresses[i],
+                            ic.destination_addresses[0],
+                            0,
+                            i,
+                            enabled_cores[ic.source.core_name]);
+                        }
+                        break;
+                    case dma_link_gather:
+                        spdlog::trace("GATHER TRANSFER");
+                        for(int i = 0; i<ic.source_channels; i++){
+                            auto src_addr = ic.source_addresses[0];
+                            auto dst_addr = ic.destination_addresses[i] ;
+                            transfer_register(
+                            ic.source.core_name,
+                            ic.destination.core_name,
+                            src_addr,
+                            dst_addr,
+                            i,
+                            0,
+                            enabled_cores[ic.source.core_name]);
+                        }
+                        break;
+                    case dma_link_vector:
                         spdlog::trace("VECTOR TRANSFER");
                         for(int i = 0; i<ic.source_channels; i++) {
                             transfer_register(
@@ -53,48 +81,22 @@ namespace fcore::emulator_v2 {
                                 enabled_cores[ic.source.core_name]
                             );
                         }
-
-                    }
-                } else if(!ic.source_is_vector() && ic.destination_is_vector()) {
-                    spdlog::trace("GATHER TRANSFER");
-                    for(int i = 0; i<ic.source_channels; i++){
-                        auto src_addr = ic.source_addresses[0];
-                        auto dst_addr = ic.destination_addresses[i] ;
-                        transfer_register(
-                        ic.source.core_name,
-                        ic.destination.core_name,
-                        src_addr,
-                        dst_addr,
-                        i,
-                        0,
-                        enabled_cores[ic.source.core_name]);
-                    }
-                } else if(ic.source_is_vector() && !ic.destination_is_vector()) {
-                    spdlog::trace("SCATTER TRANSFER");
-                    for(int i = 0; i<ic.dest_channels; i++){
-                        transfer_register(
-                        ic.source.core_name,
-                        ic.destination.core_name,
-                        ic.source_addresses[i],
-                        ic.destination_addresses[0],
-                        0,
-                        i,
-                        enabled_cores[ic.source.core_name]);
-                    }
-                } else {// 1 or 2d vector transfer
-                    spdlog::trace("2D VECTOR TRANSFER");
-                    for(int j = 0; j<ic.source_addresses.size(); j++){
-                        for(int i = 0; i<ic.source_channels; i++){
-                            transfer_register(
-                            ic.source.core_name,
-                            ic.destination.core_name,
-                            ic.source_addresses[j],
-                            ic.destination_addresses[j],
-                            i,
-                            i,
-                            enabled_cores[ic.source.core_name]);
+                        break;
+                    case dma_link_2d_vector:
+                        spdlog::trace("2D VECTOR TRANSFER");
+                        for(int j = 0; j<ic.source_vector_size; j++){
+                            for(int i = 0; i<ic.source_channels; i++){
+                                transfer_register(
+                                ic.source.core_name,
+                                ic.destination.core_name,
+                                ic.source_addresses[j],
+                                ic.destination_addresses[j],
+                                i,
+                                i,
+                                enabled_cores[ic.source.core_name]);
+                            }
                         }
-                    }
+                        break;
                 }
             }
 

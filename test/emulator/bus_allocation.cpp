@@ -15,6 +15,7 @@
 #include <fstream>
 #include <gtest/gtest.h>
 
+#include "emulator/emulator_dispatcher.hpp"
 #include "emulator/v2/bus_allocator.hpp"
 
 using namespace fcore::emulator_v2;
@@ -277,10 +278,8 @@ TEST(bus_allocation, scalar_interconnect) {
     })");
 
 
-    bus_allocator bus_engine;
-    emulator_specs emu_specs;
-
-    emu_specs.parse(specs);
-    bus_engine.set_emulation_specs(emu_specs);
+    fcore::emulator_dispatcher diss;
+    diss.set_specs(specs);
+    auto interconnect = diss.get_interconnect_slots();
     EXPECT_TRUE(false);
 }
