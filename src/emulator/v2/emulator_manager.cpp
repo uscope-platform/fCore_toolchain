@@ -150,7 +150,15 @@ namespace fcore::emulator_v2 {
     std::vector<deployer_interconnect_slot> emulator_manager::process_scatter_channel(const interconnect_descriptor &ic) {
         std::vector<deployer_interconnect_slot> ret;
         for(int i = 0; i<ic.dest_channels; i++){
-
+            deployer_interconnect_slot e;
+            e.source_id = ic.source.core_name;
+            e.destination_bus_address = ic.destination_addresses[0];
+            e.source_io_address = ic.source_addresses[i];
+            e.source_channel = 0;
+            e.destination_channel =i;
+            e.type = 'o';
+            e.metadata = ic.source_metadata;
+            ret.push_back(e);
         }
         return ret;
     }
@@ -158,18 +166,50 @@ namespace fcore::emulator_v2 {
     std::vector<deployer_interconnect_slot> emulator_manager::process_gather_channel(const interconnect_descriptor &ic) {
         std::vector<deployer_interconnect_slot> ret;
         for(int i = 0; i<ic.source_channels; i++){
-
+            deployer_interconnect_slot e;
+            e.source_id = ic.source.core_name;
+            e.destination_bus_address = ic.destination_addresses[i];
+            e.source_io_address = ic.source_addresses[0];
+            e.source_channel = i;
+            e.destination_channel =0;
+            e.type = 'o';
+            e.metadata = ic.source_metadata;
+            ret.push_back(e);
         }
         return ret;
     }
 
     std::vector<deployer_interconnect_slot> emulator_manager::process_vector_channel(const interconnect_descriptor &ic) {
         std::vector<deployer_interconnect_slot> ret;
+        for(int i = 0; i<ic.source_channels; i++){
+            deployer_interconnect_slot e;
+            e.source_id = ic.source.core_name;
+            e.destination_bus_address = ic.destination_addresses[0];
+            e.source_io_address = ic.source_addresses[0];
+            e.source_channel = i;
+            e.destination_channel =i;
+            e.type = 'o';
+            e.metadata = ic.source_metadata;
+            ret.push_back(e);
+        }
         return ret;
     }
 
     std::vector<deployer_interconnect_slot> emulator_manager::process_2d_vector_channel(const interconnect_descriptor &ic) {
         std::vector<deployer_interconnect_slot> ret;
+        for(int i = 0; i<ic.source_vector_size; i++) {
+            for(int j = 0; j<ic.source_channels; j++) {
+                deployer_interconnect_slot e;
+                e.source_id = ic.source.core_name;
+                e.destination_bus_address = ic.destination_addresses[i];
+                e.source_io_address = ic.source_addresses[i];
+                e.source_channel = j;
+                e.destination_channel = j;
+                e.type = 'o';
+                e.metadata = ic.source_metadata;
+                ret.push_back(e);
+            }
+        }
         return ret;
     }
 
@@ -201,32 +241,26 @@ namespace fcore::emulator_v2 {
             }
             slots.insert(slots.begin(), s.begin(), s.end());
         }
-        /*for(auto &i:emu_spec.interconnects) {
-            for(auto &c:i.channels) {
-
-                interconnect_exposed_outputs[i.source_core_id].insert(c.source.io_name);
-                res.insert(res.end(), slots.begin(), slots.end());
-            }
-        }
-        */
 
         for(auto &core:emu_spec.cores) {
-            for(auto &out: core.outputs) {
-                std::vector<uint32_t> addresses;
+            for(auto &out: engine->get_outputs()) {
+                for(int i = 0; i<out.vector_size; i++) {
+                    for(int j = 0 ; j<out.channels; j++) {
+                        deployer_interconnect_slot e;
+                        e.source_id = core.id;
+                        e.source_io_address = out.addresses[i];
+                        e.source_channel =  j;
+                        e.destination_bus_address = 0;
+                        e.destination_channel = 0;
+                        e.type = 'o';
 
-                deployer_interconnect_slot e;
-                e.source_id = core.id;
-                e.destination_bus_address =0;
-                e.source_io_address =00;
-                e.source_channel = 0;
-                e.destination_channel = 0;
-                e.type = 'o';
+                        e.metadata.is_signed = out.metadata.is_signed;
+                        e.metadata.type = out.metadata.type;
+                        e.metadata.width = out.metadata.width;
 
-                e.metadata.is_signed = out.metadata.is_signed;
-                e.metadata.type = out.metadata.type;
-                e.metadata.width = out.metadata.width;
-
-                slots.push_back(e);
+                        slots.push_back(e);
+                    }
+                }
             }
         }
         return slots;

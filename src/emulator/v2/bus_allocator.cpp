@@ -232,6 +232,8 @@ uint32_t bus_allocator::get_output_address(const std::string &core, const std::s
             m.port_name = port;
             m.vector_size = endpoint.vector_size;
             m.channels = endpoint.channels;
+            m.metadata = endpoint.metadata;
+            m.addresses = endpoint.bus_addresses;
             ret.push_back(m);
         }
     }

@@ -96,6 +96,8 @@ namespace fcore::emulator_v2 {
         std::string port_name;
         uint32_t vector_size;
         uint32_t channels;
+        std::vector<uint32_t> addresses;
+        iom_metadata metadata;
     };
 
 
