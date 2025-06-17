@@ -116,7 +116,8 @@ namespace fcore::emulator_v2 {
         std::unordered_map<std::string, core_iom> get_dma_io(const std::string &core_name);
 
         uint32_t get_input_address(const std::string & core, const std::string & input, uint32_t array_index);
-        uint32_t get_output_address(const std::string & core, const std::string & input, uint32_t array_index);
+        uint32_t get_output_address(const std::string & core, const std::string & output, uint32_t array_index);
+        uint32_t get_free_address(const std::string & core, const std::string & output, uint32_t array_index);
 
         core_endpoint get_slot_source(const std::string & core, const std::string & slot_name);
 

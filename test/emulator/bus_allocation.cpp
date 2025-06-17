@@ -16,9 +16,8 @@
 #include <gtest/gtest.h>
 
 #include "emulator/emulator_dispatcher.hpp"
-#include "emulator/v2/bus_allocator.hpp"
 
-using namespace fcore::emulator_v2;
+using namespace fcore;
 
 
 TEST(bus_allocation, single_core) {
@@ -64,7 +63,8 @@ TEST(bus_allocation, single_core) {
           "outputs": [
             {
               "name": "test_out",
-              "type": "scalar",
+              "type": "vector",
+              "vector_size": 2,
               "metadata": {
                 "type": "float",
                 "width": 32,
@@ -74,7 +74,8 @@ TEST(bus_allocation, single_core) {
             }
           ],
           "memory_init": [],
-          "program": {"content": "","build_settings": {"io": {"inputs": [],"outputs": [],"memories": []}},"headers": []},
+          "program": {"content": "void main(){float test_out[2]; float input_1, input_2; test_out[0] = input_1; test_out[1] = input_2;}",
+                      "build_settings": {"io": {"inputs": ["input_1", "input_2"],"outputs": ["test_out"],"memories": []}},"headers": []},
           "order": 1,
           "options": {
             "comparators": "reducing",
@@ -95,14 +96,98 @@ TEST(bus_allocation, single_core) {
     })");
 
 
-    bus_allocator bus_engine;
-    emulator_specs emu_specs;
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+    auto slots = manager.get_interconnect_slots();
 
-    emu_specs.parse(specs);
-    bus_engine.set_emulation_specs(emu_specs);
     EXPECT_TRUE(false);
 }
 
+
+
+TEST(bus_allocation, single_core_multichannel) {
+
+    nlohmann::json specs = nlohmann::json::parse( R"({
+      "version": 2,
+      "cores": [
+        {
+          "id": "test",
+          "inputs": [
+            {
+              "name": "input_1",
+              "type": "scalar",
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type": "series",
+                "value": [15.7,67.4]
+              },
+              "channel": 0
+            },
+            {
+              "name": "input_2",
+              "type": "scalar",
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type": "series",
+                "value": [42.92,-5.8]
+              },
+              "channel": 0
+            }
+          ],
+          "outputs": [
+            {
+              "name": "test_out",
+              "type": "vector",
+              "vector_size": 2,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              }
+            }
+          ],
+          "memory_init": [],
+          "program": {"content": "void main(){float test_out[2]; float input_1, input_2; test_out[0] = input_1; test_out[1] = input_2;}",
+                      "build_settings": {"io": {"inputs": ["input_1", "input_2"],"outputs": ["test_out"],"memories": []}},"headers": []},
+          "order": 1,
+          "options": {
+            "comparators": "reducing",
+            "efi_implementation": "efi_sort"
+          },
+          "channels": 2,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
+          }
+        }
+      ],
+      "interconnect": [],
+      "emulation_time": 2,
+      "deployment_mode": false
+    })");
+
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+    auto slots = manager.get_interconnect_slots();
+
+    EXPECT_TRUE(false);
+}
 
 TEST(bus_allocation, scalar_interconnect) {
 
@@ -277,9 +362,5 @@ TEST(bus_allocation, scalar_interconnect) {
       "deployment_mode": false
     })");
 
-
-    fcore::emulator_dispatcher diss;
-    diss.set_specs(specs);
-    auto interconnect = diss.get_interconnect_slots();
     EXPECT_TRUE(false);
 }

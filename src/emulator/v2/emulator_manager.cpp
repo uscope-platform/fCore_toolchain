@@ -239,19 +239,21 @@ namespace fcore::emulator_v2 {
                     s = process_2d_vector_channel(i);
                     break;
             }
-            slots.insert(slots.begin(), s.begin(), s.end());
+            //slots.insert(slots.begin(), s.begin(), s.end());
         }
 
         for(auto &core:emu_spec.cores) {
-            for(auto &out: engine->get_outputs()) {
+            for(auto &out: core.outputs) {
+                std::vector<uint32_t> addresses;
                 for(int i = 0; i<out.vector_size; i++) {
-                    for(int j = 0 ; j<out.channels; j++) {
+                    for(int j = 0; j<core.channels; j++) {
                         deployer_interconnect_slot e;
                         e.source_id = core.id;
-                        e.source_io_address = out.addresses[i];
-                        e.source_channel =  j;
-                        e.destination_bus_address = 0;
-                        e.destination_channel = 0;
+                        e.destination_bus_address = engine->get_free_address(core.id, out.name, i);
+                        e.destination_channel = j;
+
+                        e.source_io_address =  engine->get_output_address(core.id, out.name, i);
+                        e.source_channel = j;
                         e.type = 'o';
 
                         e.metadata.is_signed = out.metadata.is_signed;
@@ -260,7 +262,9 @@ namespace fcore::emulator_v2 {
 
                         slots.push_back(e);
                     }
+
                 }
+
             }
         }
         return slots;

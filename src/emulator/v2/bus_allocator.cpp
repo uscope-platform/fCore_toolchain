@@ -46,6 +46,7 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
             ep.endpoint_class = core_iom_output;
             ep.metadata = out.metadata;
             sources_map[core.id][out.name] = ep;
+
         }
         for(auto &mem:core.memories) {
             for(int i = 0; i<core.channels; i++) {
@@ -80,11 +81,10 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
         interconnect_descriptor id;
         id.source = {src_core, src_port};
         id.destination = {dst_core, dst_port};
-        id.source_vector_size = sources_map.at(src_core).at(src_port).vector_size;
-        id.dest_vector_size = destinations_map.at(dst_core).at(dst_port).vector_size;
-        id.source_channels = sources_map.at(src_core).at(src_port).channels;
-        id.dest_channels = destinations_map.at(dst_core).at(dst_port).channels;
-        id.source_metadata = sources_map.at(src_core).at(src_port).metadata;
+        id.source_vector_size = sources_map[src_core][src_port].vector_size;
+        id.dest_vector_size = destinations_map[dst_core][dst_port].vector_size;
+        id.source_channels = sources_map[src_core][src_port].channels;
+        id.dest_channels = destinations_map[dst_core][dst_port].channels;
         interconnect_mapping.push_back(id);
 
     }
@@ -93,7 +93,6 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
     update_sources(interconnect_mapping);
     allocate_additional_outputs(bus_allocations);
     allocate_independent_inputs(bus_allocations);
-    int i = 0;
 }
 
 std::vector<allocation> bus_allocator::allocate_bus_addresses(std::vector<interconnect_descriptor> &interconnects) {
@@ -213,10 +212,15 @@ uint32_t bus_allocator::get_input_address(const std::string &core, const std::st
     return destinations_map.at(core).at(input).bus_addresses.at(array_index);
 }
 
-uint32_t bus_allocator::get_output_address(const std::string &core, const std::string &input, uint32_t array_index) {
-    return sources_map.at(core).at(input).bus_addresses.at(array_index);
+uint32_t bus_allocator::get_output_address(const std::string &core, const std::string &output, uint32_t array_index) {
+    return sources_map.at(core).at(output).bus_addresses.at(array_index);
 }
 
+uint32_t bus_allocator::get_free_address(const std::string &core, const std::string &output, uint32_t array_index) {
+    auto addr = allocate_bus_address(1, {}, {0});
+    global_forbidden_addresses.insert(addr[0]);
+    return addr[0];
+}
 
  core_endpoint bus_allocator::get_slot_source(const std::string &core, const std::string &slot_name) {
     return sources_map.at(core).at(slot_name);
