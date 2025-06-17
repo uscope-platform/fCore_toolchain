@@ -81,10 +81,10 @@ void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
         interconnect_descriptor id;
         id.source = {src_core, src_port};
         id.destination = {dst_core, dst_port};
-        id.source_vector_size = sources_map[src_core][src_port].vector_size;
-        id.dest_vector_size = destinations_map[dst_core][dst_port].vector_size;
-        id.source_channels = sources_map[src_core][src_port].channels;
-        id.dest_channels = destinations_map[dst_core][dst_port].channels;
+        id.source_vector_size = sources_map.at(src_core).at(src_port).vector_size;
+        id.dest_vector_size = destinations_map.at(dst_core).at(dst_port).vector_size;
+        id.source_channels = sources_map.at(src_core).at(src_port).channels;
+        id.dest_channels = destinations_map.at(dst_core).at(dst_port).channels;
         interconnect_mapping.push_back(id);
 
     }

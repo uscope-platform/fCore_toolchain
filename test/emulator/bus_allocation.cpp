@@ -242,6 +242,16 @@ TEST(bus_allocation, scalar_interconnect) {
                         },
                         "type":"scalar",
                         "name": "out"
+                    },
+                    {
+                        "metadata": {
+                            "type": "integer",
+                            "width": 32,
+                            "signed": true,
+                            "common_io":false
+                        },
+                        "type":"scalar",
+                        "name": "out2"
                     }
                 ],
                 "memory_init": [],

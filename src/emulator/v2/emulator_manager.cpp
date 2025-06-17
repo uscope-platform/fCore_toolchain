@@ -239,30 +239,33 @@ namespace fcore::emulator_v2 {
                     s = process_2d_vector_channel(i);
                     break;
             }
+            interconnect_exposed_outputs[i.source.core_name].insert(i.source.port_name);
             slots.insert(slots.begin(), s.begin(), s.end());
         }
 
         for(auto &core:emu_spec.cores) {
             for(auto &out: core.outputs) {
                 std::vector<uint32_t> addresses;
-                for(int i = 0; i<out.vector_size; i++) {
-                    for(int j = 0; j<core.channels; j++) {
-                        deployer_interconnect_slot e;
-                        e.source_id = core.id;
-                        e.destination_bus_address = engine->get_free_address(core.id, out.name, i);
-                        e.destination_channel = j;
+                if(!interconnect_exposed_outputs[core.id].contains(out.name)) {
+                    for(int i = 0; i<out.vector_size; i++) {
+                        for(int j = 0; j<core.channels; j++) {
+                            deployer_interconnect_slot e;
+                            e.source_id = core.id;
+                            e.destination_bus_address = engine->get_free_address(core.id, out.name, i);
+                            e.destination_channel = j;
 
-                        e.source_io_address =  engine->get_output_address(core.id, out.name, i);
-                        e.source_channel = j;
-                        e.type = 'o';
+                            e.source_io_address =  engine->get_output_address(core.id, out.name, i);
+                            e.source_channel = j;
+                            e.type = 'o';
 
-                        e.metadata.is_signed = out.metadata.is_signed;
-                        e.metadata.type = out.metadata.type;
-                        e.metadata.width = out.metadata.width;
+                            e.metadata.is_signed = out.metadata.is_signed;
+                            e.metadata.type = out.metadata.type;
+                            e.metadata.width = out.metadata.width;
 
-                        slots.push_back(e);
+                            slots.push_back(e);
+                        }
+
                     }
-
                 }
 
             }
