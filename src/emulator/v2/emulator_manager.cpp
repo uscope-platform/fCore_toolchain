@@ -266,6 +266,33 @@ namespace fcore::emulator_v2 {
                 }
 
             }
+
+            for(auto &mem: core.memories) {
+                std::vector<uint32_t> addresses;
+                for(int i = 0; i<mem.vector_size; i++) {
+                    for(int j = 0; j<core.channels; j++) {
+                        if(mem.is_output) {
+                            deployer_interconnect_slot e;
+                            e.source_id = core.id;
+                            e.destination_bus_address = engine->get_free_address(core.id, mem.name, i);
+                            e.destination_channel = j;
+
+                            e.source_io_address =  engine->get_output_address(core.id, mem.name, i);
+                            e.source_channel = j;
+                            e.type = 'o';
+
+                            e.metadata.is_signed = mem.metadata.is_signed;
+                            e.metadata.type = mem.metadata.type;
+                            e.metadata.width = mem.metadata.width;
+
+                            slots.push_back(e);
+                        }
+
+                    }
+
+                }
+
+            }
         }
         return slots;
     }
