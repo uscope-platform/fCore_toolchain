@@ -406,11 +406,15 @@ namespace fcore::emulator_v2 {
 
 
     std::unordered_map<std::string, std::vector<memory_init_value>> emulator_manager::get_memory_init_values() {
+
+        auto engine = ic_manager.get_bus_engine();
         std::unordered_map<std::string, std::vector<memory_init_value>> ret;
         for(auto &core:emu_spec.cores) {
             for(const auto& mem_init: core.memories) {
                 memory_init_value val;
-                val.address = {0};
+                for(int i = 0; i<mem_init.vector_size; i++) {
+                    val.address.push_back(engine->get_output_address(core.id, mem_init.name, i));
+                }
                 val.value = mem_init.value;
                 ret[core.id].push_back(val);
             }
