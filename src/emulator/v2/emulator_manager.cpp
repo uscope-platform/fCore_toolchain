@@ -239,7 +239,7 @@ namespace fcore::emulator_v2 {
                     s = process_2d_vector_channel(i);
                     break;
             }
-            //slots.insert(slots.begin(), s.begin(), s.end());
+            slots.insert(slots.begin(), s.begin(), s.end());
         }
 
         for(auto &core:emu_spec.cores) {
