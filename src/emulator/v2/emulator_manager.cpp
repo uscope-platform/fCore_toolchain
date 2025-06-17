@@ -118,8 +118,8 @@ namespace fcore::emulator_v2 {
                 for(auto &in : prog.inputs) {
                     deployed_core_inputs dci;
                     dci.name = in.name;
-                    for(int i = 0; i<in.channel.size(); i++) {
-                        dci.address.push_back(engine->get_input_address(core, in.name, in.channel[i]));
+                    for(int i = 0; i<in.vector_size; i++) {
+                        dci.address.push_back(engine->get_input_address(core, in.name, i));
                     }
                     dci.channel = in.channel;
                     dci.data = in.data;
