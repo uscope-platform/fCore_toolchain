@@ -169,14 +169,21 @@ std::vector<uint32_t> bus_allocator::allocate_bus_address(uint32_t vector_size,
 
     auto  ret = std::vector<uint32_t>(vector_size, 0);
     uint32_t tentative_address = 1;
+
+    std::vector<u_int32_t> desired_array;
+    if(desired_addresses.size() == vector_size)
+        desired_array = desired_addresses;
+    else
+        desired_array = std::vector<uint32_t>(vector_size, 0);
+
     for(int i = 0; i< vector_size; i++) {
         if(
-            !global_forbidden_addresses.contains(desired_addresses[i]) &&
-            !local_forbidden_addresses.contains(desired_addresses[i]) &&
-            desired_addresses[i] != 0
+            !global_forbidden_addresses.contains(desired_array[i]) &&
+            !local_forbidden_addresses.contains(desired_array[i]) &&
+            desired_array[i] != 0
             ) {
-            ret[i] = desired_addresses[i];
-            local_forbidden_addresses.insert(desired_addresses[i]);
+            ret[i] = desired_array[i];
+            local_forbidden_addresses.insert(desired_array[i]);
         }else {
             while(global_forbidden_addresses.contains(tentative_address) || local_forbidden_addresses.contains(tentative_address)) tentative_address++;
             ret[i] = tentative_address;

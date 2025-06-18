@@ -366,6 +366,116 @@ TEST(bus_allocation, scalar_interconnect) {
 
 
 
+TEST(bus_allocation, scatter_interconnect) {
+
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+    "version":2,
+        "cores": [
+            {
+                "order": 1,
+                "id": "test_producer",
+                "channels":1,
+                "options":{
+                    "comparators": "full",
+                    "efi_implementation":"none"
+                },
+                "sampling_frequency":1,
+                "inputs":[],
+                "outputs":[
+                    {
+                        "name":"out",
+                        "type": "vector",
+                        "vector_size": 2,
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": true,
+                            "common_io":false
+                        }
+                    }
+                    ],
+                "memory_init":[],
+                "program": {
+                    "content": "int main(){\n  float out[2] = {15.6, 17.2};\n}",
+                    "build_settings":{"io":{"inputs":[],"outputs":["out"],"memories":[]}},
+                    "headers": []
+                },
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
+            },
+            {
+                "order": 2,
+                "id": "test_consumer",
+                "channels":2,
+                "options":{
+                    "comparators": "full",
+                    "efi_implementation":"none"
+                },
+                "sampling_frequency":1,
+                "inputs":[
+                    {
+                        "name": "input",
+                        "type":"scalar",
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": true,
+                            "common_io":true
+                        },
+                        "channel":[0,1],
+                        "source":{"type": "external"}
+                    }
+                ],
+                "outputs":[
+                    {
+                        "name":"out",
+                        "type":"scalar",
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": true,
+                            "common_io":false
+                        }
+                    }
+                ],
+                "memory_init":[],
+                "program": {
+                    "content": "int main(){\n  float input;float out = input*3.5;\n}",
+                    "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}},
+                    "headers": []
+                },
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
+            }
+        ],
+        "interconnect": [
+            {
+                "source": "test_producer.out",
+                "destination": "test_consumer.input"
+            }
+    ],
+        "emulation_time": 1,
+    "deployment_mode": false
+    })");
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+    auto slots = manager.get_interconnect_slots();
+
+    EXPECT_TRUE(false);
+}
+
+
+
+
 
 
 
