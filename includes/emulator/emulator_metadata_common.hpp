@@ -60,6 +60,7 @@ namespace fcore {
         uint16_t source_channel;
         uint16_t destination_channel;
         std::string source_id;
+        std::string source_name;
         std::string type;
         iom_metadata metadata;
     };

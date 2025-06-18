@@ -138,6 +138,7 @@ namespace fcore::emulator_v2 {
     std::vector<deployer_interconnect_slot> emulator_manager::process_scalar_channel(const interconnect_descriptor &ic) {
         deployer_interconnect_slot e;
         e.source_id = ic.source.core_name;
+        e.source_name = ic.source.port_name;
         e.destination_bus_address = ic.destination_addresses[0];
         e.source_io_address = ic.source_addresses[0];
         e.source_channel = 0;
@@ -152,6 +153,7 @@ namespace fcore::emulator_v2 {
         for(int i = 0; i<ic.dest_channels; i++){
             deployer_interconnect_slot e;
             e.source_id = ic.source.core_name;
+            e.source_name = ic.source.port_name;
             e.destination_bus_address = ic.destination_addresses[0];
             e.source_io_address = ic.source_addresses[i];
             e.source_channel = 0;
@@ -168,6 +170,7 @@ namespace fcore::emulator_v2 {
         for(int i = 0; i<ic.source_channels; i++){
             deployer_interconnect_slot e;
             e.source_id = ic.source.core_name;
+            e.source_name = ic.source.port_name;
             e.destination_bus_address = ic.destination_addresses[i];
             e.source_io_address = ic.source_addresses[0];
             e.source_channel = i;
@@ -184,6 +187,7 @@ namespace fcore::emulator_v2 {
         for(int i = 0; i<ic.source_channels; i++){
             deployer_interconnect_slot e;
             e.source_id = ic.source.core_name;
+            e.source_name = ic.source.port_name;
             e.destination_bus_address = ic.destination_addresses[0];
             e.source_io_address = ic.source_addresses[0];
             e.source_channel = i;
@@ -201,6 +205,7 @@ namespace fcore::emulator_v2 {
             for(int j = 0; j<ic.source_channels; j++) {
                 deployer_interconnect_slot e;
                 e.source_id = ic.source.core_name;
+                e.source_name = ic.source.port_name;
                 e.destination_bus_address = ic.destination_addresses[i];
                 e.source_io_address = ic.source_addresses[i];
                 e.source_channel = j;
@@ -251,6 +256,7 @@ namespace fcore::emulator_v2 {
                         for(int j = 0; j<core.channels; j++) {
                             deployer_interconnect_slot e;
                             e.source_id = core.id;
+                            e.source_name = out.name;
                             e.destination_bus_address = engine->get_free_address(core.id, out.name, i);
                             e.destination_channel = j;
 
