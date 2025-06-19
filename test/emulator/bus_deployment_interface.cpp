@@ -20,7 +20,7 @@
 using namespace fcore;
 
 
-TEST(bus_allocation, single_core) {
+TEST(bus_deployment_interface, single_core) {
 
 
     nlohmann::json specs = nlohmann::json::parse( R"({
@@ -99,14 +99,45 @@ TEST(bus_allocation, single_core) {
     emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
-    auto slots = manager.get_interconnect_slots();
 
-    EXPECT_TRUE(false);
+    auto slots = manager.get_interconnect_slots();
+    std::vector<deployer_interconnect_slot> expected_slots;
+    deployer_interconnect_slot e;
+    e.source_id = "test";
+    e.source_name = "test_out";
+    e.type = "o";
+    e.source_io_address = 1;
+    e.source_channel = 0;
+    e.destination_bus_address = 3;
+    e.destination_channel = 0;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = false;
+    e.metadata.is_common_io = false;
+    e.metadata.io_address = {0};
+    expected_slots.push_back(e);
+
+
+    e.source_id = "test";
+    e.source_name = "test_out";
+    e.type = "o";
+    e.source_io_address = 2;
+    e.source_channel = 0;
+    e.destination_bus_address = 4;
+    e.destination_channel = 0;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = false;
+    e.metadata.is_common_io = false;
+    e.metadata.io_address = {0};
+    expected_slots.push_back(e);
+
+    EXPECT_EQ(slots, expected_slots);
 }
 
 
 
-TEST(bus_allocation, single_core_multichannel) {
+TEST(bus_deployment_interface, single_core_multichannel) {
 
     nlohmann::json specs = nlohmann::json::parse( R"({
       "version": 2,
@@ -184,12 +215,74 @@ TEST(bus_allocation, single_core_multichannel) {
     emulator_dispatcher manager;
     manager.set_specs(specs);
     manager.process();
-    auto slots = manager.get_interconnect_slots();
 
-    EXPECT_TRUE(false);
+    auto slots = manager.get_interconnect_slots();
+    std::vector<deployer_interconnect_slot> expected_slots;
+    deployer_interconnect_slot e;
+    e.source_id = "test";
+    e.source_name = "test_out";
+    e.type = "o";
+    e.source_io_address = 1;
+    e.source_channel = 0;
+    e.destination_bus_address = 3;
+    e.destination_channel = 0;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = false;
+    e.metadata.is_common_io = false;
+    e.metadata.io_address = {0};
+    expected_slots.push_back(e);
+
+
+    e.source_id = "test";
+    e.source_name = "test_out";
+    e.type = "o";
+    e.source_io_address = 1;
+    e.source_channel = 1;
+    e.destination_bus_address = 4;
+    e.destination_channel = 1;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = false;
+    e.metadata.is_common_io = false;
+    e.metadata.io_address = {0};
+    expected_slots.push_back(e);
+
+
+    e.source_id = "test";
+    e.source_name = "test_out";
+    e.type = "o";
+    e.source_io_address = 2;
+    e.source_channel = 0;
+    e.destination_bus_address = 5;
+    e.destination_channel = 0;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = false;
+    e.metadata.is_common_io = false;
+    e.metadata.io_address = {0};
+    expected_slots.push_back(e);
+
+
+    e.source_id = "test";
+    e.source_name = "test_out";
+    e.type = "o";
+    e.source_io_address = 2;
+    e.source_channel = 1;
+    e.destination_bus_address = 6;
+    e.destination_channel = 1;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = false;
+    e.metadata.is_common_io = false;
+    e.metadata.io_address = {0};
+    expected_slots.push_back(e);
+
+
+    EXPECT_EQ(slots, expected_slots);
 }
 
-TEST(bus_allocation, scalar_interconnect) {
+TEST(bus_deployment_interface, scalar_interconnect) {
 
     nlohmann::json specs = nlohmann::json::parse(R"({
         "version":2,
@@ -359,14 +452,62 @@ TEST(bus_allocation, scalar_interconnect) {
     manager.process();
     auto slots = manager.get_interconnect_slots();
 
-    EXPECT_TRUE(false);
+
+    std::vector<deployer_interconnect_slot> expected_slots;
+    deployer_interconnect_slot e;
+
+    e.source_id = "test";
+    e.source_name = "out2";
+    e.type = "o";
+    e.source_io_address = 1;
+    e.source_channel = 0;
+    e.destination_bus_address = 1;
+    e.destination_channel = 0;
+    e.metadata.type = type_uint;
+    e.metadata.width = 32;
+    e.metadata.is_signed = true;
+    e.metadata.is_common_io = false;
+    e.metadata.io_address = {0};
+    expected_slots.push_back(e);
+
+    e.source_id = "test";
+    e.source_name = "out";
+    e.type = "o";
+    e.source_io_address = 3;
+    e.source_channel = 0;
+    e.destination_bus_address = 4;
+    e.destination_channel = 0;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = true;
+    e.metadata.is_common_io = false;
+    e.metadata.io_address = {0};
+    expected_slots.push_back(e);
+
+
+    e.source_id = "test_move";
+    e.source_name = "out";
+    e.type = "o";
+    e.source_io_address = 2;
+    e.source_channel = 0;
+    e.destination_bus_address = 5;
+    e.destination_channel = 0;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = true;
+    e.metadata.is_common_io = false;
+    e.metadata.io_address = {0};
+    expected_slots.push_back(e);
+
+
+    EXPECT_EQ(slots, expected_slots);
 }
 
 
 
 
 
-TEST(bus_allocation, scatter_interconnect) {
+TEST(bus_deployment_interface, scatter_interconnect) {
 
     nlohmann::json specs = nlohmann::json::parse(
             R"({
@@ -470,7 +611,70 @@ TEST(bus_allocation, scatter_interconnect) {
     manager.process();
     auto slots = manager.get_interconnect_slots();
 
-    EXPECT_TRUE(false);
+    std::vector<deployer_interconnect_slot> expected_slots;
+    deployer_interconnect_slot e;
+
+    e.source_id = "test_producer";
+    e.source_name = "out";
+    e.type = "o";
+    e.source_io_address = 1;
+    e.source_channel = 0;
+    e.destination_bus_address = 1;
+    e.destination_channel = 0;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = true;
+    e.metadata.is_common_io = false;
+    e.metadata.io_address = {0, 0};
+    expected_slots.push_back(e);
+
+    e.source_id = "test_producer";
+    e.source_name = "out";
+    e.type = "o";
+    e.source_io_address = 2;
+    e.source_channel = 0;
+    e.destination_bus_address = 1;
+    e.destination_channel = 1;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = true;
+    e.metadata.is_common_io = false;
+    e.metadata.io_address = {0, 0};
+    expected_slots.push_back(e);
+
+
+    e.source_id = "test_consumer";
+    e.source_name = "out";
+    e.type = "o";
+    e.source_io_address = 3;
+    e.source_channel = 0;
+    e.destination_bus_address = 4;
+    e.destination_channel = 0;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = true;
+    e.metadata.is_common_io = false;
+    e.metadata.io_address = {0};
+    expected_slots.push_back(e);
+
+
+
+    e.source_id = "test_consumer";
+    e.source_name = "out";
+    e.type = "o";
+    e.source_io_address = 3;
+    e.source_channel = 1;
+    e.destination_bus_address = 5;
+    e.destination_channel = 1;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = true;
+    e.metadata.is_common_io = false;
+    e.metadata.io_address = {0};
+    expected_slots.push_back(e);
+
+
+    EXPECT_EQ(slots, expected_slots);
 }
 
 

@@ -38,6 +38,17 @@ namespace fcore {
     } register_data_type;
 
     struct iom_metadata {
+        friend bool operator==(const iom_metadata &lhs, const iom_metadata &rhs) {
+            return lhs.io_address == rhs.io_address
+                   && lhs.width == rhs.width
+                   && lhs.is_signed == rhs.is_signed
+                   && lhs.is_common_io == rhs.is_common_io;
+        }
+
+        friend bool operator!=(const iom_metadata &lhs, const iom_metadata &rhs) {
+            return !(lhs == rhs);
+        }
+
         std::vector<uint32_t> io_address = {0};
         register_data_type type;
         uint16_t width;
@@ -55,6 +66,23 @@ namespace fcore {
     };
 
     struct deployer_interconnect_slot {
+        friend bool operator==(const deployer_interconnect_slot &lhs, const deployer_interconnect_slot &rhs) {
+            bool ret = true;
+            ret &= lhs.source_io_address == rhs.source_io_address;
+            ret &= lhs.destination_bus_address == rhs.destination_bus_address;
+            ret &= lhs.source_channel == rhs.source_channel;
+            ret &= lhs.destination_channel == rhs.destination_channel;
+            ret &= lhs.source_id == rhs.source_id;
+            ret &= lhs.source_name == rhs.source_name;
+            ret &= lhs.type == rhs.type;
+            ret &= lhs.metadata == rhs.metadata;
+            return ret;
+        }
+
+        friend bool operator!=(const deployer_interconnect_slot &lhs, const deployer_interconnect_slot &rhs) {
+            return !(lhs == rhs);
+        }
+
         uint16_t source_io_address;
         uint16_t destination_bus_address;
         uint16_t source_channel;
