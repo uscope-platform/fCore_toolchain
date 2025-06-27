@@ -175,12 +175,6 @@ namespace fcore::emulator_v2 {
             in.data = ds;
         }
 
-        if(i["channel"].is_array()){
-            std::vector<uint32_t> ch = i["channel"];
-            in.channel = ch;
-        } else {
-            in.channel = {i["channel"]};
-        }
 
         return in;
     }

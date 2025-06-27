@@ -130,13 +130,9 @@ namespace fcore::emulator_v2 {
 
                 }
 
-                uint32_t sel_ch = channel;
-                if(in.source_type != constant_input || in.channel.size()!=1){
-                    sel_ch = in.channel[channel];
-                }
                 current_inputs[in.name] = input_val[0];
                 for(int i = 0; i< in.vector_size; i++) {
-                    dma_write(bus_engine->get_input_address(info.id,in.name, i), sel_ch, input_val[i]);
+                    dma_write(bus_engine->get_input_address(info.id,in.name, i), channel, input_val[i]);
                 }
             }
         }

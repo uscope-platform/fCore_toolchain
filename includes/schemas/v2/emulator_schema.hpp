@@ -96,7 +96,6 @@ const std::string emulator_schema_v2 = R"~(
               "type": "object",
               "title": "Object describing a single external input",
               "required": [
-                "channel",
                 "metadata",
                 "source",
                 "name",
@@ -114,21 +113,6 @@ const std::string emulator_schema_v2 = R"~(
                 "vector_size": {
                   "type": "integer",
                   "title": "size of the array port"
-                },
-                "channel": {
-                  "anyOf": [
-                    {
-                      "type": "integer",
-                      "title": "Channel to push the input to"
-                    },
-                    {
-                      "type": "array",
-                      "title": "Channels to push the input to",
-                      "items": {
-                        "type": "integer"
-                      }
-                    }
-                  ]
                 },
                 "metadata": {
                   "type": "object",

@@ -42,8 +42,7 @@ TEST(emulator_manager_v2, emulator_executable_format) {
               "source": {
                 "type": "series",
                 "value": [15.7,67.4]
-              },
-              "channel": 0
+              }
             },
             {
               "name": "input_2",
@@ -57,8 +56,7 @@ TEST(emulator_manager_v2, emulator_executable_format) {
               "source": {
                 "type": "series",
                 "value": [42.92,-5.8]
-              },
-              "channel": 0
+              }
             }
           ],
           "outputs": [
@@ -144,8 +142,7 @@ TEST(emulator_manager_v2, emulator_compile_error) {
           "source": {
             "type":"series",
             "value": [15.7,67.4]
-          },
-          "channel": 0
+          }
         },
         {
           "name": "input_2",
@@ -159,8 +156,7 @@ TEST(emulator_manager_v2, emulator_compile_error) {
           "source": {
             "type":"series",
             "value": [42.92,5.8]
-          },
-          "channel": 0
+          }
         }
       ],
       "outputs": [
@@ -309,8 +305,7 @@ TEST(emulator_manager_v2, emulator_inputs) {
                         "source": {
                             "type": "series",
                             "value": [15.7,67.4]
-                        },
-                        "channel": [0]
+                        }
                     },
                     {
                         "name": "input_2",
@@ -324,8 +319,7 @@ TEST(emulator_manager_v2, emulator_inputs) {
                         "source": {
                             "type": "series",
                             "value": [42.92,-5.8]
-                        },
-                        "channel": [0]
+                        }
                     }
                 ],
                 "outputs": [
@@ -402,8 +396,7 @@ TEST(emulator_manager_v2, emulator_consecutive_runs) {
                         "source": {
                             "type": "series",
                             "value": [15.7,67.4]
-                        },
-                        "channel": [0]
+                        }
                     },
                     {
                         "name": "input_2",
@@ -417,8 +410,7 @@ TEST(emulator_manager_v2, emulator_consecutive_runs) {
                         "source": {
                             "type": "series",
                             "value": [42.92,-5.8]
-                        },
-                        "channel": [0]
+                        }
                     }
                 ],
                 "outputs": [],
@@ -519,8 +511,7 @@ TEST(emulator_manager_v2, emulator_outputs) {
               "source": {
                 "type":"series",
                 "value": [15.7,67.4]
-              },
-              "channel": 0
+              }
             },
             {
               "name": "input_2",
@@ -534,8 +525,7 @@ TEST(emulator_manager_v2, emulator_outputs) {
               "source": {
                 "type":"series",
                 "value": [42.92,-5.8]
-              },
-              "channel": 0
+              }
             }
           ],
           "outputs": [
@@ -636,8 +626,7 @@ TEST(emulator_manager_v2, emulator_memory) {
                         "source": {
                             "type": "series",
                             "value": [15.7,67.4]
-                        },
-                        "channel": [0]
+                        }
                     },
                     {
                         "name": "input_2",
@@ -651,8 +640,7 @@ TEST(emulator_manager_v2, emulator_memory) {
                         "source": {
                             "type": "series",
                             "value": [42.92,-5.8]
-                        },
-                        "channel": [0]
+                        }
                     }
                 ],
                 "outputs": [
@@ -738,8 +726,7 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
               "source": {
                 "type":"series",
                 "value": [15.7,67.4]
-              },
-              "channel": 0
+              }
             },
             {
               "name": "input_2",
@@ -753,8 +740,7 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
               "source": {
                 "type":"series",
                 "value": [42.92,-5.8]
-              },
-              "channel": 0
+              }
             }
           ],
           "order": 1,
@@ -817,8 +803,7 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
               },
               "source": {
                 "type":"external"
-              },
-              "channel": 0
+              }
             }
           ],
           "input_data": [],
@@ -908,8 +893,7 @@ TEST(emulator_manager_v2, emulator_compilation) {
           "source": {
             "type":"series",
             "value": [15.7,67.4]
-          },
-          "channel": 0
+          }
         },
         {
           "name": "input_2",
@@ -923,8 +907,7 @@ TEST(emulator_manager_v2, emulator_compilation) {
           "source": {
             "type":"series",
             "value": [42.92, -5.8]
-          },
-          "channel": 0
+          }
         }
       ],
       "outputs": [
@@ -1007,8 +990,7 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
             "source": {
               "type":"series",
               "value": [15.0,67.0]
-            },
-            "channel": 0
+            }
           },
           {
             "name": "input_2",
@@ -1022,8 +1004,7 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
             "source": {
               "type":"series",
               "value": [42.0,-6.0]
-            },
-            "channel": 0
+            }
           }
         ],
         "outputs": [
@@ -1082,8 +1063,7 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
               },
               "source": {
                 "type":"external"
-              },
-              "channel": 0
+              }
             }
         ],
         "outputs": [
@@ -1173,8 +1153,7 @@ TEST(emulator_manager_v2, emulator_compilation_memory) {
           "source": {
             "type":"series",
             "value": [15.7,67.4]
-          },
-          "channel": 0
+          }
         }
       ],
       "outputs": [
@@ -1271,8 +1250,7 @@ TEST(emulator_manager_v2, emulator_memory_as_output) {
                         "source": {
                             "type": "series",
                             "value": [15.7,67.4]
-                        },
-                        "channel": [0]
+                        }
                     },
                     {
                         "name": "input_2",
@@ -1286,8 +1264,7 @@ TEST(emulator_manager_v2, emulator_memory_as_output) {
                         "source": {
                             "type": "series",
                             "value": [42.92,-5.8]
-                        },
-                        "channel": [0]
+                        }
                     }
                 ],
                 "outputs": [],
@@ -1375,8 +1352,7 @@ nlohmann::json specs = nlohmann::json::parse(
                   "source": {
                     "type":"constant",
                     "value": [42.92, 15.7]
-                  },
-                  "channel": 0
+                  }
                 }
                 ],
                 "outputs":[
@@ -1388,8 +1364,7 @@ nlohmann::json specs = nlohmann::json::parse(
                         "width": 24,
                         "signed":false,
                         "common_io": false
-                    },
-                  "channel": 0
+                    }
                 }],
                 "memory_init":[],
                 "program": {
@@ -1450,8 +1425,7 @@ nlohmann::json specs = nlohmann::json::parse(
                   "source": {
                     "type":"series",
                     "value": [[15.7,67.4], [42.92,-5.8]]
-                  },
-                  "channel": 0
+                  }
                 }
                 ],
                 "outputs":[
@@ -1463,8 +1437,7 @@ nlohmann::json specs = nlohmann::json::parse(
                         "width": 24,
                         "signed":false,
                         "common_io": false
-                    },
-                  "channel": 0
+                    }
                 }],
                 "memory_init":[],
                 "program": {
@@ -1526,8 +1499,7 @@ nlohmann::json specs = nlohmann::json::parse(
                   "source": {
                     "type":"constant",
                     "value": [42, 15]
-                  },
-                  "channel": 0
+                  }
                 }
                 ],
                 "outputs":[
@@ -1539,8 +1511,7 @@ nlohmann::json specs = nlohmann::json::parse(
                         "width": 24,
                         "signed":false,
                         "common_io": false
-                    },
-                  "channel": 0
+                    }
                 }],
                 "memory_init":[],
                 "program": {
@@ -1601,8 +1572,7 @@ nlohmann::json specs = nlohmann::json::parse(
                   "source": {
                     "type":"series",
                     "value": [[15,67], [42,-5]]
-                  },
-                  "channel": 0
+                  }
                 }
                 ],
                 "outputs":[
@@ -1614,8 +1584,7 @@ nlohmann::json specs = nlohmann::json::parse(
                         "width": 24,
                         "signed":false,
                         "common_io": false
-                    },
-                  "channel": 0
+                    }
                 }],
                 "memory_init":[],
                 "program": {
@@ -1678,8 +1647,7 @@ nlohmann::json specs = nlohmann::json::parse(
                   "source": {
                     "type":"series",
                     "value": [[15.7,67.4], [42.92,-5.8]]
-                  },
-                  "channel": 0
+                  }
                 }
                 ],
                 "outputs":[
@@ -1692,8 +1660,7 @@ nlohmann::json specs = nlohmann::json::parse(
                         "width": 24,
                         "signed":false,
                         "common_io": false
-                    },
-                  "channel": 0
+                    }
                 }],
                 "memory_init":[],
                 "program": {
@@ -1750,8 +1717,7 @@ TEST(emulator_manager_v2, emulator_header) {
                     "source": {
                         "type": "constant",
                         "value": [5]
-                    },
-                    "channel": [0]
+                    }
                 },
                 {
                     "name": "input_2",
@@ -1765,8 +1731,7 @@ TEST(emulator_manager_v2, emulator_header) {
                     "source": {
                         "type": "constant",
                         "value": [4]
-                    },
-                    "channel": [0]
+                    }
                 }
             ],
             "outputs": [
@@ -1857,13 +1822,7 @@ TEST(emulator_manager_v2, emulator_multichannel) {
                             62.1,
                             64
                         ]
-                    },
-                    "channel": [
-                        0,
-                        1,
-                        2,
-                        3
-                    ]
+                    }
                 },
                 {
                     "name": "input_2",
@@ -1882,13 +1841,7 @@ TEST(emulator_manager_v2, emulator_multichannel) {
                             6,
                             12
                         ]
-                    },
-                    "channel": [
-                        0,
-                        1,
-                        2,
-                        3
-                    ]
+                    }
                 }
             ],
             "outputs": [
@@ -1986,7 +1939,6 @@ TEST(emulator_manager_v2, emulator_multichannel_input_file) {
                         "signed":false,
                         "common_io": false
                     },
-                    "channel":[0,1,2,3],
                     "source":{
                         "type": "series",
                         "value": [[31.2,31.3], [32.7,32.8], [62.1,62.2], [64.0,64.1]]
@@ -2001,7 +1953,6 @@ TEST(emulator_manager_v2, emulator_multichannel_input_file) {
                         "signed":false,
                         "common_io": false
                     },
-                    "channel":[0,1,2,3],
                     "source":{
                         "type": "constant",
                         "value": [4.0, 2.0, 6.0, 12.0]
@@ -2094,7 +2045,6 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
                         "signed":false,
                         "common_io": false
                     },
-                    "channel":[0,1],
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 },
                 {
@@ -2106,7 +2056,6 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
                         "signed":false,
                         "common_io": false
                     },
-                    "channel":[0,1],
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 }
             ],
@@ -2156,8 +2105,7 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
                   },
                   "source": {
                     "type":"external"
-                  },
-                  "channel": 0
+                  }
                 }
             ],
             "outputs":[
@@ -2273,8 +2221,7 @@ TEST(emulator_manager_v2, emulator_multichannel_scatter_transfer) {
                       },
                       "source": {
                         "type":"external"
-                      },
-                      "channel": 0
+                      }
                     }
                 ],
                 "outputs":[
@@ -2352,7 +2299,6 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
                             "signed":false,
                             "common_io": false
                         },
-                        "channel":[0,1],
                         "source":{"type": "constant","value": [31.2, 32.7]}
                     },
                     {
@@ -2364,7 +2310,6 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
                             "signed":false,
                             "common_io": false
                         },
-                        "channel":[0,1],
                         "source":{"type": "constant","value": [31.2, 32.7]}
                     }
                 ],
@@ -2413,8 +2358,7 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
                       },
                       "source": {
                         "type":"external"
-                      },
-                      "channel": 0
+                      }
                     }],
                 "outputs":[
                     {
@@ -2527,8 +2471,7 @@ TEST(emulator_manager_v2, emulator_multichannel_2d_vector_transfer) {
                       },
                       "source": {
                         "type":"external"
-                      },
-                      "channel": 0
+                      }
                     }],
                 "outputs":[
                     {
@@ -2612,8 +2555,7 @@ TEST(emulator_manager_v2, emulator_common_io) {
                     "source": {
                         "type": "constant",
                         "value": [5]
-                    },
-                    "channel": [0]
+                    }
                 },
                 {
                     "name": "b",
@@ -2627,8 +2569,7 @@ TEST(emulator_manager_v2, emulator_common_io) {
                     "source": {
                         "type": "constant",
                         "value": [1]
-                    },
-                    "channel": [0]
+                    }
                 }
             ],
             "outputs": [
@@ -2718,8 +2659,7 @@ TEST(emulator_manager_v2, emulator_multichannel_input) {
                         "source": {
                             "type": "constant",
                             "value": [5]
-                        },
-                        "channel": [0]
+                        }
                     },
                     {
                         "name": "b",
@@ -2733,8 +2673,7 @@ TEST(emulator_manager_v2, emulator_multichannel_input) {
                         "source": {
                             "type": "constant",
                             "value": [1]
-                        },
-                        "channel": [0]
+                        }
                     }
                 ],
                 "outputs":[
@@ -2811,7 +2750,6 @@ TEST(emulator_manager_v2, emulator_disassemble) {
                         "signed":false,
                         "common_io": false
                     },
-                    "channel":[0,1],
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 },
                 {
@@ -2823,7 +2761,6 @@ TEST(emulator_manager_v2, emulator_disassemble) {
                         "signed":false,
                         "common_io": false
                     },
-                    "channel":[0,1],
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 }
             ],
@@ -2870,7 +2807,6 @@ TEST(emulator_manager_v2, emulator_disassemble) {
                         "signed":false,
                         "common_io": false
                     },
-                    "channel":[0,1],
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 },
                 {
@@ -2882,7 +2818,6 @@ TEST(emulator_manager_v2, emulator_disassemble) {
                         "signed":false,
                         "common_io": false
                     },
-                    "channel":[0,1],
                     "source":{"type": "constant","value": [31.2, 32.7]}
                 }
             ],
