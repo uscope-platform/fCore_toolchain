@@ -99,16 +99,12 @@ const std::string emulator_schema_v2 = R"~(
                 "metadata",
                 "source",
                 "name",
-                "type"
+                "is_vector"
               ],
               "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "scalar",
-                    "vector"
-                  ],
-                  "title": "type of input"
+                "is_vector": {
+                  "type": "boolean",
+                  "title": "Is the input a scalar or a vector"
                 },
                 "vector_size": {
                   "type": "integer",
@@ -203,7 +199,7 @@ const std::string emulator_schema_v2 = R"~(
               },
               "allOf": [
                 {
-                  "if": {"properties": {"type": { "enum": ["vector"] }}},
+                  "if": {"properties": {"is_vector": {"const": true}}},
                   "then": { "required": ["vector_size"] }
                 }
               ]
@@ -217,7 +213,7 @@ const std::string emulator_schema_v2 = R"~(
               "type": "object",
               "title": "Object describing a single emulation output",
               "required": [
-                "type",
+                "is_vector",
                 "metadata",
                 "name"
               ],
@@ -232,13 +228,9 @@ const std::string emulator_schema_v2 = R"~(
                     "common_io"
                   ],
                   "properties": {
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "float",
-                        "integer"
-                      ],
-                      "title": "type to use for the output"
+                    "is_vector": {
+                      "type": "boolean",
+                      "title": "Is the input a scalar or a vector"
                     },
                     "width": {
                       "type": "integer",
@@ -273,7 +265,7 @@ const std::string emulator_schema_v2 = R"~(
               },
               "allOf": [
                 {
-                  "if": {"properties": {"type": { "enum": ["vector"] }}},
+                  "if": {"properties": {"is_vector": {"const": true}}},
                   "then": { "required": ["vector_size"] }
                 }
               ]
@@ -290,7 +282,7 @@ const std::string emulator_schema_v2 = R"~(
                 "value",
                 "metadata",
                 "name",
-                "type"
+                "is_vector"
               ],
               "properties": {
                 "value": {
@@ -339,13 +331,9 @@ const std::string emulator_schema_v2 = R"~(
                   "type": "string",
                   "title": "Name of the state variable (For documentation purposes only, not used internally)"
                 },
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "scalar",
-                    "vector"
-                  ],
-                  "title": "type of input"
+                "is_vector": {
+                  "type": "boolean",
+                  "title": "Is the input a scalar or a vector"
                 },
                 "vector_size": {
                   "type": "integer",
@@ -354,7 +342,7 @@ const std::string emulator_schema_v2 = R"~(
               },
               "allOf": [
                 {
-                  "if": {"properties": {"type": { "enum": ["vector"] }}},
+                  "if": {"properties": {"is_vector": {"const": true}}},
                   "then": { "required": ["vector_size"] }
                 }
               ]

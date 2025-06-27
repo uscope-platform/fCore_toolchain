@@ -75,11 +75,11 @@ namespace fcore::emulator_v2 {
         out.metadata.is_signed = o["metadata"]["signed"];
         out.metadata.is_common_io = o["metadata"]["common_io"];
         out.name = o["name"];
-        if(o["type"] == "scalar") {
-            out.is_vector = false;
+
+        out.is_vector = o["is_vector"];
+        if(!out.is_vector) {
             out.vector_size = 1;
         } else {
-            out.is_vector = true;
             out.vector_size = o["vector_size"];
         }
 
@@ -104,11 +104,10 @@ namespace fcore::emulator_v2 {
         in.metadata.type = data_type_map[i["metadata"]["type"]];
         in.metadata.width = i["metadata"]["width"];
         in.metadata.is_signed = i["metadata"]["signed"];
-        if(i["type"] == "scalar") {
-            in.is_vector = false;
+        in.is_vector = i["is_vector"];
+        if(!in.is_vector) {
             in.vector_size = 1;
         } else {
-            in.is_vector = true;
             in.vector_size = i["vector_size"];
         }
         if(i["metadata"].contains("io_address")) {
@@ -252,13 +251,13 @@ namespace fcore::emulator_v2 {
         mem.metadata.type = data_type_map[m["metadata"]["type"]];
         mem.metadata.width = m["metadata"]["width"];
         mem.metadata.is_signed = m["metadata"]["signed"];
-        if(m["type"] == "scalar") {
-            mem.is_vector = false;
+        mem.is_vector = m["is_vector"];
+        if(!mem.is_vector) {
             mem.vector_size = 1;
         } else {
-            mem.is_vector = true;
             mem.vector_size = m["vector_size"];
         }
+
         if(m["metadata"].contains("io_address")) {
             if(m["metadata"]["io_address"].is_array()) {
                 mem.metadata.io_address = static_cast<std::vector<uint32_t>>(m["metadata"]["io_address"]);

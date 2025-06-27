@@ -31,7 +31,7 @@ TEST(bus_deployment_interface, single_core) {
           "inputs": [
             {
               "name": "input_1",
-              "type": "scalar",
+              "is_vector": false,
               "metadata": {
                 "type": "float",
                 "width": 32,
@@ -41,12 +41,11 @@ TEST(bus_deployment_interface, single_core) {
               "source": {
                 "type": "series",
                 "value": [15.7,67.4]
-              },
-              "channel": 0
+              }
             },
             {
               "name": "input_2",
-              "type": "scalar",
+              "is_vector": false,
               "metadata": {
                 "type": "float",
                 "width": 32,
@@ -56,14 +55,13 @@ TEST(bus_deployment_interface, single_core) {
               "source": {
                 "type": "series",
                 "value": [42.92,-5.8]
-              },
-              "channel": 0
+              }
             }
           ],
           "outputs": [
             {
               "name": "test_out",
-              "type": "vector",
+              "is_vector": true,
               "vector_size": 2,
               "metadata": {
                 "type": "float",
@@ -147,7 +145,7 @@ TEST(bus_deployment_interface, single_core_multichannel) {
           "inputs": [
             {
               "name": "input_1",
-              "type": "scalar",
+              "is_vector": false,
               "metadata": {
                 "type": "float",
                 "width": 32,
@@ -157,12 +155,11 @@ TEST(bus_deployment_interface, single_core_multichannel) {
               "source": {
                 "type": "series",
                 "value": [15.7,67.4]
-              },
-              "channel": 0
+              }
             },
             {
               "name": "input_2",
-              "type": "scalar",
+              "is_vector": false,
               "metadata": {
                 "type": "float",
                 "width": 32,
@@ -172,14 +169,13 @@ TEST(bus_deployment_interface, single_core_multichannel) {
               "source": {
                 "type": "series",
                 "value": [42.92,-5.8]
-              },
-              "channel": 0
+              }
             }
           ],
           "outputs": [
             {
               "name": "test_out",
-              "type": "vector",
+              "is_vector": true,
               "vector_size": 2,
               "metadata": {
                 "type": "float",
@@ -292,7 +288,7 @@ TEST(bus_deployment_interface, scalar_interconnect) {
                 "inputs": [
                     {
                         "name": "input_1",
-                        "type":"scalar",
+                        "is_vector": false,
                         "metadata": {
                             "type": "float",
                             "width": 32,
@@ -304,12 +300,11 @@ TEST(bus_deployment_interface, scalar_interconnect) {
                             "value": [
                                 31.2
                             ]
-                        },
-                        "channel": 0
+                        }
                     },
                     {
                         "name": "input_2",
-                        "type":"scalar",
+                        "is_vector": false,
                         "metadata": {
                             "type": "float",
                             "width": 32,
@@ -321,8 +316,7 @@ TEST(bus_deployment_interface, scalar_interconnect) {
                             "value": [
                                 32.7
                             ]
-                        },
-                        "channel": 0
+                        }
                     }
                 ],
                 "outputs": [
@@ -333,7 +327,7 @@ TEST(bus_deployment_interface, scalar_interconnect) {
                             "signed": true,
                             "common_io":false
                         },
-                        "type":"scalar",
+                        "is_vector": false,
                         "name": "out"
                     },
                     {
@@ -343,7 +337,7 @@ TEST(bus_deployment_interface, scalar_interconnect) {
                             "signed": true,
                             "common_io":false
                         },
-                        "type":"scalar",
+                        "is_vector": false,
                         "name": "out2"
                     }
                 ],
@@ -383,20 +377,19 @@ TEST(bus_deployment_interface, scalar_interconnect) {
                 "inputs": [
                     {
                         "name": "input",
-                        "type":"scalar",
+                        "is_vector": false,
                         "metadata": {
                             "type": "float",
                             "width": 32,
                             "signed": true,
                             "common_io":false
                         },
-                        "channel":[0,1],
                         "source":{"type": "external"}
                     }
                 ],
                 "outputs": [
                     {
-                        "type":"scalar",
+                        "is_vector": false,
                         "metadata": {
                             "type": "float",
                             "width": 32,
@@ -526,7 +519,7 @@ TEST(bus_deployment_interface, scatter_interconnect) {
                 "outputs":[
                     {
                         "name":"out",
-                        "type": "vector",
+                        "is_vector": true,
                         "vector_size": 2,
                         "metadata": {
                             "type": "float",
@@ -560,21 +553,20 @@ TEST(bus_deployment_interface, scatter_interconnect) {
                 "inputs":[
                     {
                         "name": "input",
-                        "type":"scalar",
+                        "is_vector": false,
                         "metadata": {
                             "type": "float",
                             "width": 32,
                             "signed": true,
                             "common_io":true
                         },
-                        "channel":[0,1],
                         "source":{"type": "external"}
                     }
                 ],
                 "outputs":[
                     {
                         "name":"out",
-                        "type":"scalar",
+                        "is_vector": false,
                         "metadata": {
                             "type": "float",
                             "width": 32,

@@ -72,39 +72,19 @@
               "type": "object",
               "title": "Object describing a single external input",
               "required": [
-                "channel",
                 "metadata",
                 "source",
                 "name",
-                "type"
+                "is_vector"
               ],
               "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "scalar",
-                    "vector"
-                  ],
-                  "title": "type of input"
+                "is_vector": {
+                  "type": "boolean",
+                  "title": "Is the input a scalar or a vector"
                 },
                 "vector_size": {
                   "type": "integer",
                   "title": "size of the array port"
-                },
-                "channel": {
-                  "anyOf": [
-                    {
-                      "type": "integer",
-                      "title": "Channel to push the input to"
-                    },
-                    {
-                      "type": "array",
-                      "title": "Channels to push the input to",
-                      "items": {
-                        "type": "integer"
-                      }
-                    }
-                  ]
                 },
                 "metadata": {
                   "type": "object",
@@ -195,7 +175,7 @@
               },
               "allOf": [
                 {
-                  "if": {"properties": {"type": { "enum": ["vector"] }}},
+                  "if": {"properties": {"is_vector": {"const": true}}},
                   "then": { "required": ["vector_size"] }
                 }
               ]
@@ -209,7 +189,7 @@
               "type": "object",
               "title": "Object describing a single emulation output",
               "required": [
-                "type",
+                "is_vector",
                 "metadata",
                 "name"
               ],
@@ -224,13 +204,9 @@
                     "common_io"
                   ],
                   "properties": {
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "float",
-                        "integer"
-                      ],
-                      "title": "type to use for the output"
+                    "is_vector": {
+                      "type": "boolean",
+                      "title": "Is the input a scalar or a vector"
                     },
                     "width": {
                       "type": "integer",
@@ -265,7 +241,7 @@
               },
               "allOf": [
                 {
-                  "if": {"properties": {"type": { "enum": ["vector"] }}},
+                  "if": {"properties": {"is_vector": {"const": true}}},
                   "then": { "required": ["vector_size"] }
                 }
               ]
@@ -282,7 +258,7 @@
                 "value",
                 "metadata",
                 "name",
-                "type"
+                "is_vector"
               ],
               "properties": {
                 "value": {
@@ -331,13 +307,9 @@
                   "type": "string",
                   "title": "Name of the state variable (For documentation purposes only, not used internally)"
                 },
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "scalar",
-                    "vector"
-                  ],
-                  "title": "type of input"
+                "is_vector": {
+                  "type": "boolean",
+                  "title": "Is the input a scalar or a vector"
                 },
                 "vector_size": {
                   "type": "integer",
@@ -346,7 +318,7 @@
               },
               "allOf": [
                 {
-                  "if": {"properties": {"type": { "enum": ["vector"] }}},
+                  "if": {"properties": {"is_vector": {"const": true}}},
                   "then": { "required": ["vector_size"] }
                 }
               ]
