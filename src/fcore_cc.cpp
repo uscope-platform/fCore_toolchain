@@ -269,7 +269,7 @@ namespace fcore{
             iom.address = addr;
             iom.type = core_iom_type_translator[item["type"]];
             iom.common_io = item["common_io"];
-            ret[obj.key()] = iom;
+            ret[item["name"]] = iom;
         }
 
         return ret;
