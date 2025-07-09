@@ -130,7 +130,7 @@ namespace fcore{
         std::shared_ptr<ast_function_def> current_function;
 
         std::shared_ptr<ast_node> current_initializer;
-        std::shared_ptr<ast_node> current_block_item;
+        std::vector<std::shared_ptr<ast_node>> current_block_item;
 
         std::shared_ptr<ast_conditional> conditional;
         std::vector<std::shared_ptr<ast_node>> conditional_body;

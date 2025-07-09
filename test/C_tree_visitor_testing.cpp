@@ -1587,5 +1587,35 @@ namespace fcore{
 
 
 
+    TEST( cTreeVisitor, multiple_definitions){
+        std::istringstream test_content(R""""(
+        int main(){
+                float mem, out;
+        }
+        )"""");
+
+        auto def_map = std::make_shared<define_map>();
+
+        C_language_parser parser(test_content, def_map);
+        parser.pre_process({});
+
+        std::unordered_map<std::string, variable_class_t> io_spec;
+        parser.parse(io_spec);
+        auto fun = parser.AST->get_content()[0];
+        auto result = std::static_pointer_cast<ast_function_def>(fun)->get_body();
+
+
+        EXPECT_EQ(result.size(), 2);
+
+        auto ref_def = std::make_shared<ast_definition>("mem", c_type_float, std::make_shared<variable>("mem"));
+        EXPECT_EQ(*ref_def, *result[0]);
+
+        ref_def = std::make_shared<ast_definition>("out", c_type_float, std::make_shared<variable>("out"));
+        EXPECT_EQ(*ref_def, *result[1]);
+    }
+
+
+
+
 
 }

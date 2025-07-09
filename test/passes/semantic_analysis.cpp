@@ -290,3 +290,33 @@ TEST(semantic_analysis, wrong_argument_for_builtin) {
     }
 
 }
+
+
+TEST(semantic_analysis, multiple_definitions) {
+    std::vector<std::string> input =  {R"(
+
+            void main(){
+                float mem, out;
+
+                mem += 1.0;
+                out = mem*2;
+            }
+    )"};
+
+    auto includes = std::vector<std::string>();
+    auto engine = create_type_checking_engine();
+
+    fcore_cc compiler(input, includes);
+    auto [ast, globals] = compiler.get_hl_ast();
+
+
+    try {
+        engine.run_semantic_analysis(ast, globals);
+        spdlog::critical("Mixed type operation not caught");
+        EXPECT_TRUE(false);
+    } catch(const std::runtime_error &err) {
+        std::string msg = err.what();
+        EXPECT_EQ(msg, "Encountered expression with mixed types: mem is float and constant is int");
+    }
+
+}
