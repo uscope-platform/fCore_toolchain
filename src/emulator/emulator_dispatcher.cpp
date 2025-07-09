@@ -34,9 +34,11 @@ namespace fcore {
         version = spec_file["version"];
         switch(version) {
             case 1:
+                v1 = emulator::emulator_manager();
                 v1.set_specs(spec_file);
                 break;
             case 2:
+                v2 = emulator_v2::emulator_manager();
                 v2.set_specs(spec_file);
                 break;
             default:

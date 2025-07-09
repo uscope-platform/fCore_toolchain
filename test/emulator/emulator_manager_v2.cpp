@@ -2868,3 +2868,156 @@ TEST(emulator_manager_v2, emulator_disassemble) {
 
 
 }
+
+TEST(emulator_manager_v2, emulation_repeatability) {
+
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+    "version": 2,
+    "cores": [
+        {
+            "id": "producer",
+            "order": 1,
+            "inputs": [],
+            "outputs": [
+                {
+                    "name": "out",
+                    "is_vector": false,
+                    "vector_size": 1,
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": true,
+                        "common_io": false
+                    }
+                }
+            ],
+            "memory_init": [
+                {
+                    "name": "mem",
+                    "vector_size": 1,
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": true
+                    },
+                    "is_output": false,
+                    "is_vector": false,
+                    "value": [
+                        0
+                    ]
+                }
+            ],
+            "deployment": {
+                "rom_address": 0,
+                "has_reciprocal": false,
+                "control_address": 0
+            },
+            "channels": 1,
+            "program": {
+                "content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}",
+                "build_settings": {
+                    "io": {
+                        "inputs": [],
+                        "outputs": [
+                            "out"
+                        ],
+                        "memories": [
+                            "mem"
+                        ]
+                    }
+                },
+                "headers": []
+            },
+            "options": {
+                "comparators": "reducing",
+                "efi_implementation": "efi_trig"
+            },
+            "sampling_frequency": 1000
+        },
+        {
+            "id": "consumer",
+            "order": 2,
+            "inputs": [
+                {
+                    "name": "in",
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": true,
+                        "common_io": false
+                    },
+                    "source": {
+                        "type": "external",
+                        "value": ""
+                    },
+                    "vector_size": 1,
+                    "is_vector": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "is_vector": false,
+                    "vector_size": 1,
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": true,
+                        "common_io": false
+                    }
+                }
+            ],
+            "memory_init": [],
+            "deployment": {
+                "rom_address": 0,
+                "has_reciprocal": false,
+                "control_address": 0
+            },
+            "channels": 1,
+            "program": {
+                "content": "void main(){\n  float in, out;\n  out = in*1.5;\n}",
+                "build_settings": {
+                    "io": {
+                        "inputs": [
+                            "in"
+                        ],
+                        "outputs": [
+                            "out"
+                        ],
+                        "memories": []
+                    }
+                },
+                "headers": []
+            },
+            "options": {
+                "comparators": "reducing",
+                "efi_implementation": "efi_trig"
+            },
+            "sampling_frequency": 1000
+        }
+    ],
+    "interconnect": [
+        {
+            "source": "producer.out",
+            "destination": "consumer.in"
+        }
+    ],
+    "emulation_time": 1,
+    "deployment_mode": false
+})");
+
+    emulator_dispatcher dispatcher;
+    dispatcher.set_specs(specs);
+    dispatcher.process();
+    dispatcher.emulate();
+    auto res_1 = dispatcher.get_results();
+
+    dispatcher.set_specs(specs);
+    dispatcher.process();
+    dispatcher.emulate();
+    auto res_2 = dispatcher.get_results();
+
+
+    EXPECT_EQ(res_1, res_2);
+}
