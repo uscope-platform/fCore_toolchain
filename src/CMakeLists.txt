@@ -197,6 +197,7 @@ target_compile_definitions(fcore_emu_lib_gp PUBLIC GENERAL_PURPOSE_EMULATION=1)
 target_link_libraries(fcore_emu_lib_gp PUBLIC
         fcore_dis_lib
         fcore_cc_lib
+        fcore_has_lib
 )
 
 add_executable(fCore_emu_gp fcore_emu_main.cpp)
