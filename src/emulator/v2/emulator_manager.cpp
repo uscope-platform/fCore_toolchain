@@ -283,6 +283,7 @@ namespace fcore::emulator_v2 {
                         if(mem.is_output) {
                             deployer_interconnect_slot e;
                             e.source_id = core.id;
+                            e.source_name = mem.name;
                             e.destination_bus_address = engine->get_free_address(core.id, mem.name, i);
                             e.destination_channel = j;
 
