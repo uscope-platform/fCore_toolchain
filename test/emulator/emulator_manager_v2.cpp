@@ -1913,6 +1913,97 @@ TEST(emulator_manager_v2, emulator_multichannel) {
     ASSERT_FLOAT_EQ(res[1], 76.0);
 }
 
+
+TEST(emulator_manager_v2, emulator_multichannel_mem_init) {
+
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+    "version": 2,
+    "cores": [
+        {
+            "id": "test",
+            "order": 1,
+            "inputs": [],
+            "outputs": [
+                {
+                    "name": "out",
+                    "is_vector": false,
+                    "metadata":{
+                        "type": "float",
+                        "width": 24,
+                        "signed":false,
+                        "common_io": false
+                    }
+                }
+            ],
+            "memory_init": [
+                {
+                    "name": "mem",
+                    "vector_size": 1,
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": true
+                    },
+                    "is_output": true,
+                    "is_vector": false,
+                    "value": [
+                        100.0,
+                        500.0
+                    ]
+                }
+            ],
+            "channels": 2,
+            "options": {
+                "comparators": "reducing",
+                "efi_implementation": "none"
+            },
+            "program": {
+                "content": "int main(){\n  float out = mem*2.5;\n mem += 0.1;\n}",
+                "build_settings": {
+                    "io": {
+                        "inputs": [
+                            "input_1",
+                            "input_2"
+                        ],
+                        "memories": [],
+                        "outputs": [
+                            "out"
+                        ]
+                    }
+                },
+                "headers": []
+            },
+            "sampling_frequency": 1,
+            "deployment": {
+                "has_reciprocal": false,
+                "control_address": 18316525568,
+                "rom_address": 17179869184
+            }
+        }
+    ],
+    "interconnect": [],
+    "emulation_time": 2,
+    "deployment_mode": false
+})");
+
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+    manager.emulate();
+
+    auto res_obj = manager.get_results();
+
+    std::vector<float> res = res_obj["test"]["outputs"]["out"]["0"][0];
+    ASSERT_FLOAT_EQ(res[0], 250.0);
+    ASSERT_FLOAT_EQ(res[1], 250.25);
+    res = (std::vector<float>) res_obj["test"]["outputs"]["out"]["1"][0];
+    ASSERT_FLOAT_EQ(res[0], 1250.0);
+    ASSERT_FLOAT_EQ(res[1], 1250.25);
+}
+
+
 TEST(emulator_manager_v2, emulator_multichannel_input_file) {
 
 
