@@ -17,9 +17,9 @@
 #include <gtest/gtest.h>
 
 #include "emulator_test_helpers.hpp"
-#include "emulator/v1/emulator_manager.hpp"
+#include "emulator/v2/emulator_manager.hpp"
 
-using namespace fcore::emulator;
+using namespace fcore::emulator_v2;
 
 
 TEST(Emulator_execution, emulator_load) {
@@ -353,11 +353,13 @@ TEST(Emulator_execution, emulator_efi) {
 
     nlohmann::json out_obj;
     out_obj["name"] = "sort_output";
-    out_obj["type"] = "integer";
     out_obj["metadata"] = nlohmann::json();
-    out_obj["metadata"]["type"] = "float";
+    out_obj["metadata"]["type"] = "integer";
     out_obj["metadata"]["width"] = 12;
     out_obj["metadata"]["signed"] = true;
+    out_obj["metadata"]["common_io"] = false;
+    out_obj["is_vector"] = true;
+    out_obj["vector_size"] = 4;
     out_obj["reg_n"] = {5, 6, 7};
     specs["cores"][0]["program"]["build_settings"]["io"]["outputs"].push_back("sort_output");
     specs["cores"][0]["outputs"].push_back(out_obj);

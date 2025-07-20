@@ -20,13 +20,12 @@
 #include "emulator/emulator_dispatcher.hpp"
 
 using namespace fcore;
-using namespace fcore::emulator;
-
+using namespace fcore::emulator_v2;
 
 nlohmann::json prepare_asm_spec(std::vector<std::string> pv, uint32_t n_steps, std::vector<uint32_t> output_regs, uint32_t n_channels){
 
     nlohmann::json spec;
-    spec["version"] = 1;
+    spec["version"] = 2;
     spec["cores"] = std::vector<nlohmann::json>();
     spec["emulation_time"] = n_steps;
 
@@ -68,11 +67,11 @@ nlohmann::json prepare_asm_spec(std::vector<std::string> pv, uint32_t n_steps, s
             auto out = nlohmann::json();
             out["name"] = "r" + std::to_string(j);
             out["metadata"]["type"] = "float";
-            out["metadata"]["width"] = j;
+            out["metadata"]["width"] = 32;
             out["metadata"]["signed"] = true;
-            out["reg_n"] = std::vector<uint32_t>();
-            out["reg_n"].push_back(j);
-            out["type"] = "float";
+            out["metadata"]["common_io"] = false;
+            out["vector_size"] = 1;
+            out["is_vector"] = false;
             cs["outputs"].push_back(out);
         }
 
@@ -104,6 +103,7 @@ TEST(emulator_manager_interactive, uninterrupted_run) {
     manager.set_specs(spec);
     manager.process();
     manager.emulate();
+    auto dbg = manager.get_results().dump(4);
     float res = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, 15.7f);
 
@@ -288,14 +288,15 @@ TEST(emulator_manager_interactive, two_programs_continue) {
     )";
 
     std::string program_b = R"(
-        ldc r42, 1.5000
-        ldc r3, 332.2000
-        sub r42, r3, r12
+        ldc r45, 1.5000
+        ldc r4, 332.2000
+        sub r45, r4, r14
         stop
     )";
     uint32_t n_steps = 1;
 
     auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42}, 1);
+    spec["cores"][1]["outputs"][0]["name"] = "r14";
 
     emulator_dispatcher manager;
     manager.set_specs(spec);
@@ -329,7 +330,7 @@ TEST(emulator_manager_interactive, two_programs_continue) {
     float res = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, 15.7f);
 
-     res = manager.get_results()["test_1"]["outputs"]["r12"]["0"][0][0];
+     res = manager.get_results()["test_1"]["outputs"]["r14"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, -330.7f);
 };
 
@@ -345,14 +346,15 @@ TEST(emulator_manager_interactive, second_program_breakpoint) {
     )";
 
     std::string program_b = R"(
-        ldc r42, 1.5000
-        ldc r3, 332.2000
-        sub r42, r3, r12
+        ldc r43, 1.5000
+        ldc r4, 332.2000
+        sub r43, r4, r13
         stop
     )";
     uint32_t n_steps = 1;
 
     auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42}, 1);
+    spec["cores"][1]["outputs"][0]["name"] = "r13";
 
     emulator_dispatcher manager;
     manager.set_specs(spec);
@@ -387,7 +389,7 @@ TEST(emulator_manager_interactive, second_program_breakpoint) {
     float res = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, 15.7f);
 
-    res = manager.get_results()["test_1"]["outputs"]["r12"]["0"][0][0];
+    res = manager.get_results()["test_1"]["outputs"]["r13"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, -330.7f);
 };
 
@@ -401,14 +403,15 @@ TEST(emulator_manager_interactive, two_programs_step_over) {
     )";
 
     std::string program_b = R"(
-        ldc r42, 1.5000
-        ldc r3, 332.2000
-        sub r42, r3, r12
+        ldc r43, 1.5000
+        ldc r4, 332.2000
+        sub r43, r4, r13
         stop
     )";
     uint32_t n_steps = 1;
 
     auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42}, 1);
+    spec["cores"][1]["outputs"][0]["name"] = "r13";
 
     emulator_dispatcher manager;
     manager.set_specs(spec);
@@ -441,10 +444,11 @@ TEST(emulator_manager_interactive, two_programs_step_over) {
     auto dbg = manager.get_results().dump(4);
     auto results = manager.get_results();
 
-    float res = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0][0];
+    float res = results["test_0"]["outputs"]["r12"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, 15.7f);
 
-    res = manager.get_results()["test_1"]["outputs"]["r12"]["0"][0][0];
+    auto dbg_1 =  results["test_1"]["outputs"]["r13"].dump(2);
+    res = results["test_1"]["outputs"]["r13"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, -330.7f);
 };
 
@@ -459,13 +463,14 @@ TEST(emulator_manager_interactive, first_core_correct_restart) {
     )";
 
     std::string program_b = R"(
-        ldc r42, 1.5000
+        ldc r43, 1.5000
         stop
     )";
     uint32_t n_steps = 2;
 
     auto spec = prepare_asm_spec({program_a, program_b}, n_steps, {12, 42}, 1);
 
+    spec["cores"][1]["outputs"][0]["name"] = "r43";
     emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();

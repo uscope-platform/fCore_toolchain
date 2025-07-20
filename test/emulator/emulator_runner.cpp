@@ -16,11 +16,11 @@
 
 #include <gtest/gtest.h>
 
-#include "emulator/v1/emulator_runner.hpp"
+#include "emulator/v2/emulator_runner.hpp"
 #include "fcore_has.hpp"
 
 using namespace fcore;
-using namespace fcore::emulator;
+using namespace fcore::emulator_v2;
 
 program_bundle prepare_test_bundle(std::vector<uint32_t> program){
 
@@ -33,26 +33,26 @@ program_bundle prepare_test_bundle(std::vector<uint32_t> program){
     b.io.emplace(1, 1, "i");
     b.io.emplace(10, 3, "o");
 
-    emulator::emulator_input_specs s;
+    emulator_v2::emulator_input_specs s;
     s.name = "a";
     s.metadata.type = type_float;
     s.metadata.width = 32;
     s.metadata.is_signed = true;
+    s.is_vector = false;
+    s.vector_size = 1;
     s.source_type = constant_input;
     s.data.emplace_back(std::vector<float>({2.3}));
-    s.address = {0};
-    s.channel = {0};
     b.input.push_back(s);
 
-    emulator::emulator_input_specs s2;
+    emulator_v2::emulator_input_specs s2;
     s2.name = "b";
     s2.metadata.type = type_float;
     s2.metadata.width = 32;
     s2.metadata.is_signed = true;
+    s2.is_vector = false;
+    s2.vector_size = 1;
     s2.source_type = constant_input;
     s2.data.emplace_back(std::vector<float>({1.5}));
-    s2.address = {1};
-    s2.channel = {0};
     b.input.push_back(s2);
     b.sampling_frequency = 1;
     b.execution_order = 0;
@@ -84,7 +84,16 @@ TEST(Emulator_runner, run_simple_emulator) {
     auto emulators_memory  = std::make_shared<std::unordered_map<std::string, core_memory_pool_t>>();
     auto common_memory  = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
 
-    emulator_runner uut(bundle);
+    auto bus_engine = std::make_shared<bus_allocator>();
+
+    core_endpoint ep;
+    ep.bus_addresses = {0};
+    bus_engine->add_destination("test_prog", "a", ep);
+
+    ep.bus_addresses = {1};
+    bus_engine->add_destination("test_prog", "b", ep);
+
+    emulator_runner uut(bundle, bus_engine);
 
     core_step_metadata m;
     m.id = "test_prog";
@@ -119,7 +128,8 @@ TEST(Emulator_runner, run_simple_emulator_inputs) {
     auto common_memory  = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
 
     bundle.input.clear();
-    emulator_runner uut(bundle);
+    auto bus_engine = std::make_shared<bus_allocator>();
+    emulator_runner uut(bundle, bus_engine);
 
 
     core_step_metadata m;
@@ -158,7 +168,8 @@ TEST(Emulator_runner, breakpoint) {
     auto common_memory  = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
 
     bundle.input.clear();
-    emulator_runner uut(bundle);
+    auto bus_engine = std::make_shared<bus_allocator>();
+    emulator_runner uut(bundle, bus_engine);
 
     uint32_t line = 2;
 
@@ -199,7 +210,8 @@ TEST(Emulator_runner, continue_emulation) {
     auto common_memory  = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
 
     bundle.input.clear();
-    emulator_runner uut(bundle);
+    auto bus_engine = std::make_shared<bus_allocator>();
+    emulator_runner uut(bundle, bus_engine);
 
     uint32_t line = 2;
 
@@ -270,7 +282,8 @@ TEST(Emulator_runner, single_stepping) {
     auto common_memory  = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
 
     bundle.input.clear();
-    emulator_runner uut(bundle);
+    auto bus_engine = std::make_shared<bus_allocator>();
+    emulator_runner uut(bundle, bus_engine);
 
     uint32_t line = 2;
 
@@ -327,7 +340,8 @@ TEST(Emulator_runner, single_step_conclusion) {
     auto common_memory  = std::make_shared<std::unordered_map<std::string, std::shared_ptr<std::vector<uint32_t>>>>();
 
     bundle.input.clear();
-    emulator_runner uut(bundle);
+    auto bus_engine = std::make_shared<bus_allocator>();
+    emulator_runner uut(bundle, bus_engine);
 
     uint32_t line = 5;
 

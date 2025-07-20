@@ -14,23 +14,23 @@
 
 #include <gtest/gtest.h>
 #include <fstream>
-#include "data_structures/emulation/v1/specs/emulator_specs.hpp"
+#include "data_structures/emulation/v2/specs/emulator_specs.hpp"
 #include "frontend/schema_validators/schema_validator_base.h"
 
-using namespace fcore::emulator;
+using namespace fcore::emulator_v2;
 using namespace fcore;
 
 TEST(emulator_schema, validation_success) {
     std::ifstream ifs("emu/schemas/valid_emulator_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    schema_validator_base validator(emulator_input, 1);
+    schema_validator_base validator(emulator_input, 2);
     EXPECT_NO_THROW(validator.validate(spec));
 }
 
 TEST(emulator_schema, validation_fail_no_cores) {
     std::ifstream ifs("emu/schemas/valid_emulator_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    schema_validator_base validator(emulator_input,1);
+    schema_validator_base validator(emulator_input,2);
     spec.erase("cores");
     testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(spec), std::invalid_argument);
@@ -43,7 +43,7 @@ TEST(emulator_schema, validation_fail_no_cores) {
 TEST(emulator_schema, validation_fail_no_program) {
     std::ifstream ifs("emu/schemas/valid_emulator_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    schema_validator_base validator(emulator_input,1);
+    schema_validator_base validator(emulator_input,2);
     spec["cores"][0].erase("program");
     testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(spec), std::invalid_argument);
@@ -57,7 +57,7 @@ TEST(emulator_schema, validation_fail_no_program) {
 TEST(compiler_schema, validation_success) {
     std::ifstream ifs("emu/schemas/valid_compiler_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    schema_validator_base validator(compiler_input,1);
+    schema_validator_base validator(compiler_input,2);
     EXPECT_NO_THROW(validator.validate(spec));
 
 }
@@ -66,7 +66,7 @@ TEST(compiler_schema, validation_success) {
 TEST(compiler_schema, validation_fail_no_input) {
     std::ifstream ifs("emu/schemas/valid_compiler_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    schema_validator_base validator(compiler_input,1);
+    schema_validator_base validator(compiler_input,2);
     spec.erase("input_file");
     testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(spec), std::invalid_argument);
@@ -79,7 +79,7 @@ TEST(compiler_schema, validation_fail_no_input) {
 TEST(compiler_schema, validation_success_ints_as_floats) {
     std::ifstream ifs("emu/schemas/msgpackd_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    schema_validator_base validator(emulator_input,1);
+    schema_validator_base validator(emulator_input,2);
     EXPECT_NO_THROW(validator.validate(spec));
 
 }
@@ -87,13 +87,13 @@ TEST(compiler_schema, validation_success_ints_as_floats) {
 TEST(compiler_schema, validation_fail_ints_as_floats) {
     std::ifstream ifs("emu/schemas/msgpackd_schema_fail.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    schema_validator_base validator(emulator_input,1);
+    schema_validator_base validator(emulator_input,2);
 
     EXPECT_NO_THROW(validator.validate(spec));
 
     try{
-        fcore::emulator::emulator_specs s;
-        s.set_specs(spec);
+        emulator_specs s;
+        s.parse(spec);
         EXPECT_TRUE(false);
     } catch (std::runtime_error &e){
         std::string message = e.what();

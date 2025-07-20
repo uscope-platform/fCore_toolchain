@@ -23,12 +23,10 @@ namespace fcore{
 
         switch (schema_type) {
             case compiler_input:
-                if(version == 1) chosen_schema_doc = nlohmann::json::parse(compiler_schema_v1);
-                else chosen_schema_doc = nlohmann::json::parse(compiler_schema_v2);
+                chosen_schema_doc = nlohmann::json::parse(compiler_schema_v2);
                 break;
             case emulator_input:
-                if(version == 1) chosen_schema_doc = nlohmann::json::parse(emulator_schema_v1);
-                else chosen_schema_doc = nlohmann::json::parse(emulator_schema_v2);
+                chosen_schema_doc = nlohmann::json::parse(emulator_schema_v2);
                 break;
 
         }

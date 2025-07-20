@@ -24,9 +24,6 @@
 #include <valijson/schema_parser.hpp>
 #include <valijson/validator.hpp>
 
-#include "schemas/v1/compiler_schema.hpp"
-#include "schemas/v1/emulator_schema.hpp"
-
 #include "schemas/v2/compiler_schema.hpp"
 #include "schemas/v2/emulator_schema.hpp"
 

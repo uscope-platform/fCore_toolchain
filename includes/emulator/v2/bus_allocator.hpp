@@ -130,7 +130,13 @@ namespace fcore::emulator_v2 {
 
         std::vector<core_endpoint> get_memories(const std::string &core_name);
         std::vector<interconnect_descriptor> get_interconnects();
+
+        void add_source(const std::string &c,const std::string &io,  core_endpoint &ep) {sources_map[c][io] = ep;}
+        void add_destination(const std::string &c,const std::string &io, core_endpoint &ep) {destinations_map[c][io] = ep;}
+
     private:
+
+        bool is_register(const std::string &r);
         std::vector<interconnect_descriptor> interconnect_mapping;
 
         std::set<uint32_t> global_forbidden_addresses;

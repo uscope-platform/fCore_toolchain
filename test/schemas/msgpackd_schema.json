@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "cores": [
     {
       "channels":1,
@@ -20,6 +20,8 @@
             "width":32
           },
           "name":"mem",
+          "is_vector": false,
+          "vector_size": 1,
           "reg_n":4,
           "value":14
         },
@@ -30,6 +32,8 @@
             "type":"integer",
             "width":16
           },
+          "is_vector": false,
+          "vector_size": 1,
           "name":"mem_2",
           "reg_n":3,
           "value":12
@@ -41,7 +45,18 @@
       },
       "order":0,
       "outputs":[
-        {"metadata":{"signed":true,"type":"float","width":32},"type": "float","name":"out","reg_n":[5]}],
+        {
+          "metadata":{
+            "signed":true,
+            "type":"float",
+            "width":32,
+            "common_io": false
+          },
+          "name":"out",
+          "is_vector": false,
+          "vector_size": 1
+        }
+      ],
       "program":{
         "build_settings":{
           "io":{

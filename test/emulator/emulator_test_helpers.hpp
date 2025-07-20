@@ -42,7 +42,7 @@ static nlohmann::json prepare_spec(
         std::vector<memory_struct> memories
 ){
     nlohmann::json spec;
-    spec["version"] = 1;
+    spec["version"] = 2;
     spec["cores"] = std::vector<nlohmann::json>();
     spec["emulation_time"] = emulation_time;
 
@@ -83,6 +83,7 @@ static nlohmann::json prepare_spec(
         in_obj["metadata"]["common_io"] = false;
         in_obj["reg_n"] = i;
         in_obj["channel"] = 0;
+        in_obj["is_vector"] = false;
         in_obj["source"] = nlohmann::json();
         in_obj["source"]["type"] = "constant";
         in_obj["source"]["value"] = inputs[i].value;
@@ -97,8 +98,9 @@ static nlohmann::json prepare_spec(
         out_obj["metadata"] = nlohmann::json();
         out_obj["metadata"]["type"] = outputs[i].type;
         out_obj["metadata"]["width"] = 32;
+        out_obj["metadata"]["common_io"] = false;
         out_obj["metadata"]["signed"] = true;
-        out_obj["type"] =  outputs[i].type;
+        out_obj["is_vector"] = false;
         out_obj["reg_n"] = {10 + i};
         cs["program"]["build_settings"]["io"]["outputs"].push_back(outputs[i].name);
         cs["outputs"].push_back(out_obj);
@@ -115,6 +117,7 @@ static nlohmann::json prepare_spec(
         mem_obj["metadata"]["signed"] = true;
         mem_obj["reg_n"] = 20+i;
         mem_obj["is_output"] = false;
+        mem_obj["is_vector"] = false;
         mem_obj["value"] = memories[i].value;
         cs["program"]["build_settings"]["io"]["memories"].push_back(memories[i].name);
         cs["memory_init"].push_back(mem_obj);

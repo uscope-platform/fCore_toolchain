@@ -19,7 +19,6 @@
 #include <set>
 #include <nlohmann/json.hpp>
 
-#include <emulator/v1/emulator_manager.hpp>
 #include <emulator/v2/emulator_manager.hpp>
 
 namespace fcore {
@@ -54,7 +53,6 @@ namespace fcore {
 
     private:
         uint32_t version = 0;
-        emulator::emulator_manager v1;
         emulator_v2::emulator_manager v2;
     };
 

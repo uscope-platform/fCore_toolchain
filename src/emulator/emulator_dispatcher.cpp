@@ -16,7 +16,7 @@
 namespace fcore {
     void emulator_dispatcher::enable_debug_mode() {
         if(version == 1) {
-            v1.enable_debug_mode();
+            throw std::runtime_error("Emulator schema version 1 is no longer supported");
         } else if(version == 2) {
             v2.enable_debug_mode();
         } else {
@@ -34,9 +34,7 @@ namespace fcore {
         version = spec_file["version"];
         switch(version) {
             case 1:
-                v1 = emulator::emulator_manager();
-                v1.set_specs(spec_file);
-                break;
+                throw std::runtime_error("Emulator schema version 1 is no longer supported");
             case 2:
                 v2 = emulator_v2::emulator_manager();
                 v2.set_specs(spec_file);
@@ -50,7 +48,7 @@ namespace fcore {
     std::set<uint32_t> emulator_dispatcher::get_breakpoints(const std::string &id) {
         switch(version) {
             case 1:
-            return v1.get_breakpoints(id);
+                throw std::runtime_error("Emulator schema version 1 is no longer supported");
             case 2:
             return v2.get_breakpoints(id);
             default:
@@ -61,8 +59,7 @@ namespace fcore {
     void emulator_dispatcher::process() {
         switch(version) {
             case 1:
-                v1.process();
-                break;
+                throw std::runtime_error("Emulator schema version 1 is no longer supported");
             case 2:
                 v2.process();
                 break;
@@ -74,7 +71,7 @@ namespace fcore {
     std::optional<debug_checkpoint> emulator_dispatcher::emulate() {
         switch(version) {
             case 1:
-            return v1.emulate();
+                throw std::runtime_error("Emulator schema version 1 is no longer supported");
             case 2:
                 return v2.emulate();
             default:
@@ -86,7 +83,7 @@ namespace fcore {
     debug_checkpoint emulator_dispatcher::step_over() {
         switch(version) {
             case 1:
-            return v1.step_over();
+                throw std::runtime_error("Emulator schema version 1 is no longer supported");
             case 2:
             return v2.step_over();
             default:
@@ -98,9 +95,9 @@ namespace fcore {
     std::optional<debug_checkpoint> emulator_dispatcher::continue_emulation() {
         switch(version) {
             case 1:
-            return v1.continue_emulation();
+                throw std::runtime_error("Emulator schema version 1 is no longer supported");
             case 2:
-            return v2.continue_emulation();
+                return v2.continue_emulation();
             default:
                 throw std::runtime_error("Invalid version");
         }
@@ -109,8 +106,7 @@ namespace fcore {
     void emulator_dispatcher::add_breakpoint(const std::string &s, uint32_t addr) {
         switch(version) {
             case 1:
-                v1.add_breakpoint(s, addr);
-                break;
+                throw std::runtime_error("Emulator schema version 1 is no longer supported");
             case 2:
                 v2.add_breakpoint(s, addr);
                 break;
@@ -122,8 +118,7 @@ namespace fcore {
     void emulator_dispatcher::remove_breakpoint(const std::string &s, uint32_t addr) {
         switch(version) {
             case 1:
-                v1.remove_breakpoint(s, addr);
-                break;
+                throw std::runtime_error("Emulator schema version 1 is no longer supported");
             case 2:
                 v2.remove_breakpoint(s, addr);
                 break;
@@ -135,8 +130,7 @@ namespace fcore {
     void emulator_dispatcher::set_multichannel_debug(bool mc) {
         switch(version) {
             case 1:
-                v1.set_multichannel_debug(mc);
-                break;
+                throw std::runtime_error("Emulator schema version 1 is no longer supported");
             case 2:
                 v2.set_multichannel_debug(mc);
                 break;
@@ -148,7 +142,7 @@ namespace fcore {
     nlohmann::json emulator_dispatcher::get_results() {
         switch(version) {
             case 1:
-                return v1.get_results();
+                throw std::runtime_error("Emulator schema version 1 is no longer supported");
             case 2:
                 return v2.get_results();
             default:
@@ -159,8 +153,7 @@ namespace fcore {
     void emulator_dispatcher::set_profiler(const std::shared_ptr<instrumentation_core> &prof) {
         switch(version) {
             case 1:
-                v1.set_profiler(prof);
-                break;
+                throw std::runtime_error("Emulator schema version 1 is no longer supported");
             case 2:
                 v2.set_profiler(prof);
                 break;
@@ -172,7 +165,7 @@ namespace fcore {
     std::unordered_map<std::string, disassembled_program> emulator_dispatcher::disassemble() {
         switch(version) {
             case 1:
-                return v1.disassemble();
+                throw std::runtime_error("Emulator schema version 1 is no longer supported");
             case 2:
                 return v2.disassemble();
             default:
@@ -182,7 +175,7 @@ namespace fcore {
 
     std::vector<deployed_program> emulator_dispatcher::get_programs() {
         if(version == 1) {
-            return v1.deploy_programs();
+            throw std::runtime_error("Emulator schema version 1 is no longer supported");
         } else if(version == 2) {
             return v2.deploy_programs();
 
@@ -194,7 +187,7 @@ namespace fcore {
     std::unordered_map<std::string, std::vector<memory_init_value>>  emulator_dispatcher::get_memory_initializations() {
         std::unordered_map<std::string, std::vector<memory_init_value>> ret;
         if(version == 1) {
-            return v1.get_memory_init_values();
+            throw std::runtime_error("Emulator schema version 1 is no longer supported");
         } else if(version == 2) {
             return v2.get_memory_init_values();
         } else {
@@ -205,7 +198,7 @@ namespace fcore {
     std::vector<deployed_core_inputs> emulator_dispatcher::get_inputs(const std::string &core) {
         std::vector<deployed_core_inputs> ret;
         if(version == 1) {
-            return v1.get_inputs(core);
+            throw std::runtime_error("Emulator schema version 1 is no longer supported");
         } else if(version == 2) {
             return v2.get_inputs(core);
         } else {
@@ -215,7 +208,7 @@ namespace fcore {
 
     std::vector<deployer_interconnect_slot> emulator_dispatcher::get_interconnect_slots() {
         if(version == 1) {
-            return v1.get_interconnects();
+            throw std::runtime_error("Emulator schema version 1 is no longer supported");
         } else if(version == 2) {
             return v2.get_interconnects();
         } else {
@@ -225,7 +218,7 @@ namespace fcore {
 
     deployment_options emulator_dispatcher::get_deployment_options(const std::string &core) {
         if(version == 1) {
-            return v1.get_deployment_options(core);
+            throw std::runtime_error("Emulator schema version 1 is no longer supported");
         } else if(version == 2) {
             return v2.get_deployment_options(core);
         } else {

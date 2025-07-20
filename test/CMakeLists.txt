@@ -13,7 +13,6 @@ set(TEST_SOURCES
         disassembler_testing.cpp
         hl_pretty_print.cpp
         emulator/emulator_manager_interactive.cpp
-        emulator/emulator_manager_bulk.cpp
         emulator/emulator_manager_v2.cpp
         emulator/emulator_execution.cpp
         emulator/emulator_schema_validation.cpp
