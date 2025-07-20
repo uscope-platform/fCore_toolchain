@@ -47,7 +47,6 @@ nlohmann::json prepare_asm_spec(std::vector<std::string> pv, uint32_t n_steps, s
         cs["deployment"]["control_address"] = 18316525568;
         cs["deployment"]["rom_address"] = 17179869184;
         cs["deployment"]["has_reciprocal"] = false;
-        cs["input_data"] = std::vector<nlohmann::json>();
         cs["inputs"]= std::vector<nlohmann::json>();
 
         cs["program"]["type"] = "asm";

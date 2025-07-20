@@ -9,7 +9,6 @@
         "rom_address":17179869184.0000001
       },
       "id":"test",
-      "input_data":[],
       "inputs":[],
       "memory_init":[
         {
@@ -22,7 +21,6 @@
           "name":"mem",
           "is_vector": false,
           "vector_size": 1,
-          "reg_n":4,
           "value":14
         },
         {
@@ -35,7 +33,6 @@
           "is_vector": false,
           "vector_size": 1,
           "name":"mem_2",
-          "reg_n":3,
           "value":12
         }
       ],

@@ -806,7 +806,6 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
               }
             }
           ],
-          "input_data": [],
           "memory_init": [],
           "outputs": [
             {

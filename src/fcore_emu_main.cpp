@@ -23,7 +23,7 @@
 
 #include <CLI/CLI.hpp>
 
-#include "emulator/v1/emulator_manager.hpp"
+#include "emulator/v2/emulator_manager.hpp"
 #include "instrumentation/instrumentation_core.hpp"
 
 int main(int argc, char **argv) {
@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
 
     nlohmann::json profiling_data;
     try{
-        fcore::emulator::emulator_manager emu_manager;
+        fcore::emulator_v2::emulator_manager emu_manager;
         emu_manager.set_specs(specs);
         if(debug_autogen) emu_manager.enable_debug_mode();
         emu_manager.set_profiler(profiler);

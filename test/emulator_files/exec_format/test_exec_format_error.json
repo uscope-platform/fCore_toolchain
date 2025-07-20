@@ -1,45 +1,8 @@
 {
-  "version": 1,
+  "version": 2,
   "cores": [
     {
       "id": "test",
-      "input_data": [
-        {
-          "name": "file_a",
-          "data": {
-            "input_1": [
-              15.7,
-              67.4
-            ],
-            "input_2": [
-              42.92,
-              -5.8
-            ],
-            "spurious": [
-              123.5,
-              5278.6
-            ]
-          }
-        },
-        {
-          "name": "file_b",
-          "data": {
-            "input_1": [
-              135.7,
-              672.4
-            ],
-            "input_2": [
-              423.92,
-              -35.8
-            ],
-            "spurious": [
-              1213.5,
-              52378.6
-            ]
-          }
-
-        }
-      ],
       "inputs": [
         {
           "name": "input_1",
@@ -50,13 +13,10 @@
             "common_io": false
           },
           "type": "float",
-          "reg_n": 15,
           "source": {
-            "type":"file",
-            "series": "input_1",
-            "file": "file_a"
-          },
-          "channel": 0
+            "type":"series",
+            "value": [15.7, 67.4]
+          }
         },
         {
           "name": "input_2",
@@ -66,18 +26,14 @@
             "signed": false,
             "common_io": false
           },
-          "reg_n": 38,
           "source": {
-            "type":"file",
-            "series": "input_2",
-            "file": "file_a"
-          },
-          "channel": 0
+            "type":"series",
+            "value": [42.92, -5.8]
+          }
         }
       ],
       "outputs": [
         {
-          "reg_n":[42],
           "type": "float",
           "metadata": {
             "type": "float",

@@ -63,7 +63,6 @@ static nlohmann::json prepare_spec(
     cs["deployment"]["control_address"] = 18316525568;
     cs["deployment"]["rom_address"] = 17179869184;
     cs["deployment"]["has_reciprocal"] = false;
-    cs["input_data"] = std::vector<nlohmann::json>();
     cs["inputs"]= std::vector<nlohmann::json>();
 
     cs["program"]["build_settings"] = nlohmann::json();
@@ -81,8 +80,6 @@ static nlohmann::json prepare_spec(
         in_obj["metadata"]["width"] = 32;
         in_obj["metadata"]["signed"] = true;
         in_obj["metadata"]["common_io"] = false;
-        in_obj["reg_n"] = i;
-        in_obj["channel"] = 0;
         in_obj["is_vector"] = false;
         in_obj["source"] = nlohmann::json();
         in_obj["source"]["type"] = "constant";
@@ -101,7 +98,6 @@ static nlohmann::json prepare_spec(
         out_obj["metadata"]["common_io"] = false;
         out_obj["metadata"]["signed"] = true;
         out_obj["is_vector"] = false;
-        out_obj["reg_n"] = {10 + i};
         cs["program"]["build_settings"]["io"]["outputs"].push_back(outputs[i].name);
         cs["outputs"].push_back(out_obj);
     }
@@ -115,7 +111,6 @@ static nlohmann::json prepare_spec(
         mem_obj["metadata"]["type"] = memories[i].type;
         mem_obj["metadata"]["width"] = 32;
         mem_obj["metadata"]["signed"] = true;
-        mem_obj["reg_n"] = 20+i;
         mem_obj["is_output"] = false;
         mem_obj["is_vector"] = false;
         mem_obj["value"] = memories[i].value;

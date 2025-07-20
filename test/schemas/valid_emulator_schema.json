@@ -17,8 +17,7 @@
           "source": {
             "type":"series",
             "value": [15.7,67.4]
-          },
-          "channel": 0
+          }
         },
         {
           "name": "input_2",
@@ -33,8 +32,7 @@
           "source": {
             "type":"series",
             "value":[42.92, -5.8]
-          },
-          "channel": 0
+          }
         }
       ],
       "order": 0,
@@ -69,7 +67,6 @@
           "is_vector": false,
           "vector_size": 1,
           "is_output": true,
-          "reg_n": 4,
           "value": 0
         }
       ],
@@ -89,7 +86,6 @@
       "id": "test_consumer",
       "inputs": [],
       "memory_init": [],
-      "input_data": [],
       "outputs": [
         {
           "metadata": {
@@ -135,14 +131,8 @@
   ],
   "interconnect":[
     {
-      "source":"test_producer",
-      "destination":"test_consumer",
-      "ports":[
-        {
-          "source": "test_producer.test_out",
-          "destination": "test_consumer.input_1"
-        }
-      ]
+      "source": "test_producer.test_out",
+      "destination": "test_consumer.input_1"
     }
   ],
   "emulation_time": 2,

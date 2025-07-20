@@ -360,7 +360,6 @@ TEST(Emulator_execution, emulator_efi) {
     out_obj["metadata"]["common_io"] = false;
     out_obj["is_vector"] = true;
     out_obj["vector_size"] = 4;
-    out_obj["reg_n"] = {5, 6, 7};
     specs["cores"][0]["program"]["build_settings"]["io"]["outputs"].push_back("sort_output");
     specs["cores"][0]["outputs"].push_back(out_obj);
 
