@@ -33,6 +33,7 @@ namespace fcore::emulator_v2 {
                 ep.vector_size = in.vector_size;
                 ep.endpoint_class = core_iom_input;
                 ep.metadata = in.metadata;
+                if(in.source_type == random_input) random_inputs.insert({core.id, in.name});
                 destinations_map[core.id][in.name] = ep;
             }
             for(auto &out:core.outputs) {
@@ -92,15 +93,14 @@ namespace fcore::emulator_v2 {
 
         }
 
-        auto bus_allocations = allocate_bus_addresses(interconnect_mapping);
+        allocate_bus_addresses(interconnect_mapping);
         update_sources(interconnect_mapping);
-        allocate_additional_outputs(bus_allocations);
-        allocate_independent_inputs(bus_allocations);
+        allocate_additional_outputs();
+        allocate_independent_inputs();
     }
 
-    std::vector<allocation> bus_allocator::allocate_bus_addresses(std::vector<interconnect_descriptor> &interconnects) {
+    void bus_allocator::allocate_bus_addresses(std::vector<interconnect_descriptor> &interconnects) {
 
-        std::vector<allocation> bus_allocations;
         for(auto &[core_name, destinations]:destinations_map) {
             for(auto &[port_name, dest]: destinations) {
                 for(auto &ic: interconnects) {
@@ -120,14 +120,14 @@ namespace fcore::emulator_v2 {
                         }
 
                         global_forbidden_addresses.insert( dest.bus_addresses.begin(),  dest.bus_addresses.end());
-                        bus_allocations.push_back({{ic.source.core_name, ic.source.port_name}, dest.bus_addresses});
-
-
                     }
+                }
+                if(random_inputs.contains({dest.core_name, dest.source_name})) {
+                    dest.bus_addresses = allocate_bus_address(dest.vector_size, {}, dest.metadata.io_address);
+                    global_forbidden_addresses.insert( dest.bus_addresses.begin(),  dest.bus_addresses.end());
                 }
             }
         }
-        return bus_allocations;
     }
 
     void bus_allocator::update_sources(std::vector<interconnect_descriptor> &interconnects) {
@@ -137,7 +137,7 @@ namespace fcore::emulator_v2 {
         }
     }
 
-    void bus_allocator::allocate_additional_outputs(std::vector<allocation> &current_allocations) {
+    void bus_allocator::allocate_additional_outputs() {
 
         for(auto &[core_name, sources]: sources_map) {
             for(auto &[port_name, src]:sources) {
@@ -151,7 +151,7 @@ namespace fcore::emulator_v2 {
         }
     }
 
-    void bus_allocator::allocate_independent_inputs(const std::vector<allocation> &current_allocations) {
+    void bus_allocator::allocate_independent_inputs() {
 
         for(auto &destinations: destinations_map | std::views::values) {
         std::set<uint32_t> local_allocated_addresses;

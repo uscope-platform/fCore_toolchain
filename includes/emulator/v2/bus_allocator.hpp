@@ -86,11 +86,6 @@ namespace fcore::emulator_v2 {
         }
     };
 
-    struct allocation {
-        endpoint_descriptor endpoint;
-        std::vector<uint32_t> addresses;
-    };
-
     struct output_metadata {
         std::string core_name;
         std::string port_name;
@@ -105,10 +100,10 @@ namespace fcore::emulator_v2 {
     public:
         bus_allocator() = default;
         void set_emulation_specs(const emulator_specs &specs);
-        std::vector<allocation> allocate_bus_addresses(std::vector<interconnect_descriptor> &interconnects);
+        void allocate_bus_addresses(std::vector<interconnect_descriptor> &interconnects);
         void update_sources(std::vector<interconnect_descriptor> &interconnects);
-        void allocate_additional_outputs(std::vector<allocation> &current_allocations);
-        void allocate_independent_inputs(const std::vector<allocation> &current_allocations);
+        void allocate_additional_outputs();
+        void allocate_independent_inputs();
         std::vector<uint32_t> allocate_bus_address(uint32_t vector_size, std::set<uint32_t> local_forbidden_addresses,
             const std::vector<uint32_t> &desired_addresses
         ) const;
@@ -144,7 +139,7 @@ namespace fcore::emulator_v2 {
         std::unordered_map<std::string, std::unordered_map<std::string, core_endpoint>> sources_map;
         std::unordered_map<std::string, std::unordered_map<std::string, core_endpoint>> destinations_map;
 
-
+        std::set<std::pair<std::string, std::string>> random_inputs;
 
     };
 

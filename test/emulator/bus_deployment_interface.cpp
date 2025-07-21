@@ -499,6 +499,170 @@ TEST(bus_deployment_interface, scalar_interconnect) {
 
 
 
+TEST(bus_deployment_interface, multi_core_random_inputs) {
+
+    nlohmann::json specs = nlohmann::json::parse(R"({
+        "version":2,
+        "cores": [
+            {
+                "id": "test",
+                "inputs": [
+                    {
+                        "name": "input_1",
+                        "is_vector": false,
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": true,
+                            "common_io":false
+                        },
+                        "source": {
+                            "type": "random"
+                        }
+                    },
+                    {
+                        "name": "input_2",
+                        "is_vector": false,
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": true,
+                            "common_io":false
+                        },
+                        "source": {
+                            "type": "constant",
+                            "value": [
+                                32.7
+                            ]
+                        }
+                    }
+                ],
+                "outputs": [
+                    {
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": true,
+                            "common_io":false
+                        },
+                        "is_vector": false,
+                        "name": "out"
+                    },
+                    {
+                        "metadata": {
+                            "type": "integer",
+                            "width": 32,
+                            "signed": true,
+                            "common_io":false
+                        },
+                        "is_vector": false,
+                        "name": "out2"
+                    }
+                ],
+                "memory_init": [],
+                "program": {
+                    "content": "int main(){float input_1; float input_2; float out; out = input_1 + input_2 ; out2=fti(out);}",
+                    "build_settings": {
+                        "io": {
+                            "inputs": [
+                                "input_1",
+                                "input_2"
+                            ],
+                            "outputs": [
+                                "out",
+                                "out2"
+                            ],
+                            "memories": []
+                        }
+                    },
+                    "headers": []
+                },
+                "order": 1,
+                "options": {
+                    "comparators": "reducing",
+                    "efi_implementation": "efi_sort"
+                },
+                "channels": 1,
+                "sampling_frequency": 1,
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
+            },
+            {
+                "id": "test_move",
+                "inputs": [
+                    {
+                        "name": "input",
+                        "is_vector": false,
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": true,
+                            "common_io":false
+                        },
+                        "source":{"type": "random"}
+                    }
+                ],
+                "outputs": [
+                    {
+                        "is_vector": false,
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": true,
+                            "common_io":false
+                        },
+                        "name": "out"
+                    }
+                ],
+                "memory_init": [],
+                "program": {
+                    "content": "int main(){float input; float out; float val = itf(input); out = fti(val+1.0);}",
+                    "build_settings": {
+                        "io": {
+                            "inputs": [
+                                "input"
+                            ],
+                            "outputs": [
+                                "out"
+                            ],
+                            "memories": []
+                        }
+                    },
+                    "headers": []
+                },
+                "order": 2,
+                "options": {
+                    "comparators": "reducing",
+                    "efi_implementation": "efi_sort"
+                },
+                "channels": 1,
+                "sampling_frequency": 1,
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 2,
+        "deployment_mode": false
+    }
+    )");
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+    auto inputs_0 = manager.get_inputs("test");
+    auto inputs_1 = manager.get_inputs("test_move");
+
+    EXPECT_NE(inputs_0[0].address[0], inputs_1[0].address[0]);
+    EXPECT_NE(inputs_0[1].address[0], inputs_1[0].address[0]);
+}
+
 
 TEST(bus_deployment_interface, scatter_interconnect) {
 
