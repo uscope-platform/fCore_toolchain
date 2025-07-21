@@ -207,6 +207,7 @@ if(${INCLUDE_EMULATOR})
     install(FILES ../third_party/fp_ip_cmodel/lib/libIp_floating_point_v7_1_bitacc_cmodel.so
             DESTINATION ${CMAKE_INSTALL_LIBDIR})
 else ()
+    add_library(fcore_emu_lib ${FCORE_EMU_SRCS})
     target_compile_definitions(fcore_emu_lib PUBLIC GENERAL_PURPOSE_EMULATION=1)
 
 endif(${INCLUDE_EMULATOR})
