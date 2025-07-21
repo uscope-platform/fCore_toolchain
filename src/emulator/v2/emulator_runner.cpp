@@ -160,7 +160,7 @@ namespace fcore::emulator_v2 {
             core_reg = core_addr->core_addr;
             is_common = core_addr->common_io;
         } else {
-            throw std::runtime_error("unable to find input address in the core io map during input phase");
+            throw std::runtime_error("unable to find address in the core io map during dma read");
         }
 
         if(emulators_memory.size()< channel+1){
@@ -184,7 +184,7 @@ namespace fcore::emulator_v2 {
             core_reg = core_addr->core_addr;
             is_common = core_addr->common_io;
         } else {
-            throw std::runtime_error("unable to find input address in the core io map during input phase");
+            throw std::runtime_error("unable to find address in the core io map during dma write");
         }
         if(emulators_memory.size()< channel+1){
             throw std::runtime_error("Attempted write to unavailable channel: " + std::to_string(channel) + " of core: " + core_name);
