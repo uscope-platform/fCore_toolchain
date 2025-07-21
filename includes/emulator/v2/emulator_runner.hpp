@@ -21,6 +21,7 @@
 #include "emulator/v2/backend/emulator_backend.hpp"
 #include "emulator/v2/emulation_sequencer.hpp"
 #include "emulator/v2/emulator_builder.hpp"
+#include "emulator/erfinv_quant.hpp"
 
 #include <random>
 

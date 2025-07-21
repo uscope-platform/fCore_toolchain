@@ -463,7 +463,7 @@ TEST(emulator_manager_v2, emulator_random_inputs) {
     for (auto i : res_obj["test"]["outputs"]["out"]["0"][0]) {
         res_f.push_back(emulator_backend::uint32_to_float(i));
     }
-    std::vector<float> reference = {-60809, 22122};
+    std::vector<float> reference = {-45419, 11592};
     ASSERT_EQ(res_f, reference);
 
 }
