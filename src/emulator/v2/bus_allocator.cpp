@@ -143,7 +143,7 @@ namespace fcore::emulator_v2 {
             for(auto &[port_name, src]:sources) {
                 if(src.bus_addresses.empty()) {
 
-                    if(is_register(src.source_name)) src.metadata.io_address = {std::stoul(src.source_name.substr(1))};
+                    if(is_register(src.source_name)) src.metadata.io_address = {static_cast<uint32_t>(std::stoul(src.source_name.substr(1)))};
                     src.bus_addresses = allocate_bus_address(src.vector_size, {}, src.metadata.io_address);
                     global_forbidden_addresses.insert(src.bus_addresses.begin(), src.bus_addresses.end());
                 }
@@ -158,7 +158,7 @@ namespace fcore::emulator_v2 {
             for(auto &dest: destinations | std::views::values) {
                 if(dest.bus_addresses.empty()) {
 
-                    if(is_register(dest.source_name)) dest.metadata.io_address = {std::stoul(dest.source_name.substr(1))};
+                    if(is_register(dest.source_name)) dest.metadata.io_address = {static_cast<uint32_t>(std::stoul(dest.source_name.substr(1)))};
                     dest.bus_addresses = allocate_bus_address(dest.vector_size, local_allocated_addresses, dest.metadata.io_address);
                     local_allocated_addresses.insert( dest.bus_addresses.begin(),  dest.bus_addresses.end());
 
