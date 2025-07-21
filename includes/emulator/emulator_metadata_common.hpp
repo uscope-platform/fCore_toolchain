@@ -29,7 +29,8 @@ namespace fcore {
     typedef enum {
         constant_input = 0,
         time_series_input = 1,
-        external_input = 2
+        external_input = 2,
+        random_input = 3
     } source_type_t;
 
     typedef enum {
@@ -119,6 +120,7 @@ namespace fcore {
         {"file", time_series_input},
         {"series", time_series_input},
         {"external", external_input},
+        {"random", random_input}
     };
 
 

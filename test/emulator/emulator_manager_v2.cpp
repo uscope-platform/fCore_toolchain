@@ -375,6 +375,99 @@ TEST(emulator_manager_v2, emulator_inputs) {
 
 }
 
+
+TEST(emulator_manager_v2, emulator_random_inputs) {
+
+    nlohmann::json specs = nlohmann::json::parse( R"({
+        "version": 2,
+        "cores": [
+            {
+                "id": "test",
+                "order": 1,
+                "inputs": [
+                    {
+                        "name": "input_1",
+                        "is_vector": false,
+                        "metadata":{
+                            "type": "float",
+                            "width": 12,
+                            "signed":true,
+                            "common_io": false
+                        },
+                        "source": {
+                            "type": "random"
+                        }
+                    },
+                    {
+                        "name": "input_2",
+                        "is_vector": false,
+                        "metadata":{
+                            "type": "float",
+                            "width": 12,
+                            "signed":true,
+                            "common_io": false
+                        },
+                        "source": {
+                            "type": "random"
+                        }
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "out",
+                        "is_vector": false,
+                        "metadata":{
+                            "type": "integer",
+                            "width": 12,
+                            "signed":true,
+                            "common_io": false
+                        }
+                    }
+                ],
+                "memory_init": [],
+                "channels": 1,
+                "options": {
+                    "comparators": "reducing",
+                    "efi_implementation": "efi_sort"
+                },
+                "program": {
+                    "content": "int main(){float input_1;float input_2;float out = itf(input_1) + itf(input_2);}",
+                    "build_settings": { "io": {"inputs": ["input_1","input_2"],"memories": [],"outputs": ["out"] } },
+                    "type":"c",
+                    "headers": []
+                },
+                "sampling_frequency": 1,
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 2,
+        "deployment_mode": false
+    })");
+
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+    manager.emulate();
+
+    auto res_obj = manager.get_results();
+
+    auto dbg = res_obj.dump(4);
+
+    std::vector<float> res_f;
+    for (auto i : res_obj["test"]["outputs"]["out"]["0"][0]) {
+        res_f.push_back(emulator_backend::uint32_to_float(i));
+    }
+    std::vector<float> reference = {-60809, 22122};
+    ASSERT_EQ(res_f, reference);
+
+}
+
 TEST(emulator_manager_v2, emulator_consecutive_runs) {
 
     nlohmann::json specs = nlohmann::json::parse( R"({

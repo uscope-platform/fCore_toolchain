@@ -122,7 +122,7 @@ namespace fcore::emulator_v2 {
         in.metadata.is_common_io = i["metadata"]["common_io"];
         in.source_type = source_type_map[i["source"]["type"]];
 
-        if(in.source_type == external_input) {
+        if(in.source_type == external_input || in.source_type == random_input) {
             in.data = {};
         } else if(in.source_type == time_series_input){
             std::vector<std::string> series;

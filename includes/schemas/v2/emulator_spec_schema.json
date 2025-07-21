@@ -131,7 +131,7 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": ["constant", "series", "external"],
+                      "enum": ["constant", "series", "external", "random"],
                       "title": "Type of source"
                     },
                     "value": {

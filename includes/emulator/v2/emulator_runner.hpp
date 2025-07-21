@@ -22,6 +22,8 @@
 #include "emulator/v2/emulation_sequencer.hpp"
 #include "emulator/v2/emulator_builder.hpp"
 
+#include <random>
+
 namespace fcore::emulator_v2 {
 
 
@@ -49,6 +51,9 @@ namespace fcore::emulator_v2 {
         std::unordered_map<std::string, uint32_t> get_inputs() {return current_inputs;};
 
     private:
+
+        std::mt19937 gen;
+        std::uniform_int_distribution<> distrib;
 
         static std::vector<uint32_t> sanitize_program(const std::vector<uint32_t>&  raw_prog);
         static constexpr uint16_t code_section_index = 3;

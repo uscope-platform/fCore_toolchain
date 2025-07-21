@@ -155,7 +155,7 @@ const std::string emulator_schema_v2 = R"~(
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": ["constant", "series", "external"],
+                      "enum": ["constant", "series", "external",  "random"],
                       "title": "Type of source"
                     },
                     "value": {

@@ -19,7 +19,8 @@
 namespace fcore::emulator_v2 {
 
 
-    emulator_runner::emulator_runner(program_bundle &prog, const std::shared_ptr<bus_allocator> &engine) {
+    emulator_runner::emulator_runner(program_bundle &prog, const std::shared_ptr<bus_allocator> &engine) : distrib(-32767, 32767) {
+        gen.seed(542);
         core_name = prog.name;
         multichannel_debug = false;
         bus_engine = engine;
@@ -86,7 +87,14 @@ namespace fcore::emulator_v2 {
             for(auto &in:program.input){
                 std::vector<uint32_t> input_val;
                 if(in.source_type == external_input) continue;
-                if(in.metadata.type==type_float){
+                if(in.source_type == random_input) {
+                    for(int i = 0; i< in.vector_size; i++) {
+                        auto in_i = distrib(gen);
+                        float in_f = in_i/(float)(2<<15);
+                        int32_t norm_in = std::erff(in_f)*(2<<15);
+                        input_val = {static_cast<uint32_t>(norm_in)};
+                    }
+                } else if(in.metadata.type==type_float){
                     if(in.source_type == constant_input){
                         if(in.is_vector) {
                             for(int i = 0; i< in.vector_size; i++) {
