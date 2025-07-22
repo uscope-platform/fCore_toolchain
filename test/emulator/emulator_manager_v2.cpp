@@ -489,6 +489,7 @@ TEST(emulator_manager_v2, emulator_consecutive_runs) {
                             "signed":true
                         },
                         "is_output":true,
+                        "is_input": false,
                         "value":0
                     }],
                 "channels": 1,
@@ -619,6 +620,7 @@ TEST(emulator_manager_v2, emulator_outputs) {
                 "signed": false
               },
               "is_output": true,
+              "is_input": false,
               "value": 0
             }
           ],
@@ -716,6 +718,7 @@ TEST(emulator_manager_v2, emulator_memory) {
                             "signed":true
                         },
                         "is_output":true,
+                        "is_input": false,
                         "value":2
                     }
                 ],
@@ -811,6 +814,7 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
                 "common_io": false
               },
               "is_output": true,
+              "is_input": false,
               "value": 0
             }
           ],
@@ -859,6 +863,121 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
           "order": 2,
           "program":{
             "content": "void main(){float input_1; float consumer_out = input_1;}",
+            "headers": []
+          },
+          "options":{
+            "comparators":"reducing",
+            "efi_implementation":"efi_sort"
+          },
+          "channels":1,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
+          }
+        }
+      ],
+      "interconnect":[
+        {
+          "source": "test_producer.producer_out",
+          "destination": "test_consumer.input_1"
+        }
+      ],
+      "emulation_time": 2,
+      "deployment_mode": false
+    }
+)");
+
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+    manager.emulate();
+    auto res = manager.get_results()["test_consumer"];
+
+    std::vector<uint32_t> reference = {0x426a7ae1, 0x42f070a4};
+    ASSERT_EQ(res["outputs"]["consumer_out"]["0"][0], reference);
+
+}
+
+
+TEST(emulator_manager_v2, emulator_memory_to_memory_inteconnect) {
+
+    nlohmann::json specs = nlohmann::json::parse( R"(
+    {
+      "version": 2,
+      "cores": [
+        {
+          "id": "test_producer",
+          "inputs": [],
+          "order": 1,
+          "outputs": [
+          ],
+          "program":{
+            "content": "void main(){float mem += 1.2;}",
+            "headers": []
+          },
+          "memory_init": [
+            {
+              "name": "mem",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "is_output": true,
+              "is_input": false,
+              "value": 0
+            }
+          ],
+          "options":{
+            "comparators":"reducing",
+            "efi_implementation":"efi_sort"
+          },
+          "channels":1,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
+          }
+        },
+        {
+          "id": "test_consumer",
+          "inputs": [],
+          "memory_init": [
+            {
+              "name": "mem",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "is_output": true,
+              "is_input": false,
+              "value": 0
+            }
+          ],
+          "outputs": [
+            {
+              "name":"out",
+              "is_vector": false,
+              "metadata": {
+                "type": "integer",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              }
+            }
+          ],
+          "order": 2,
+          "program":{
+            "content": "void main(){float mem; float out = mem*2.0;}",
             "headers": []
           },
           "options":{
@@ -1167,6 +1286,7 @@ TEST(emulator_manager_v2, emulator_compilation_memory) {
                 "signed":true
             },
             "is_output":true,
+            "is_input": false,
             "value":0
         }
 ],
@@ -1254,6 +1374,7 @@ TEST(emulator_manager_v2, emulator_memory_as_output) {
                             "signed":true
                         },
                         "is_output":true,
+                        "is_input": false,
                         "value":2
                     }
                 ],
@@ -1892,6 +2013,7 @@ TEST(emulator_manager_v2, emulator_multichannel_mem_init) {
                         "signed": true
                     },
                     "is_output": true,
+                    "is_input": false,
                     "is_vector": false,
                     "value": [
                         100.0,
@@ -2897,6 +3019,7 @@ TEST(emulator_manager_v2, emulation_repeatability) {
                         "signed": true
                     },
                     "is_output": false,
+                    "is_input": false,
                     "is_vector": false,
                     "value": [
                         0

@@ -79,6 +79,19 @@ namespace fcore::emulator_v2 {
             auto dst_core = ic.destination_endpoint.substr(0, ic.destination_endpoint.find('.'));
             auto dst_port = ic.destination_endpoint.substr(ic.destination_endpoint.find('.')+1, ic.destination_endpoint.size());
             interconnect_descriptor id;
+            if(!sources_map.contains(src_core)) {
+                throw std::runtime_error("Source core ("+ src_core + ") not found for interconnect: " + ic.source_endpoint + " -> " + ic.destination_endpoint);
+            }
+            if(!destinations_map.contains(dst_core)) {
+                throw std::runtime_error("Destination core ("+ dst_core + ") not found for interconnect: " + ic.source_endpoint + " -> " + ic.destination_endpoint);
+            }
+
+            if(!sources_map.at(src_core).contains(src_port)) {
+                throw std::runtime_error("Source core " + src_core + " does not have a port named " + src_port);
+            }
+            if(!destinations_map.at(dst_core).contains(dst_port)) {
+                throw std::runtime_error("Destination core " + dst_core + " does not have a port named " + dst_port);
+            }
 
             auto source_descriptor= sources_map.at(src_core).at(src_port);
             auto dest_descriptor= destinations_map.at(dst_core).at(dst_port);

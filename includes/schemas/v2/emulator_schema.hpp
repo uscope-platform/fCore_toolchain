@@ -155,7 +155,7 @@ const std::string emulator_schema_v2 = R"~(
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": ["constant", "series", "external",  "random"],
+                      "enum": ["constant", "series", "external", "random"],
                       "title": "Type of source"
                     },
                     "value": {
@@ -282,7 +282,9 @@ const std::string emulator_schema_v2 = R"~(
                 "value",
                 "metadata",
                 "name",
-                "is_vector"
+                "is_vector",
+                "is_input",
+                "is_output"
               ],
               "properties": {
                 "value": {
@@ -333,7 +335,15 @@ const std::string emulator_schema_v2 = R"~(
                 },
                 "is_vector": {
                   "type": "boolean",
-                  "title": "Is the input a scalar or a vector"
+                  "title": "Is the memory a scalar or a vector"
+                },
+                "is_output": {
+                  "type": "boolean",
+                  "title": "Is this memory used as output"
+                },
+                "is_input": {
+                  "type": "boolean",
+                  "title": "Is this memory used as input"
                 },
                 "vector_size": {
                   "type": "integer",
