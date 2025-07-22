@@ -958,7 +958,7 @@ TEST(emulator_manager_v2, emulator_memory_to_memory_inteconnect) {
                 "signed": false,
                 "common_io": false
               },
-              "is_output": true,
+              "is_output": false,
               "is_input": true,
               "value": 0
             }

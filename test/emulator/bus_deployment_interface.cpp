@@ -787,4 +787,160 @@ TEST(bus_deployment_interface, scatter_interconnect) {
 
 
 
+TEST(bus_deployment_interface, memory_to_memory_interface) {
 
+    nlohmann::json specs = nlohmann::json::parse( R"(
+    {
+      "version": 2,
+      "cores": [
+        {
+          "id": "test_producer",
+          "inputs": [],
+          "order": 1,
+          "outputs": [
+          ],
+          "program":{
+            "content": "void main(){float mem; mem += 1.2;}",
+            "headers": []
+          },
+          "memory_init": [
+            {
+              "name": "mem",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "is_output": true,
+              "is_input": false,
+              "value": 0
+            }
+          ],
+          "options":{
+            "comparators":"reducing",
+            "efi_implementation":"efi_sort"
+          },
+          "channels":1,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
+          }
+        },
+        {
+          "id": "test_consumer",
+          "inputs": [],
+          "memory_init": [
+            {
+              "name": "mem",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "is_output": false,
+              "is_input": true,
+              "value": 0
+            }
+          ],
+          "outputs": [
+            {
+              "name":"out",
+              "is_vector": false,
+              "metadata": {
+                "type": "integer",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              }
+            }
+          ],
+          "order": 2,
+          "program":{
+            "content": "void main(){float mem; float out = mem*2.0;}",
+            "headers": []
+          },
+          "options":{
+            "comparators":"reducing",
+            "efi_implementation":"efi_sort"
+          },
+          "channels":1,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
+          }
+        }
+      ],
+      "interconnect":[
+        {
+          "source": "test_producer.mem",
+          "destination": "test_consumer.mem"
+        }
+      ],
+      "emulation_time": 2,
+      "deployment_mode": false
+    }
+)");
+
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+    auto slots = manager.get_interconnect_slots();
+
+    std::vector<deployer_interconnect_slot> expected_slots;
+    deployer_interconnect_slot e;
+
+    e.source_id = "test_producer";
+    e.source_name = "mem";
+    e.type = "o";
+    e.source_io_address = 1;
+    e.source_channel = 0;
+    e.destination_bus_address = 1;
+    e.destination_channel = 0;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = false;
+    e.metadata.is_common_io = false;
+    e.metadata.io_address = {0};
+    expected_slots.push_back(e);
+
+
+    e.source_id = "test_producer";
+    e.source_name = "mem";
+    e.type = "o";
+    e.source_io_address = 1;
+    e.source_channel = 0;
+    e.destination_bus_address = 3;
+    e.destination_channel = 0;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = false;
+    e.metadata.is_common_io = false;
+    e.metadata.io_address = {0};
+    expected_slots.push_back(e);
+
+
+    e.source_id = "test_consumer";
+    e.source_name = "out";
+    e.type = "o";
+    e.source_io_address = 2;
+    e.source_channel = 0;
+    e.destination_bus_address = 4;
+    e.destination_channel = 0;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = false;
+    e.metadata.is_common_io = false;
+    e.metadata.io_address = {0};
+    expected_slots.push_back(e);
+
+    EXPECT_EQ(slots, expected_slots);
+}

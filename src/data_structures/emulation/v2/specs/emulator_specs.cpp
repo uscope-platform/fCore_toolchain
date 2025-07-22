@@ -261,6 +261,10 @@ namespace fcore::emulator_v2 {
         mem.is_output = m["is_output"];
         mem.is_input = m["is_input"];
 
+        if(mem.is_output && mem.is_input) {
+            throw std::runtime_error("Memory " + mem.name + " can not be both an input and an output");
+        }
+
         if(mem.metadata.type == type_float){
             std::vector<float> value;
             if(m["value"].is_array()){
