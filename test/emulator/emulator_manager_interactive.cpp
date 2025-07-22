@@ -50,14 +50,6 @@ nlohmann::json prepare_asm_spec(std::vector<std::string> pv, uint32_t n_steps, s
         cs["inputs"]= std::vector<nlohmann::json>();
 
         cs["program"]["type"] = "asm";
-        cs["program"]["build_settings"] = nlohmann::json();
-        cs["program"]["build_settings"]["io"] = nlohmann::json();
-
-        cs["program"]["build_settings"]["io"]["inputs"] = std::vector<std::string>();
-        cs["program"]["build_settings"]["io"]["outputs"] = std::vector<std::string>();
-        cs["program"]["build_settings"]["io"]["memories"] = std::vector<std::string>();
-        cs["program"]["build_settings"]["io"]["memories"].push_back("out");
-
 
 
         cs["outputs"]= std::vector<nlohmann::json>();

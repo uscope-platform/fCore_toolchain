@@ -32,19 +32,7 @@
       "memory_init": [],
       "program":{
         "content": "int main(){float input_1; float mem; float out; mem = mem + input_1; out = mem;}",
-        "build_settings": {
-          "io": {
-            "inputs": [
-              "input_1"
-            ],
-            "memories": [
-              "mem"
-            ],
-            "outputs": [
-              "out"
-            ]
-          }
-        },
+
         "headers": []
       },
       "order": 1,

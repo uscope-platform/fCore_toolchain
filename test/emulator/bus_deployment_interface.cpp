@@ -72,8 +72,7 @@ TEST(bus_deployment_interface, single_core) {
             }
           ],
           "memory_init": [],
-          "program": {"content": "void main(){float test_out[2]; float input_1, input_2; test_out[0] = input_1; test_out[1] = input_2;}",
-                      "build_settings": {"io": {"inputs": ["input_1", "input_2"],"outputs": ["test_out"],"memories": []}},"headers": []},
+          "program": {"content": "void main(){float test_out[2]; float input_1, input_2; test_out[0] = input_1; test_out[1] = input_2;}","headers": []},
           "order": 1,
           "options": {
             "comparators": "reducing",
@@ -186,8 +185,7 @@ TEST(bus_deployment_interface, single_core_multichannel) {
             }
           ],
           "memory_init": [],
-          "program": {"content": "void main(){float test_out[2]; float input_1, input_2; test_out[0] = input_1; test_out[1] = input_2;}",
-                      "build_settings": {"io": {"inputs": ["input_1", "input_2"],"outputs": ["test_out"],"memories": []}},"headers": []},
+          "program": {"content": "void main(){float test_out[2]; float input_1, input_2; test_out[0] = input_1; test_out[1] = input_2;}","headers": []},
           "order": 1,
           "options": {
             "comparators": "reducing",
@@ -344,19 +342,6 @@ TEST(bus_deployment_interface, scalar_interconnect) {
                 "memory_init": [],
                 "program": {
                     "content": "int main(){float input_1; float input_2; float out; out = input_1 + input_2 ; out2=fti(out);}",
-                    "build_settings": {
-                        "io": {
-                            "inputs": [
-                                "input_1",
-                                "input_2"
-                            ],
-                            "outputs": [
-                                "out",
-                                "out2"
-                            ],
-                            "memories": []
-                        }
-                    },
                     "headers": []
                 },
                 "order": 1,
@@ -402,17 +387,6 @@ TEST(bus_deployment_interface, scalar_interconnect) {
                 "memory_init": [],
                 "program": {
                     "content": "int main(){float input; float out; float val = itf(input); out = fti(val+1.0);}",
-                    "build_settings": {
-                        "io": {
-                            "inputs": [
-                                "input"
-                            ],
-                            "outputs": [
-                                "out"
-                            ],
-                            "memories": []
-                        }
-                    },
                     "headers": []
                 },
                 "order": 2,
@@ -562,19 +536,6 @@ TEST(bus_deployment_interface, multi_core_random_inputs) {
                 "memory_init": [],
                 "program": {
                     "content": "int main(){float input_1; float input_2; float out; out = input_1 + input_2 ; out2=fti(out);}",
-                    "build_settings": {
-                        "io": {
-                            "inputs": [
-                                "input_1",
-                                "input_2"
-                            ],
-                            "outputs": [
-                                "out",
-                                "out2"
-                            ],
-                            "memories": []
-                        }
-                    },
                     "headers": []
                 },
                 "order": 1,
@@ -620,17 +581,6 @@ TEST(bus_deployment_interface, multi_core_random_inputs) {
                 "memory_init": [],
                 "program": {
                     "content": "int main(){float input; float out; float val = itf(input); out = fti(val+1.0);}",
-                    "build_settings": {
-                        "io": {
-                            "inputs": [
-                                "input"
-                            ],
-                            "outputs": [
-                                "out"
-                            ],
-                            "memories": []
-                        }
-                    },
                     "headers": []
                 },
                 "order": 2,
@@ -696,7 +646,6 @@ TEST(bus_deployment_interface, scatter_interconnect) {
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float out[2] = {15.6, 17.2};\n}",
-                    "build_settings":{"io":{"inputs":[],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
                 "deployment": {
@@ -742,7 +691,6 @@ TEST(bus_deployment_interface, scatter_interconnect) {
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float input;float out = input*3.5;\n}",
-                    "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
                 "deployment": {

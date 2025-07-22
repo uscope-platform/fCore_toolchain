@@ -45,19 +45,6 @@
       "memory_init": [],
       "program":{
         "content": "int main(){float input_1; float input_2; float out; out = fti(input_1 + input_2); out2=out;}",
-        "build_settings": {
-          "io": {
-            "inputs": [
-              "input_1",
-              "input_2"
-            ],
-            "outputs": [
-              "out",
-              "out2"
-            ],
-            "memories": []
-          }
-        },
         "headers": []
       },
       "order": 1,
@@ -91,17 +78,6 @@
       "memory_init": [],
       "program":{
         "content": "int main(){float input; float out; float val = itf(input); out = fti(val+1.0);}",
-        "build_settings": {
-          "io": {
-            "inputs": [
-              "input"
-            ],
-            "outputs": [
-              "out"
-            ],
-            "memories": []
-          }
-        },
         "headers": []
       },
       "order": 2,

@@ -55,13 +55,6 @@
         }
       ],
       "program":{
-        "build_settings":{
-          "io":{
-            "inputs":[],
-            "memories":["mem","mem_2"],
-            "outputs":["out"]
-          }
-        },
         "content":"int main(){float mem;float mem_2;float out = mem + mem_2;}",
         "headers":[]
       },

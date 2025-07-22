@@ -40,19 +40,6 @@
       ],
       "program":{
         "content": "void main(){float input_1,input_2; float c = input_1 + input_2; float producer_out = producer_out + c;}",
-        "build_settings": {
-          "io": {
-            "inputs": [
-              "input_1",
-              "input_2"
-            ],
-            "outputs": [
-            ],
-            "memories": [
-              "producer_out"
-            ]
-          }
-        },
         "headers": []
       },
       "memory_init": [
@@ -102,18 +89,6 @@
       "order": 1,
       "program":{
         "content": "void main(){float input_1; float consumer_out = input_1;}",
-        "build_settings": {
-          "io": {
-            "inputs": [
-              "input_1"
-            ],
-            "outputs": [
-              "consumer_out"
-            ],
-            "memories": [
-            ]
-          }
-        },
         "headers": []
       },
       "options":{

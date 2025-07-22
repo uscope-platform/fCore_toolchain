@@ -46,18 +46,6 @@
       "memory_init": [],
       "program":{
         "content": "int main() {float a;float b;float c;c = UNDEFINED(a + b);}",
-        "build_settings": {
-          "io": {
-            "inputs": [
-              "a",
-              "b"
-            ],
-            "memories": [],
-            "outputs": [
-              "c"
-            ]
-          }
-        },
         "headers": []
       },
       "order": 1,

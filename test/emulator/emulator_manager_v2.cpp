@@ -74,18 +74,6 @@ TEST(emulator_manager_v2, emulator_executable_format) {
           "memory_init": [],
           "program": {
             "content": "int main() {float input_1;float input_2;float test_out;test_out = input_1 + input_2;}",
-            "build_settings": {
-              "io": {
-                "inputs": [
-                  "input_1",
-                  "input_2"
-                ],
-                "outputs": [
-                  "test_out"
-                ],
-                "memories": []
-              }
-            },
             "headers": []
           },
           "order": 1,
@@ -174,18 +162,6 @@ TEST(emulator_manager_v2, emulator_compile_error) {
       "memory_init": [],
       "program":{
         "content": "int main() {float a;float b;float c;c = UNDEFINED(a + b);}",
-        "build_settings": {
-          "io": {
-            "inputs": [
-              "a",
-              "b"
-            ],
-            "memories": [],
-            "outputs": [
-              "c"
-            ]
-          }
-        },
         "headers": []
       },
       "order": 1,
@@ -252,7 +228,6 @@ TEST(emulator_manager_v2, emulator_asm) {
                 },
                 "program": {
                     "content": "ldc r42, 12.5000\nldc r3, 3.2000\nadd r3, r42, r12\nstop\n",
-                    "build_settings": { "io": {"inputs": [],"memories": [],"outputs": [] } },
                     "type":"asm",
                     "headers": []
                 },
@@ -342,7 +317,6 @@ TEST(emulator_manager_v2, emulator_inputs) {
                 },
                 "program": {
                     "content": "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal;}",
-                    "build_settings": { "io": {"inputs": ["input_1","input_2"],"memories": ["out"],"outputs": [] } },
                     "type":"c",
                     "headers": []
                 },
@@ -432,7 +406,6 @@ TEST(emulator_manager_v2, emulator_random_inputs) {
                 },
                 "program": {
                     "content": "int main(){float input_1;float input_2;float out = itf(input_1) + itf(input_2);}",
-                    "build_settings": { "io": {"inputs": ["input_1","input_2"],"memories": [],"outputs": ["out"] } },
                     "type":"c",
                     "headers": []
                 },
@@ -525,7 +498,6 @@ TEST(emulator_manager_v2, emulator_consecutive_runs) {
                 },
                 "program": {
                     "content": "int main(){float input_1;float input_2;float internal = input_1 + input_2;float out =  internal + out;}",
-                    "build_settings": { "io": {"inputs": ["input_1","input_2"],"memories": ["out"],"outputs": [] } },
                     "type":"c",
                     "headers": []
                 },
@@ -635,20 +607,6 @@ TEST(emulator_manager_v2, emulator_outputs) {
           ],
           "program":{
             "content": "void main(){float input_1,input_2; float c = input_1 + input_2; float test_out = test_out + c; float out = test_out*1.0;}",
-            "build_settings": {
-              "io": {
-                "inputs": [
-                  "input_1",
-                  "input_2"
-                ],
-                "outputs": [
-                  "out"
-                ],
-                "memories": [
-                  "test_out"
-                ]
-              }
-            },
             "headers": []
           },
           "memory_init": [
@@ -768,7 +726,6 @@ TEST(emulator_manager_v2, emulator_memory) {
                 },
                 "program": {
                     "content": "int main(){float input_1;float input_2;float internal = input_1 + input_2;float mem =  internal + mem; float out=mem*1.0;}",
-                    "build_settings": { "io": {"inputs": ["input_1","input_2"],"memories": ["mem"],"outputs": ["out"] } },
                     "type":"c",
                     "headers": []
                 },
@@ -841,19 +798,6 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
           ],
           "program":{
             "content": "void main(){float input_1,input_2; float c = input_1 + input_2; float producer_out = producer_out + c;}",
-            "build_settings": {
-              "io": {
-                "inputs": [
-                  "input_1",
-                  "input_2"
-                ],
-                "outputs": [
-                ],
-                "memories": [
-                  "producer_out"
-                ]
-              }
-            },
             "headers": []
           },
           "memory_init": [
@@ -915,18 +859,6 @@ TEST(emulator_manager_v2, emulator_inteconnect) {
           "order": 2,
           "program":{
             "content": "void main(){float input_1; float consumer_out = input_1;}",
-            "build_settings": {
-              "io": {
-                "inputs": [
-                  "input_1"
-                ],
-                "outputs": [
-                  "consumer_out"
-                ],
-                "memories": [
-                ]
-              }
-            },
             "headers": []
           },
           "options":{
@@ -1017,18 +949,6 @@ TEST(emulator_manager_v2, emulator_compilation) {
       "memory_init": [],
       "program":{
         "content": "int main(){float input_1; float input_2; float out; out = fti(input_1 + input_2);}",
-        "build_settings": {
-          "io": {
-            "inputs": [
-              "input_1",
-              "input_2"
-            ],
-            "outputs": [
-              "out"
-            ],
-            "memories": []
-          }
-        },
         "headers": []
       },
       "order": 1,
@@ -1114,18 +1034,6 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
         "memory_init": [],
         "program":{
           "content": "int main(){float input_1; float input_2; float out; out = fti(input_1 + input_2);}",
-          "build_settings": {
-            "io": {
-              "inputs": [
-                "input_1",
-                "input_2"
-              ],
-              "outputs": [
-                "out"
-              ],
-              "memories": []
-            }
-          },
           "headers": []
         },
         "order": 1,
@@ -1173,17 +1081,6 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
         "memory_init": [],
         "program":{
           "content": "int main(){float input; float out; float val = itf(input); out = fti(val+1.0);}",
-          "build_settings": {
-            "io": {
-              "inputs": [
-                "input"
-              ],
-              "outputs": [
-                "out"
-              ],
-              "memories": []
-            }
-          },
           "headers": []
         },
         "order": 2,
@@ -1275,19 +1172,6 @@ TEST(emulator_manager_v2, emulator_compilation_memory) {
 ],
       "program":{
         "content": "int main(){float input_1; float mem; float out; mem = mem + input_1; out = mem;}",
-        "build_settings": {
-          "io": {
-            "inputs": [
-              "input_1"
-            ],
-            "memories": [
-              "mem"
-            ],
-            "outputs": [
-              "out"
-            ]
-          }
-        },
         "headers": []
       },
       "order": 1,
@@ -1380,7 +1264,6 @@ TEST(emulator_manager_v2, emulator_memory_as_output) {
                 },
                 "program": {
                     "content": "int main(){float input_1;float input_2;float internal = input_1 + input_2;float mem =  internal + mem;}",
-                    "build_settings": { "io": {"inputs": ["input_1","input_2"],"memories": ["mem"],"outputs": [] } },
                     "type":"c",
                     "headers": []
                 },
@@ -1461,7 +1344,6 @@ nlohmann::json specs = nlohmann::json::parse(
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float in[2]; float out = in[0] + in[1];\n}",
-                    "build_settings":{"io":{"inputs":["in"],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
                 "deployment": {
@@ -1534,7 +1416,6 @@ nlohmann::json specs = nlohmann::json::parse(
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float in[2]; float out = in[0] + in[1];\n}",
-                    "build_settings":{"io":{"inputs":["in"],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
                 "deployment": {
@@ -1608,7 +1489,6 @@ nlohmann::json specs = nlohmann::json::parse(
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float in[2]; float out = itf(in[0]) + itf(in[1]);\n}",
-                    "build_settings":{"io":{"inputs":["in"],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
                 "deployment": {
@@ -1681,7 +1561,6 @@ nlohmann::json specs = nlohmann::json::parse(
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float in[2]; float out = itf(in[0]) + itf(in[1]);\n}",
-                    "build_settings":{"io":{"inputs":["in"],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
                 "deployment": {
@@ -1757,7 +1636,6 @@ nlohmann::json specs = nlohmann::json::parse(
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float in[2]; float out[2]; out[0] = in[0] + in[1]; out[1] = in[0] + 2.0*in[1];\n}",
-                    "build_settings":{"io":{"inputs":["in"],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
                 "deployment": {
@@ -1846,18 +1724,6 @@ TEST(emulator_manager_v2, emulator_header) {
             },
             "program": {
                 "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = add(input_1, input_2);\n}",
-                "build_settings": {
-                    "io": {
-                        "inputs": [
-                            "input_1",
-                            "input_2"
-                        ],
-                        "memories": [],
-                        "outputs": [
-                            "out"
-                        ]
-                    }
-                },
                 "headers": ["float add(float input_1, float input_2) {return input_1 + input_2;};"]
             },
             "sampling_frequency": 1,
@@ -1956,18 +1822,6 @@ TEST(emulator_manager_v2, emulator_multichannel) {
             },
             "program": {
                 "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = input_1 + input_2;\n}",
-                "build_settings": {
-                    "io": {
-                        "inputs": [
-                            "input_1",
-                            "input_2"
-                        ],
-                        "memories": [],
-                        "outputs": [
-                            "out"
-                        ]
-                    }
-                },
                 "headers": []
             },
             "sampling_frequency": 1,
@@ -2052,18 +1906,6 @@ TEST(emulator_manager_v2, emulator_multichannel_mem_init) {
             },
             "program": {
                 "content": "int main(){\n  float out = mem*2.5;\n mem += 0.1;\n}",
-                "build_settings": {
-                    "io": {
-                        "inputs": [
-                            "input_1",
-                            "input_2"
-                        ],
-                        "memories": [],
-                        "outputs": [
-                            "out"
-                        ]
-                    }
-                },
                 "headers": []
             },
             "sampling_frequency": 1,
@@ -2157,13 +1999,6 @@ TEST(emulator_manager_v2, emulator_multichannel_input_file) {
             "memory_init":[],
             "program": {
                 "content": "int main(){float input_1;float input_2;float out = input_1 + input_2;}",
-                "build_settings":{
-                    "io":{
-                        "inputs":["input_1", "input_2"],
-                        "outputs":["out"],
-                        "memories":[]
-                    }
-                },
                 "headers": []
             },
             "deployment": {
@@ -2257,7 +2092,6 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
             "memory_init":[],
             "program": {
                 "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = input_1 + input_2;\n}",
-                "build_settings":{"io":{"inputs":["input_data"],"outputs":["out"],"memories":[]}},
                 "headers": []
             },
             "deployment": {
@@ -2306,7 +2140,6 @@ TEST(emulator_manager_v2, emulator_multichannel_gather_transfer) {
             "memory_init":[],
             "program": {
                 "content": "int main(){\n    float input_data[2];\n    float out = input_data[0] + input_data[1];\n}\n",
-                "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}},
                 "headers": []
             },
             "deployment": {
@@ -2374,7 +2207,6 @@ TEST(emulator_manager_v2, emulator_multichannel_scatter_transfer) {
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float out[2] = {15.6, 17.2};\n}",
-                    "build_settings":{"io":{"inputs":[],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
                 "deployment": {
@@ -2422,7 +2254,6 @@ TEST(emulator_manager_v2, emulator_multichannel_scatter_transfer) {
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float input;float out = input*3.5;\n}",
-                    "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
                 "deployment": {
@@ -2511,7 +2342,6 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = input_1 + input_2;\n}",
-                    "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
                 "deployment": {
@@ -2558,7 +2388,6 @@ TEST(emulator_manager_v2, emulator_multichannel_vector_transfer) {
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float input;float out = input*3.5;\n}",
-                    "build_settings":{"io":{"inputs":["input"],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
                 "deployment": {
@@ -2623,7 +2452,6 @@ TEST(emulator_manager_v2, emulator_multichannel_2d_vector_transfer) {
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float out[2] = {15.6, 17.2};\n}",
-                    "build_settings":{"io":{"inputs":[],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
                 "deployment": {
@@ -2672,7 +2500,6 @@ TEST(emulator_manager_v2, emulator_multichannel_2d_vector_transfer) {
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float input[2]; \n  float consumer_out[2]; \n  consumer_out[0] = input[0]*3.5; \n  consumer_out[1] = input[1]*3.5;\n}",
-                    "build_settings":{"io":{"inputs":["input"],"outputs":["consumer_out"],"memories":[]}},
                     "headers": []
                 },
                 "deployment": {
@@ -2775,18 +2602,6 @@ TEST(emulator_manager_v2, emulator_common_io) {
             },
             "program": {
                 "content": "int main(){float a, b;float c = a + b;}",
-                "build_settings": {
-                    "io": {
-                        "inputs": [
-                            "a",
-                            "b"
-                        ],
-                        "memories": [],
-                        "outputs": [
-                            "c"
-                        ]
-                    }
-                },
                 "headers": ["float add(float input_1, float input_2) {return input_1 + input_2;};"]
             },
             "sampling_frequency": 1,
@@ -2874,7 +2689,6 @@ TEST(emulator_manager_v2, emulator_multichannel_input) {
                 "memory_init":[],
                 "program": {
                     "content": "int main(){\n  float a,b,out; out = a + b;\n}",
-                    "build_settings":{"io":{"inputs":["a", "b"],"outputs":["out"],"memories":[]}},
                     "headers": []
                 },
                 "deployment": {
@@ -2962,7 +2776,6 @@ TEST(emulator_manager_v2, emulator_disassemble) {
             "memory_init":[],
             "program": {
                 "content": "int main(){\n  float input_1;\n  float input_2;\n  float out = input_1 + input_2;\n}",
-                "build_settings":{"io":{"inputs":["input_1", "input_2"],"outputs":["out"],"memories":[]}},
                 "headers": []
             },
             "deployment": {
@@ -3019,7 +2832,6 @@ TEST(emulator_manager_v2, emulator_disassemble) {
             "memory_init":[],
             "program": {
                 "content": "int main(){\n    float input_data_1, input_data_2; \n    float out = input_data_1 * input_data_2;\n}\n",
-                "build_settings":{"io":{"inputs":["input_data_1", "input_data_2"],"outputs":["out"],"memories":[]}},
                 "headers": []
             },
             "deployment": {
@@ -3099,17 +2911,6 @@ TEST(emulator_manager_v2, emulation_repeatability) {
             "channels": 1,
             "program": {
                 "content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}",
-                "build_settings": {
-                    "io": {
-                        "inputs": [],
-                        "outputs": [
-                            "out"
-                        ],
-                        "memories": [
-                            "mem"
-                        ]
-                    }
-                },
                 "headers": []
             },
             "options": {
@@ -3160,17 +2961,6 @@ TEST(emulator_manager_v2, emulation_repeatability) {
             "channels": 1,
             "program": {
                 "content": "void main(){\n  float in, out;\n  out = in*1.5;\n}",
-                "build_settings": {
-                    "io": {
-                        "inputs": [
-                            "in"
-                        ],
-                        "outputs": [
-                            "out"
-                        ],
-                        "memories": []
-                    }
-                },
                 "headers": []
             },
             "options": {

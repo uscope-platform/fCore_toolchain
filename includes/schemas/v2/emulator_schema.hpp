@@ -367,42 +367,11 @@ const std::string emulator_schema_v2 = R"~(
               "type":{
                 "type": "string",
                 "enum": ["c", "asm"]
-              },
-              "io": {
-                "type": "object",
-                "title": "Object listing input, output and memories for the program",
-                "properties": {
-                  "inputs": {
-                    "type": "array",
-                    "default": [],
-                    "title": "List of program inputs",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "outputs": {
-                    "type": "array",
-                    "default": [],
-                    "title": "List of program Outputs",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "memories": {
-                    "type": "array",
-                    "default": [],
-                    "title": "List of program memories",
-                    "items": {
-                      "type": "string"
-                    }
-                  }
-                }
               }
             },
             "required": [
               "content",
-              "headers",
-              "build_settings"
+              "headers"
             ]
           },
           "deployment": {

@@ -65,13 +65,6 @@ static nlohmann::json prepare_spec(
     cs["deployment"]["has_reciprocal"] = false;
     cs["inputs"]= std::vector<nlohmann::json>();
 
-    cs["program"]["build_settings"] = nlohmann::json();
-    cs["program"]["build_settings"]["io"] = nlohmann::json();
-
-    cs["program"]["build_settings"]["io"]["inputs"] = std::vector<std::string>();
-    cs["program"]["build_settings"]["io"]["outputs"] = std::vector<std::string>();
-    cs["program"]["build_settings"]["io"]["memories"] = std::vector<std::string>();
-
     for(int i = 0; i<inputs.size(); i++){
         nlohmann::json in_obj;
         in_obj["name"] = inputs[i].name;
@@ -85,7 +78,6 @@ static nlohmann::json prepare_spec(
         in_obj["source"]["type"] = "constant";
         in_obj["source"]["value"] = inputs[i].value;
         cs["inputs"].push_back(in_obj);
-        cs["program"]["build_settings"]["io"]["inputs"].push_back(inputs[i].name);
     }
 
     cs["outputs"]= std::vector<nlohmann::json>();
@@ -98,7 +90,6 @@ static nlohmann::json prepare_spec(
         out_obj["metadata"]["common_io"] = false;
         out_obj["metadata"]["signed"] = true;
         out_obj["is_vector"] = false;
-        cs["program"]["build_settings"]["io"]["outputs"].push_back(outputs[i].name);
         cs["outputs"].push_back(out_obj);
     }
 
@@ -114,7 +105,6 @@ static nlohmann::json prepare_spec(
         mem_obj["is_output"] = false;
         mem_obj["is_vector"] = false;
         mem_obj["value"] = memories[i].value;
-        cs["program"]["build_settings"]["io"]["memories"].push_back(memories[i].name);
         cs["memory_init"].push_back(mem_obj);
     }
 

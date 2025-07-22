@@ -197,16 +197,6 @@ namespace fcore::emulator_v2 {
         c.program.content = core_obj["program"]["content"];
         c.program.headers = core_obj["program"]["headers"];
 
-        for(auto &s:core_obj["program"]["build_settings"]["io"]["inputs"]){
-            c.program.io.inputs.insert(s);
-        }
-        for(auto &s:core_obj["program"]["build_settings"]["io"]["outputs"]){
-            c.program.io.outputs.insert(s);
-        }
-        for(auto &s:core_obj["program"]["build_settings"]["io"]["memories"]){
-            c.program.io.memories.insert(s);
-        }
-
         for(auto &o: core_obj["outputs"]){
             c.outputs.push_back(process_output(o));
         }

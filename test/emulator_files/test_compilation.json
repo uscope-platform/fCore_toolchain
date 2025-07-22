@@ -45,18 +45,6 @@
       "memory_init": [],
       "program":{
         "content": "int main(){float input_1; float input_2; float out; out = fti(input_1 + input_2);}",
-        "build_settings": {
-          "io": {
-            "inputs": [
-              "input_1",
-              "input_2"
-            ],
-            "outputs": [
-              "out"
-            ],
-            "memories": []
-          }
-        },
         "headers": []
       },
       "order": 1,

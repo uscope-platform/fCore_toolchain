@@ -44,20 +44,6 @@
       ],
       "program":{
         "content": "void main(){float input_1,input_2; float c = input_1 + input_2; float test_out = test_out + c; float out = test_out*1.0;}",
-        "build_settings": {
-          "io": {
-            "inputs": [
-              "input_1",
-              "input_2"
-            ],
-            "outputs": [
-              "out"
-            ],
-            "memories": [
-              "test_out"
-            ]
-          }
-        },
         "headers": []
       },
       "memory_init": [
