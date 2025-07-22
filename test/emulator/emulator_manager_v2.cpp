@@ -915,7 +915,7 @@ TEST(emulator_manager_v2, emulator_memory_to_memory_inteconnect) {
           "outputs": [
           ],
           "program":{
-            "content": "void main(){float mem += 1.2;}",
+            "content": "void main(){float mem; mem += 1.2;}",
             "headers": []
           },
           "memory_init": [
@@ -959,7 +959,7 @@ TEST(emulator_manager_v2, emulator_memory_to_memory_inteconnect) {
                 "common_io": false
               },
               "is_output": true,
-              "is_input": false,
+              "is_input": true,
               "value": 0
             }
           ],
@@ -995,8 +995,8 @@ TEST(emulator_manager_v2, emulator_memory_to_memory_inteconnect) {
       ],
       "interconnect":[
         {
-          "source": "test_producer.producer_out",
-          "destination": "test_consumer.input_1"
+          "source": "test_producer.mem",
+          "destination": "test_consumer.mem"
         }
       ],
       "emulation_time": 2,
@@ -1011,8 +1011,9 @@ TEST(emulator_manager_v2, emulator_memory_to_memory_inteconnect) {
     manager.emulate();
     auto res = manager.get_results()["test_consumer"];
 
-    std::vector<uint32_t> reference = {0x426a7ae1, 0x42f070a4};
-    ASSERT_EQ(res["outputs"]["consumer_out"]["0"][0], reference);
+    std::vector<uint32_t> reference = {0x4019999A, 0x4099999A};
+    std::vector<uint32_t> result = res["outputs"]["out"]["0"][0];
+    ASSERT_EQ(result, reference);
 
 }
 

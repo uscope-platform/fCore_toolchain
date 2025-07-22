@@ -67,7 +67,12 @@ namespace fcore::emulator_v2 {
                     ep.channels = core.channels;
                     ep.metadata.io_address = mem.metadata.io_address;
                     ep.metadata = mem.metadata;
-                    sources_map[core.id][mem.name] = ep;
+                    if(mem.is_input) {
+                        destinations_map[core.id][mem.name] = ep;
+                    } else {
+                        sources_map[core.id][mem.name] = ep;
+                    }
+
                 }
             }
         }

@@ -75,6 +75,7 @@ namespace fcore::emulator_v2 {
         std::string name;
         iom_metadata metadata;
         bool is_output;
+        bool is_input;
         bool is_vector;
         uint32_t vector_size;
         std::variant<std::vector<float>, std::vector<uint32_t>> value;

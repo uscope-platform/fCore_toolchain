@@ -259,6 +259,7 @@ namespace fcore::emulator_v2 {
         }
 
         mem.is_output = m["is_output"];
+        mem.is_input = m["is_input"];
 
         if(mem.metadata.type == type_float){
             std::vector<float> value;
