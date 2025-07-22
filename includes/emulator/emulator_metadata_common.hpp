@@ -95,6 +95,19 @@ namespace fcore {
     };
 
     struct memory_init_value {
+        friend bool operator==(const memory_init_value &lhs, const memory_init_value &rhs) {
+            bool ret = true;
+            if(std::holds_alternative<std::vector<float>>(lhs.value) && std::holds_alternative<std::vector<uint32_t>>(rhs.value) ) return false;
+            if(std::holds_alternative<std::vector<float>>(rhs.value) && std::holds_alternative<std::vector<uint32_t>>(lhs.value) ) return false;
+            ret &= lhs.address== rhs.address;
+            if(std::holds_alternative<std::vector<float>>(lhs.value)) {
+                ret &= std::get<std::vector<float>>(lhs.value) == std::get<std::vector<float>>(rhs.value);
+            } else {
+                ret &= std::get<std::vector<uint32_t>>(lhs.value) == std::get<std::vector<uint32_t>>(rhs.value);
+            }
+            return ret;
+        }
+
         std::vector<uint32_t>  address;
         std::variant<std::vector<float>, std::vector<uint32_t>> value;
     };

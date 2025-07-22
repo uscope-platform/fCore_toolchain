@@ -943,4 +943,16 @@ TEST(bus_deployment_interface, memory_to_memory_interface) {
     expected_slots.push_back(e);
 
     EXPECT_EQ(slots, expected_slots);
+
+
+    auto inits = manager.get_memory_initializations();
+    std::unordered_map<std::string, std::vector<memory_init_value>> expected_inits;
+    memory_init_value m;
+    m.address = {1};
+    m.value = std::vector<float>{0};
+    expected_inits["test_producer"] = {m};
+    m.address = {1};
+    m.value = std::vector<float>{0};
+    expected_inits["test_consumer"] = {m};
+    EXPECT_EQ(inits, expected_inits);
 }

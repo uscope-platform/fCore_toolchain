@@ -450,7 +450,13 @@ namespace fcore::emulator_v2 {
             for(const auto& mem_init: core.memories) {
                 memory_init_value val;
                 for(int i = 0; i<mem_init.vector_size; i++) {
-                    val.address.push_back(engine->get_output_address(core.id, mem_init.name, i));
+                    uint32_t address;
+                    if(mem_init.is_input) {
+                        address= engine->get_input_address(core.id, mem_init.name, i);
+                    } else {
+                        address= engine->get_output_address(core.id, mem_init.name, i);
+                    }
+                    val.address.push_back(address);
                 }
                 val.value = mem_init.value;
                 ret[core.id].push_back(val);
