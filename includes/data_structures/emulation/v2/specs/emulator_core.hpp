@@ -29,16 +29,9 @@ namespace fcore::emulator_v2 {
         prog_type_asm=1
     } program_data_type;
 
-    struct core_io {
-        std::set<std::string> inputs;
-        std::set<std::string> outputs;
-        std::set<std::string> memories;
-    };
-
     struct program_data {
         std::string content;
         program_data_type type;
-        core_io io;
         std::vector<std::string> headers;
     };
 
