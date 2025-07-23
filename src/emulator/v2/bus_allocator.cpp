@@ -130,11 +130,11 @@ namespace fcore::emulator_v2 {
             for(auto &[port_name, dest]: destinations) {
                 for(auto &ic: interconnects) {
                     if(ic.destination.core_name == core_name && ic.destination.port_name== port_name) {
-                        if(ic.destination_shape.size > 1 && ic.source_shape.size == 1){
+                        if(ic.destination_shape.size > 1 && ic.source_shape.size == 1){ // gather allocation
                             dest.bus_addresses = allocate_bus_address(dest.vector_size, {}, dest.metadata.io_address);
                             ic.source_addresses = {dest.bus_addresses[0]};
                             ic.destination_addresses = dest.bus_addresses;
-                        } else if (ic.source_shape.size > 1 && ic.destination_shape.size == 1) {
+                        } else if (ic.source_shape.size > 1 && ic.destination_shape.size == 1) { // scatter allocation
                             ic.source_addresses = allocate_bus_address(ic.source_shape.size, {}, dest.metadata.io_address);
                             dest.bus_addresses = {ic.source_addresses[0]};
                             ic.destination_addresses = dest.bus_addresses;

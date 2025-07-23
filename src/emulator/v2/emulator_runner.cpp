@@ -175,7 +175,6 @@ namespace fcore::emulator_v2 {
         if(is_common){
             return common_io_memory->at(core_reg);
         } else {
-
             return  emulators_memory[channel]->at(core_reg);
         }
 

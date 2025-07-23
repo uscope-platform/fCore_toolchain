@@ -1045,9 +1045,19 @@ TEST(emulator_manager_v2, emulator_memory_to_memory_multichannel) {
           ],
           "order": 1,
           "outputs": [
+            {
+              "name":"out",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              }
+            }
           ],
           "program":{
-            "content": "void main(){float mem; mem += in_c;}",
+            "content": "void main(){float mem; mem += in_c; float out = mem*1.0;}",
             "headers": []
           },
           "memory_init": [
@@ -1101,14 +1111,25 @@ TEST(emulator_manager_v2, emulator_memory_to_memory_multichannel) {
     auto dbg = manager.get_results().dump(4);
 
     std::vector<float> reference_0 = {5, 10};
-    std::vector<float> result_0 = res["outputs"]["mem"]["0"][0];
+    std::vector<float> result_0 = res["outputs"]["out"]["0"][0];
     for(int i =0; i<2; i++) {
         ASSERT_FLOAT_EQ(result_0[i], reference_0[i]);
     }
     std::vector<float> reference_1 = {1, 6};
-    std::vector<float> result_1 = res["outputs"]["mem"]["1"][0];
+    std::vector<float> result_1 = res["outputs"]["out"]["1"][0];
     for(int i =0; i<2; i++) {
         ASSERT_FLOAT_EQ(result_1[i], reference_1[i]);
+    }
+
+    std::vector<float> reference_2 = {5, 10};
+    std::vector<float> result_2 = res["outputs"]["mem"]["0"][0];
+    for(int i =0; i<2; i++) {
+        ASSERT_FLOAT_EQ(result_2[i], reference_2[i]);
+    }
+    std::vector<float> reference_3 = {5, 10};
+    std::vector<float> result_3 = res["outputs"]["mem"]["1"][0];
+    for(int i =0; i<2; i++) {
+        ASSERT_FLOAT_EQ(result_3[i], reference_3[i]);
     }
 }
 
