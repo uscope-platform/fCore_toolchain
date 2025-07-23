@@ -1019,7 +1019,7 @@ TEST(emulator_manager_v2, emulator_memory_to_memory_inteconnect) {
 
 
 
-TEST(emulator_manager_v2, emulator_memory_to_memory_multichannel) {
+TEST(emulator_manager_v2, emulator_partial_memory_to_memory) {
 
     nlohmann::json specs = nlohmann::json::parse( R"(
     {
