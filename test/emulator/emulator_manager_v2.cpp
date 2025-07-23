@@ -1017,6 +1017,101 @@ TEST(emulator_manager_v2, emulator_memory_to_memory_inteconnect) {
 
 }
 
+
+
+TEST(emulator_manager_v2, emulator_memory_to_memory_multichannel) {
+
+    nlohmann::json specs = nlohmann::json::parse( R"(
+    {
+      "version": 2,
+      "cores": [
+        {
+          "id": "test_producer",
+          "inputs": [
+            {
+                "name": "in_c",
+                "is_vector": false,
+                "metadata":{
+                    "type": "float",
+                    "width": 12,
+                    "signed":true,
+                    "common_io": false
+                },
+                "source": {
+                    "type": "constant",
+                    "value": [5,1]
+                }
+            }
+          ],
+          "order": 1,
+          "outputs": [
+          ],
+          "program":{
+            "content": "void main(){float mem; mem += in_c;}",
+            "headers": []
+          },
+          "memory_init": [
+            {
+              "name": "mem",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "is_output": true,
+              "is_input": true,
+              "value": 0
+            }
+          ],
+          "options":{
+            "comparators":"reducing",
+            "efi_implementation":"efi_sort"
+          },
+          "channels":2,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
+          }
+        }
+      ],
+      "interconnect":[
+        {
+          "source": "test_producer.mem",
+          "source_channel":0,
+          "destination": "test_producer.mem",
+          "destination_channel": 1
+        }
+      ],
+      "emulation_time": 2,
+      "deployment_mode": false
+    }
+)");
+
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+    manager.emulate();
+    auto res = manager.get_results()["test_producer"];
+
+    auto dbg = manager.get_results().dump(4);
+
+    std::vector<float> reference_0 = {5, 10};
+    std::vector<float> result_0 = res["outputs"]["mem"]["0"][0];
+    for(int i =0; i<2; i++) {
+        ASSERT_FLOAT_EQ(result_0[i], reference_0[i]);
+    }
+    std::vector<float> reference_1 = {1, 6};
+    std::vector<float> result_1 = res["outputs"]["mem"]["1"][0];
+    for(int i =0; i<2; i++) {
+        ASSERT_FLOAT_EQ(result_1[i], reference_1[i]);
+    }
+}
+
 TEST(emulator_manager_v2, emulator_compilation) {
 
     nlohmann::json specs = nlohmann::json::parse( R"({

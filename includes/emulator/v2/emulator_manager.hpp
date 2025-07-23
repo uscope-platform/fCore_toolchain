@@ -64,6 +64,7 @@ namespace fcore::emulator_v2{
         std::vector<deployer_interconnect_slot> process_gather_channel(const interconnect_descriptor & ic);
         std::vector<deployer_interconnect_slot> process_vector_channel(const interconnect_descriptor & ic);
         std::vector<deployer_interconnect_slot> process_2d_vector_channel(const interconnect_descriptor & ic);
+        std::vector<deployer_interconnect_slot> process_partial_channel(const interconnect_descriptor & ic);
 
         std::vector<deployer_interconnect_slot> get_interconnects();
 

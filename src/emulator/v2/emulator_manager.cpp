@@ -150,7 +150,7 @@ namespace fcore::emulator_v2 {
 
     std::vector<deployer_interconnect_slot> emulator_manager::process_scatter_channel(const interconnect_descriptor &ic) {
         std::vector<deployer_interconnect_slot> ret;
-        for(int i = 0; i<ic.dest_channels; i++){
+        for(int i = 0; i<ic.destination_shape.channels; i++){
             deployer_interconnect_slot e;
             e.source_id = ic.source.core_name;
             e.source_name = ic.source.port_name;
@@ -167,7 +167,7 @@ namespace fcore::emulator_v2 {
 
     std::vector<deployer_interconnect_slot> emulator_manager::process_gather_channel(const interconnect_descriptor &ic) {
         std::vector<deployer_interconnect_slot> ret;
-        for(int i = 0; i<ic.source_channels; i++){
+        for(int i = 0; i<ic.source_shape.channels; i++){
             deployer_interconnect_slot e;
             e.source_id = ic.source.core_name;
             e.source_name = ic.source.port_name;
@@ -184,7 +184,7 @@ namespace fcore::emulator_v2 {
 
     std::vector<deployer_interconnect_slot> emulator_manager::process_vector_channel(const interconnect_descriptor &ic) {
         std::vector<deployer_interconnect_slot> ret;
-        for(int i = 0; i<ic.source_channels; i++){
+        for(int i = 0; i<ic.source_shape.channels; i++){
             deployer_interconnect_slot e;
             e.source_id = ic.source.core_name;
             e.source_name = ic.source.port_name;
@@ -201,8 +201,8 @@ namespace fcore::emulator_v2 {
 
     std::vector<deployer_interconnect_slot> emulator_manager::process_2d_vector_channel(const interconnect_descriptor &ic) {
         std::vector<deployer_interconnect_slot> ret;
-        for(int i = 0; i<ic.source_vector_size; i++) {
-            for(int j = 0; j<ic.source_channels; j++) {
+        for(int i = 0; i<ic.source_shape.size; i++) {
+            for(int j = 0; j<ic.source_shape.channels; j++) {
                 deployer_interconnect_slot e;
                 e.source_id = ic.source.core_name;
                 e.source_name = ic.source.port_name;
@@ -216,6 +216,20 @@ namespace fcore::emulator_v2 {
             }
         }
         return ret;
+    }
+
+    std::vector<deployer_interconnect_slot> emulator_manager::
+    process_partial_channel(const interconnect_descriptor &ic) {
+        deployer_interconnect_slot e;
+        e.source_id = ic.source.core_name;
+        e.source_name = ic.source.port_name;
+        e.destination_bus_address = ic.destination_addresses[0];
+        e.source_io_address = ic.source_addresses[0];
+        e.source_channel = ic.partial_channels.first;
+        e.destination_channel = ic.partial_channels.second;
+        e.type = 'o';
+        e.metadata = ic.source_metadata;
+        return {e};
     }
 
 
@@ -242,6 +256,9 @@ namespace fcore::emulator_v2 {
                     break;
                 case dma_link_2d_vector:
                     s = process_2d_vector_channel(i);
+                    break;
+                case dma_link_partial:
+                    s = process_partial_channel(i);
                     break;
             }
             interconnect_exposed_outputs[i.source.core_name].insert(i.source.port_name);

@@ -142,10 +142,16 @@ namespace fcore::emulator_v2 {
                     }
 
                 }
-
                 current_inputs[in.name] = input_val[0];
                 for(int i = 0; i< in.vector_size; i++) {
-                    dma_write(bus_engine->get_input_address(info.id,in.name, i), channel, input_val[i]);
+                    auto addr = bus_engine->get_input_address(info.id,in.name, i);
+                    if(in.metadata.type==type_float) {
+                        spdlog::trace("Applying input {}f to register ({},{}) of core {}", emulator_backend::uint32_to_float(input_val[i]), addr, channel, core_name);
+                    } else {
+                        spdlog::trace("Applying input {} to register ({},{}) of core {}", input_val[i], addr, channel, core_name);
+                    }
+
+                    dma_write(addr, channel, input_val[i]);
                 }
             }
         }

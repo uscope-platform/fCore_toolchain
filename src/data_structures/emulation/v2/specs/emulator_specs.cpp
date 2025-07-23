@@ -229,6 +229,16 @@ namespace fcore::emulator_v2 {
 
         interconnect.destination_endpoint = ic["destination"];
         interconnect.source_endpoint = ic["source"];
+        if(ic.contains("source_channel") && !ic.contains("destination_channel"))
+            throw std::runtime_error("Either both source and destination channels need to be specified or none of them");
+        if(ic.contains("source_channel"))
+            interconnect.source_channel = ic["source_channel"];
+        else
+            interconnect.source_channel = -1;
+        if(ic.contains("destination_channel"))
+            interconnect.destination_channel = ic["destination_channel"];
+        else
+            interconnect.destination_channel = -1;
 
         return interconnect;
     }
@@ -260,10 +270,6 @@ namespace fcore::emulator_v2 {
 
         mem.is_output = m["is_output"];
         mem.is_input = m["is_input"];
-
-        if(mem.is_output && mem.is_input) {
-            throw std::runtime_error("Memory " + mem.name + " can not be both an input and an output");
-        }
 
         if(mem.metadata.type == type_float){
             std::vector<float> value;

@@ -420,17 +420,22 @@ const std::string emulator_schema_v2 = R"~(
           "source",
           "destination"
         ],
-        "not": {
-          "required": ["channels"]
-        },
         "properties": {
           "source":  {
             "type": "string",
-            "title": "source endpoint id"
+            "title": "Source endpoint id"
+          },
+          "source_channel":  {
+            "type": "integer",
+            "title": "Channel to use as a source for the connection"
           },
           "destination":  {
             "type": "string",
-            "title": "source endpoint id"
+            "title": "Destination endpoint id"
+          },
+          "destination_channel":  {
+            "type": "integer",
+            "title": "Channel to use as a destination for the connection"
           }
         }
       }

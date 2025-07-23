@@ -50,28 +50,36 @@ namespace fcore::emulator_v2 {
         }
     };
 
+    struct endpoint_shape {
+        uint16_t size;
+        uint16_t channels;
+    };
+
     struct interconnect_descriptor {
         endpoint_descriptor source;
         endpoint_descriptor destination;
         std::vector<uint32_t> source_addresses;
         std::vector<uint32_t> destination_addresses;
-        uint32_t source_vector_size;
-        uint32_t dest_vector_size;
-        uint32_t source_channels;
-        uint32_t dest_channels;
+        endpoint_shape source_shape;
+        endpoint_shape destination_shape;
+        bool partial_transfer;
+        std::pair<uint8_t, uint8_t> partial_channels;
         iom_metadata source_metadata;
 
         dma_channel_type get_type() const {
-            if(source_vector_size == 1 && dest_vector_size == 1 ) {
-                if(source_channels == 1 && dest_channels == 1) {
+            if(partial_transfer) {
+                return dma_link_partial;
+            }
+            if(source_shape.size == 1 && destination_shape.size == 1 ) {
+                if(source_shape.channels == 1 && destination_shape.channels == 1) {
                     return dma_link_scalar;
                 }
                 return dma_link_vector;
             }
-            if(source_vector_size == 1 && dest_vector_size > 1 ) {
+            if(source_shape.size  == 1 && destination_shape.size  > 1 ) {
                 return dma_link_gather;
             }
-            if(source_vector_size >1 && dest_vector_size == 1) {
+            if(source_shape.size  >1 && destination_shape.size  == 1) {
                 return dma_link_scatter;
             }
             return  dma_link_2d_vector;

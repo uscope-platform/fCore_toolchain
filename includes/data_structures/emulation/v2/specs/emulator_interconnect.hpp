@@ -30,7 +30,8 @@ namespace fcore::emulator_v2 {
         dma_link_scatter=1,
         dma_link_gather=2,
         dma_link_vector=3,
-        dma_link_2d_vector=4
+        dma_link_2d_vector=4,
+        dma_link_partial=5
     }dma_channel_type;
 
     static std::unordered_map<std::string, dma_channel_type > interconnect_type_map = {
@@ -47,17 +48,11 @@ namespace fcore::emulator_v2 {
         std::vector<uint16_t> address;
     };
 
-    struct dma_channel{
-        std::string name;
-        endpoint_specs source;
-        endpoint_specs destination;
-        uint32_t length=1;
-        uint32_t stride=0;
-    };
-
     struct emulator_interconnect {
         std::string source_endpoint;
         std::string destination_endpoint;
+        int8_t source_channel;
+        int8_t destination_channel;
     };
 
 } // fcore

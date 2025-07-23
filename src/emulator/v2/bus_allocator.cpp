@@ -67,12 +67,13 @@ namespace fcore::emulator_v2 {
                     ep.channels = core.channels;
                     ep.metadata.io_address = mem.metadata.io_address;
                     ep.metadata = mem.metadata;
+
                     if(mem.is_input) {
                         destinations_map[core.id][mem.name] = ep;
-                    } else {
+                    }
+                    if(mem.is_output | !mem.is_input) {
                         sources_map[core.id][mem.name] = ep;
                     }
-
                 }
             }
         }
@@ -102,11 +103,17 @@ namespace fcore::emulator_v2 {
             auto dest_descriptor= destinations_map.at(dst_core).at(dst_port);
             id.source = {src_core, src_port};
             id.destination = {dst_core, dst_port};
-            id.source_vector_size = source_descriptor.vector_size;
-            id.dest_vector_size = dest_descriptor.vector_size;
-            id.source_channels = source_descriptor.channels;
-            id.dest_channels = dest_descriptor.channels;
+            id.source_shape.size = source_descriptor.vector_size;
+            id.destination_shape.size = dest_descriptor.vector_size;
             id.source_metadata = source_descriptor.metadata;
+
+            id.source_shape.channels = source_descriptor.channels;
+            id.destination_shape.channels = dest_descriptor.channels;
+            id.partial_transfer = false;
+            if(ic.source_channel != -1 && ic.destination_channel != -1) {
+                id.partial_channels = {ic.source_channel, ic.destination_channel};
+                id.partial_transfer = true;
+            }
             interconnect_mapping.push_back(id);
 
         }
@@ -123,12 +130,12 @@ namespace fcore::emulator_v2 {
             for(auto &[port_name, dest]: destinations) {
                 for(auto &ic: interconnects) {
                     if(ic.destination.core_name == core_name && ic.destination.port_name== port_name) {
-                        if(ic.dest_vector_size > 1 && ic.source_vector_size == 1){
+                        if(ic.destination_shape.size > 1 && ic.source_shape.size == 1){
                             dest.bus_addresses = allocate_bus_address(dest.vector_size, {}, dest.metadata.io_address);
                             ic.source_addresses = {dest.bus_addresses[0]};
                             ic.destination_addresses = dest.bus_addresses;
-                        } else if (ic.source_vector_size > 1 && ic.dest_vector_size == 1) {
-                            ic.source_addresses = allocate_bus_address(ic.source_vector_size, {}, dest.metadata.io_address);
+                        } else if (ic.source_shape.size > 1 && ic.destination_shape.size == 1) {
+                            ic.source_addresses = allocate_bus_address(ic.source_shape.size, {}, dest.metadata.io_address);
                             dest.bus_addresses = {ic.source_addresses[0]};
                             ic.destination_addresses = dest.bus_addresses;
                         } else {

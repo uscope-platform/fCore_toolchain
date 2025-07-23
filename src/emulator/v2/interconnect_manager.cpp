@@ -42,7 +42,7 @@ namespace fcore::emulator_v2 {
                         break;
                     case dma_link_scatter:
                         spdlog::trace("SCATTER TRANSFER");
-                        for(int i = 0; i<ic.dest_channels; i++){
+                        for(int i = 0; i<ic.destination_shape.channels; i++){
                             transfer_register(
                             ic.source.core_name,
                             ic.destination.core_name,
@@ -55,7 +55,7 @@ namespace fcore::emulator_v2 {
                         break;
                     case dma_link_gather:
                         spdlog::trace("GATHER TRANSFER");
-                        for(int i = 0; i<ic.source_channels; i++){
+                        for(int i = 0; i<ic.source_shape.channels; i++){
                             auto src_addr = ic.source_addresses[0];
                             auto dst_addr = ic.destination_addresses[i] ;
                             transfer_register(
@@ -70,7 +70,7 @@ namespace fcore::emulator_v2 {
                         break;
                     case dma_link_vector:
                         spdlog::trace("VECTOR TRANSFER");
-                        for(int i = 0; i<ic.source_channels; i++) {
+                        for(int i = 0; i<ic.source_shape.channels; i++) {
                             transfer_register(
                                 ic.source.core_name,
                                 ic.destination.core_name,
@@ -84,8 +84,8 @@ namespace fcore::emulator_v2 {
                         break;
                     case dma_link_2d_vector:
                         spdlog::trace("2D VECTOR TRANSFER");
-                        for(int j = 0; j<ic.source_vector_size; j++){
-                            for(int i = 0; i<ic.source_channels; i++){
+                        for(int j = 0; j<ic.source_shape.size; j++){
+                            for(int i = 0; i<ic.source_shape.channels; i++){
                                 transfer_register(
                                 ic.source.core_name,
                                 ic.destination.core_name,
@@ -97,6 +97,19 @@ namespace fcore::emulator_v2 {
                             }
                         }
                         break;
+                    case dma_link_partial:
+                        spdlog::trace("PARTIAL SCALAR TRANSFER");
+                        transfer_register(
+                            ic.source.core_name,
+                            ic.destination.core_name,
+                            ic.source_addresses[0],
+                            ic.destination_addresses[0],
+                            ic.partial_channels.first,
+                            ic.partial_channels.second,
+                            enabled_cores[ic.source.core_name]
+                        );
+                        break;
+                       break;
                 }
             }
 
