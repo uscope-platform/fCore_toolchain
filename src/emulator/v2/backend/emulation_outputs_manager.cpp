@@ -147,7 +147,7 @@ namespace fcore::emulator_v2{
                 auto read_result = runners->at(core_id).dma_read(addresses[i], j);
                  if(!read_result.has_value()) return false;
                 spdlog::trace("Read output at io address {} for channel {}", addresses[i], j);
-                data_point.push_back(read_result.has_value());
+                data_point.push_back(read_result.value());
             }
             out.add_data_point(data_point, j);
         }
