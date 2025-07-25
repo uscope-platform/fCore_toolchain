@@ -40,9 +40,11 @@ namespace fcore::emulator_v2 {
         for(auto &init_val: bus_engine->get_memories(core_name)){
             for(int i = 0; i< prog.active_channels; i++){
                 if(init_val.initial_value.size()== prog.active_channels) {
-                    dma_write(init_val.bus_addresses[0], i, init_val.initial_value[i]);
+                    auto res = dma_write(init_val.bus_addresses[0], i, init_val.initial_value[i]);
+                    if(!res) throw std::runtime_error("Unable to initialize memory (" +core_name + "." + init_val.source_name + "[" + std::to_string(i) + "])");
                 } else {
-                    dma_write(init_val.bus_addresses[0], i, init_val.initial_value[0]);
+                    auto res = dma_write(init_val.bus_addresses[0], i, init_val.initial_value[0]);
+                    if(!res) throw std::runtime_error("Unable to initialize memory (" +core_name + "." + init_val.source_name);
                 }
 
             }
@@ -151,13 +153,14 @@ namespace fcore::emulator_v2 {
                         spdlog::trace("Applying input {} to register ({},{}) of core {}", input_val[i], addr, channel, core_name);
                     }
 
-                    dma_write(addr, channel, input_val[i]);
+                    auto res = dma_write(addr, channel, input_val[i]);
+                    if(!res) throw std::runtime_error("Unable to apply input (" +in.name + "[" + std::to_string(i) + "])");
                 }
             }
         }
     }
 
-    uint32_t emulator_runner::dma_read(uint32_t address, uint32_t channel) {
+    std::optional<uint32_t>  emulator_runner::dma_read(uint32_t address, uint32_t channel) {
 
         uint32_t core_reg = 0;
         bool is_common;
@@ -166,7 +169,7 @@ namespace fcore::emulator_v2 {
             core_reg = core_addr->core_addr;
             is_common = core_addr->common_io;
         } else {
-            throw std::runtime_error("unable to find address in the core io map during dma read");
+            return {};
         }
 
         if(emulators_memory.size()< channel+1){
@@ -180,7 +183,7 @@ namespace fcore::emulator_v2 {
 
     }
 
-    void emulator_runner::dma_write(uint32_t address, uint32_t channel, uint32_t data) {
+    bool emulator_runner::dma_write(uint32_t address, uint32_t channel, uint32_t data) {
 
         uint32_t core_reg = 0;
         bool is_common;
@@ -189,7 +192,8 @@ namespace fcore::emulator_v2 {
             core_reg = core_addr->core_addr;
             is_common = core_addr->common_io;
         } else {
-            throw std::runtime_error("unable to find address in the core io map during dma write");
+            return false;
+
         }
         if(emulators_memory.size()< channel+1){
             throw std::runtime_error("Attempted write to unavailable channel: " + std::to_string(channel) + " of core: " + core_name);
@@ -201,7 +205,7 @@ namespace fcore::emulator_v2 {
                 emulators_memory[channel]->at(core_reg) = data;
             }
         }
-
+        return true;
     }
 
     debug_checkpoint emulator_runner::get_end_state() {

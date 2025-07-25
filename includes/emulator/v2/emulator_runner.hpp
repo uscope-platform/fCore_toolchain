@@ -44,8 +44,8 @@ namespace fcore::emulator_v2 {
         debug_checkpoint step_over(uint32_t channel);
         debug_checkpoint get_end_state();
 
-        uint32_t dma_read(uint32_t address, uint32_t channel);
-        void dma_write(uint32_t address, uint32_t channel, uint32_t data);
+        std::optional<uint32_t> dma_read(uint32_t address, uint32_t channel);
+        bool dma_write(uint32_t address, uint32_t channel, uint32_t data);
 
         void set_multichannel_debug(bool mc_debug){ multichannel_debug = mc_debug; };
 

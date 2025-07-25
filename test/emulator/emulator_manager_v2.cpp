@@ -1826,7 +1826,7 @@ nlohmann::json specs = nlohmann::json::parse(
 
 
 
-TEST(emulator_manager_v2, emulator_array_output) {
+TEST(emulator_manager_v2, emulator_array_output ) {
 
 
 nlohmann::json specs = nlohmann::json::parse(

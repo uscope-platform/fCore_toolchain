@@ -39,14 +39,14 @@ namespace fcore::emulator_v2{
             const std::vector<core_step_metadata> &metadata
         );
 
-        void process_scalar_output(
+        bool process_scalar_output(
                 std::string core_id,
                 emulator_output &out,
                 uint32_t address,
                 uint32_t active_channels
         );
 
-        void process_vector_output(
+        bool process_vector_output(
                 std::string core_id,
                 emulator_output &out,
             std::vector<uint32_t> addresses,

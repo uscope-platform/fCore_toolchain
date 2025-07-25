@@ -49,10 +49,13 @@ namespace fcore::emulator_v2{
                         std::vector<uint32_t> addresses;
                         for(int i = 0; i<spec.vector_size; i++)
                             addresses.push_back(bus_engine->get_output_address(core_name, slot_name, i));
-                        process_vector_output(core_name, output, addresses, m.n_channels);
+
+                        auto res = process_vector_output(core_name, output, addresses, m.n_channels);
+                        if(!res) throw std::runtime_error("Error while reading output: " + core_name + "." + slot_name);
                     } else {
                         auto address = bus_engine->get_output_address(core_name, slot_name, 0);
-                        process_scalar_output(core_name, output, address, m.n_channels);
+                        auto res = process_scalar_output(core_name, output, address, m.n_channels);
+                        if(!res) throw std::runtime_error("Error while reading output: " + core_name + "." + slot_name);
                     }
                 }
 
@@ -114,7 +117,7 @@ namespace fcore::emulator_v2{
         return result;
     }
 
-    void emulation_outputs_manager::process_scalar_output(
+    bool emulation_outputs_manager::process_scalar_output(
             std::string core_id,
             emulator_output &out,
             uint32_t address,
@@ -122,13 +125,15 @@ namespace fcore::emulator_v2{
     ){
 
         for(int i = 0; i<active_channels; i++){
-            auto val = runners->at(core_id).dma_read(address, i);
-            out.add_data_point(val, i);
+            auto read_result = runners->at(core_id).dma_read(address, i);
+            if(!read_result.has_value()) return false;
+            out.add_data_point(read_result.value(), i);
             spdlog::trace("Read output at io address {} for channel {}", address, i);
         }
+        return true;
     }
 
-    void emulation_outputs_manager::process_vector_output(
+    bool emulation_outputs_manager::process_vector_output(
             std::string core_id,
             emulator_output &out,
             std::vector<uint32_t> addresses,
@@ -139,12 +144,14 @@ namespace fcore::emulator_v2{
             std::vector<uint32_t> data_point;
 
              for(int i = 0; i<addresses.size(); i++){
-                auto val = runners->at(core_id).dma_read(addresses[i], j);
+                auto read_result = runners->at(core_id).dma_read(addresses[i], j);
+                 if(!read_result.has_value()) return false;
                 spdlog::trace("Read output at io address {} for channel {}", addresses[i], j);
-                data_point.push_back(val);
+                data_point.push_back(read_result.has_value());
             }
             out.add_data_point(data_point, j);
         }
+        return true;
     }
 
     void emulation_outputs_manager::clear() {

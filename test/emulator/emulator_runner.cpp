@@ -137,8 +137,10 @@ TEST(Emulator_runner, run_simple_emulator_inputs) {
     m.running = true;
     m.order = 0;
     m.step_n = 0;
-    uut.dma_write(0, 0, 0x40133333);
-    uut.dma_write(1, 0, 0x3fc00000);
+    auto res = uut.dma_write(0, 0, 0x40133333);
+    EXPECT_TRUE(res);
+    res =  uut.dma_write(1, 0, 0x3fc00000);
+    EXPECT_TRUE(res);
     uut.emulation_phase(0, 0);
     auto result = uut.dma_read(10, 0);
     ASSERT_EQ(result, 0x40733333);

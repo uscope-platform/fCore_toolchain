@@ -127,12 +127,15 @@ namespace fcore::emulator_v2 {
 
 
         if(src_enabled){
-            auto val = runners->at(src_core).dma_read(src_addr, src_channel);
-            output_repeater.add_output(src_core, src_addr,src_channel, val);
-            runners->at(dst_core).dma_write(dst_addr, dst_channel, val);
+            auto read_result = runners->at(src_core).dma_read(src_addr, src_channel);
+            if(!read_result.has_value()) throw std::runtime_error("Error during read phase of register to register transfer " +src_core + "->" + dst_core);
+            output_repeater.add_output(src_core, src_addr,src_channel, read_result.value());
+            auto res = runners->at(dst_core).dma_write(dst_addr, dst_channel, read_result.value());
+            if(!res) throw std::runtime_error("Error during write phase of register to register transfer " +src_core + "->" + dst_core);
         } else {
             auto val = output_repeater.get_output(src_core, src_addr, src_channel);
-            runners->at(dst_core).dma_write(dst_addr, dst_channel, val);
+            auto res = runners->at(dst_core).dma_write(dst_addr, dst_channel, val);
+            if(!res) throw std::runtime_error("Error during register to register transfer " +src_core + "->" + dst_core);
         }
     }
 
