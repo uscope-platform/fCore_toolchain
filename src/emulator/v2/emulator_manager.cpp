@@ -384,7 +384,7 @@ namespace fcore::emulator_v2 {
                         current_channel++;
                     } while (current_channel < core.n_channels);
                     is_in_progress = false;
-                    interconnects_phase(emu_spec.interconnects, core);
+                    ic_manager.run_interconnect(core.id, sequencer.get_enabled_cores());
                 }
             }
             sequencer.advance_emulation();
@@ -399,7 +399,7 @@ namespace fcore::emulator_v2 {
         auto checkpoint = runners->at(currently_active_core).step_over(current_channel);
         interactive_restart_point++;
         if(checkpoint.completed_round){
-            interconnects_phase(emu_spec.interconnects, current_core);
+            ic_manager.run_interconnect(current_core.id, sequencer.get_enabled_cores());
             runners->at(currently_active_core).reset_instruction_pointer();
             if (current_channel==current_core.n_channels-1) {
                 current_channel = 0;
@@ -426,11 +426,6 @@ namespace fcore::emulator_v2 {
         checkpoint.progress.channel = current_channel;
 
         return checkpoint;
-    }
-
-
-    void emulator_manager::interconnects_phase(const std::vector<emulator_interconnect> &ic, const core_step_metadata& info) {
-        ic_manager.run_interconnect(info.id, sequencer.get_enabled_cores());
     }
 
 

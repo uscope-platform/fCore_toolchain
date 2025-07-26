@@ -76,7 +76,6 @@ namespace fcore::emulator_v2{
 
         debug_checkpoint augment_checkpoint_info(debug_checkpoint &in);
 
-        void interconnects_phase(const std::vector<emulator_interconnect> &specs, const core_step_metadata& info);
 
         std::unordered_map<std::string, std::string> errors;
         bool debug_autogen;
