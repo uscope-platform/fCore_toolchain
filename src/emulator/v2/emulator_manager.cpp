@@ -44,7 +44,6 @@ namespace fcore::emulator_v2 {
     }
 
     void emulator_manager::process() {
-        bus_map.clear();
 
         if(emu_spec.cores.empty()){
             throw std::runtime_error("No cores section found in the emulator specification file");
@@ -66,7 +65,6 @@ namespace fcore::emulator_v2 {
         outputs_manager.process_specs(ic_manager.get_bus_engine());
         sequencer.setup_run(emu_spec.emulation_time);
 
-        check_bus_duplicates();
 
         for(auto &p:programs){
             emulator_runner r(p, ic_manager.get_bus_engine());
@@ -75,7 +73,6 @@ namespace fcore::emulator_v2 {
     }
 
     std::vector<program_bundle> emulator_manager::get_programs() {
-        bus_map.clear();
         auto bus_engine = ic_manager.get_bus_engine();
         emulator_builder e_b(debug_autogen, bus_engine);
         e_b.set_profiler(profiler);
@@ -103,10 +100,8 @@ namespace fcore::emulator_v2 {
                 errors[core.id] = e.what();
             }
 
-
             res.push_back(b);
         }
-        check_bus_duplicates();
         return res;
     }
 
@@ -435,9 +430,7 @@ namespace fcore::emulator_v2 {
 
 
     void emulator_manager::interconnects_phase(const std::vector<emulator_interconnect> &ic, const core_step_metadata& info) {
-
         ic_manager.run_interconnect(info.id, sequencer.get_enabled_cores());
-
     }
 
 
@@ -482,12 +475,6 @@ namespace fcore::emulator_v2 {
         return ret;
     }
 
-    void emulator_manager::check_bus_duplicates() {
-        if(bus_map.check_duplicates()){
-            auto duplicates = bus_map.get_duplicates().dump();
-            throw std::domain_error(duplicates);
-        }
-    }
 
     std::unordered_map<std::string, disassembled_program> emulator_manager::disassemble() {
         std::unordered_map<std::string, disassembled_program> ret;
@@ -511,7 +498,6 @@ namespace fcore::emulator_v2 {
         runners->clear();
         sequencer.clear();
         outputs_manager.clear();
-        bus_map.clear();
         emu_spec.parse(spec_file);
         ic_manager.set_emulation_specs(emu_spec);
     }

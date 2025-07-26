@@ -17,6 +17,7 @@
 #define BUS_ALLOCATOR_HPP
 
 #include <unordered_set>
+#include <nlohmann/json.hpp>
 #include <string>
 
 #include "data_structures/common/program_metadata.hpp"
@@ -123,6 +124,8 @@ namespace fcore::emulator_v2 {
         uint32_t get_free_address(const std::string & core, const std::string & output, uint32_t array_index);
 
         core_endpoint get_slot_source(const std::string & core, const std::string & slot_name);
+
+        std::unordered_map<std::string, std::string> dump_bus();
 
         std::vector<output_metadata> get_outputs();
 

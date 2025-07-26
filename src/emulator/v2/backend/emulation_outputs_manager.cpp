@@ -22,6 +22,7 @@ namespace fcore::emulator_v2{
         bus_engine = engine;
 
         for(auto &out: bus_engine->get_outputs()) {
+            bool stop = out.port_name == "i_in";
             auto data = emulator_output(out.port_name, out.channels, out.vector_size);
             data_section[out.core_name].insert({out.port_name, data});
         }
@@ -44,6 +45,7 @@ namespace fcore::emulator_v2{
             } else {
                 for(auto &[slot_name,output]: slots){
 
+                    bool stop = slot_name == "i_in";
                     auto spec = bus_engine->get_slot_source(core_name, slot_name);
                     if(spec.is_vector) {
                         std::vector<uint32_t> addresses;

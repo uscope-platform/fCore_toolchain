@@ -32,6 +32,7 @@ int main(int argc, char **argv) {
     bool output_force = false;
     bool verbose_logging = false;
     bool debug_autogen = false;
+    bool dump_bus = false;
     std::string inputs_file;
     std::string output_file;
     std::string spec_file;
@@ -40,6 +41,7 @@ int main(int argc, char **argv) {
     app.add_flag("--f", output_force, "force the rewriting of an existing product file");
     app.add_option("--o", output_file, "Output file path");
     app.add_flag("--debug_autogen", debug_autogen, "Write intermediate steps for autogen emulation debugging");
+    app.add_flag("--dump_bus", dump_bus, "Dump the bus allocations");
     CLI11_PARSE(app, argc, argv);
 
     std::shared_ptr<spdlog::logger> logger = spdlog::stdout_color_mt("logger", spdlog::color_mode::automatic);
@@ -86,6 +88,16 @@ int main(int argc, char **argv) {
         profiler->end_event("execution");
         results = emu_manager.get_results();
         profiling_data = profiler->dump();
+
+        if(dump_bus) {
+            auto bus = emu_manager.dump_bus();
+            std::ofstream ss("bus.txt");
+            for(auto &b: bus) {
+             ss << b.first << " --- " << b.second << std::endl;
+            }
+            ss.close();
+            exit(0);
+        }
     } catch (std::runtime_error &err) {
         spdlog::critical(err.what());
         exit(-1);
@@ -96,6 +108,8 @@ int main(int argc, char **argv) {
         ss.close();
         exit(-1);
     }
+
+
 
 
     results["profiling"] = profiling_data;

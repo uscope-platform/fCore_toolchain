@@ -265,6 +265,21 @@ namespace fcore::emulator_v2 {
         return sources_map.at(core).at(slot_name);
     }
 
+     std::unordered_map<std::string, std::string> bus_allocator::dump_bus() {
+        std::unordered_map<std::string, std::string> ret;
+        for(auto &[core, sources]: sources_map) {
+            for(auto &[slot_name, ep] : sources) {
+                std::string ep_name = core + "." + slot_name;
+                std::string addresses = "";
+                for(auto addr: ep.bus_addresses) {
+                    addresses += std::to_string(addr) + " ";
+                }
+                ret[ep_name] = addresses;
+            }
+        }
+        return ret;
+    }
+
      std::vector<output_metadata> bus_allocator::get_outputs() {
 
         std::vector<output_metadata> ret;

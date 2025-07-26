@@ -70,9 +70,8 @@ namespace fcore::emulator_v2{
 
         deployment_options get_deployment_options(const std::string &core_id) {return emu_spec.get_deployment_options(core_id);}
         std::unordered_map<std::string, std::vector<memory_init_value>> get_memory_init_values();
+        std::unordered_map<std::string, std::string> dump_bus() {return ic_manager.get_bus_engine()->dump_bus();}
     private:
-        void check_bus_duplicates();
-
         void run_cores(bool in_progress);
 
         debug_checkpoint augment_checkpoint_info(debug_checkpoint &in);
@@ -88,7 +87,6 @@ namespace fcore::emulator_v2{
         std::string currently_active_core;
         uint32_t current_channel;
 
-        hil_bus_map bus_map;
 
         emulation_sequencer sequencer;
         emulation_outputs_manager outputs_manager;
