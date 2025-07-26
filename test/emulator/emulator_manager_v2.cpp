@@ -1214,6 +1214,148 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
     ASSERT_EQ(result2, reference2);
 }
 
+
+TEST(emulator_manager_v2, emulator_interconnect_input_override) {
+
+    nlohmann::json specs = nlohmann::json::parse( R"(
+    {
+    "version": 2,
+    "cores": [
+      {
+        "id": "test",
+        "inputs": [
+          {
+            "name": "input_1",
+            "is_vector": false,
+            "metadata": {
+              "type": "float",
+              "width": 32,
+              "signed": false,
+              "common_io": false
+            },
+            "source": {
+              "type":"series",
+              "value": [15.0,67.0]
+            }
+          },
+          {
+            "name": "input_2",
+            "is_vector": false,
+            "metadata": {
+              "type": "float",
+              "width": 32,
+              "signed": false,
+              "common_io": false
+            },
+            "source": {
+              "type":"series",
+              "value": [42.0,-6.0]
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "name":"out",
+            "is_vector": false,
+            "metadata": {
+              "type": "integer",
+              "width": 24,
+              "signed": false,
+              "common_io": false
+            }
+          }
+        ],
+        "memory_init": [],
+        "program":{
+          "content": "int main(){float input_1; float input_2; float out; out = fti(input_1 + input_2);}",
+          "headers": []
+        },
+        "order": 1,
+        "options":{
+          "comparators":"reducing",
+          "efi_implementation":"efi_sort"
+        },
+        "channels":1,
+        "sampling_frequency": 1,
+        "deployment": {
+          "has_reciprocal": false,
+          "control_address": 18316525568,
+          "rom_address": 17179869184
+        }
+      },
+      {
+        "id": "test_move",
+        "inputs": [
+            {
+              "name": "input",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type":"constant",
+                "value": 322.0
+              }
+            }
+        ],
+        "outputs": [
+          {
+            "name":"out",
+            "is_vector": false,
+            "metadata": {
+              "type": "integer",
+              "width": 15,
+              "signed": false,
+              "common_io": false
+            }
+          }
+        ],
+        "memory_init": [],
+        "program":{
+          "content": "int main(){float input; float out; float val = itf(input); out = fti(val+1.0);}",
+          "headers": []
+        },
+        "order": 2,
+        "options":{
+          "comparators":"reducing",
+          "efi_implementation":"efi_sort"
+        },
+        "channels":1,
+        "sampling_frequency": 1,
+        "deployment": {
+          "has_reciprocal": false,
+          "control_address": 18316525568,
+          "rom_address": 17179869184
+        }
+      }
+    ],
+    "interconnect":[
+      {
+        "source": "test.out",
+        "destination": "test_move.input"
+      }
+    ],
+    "emulation_time": 2,
+    "deployment_mode": false
+    }
+    )");
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+    manager.emulate();
+    auto res = manager.get_results();
+    auto dbg = res.dump(4);
+    std::vector<uint32_t> reference = {57,61};
+    std::vector<uint32_t> result = res["test"]["outputs"]["out"]["0"][0];
+    ASSERT_EQ(result, reference);
+    std::vector<uint32_t> reference2 = {58,62};
+    std::vector<uint32_t> result2 = res["test_move"]["outputs"]["out"]["0"][0];
+    ASSERT_EQ(result2, reference2);
+}
+
 TEST(emulator_manager_v2, emulator_compilation_memory) {
 
 

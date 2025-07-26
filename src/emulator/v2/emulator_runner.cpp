@@ -50,6 +50,17 @@ namespace fcore::emulator_v2 {
             }
         }
 
+
+        for(auto &ic : bus_engine->get_interconnects()) {
+            if(prog.name==ic.destination.core_name) {
+                for(auto &i:program.input) {
+                    if(i.name == ic.destination.port_name) {
+                        input_override[prog.name].insert(i.name);
+                    }
+                }
+            }
+        }
+
     }
 
     std::vector<uint32_t> emulator_runner::sanitize_program(const std::vector<uint32_t> &raw_prog) {
@@ -87,6 +98,7 @@ namespace fcore::emulator_v2 {
 
         if(info.running){
             for(auto &in:program.input){
+                if(input_override[info.id].contains(in.name)) continue;
                 std::vector<uint32_t> input_val;
                 if(in.source_type == external_input) continue;
                 if(in.source_type == random_input) {

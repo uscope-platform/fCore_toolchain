@@ -64,6 +64,8 @@ namespace fcore::emulator_v2 {
 
         std::shared_ptr<std::vector<uint32_t>> common_io_memory;
         std::unordered_map<std::string, uint32_t> current_inputs;
+
+        std::unordered_map<std::string, std::set<std::string>> input_override;
         core_memory_pool_t emulators_memory;
         bool multichannel_debug;
 
