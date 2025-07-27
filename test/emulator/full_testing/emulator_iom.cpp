@@ -22,7 +22,7 @@
 using namespace fcore;
 using namespace fcore::emulator_v2;
 
-TEST(emulator_manager_v2, emulator_inputs) {
+TEST(emulator_iom, emulator_inputs) {
 
     nlohmann::json specs = nlohmann::json::parse( R"({
         "version": 2,
@@ -113,7 +113,7 @@ TEST(emulator_manager_v2, emulator_inputs) {
 }
 
 
-TEST(emulator_manager_v2, emulator_random_inputs) {
+TEST(emulator_iom, emulator_random_inputs) {
 
     nlohmann::json specs = nlohmann::json::parse( R"({
         "version": 2,
@@ -204,7 +204,7 @@ TEST(emulator_manager_v2, emulator_random_inputs) {
 
 }
 
-TEST(emulator_manager_v2, emulator_outputs) {
+TEST(emulator_iom, emulator_outputs) {
 
     nlohmann::json specs = nlohmann::json::parse( R"({
       "version": 2,
@@ -305,7 +305,7 @@ TEST(emulator_manager_v2, emulator_outputs) {
 
 }
 
-TEST(emulator_manager_v2, emulator_memory) {
+TEST(emulator_iom, emulator_memory) {
 
     nlohmann::json specs = nlohmann::json::parse( R"({
         "version": 2,
@@ -406,7 +406,7 @@ TEST(emulator_manager_v2, emulator_memory) {
 }
 
 
-TEST(emulator_manager_v2, emulator_memory_to_memory_inteconnect) {
+TEST(emulator_iom, emulator_memory_to_memory_inteconnect) {
 
     nlohmann::json specs = nlohmann::json::parse( R"(
     {
@@ -522,7 +522,7 @@ TEST(emulator_manager_v2, emulator_memory_to_memory_inteconnect) {
 }
 
 
-TEST(emulator_manager_v2, emulator_compilation_memory) {
+TEST(emulator_iom, emulator_compilation_memory) {
 
 
     nlohmann::json specs = nlohmann::json::parse( R"({
@@ -607,7 +607,7 @@ TEST(emulator_manager_v2, emulator_compilation_memory) {
 }
 
 
-TEST(emulator_manager_v2, emulator_memory_as_output) {
+TEST(emulator_iom, emulator_memory_as_output) {
 
     nlohmann::json specs = nlohmann::json::parse( R"({
         "version": 2,
@@ -701,7 +701,7 @@ TEST(emulator_manager_v2, emulator_memory_as_output) {
     ASSERT_FLOAT_EQ(res, 122.22);
 }
 
-TEST(emulator_manager_v2, emulator_array_constant_input_float) {
+TEST(emulator_iom, emulator_array_constant_input_float) {
 
 nlohmann::json specs = nlohmann::json::parse(
     R"({
@@ -772,7 +772,7 @@ nlohmann::json specs = nlohmann::json::parse(
     ASSERT_EQ(result, reference);
 }
 
-TEST(emulator_manager_v2, emulator_array_file_input_float) {
+TEST(emulator_iom, emulator_array_file_input_float) {
 
 
 nlohmann::json specs = nlohmann::json::parse(
@@ -846,7 +846,7 @@ nlohmann::json specs = nlohmann::json::parse(
 
 
 
-TEST(emulator_manager_v2, emulator_array_constant_input_int) {
+TEST(emulator_iom, emulator_array_constant_input_int) {
 
 nlohmann::json specs = nlohmann::json::parse(
     R"({
@@ -917,7 +917,7 @@ nlohmann::json specs = nlohmann::json::parse(
     ASSERT_EQ(result, reference);
 }
 
-TEST(emulator_manager_v2, emulator_array_file_input_int) {
+TEST(emulator_iom, emulator_array_file_input_int) {
 
 
 nlohmann::json specs = nlohmann::json::parse(
@@ -991,7 +991,7 @@ nlohmann::json specs = nlohmann::json::parse(
 
 
 
-TEST(emulator_manager_v2, emulator_array_output ) {
+TEST(emulator_iom, emulator_array_output ) {
 
 
 nlohmann::json specs = nlohmann::json::parse(
@@ -1067,7 +1067,7 @@ nlohmann::json specs = nlohmann::json::parse(
     ASSERT_EQ(result2, reference2);
 }
 
-TEST(emulator_manager_v2, emulator_same_name_outputs) {
+TEST(emulator_iom, emulator_same_name_outputs) {
 
     nlohmann::json specs = nlohmann::json::parse( R"(
 {
