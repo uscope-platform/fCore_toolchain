@@ -41,6 +41,7 @@ namespace fcore {
 
     void ast_definition::set_scalar_initializer(const std::shared_ptr<ast_node>& init) {
         initializer.clear();
+
         initializer.push_back(init);
 
     }

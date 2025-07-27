@@ -384,11 +384,13 @@ namespace fcore::emulator_v2 {
                         current_channel++;
                     } while (current_channel < core.n_channels);
                     is_in_progress = false;
+                    outputs_manager.process_outputs(running_cores, core.id);
                     ic_manager.run_interconnect(core.id, sequencer.get_enabled_cores());
+                } else {
+                    outputs_manager.process_outputs(running_cores, core.id);
                 }
             }
             sequencer.advance_emulation();
-            outputs_manager.process_outputs(running_cores);
         } while (!sequencer.sim_complete());
     }
 

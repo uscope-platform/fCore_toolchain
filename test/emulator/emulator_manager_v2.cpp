@@ -983,7 +983,7 @@ TEST(emulator_manager_v2, emulator_partial_memory_to_memory) {
     for(int i =0; i<2; i++) {
         ASSERT_FLOAT_EQ(result_2[i], reference_2[i]);
     }
-    std::vector<float> reference_3 = {5, 10};
+    std::vector<float> reference_3 = {1, 6};
     std::vector<float> result_3 = res["outputs"]["mem"]["1"][0];
     for(int i =0; i<2; i++) {
         ASSERT_FLOAT_EQ(result_3[i], reference_3[i]);

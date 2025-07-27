@@ -30,8 +30,51 @@ namespace fcore::emulator_v2{
 
 
     void emulation_outputs_manager::process_outputs(
+        const std::vector<core_step_metadata> &metadata,
+        const std::string &core
+    ) {
+
+        for(auto &[core_name, slots]:data_section){
+            core_step_metadata m;
+            if(core_name != core) continue;
+            for(auto &m_temp:metadata){
+                if(core_name == m_temp.id) m = m_temp;
+            }
+            if(!m.running){
+                // carry over previous outputs
+                for(auto &out: slots){
+                    out.second.repeat_last_data_point();
+                }
+            } else {
+                for(auto &[slot_name,output]: slots){
+
+                    bool stop = slot_name == "i_in";
+                    auto spec = bus_engine->get_slot_source(core_name, slot_name);
+                    if(spec.is_vector) {
+                        std::vector<uint32_t> addresses;
+                        for(int i = 0; i<spec.vector_size; i++)
+                            addresses.push_back(bus_engine->get_output_address(core_name, slot_name, i));
+
+                        auto res = process_vector_output(core_name, output, addresses, m.n_channels);
+                        if(!res) throw std::runtime_error("Error while reading output: " + core_name + "." + slot_name);
+                    } else {
+                        auto address = bus_engine->get_output_address(core_name, slot_name, 0);
+                        auto res = process_scalar_output(core_name, output, address, m.n_channels);
+                        if(!res) throw std::runtime_error("Error while reading output: " + core_name + "." + slot_name);
+                    }
+                }
+
+            }
+        }
+
+
+    }
+
+
+    void emulation_outputs_manager::process_outputs(
         const std::vector<core_step_metadata> &metadata
     ) {
+
         for(auto &[core_name, slots]:data_section){
             core_step_metadata m;
             for(auto &m_temp:metadata){
@@ -66,6 +109,7 @@ namespace fcore::emulator_v2{
 
 
     }
+
 
     void emulation_outputs_manager::set_simulation_frequency(uint32_t freq) {
         double period = 1.0/freq;
