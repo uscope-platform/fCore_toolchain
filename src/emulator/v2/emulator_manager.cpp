@@ -369,7 +369,7 @@ namespace fcore::emulator_v2 {
             auto running_cores = sequencer.get_running_cores();
 
             for(auto &core:running_cores){
-                if(!sequencer.is_empty_step()){
+                if(!sequencer.is_empty_step() && core.running){
                     if(!is_in_progress) {
                         current_channel = 0;
                         interactive_restart_point = 0;
