@@ -12,8 +12,10 @@ set(TEST_SOURCES
         C_tree_visitor_testing.cpp
         disassembler_testing.cpp
         hl_pretty_print.cpp
-        emulator/emulator_manager_interactive.cpp
-        emulator/emulator_manager_v2.cpp
+        emulator/full_testing/emulator_manager_interactive.cpp
+        emulator/full_testing/emulator_manager_v2.cpp
+        emulator/full_testing/emulator_iom.cpp
+        emulator/full_testing/emulator_multichannel_tests.cpp
         emulator/emulator_execution.cpp
         emulator/emulator_schema_validation.cpp
         emulator/emulator_runner.cpp

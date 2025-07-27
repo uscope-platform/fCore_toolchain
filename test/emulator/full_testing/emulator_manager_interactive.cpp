@@ -16,7 +16,7 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 
-#include "emulator_test_helpers.hpp"
+#include "../emulator_test_helpers.hpp"
 #include "emulator/emulator_dispatcher.hpp"
 
 using namespace fcore;
