@@ -56,7 +56,12 @@ namespace fcore::emulator_v2{
     void emulator_output::repeat_last_data_point() {
         for(auto & item : data){
             for(int n = 0; n<vector_size; n++){
-                item.second[n].push_back(item.second[n].back());
+                if(item.second[n].empty()) {
+                    item.second[n].push_back(0);
+                } else {
+                    item.second[n].push_back(item.second[n].back());
+                }
+
             }
         }
 

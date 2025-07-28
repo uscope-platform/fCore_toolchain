@@ -47,6 +47,7 @@ namespace fcore::emulator_v2{
 
             for(auto &i: cores){
                 i.n_skips = simulation_frequency/i.freq - 1;
+                i.current_step = i.n_skips;
             }
 
         } else {
