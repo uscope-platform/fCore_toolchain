@@ -45,6 +45,7 @@ namespace fcore{
         executable exec(file_content);
         construct_ast(exec.get_code());
         io_mapping = exec.get_io_mapping();
+        common_io_mapping = exec.get_common_io_mapping();
     }
 
 
@@ -166,6 +167,14 @@ namespace fcore{
     std::unordered_map <uint16_t, uint16_t> binary_loader::get_io_mapping() {
         std::unordered_map<uint16_t, uint16_t> ret_val;
         for(auto &item:io_mapping){
+            ret_val[item.first] = item.second;
+        }
+        return ret_val;
+    }
+
+    std::unordered_map<uint16_t, uint16_t> binary_loader::get_common_io_mapping() {
+        std::unordered_map<uint16_t, uint16_t> ret_val;
+        for(auto &item:common_io_mapping){
             ret_val[item.first] = item.second;
         }
         return ret_val;

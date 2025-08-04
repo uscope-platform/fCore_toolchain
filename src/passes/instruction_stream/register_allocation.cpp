@@ -96,14 +96,14 @@ namespace fcore{
                     bool found = false;
                     for(int i = 0; i<pow(2, fcore_register_address_width);i++){
                         if(!item->get_array_shape().empty() && item->is_contiguous()){
-                            if(!reg_map.is_used({i,item->get_size()}, item->get_first_occurrence(), item->get_last_occurrence()) & !excluded[i]){
+                            if(!reg_map.is_used({i,item->get_size()}, item) & !excluded[i]){
                                 found = true;
                                 allocate_array(item, i);
                                 item = reg_map.get_identifier(item);
                                 break;
                             }
                         } else{
-                            if(!reg_map.is_used(i, item->get_first_occurrence(), item->get_last_occurrence()) & !excluded[i]){
+                            if(!reg_map.is_used(i, item) & !excluded[i]){
                                 found = true;
                                 allocate_register(item, i);
                                 item = reg_map.get_identifier(item);

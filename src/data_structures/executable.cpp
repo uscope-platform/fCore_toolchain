@@ -103,6 +103,16 @@ namespace fcore{
         }
         return ret_val;
     }
+
+    std::set<std::pair<uint16_t, uint16_t>> executable::get_common_io_mapping() {
+        std::set<std::pair<uint16_t, uint16_t>> ret_val;
+        for(auto &item:sections["common_io_map"]){
+            uint16_t pair[2];
+            split_word(item, pair);
+            ret_val.insert({pair[0], pair[1]});
+        }
+        return ret_val;
+    }
 }
 
 

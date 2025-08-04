@@ -32,7 +32,9 @@ namespace fcore{
         binary_loader(std::istream &stream, bin_loader_input_type_t in_type);
         explicit binary_loader(const std::vector<uint32_t> &file_content);
         void load_program(const std::vector<uint32_t> &file_content);
-        instruction_stream get_program_stream() {return program_stream;};
+        instruction_stream get_program_stream() {return program_stream;}
+
+
         void construct_ast(const std::vector<uint32_t> &program);
         static instruction_variant process_register_instr(uint32_t instruction);
         static instruction_variant process_ternary_instr(uint32_t instruction);
@@ -41,10 +43,12 @@ namespace fcore{
         static instruction_variant process_conversion_instr(uint32_t instruction);
         static uint32_t to_littleEndian(uint32_t in_num);
         std::unordered_map<uint16_t, uint16_t> get_io_mapping();
+        std::unordered_map<uint16_t, uint16_t> get_common_io_mapping();
         std::set<io_map_entry> get_io_mapping_set();
     private:
         instruction_stream program_stream;
         std::set<std::pair<uint16_t , uint16_t>> io_mapping;
+        std::set<std::pair<uint16_t , uint16_t>> common_io_mapping;
     };
 }
 

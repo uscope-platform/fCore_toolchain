@@ -30,10 +30,10 @@ namespace fcore{
 
     struct disassembled_program{
         std::unordered_map<uint16_t, uint16_t> translation_table;
+        std::unordered_map<uint16_t, uint16_t> common_io_translation_table;
         std::string program;
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(disassembled_program, translation_table, program
-        )
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(disassembled_program, translation_table,common_io_translation_table, program)
     };
 
     bool operator==(const disassembled_program& lhs, const disassembled_program& rhs);

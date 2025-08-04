@@ -25,25 +25,32 @@ namespace fcore{
 
 
 
-    bool register_map::is_used(int reg, int from_inst, int to_inst) {
+    bool register_map::is_used(int reg, std::shared_ptr<variable> var) {
         if(reg==0)
             return true;
-        std::vector<range_t> current_ranges = reg_map[reg];
-        range_t req_range = {from_inst, to_inst};
-        for(auto item:current_ranges){
-            bool ranges_overlap = (item.start <= req_range.end) && (req_range.start <= item.end);
-            if(ranges_overlap)
-                return true;
+        if(var->get_variable_class().common_io) {
+            return used_common_io.contains(reg);
+        }else {
+            std::vector<range_t> current_ranges = reg_map[reg];
+            range_t req_range;
+            req_range.start = var->get_first_occurrence();
+            req_range.end = var->get_last_occurrence();
+            for(auto item:current_ranges){
+                bool ranges_overlap = (item.start <= req_range.end) && (req_range.start <= item.end);
+                if(ranges_overlap)
+                    return true;
+            }
         }
+
         return false;
     }
 
-    bool register_map::is_used(std::pair<int,int> array, int from_inst, int to_inst) {
+    bool register_map::is_used(std::pair<int,int> array, std::shared_ptr<variable> var) {
         bool retval = false;
         if(array.first==0)
             retval = true;
         for(int i =array.first; i<array.first+array.second; i++){
-            retval |= is_used(i, from_inst, to_inst);
+            retval |= is_used(i, var);
         }
         return retval;
     }
@@ -87,6 +94,7 @@ namespace fcore{
     void register_map::insert_common_io(const std::shared_ptr<variable>& var, int reg) {
         common_io_map[var->get_identifier()] = std::make_shared<variable>("r"+std::to_string(reg) + "c");
         common_io_map[var->get_identifier()]->set_variable_class({variable_input_type, true});
+        used_common_io.insert(reg);
     }
 
 }

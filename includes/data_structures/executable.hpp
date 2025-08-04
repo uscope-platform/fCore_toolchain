@@ -37,7 +37,10 @@ namespace fcore{
         std::vector<uint32_t> get_executable();
         std::vector<uint32_t> get_code();
         std::set<std::pair<uint16_t, uint16_t>> get_io_mapping();
+        std::set<std::pair<uint16_t,uint16_t>> get_common_io_mapping();
         void generate_metadata();
+
+
     private:
 
         std::unordered_map<std::string, std::vector<uint32_t>> sections;

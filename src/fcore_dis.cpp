@@ -27,6 +27,7 @@ namespace fcore{
         try{
             binary_loader dis(input, in_type);
             process_stream(dis.get_program_stream());
+            gen->set_common_io_map(dis.get_common_io_mapping());
             gen->set_io_map(dis.get_io_mapping());
         } catch(std::runtime_error &e){
             error_code = e.what();
@@ -40,6 +41,7 @@ namespace fcore{
             binary_loader dis(mem);
             process_stream(dis.get_program_stream());
             gen->set_io_map(dis.get_io_mapping());
+            gen->set_common_io_map(dis.get_common_io_mapping());
         } catch(std::runtime_error &e){
             error_code = e.what();
         }
@@ -85,6 +87,7 @@ namespace fcore{
         disassembled_program dis;
         dis.program = gen->get_program(false);
         dis.translation_table = gen->get_io_map();
+        dis.common_io_translation_table = gen->get_common_io_map();
         return dis;
     }
 }

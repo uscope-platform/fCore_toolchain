@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <set>
 
 #include "fCore_isa.hpp"
 
@@ -33,8 +34,8 @@ namespace fcore {
     class register_map {
     public:
         register_map();
-        bool is_used(int reg, int from_inst, int to_inst);
-        bool is_used(std::pair<int,int> array, int from_inst, int to_inst);
+        bool is_used(int reg, std::shared_ptr<variable> var);
+        bool is_used(std::pair<int,int> array, std::shared_ptr<variable> var);
         void insert(const std::shared_ptr<variable>& var, int reg);
         void insert(const std::shared_ptr<variable>& var, std::pair<int,int> reg);
         void insert_common_io(const std::shared_ptr<variable>& var, int reg);
@@ -46,6 +47,7 @@ namespace fcore {
         std::unordered_map<std::string, std::shared_ptr<variable>> identifiers_map;
         std::vector<std::vector<range_t>> reg_map;
         std::unordered_map<std::string, std::shared_ptr<variable>> common_io_map;
+        std::set<uint32_t> used_common_io;
     };
 }
 
