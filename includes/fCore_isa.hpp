@@ -61,7 +61,7 @@ namespace fcore{
         );
     }
     static uint32_t flag_mask(uint8_t flag_n){
-        return ((1<<(fcore_opcode_width +n_operands*fcore_register_address_width)) + (flag_n-1));
+        return 1<<(fcore_opcode_width +n_operands*fcore_register_address_width + flag_n-1);
     }
 
     static std::array<uint32_t,3> get_operands(uint32_t instr){

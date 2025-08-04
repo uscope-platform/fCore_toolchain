@@ -1101,7 +1101,6 @@ TEST(emulator_manager_v2, emulator_multiple_common_io) {
     manager.set_specs(specs);
     manager.process();
     manager.emulate();
-    auto res = manager.disassemble();
     auto res_obj = manager.get_results();
     auto dbg = res_obj.dump(4);
     std::vector<float> res_0 = res_obj["test"]["outputs"]["out"]["0"][0];
