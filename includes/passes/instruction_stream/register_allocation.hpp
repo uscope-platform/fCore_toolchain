@@ -34,6 +34,7 @@ namespace fcore{
                 std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm,
                 const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
         );
+
         void setup() override;
         std::optional<instruction_variant> apply_mutable_pass(instruction_variant &element, uint32_t n)  override;
     private:

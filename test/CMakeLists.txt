@@ -17,6 +17,7 @@ set(TEST_SOURCES
         emulator/full_testing/emulator_iom.cpp
         emulator/full_testing/emulator_multirate.cpp
         emulator/full_testing/emulator_multichannel_tests.cpp
+        emulator/full_testing/emulator_disassembler.cpp
         emulator/emulator_execution.cpp
         emulator/emulator_schema_validation.cpp
         emulator/emulator_runner.cpp

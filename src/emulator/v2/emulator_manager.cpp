@@ -478,7 +478,25 @@ namespace fcore::emulator_v2 {
 
         for(auto &p:get_programs()){
             fcore_dis d(p.program.binary);
-            ret[p.name] = d.get_diassembled_object();
+            auto obj = d.get_diassembled_object();
+
+            for(auto &[io_addr, table_entry]: obj.translation_table) {
+                for(auto &io_entry:p.io) {
+                    if(io_addr == io_entry.io_addr) {
+                        table_entry.name = io_entry.io_name;
+                    }
+                }
+            }
+
+            for(auto &[io_addr, table_entry]: obj.common_io_translation_table) {
+                for(auto &io_entry:p.io) {
+                    if(io_addr == io_entry.io_addr) {
+                        table_entry.name = io_entry.io_name;
+                    }
+                }
+            }
+
+            ret[p.name] = obj;
         }
         return ret;
     }

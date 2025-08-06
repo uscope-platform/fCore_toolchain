@@ -141,16 +141,20 @@ namespace fcore{
             auto item = std::vector<io_map_entry>();
             item.emplace_back( var->get_linear_index(), reg_addr, get_variable_type(var));
             item[0].common_io = true;
+            item[0].io_name = var->get_linear_identifier();
             allocation_map->emplace(var->get_linear_identifier(), item);
+
         } else {
             reg_map.insert(var, reg_addr);
             auto lin_identifier = var->get_linear_identifier();
             std::string var_type =get_variable_type(var);
             if(allocation_map->contains(lin_identifier)){
                 allocation_map->at(lin_identifier).emplace_back(var->get_linear_index(),reg_addr, var_type);
+                allocation_map->at(lin_identifier).back().io_name = lin_identifier;
             } else {
                 auto item = std::vector<io_map_entry>();
-                item.emplace_back( var->get_linear_index(), reg_addr,var_type);
+                item.emplace_back( var->get_linear_index(), reg_addr, var_type);
+                item.back().io_name = lin_identifier;
                 allocation_map->emplace(lin_identifier, item);
             }
             if(var->get_variable_class().iom_spec == variable_output_type){
@@ -176,10 +180,13 @@ namespace fcore{
 
                 if(allocation_map->contains(lin_identifier)){
                     allocation_map->at(lin_identifier).emplace_back( i,reg_addr+i, var_type);
+                    allocation_map->at(lin_identifier).back().io_name = lin_identifier;
                 } else {
                     auto item = std::vector<io_map_entry>();
                     item.emplace_back(i,reg_addr+i,  var_type);
+                    item.back().io_name = lin_identifier;
                     allocation_map->emplace(lin_identifier, item);
+
                 }
 
             }

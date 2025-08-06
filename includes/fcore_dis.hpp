@@ -28,9 +28,17 @@
 
 namespace fcore{
 
+    struct translation_table_entry {
+        std::string name;
+        uint16_t address;
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(translation_table_entry, name, address)
+    };
+
+    bool operator==(const translation_table_entry& lhs, const translation_table_entry& rhs);
+
     struct disassembled_program{
-        std::unordered_map<uint16_t, uint16_t> translation_table;
-        std::unordered_map<uint16_t, uint16_t> common_io_translation_table;
+        std::unordered_map<uint16_t, translation_table_entry> translation_table;
+        std::unordered_map<uint16_t, translation_table_entry> common_io_translation_table;
         std::string program;
 
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(disassembled_program, translation_table,common_io_translation_table, program)

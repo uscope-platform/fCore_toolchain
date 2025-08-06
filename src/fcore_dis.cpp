@@ -22,6 +22,12 @@ namespace fcore{
         return lhs.translation_table == rhs.translation_table && lhs.program == rhs.program;
     }
 
+
+    bool operator==(const translation_table_entry& lhs, const translation_table_entry& rhs){
+        return lhs.address == rhs.address && lhs.name == rhs.name;
+    }
+
+
     fcore_dis::fcore_dis(std::istream &input, bin_loader_input_type_t in_type) {
         error_code = "";
         try{
@@ -86,8 +92,17 @@ namespace fcore{
     disassembled_program fcore_dis::get_diassembled_object() {
         disassembled_program dis;
         dis.program = gen->get_program(false);
-        dis.translation_table = gen->get_io_map();
-        dis.common_io_translation_table = gen->get_common_io_map();
+        auto raw_translation_table = gen->get_io_map();
+        auto raw_common_io_table =  gen->get_common_io_map();
+
+        for(auto &[key, value]: raw_translation_table) {
+            dis.translation_table[key] =  {"",value};
+        }
+
+        for(auto &[key, value]: raw_common_io_table) {
+            dis.common_io_translation_table[key] =  {"",value};
+        }
+
         return dis;
     }
 }

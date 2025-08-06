@@ -28,6 +28,7 @@ namespace fcore{
         io_map_entry(int32_t i, int32_t c, const std::string &t) {io_addr =i; core_addr = c; type = t;};
         int32_t io_addr;
         int32_t core_addr;
+        std::string io_name;
         bool common_io = false;
 
         std::string type;

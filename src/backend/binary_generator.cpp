@@ -51,9 +51,14 @@ namespace fcore{
                         }
 
                         if(allocated_item.common_io){
-                            common_io_mapping.emplace(dma_reg,core_reg, allocated_item.type);
+                            io_map_entry e(dma_reg,core_reg, allocated_item.type);
+                            e.io_name = allocated_item.io_name;
+                            e.common_io = true;
+                            common_io_mapping.insert(e);
                         } else {
-                            io_mapping.emplace(dma_reg,core_reg, allocated_item.type);
+                            io_map_entry e(dma_reg,core_reg, allocated_item.type);
+                            e.io_name = allocated_item.io_name;
+                            io_mapping.insert(e);
                         }
                     }
                 }
@@ -65,9 +70,14 @@ namespace fcore{
                             uint16_t core_reg = allocated_item.core_addr;
                             uint16_t dma_reg = item.second[i];
                             if(allocated_item.common_io){
-                                common_io_mapping.emplace(dma_reg,core_reg, allocated_item.type);
+                                io_map_entry e(dma_reg,core_reg, allocated_item.type);
+                                e.io_name = allocated_item.io_name;
+                                e.common_io = true;
+                                common_io_mapping.insert(e);
                             } else {
-                                io_mapping.emplace(dma_reg,core_reg, allocated_item.type);
+                                io_map_entry e(dma_reg,core_reg, allocated_item.type);
+                                e.io_name = allocated_item.io_name;
+                                io_mapping.insert(e);
                             }
                         }
                     }
