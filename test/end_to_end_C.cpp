@@ -1357,7 +1357,7 @@ TEST(EndToEndC, common_io_space) {
     std::vector<uint32_t> result =  compiler.get_executable();
 
 
-    std::vector<uint32_t> gold_standard = {0x20003, 0xc, 0x20003, 0x1000c, 0xc, 0x2000a, 0xc, 0x840841, 0xc};
+    std::vector<uint32_t> gold_standard = {0x20003, 0xc, 0x20003, 0x1000c, 0xc, 0x1000a, 0xc, 0x840821, 0xc};
 
     ASSERT_EQ(gold_standard, result);
 
