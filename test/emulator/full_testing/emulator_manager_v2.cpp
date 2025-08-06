@@ -1004,7 +1004,7 @@ TEST(emulator_manager_v2, emulator_disassemble_common_io) {
     auto execs = manager.get_programs();
     auto res = manager.disassemble();
     std::unordered_map<std::string, fcore::disassembled_program> expected = {
-        {"test", {{{1,1}}, {{2, 2}, {3, 1}}, "add r1, r2, r1\nstop\n"}}
+        {"test", {{{1,1}}, {{2, 2}, {3, 1}}, "add r1c, r2c, r1\nstop\n"}}
     };
 
     EXPECT_EQ(res["test"].program, expected["test"].program);

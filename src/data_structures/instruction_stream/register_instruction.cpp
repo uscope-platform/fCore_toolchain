@@ -33,19 +33,19 @@ namespace fcore{
         uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
         raw_instr += fcore_opcodes[opcode] & opcode_mask;
 
-        auto op_a = operand_a->get_value();
-        raw_instr += (op_a.first & register_mask) << fcore_opcode_width;
+        auto [op_a, op_a_common] = operand_a->get_value();
+        raw_instr += (op_a & register_mask) << fcore_opcode_width;
 
-        auto op_b = operand_b->get_value();
-        raw_instr += (op_b.first & register_mask) << (fcore_opcode_width+fcore_register_address_width);
+        auto [op_b, op_b_common] = operand_b->get_value();
+        raw_instr += (op_b & register_mask) << (fcore_opcode_width+fcore_register_address_width);
 
         raw_instr += (destination->get_value().first & register_mask) << (fcore_opcode_width+2*fcore_register_address_width);
 
-        if(op_a.second){
+        if(op_a_common){
             raw_instr += 1 <<  (fcore_opcode_width+3*fcore_register_address_width);
         }
 
-        if(op_b.second){
+        if(op_b_common){
             raw_instr += 1 <<  (fcore_opcode_width+3*fcore_register_address_width +1);
         }
 
