@@ -75,10 +75,11 @@ namespace fcore{
 
     }
 
-    static std::array<bool, 2> get_common_io_flags(uint32_t instr){
-        std::array<bool,2> result = {};
+    static std::array<bool, 3> get_common_io_flags(uint32_t instr){
+        std::array<bool,3> result = {};
         result[0] = (instr & flag_mask(1)) >> (fcore_opcode_width + 3*fcore_register_address_width);
         result[1] = (instr & flag_mask(2)) >> (fcore_opcode_width + 3*fcore_register_address_width+1);
+        result[2] = (instr & flag_mask(3)) >> (fcore_opcode_width + 3*fcore_register_address_width+2);
         return result;
     }
     typedef enum {

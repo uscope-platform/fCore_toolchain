@@ -89,7 +89,7 @@ namespace fcore::emulator_v2{
         return res;
     }
 
-    void emulator_backend::run_instruction_by_type(const uint32_t& raw_opcode, std::array<uint32_t, 3> operands, std::array<bool, 2> io_flags) {
+    void emulator_backend::run_instruction_by_type(const uint32_t& raw_opcode, std::array<uint32_t, 3> operands, std::array<bool, 3> io_flags) {
         auto opcode = static_cast<opcode_table_t>(raw_opcode);
         switch (fcore_op_types[fcore_opcodes_reverse[opcode]]) {
             case isa_independent_instruction:
@@ -102,22 +102,38 @@ namespace fcore::emulator_v2{
                 run_conversion_instruction(opcode, operands, io_flags);
                 break;
             case isa_ternary_instruction:
-                run_ternary_instruction(opcode,operands);
+                run_ternary_instruction(opcode,operands, io_flags);
                 break;
             default:
                 break;
         }
     }
 
-    void emulator_backend::run_ternary_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands) {
+    void emulator_backend::run_ternary_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags) {
 
         uint32_t op_a = operands[0];
         uint32_t op_b = operands[1];
         uint32_t op_c = operands[2];
 
-        auto a = working_memory->at(op_a);
-        auto b = working_memory->at(op_b);
-        auto c = working_memory->at(op_c);
+        uint32_t a,b,c;
+
+        if(io_flags[0]){
+            a = common_io->at(op_a);
+        } else {
+            a = working_memory->at(op_a);
+        }
+
+        if(io_flags[1]){
+            b = common_io->at(op_b);
+        } else {
+            b = working_memory->at(op_b);
+        }
+
+        if(io_flags[2]){
+            c = common_io->at(op_c);
+        } else {
+            c = working_memory->at(op_c);
+        }
 
         uint32_t result;
         uint32_t writeback_address = op_a;
@@ -132,7 +148,7 @@ namespace fcore::emulator_v2{
         working_memory->at(writeback_address) = result;
     }
 
-    void emulator_backend::run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 2> io_flags) {
+    void emulator_backend::run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags) {
 
 
         uint32_t dest = operands[2];
@@ -222,7 +238,7 @@ namespace fcore::emulator_v2{
 
     }
 
-    void emulator_backend::run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 2> io_flags) {
+    void emulator_backend::run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags) {
 
 
         uint32_t src;

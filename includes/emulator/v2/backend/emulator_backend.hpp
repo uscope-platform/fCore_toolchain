@@ -77,12 +77,12 @@ namespace fcore::emulator_v2{
     private:
 
 
-        void run_instruction_by_type(const uint32_t& opcode, std::array<uint32_t, 3> operands, std::array<bool, 2> io_flags);
+        void run_instruction_by_type(const uint32_t& opcode, std::array<uint32_t, 3> operands, std::array<bool, 3> io_flags);
 
-        void run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 2> io_flags);
-        void run_ternary_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands);
+        void run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags);
+        void run_ternary_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags);
         void run_independent_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands);
-        void run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 2> io_flags);
+        void run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags);
         void run_load_constant_instruction(uint32_t dest, uint32_t val);
 
         uint32_t execute_add(uint32_t a, uint32_t b);

@@ -1201,3 +1201,125 @@ TEST(emulator_iom, emulator_same_name_outputs) {
 
 
 }
+
+
+
+TEST(emulator_iom, emulator_iom_common_io_csel) {
+
+    nlohmann::json specs = nlohmann::json::parse( R"(
+    {
+        "version": 2,
+        "cores": [
+            {
+                "id": "test",
+                "order": 1,
+                "inputs": [
+                    {
+                        "name": "fault",
+                        "metadata": {
+                            "type": "integer",
+                            "width": 32,
+                            "signed": true,
+                            "common_io": false
+                        },
+                        "source": {
+                            "type": "series",
+                            "value": [
+                                [0, 0, 1, 1],
+                                [1, 1, 0, 0]
+                            ]
+                        },
+                        "vector_size": 1,
+                        "is_vector": false
+                    },
+                    {
+                        "name": "v_in",
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": true,
+                            "common_io": true
+                        },
+                        "source": {
+                            "type": "constant",
+                            "value": [
+                                1000
+                            ]
+                        },
+                        "vector_size": 1,
+                        "is_vector": false
+                    }
+                ],
+                "outputs": [
+                    {
+                        "name": "v_out",
+                        "is_vector": false,
+                        "vector_size": 1,
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": true,
+                            "common_io": false
+                        }
+                    }
+                ],
+                "memory_init": [
+                    {
+                        "name": "v_cross",
+                        "vector_size": 1,
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": true
+                        },
+                        "is_output": true,
+                        "is_input": false,
+                        "is_vector": false,
+                        "value": [
+                            20,
+                            20
+                        ]
+                    }
+                ],
+                "deployment": {
+                    "rom_address": 0,
+                    "has_reciprocal": false,
+                    "control_address": 0
+                },
+                "channels": 2,
+                "program": {
+                    "content": "void main(){\n  \n    float  v_in, v_out, v_cross, fault; \n    v_out = fault != 0 ? v_cross : v_in;\n  \n}\n",
+                    "headers": []
+                },
+                "options": {
+                    "comparators": "reducing",
+                    "efi_implementation": "efi_trig"
+                },
+                "sampling_frequency": 1
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 4,
+        "deployment_mode": false
+    }
+)");
+
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+    manager.emulate();
+    auto res = manager.get_results();
+
+    std::vector<float> reference = {1000,1000,20,20};
+    std::vector<float> result = res["test"]["outputs"]["v_out"]["0"][0];
+    for(int i = 0; i < reference.size(); i++) {
+        ASSERT_FLOAT_EQ(reference[i], result[i]);
+    }
+
+    std::vector<float> reference_2 = {20,20,1000,1000};
+    std::vector<float> result_2 = res["test"]["outputs"]["v_out"]["1"][0];
+    for(int i = 0; i < reference.size(); i++) {
+        ASSERT_FLOAT_EQ(reference_2[i], result_2[i]);
+    }
+}
