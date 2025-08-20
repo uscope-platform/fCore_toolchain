@@ -124,13 +124,34 @@ namespace fcore{
         uint32_t operand_a = (instruction >> fcore_opcode_width) & (1<<fcore_register_address_width)-1;
         uint32_t operand_b = (instruction >> (fcore_opcode_width+fcore_register_address_width)) & (1<<fcore_register_address_width)-1;
         uint32_t operand_c = (instruction >> (fcore_opcode_width+2*fcore_register_address_width)) & (1<<fcore_register_address_width)-1;
-
-        std::shared_ptr<variable> op_a_var = std::make_shared<variable>("r" + std::to_string(operand_a));
-        std::shared_ptr<variable> op_b_var  = std::make_shared<variable>("r" + std::to_string(operand_b));
-        std::shared_ptr<variable> op_c_var  = std::make_shared<variable>("r" + std::to_string(operand_c));
-        std::shared_ptr<variable> dest_var  = std::make_shared<variable>("r" + std::to_string(operand_a));
+        bool operand_a_common = (instruction >> (fcore_opcode_width+3*fcore_register_address_width) & 0x1);
+        bool operand_b_common = (instruction >> (fcore_opcode_width+3*fcore_register_address_width+1) & 0x1);
+        bool operand_c_common = (instruction >> (fcore_opcode_width+3*fcore_register_address_width+2) & 0x1);
 
 
+        std::string r_a_name = "r" + std::to_string(operand_a);
+        std::string r_b_name = "r" + std::to_string(operand_b);
+        std::string r_c_name = "r" + std::to_string(operand_c);
+
+
+        std::shared_ptr<variable> op_a_var = std::make_shared<variable>(r_a_name);
+        std::shared_ptr<variable> op_b_var  = std::make_shared<variable>(r_b_name);
+        std::shared_ptr<variable> op_c_var  = std::make_shared<variable>(r_c_name);
+        std::shared_ptr<variable> dest_var  = std::make_shared<variable>(r_a_name);
+
+
+        if(operand_a_common) {
+            op_a_var->set_name(r_a_name + "c");
+            op_a_var->set_variable_class({variable_regular_type, true});
+        }
+        if(operand_b_common) {
+            op_b_var->set_name(r_b_name + "c");
+            op_b_var->set_variable_class({variable_regular_type, true});
+        }
+        if(operand_c_common) {
+            op_c_var->set_name(r_c_name + "c");
+            op_c_var->set_variable_class({variable_regular_type, true});
+        }
         return instruction_variant(ternary_instruction(fcore_opcodes_reverse[opcode], op_a_var, op_b_var, op_c_var, dest_var));
     }
 

@@ -271,3 +271,124 @@ TEST(emulator_disassembler, emulator_disassemble_common_io) {
 
 }
 
+
+
+TEST(emulator_disassembler, emulator_disassemble_common_csel_c_operand) {
+
+
+    nlohmann::json specs = nlohmann::json::parse( R"(
+        {
+            "version": 2,
+            "cores": [
+                {
+                    "id": "hv bus",
+                    "order": 1,
+                    "inputs": [
+                        {
+                            "name": "fault",
+                            "metadata": {
+                                "type": "integer",
+                                "width": 32,
+                                "signed": true,
+                                "common_io": false
+                            },
+                            "source": {
+                                "type": "constant",
+                                "value": [0]
+                            },
+                            "vector_size": 1,
+                            "is_vector": false
+                        },
+                        {
+                            "name": "v_in",
+                            "metadata": {
+                                "type": "float",
+                                "width": 32,
+                                "signed": true,
+                                "common_io": true
+                            },
+                            "source": {
+                                "type": "constant",
+                                "value": [
+                                    1000
+                                ]
+                            },
+                            "vector_size": 1,
+                            "is_vector": false
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "name": "v_out",
+                            "is_vector": false,
+                            "vector_size": 1,
+                            "metadata": {
+                                "type": "float",
+                                "width": 32,
+                                "signed": true,
+                                "common_io": false
+                            }
+                        }
+                    ],
+                    "memory_init": [
+                        {
+                            "name": "v_cross",
+                            "vector_size": 1,
+                            "metadata": {
+                                "type": "float",
+                                "width": 32,
+                                "signed": true
+                            },
+                            "is_output": true,
+                            "is_input": false,
+                            "is_vector": false,
+                            "value": [
+                                0,
+                                0
+                            ]
+                        }
+                    ],
+                    "deployment": {
+                        "rom_address": 0,
+                        "has_reciprocal": false,
+                        "control_address": 0
+                    },
+                    "channels": 2,
+                    "program": {
+                        "content": "void main(){\n  \n    float  v_in, v_out, v_cross, fault; \n    v_out = fault != 0 ? v_cross : v_in;\n  \n}\n",
+                        "headers": []
+                    },
+                    "options": {
+                        "comparators": "reducing",
+                        "efi_implementation": "efi_trig"
+                    },
+                    "sampling_frequency": 25000
+                }
+            ],
+            "interconnect": [],
+            "emulation_time": 0.2,
+            "deployment_mode": false
+        }
+    )");
+
+
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    auto execs = manager.get_programs();
+    auto res = manager.disassemble();
+
+    std::unordered_map<uint16_t, translation_table_entry> io = {
+        {1,{"v_cross", 63}},
+        {2,{"v_out", 1}},
+        {4,{"fault", 1}}
+    };
+    std::unordered_map<uint16_t, translation_table_entry> common_io = {{3, {"v_in",1}}};
+    disassembled_program test_reference = {io,common_io, "bne r1, r0, r2\ncsel r2, r63, r1c, r2\nor r2, r0, r1\nstop\n"};
+
+    EXPECT_EQ(res["hv bus"].program, test_reference.program);
+    EXPECT_EQ(res["hv bus"].translation_table, test_reference.translation_table);
+    EXPECT_EQ(res["hv bus"].common_io_translation_table, test_reference.common_io_translation_table);
+
+
+}

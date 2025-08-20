@@ -1971,3 +1971,40 @@ TEST(EndToEndC, ternary_in_if) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+
+TEST(EndToEndC, common_csel_c_operand) {
+
+    std::vector<std::string> file_content = {R""""(
+
+        void main(){
+
+            float  v_in, v_out, v_cross, fault;
+
+            v_out = fault != 0 ? v_cross : v_in;
+
+        }
+
+    )""""};
+
+    std::vector<std::string> includes;
+
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["v_cross"] = {core_iom_input, {12}, false};
+    dma_map["v_in"]    = {core_iom_input, {13}, true};
+    dma_map["fault"]   = {core_iom_input, {15}, false};
+    dma_map["v_out"]   = {core_iom_output, {50}, false};
+
+    fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
+    compiler.set_dma_map(dma_map);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+    std::vector<uint32_t> gold_standard = {0x40004, 0xc, 0x2000C, 0x1000F, 0x10032, 0xc,0x1000D, 0xc,
+        0x6002b, 0x202107b, 0x2006e, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}
