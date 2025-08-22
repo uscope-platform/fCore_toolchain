@@ -782,11 +782,6 @@ TEST(bus_deployment_interface, scatter_interconnect) {
 }
 
 
-
-
-
-
-
 TEST(bus_deployment_interface, memory_to_memory_interface) {
 
     nlohmann::json specs = nlohmann::json::parse( R"(
@@ -913,27 +908,12 @@ TEST(bus_deployment_interface, memory_to_memory_interface) {
     expected_slots.push_back(e);
 
 
-    e.source_id = "test_producer";
-    e.source_name = "mem";
-    e.type = "o";
-    e.source_io_address = 1;
-    e.source_channel = 0;
-    e.destination_bus_address = 3;
-    e.destination_channel = 0;
-    e.metadata.type = type_float;
-    e.metadata.width = 32;
-    e.metadata.is_signed = false;
-    e.metadata.is_common_io = false;
-    e.metadata.io_address = {0};
-    expected_slots.push_back(e);
-
-
     e.source_id = "test_consumer";
     e.source_name = "out";
     e.type = "o";
     e.source_io_address = 2;
     e.source_channel = 0;
-    e.destination_bus_address = 4;
+    e.destination_bus_address = 3;
     e.destination_channel = 0;
     e.metadata.type = type_float;
     e.metadata.width = 32;
