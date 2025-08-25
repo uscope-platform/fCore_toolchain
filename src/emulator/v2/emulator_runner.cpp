@@ -104,9 +104,7 @@ namespace fcore::emulator_v2 {
                 if(in.source_type == random_input) {
                     for(int i = 0; i< in.vector_size; i++) {
                         auto in_i = distrib(gen);
-                        float in_norm = quant_norm[in_i];
-                        int32_t norm_in = in_norm*(2<<15);
-                        input_val = {static_cast<uint32_t>(norm_in)};
+                        input_val = {emulator_backend::float_to_uint32(quant_norm[in_i])};
                     }
                 } else if(in.metadata.type==type_float){
                     if(in.source_type == constant_input){

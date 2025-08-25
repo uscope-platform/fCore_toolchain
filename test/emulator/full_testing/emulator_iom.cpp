@@ -168,7 +168,7 @@ TEST(emulator_iom, emulator_random_inputs) {
                     "efi_implementation": "efi_sort"
                 },
                 "program": {
-                    "content": "int main(){float input_1;float input_2;float out = itf(input_1) + itf(input_2);}",
+                    "content": "int main(){float input_1;float input_2;float out = input_1 + input_2;}",
                     "type":"c",
                     "headers": []
                 },
@@ -199,7 +199,7 @@ TEST(emulator_iom, emulator_random_inputs) {
     for (auto i : res_obj["test"]["outputs"]["out"]["0"][0]) {
         res_f.push_back(emulator_backend::uint32_to_float(i));
     }
-    std::vector<float> reference = {-45419, 11592};
+    std::vector<float> reference = {-0.693055391, 0.176892057};
     ASSERT_EQ(res_f, reference);
 
 }
