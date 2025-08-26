@@ -23,14 +23,13 @@
 #include <spdlog/spdlog.h>
 
 
-
 namespace fcore::emulator_v2 {
 
     class interconnect_manager {
     public:
         interconnect_manager();
         void set_emulation_specs(const emulator_specs &specs);
-        void set_runners(const std::shared_ptr<std::unordered_map<std::string, emulator_runner>> &r){runners = r;};
+        void set_runners(const std::shared_ptr<std::unordered_map<std::string, emulator_runner>> &r){runners = r;}
         std::shared_ptr<bus_allocator> get_bus_engine(){ return bus_engine;}
         void clear_repeater();
 
@@ -38,8 +37,7 @@ namespace fcore::emulator_v2 {
 
     private:
 
-
-        void transfer_register(const std::string& src_core, const std::string& dst_core,
+        void transfer_register(const endpoint_descriptor& src_core, const endpoint_descriptor& dst_core,
                                uint32_t src_addr, uint32_t dst_addr,
                                uint32_t src_channel, uint32_t dst_channel,
                                bool src_enabled

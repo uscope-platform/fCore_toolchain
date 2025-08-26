@@ -416,3 +416,153 @@ TEST(emulator_multirate, emulator_interconnect_multirate) {
     }
 
 }
+
+
+TEST(emulator_multirate, multirate_interconnect_initializaiton) {
+
+    nlohmann::json specs = nlohmann::json::parse( R"(
+        {
+            "version": 2,
+            "cores": [
+                {
+                    "id": "fast_core",
+                    "order": 2,
+                    "inputs": [
+                        {
+                            "name": "input",
+                            "metadata": {
+                                "type": "float",
+                                "width": 32,
+                                "signed": true,
+                                "common_io": false
+                            },
+                            "source": {
+                                "type": "constant",
+                                "value": [
+                                    40
+                                ]
+                            },
+                            "vector_size": 1,
+                            "is_vector": false
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "name": "out",
+                            "is_vector": false,
+                            "vector_size": 1,
+                            "metadata": {
+                                "type": "float",
+                                "width": 32,
+                                "signed": true,
+                                "common_io": false
+                            }
+                        }
+                    ],
+                    "memory_init": [],
+                    "deployment": {
+                        "rom_address": 0,
+                        "has_reciprocal": false,
+                        "control_address": 0
+                    },
+                    "channels": 1,
+                    "program": {
+                        "content": "void main(){\n\n    //inputs\n    float random_in;\n    float gain;\n\n    float out = input + 20.4;\n\n      \n}\n",
+                        "headers": []
+                    },
+                    "options": {
+                        "comparators": "reducing",
+                        "efi_implementation": "efi_trig"
+                    },
+                    "sampling_frequency": 100
+                },
+                {
+                    "id": "slow_core",
+                    "order": 1,
+                    "inputs": [
+                        {
+                            "name": "input",
+                            "metadata": {
+                                "type": "float",
+                                "width": 32,
+                                "signed": true,
+                                "common_io": false
+                            },
+                            "source": {
+                                "type": "constant",
+                                "value": [
+                                    50
+                                ]
+                            },
+                            "vector_size": 1,
+                            "is_vector": false
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "name": "out",
+                            "is_vector": false,
+                            "vector_size": 1,
+                            "metadata": {
+                                "type": "float",
+                                "width": 32,
+                                "signed": true,
+                                "common_io": false
+                            }
+                        }
+                    ],
+                    "memory_init": [],
+                    "deployment": {
+                        "rom_address": 0,
+                        "has_reciprocal": false,
+                        "control_address": 0
+                    },
+                    "channels": 1,
+                    "program": {
+                        "content": "void main(){\n\n    //inputs\n    float random_in;\n    float gain;\n\n    float out = input + 20.4;\n\n      \n}\n",
+                        "headers": []
+                    },
+                    "options": {
+                        "comparators": "reducing",
+                        "efi_implementation": "efi_trig"
+                    },
+                    "sampling_frequency": 50
+                }
+            ],
+            "interconnect": [
+                {
+                    "source": "slow_core.out",
+                    "source_channel": -1,
+                    "destination": "fast_core.input",
+                    "destination_channel": -1
+                }
+            ],
+            "emulation_time": 0.025,
+            "deployment_mode": false
+        }
+    )");
+
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+    manager.emulate();
+
+    auto res_obj = manager.get_results();
+
+    auto dbg = res_obj.dump(4);
+
+    std::vector<float> res_1 = res_obj["fast_core"]["outputs"]["out"]["0"][0];
+    std::vector<float> reference_1 = {60.4, 90.8, 90.8};
+    for (size_t i = 0; i < res_1.size(); i++) {
+        EXPECT_EQ(res_1[i], reference_1[i]);
+    }
+
+    std::vector<float> res_2= res_obj["slow_core"]["outputs"]["out"]["0"][0];
+    std::vector<float> reference_2 = {0.0, 70.4, 70.4};
+    for (size_t i = 0; i < res_2.size(); i++) {
+        EXPECT_EQ(res_2[i], reference_2[i]);
+    }
+
+}
+

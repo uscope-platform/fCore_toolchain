@@ -377,7 +377,8 @@ namespace fcore::emulator_v2 {
                         interactive_restart_point = 0;
                     }
                     do {
-                        spdlog::trace("Start round {0} on channel {1}, from instruction {2}", sequencer.get_current_step(), current_channel, interactive_restart_point);
+                        spdlog::trace("Start round {0} for core {3} on channel {1}, from instruction {2}",
+                        sequencer.get_current_step(), current_channel, interactive_restart_point, core.id);
                         runners->at(core.id).inputs_phase(core, current_channel);
                         runners->at(core.id).emulation_phase(current_channel, interactive_restart_point);
                         runners->at(core.id).reset_instruction_pointer();
@@ -390,6 +391,7 @@ namespace fcore::emulator_v2 {
                     ic_manager.run_interconnect(core.id, sequencer.get_enabled_cores());
                 } else {
                     outputs_manager.process_outputs(running_cores, core.id);
+                    ic_manager.run_interconnect(core.id, sequencer.get_enabled_cores());
                 }
             }
             sequencer.advance_emulation();

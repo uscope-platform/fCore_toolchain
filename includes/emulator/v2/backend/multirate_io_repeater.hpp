@@ -21,19 +21,23 @@
 #include <cstdint>
 #include <string>
 
+#include "emulator/v2/bus_allocator.hpp"
+
 namespace fcore::emulator_v2 {
     class multirate_io_repeater {
     public:
-        void add_output(const std::string &core, uint32_t addr,uint32_t channel, uint32_t value) { working_map[core][channel][addr] = value; };
-
-        uint32_t get_output(const std::string &core, uint32_t addr, uint32_t channel) { return working_map[core][channel][addr]; };
-
+        void add_output(const endpoint_descriptor &source, uint32_t addr,uint32_t channel, uint32_t value);
+        uint32_t get_output(const endpoint_descriptor &source,const endpoint_descriptor &dest, uint32_t addr, uint32_t channel);
+        void set_initial_input_values(const std::unordered_map<std::string, std::unordered_map<std::string, uint32_t>> &values) {initial_input_values = values;}
         void clear() { working_map.clear(); };
     private:
         std::unordered_map<std::string,
             std::unordered_map<uint32_t, std::unordered_map<uint32_t, uint32_t>>
         > working_map;
 
+        std::unordered_map<std::string, std::unordered_map<std::string, uint32_t>> initial_input_values;
+
+        std::unordered_map<std::string, std::unordered_map<std::string, bool>> initialized_endpoints;
     };
 }
 

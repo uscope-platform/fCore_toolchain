@@ -22,7 +22,6 @@ namespace fcore::emulator_v2{
         bus_engine = engine;
 
         for(auto &out: bus_engine->get_outputs()) {
-            bool stop = out.port_name == "i_in";
             auto data = emulator_output(out.port_name, out.channels, out.vector_size);
             data_section[out.core_name].insert({out.port_name, data});
         }
@@ -33,7 +32,7 @@ namespace fcore::emulator_v2{
         const std::vector<core_step_metadata> &metadata,
         const std::string &core
     ) {
-
+        spdlog::trace("Processing outputs for core {}", core);
         for(auto &[core_name, slots]:data_section){
             core_step_metadata m;
             if(core_name != core) continue;
@@ -75,6 +74,7 @@ namespace fcore::emulator_v2{
         const std::vector<core_step_metadata> &metadata
     ) {
 
+        spdlog::trace("processing outputs for all cores");
         for(auto &[core_name, slots]:data_section){
             core_step_metadata m;
             for(auto &m_temp:metadata){
