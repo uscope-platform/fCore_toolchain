@@ -143,7 +143,7 @@ namespace fcore::emulator_v2 {
         std::unordered_map<std::string, std::unordered_map<std::string, uint32_t>> initial_input_values;
         for(auto &c:specs.cores) {
             for(auto &in:c.inputs) {
-                if(in.source_type == external_input) {
+                if(in.source_type == external_input && !in.data.empty()) {
                     for(int i = 0; i<in.vector_size; i++) {
                         if(std::holds_alternative<std::vector<float>>(in.data[i])) {
                             auto val = emulator_backend::float_to_uint32_v(std::get<std::vector<float>>(in.data[i]));

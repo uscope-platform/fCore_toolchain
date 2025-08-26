@@ -1080,7 +1080,7 @@ TEST(emulator_manager_v2, emulation_repeatability) {
                     },
                     "source": {
                         "type": "external",
-                        "value": ""
+                        "value": 0
                     },
                     "vector_size": 1,
                     "is_vector": false
