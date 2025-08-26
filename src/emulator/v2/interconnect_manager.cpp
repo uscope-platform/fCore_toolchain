@@ -145,13 +145,24 @@ namespace fcore::emulator_v2 {
             for(auto &in:c.inputs) {
                 if(in.source_type == external_input && !in.data.empty()) {
                     for(int i = 0; i<in.vector_size; i++) {
-                        if(std::holds_alternative<std::vector<float>>(in.data[i])) {
-                            auto val = emulator_backend::float_to_uint32_v(std::get<std::vector<float>>(in.data[i]));
-                            initial_input_values[c.id][in.name] = val[0];
+                        if(in.data.size() == 1 ) {
+                            if(std::holds_alternative<std::vector<float>>(in.data[0])) {
+                                auto val = emulator_backend::float_to_uint32_v(std::get<std::vector<float>>(in.data[0]));
+                                initial_input_values[c.id][in.name] = val[0];
+                            } else {
+                                auto val = std::get<std::vector<uint32_t>>(in.data[0]);
+                                initial_input_values[c.id][in.name] = val[0];
+                            }
                         } else {
-                            auto val = std::get<std::vector<uint32_t>>(in.data[i]);
-                            initial_input_values[c.id][in.name] = val[0];
+                            if(std::holds_alternative<std::vector<float>>(in.data[i])) {
+                                auto val = emulator_backend::float_to_uint32_v(std::get<std::vector<float>>(in.data[i]));
+                                initial_input_values[c.id][in.name] = val[0];
+                            } else {
+                                auto val = std::get<std::vector<uint32_t>>(in.data[i]);
+                                initial_input_values[c.id][in.name] = val[0];
+                            }
                         }
+
                     }
                 } else {
                     initial_input_values[c.id][in.name] = 0;
