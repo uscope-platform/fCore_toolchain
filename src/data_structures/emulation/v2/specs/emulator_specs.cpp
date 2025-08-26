@@ -122,9 +122,7 @@ namespace fcore::emulator_v2 {
         in.metadata.is_common_io = i["metadata"]["common_io"];
         in.source_type = source_type_map[i["source"]["type"]];
 
-        if(in.source_type == external_input || in.source_type == random_input) {
-            in.data = {};
-        } else if(in.source_type == time_series_input){
+        if(in.source_type == time_series_input){
             std::vector<std::string> series;
             if(in.metadata.type== type_float){
                 if(i["source"]["value"][0].is_array()) {
@@ -149,29 +147,33 @@ namespace fcore::emulator_v2 {
 
             }
         } else {
-            std::vector<std::variant<std::vector<unsigned int>, std::vector<float>>> ds;
-            if(in.metadata.type== type_float){
-                if(i["source"]["value"].is_array()){
-                    std::vector<float> v = i["source"]["value"];
-                    for(auto &item:v){
-                        ds.emplace_back(std::vector<float>({item}));
+            if(i["source"].contains("value")) {
+                std::vector<std::variant<std::vector<unsigned int>, std::vector<float>>> ds;
+                if(in.metadata.type== type_float){
+                    if(i["source"]["value"].is_array()){
+                        std::vector<float> v = i["source"]["value"];
+                        for(auto &item:v){
+                            ds.emplace_back(std::vector<float>({item}));
+                        }
+                    } else {
+                        std::vector<float> v = {i["source"]["value"]};
+                        ds.emplace_back(v);
                     }
                 } else {
-                    std::vector<float> v = {i["source"]["value"]};
-                    ds.emplace_back(v);
+                    if(i["source"]["value"].is_array()){
+                        std::vector<uint32_t> v = i["source"]["value"];
+                        for(auto &item:v){
+                            ds.emplace_back(std::vector<uint32_t>({item}));
+                        }
+                    } else {
+                        std::vector<uint32_t> v = {i["source"]["value"]};
+                        ds.emplace_back(v);
+                    }
                 }
+                in.data = ds;
             } else {
-                if(i["source"]["value"].is_array()){
-                    std::vector<uint32_t> v = i["source"]["value"];
-                    for(auto &item:v){
-                        ds.emplace_back(std::vector<uint32_t>({item}));
-                    }
-                } else {
-                    std::vector<uint32_t> v = {i["source"]["value"]};
-                    ds.emplace_back(v);
-                }
+                in.data = {};
             }
-            in.data = ds;
         }
 
 
