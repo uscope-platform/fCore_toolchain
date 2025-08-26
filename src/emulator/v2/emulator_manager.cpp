@@ -134,11 +134,13 @@ namespace fcore::emulator_v2 {
         deployer_interconnect_slot e;
         e.source_id = ic.source.core_name;
         e.source_name = ic.source.port_name;
+        e.destination_id = ic.destination.core_name;
+        e.destination_name = ic.destination.port_name;
         e.destination_bus_address = ic.destination_addresses[0];
         e.source_io_address = ic.source_addresses[0];
         e.source_channel = 0;
         e.destination_channel =0;
-        e.type = 'o';
+        e.type = 'c';
         e.metadata = ic.source_metadata;
         return {e};
     }
@@ -149,11 +151,13 @@ namespace fcore::emulator_v2 {
             deployer_interconnect_slot e;
             e.source_id = ic.source.core_name;
             e.source_name = ic.source.port_name;
+            e.destination_id = ic.destination.core_name;
+            e.destination_name = ic.destination.port_name;
             e.destination_bus_address = ic.destination_addresses[0];
             e.source_io_address = ic.source_addresses[i];
             e.source_channel = 0;
             e.destination_channel =i;
-            e.type = 'o';
+            e.type = 'c';
             e.metadata = ic.source_metadata;
             ret.push_back(e);
         }
@@ -166,11 +170,13 @@ namespace fcore::emulator_v2 {
             deployer_interconnect_slot e;
             e.source_id = ic.source.core_name;
             e.source_name = ic.source.port_name;
+            e.destination_id = ic.destination.core_name;
+            e.destination_name = ic.destination.port_name;
             e.destination_bus_address = ic.destination_addresses[i];
             e.source_io_address = ic.source_addresses[0];
             e.source_channel = i;
             e.destination_channel =0;
-            e.type = 'o';
+            e.type = 'c';
             e.metadata = ic.source_metadata;
             ret.push_back(e);
         }
@@ -183,11 +189,13 @@ namespace fcore::emulator_v2 {
             deployer_interconnect_slot e;
             e.source_id = ic.source.core_name;
             e.source_name = ic.source.port_name;
+            e.destination_id = ic.destination.core_name;
+            e.destination_name = ic.destination.port_name;
             e.destination_bus_address = ic.destination_addresses[0];
             e.source_io_address = ic.source_addresses[0];
             e.source_channel = i;
             e.destination_channel =i;
-            e.type = 'o';
+            e.type = 'c';
             e.metadata = ic.source_metadata;
             ret.push_back(e);
         }
@@ -201,11 +209,13 @@ namespace fcore::emulator_v2 {
                 deployer_interconnect_slot e;
                 e.source_id = ic.source.core_name;
                 e.source_name = ic.source.port_name;
+                e.destination_id = ic.destination.core_name;
+                e.destination_name = ic.destination.port_name;
                 e.destination_bus_address = ic.destination_addresses[i];
                 e.source_io_address = ic.source_addresses[i];
                 e.source_channel = j;
                 e.destination_channel = j;
-                e.type = 'o';
+                e.type = 'c';
                 e.metadata = ic.source_metadata;
                 ret.push_back(e);
             }
@@ -218,11 +228,13 @@ namespace fcore::emulator_v2 {
         deployer_interconnect_slot e;
         e.source_id = ic.source.core_name;
         e.source_name = ic.source.port_name;
+        e.destination_id = ic.destination.core_name;
+        e.destination_name = ic.destination.port_name;
         e.destination_bus_address = ic.destination_addresses[0];
         e.source_io_address = ic.source_addresses[0];
         e.source_channel = ic.partial_channels.first;
         e.destination_channel = ic.partial_channels.second;
-        e.type = 'o';
+        e.type = 'c';
         e.metadata = ic.source_metadata;
         return {e};
     }
@@ -302,7 +314,7 @@ namespace fcore::emulator_v2 {
 
                                 e.source_io_address =  engine->get_output_address(core.id, mem.name, i);
                                 e.source_channel = j;
-                                e.type = 'o';
+                                e.type = 'm';
 
                                 e.metadata.is_signed = mem.metadata.is_signed;
                                 e.metadata.type = mem.metadata.type;

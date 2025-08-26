@@ -425,7 +425,9 @@ TEST(bus_deployment_interface, scalar_interconnect) {
 
     e.source_id = "test";
     e.source_name = "out2";
-    e.type = "o";
+    e.destination_id = "test_move";
+    e.destination_name = "input";
+    e.type = "c";
     e.source_io_address = 1;
     e.source_channel = 0;
     e.destination_bus_address = 1;
@@ -439,6 +441,8 @@ TEST(bus_deployment_interface, scalar_interconnect) {
 
     e.source_id = "test";
     e.source_name = "out";
+    e.destination_id = "";
+    e.destination_name = "";
     e.type = "o";
     e.source_io_address = 3;
     e.source_channel = 0;
@@ -720,7 +724,9 @@ TEST(bus_deployment_interface, scatter_interconnect) {
 
     e.source_id = "test_producer";
     e.source_name = "out";
-    e.type = "o";
+    e.destination_id = "test_consumer";
+    e.destination_name = "input";
+    e.type = "c";
     e.source_io_address = 1;
     e.source_channel = 0;
     e.destination_bus_address = 1;
@@ -734,7 +740,9 @@ TEST(bus_deployment_interface, scatter_interconnect) {
 
     e.source_id = "test_producer";
     e.source_name = "out";
-    e.type = "o";
+    e.destination_id = "test_consumer";
+    e.destination_name = "input";
+    e.type = "c";
     e.source_io_address = 2;
     e.source_channel = 0;
     e.destination_bus_address = 1;
@@ -749,6 +757,8 @@ TEST(bus_deployment_interface, scatter_interconnect) {
 
     e.source_id = "test_consumer";
     e.source_name = "out";
+    e.destination_id = "";
+    e.destination_name = "";
     e.type = "o";
     e.source_io_address = 3;
     e.source_channel = 0;
@@ -895,7 +905,9 @@ TEST(bus_deployment_interface, memory_to_memory_interface) {
 
     e.source_id = "test_producer";
     e.source_name = "mem";
-    e.type = "o";
+    e.destination_id = "test_consumer";
+    e.destination_name = "mem";
+    e.type = "c";
     e.source_io_address = 1;
     e.source_channel = 0;
     e.destination_bus_address = 1;
@@ -910,6 +922,8 @@ TEST(bus_deployment_interface, memory_to_memory_interface) {
 
     e.source_id = "test_consumer";
     e.source_name = "out";
+    e.destination_id = "";
+    e.destination_name = "";
     e.type = "o";
     e.source_io_address = 2;
     e.source_channel = 0;

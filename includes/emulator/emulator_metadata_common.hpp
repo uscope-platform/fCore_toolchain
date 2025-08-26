@@ -77,6 +77,9 @@ namespace fcore {
             ret &= lhs.source_name == rhs.source_name;
             ret &= lhs.type == rhs.type;
             ret &= lhs.metadata == rhs.metadata;
+
+            ret &= lhs.destination_id == rhs.destination_id;
+            ret &= lhs.destination_name == rhs.destination_name;
             return ret;
         }
 
@@ -90,6 +93,8 @@ namespace fcore {
         uint16_t destination_channel;
         std::string source_id;
         std::string source_name;
+        std::string destination_id;
+        std::string destination_name;
         std::string type;
         iom_metadata metadata;
     };
