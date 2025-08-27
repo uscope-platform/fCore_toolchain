@@ -98,13 +98,10 @@ namespace fcore::emulator_v2 {
                 output_ivs[c.id][o.name] = std::vector<uint32_t>(c.channels, 0);
             }
             for(auto &m:c.memories) {
-                if(m.is_output) {
-                     if(std::holds_alternative<std::vector<uint32_t>>(m.value)) {
-                         output_ivs[c.id][m.name] = std::get<std::vector<uint32_t>>(m.value);
-                    } else {
-                        output_ivs[c.id][m.name] = emulator_backend::float_to_uint32_v(std::get<std::vector<float>>(m.value));
-                    }
-
+                if(std::holds_alternative<std::vector<uint32_t>>(m.value)) {
+                    output_ivs[c.id][m.name] = std::get<std::vector<uint32_t>>(m.value);
+                } else {
+                    output_ivs[c.id][m.name] = emulator_backend::float_to_uint32_v(std::get<std::vector<float>>(m.value));
                 }
             }
         }
