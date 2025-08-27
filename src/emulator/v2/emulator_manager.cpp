@@ -38,6 +38,15 @@ namespace fcore::emulator_v2 {
             dp.n_channels = bundles[i].active_channels;
             dp.name = bundles[i].name;
             dp.program = bundles[i].program;
+            for(int j = 0; j<bundles[i].input.size(); j++) {
+                dp.inputs.push_back({});
+                dp.inputs[j].name = bundles[i].input[j].name;
+                dp.inputs[j].data = bundles[i].input[j].data;
+                dp.inputs[j].metadata.is_signed = bundles[i].input[j].metadata.is_signed;
+                dp.inputs[j].metadata.type = bundles[i].input[j].metadata.type;
+                dp.inputs[j].metadata.width = bundles[i].input[j].metadata.width;
+                dp.inputs[j].source_type = bundles[i].input[j].source_type;
+            }
             ret.push_back(dp);
         }
         return ret;
