@@ -399,12 +399,9 @@ namespace fcore::emulator_v2 {
                         current_channel++;
                     } while (current_channel < core.n_channels);
                     is_in_progress = false;
-                    outputs_manager.process_outputs(running_cores, core.id, false);
-                    ic_manager.run_interconnect(core.id, sequencer.get_enabled_cores());
-                } else {
-                    outputs_manager.process_outputs(running_cores, core.id, false);
-                    ic_manager.run_interconnect(core.id, sequencer.get_enabled_cores());
                 }
+                outputs_manager.process_outputs(running_cores, core.id);
+                ic_manager.run_interconnect(core.id, sequencer.get_enabled_cores());
             }
             sequencer.advance_emulation();
         } while (!sequencer.sim_complete());
@@ -423,7 +420,7 @@ namespace fcore::emulator_v2 {
                 current_channel = 0;
                 if(sequencer.is_last_in_sequence(currently_active_core)){
                     sequencer.advance_emulation();
-                    outputs_manager.process_outputs(sequencer.get_running_cores(), current_core.id, true);
+                    outputs_manager.process_outputs(sequencer.get_running_cores(), "");
                 }
             } else {
                 current_channel++;

@@ -37,8 +37,7 @@ namespace fcore::emulator_v2{
         void process_specs(const std::shared_ptr<bus_allocator> &bus_engine);
         void process_outputs(
             const std::vector<core_step_metadata> &metadata,
-            const std::string &core,
-            bool all_cores
+            const std::string &core
         );
 
         bool process_scalar_output(

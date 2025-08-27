@@ -30,13 +30,12 @@ namespace fcore::emulator_v2{
 
     void emulation_outputs_manager::process_outputs(
         const std::vector<core_step_metadata> &metadata,
-        const std::string &core,
-        bool all_cores
+        const std::string &core
     ) {
         spdlog::trace("Processing outputs for core {}", core);
         for(auto &[core_name, slots]:data_section){
             core_step_metadata m;
-            if(core_name != core && !all_cores) continue;
+            if(core_name != core && core != "") continue;
             for(auto &m_temp:metadata){
                 if(core_name == m_temp.id) m = m_temp;
             }
