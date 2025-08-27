@@ -66,6 +66,8 @@ namespace fcore::emulator_v2 {
         sequencer.setup_run(emu_spec.emulation_time);
 
 
+        outputs_manager.set_initial_values(emu_spec.get_outputs_initial_values());
+
         for(auto &p:programs){
             emulator_runner r(p, ic_manager.get_bus_engine());
             runners->insert({p.name, r});

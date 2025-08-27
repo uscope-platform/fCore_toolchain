@@ -369,7 +369,10 @@ TEST(bus_deployment_interface, scalar_interconnect) {
                             "signed": true,
                             "common_io":false
                         },
-                        "source":{"type": "external"}
+                        "source":{
+                            "type": "external",
+                            "value":[0]
+                        }
                     }
                 ],
                 "outputs": [
@@ -495,7 +498,8 @@ TEST(bus_deployment_interface, multi_core_random_inputs) {
                             "common_io":false
                         },
                         "source": {
-                            "type": "random"
+                            "type": "random",
+                            "value":[0]
                         }
                     },
                     {
@@ -567,7 +571,10 @@ TEST(bus_deployment_interface, multi_core_random_inputs) {
                             "signed": true,
                             "common_io":false
                         },
-                        "source":{"type": "random"}
+                        "source":{
+                            "type": "random",
+                            "value":[0]
+                        }
                     }
                 ],
                 "outputs": [
@@ -677,7 +684,10 @@ TEST(bus_deployment_interface, scatter_interconnect) {
                             "signed": true,
                             "common_io":true
                         },
-                        "source":{"type": "external"}
+                        "source":{
+                            "type": "external",
+                            "value":[0]
+                        }
                     }
                 ],
                 "outputs":[

@@ -132,7 +132,8 @@ TEST(emulator_iom, emulator_random_inputs) {
                             "common_io": false
                         },
                         "source": {
-                            "type": "random"
+                            "type": "random",
+                            "value":[0]
                         }
                     },
                     {
@@ -145,7 +146,8 @@ TEST(emulator_iom, emulator_random_inputs) {
                             "common_io": false
                         },
                         "source": {
-                            "type": "random"
+                            "type": "random",
+                            "value":[0]
                         }
                     }
                 ],

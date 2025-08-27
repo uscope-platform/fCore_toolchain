@@ -16,6 +16,8 @@
 
 #include "data_structures/emulation/v2/specs/emulator_specs.hpp"
 
+#include "emulator/v2/backend/emulator_backend.hpp"
+
 namespace fcore::emulator_v2 {
 
     void emulator_specs::parse(const nlohmann::json &spec_obj) {
@@ -66,6 +68,42 @@ namespace fcore::emulator_v2 {
             if(c.id == core_id) return c.deployment;
         }
         throw std::runtime_error("core with ID: " + core_id + " not found");
+    }
+
+    std::unordered_map<std::string, std::unordered_map<std::string, uint32_t>> emulator_specs::
+    get_outputs_initial_values() {
+        std::unordered_map<std::string,std::unordered_map<std::string, uint32_t>> output_ivs;
+
+        std::unordered_map<std::string,std::unordered_map<std::string, uint32_t>> inputs_ivs;
+        for(auto &c:cores) {
+            for(auto &i: c.inputs) {
+                if(std::holds_alternative<std::vector<uint32_t>>(i.data[0])) {
+                    inputs_ivs[c.id][i.name] = std::get<std::vector<uint32_t>>(i.data[0])[0];
+                } else {
+                    inputs_ivs[c.id][i.name] = emulator_backend::float_to_uint32(std::get<std::vector<float>>(i.data[0])[0]);
+                }
+            }
+        }
+
+        for(auto &ic:interconnects) {
+            auto source_id = ic.source_endpoint.substr(0, ic.source_endpoint.find("."));
+            auto source_name = ic.source_endpoint.substr(ic.source_endpoint.find(".") + 1);
+
+            auto dest_id = ic.destination_endpoint.substr(0, ic.destination_endpoint.find("."));
+            auto dest_name = ic.destination_endpoint.substr(ic.destination_endpoint.find(".") + 1);
+            output_ivs[source_id][source_name] = inputs_ivs[dest_id][dest_name];
+        }
+        for(auto &c:cores) {
+            for(auto &o: c.outputs) {
+                if(!output_ivs.contains(c.id)) {
+                    output_ivs[c.id][o.name] = 0;
+                } else if(!output_ivs[c.id].contains(o.name)) {
+                    output_ivs[c.id][o.name] = 0;
+                }
+            }
+        }
+
+        return output_ivs;
     }
 
     emulator_output_specs emulator_specs::process_output(const nlohmann::json &o) {

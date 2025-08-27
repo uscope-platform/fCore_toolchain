@@ -36,6 +36,7 @@ namespace fcore::emulator_v2 {
 
         deployment_options get_deployment_options(const std::string &core_id);
 
+        std::unordered_map<std::string,std::unordered_map<std::string, uint32_t>> get_outputs_initial_values();
         std::vector<emulator_core> cores;
         std::vector<emulator_interconnect> interconnects;
         double emulation_time;

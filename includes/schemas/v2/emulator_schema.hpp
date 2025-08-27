@@ -150,7 +150,8 @@ const std::string emulator_schema_v2 = R"~(
                   "type": "object",
                   "title": "Object describing a single external input",
                   "required": [
-                    "type"
+                    "type",
+                    "value"
                   ],
                   "properties": {
                     "type": {

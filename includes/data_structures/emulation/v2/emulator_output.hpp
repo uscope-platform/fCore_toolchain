@@ -40,6 +40,7 @@ namespace fcore::emulator_v2 {
         std::map<std::string, std::vector<std::vector<float>>> get_float_data();
         uint64_t get_data_length(){return data[0].size();};
         double get_sampling_period() const{return sampling_period;};
+        bool is_empty(){return data[0][0].empty();};
 
     private:
         std::map<uint32_t, std::vector<std::string>> id;

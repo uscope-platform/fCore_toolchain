@@ -126,7 +126,8 @@
                   "type": "object",
                   "title": "Object describing a single external input",
                   "required": [
-                    "type"
+                    "type",
+                    "value"
                   ],
                   "properties": {
                     "type": {

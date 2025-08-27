@@ -36,13 +36,25 @@ namespace fcore::emulator_v2{
         for(auto &[core_name, slots]:data_section){
             core_step_metadata m;
             if(core_name != core && core != "") continue;
+            bool core_found = false;
             for(auto &m_temp:metadata){
-                if(core_name == m_temp.id) m = m_temp;
+                if(core_name == m_temp.id) {
+                    m = m_temp;
+                    core_found = true;
+                }
             }
+            if(!core_found) continue;
             if(!m.running){
-                // carry over previous outputs
+                // carry over previous outputs or get initial values
                 for(auto &out: slots){
-                    out.second.repeat_last_data_point();
+                    if(out.second.is_empty()) {
+                        for(int i = 0; i<m.n_channels; i++){
+                            out.second.add_data_point(initial_values[core_name][out.first], i);
+                        }
+                    } else {
+                        out.second.repeat_last_data_point();
+                    }
+
                 }
             } else {
                 for(auto &[slot_name,output]: slots){

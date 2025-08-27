@@ -540,7 +540,8 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
                 "common_io": false
               },
               "source": {
-                "type":"external"
+                "type":"external",
+                "value": [0]
               }
             }
         ],

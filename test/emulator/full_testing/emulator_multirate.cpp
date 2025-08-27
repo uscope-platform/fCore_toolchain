@@ -404,7 +404,7 @@ TEST(emulator_multirate, emulator_interconnect_multirate) {
     auto dbg = res_obj.dump(4);
 
     std::vector<float> res_1 = res_obj["test_0"]["outputs"]["mem"]["0"][0];
-    std::vector<float> reference_1 = {0.0, 1.0, 1.0, 6.0};
+    std::vector<float> reference_1 = {1.0, 1.0, 1.0, 6.0};
     for (size_t i = 0; i < res_1.size(); i++) {
         EXPECT_EQ(res_1[i], reference_1[i]);
     }
@@ -559,7 +559,7 @@ TEST(emulator_multirate, multirate_interconnect_initializaiton) {
     }
 
     std::vector<float> res_2= res_obj["slow_core"]["outputs"]["out"]["0"][0];
-    std::vector<float> reference_2 = {0.0, 70.4, 70.4};
+    std::vector<float> reference_2 = {40.0, 70.4, 70.4};
     for (size_t i = 0; i < res_2.size(); i++) {
         EXPECT_EQ(res_2[i], reference_2[i]);
     }

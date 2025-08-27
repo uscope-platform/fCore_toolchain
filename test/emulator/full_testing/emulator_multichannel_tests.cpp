@@ -503,7 +503,8 @@ TEST(emulator_multichannel, emulator_multichannel_gather_transfer) {
                     "common_io": false
                   },
                   "source": {
-                    "type":"external"
+                    "type":"external",
+                    "value":[0]
                   }
                 }
             ],
@@ -617,7 +618,8 @@ TEST(emulator_multichannel, emulator_multichannel_scatter_transfer) {
                         "common_io": false
                       },
                       "source": {
-                        "type":"external"
+                        "type":"external",
+                        "value":[0]
                       }
                     }
                 ],
@@ -751,7 +753,8 @@ TEST(emulator_multichannel, emulator_multichannel_vector_transfer) {
                         "common_io": false
                       },
                       "source": {
-                        "type":"external"
+                        "type":"external",
+                        "value":[0]
                       }
                     }],
                 "outputs":[
@@ -862,7 +865,8 @@ TEST(emulator_multichannel, emulator_multichannel_2d_vector_transfer) {
                         "common_io": false
                       },
                       "source": {
-                        "type":"external"
+                        "type":"external",
+                        "value":[0]
                       }
                     }],
                 "outputs":[
