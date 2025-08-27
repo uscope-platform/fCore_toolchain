@@ -70,17 +70,41 @@ namespace fcore::emulator_v2 {
         throw std::runtime_error("core with ID: " + core_id + " not found");
     }
 
-    std::unordered_map<std::string, std::unordered_map<std::string, uint32_t>> emulator_specs::
-    get_outputs_initial_values() {
-        std::unordered_map<std::string,std::unordered_map<std::string, uint32_t>> output_ivs;
+    std::unordered_map<std::string, std::unordered_map<std::string, std::vector<uint32_t>>> emulator_specs::
+    get_outputs_initial_values() const {
+        std::unordered_map<std::string,std::unordered_map<std::string, std::vector<uint32_t>>> output_ivs;
 
-        std::unordered_map<std::string,std::unordered_map<std::string, uint32_t>> inputs_ivs;
+        std::unordered_map<std::string,std::unordered_map<std::string, std::vector<uint32_t>>> inputs_ivs;
         for(auto &c:cores) {
-            for(auto &i: c.inputs) {
-                if(std::holds_alternative<std::vector<uint32_t>>(i.data[0])) {
-                    inputs_ivs[c.id][i.name] = std::get<std::vector<uint32_t>>(i.data[0])[0];
-                } else {
-                    inputs_ivs[c.id][i.name] = emulator_backend::float_to_uint32(std::get<std::vector<float>>(i.data[0])[0]);
+            for(auto &in: c.inputs) {
+                std::vector<uint32_t> data;
+                for(int j = 0; j < c.channels; j++) {
+                    int idx = 0;
+                    if(in.data.size() != 1) idx = j;
+
+                    if(std::holds_alternative<std::vector<uint32_t>>(in.data[idx])) {
+                        data.push_back(std::get<std::vector<uint32_t>>(in.data[idx])[0]);
+                    } else {
+                        data.push_back(emulator_backend::float_to_uint32(std::get<std::vector<float>>(in.data[idx])[0]));
+                    }
+                }
+                inputs_ivs[c.id][in.name] = data;
+            }
+        }
+
+
+        for(auto &c:cores) {
+            for(auto &o: c.outputs) {
+                output_ivs[c.id][o.name] = std::vector<uint32_t>(c.channels, 0);
+            }
+            for(auto &m:c.memories) {
+                if(m.is_output) {
+                     if(std::holds_alternative<std::vector<uint32_t>>(m.value)) {
+                         output_ivs[c.id][m.name] = std::get<std::vector<uint32_t>>(m.value);
+                    } else {
+                        output_ivs[c.id][m.name] = emulator_backend::float_to_uint32_v(std::get<std::vector<float>>(m.value));
+                    }
+
                 }
             }
         }
@@ -92,15 +116,6 @@ namespace fcore::emulator_v2 {
             auto dest_id = ic.destination_endpoint.substr(0, ic.destination_endpoint.find("."));
             auto dest_name = ic.destination_endpoint.substr(ic.destination_endpoint.find(".") + 1);
             output_ivs[source_id][source_name] = inputs_ivs[dest_id][dest_name];
-        }
-        for(auto &c:cores) {
-            for(auto &o: c.outputs) {
-                if(!output_ivs.contains(c.id)) {
-                    output_ivs[c.id][o.name] = 0;
-                } else if(!output_ivs[c.id].contains(o.name)) {
-                    output_ivs[c.id][o.name] = 0;
-                }
-            }
         }
 
         return output_ivs;

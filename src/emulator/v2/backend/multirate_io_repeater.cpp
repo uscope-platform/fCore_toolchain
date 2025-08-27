@@ -23,10 +23,10 @@ void fcore::emulator_v2::multirate_io_repeater::add_output(const endpoint_descri
 }
 
 uint32_t fcore::emulator_v2::multirate_io_repeater::
-get_output(const endpoint_descriptor &source, const endpoint_descriptor &dest,  uint32_t addr, uint32_t channel) {
+get_output(const endpoint_descriptor &source,  uint32_t addr, uint32_t channel) {
     if(!initialized_endpoints[source.core_name][source.port_name]) {
-        auto val =  initial_input_values[dest.core_name][dest.port_name];
-        return val;
+        auto val =  initial_input_values[source.core_name][source.port_name];
+        return val[channel];
     } else {
         return working_map[source.core_name][channel][addr];
     }

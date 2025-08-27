@@ -49,7 +49,8 @@ namespace fcore::emulator_v2{
                 for(auto &out: slots){
                     if(out.second.is_empty()) {
                         for(int i = 0; i<m.n_channels; i++){
-                            out.second.add_data_point(initial_values[core_name][out.first], i);
+                            auto data_point = initial_values[core_name][out.first][i];
+                            out.second.add_data_point(data_point, i);
                         }
                     } else {
                         out.second.repeat_last_data_point();

@@ -410,7 +410,7 @@ TEST(emulator_multirate, emulator_interconnect_multirate) {
     }
 
     std::vector<float> res_2= res_obj["test_1"]["outputs"]["mem"]["0"][0];
-    std::vector<float> reference_2 = {0.0, 1.0, 2.0,8.0};
+    std::vector<float> reference_2 = {1.0, 2.0, 3.0,9.0};
     for (size_t i = 0; i < res_2.size(); i++) {
         EXPECT_EQ(res_2[i], reference_2[i]);
     }

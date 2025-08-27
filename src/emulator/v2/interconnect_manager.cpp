@@ -130,7 +130,7 @@ namespace fcore::emulator_v2 {
             auto res = runners->at(dst_core.core_name).dma_write(dst_addr, dst_channel, read_result.value());
             if(!res) throw std::runtime_error("Error during write phase of register to register transfer " +src_core.core_name + "->" + dst_core.core_name);
         } else {
-            auto val = output_repeater.get_output(src_core,dst_core, src_addr, src_channel);
+            auto val = output_repeater.get_output(src_core, src_addr, src_channel);
             auto val_f = emulator_backend::uint32_to_float(val);
             auto res = runners->at(dst_core.core_name).dma_write(dst_addr, dst_channel, val);
             if(!res) throw std::runtime_error("Error during register to register transfer " +src_core.core_name+ "->" + dst_core.core_name);
@@ -140,37 +140,7 @@ namespace fcore::emulator_v2 {
 
     void interconnect_manager::set_emulation_specs(const emulator_specs &specs) {
         bus_engine->set_emulation_specs(specs);
-        std::unordered_map<std::string, std::unordered_map<std::string, uint32_t>> initial_input_values;
-        for(auto &c:specs.cores) {
-            for(auto &in:c.inputs) {
-                if(in.source_type == external_input && !in.data.empty()) {
-                    for(int i = 0; i<in.vector_size; i++) {
-                        if(in.data.size() == 1 ) {
-                            if(std::holds_alternative<std::vector<float>>(in.data[0])) {
-                                auto val = emulator_backend::float_to_uint32_v(std::get<std::vector<float>>(in.data[0]));
-                                initial_input_values[c.id][in.name] = val[0];
-                            } else {
-                                auto val = std::get<std::vector<uint32_t>>(in.data[0]);
-                                initial_input_values[c.id][in.name] = val[0];
-                            }
-                        } else {
-                            if(std::holds_alternative<std::vector<float>>(in.data[i])) {
-                                auto val = emulator_backend::float_to_uint32_v(std::get<std::vector<float>>(in.data[i]));
-                                initial_input_values[c.id][in.name] = val[0];
-                            } else {
-                                auto val = std::get<std::vector<uint32_t>>(in.data[i]);
-                                initial_input_values[c.id][in.name] = val[0];
-                            }
-                        }
-
-                    }
-                } else {
-                    initial_input_values[c.id][in.name] = 0;
-                }
-
-            }
-        }
-        output_repeater.set_initial_input_values(initial_input_values);
+        output_repeater.set_initial_input_values(specs.get_outputs_initial_values());
     }
 
     void interconnect_manager::clear_repeater() {
