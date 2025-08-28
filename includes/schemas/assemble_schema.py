@@ -58,12 +58,14 @@ with open(schemas_dir + "/cores_schema.json", "r") as f:
 with open(schemas_dir + "/interconnect_schema.json", "r") as f:
     interconnect_schema = f.read()
 
+with open(schemas_dir + "/core_input_schema.json", "r") as f:
+    input_schema = f.read()
+
 
     schema_obj = json.loads(schema_base)
-    schema_obj["$defs"] = {
-        "cores": json.loads(cores_schema),
-        "interconnect": json.loads(interconnect_schema)
-    }
+    schema_obj["$defs"]["cores"] = json.loads(cores_schema)
+    schema_obj["$defs"]["input_source"] = json.loads(input_schema)
+    schema_obj["$defs"]["interconnect"] = json.loads(interconnect_schema)
     schema_obj["properties"]["cores"] = {"$ref": "#/$defs/cores"}
     schema_obj["properties"]["interconnect"] = {"$ref": "#/$defs/interconnect"}
 

@@ -1,0 +1,51 @@
+{
+  "type": "object",
+  "title": "Object describing a single external input",
+  "required": [
+    "type",
+    "value"
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["constant", "series", "external", "random", "waveform"],
+      "title": "Type of source"
+    },
+    "value": {
+      "anyOf": [
+        {
+          "type": "number",
+          "title": "Constant to be used as input"
+        },
+        {
+          "type": "array",
+          "title": "Constants to be used as input",
+          "items": {
+            "type": "number"
+          }
+        },
+        {
+          "type": "array",
+          "title": "Constants to be used as input",
+          "items": {
+            "type": "array"
+          }
+        },
+        {
+          "type": "string",
+          "value": ""
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"type": {"enum": ["constant"]}}},
+      "then": {"required": ["value"]}
+    },
+    {
+      "if": {"properties": {"type": {"enum": ["file"]}}},
+      "then": {"required": ["series", "file"]}
+    }
+  ]
+}
