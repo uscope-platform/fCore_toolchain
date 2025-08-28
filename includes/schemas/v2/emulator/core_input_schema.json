@@ -2,8 +2,7 @@
   "type": "object",
   "title": "Object describing a single external input",
   "required": [
-    "type",
-    "value"
+    "type"
   ],
   "properties": {
     "type": {
@@ -85,7 +84,7 @@
   },
   "allOf": [
     {
-      "if": {"properties": {"type": {"enum": ["constant"]}}},
+      "if": {"properties": {"type": {"enum": ["constant", "series", "external"]}}},
       "then": {"required": ["value"]}
     },
     {

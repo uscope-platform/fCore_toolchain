@@ -100,7 +100,359 @@ TEST(compiler_schema, validation_fail_ints_as_floats) {
         std::string correct_message = "Both rom and control addresses for core test should be integer like numbers";
         EXPECT_EQ(message, correct_message);
     }
-
-
 }
 
+
+TEST(emulator_schema, waveform_square_success) {
+        nlohmann::json specs = nlohmann::json::parse(
+                R"({
+        "version": 2,
+        "cores": [
+            {
+                "id": "producer",
+                "order": 1,
+                "inputs": [
+                    {
+                      "name": "input_2",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false
+                      },
+                      "source": {
+                        "type":"waveform",
+                        "shape":"square",
+                        "von": 21.1,
+                        "voff": 21.1,
+                        "tdelay": 21.1,
+                        "period": 21.1,
+                        "ton": 21.1
+                      }
+                    }
+                ],
+                "outputs": [],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 1,
+        "deployment_mode": false
+    })");
+    schema_validator_base validator(emulator_input, 2);
+    EXPECT_NO_THROW(validator.validate(specs));
+}
+
+
+TEST(emulator_schema, waveform_missing_shape_fail) {
+
+
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+        "version": 2,
+        "cores": [
+            {
+                "id": "producer",
+                "order": 1,
+                "inputs": [
+                    {
+                      "name": "input_2",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false
+                      },
+                      "source": {
+                        "type":"waveform",
+                        "von": 21.1,
+                        "voff": 21.1,
+                        "tdelay": 21.1,
+                        "period": 21.1,
+                        "ton": 21.1
+                      }
+                    }
+                ],
+                "outputs": [],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 1,
+        "deployment_mode": false
+    })");
+    schema_validator_base validator(emulator_input,2);
+    testing::internal::CaptureStderr();
+    EXPECT_THROW(validator.validate(specs), std::invalid_argument);
+
+    auto message = testing::internal::GetCapturedStderr();
+    std::string correct_message = "Error #1\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Missing required property 'shape'.\nError #2\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against a conditional schema set by if-then-else constraints.\nError #3\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against child schema #2.\nError #4\n  context: <root>[cores][0][inputs][0]\n  desc:    Failed to validate against schema associated with property name 'source'.\nError #5\n  context: <root>[cores][0][inputs]\n  desc:    Failed to validate item #0 in array.\nError #6\n  context: <root>[cores][0]\n  desc:    Failed to validate against schema associated with property name 'inputs'.\nError #7\n  context: <root>[cores]\n  desc:    Failed to validate item #0 in array.\nError #8\n  context: <root>\n  desc:    Failed to validate against schema associated with property name 'cores'.\n";
+    EXPECT_EQ(message, correct_message);
+}
+
+
+TEST(emulator_schema, waveform_missing_square_parameter_fail) {
+
+
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+        "version": 2,
+        "cores": [
+            {
+                "id": "producer",
+                "order": 1,
+                "inputs": [
+                    {
+                      "name": "input_2",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false
+                      },
+                      "source": {
+                        "type":"waveform",
+                        "shape":"square",
+                        "voff": 21.1,
+                        "tdelay": 21.1,
+                        "period": 21.1,
+                        "ton": 21.1
+                      }
+                    }
+                ],
+                "outputs": [],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 1,
+        "deployment_mode": false
+    })");
+    schema_validator_base validator(emulator_input,2);
+    testing::internal::CaptureStderr();
+    EXPECT_THROW(validator.validate(specs), std::invalid_argument);
+
+    auto message = testing::internal::GetCapturedStderr();
+    std::string correct_message = "Error #1\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Missing required property 'von'.\nError #2\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against a conditional schema set by if-then-else constraints.\nError #3\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against child schema #3.\nError #4\n  context: <root>[cores][0][inputs][0]\n  desc:    Failed to validate against schema associated with property name 'source'.\nError #5\n  context: <root>[cores][0][inputs]\n  desc:    Failed to validate item #0 in array.\nError #6\n  context: <root>[cores][0]\n  desc:    Failed to validate against schema associated with property name 'inputs'.\nError #7\n  context: <root>[cores]\n  desc:    Failed to validate item #0 in array.\nError #8\n  context: <root>\n  desc:    Failed to validate against schema associated with property name 'cores'.\n";
+    EXPECT_EQ(message, correct_message);
+}
+
+
+TEST(emulator_schema, waveform_sine) {
+
+
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+        "version": 2,
+        "cores": [
+            {
+                "id": "producer",
+                "order": 1,
+                "inputs": [
+                    {
+                      "name": "input_2",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false
+                      },
+                      "source": {
+                        "type":"waveform",
+                        "shape":"sine",
+                        "dc_offset": 21.1,
+                        "amplitude": 21.1,
+                        "frequency": 21.1,
+                        "phase": 21.1
+                      }
+                    }
+                ],
+                "outputs": [],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 1,
+        "deployment_mode": false
+    })");
+    schema_validator_base validator(emulator_input, 2);
+    EXPECT_NO_THROW(validator.validate(specs));
+}
+
+
+TEST(emulator_schema, waveform_sine_missing_parameter_fail) {
+
+
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+        "version": 2,
+        "cores": [
+            {
+                "id": "producer",
+                "order": 1,
+                "inputs": [
+                    {
+                      "name": "input_2",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false
+                      },
+                      "source": {
+                        "type":"waveform",
+                        "shape":"sine",
+                        "amplitude": 21.1,
+                        "frequency": 21.1,
+                        "phase": 21.1
+                      }
+                    }
+                ],
+                "outputs": [],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 1,
+        "deployment_mode": false
+    })");
+    schema_validator_base validator(emulator_input,2);
+    testing::internal::CaptureStderr();
+    EXPECT_THROW(validator.validate(specs), std::invalid_argument);
+
+    auto message = testing::internal::GetCapturedStderr();
+    std::string correct_message = "Error #1\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Missing required property 'dc_offset'.\nError #2\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against a conditional schema set by if-then-else constraints.\nError #3\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against child schema #5.\nError #4\n  context: <root>[cores][0][inputs][0]\n  desc:    Failed to validate against schema associated with property name 'source'.\nError #5\n  context: <root>[cores][0][inputs]\n  desc:    Failed to validate item #0 in array.\nError #6\n  context: <root>[cores][0]\n  desc:    Failed to validate against schema associated with property name 'inputs'.\nError #7\n  context: <root>[cores]\n  desc:    Failed to validate item #0 in array.\nError #8\n  context: <root>\n  desc:    Failed to validate against schema associated with property name 'cores'.\n";
+    EXPECT_EQ(message, correct_message);
+}
+
+
+TEST(emulator_schema, waveform_triangle) {
+
+
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+        "version": 2,
+        "cores": [
+            {
+                "id": "producer",
+                "order": 1,
+                "inputs": [
+                    {
+                      "name": "input_2",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false
+                      },
+                      "source": {
+                        "type":"waveform",
+                        "shape":"triangle",
+                        "dc_offset": 21.1,
+                        "amplitude": 21.1,
+                        "frequency": 21.1,
+                        "phase": 21.1,
+                        "duty": 0.3
+                      }
+                    }
+                ],
+                "outputs": [],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 1,
+        "deployment_mode": false
+    })");
+    schema_validator_base validator(emulator_input, 2);
+    EXPECT_NO_THROW(validator.validate(specs));
+}
+
+
+TEST(emulator_schema, waveform_triangle_missing_parameter_fail) {
+
+
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+        "version": 2,
+        "cores": [
+            {
+                "id": "producer",
+                "order": 1,
+                "inputs": [
+                    {
+                      "name": "input_2",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false
+                      },
+                      "source": {
+                        "type":"waveform",
+                        "shape":"triangle",
+                        "dc_offset": 21.1,
+                        "amplitude": 21.1,
+                        "frequency": 21.1,
+                        "phase": 21.1
+                      }
+                    }
+                ],
+                "outputs": [],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 1,
+        "deployment_mode": false
+    })");
+    schema_validator_base validator(emulator_input,2);
+    testing::internal::CaptureStderr();
+    EXPECT_THROW(validator.validate(specs), std::invalid_argument);
+
+    auto message = testing::internal::GetCapturedStderr();
+    std::string correct_message = "Error #1\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Missing required property 'duty'.\nError #2\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against a conditional schema set by if-then-else constraints.\nError #3\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against child schema #4.\nError #4\n  context: <root>[cores][0][inputs][0]\n  desc:    Failed to validate against schema associated with property name 'source'.\nError #5\n  context: <root>[cores][0][inputs]\n  desc:    Failed to validate item #0 in array.\nError #6\n  context: <root>[cores][0]\n  desc:    Failed to validate against schema associated with property name 'inputs'.\nError #7\n  context: <root>[cores]\n  desc:    Failed to validate item #0 in array.\nError #8\n  context: <root>\n  desc:    Failed to validate against schema associated with property name 'cores'.\n";
+    EXPECT_EQ(message, correct_message);
+}
