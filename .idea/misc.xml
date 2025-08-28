@@ -26,11 +26,17 @@
       </list>
     </option>
   </component>
+  <component name="Black">
+    <option name="sdkName" value="Python 3.12 (fCore_toolchain)" />
+  </component>
   <component name="CMakePythonSetting">
-    <option name="pythonIntegrationState" value="YES" />
+    <option name="pythonIntegrationState" value="NO" />
   </component>
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="ES6" />
+  </component>
+  <component name="ProjectResources">
+    <resource url="schema" location="$PROJECT_DIR$/includes/schemas/v2/emulator/emulator_spec_schema.json" />
   </component>
 </project>

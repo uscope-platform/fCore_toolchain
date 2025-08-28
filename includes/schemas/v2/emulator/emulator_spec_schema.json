@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "title": "Root Schema",
+  "required": [
+    "version",
+    "cores",
+    "interconnect",
+    "emulation_time",
+    "deployment_mode"
+  ],
+
+
+  "properties": {
+    "version":{
+      "type": "integer",
+      "title": "input file schema version"
+    },
+    "cores": {"$ref": "cores_schema.json"},
+    "interconnect": {"$ref": "interconnect_schema.json"},
+    "emulation_time": {
+      "type": "number",
+      "title": "Length of time to emulation_phase"
+    },
+    "deployment_mode": {
+      "type": "boolean",
+      "title": "Enable custom image deployment mode"
+    }
+  }
+}

@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.15)
 
 project(fCore_toolchain)
 
+find_package(Python3 REQUIRED)
+
 include(GNUInstallDirs)
 
 option(BUILD_TESTS "Build test programs" OFF)
@@ -71,4 +73,14 @@ unset(BUILD_TESTS CACHE)
 include(ExternalProject)
 
 add_custom_target(parsers)
-add_dependencies(parsers c_parser_gen asm_parser_gen)
+add_dependencies(parsers c_parser_gen asm_parser_gen schema_assembler)
+
+
+add_custom_command(
+        OUTPUT ${CMAKE_SOURCE_DIR}/includes/schemas/v2/emulator/emulator_schema_v2.hpp
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/includes/schemas/assemble_schema.py ${CMAKE_SOURCE_DIR}
+        DEPENDS ${CMAKE_SOURCE_DIR}/includes/schemas/v2/emulator/*.json
+        COMMENT "Assembling emulator schemas"
+)
+
+add_custom_target(schema_assembler DEPENDS ${CMAKE_SOURCE_DIR}/includes/schemas/v2/emulator/emulator_schema_v2.hpp)

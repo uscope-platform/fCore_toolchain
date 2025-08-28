@@ -46,6 +46,7 @@ target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES}
         )
 
 
+add_dependencies(test_target schema_assembler)
 
 include(GoogleTest)
 gtest_discover_tests(test_target)

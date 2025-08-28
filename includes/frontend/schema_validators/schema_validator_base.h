@@ -24,8 +24,8 @@
 #include <valijson/schema_parser.hpp>
 #include <valijson/validator.hpp>
 
-#include "schemas/v2/compiler_schema.hpp"
-#include "schemas/v2/emulator_schema.hpp"
+#include "../../schemas/v2/compiler/compiler_schema.hpp"
+#include "../../schemas/v2/emulator/emulator_schema_v2.hpp"
 
 namespace fcore{
 

@@ -145,6 +145,7 @@ target_link_libraries(fCore_has PRIVATE
         fcore_has_lib
         CLI11::CLI11
         )
+add_dependencies(fCore_has schema_assembler)
 
 add_library(fcore_cc_lib ${FCORE_CC_SRCS} ${C_PARSER_SRCS})
 target_link_libraries(fcore_cc_lib PUBLIC
@@ -159,6 +160,7 @@ target_link_libraries(fCore_cc PRIVATE common_srcs
         fcore_cc_lib
         CLI11::CLI11
         )
+add_dependencies(fCore_cc schema_assembler)
 
 add_library(fcore_dis_lib ${FCORE_DIS_SRCS})
 target_link_libraries(fcore_dis_lib PUBLIC
@@ -171,6 +173,7 @@ target_link_libraries(fCore_dis PRIVATE
         CLI11::CLI11
         spdlog::spdlog
         )
+add_dependencies(fCore_dis schema_assembler)
 
 
 add_executable(fCore_emu fcore_emu_main.cpp)
@@ -223,9 +226,10 @@ target_link_libraries(fCore_emu
         spdlog::spdlog
         CLI11::CLI11
 )
+add_dependencies(fCore_emu schema_assembler)
 
 add_custom_target(toolchain)
-add_dependencies(toolchain fCore_has fCore_cc fCore_dis fCore_emu)
+add_dependencies(toolchain fCore_has fCore_cc fCore_dis fCore_emu schema_assembler)
 
 
 install(TARGETS fCore_has DESTINATION ${CMAKE_INSTALL_BINDIR})
