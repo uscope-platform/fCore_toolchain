@@ -36,6 +36,51 @@
           "value": ""
         }
       ]
+    },
+    "shape": {
+      "type": "string",
+      "enum": ["triangle", "square", "sine"],
+      "title": "Shape of the waveform"
+    },
+    "voff": {
+      "type": "number",
+      "title": "Off state level"
+    },
+    "von": {
+      "type": "number",
+      "title": "On state level"
+    },
+    "tdelay": {
+      "type": "number",
+      "title": "First transition delay from start"
+    },
+    "ton": {
+      "type": "number",
+      "title": "On time"
+    },
+    "period": {
+      "type": "number",
+      "title": "Period"
+    },
+    "dc_offset": {
+      "type": "number",
+      "title": "DC offset from the reference level"
+    },
+    "amplitude": {
+      "type": "number",
+      "title": "Ampliture of the waveform"
+    },
+    "frequency": {
+      "type": "number",
+      "title": "Frequency of the waveform"
+    },
+    "phase": {
+      "type": "number",
+      "title": "Initial phase angle of the waveform"
+    },
+    "duty": {
+      "type": "number",
+      "title": "0 for rising sawtooth,0.5 for triangle and 1 for falling sawtooth"
     }
   },
   "allOf": [
@@ -46,6 +91,84 @@
     {
       "if": {"properties": {"type": {"enum": ["file"]}}},
       "then": {"required": ["series", "file"]}
+    },
+    {
+      "if": {"properties": {"type": {"enum": ["waveform"]}}},
+      "then": {"required": ["shape"]}
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "waveform"
+          },
+          "shape": {
+            "const": "square"
+          }
+        },
+        "required": [
+          "type",
+          "shape"
+        ]
+      },
+      "then": {
+        "required": [
+          "von",
+          "voff",
+          "tdelay",
+          "ton",
+          "period"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "waveform"
+          },
+          "shape": {
+            "const": "triangle"
+          }
+        },
+        "required": [
+          "type",
+          "shape"
+        ]
+      },
+      "then": {
+        "required": [
+          "dc_offset",
+          "amplitude",
+          "frequency",
+          "phase",
+          "duty"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "waveform"
+          },
+          "shape": {
+            "const": "sine"
+          }
+        },
+        "required": [
+          "type",
+          "shape"
+        ]
+      },
+      "then": {
+        "required": [
+          "dc_offset",
+          "amplitude",
+          "frequency",
+          "phase"
+        ]
+      }
     }
   ]
 }
