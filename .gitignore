@@ -24,3 +24,4 @@ cmake-build-debug-llvm/
 cmake-build-relwithdebinfo-llvm/
 
 cmake-build-release-llvm/
+/includes/schemas/v2/emulator/emulator_schema_v2.hpp
