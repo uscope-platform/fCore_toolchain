@@ -170,53 +170,80 @@ namespace fcore::emulator_v2 {
             in.metadata.io_address =  std::vector<uint32_t>(in.vector_size, 0);;
         }
         in.metadata.is_common_io = i["metadata"]["common_io"];
-        in.source_type = source_type_map[i["source"]["type"]];
 
-        if(in.source_type == time_series_input){
+        auto source_obj = i["source"];
+        in.source_type = source_type_map[source_obj["type"]];
+
+        if(in.source_type == time_series_input) {
             std::vector<std::string> series;
             if(in.metadata.type== type_float){
-                if(i["source"]["value"][0].is_array()) {
-                    for(auto &item:i["source"]["value"]) {
+                if(source_obj["value"][0].is_array()) {
+                    for(auto &item:source_obj["value"]) {
                         std::vector<float> ds = item;
                         in.data.emplace_back(ds);
                     }
                 } else {
-                    std::vector<float> ds = i["source"]["value"];
+                    std::vector<float> ds = source_obj["value"];
                     in.data.emplace_back(ds);
                 }
             } else {
-                if(i["source"]["value"][0].is_array()) {
-                    for(auto &item:i["source"]["value"]) {
+                if(source_obj["value"][0].is_array()) {
+                    for(auto &item:source_obj["value"]) {
                         std::vector<uint32_t> ds = item;
                         in.data.emplace_back(ds);
                     }
                 } else {
-                    std::vector<uint32_t> ds = i["source"]["value"];
+                    std::vector<uint32_t> ds = source_obj["value"];
                     in.data.emplace_back(ds);
                 }
 
             }
+        } else if(in.source_type == waveform_input){
+            if(source_obj["shape"] == "square") {
+                in.shape = square_wave;
+                in.waveform_parameters[0] = source_obj["von"];
+                in.waveform_parameters[1] = source_obj["voff"];
+                in.waveform_parameters[2] = source_obj["tdelay"];
+                in.waveform_parameters[3] = source_obj["period"];
+                in.waveform_parameters[4] = source_obj["ton"];
+            } else if(source_obj["shape"] == "sine") {
+                in.shape = sine_wave;
+                in.waveform_parameters[0] = source_obj["dc_offset"];
+                in.waveform_parameters[1] = source_obj["amplitude"];
+                in.waveform_parameters[2] = source_obj["frequency"];
+                in.waveform_parameters[3] = source_obj["phase"];
+
+            } else if(source_obj["shape"] == "triangle") {
+                in.shape = triangle_wave;
+                in.waveform_parameters[0] = source_obj["dc_offset"];
+                in.waveform_parameters[1] = source_obj["amplitude"];
+                in.waveform_parameters[2] = source_obj["frequency"];
+                in.waveform_parameters[3] = source_obj["phase"];
+                in.waveform_parameters[4] = source_obj["duty"];
+            } else {
+                throw std::runtime_error(fmt::format("Unsupported waveform shape ({0}) for input {1}", i["shape"].dump(), in.name));
+            }
         } else {
-            if(i["source"].contains("value")) {
+            if(source_obj.contains("value")) {
                 std::vector<std::variant<std::vector<unsigned int>, std::vector<float>>> ds;
                 if(in.metadata.type== type_float){
-                    if(i["source"]["value"].is_array()){
-                        std::vector<float> v = i["source"]["value"];
+                    if(source_obj["value"].is_array()){
+                        std::vector<float> v = source_obj["value"];
                         for(auto &item:v){
                             ds.emplace_back(std::vector<float>({item}));
                         }
                     } else {
-                        std::vector<float> v = {i["source"]["value"]};
+                        std::vector<float> v = {source_obj["value"]};
                         ds.emplace_back(v);
                     }
                 } else {
-                    if(i["source"]["value"].is_array()){
-                        std::vector<uint32_t> v = i["source"]["value"];
+                    if(source_obj["value"].is_array()){
+                        std::vector<uint32_t> v = source_obj["value"];
                         for(auto &item:v){
                             ds.emplace_back(std::vector<uint32_t>({item}));
                         }
                     } else {
-                        std::vector<uint32_t> v = {i["source"]["value"]};
+                        std::vector<uint32_t> v = {source_obj["value"]};
                         ds.emplace_back(v);
                     }
                 }

@@ -30,8 +30,16 @@ namespace fcore {
         constant_input = 0,
         time_series_input = 1,
         external_input = 2,
-        random_input = 3
+        random_input = 3,
+        waveform_input = 4
     } source_type_t;
+
+    typedef enum {
+        square_wave,
+        sine_wave,
+        triangle_wave
+    } waveform_shape_t;
+
 
     typedef enum {
         type_float=0,
