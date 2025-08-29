@@ -62,9 +62,8 @@ TEST(waveform_generator, generate_sine) {
         auto sample = gen.get_value("test_sine");
         double val;
         file >> val;
-        EXPECT_NEAR(sample, val, 1e-4);
+        EXPECT_NEAR(sample, val, 1e-6);
     }
-
 }
 
 
