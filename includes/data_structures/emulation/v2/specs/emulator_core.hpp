@@ -64,8 +64,7 @@ namespace fcore::emulator_v2 {
         std::string name;
         iom_metadata metadata;
         source_type_t source_type;
-        waveform_shape_t shape;
-        std::vector<double> waveform_parameters;
+        std::variant<square_wave_parameters, sine_wave_parameters, triangle_wave_parameters> waveform_parameters;
         std::vector<std::variant<std::vector<uint32_t>, std::vector<float>>> data;
         std::vector<uint32_t> channel;
         bool is_vector;

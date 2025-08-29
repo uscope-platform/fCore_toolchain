@@ -108,6 +108,7 @@ set(FCORE_EMU_SRCS
         data_structures/emulation/v2/emulator_output.cpp
         data_structures/emulation/v2/specs/emulator_specs.cpp
         data_structures/emulation/v2/emulation_program.cpp
+        emulator/v2/input_waveform_generator.cpp
         emulator/v2/backend/emulator_backend.cpp
         emulator/v2/backend/emulation_outputs_manager.cpp
         emulator/v2/backend/efi_dispatcher.cpp

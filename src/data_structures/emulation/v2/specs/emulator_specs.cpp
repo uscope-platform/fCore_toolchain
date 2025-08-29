@@ -200,26 +200,29 @@ namespace fcore::emulator_v2 {
             }
         } else if(in.source_type == waveform_input){
             if(source_obj["shape"] == "square") {
-                in.shape = square_wave;
-                in.waveform_parameters[0] = source_obj["von"];
-                in.waveform_parameters[1] = source_obj["voff"];
-                in.waveform_parameters[2] = source_obj["tdelay"];
-                in.waveform_parameters[3] = source_obj["period"];
-                in.waveform_parameters[4] = source_obj["ton"];
+                square_wave_parameters p;
+                p.v_off = source_obj["voff"];
+                p.v_on = source_obj["von"];
+                p.t_delay = source_obj["tdelay"];
+                p.t_on = source_obj["ton"];
+                p.period = source_obj["period"];
+                in.waveform_parameters  = p;
             } else if(source_obj["shape"] == "sine") {
-                in.shape = sine_wave;
-                in.waveform_parameters[0] = source_obj["dc_offset"];
-                in.waveform_parameters[1] = source_obj["amplitude"];
-                in.waveform_parameters[2] = source_obj["frequency"];
-                in.waveform_parameters[3] = source_obj["phase"];
-
+                sine_wave_parameters p;
+                p.dc_offset = source_obj["dc_offset"];
+                p.amplitude = source_obj["amplitude"];
+                p.frequency = source_obj["frequency"];
+                p.phase = source_obj["phase"];
+                in.waveform_parameters  = p;
             } else if(source_obj["shape"] == "triangle") {
-                in.shape = triangle_wave;
-                in.waveform_parameters[0] = source_obj["dc_offset"];
-                in.waveform_parameters[1] = source_obj["amplitude"];
-                in.waveform_parameters[2] = source_obj["frequency"];
-                in.waveform_parameters[3] = source_obj["phase"];
-                in.waveform_parameters[4] = source_obj["duty"];
+
+                triangle_wave_parameters p;
+                p.dc_offset = source_obj["dc_offset"];
+                p.amplitude = source_obj["amplitude"];
+                p.frequency = source_obj["frequency"];
+                p.phase = source_obj["phase"];
+                p.duty = source_obj["duty"];
+                in.waveform_parameters  = p;
             } else {
                 throw std::runtime_error(fmt::format("Unsupported waveform shape ({0}) for input {1}", i["shape"].dump(), in.name));
             }

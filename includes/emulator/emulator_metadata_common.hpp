@@ -34,11 +34,28 @@ namespace fcore {
         waveform_input = 4
     } source_type_t;
 
-    typedef enum {
-        square_wave,
-        sine_wave,
-        triangle_wave
-    } waveform_shape_t;
+    struct square_wave_parameters {
+        double v_on;
+        double v_off;
+        double period;
+        double t_delay;
+        double t_on;
+    };
+
+    struct sine_wave_parameters {
+        double dc_offset;
+        double amplitude;
+        double frequency;
+        double phase;
+    };
+
+    struct triangle_wave_parameters {
+        double dc_offset;
+        double amplitude;
+        double frequency;
+        double phase;
+        double duty;
+    };
 
 
     typedef enum {

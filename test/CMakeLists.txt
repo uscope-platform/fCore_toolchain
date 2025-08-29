@@ -22,6 +22,7 @@ set(TEST_SOURCES
         emulator/emulator_schema_validation.cpp
         emulator/emulator_runner.cpp
         emulator/bus_deployment_interface.cpp
+        emulator/waveform_generator.cpp
         tools/length_analysis.cpp
         tools/deep_copy.cpp
         tools/expression_evaluator.cpp
@@ -80,6 +81,13 @@ configure_file(emulator_files/test_compilation_memory.json ${EMU_TEST_FILES_DIR}
 configure_file(emulator_files/exec_format/test_exec_format.json ${EMU_TEST_FILES_DIR} COPYONLY)
 configure_file(emulator_files/exec_format/test_exec_format_error.json ${EMU_TEST_FILES_DIR} COPYONLY)
 
+# WAVEFORM GENERATOR TEST REFERENCE
+set(IN_GEN_TEST_REF ${CMAKE_CURRENT_BINARY_DIR}/in_gen)
+file(MAKE_DIRECTORY ${IN_GEN_TEST_REF})
+
+configure_file(waveform_check_files/sine.txt ${IN_GEN_TEST_REF} COPYONLY)
+configure_file(waveform_check_files/square.txt ${IN_GEN_TEST_REF} COPYONLY)
+configure_file(waveform_check_files/triangle.txt ${IN_GEN_TEST_REF} COPYONLY)
 
 
 set(EMU_TEST_SCHEMAS_FILES_DIR ${CMAKE_CURRENT_BINARY_DIR}/emu/schemas)
