@@ -31,6 +31,7 @@ namespace fcore::emulator_v2 {
         void add_waveform(const std::string& in, std::variant<square_wave_parameters, sine_wave_parameters, triangle_wave_parameters> p)
             {parameters.insert({in, p});}
         double get_value(const std::string &in);
+        void reset() {current_sample.clear();}
     private:
         double produce_waveform(const square_wave_parameters &p, double time);
         double produce_waveform(const triangle_wave_parameters &p, double time);
@@ -38,7 +39,6 @@ namespace fcore::emulator_v2 {
         std::unordered_map<std::string, std::variant<square_wave_parameters, sine_wave_parameters, triangle_wave_parameters>> parameters;
         double sampling_period = 0;
         std::unordered_map<std::string, uint64_t> current_sample;
-        std::unordered_map<std::string, double> integrators_memory;
     };
 }
 

@@ -19,7 +19,6 @@ namespace  fcore::emulator_v2 {
     double input_waveform_generator::get_value(const std::string &in) {
         auto p = parameters.at(in);
         if(!current_sample.contains(in)) current_sample.insert({in, 0});
-        if(!integrators_memory.contains(in)) integrators_memory.insert({in, 0});
         auto time = static_cast<double>(current_sample.at(in))*sampling_period;
         current_sample[in]++;
         return std::visit([&](auto &&arg) { return produce_waveform(arg, time); }, p);
