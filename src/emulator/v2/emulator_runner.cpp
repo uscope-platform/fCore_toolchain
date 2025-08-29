@@ -63,6 +63,11 @@ namespace fcore::emulator_v2 {
 
     }
 
+    void emulator_runner::add_waveform(const std::string &in,
+        std::variant<square_wave_parameters, sine_wave_parameters, triangle_wave_parameters> p) {
+        waveforms_generator.add_waveform(in, p);
+    }
+
     std::vector<uint32_t> emulator_runner::sanitize_program(const std::vector<uint32_t> &raw_prog) {
         std::vector<uint32_t> program;
         int section = 0;
@@ -101,7 +106,9 @@ namespace fcore::emulator_v2 {
                 if(input_override[info.id].contains(in.name)) continue;
                 std::vector<uint32_t> input_val;
                 if(in.source_type == external_input) continue;
-                if(in.source_type == random_input) {
+                if(in.source_type == waveform_input) {
+                    //TODO: IMPLEMENT WAVEFORM INPUT
+                } else if(in.source_type == random_input) {
                     for(int i = 0; i< in.vector_size; i++) {
                         auto in_i = distrib(gen);
                         input_val = {emulator_backend::float_to_uint32(quant_norm[in_i])};

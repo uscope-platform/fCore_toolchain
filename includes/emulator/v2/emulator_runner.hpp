@@ -21,6 +21,7 @@
 #include "emulator/v2/backend/emulator_backend.hpp"
 #include "emulator/v2/emulation_sequencer.hpp"
 #include "emulator/v2/emulator_builder.hpp"
+#include "emulator/v2/input_waveform_generator.hpp"
 #include "emulator/erfinv_quant.hpp"
 
 #include <random>
@@ -32,6 +33,9 @@ namespace fcore::emulator_v2 {
     public:
 
         explicit emulator_runner(program_bundle &prog, const std::shared_ptr<bus_allocator> &bus_engine);
+
+        void set_sampling_frequency(const double &sf) {waveforms_generator.set_sampling_frequency(sf);}
+        void add_waveform(const std::string& in, std::variant<square_wave_parameters, sine_wave_parameters, triangle_wave_parameters> p);
 
         void add_breakpoint(uint32_t addr) {backend.add_breakpoint(addr);};
         void remove_breakpoint(uint32_t addr) {backend.remove_breakpoint(addr);};
@@ -58,6 +62,8 @@ namespace fcore::emulator_v2 {
 
         static std::vector<uint32_t> sanitize_program(const std::vector<uint32_t>&  raw_prog);
         static constexpr uint16_t code_section_index = 3;
+
+        input_waveform_generator waveforms_generator;
 
         program_bundle program;
         std::string core_name;

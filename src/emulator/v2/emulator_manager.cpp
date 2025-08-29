@@ -357,6 +357,15 @@ namespace fcore::emulator_v2 {
             val.set_multichannel_debug(multichannel_debug);
         }
 
+
+        for(auto &core:emu_spec.cores) {
+            for(auto &in:core.inputs) {
+                if(in.source_type == waveform_input) {
+                    runners->at(core.id).add_waveform(in.name, in.waveform_parameters);
+                }
+            }
+        }
+
         spdlog::info("EMULATION START");
         try{
             currently_active_core = sequencer.get_core_by_order(1);

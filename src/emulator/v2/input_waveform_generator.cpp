@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "emulator/input_waveform_generator.hpp"
+#include "emulator/v2/input_waveform_generator.hpp"
 
 
 namespace  fcore::emulator_v2 {

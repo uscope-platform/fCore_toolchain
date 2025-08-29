@@ -16,7 +16,7 @@
 #include <fstream>
 #include <gtest/gtest.h>
 
-#include "emulator/input_waveform_generator.hpp"
+#include "../../includes/emulator/v2/input_waveform_generator.hpp"
 
 using namespace fcore::emulator_v2;
 
