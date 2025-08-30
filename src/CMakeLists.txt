@@ -196,6 +196,7 @@ target_link_libraries(fCore_emu_gp
         spdlog::spdlog
         CLI11::CLI11
 )
+add_dependencies(fCore_emu_gp schema_assembler)
 
 if(${INCLUDE_EMULATOR})
 
@@ -221,6 +222,8 @@ target_link_libraries(fcore_emu_lib PUBLIC
         fcore_cc_lib
         fcore_has_lib
 )
+add_dependencies(fcore_emu_lib schema_assembler)
+
 
 target_link_libraries(fCore_emu
         fcore_emu_lib
