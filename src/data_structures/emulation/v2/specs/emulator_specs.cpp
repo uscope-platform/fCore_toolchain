@@ -16,6 +16,7 @@
 
 #include "data_structures/emulation/v2/specs/emulator_specs.hpp"
 
+#include "emulator/v2/input_waveform_generator.hpp"
 #include "emulator/v2/backend/emulator_backend.hpp"
 
 namespace fcore::emulator_v2 {
@@ -81,8 +82,13 @@ namespace fcore::emulator_v2 {
                 for(int j = 0; j < c.channels; j++) {
                     int idx = 0;
                     if(in.data.size() != 1) idx = j;
-
-                    if(std::holds_alternative<std::vector<uint32_t>>(in.data[idx])) {
+                    if(in.source_type == waveform_input) {
+                        input_waveform_generator gen;
+                        gen.set_sampling_frequency(c.sampling_frequency);
+                        gen.add_waveform(in.name, in.waveform_parameters);
+                        const auto val = gen.peek_value(in.name);
+                        data.push_back(emulator_backend::float_to_uint32(val));
+                    }else if(std::holds_alternative<std::vector<uint32_t>>(in.data[idx])) {
                         data.push_back(std::get<std::vector<uint32_t>>(in.data[idx])[0]);
                     } else {
                         data.push_back(emulator_backend::float_to_uint32(std::get<std::vector<float>>(in.data[idx])[0]));

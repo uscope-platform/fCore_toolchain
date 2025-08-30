@@ -364,6 +364,7 @@ namespace fcore::emulator_v2 {
                     runners->at(core.id).add_waveform(in.name, in.waveform_parameters);
                 }
             }
+            runners->at(core.id).set_sampling_frequency(core.sampling_frequency);
         }
 
         spdlog::info("EMULATION START");

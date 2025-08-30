@@ -30,6 +30,7 @@ namespace fcore::emulator_v2 {
         void set_sampling_frequency(const double f){sampling_period = 1/f;}
         void add_waveform(const std::string& in, std::variant<square_wave_parameters, sine_wave_parameters, triangle_wave_parameters> p)
             {parameters.insert({in, p});}
+        double peek_value(const std::string &in);
         double get_value(const std::string &in);
         void reset() {current_sample.clear();}
     private:

@@ -163,7 +163,8 @@ namespace fcore {
         {"file", time_series_input},
         {"series", time_series_input},
         {"external", external_input},
-        {"random", random_input}
+        {"random", random_input},
+        {"waveform", waveform_input}
     };
 
 
