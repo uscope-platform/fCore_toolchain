@@ -77,10 +77,10 @@ add_dependencies(parsers c_parser_gen asm_parser_gen schema_assembler)
 
 
 add_custom_command(
-        OUTPUT ${CMAKE_SOURCE_DIR}/includes/schemas/v2/emulator/emulator_schema_v2.hpp
-        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/includes/schemas/assemble_schema.py ${CMAKE_SOURCE_DIR}
-        DEPENDS ${CMAKE_SOURCE_DIR}/includes/schemas/v2/emulator/*.json
+        OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/includes/schemas/v2/emulator/emulator_schema_v2.hpp
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/includes/schemas/assemble_schema.py ${CMAKE_CURRENT_SOURCE_DIR}
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/includes/schemas/v2/emulator/*.json
         COMMENT "Assembling emulator schemas"
 )
 
-add_custom_target(schema_assembler DEPENDS ${CMAKE_SOURCE_DIR}/includes/schemas/v2/emulator/emulator_schema_v2.hpp)
+add_custom_target(schema_assembler DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/includes/schemas/v2/emulator/emulator_schema_v2.hpp)
