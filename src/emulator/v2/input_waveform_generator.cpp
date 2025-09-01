@@ -16,31 +16,31 @@
 
 
 namespace  fcore::emulator_v2 {
-    double input_waveform_generator::peek_value(const std::string &in) {
+    double input_waveform_generator::peek_value(const std::string &in, uint32_t channel) {
         auto p = parameters.at(in);
         if(!current_sample.contains(in)) current_sample.insert({in, 0});
         auto time = static_cast<double>(current_sample.at(in))*sampling_period;
-        return std::visit([&](auto &&arg) { return produce_waveform(arg, time); }, p);
+        return std::visit([&](auto &&arg) { return produce_waveform(arg, time, channel); }, p);
 
     }
 
-    double input_waveform_generator::get_value(const std::string &in) {
-        auto result = peek_value(in);
+    double input_waveform_generator::get_value(const std::string &in, uint32_t channel) {
+        auto result = peek_value(in, channel);
         current_sample[in]++;
         return result;
     }
 
-    double input_waveform_generator::produce_waveform(const square_wave_parameters &p, double time) {
-        double normalized_time = std::fmod(time-p.t_delay, p.period);
-        if(normalized_time<(p.period-p.t_on)) return p.v_off;
-        else return p.v_on;
+    double input_waveform_generator::produce_waveform(const square_wave_parameters &p, double time, uint32_t channel) {
+        double normalized_time = std::fmod(time-p.t_delay[channel], p.period[channel]);
+        if(normalized_time<(p.period[channel]-p.t_on[channel])) return p.v_off[channel];
+        else return p.v_on[channel];
     }
 
-    double input_waveform_generator::produce_waveform(const triangle_wave_parameters &p, double time) {
+    double input_waveform_generator::produce_waveform(const triangle_wave_parameters &p, double time, uint32_t channel) {
 
-        auto period = 1/p.frequency;
-        auto t_peak = period*p.duty;
-        auto time_shift = p.phase/(2*M_PI*p.frequency);
+        auto period = 1/p.frequency[channel];
+        auto t_peak = period*p.duty[channel];
+        auto time_shift = p.phase[channel]/(2*M_PI*p.frequency[channel]);
 
         double normalized_time = std::fmod(time-time_shift, period);
         if (normalized_time < 0) {
@@ -56,7 +56,7 @@ namespace  fcore::emulator_v2 {
         }
     }
 
-    double input_waveform_generator::produce_waveform(const sine_wave_parameters &p, double time) {
-        return p.amplitude * std::sin(2 * M_PI * p.frequency * time + p.phase) + p.dc_offset;
+    double input_waveform_generator::produce_waveform(const sine_wave_parameters &p, double time, uint32_t channel) {
+        return p.amplitude[channel] * std::sin(2 * M_PI * p.frequency[channel] * time + p.phase[channel]) + p.dc_offset[channel];
     }
 }

@@ -27,16 +27,16 @@ TEST(waveform_generator, generate_square) {
     gen.set_sampling_frequency(1e6);
 
     fcore::square_wave_parameters p{};
-    p.period = 1e-3;
-    p.t_on = 850e-6;
-    p.v_on = 50;
-    p.v_off = -30;
-    p.t_delay = 124e-6;
+    p.period = {1e-3};
+    p.t_on = {850e-6};
+    p.v_on = {50};
+    p.v_off = {-30};
+    p.t_delay = {124e-6};
     gen.add_waveform("test_square", p);
 
     std::ifstream file("in_gen/square.txt");
     for(int i = 0; i < 2300; i++){
-        auto sample = gen.get_value("test_square");
+        auto sample = gen.get_value("test_square", 0);
         double val;
         file >> val;
         EXPECT_NEAR(sample, val, 1e-6);
@@ -51,15 +51,15 @@ TEST(waveform_generator, generate_sine) {
     gen.set_sampling_frequency(1e6);
 
     fcore::sine_wave_parameters p{};
-    p.amplitude = 25;
-    p.dc_offset = 25;
-    p.frequency = 1e3;
-    p.phase = 2.0*M_PI/3;
+    p.amplitude = {25};
+    p.dc_offset = {25};
+    p.frequency = {1e3};
+    p.phase = {2.0*M_PI/3};
     gen.add_waveform("test_sine", p);
 
     std::ifstream file("in_gen/sine.txt");
     for(int i = 0; i < 2300; i++){
-        auto sample = gen.get_value("test_sine");
+        auto sample = gen.get_value("test_sine", 0);
         double val;
         file >> val;
         EXPECT_NEAR(sample, val, 1e-6);
@@ -73,20 +73,52 @@ TEST(waveform_generator, generate_triangle) {
     gen.set_sampling_frequency(1e6);
 
     fcore::triangle_wave_parameters p{};
-    p.amplitude = 25;
-    p.dc_offset = 25;
-    p.frequency = 1e3;
-    p.phase = M_PI;
-    p.duty = 0.5;
+    p.amplitude = {25};
+    p.dc_offset = {25};
+    p.frequency = {1e3};
+    p.phase = {M_PI};
+    p.duty = {0.5};
     gen.add_waveform("test_triangle", p);
 
     std::ifstream file("in_gen/triangle.txt");
     for(int i = 0; i < 2300; i++){
-        auto sample = gen.get_value("test_triangle");
+        auto sample = gen.get_value("test_triangle", 0);
         double val;
         file >> val;
         EXPECT_NEAR(sample, val, 1e-4);
     }
+}
+
+
+
+TEST(waveform_generator, generate_sine_multichannel) {
+
+    input_waveform_generator gen;
+    gen.set_sampling_frequency(1e6);
+
+    fcore::sine_wave_parameters p{};
+    p.amplitude = {25, 50};
+    p.dc_offset = {25, 50};
+    p.frequency = {1e3,1e3};
+    p.phase = {2.0*M_PI/3,2.0*M_PI/3};
+    gen.add_waveform("test_sine", p);
+
+    std::ifstream file("in_gen/sine.txt");
+    for(int i = 0; i < 2300; i++){
+        auto sample = gen.get_value("test_sine", 0);
+        double val;
+        file >> val;
+        EXPECT_NEAR(sample, val, 1e-6);
+    }
+
+    file = std::ifstream("in_gen/sine_mc.txt");
+    for(int i = 0; i < 2300; i++){
+        auto sample = gen.get_value("test_sine", 1);
+        double val;
+        file >> val;
+        EXPECT_NEAR(sample, val, 1e-6);
+    }
+
 }
 
 

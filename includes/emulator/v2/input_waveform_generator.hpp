@@ -30,13 +30,13 @@ namespace fcore::emulator_v2 {
         void set_sampling_frequency(const double f){sampling_period = 1/f;}
         void add_waveform(const std::string& in, std::variant<square_wave_parameters, sine_wave_parameters, triangle_wave_parameters> p)
             {parameters.insert({in, p});}
-        double peek_value(const std::string &in);
-        double get_value(const std::string &in);
+        double peek_value(const std::string &in, uint32_t channel);
+        double get_value(const std::string &in, uint32_t channel);
         void reset() {current_sample.clear();}
     private:
-        double produce_waveform(const square_wave_parameters &p, double time);
-        double produce_waveform(const triangle_wave_parameters &p, double time);
-        double produce_waveform(const sine_wave_parameters &p, double time);
+        double produce_waveform(const square_wave_parameters &p, double time, uint32_t channel);
+        double produce_waveform(const triangle_wave_parameters &p, double time, uint32_t channel);
+        double produce_waveform(const sine_wave_parameters &p, double time, uint32_t channel);
         std::unordered_map<std::string, std::variant<square_wave_parameters, sine_wave_parameters, triangle_wave_parameters>> parameters;
         double sampling_period = 0;
         std::unordered_map<std::string, uint64_t> current_sample;

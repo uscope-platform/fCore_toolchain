@@ -124,11 +124,11 @@ TEST(emulator_schema, waveform_square_success) {
                       "source": {
                         "type":"waveform",
                         "shape":"square",
-                        "von": 21.1,
-                        "voff": 21.1,
-                        "tdelay": 21.1,
-                        "period": 21.1,
-                        "ton": 21.1
+                        "von": [21.1],
+                        "voff": [21.1],
+                        "tdelay": [21.1],
+                        "period": [21.1],
+                        "ton": [21.1]
                       }
                     }
                 ],
@@ -172,11 +172,11 @@ TEST(emulator_schema, waveform_missing_shape_fail) {
                       },
                       "source": {
                         "type":"waveform",
-                        "von": 21.1,
-                        "voff": 21.1,
-                        "tdelay": 21.1,
-                        "period": 21.1,
-                        "ton": 21.1
+                        "von": [21.1],
+                        "voff": [21.1],
+                        "tdelay": [21.1],
+                        "period": [21.1],
+                        "ton": [21.1]
                       }
                     }
                 ],
@@ -226,10 +226,10 @@ TEST(emulator_schema, waveform_missing_square_parameter_fail) {
                       "source": {
                         "type":"waveform",
                         "shape":"square",
-                        "voff": 21.1,
-                        "tdelay": 21.1,
-                        "period": 21.1,
-                        "ton": 21.1
+                        "voff": [21.1],
+                        "tdelay": [21.1],
+                        "period": [21.1],
+                        "ton": [21.1]
                       }
                     }
                 ],
@@ -279,10 +279,10 @@ TEST(emulator_schema, waveform_sine) {
                       "source": {
                         "type":"waveform",
                         "shape":"sine",
-                        "dc_offset": 21.1,
-                        "amplitude": 21.1,
-                        "frequency": 21.1,
-                        "phase": 21.1
+                        "dc_offset": [21.1],
+                        "amplitude": [21.1],
+                        "frequency": [21.1],
+                        "phase": [21.1]
                       }
                     }
                 ],
@@ -327,9 +327,9 @@ TEST(emulator_schema, waveform_sine_missing_parameter_fail) {
                       "source": {
                         "type":"waveform",
                         "shape":"sine",
-                        "amplitude": 21.1,
-                        "frequency": 21.1,
-                        "phase": 21.1
+                        "amplitude": [21.1],
+                        "frequency": [21.1],
+                        "phase": [21.1]
                       }
                     }
                 ],
@@ -379,11 +379,11 @@ TEST(emulator_schema, waveform_triangle) {
                       "source": {
                         "type":"waveform",
                         "shape":"triangle",
-                        "dc_offset": 21.1,
-                        "amplitude": 21.1,
-                        "frequency": 21.1,
-                        "phase": 21.1,
-                        "duty": 0.3
+                        "dc_offset": [21.1],
+                        "amplitude": [21.1],
+                        "frequency": [21.1],
+                        "phase": [21.1],
+                        "duty": [0.3]
                       }
                     }
                 ],
@@ -428,10 +428,10 @@ TEST(emulator_schema, waveform_triangle_missing_parameter_fail) {
                       "source": {
                         "type":"waveform",
                         "shape":"triangle",
-                        "dc_offset": 21.1,
-                        "amplitude": 21.1,
-                        "frequency": 21.1,
-                        "phase": 21.1
+                        "dc_offset": [21.1],
+                        "amplitude": [21.1],
+                        "frequency": [21.1],
+                        "phase": [21.1]
                       }
                     }
                 ],

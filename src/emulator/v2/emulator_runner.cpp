@@ -107,7 +107,7 @@ namespace fcore::emulator_v2 {
                 std::vector<uint32_t> input_val;
                 if(in.source_type == external_input) continue;
                 if(in.source_type == waveform_input) {
-                    auto val = waveforms_generator.get_value(in.name);
+                    auto val = waveforms_generator.get_value(in.name, channel);
                     input_val = {emulator_backend::float_to_uint32(val)};
                 } else if(in.source_type == random_input) {
                     for(int i = 0; i< in.vector_size; i++) {

@@ -35,26 +35,26 @@ namespace fcore {
     } source_type_t;
 
     struct square_wave_parameters {
-        double v_on;
-        double v_off;
-        double period;
-        double t_delay;
-        double t_on;
+        std::vector<double> v_on;
+        std::vector<double> v_off;
+        std::vector<double> period;
+        std::vector<double> t_delay;
+        std::vector<double> t_on;
     };
 
     struct sine_wave_parameters {
-        double dc_offset;
-        double amplitude;
-        double frequency;
-        double phase;
+        std::vector<double> dc_offset;
+        std::vector<double> amplitude;
+        std::vector<double> frequency;
+        std::vector<double> phase;
     };
 
     struct triangle_wave_parameters {
-        double dc_offset;
-        double amplitude;
-        double frequency;
-        double phase;
-        double duty;
+        std::vector<double> dc_offset;
+        std::vector<double> amplitude;
+        std::vector<double> frequency;
+        std::vector<double> phase;
+        std::vector<double> duty;
     };
 
 
