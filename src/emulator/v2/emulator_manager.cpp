@@ -133,6 +133,7 @@ namespace fcore::emulator_v2 {
                     dci.metadata.type = in.metadata.type;
                     dci.metadata.width = in.metadata.width;
                     dci.source_type = in. source_type;
+                    dci.waveform_parameters = in.waveform_parameters;
                     ret.push_back(dci);
                 }
                 return ret;

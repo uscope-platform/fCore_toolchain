@@ -89,6 +89,7 @@ namespace fcore {
         std::vector<std::variant<std::vector<uint32_t>, std::vector<float>>> data;
         std::vector<uint32_t> address;
         std::vector<uint32_t> channel;
+        std::variant<square_wave_parameters, sine_wave_parameters, triangle_wave_parameters> waveform_parameters;
     };
 
     struct deployer_interconnect_slot {
