@@ -150,7 +150,7 @@ namespace fcore::emulator_v2 {
         std::unordered_map<std::string, std::unordered_map<std::string, core_endpoint>> sources_map;
         std::unordered_map<std::string, std::unordered_map<std::string, core_endpoint>> destinations_map;
 
-        std::set<std::pair<std::string, std::string>> random_inputs;
+        std::set<std::pair<std::string, std::string>> waveform_inputs;
 
     };
 

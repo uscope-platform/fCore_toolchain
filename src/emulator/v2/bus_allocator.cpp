@@ -33,7 +33,7 @@ namespace fcore::emulator_v2 {
                 ep.vector_size = in.vector_size;
                 ep.endpoint_class = core_iom_input;
                 ep.metadata = in.metadata;
-                if(in.source_type == random_input) random_inputs.insert({core.id, in.name});
+                if(in.source_type == random_input || in.source_type == waveform_input) waveform_inputs.insert({core.id, in.name});
                 destinations_map[core.id][in.name] = ep;
             }
             for(auto &out:core.outputs) {
@@ -147,7 +147,7 @@ namespace fcore::emulator_v2 {
                         global_forbidden_addresses.insert( dest.bus_addresses.begin(),  dest.bus_addresses.end());
                     }
                 }
-                if(random_inputs.contains({dest.core_name, dest.source_name})) {
+                if(waveform_inputs.contains({dest.core_name, dest.source_name})) {
                     dest.bus_addresses = allocate_bus_address(dest.vector_size, {}, dest.metadata.io_address);
                     global_forbidden_addresses.insert( dest.bus_addresses.begin(),  dest.bus_addresses.end());
                 }
