@@ -84,7 +84,6 @@ namespace fcore::emulator_v2 {
                     if(in.data.size() != 1) idx = j;
                     if(in.source_type == waveform_input) {
                         input_waveform_generator gen;
-                        gen.set_sampling_frequency(c.sampling_frequency);
                         gen.add_waveform(in.name, in.waveform_parameters);
                         const auto val = gen.peek_value(in.name, j);
                         data.push_back(emulator_backend::float_to_uint32(val));
