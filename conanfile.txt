@@ -1,5 +1,5 @@
 [requires]
-antlr4-cppruntime/4.13.1
+antlr4-cppruntime/4.13.2
 nlohmann_json/3.12.0
 valijson/1.0.3
 spdlog/1.15.3

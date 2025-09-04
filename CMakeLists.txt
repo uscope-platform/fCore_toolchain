@@ -14,7 +14,7 @@ option(USE_CONAN "Use the conan package manager for dependency management" OFF)
 
 set(CMAKE_LINKER_TYPE MOLD)
 
-set(ANTLR_VERSION 4.13.1)
+set(ANTLR_VERSION 4.13.2)
 SET(ANTLR_JAR antlr-${ANTLR_VERSION}-complete.jar)
 set(ANTLR_CLASSPATH ${CMAKE_CURRENT_BINARY_DIR}/antlr_jar/${ANTLR_JAR})
 set(ANTLR_OPTIONS -Dlanguage=Cpp -visitor -listener  -encoding iso-8859-1)
@@ -71,6 +71,18 @@ endif(${BUILD_TESTS})
 unset(BUILD_TESTS CACHE)
 
 include(ExternalProject)
+
+set(ANTLR_URL "https://www.antlr.org/download/${ANTLR_JAR}")
+file(MAKE_DIRECTORY ${ANTLR_DIR})
+
+if(NOT EXISTS ${ANTLR_CLASSPATH})
+    message(STATUS "Downloading ${ANTLR_JAR} from ${ANTLR_URL}")
+    file(DOWNLOAD
+            ${ANTLR_URL}
+            ${ANTLR_CLASSPATH}
+            EXPECTED_HASH SHA256=eae2dfa119a64327444672aff63e9ec35a20180dc5b8090b7a6ab85125df4d76  # optional, safer
+    )
+endif()
 
 add_custom_target(parsers)
 add_dependencies(parsers c_parser_gen asm_parser_gen schema_assembler)
