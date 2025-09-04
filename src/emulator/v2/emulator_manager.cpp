@@ -352,7 +352,8 @@ namespace fcore::emulator_v2 {
         outputs_manager.set_runners(runners);
 
         sequencer.calculate_sequence();
-        outputs_manager.set_simulation_frequency(sequencer.get_simulation_frequency());
+        auto sim_freq = sequencer.get_simulation_frequency();
+        outputs_manager.set_simulation_frequency(sim_freq);
 
         for (auto &val: *runners | std::views::values) {
             val.set_multichannel_debug(multichannel_debug);
@@ -365,7 +366,7 @@ namespace fcore::emulator_v2 {
                     runners->at(core.id).add_waveform(in.name, in.waveform_parameters);
                 }
             }
-            runners->at(core.id).set_wavegen_sampling_frequency(sequencer.get_simulation_frequency());
+            runners->at(core.id).set_wavegen_sampling_frequency(sim_freq);
         }
 
         spdlog::info("EMULATION START");

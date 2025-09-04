@@ -16,18 +16,29 @@
 
 
 namespace  fcore::emulator_v2 {
+    void input_waveform_generator::add_waveform(const std::string &in,
+        std::variant<square_wave_parameters, sine_wave_parameters, triangle_wave_parameters> p, uint32_t channels) {
+        parameters.insert({in, p});
+        current_sample.emplace(in, std::vector<uint64_t>(channels));
+    }
+
     double input_waveform_generator::peek_value(const std::string &in, uint32_t channel) {
         auto p = parameters.at(in);
-        if(!current_sample.contains(in)) current_sample.insert({in, 0});
-        auto time = static_cast<double>(current_sample.at(in))*sampling_period;
+        auto time = static_cast<double>(current_sample.at(in).at(channel))*sampling_period;
         return std::visit([&](auto &&arg) { return produce_waveform(arg, time, channel); }, p);
 
     }
 
     double input_waveform_generator::get_value(const std::string &in, uint32_t channel) {
         auto result = peek_value(in, channel);
-        current_sample[in]++;
+        current_sample[in][channel]++;
         return result;
+    }
+
+    void input_waveform_generator::advance() {
+        for(auto &val: current_sample | std::views::values) {
+            for(auto &sample:val) sample++;
+        }
     }
 
     double input_waveform_generator::produce_waveform(const square_wave_parameters &p, double time, uint32_t channel) {

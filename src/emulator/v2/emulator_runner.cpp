@@ -65,7 +65,7 @@ namespace fcore::emulator_v2 {
 
     void emulator_runner::add_waveform(const std::string &in,
         std::variant<square_wave_parameters, sine_wave_parameters, triangle_wave_parameters> p) {
-        waveforms_generator.add_waveform(in, p);
+        waveforms_generator.add_waveform(in, p, program.active_channels);
     }
 
     std::vector<uint32_t> emulator_runner::sanitize_program(const std::vector<uint32_t> &raw_prog) {
