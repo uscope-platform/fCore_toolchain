@@ -15,6 +15,7 @@
 #include "emulator/v2/emulation_sequencer.hpp"
 
 #include <cmath>
+#include <sys/stat.h>
 
 
 namespace fcore::emulator_v2{
@@ -151,6 +152,15 @@ namespace fcore::emulator_v2{
         ret.current = get_current_step();
         ret.total_steps = std::round(sim_length*(float)simulation_frequency);
         ret.period = 1/simulation_frequency;
+        return ret;
+    }
+
+    std::vector<double> emulation_sequencer::get_timebase() {
+        std::vector<double> ret;
+        uint64_t n_steps = std::round(sim_length*static_cast<float>(simulation_frequency));
+        for(uint64_t i = 0; i < n_steps; i++){
+            ret.push_back(static_cast<double>(i)/simulation_frequency);
+        }
         return ret;
     }
 }

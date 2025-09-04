@@ -479,7 +479,7 @@ namespace fcore::emulator_v2 {
         }
 
 
-        res["timebase"] = outputs_manager.get_timebase();
+        res["timebase"] = sequencer.get_timebase();
         return res;
     }
 
