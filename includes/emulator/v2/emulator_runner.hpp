@@ -37,23 +37,25 @@ namespace fcore::emulator_v2 {
         void set_wavegen_sampling_frequency(const double &sf) {waveforms_generator.set_sampling_frequency(sf);}
         void add_waveform(const std::string& in, std::variant<square_wave_parameters, sine_wave_parameters, triangle_wave_parameters> p);
 
-        void add_breakpoint(uint32_t addr) {backend.add_breakpoint(addr);};
-        void remove_breakpoint(uint32_t addr) {backend.remove_breakpoint(addr);};
-        std::set<uint32_t> get_breakpoints() {return backend.get_breakpoints();};
+        void add_breakpoint(uint32_t addr) {backend.add_breakpoint(addr);}
+
+        void advance_inputs() {waveforms_generator.advance();}
+        void remove_breakpoint(uint32_t addr) {backend.remove_breakpoint(addr);}
+        std::set<uint32_t> get_breakpoints() {return backend.get_breakpoints();}
 
         void inputs_phase(const core_step_metadata& info, uint32_t  channel);
         void emulation_phase(uint32_t  channel, int init_point);
 
-        void reset_instruction_pointer() {backend.reset_instruction_pointer();};
+        void reset_instruction_pointer() {backend.reset_instruction_pointer();}
         debug_checkpoint step_over(uint32_t channel);
         debug_checkpoint get_end_state();
 
         std::optional<uint32_t> dma_read(uint32_t address, uint32_t channel);
         bool dma_write(uint32_t address, uint32_t channel, uint32_t data);
 
-        void set_multichannel_debug(bool mc_debug){ multichannel_debug = mc_debug; };
+        void set_multichannel_debug(bool mc_debug){ multichannel_debug = mc_debug; }
 
-        std::unordered_map<std::string, uint32_t> get_inputs() {return current_inputs;};
+        std::unordered_map<std::string, uint32_t> get_inputs() {return current_inputs;}
 
     private:
 
