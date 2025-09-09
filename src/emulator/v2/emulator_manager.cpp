@@ -138,6 +138,7 @@ namespace fcore::emulator_v2 {
                     dci.metadata.type = in.metadata.type;
                     dci.metadata.width = in.metadata.width;
                     dci.source_type = in. source_type;
+                    dci.waveform_parameters = in.waveform_parameters;
                     ret.push_back(dci);
                 }
                 return ret;
@@ -356,7 +357,8 @@ namespace fcore::emulator_v2 {
         outputs_manager.set_runners(runners);
 
         sequencer.calculate_sequence();
-        outputs_manager.set_simulation_frequency(sequencer.get_simulation_frequency());
+        auto sim_freq = sequencer.get_simulation_frequency();
+        outputs_manager.set_simulation_frequency(sim_freq);
 
         for (auto &val: *runners | std::views::values) {
             val.set_multichannel_debug(multichannel_debug);
@@ -369,7 +371,7 @@ namespace fcore::emulator_v2 {
                     runners->at(core.id).add_waveform(in.name, in.waveform_parameters);
                 }
             }
-            runners->at(core.id).set_sampling_frequency(core.sampling_frequency);
+            runners->at(core.id).set_wavegen_sampling_frequency(sim_freq);
         }
 
         spdlog::info("EMULATION START");
@@ -415,8 +417,8 @@ namespace fcore::emulator_v2 {
                         interactive_restart_point = 0;
                     }
                     do {
-                        spdlog::trace("Start round {0} for core {3} on channel {1}, from instruction {2}",
-                        sequencer.get_current_step(), current_channel, interactive_restart_point, core.id);
+                        spdlog::trace("Start round {} for core {} on channel {}, from instruction {}",
+                        sequencer.get_current_step(),core.id, current_channel, interactive_restart_point);
                         runners->at(core.id).inputs_phase(core, current_channel);
                         runners->at(core.id).emulation_phase(current_channel, interactive_restart_point);
                         runners->at(core.id).reset_instruction_pointer();
@@ -425,6 +427,8 @@ namespace fcore::emulator_v2 {
                         current_channel++;
                     } while (current_channel < core.n_channels);
                     is_in_progress = false;
+                } else {
+                    runners->at(core.id).advance_inputs();
                 }
                 outputs_manager.process_outputs(running_cores, core.id);
                 ic_manager.run_interconnect(core.id, sequencer.get_enabled_cores());
@@ -483,7 +487,7 @@ namespace fcore::emulator_v2 {
         }
 
 
-        res["timebase"] = outputs_manager.get_timebase();
+        res["timebase"] = sequencer.get_timebase();
         return res;
     }
 

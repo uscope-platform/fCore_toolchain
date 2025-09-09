@@ -38,7 +38,7 @@ namespace fcore::emulator_v2 {
         void repeat_last_data_point();
         std::map<std::string, std::vector<std::vector<uint32_t>>> get_integer_data();
         std::map<std::string, std::vector<std::vector<float>>> get_float_data();
-        uint64_t get_data_length(){return data[0].size();};
+        uint64_t get_data_length(){return data[0][0].size();}
         double get_sampling_period() const{return sampling_period;};
         bool is_empty(){return data[0][0].empty();};
 

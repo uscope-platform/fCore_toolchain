@@ -108,6 +108,10 @@ TEST(emulator_manager_v2, emulator_executable_format) {
         ASSERT_FLOAT_EQ(result[i], reference[i]);
     }
 
+    std::vector<double> tb = res_obj["timebase"];
+    std::vector<double> tb_ref = {0, 1};
+    ASSERT_EQ(tb.size(), 2);
+    ASSERT_EQ(tb, tb_ref);
 }
 
 TEST(emulator_manager_v2, emulator_compile_error) {

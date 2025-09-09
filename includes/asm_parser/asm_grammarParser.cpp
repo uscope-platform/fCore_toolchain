@@ -1,5 +1,5 @@
 
-// Generated from ./src/frontend/asm_grammar.g4 by ANTLR 4.13.1
+// Generated from /home/filssavi/git/fCore_toolchain/src/frontend/asm_grammar.g4 by ANTLR 4.13.2
 
 
 #include "asm_grammarListener.h"
@@ -42,7 +42,7 @@ struct Asm_grammarParserStaticData final {
 #if ANTLR4_USE_THREAD_LOCAL_CACHE
 static thread_local
 #endif
-Asm_grammarParserStaticData *asm_grammarParserStaticData = nullptr;
+std::unique_ptr<Asm_grammarParserStaticData> asm_grammarParserStaticData = nullptr;
 
 void asm_grammarParserInitialize() {
 #if ANTLR4_USE_THREAD_LOCAL_CACHE
@@ -147,7 +147,7 @@ void asm_grammarParserInitialize() {
   for (size_t i = 0; i < count; i++) { 
     staticData->decisionToDFA.emplace_back(staticData->atn->getDecisionState(i), i);
   }
-  asm_grammarParserStaticData = staticData.release();
+  asm_grammarParserStaticData = std::move(staticData);
 }
 
 }

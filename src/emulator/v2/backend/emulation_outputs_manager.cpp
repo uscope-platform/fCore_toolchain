@@ -110,30 +110,6 @@ namespace fcore::emulator_v2{
         return res;
     }
 
-    std::vector<double> emulation_outputs_manager::get_timebase() {
-        std::vector<double> result;
-        emulator_output output;
-        // TODO: this check should be done before the simulation is run, not after, and the output timebase existing or not
-        // Should not depend on whether an output is present or not...
-        bool found_output = false;
-        for(const auto &o:data_section){
-            if(!o.second.empty()){
-                output = o.second.begin()->second;
-                found_output = true;
-                break;
-            }
-        }
-        if(!found_output){
-            throw std::runtime_error("At least one emulator has to have an output defined");
-        }
-        auto ts = output.get_sampling_period();
-        auto size = output.get_data_length();
-
-        for(int i = 0; i<size; i++){
-            result.push_back(ts*i);
-        }
-        return result;
-    }
 
     bool emulation_outputs_manager::process_scalar_output(
             std::string core_id,

@@ -51,11 +51,12 @@ namespace fcore::emulator_v2{
 
         emulation_progress_stat get_progress() const;
 
-        uint32_t get_simulation_frequency(){ return simulation_frequency;};
-        bool sim_complete() const { return progress < 0; };
-        bool is_empty_step() {return empty_step;};
+        uint32_t get_simulation_frequency() const{ return simulation_frequency;}
+        std::vector<double> get_timebase();
+        bool sim_complete() const { return progress < 0; }
+        bool is_empty_step() const {return empty_step;}
         std::vector<core_step_metadata> get_running_cores();
-        void advance_emulation() { progress--;};
+        void advance_emulation() { progress--;}
 
         core_step_metadata get_core_by_id(const std::string &id);
         std::string get_next_core_by_order(uint32_t n_step);

@@ -84,9 +84,8 @@ namespace fcore::emulator_v2 {
                     if(in.data.size() != 1) idx = j;
                     if(in.source_type == waveform_input) {
                         input_waveform_generator gen;
-                        gen.set_sampling_frequency(c.sampling_frequency);
-                        gen.add_waveform(in.name, in.waveform_parameters);
-                        const auto val = gen.peek_value(in.name);
+                        gen.add_waveform(in.name, in.waveform_parameters, c.channels);
+                        const auto val = gen.peek_value(in.name, j);
                         data.push_back(emulator_backend::float_to_uint32(val));
                     }else if(std::holds_alternative<std::vector<uint32_t>>(in.data[idx])) {
                         data.push_back(std::get<std::vector<uint32_t>>(in.data[idx])[0]);
@@ -207,27 +206,27 @@ namespace fcore::emulator_v2 {
         } else if(in.source_type == waveform_input){
             if(source_obj["shape"] == "square") {
                 square_wave_parameters p;
-                p.v_off = source_obj["voff"];
-                p.v_on = source_obj["von"];
-                p.t_delay = source_obj["tdelay"];
-                p.t_on = source_obj["ton"];
-                p.period = source_obj["period"];
+                p.v_off = static_cast<std::vector<double>>(source_obj["voff"]);
+                p.v_on = static_cast<std::vector<double>>(source_obj["von"]);
+                p.t_delay = static_cast<std::vector<double>>(source_obj["tdelay"]);
+                p.t_on = static_cast<std::vector<double>>(source_obj["ton"]);
+                p.period = static_cast<std::vector<double>>(source_obj["period"]);
                 in.waveform_parameters  = p;
             } else if(source_obj["shape"] == "sine") {
                 sine_wave_parameters p;
-                p.dc_offset = source_obj["dc_offset"];
-                p.amplitude = source_obj["amplitude"];
-                p.frequency = source_obj["frequency"];
-                p.phase = source_obj["phase"];
+                p.dc_offset = static_cast<std::vector<double>>(source_obj["dc_offset"]);
+                p.amplitude = static_cast<std::vector<double>>(source_obj["amplitude"]);
+                p.frequency = static_cast<std::vector<double>>(source_obj["frequency"]);
+                p.phase = static_cast<std::vector<double>>(source_obj["phase"]);
                 in.waveform_parameters  = p;
             } else if(source_obj["shape"] == "triangle") {
 
                 triangle_wave_parameters p;
-                p.dc_offset = source_obj["dc_offset"];
-                p.amplitude = source_obj["amplitude"];
-                p.frequency = source_obj["frequency"];
-                p.phase = source_obj["phase"];
-                p.duty = source_obj["duty"];
+                p.dc_offset = static_cast<std::vector<double>>(source_obj["dc_offset"]);
+                p.amplitude = static_cast<std::vector<double>>(source_obj["amplitude"]);
+                p.frequency = static_cast<std::vector<double>>(source_obj["frequency"]);
+                p.phase = static_cast<std::vector<double>>(source_obj["phase"]);
+                p.duty = static_cast<std::vector<double>>(source_obj["duty"]);
                 in.waveform_parameters  = p;
             } else {
                 throw std::runtime_error(fmt::format("Unsupported waveform shape ({0}) for input {1}", i["shape"].dump(), in.name));

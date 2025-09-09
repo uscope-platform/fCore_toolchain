@@ -42,44 +42,74 @@
       "title": "Shape of the waveform"
     },
     "voff": {
-      "type": "number",
-      "title": "Off state level"
+      "type": "array",
+      "title": "Off state level",
+      "items": {
+        "type": "number"
+      }
     },
     "von": {
-      "type": "number",
-      "title": "On state level"
+      "type": "array",
+      "title": "On state level",
+      "items": {
+        "type": "number"
+      }
     },
     "tdelay": {
-      "type": "number",
-      "title": "First transition delay from start"
+      "type": "array",
+      "title": "First transition delay from start",
+      "items": {
+        "type": "number"
+      }
     },
     "ton": {
-      "type": "number",
-      "title": "On time"
+      "type": "array",
+      "title": "On time",
+      "items": {
+        "type": "number"
+      }
     },
     "period": {
-      "type": "number",
-      "title": "Period"
+      "type": "array",
+      "title": "Period",
+      "items": {
+        "type": "number"
+      }
     },
     "dc_offset": {
-      "type": "number",
-      "title": "DC offset from the reference level"
+      "type": "array",
+      "title": "DC offset from the reference level",
+      "items": {
+        "type": "number"
+      }
     },
     "amplitude": {
-      "type": "number",
-      "title": "Ampliture of the waveform"
+      "type": "array",
+      "title": "Ampliture of the waveform",
+      "items": {
+        "type": "number"
+      }
     },
     "frequency": {
-      "type": "number",
-      "title": "Frequency of the waveform"
+      "type": "array",
+      "title": "Frequency of the waveform",
+      "items": {
+        "type": "number"
+      }
     },
     "phase": {
-      "type": "number",
-      "title": "Initial phase angle of the waveform"
+      "type": "array",
+      "title": "Initial phase angle of the waveform",
+      "items": {
+        "type": "number"
+      }
     },
     "duty": {
-      "type": "number",
-      "title": "0 for rising sawtooth,0.5 for triangle and 1 for falling sawtooth"
+      "type": "array",
+      "title": "0 for rising sawtooth,0.5 for triangle and 1 for falling sawtooth",
+      "items": {
+        "type": "number"
+      }
     }
   },
   "allOf": [

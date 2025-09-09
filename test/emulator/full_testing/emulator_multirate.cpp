@@ -130,6 +130,10 @@ TEST(emulator_multirate, emulator_simple_multirate) {
         EXPECT_EQ(res_2[i], reference_2[i]);
     }
 
+    std::vector<double> tb = res_obj["timebase"];
+    std::vector<double> tb_ref = {0, 0.5, 1, 1.5};
+    ASSERT_EQ(tb.size(), 4);
+    ASSERT_EQ(tb, tb_ref);
 }
 
 

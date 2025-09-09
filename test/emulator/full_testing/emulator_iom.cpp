@@ -1350,10 +1350,10 @@ TEST(emulator_iom, emulator_waveform_input) {
                         "source": {
                             "type": "waveform",
                             "shape": "sine",
-                            "dc_offset": 0,
-                            "amplitude": 10,
-                            "frequency": 1000,
-                            "phase": 0
+                            "dc_offset": [0],
+                            "amplitude": [10],
+                            "frequency": [1000],
+                            "phase": [0]
                         },
                         "vector_size": 1,
                         "is_vector": false

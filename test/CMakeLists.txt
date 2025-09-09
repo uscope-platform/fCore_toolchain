@@ -86,6 +86,7 @@ set(IN_GEN_TEST_REF ${CMAKE_CURRENT_BINARY_DIR}/in_gen)
 file(MAKE_DIRECTORY ${IN_GEN_TEST_REF})
 
 configure_file(waveform_check_files/sine.txt ${IN_GEN_TEST_REF} COPYONLY)
+configure_file(waveform_check_files/sine_mc.txt ${IN_GEN_TEST_REF} COPYONLY)
 configure_file(waveform_check_files/square.txt ${IN_GEN_TEST_REF} COPYONLY)
 configure_file(waveform_check_files/triangle.txt ${IN_GEN_TEST_REF} COPYONLY)
 
