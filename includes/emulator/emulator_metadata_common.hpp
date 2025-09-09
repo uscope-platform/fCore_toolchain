@@ -150,6 +150,7 @@ namespace fcore {
         uint32_t order;
         fcore_program program;
         std::vector<deployed_core_inputs> inputs;
+        uint32_t n_outputs;
     };
 
     struct deployment_options {

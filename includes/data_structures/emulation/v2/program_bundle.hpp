@@ -38,6 +38,7 @@ namespace fcore::emulator_v2 {
         uint32_t sampling_frequency;
         uint32_t execution_order;
         uint32_t active_channels;
+        uint32_t n_outputs;
         efi_implementation_t efi_selector;
         comparator_type_t comparator_type;
     };
