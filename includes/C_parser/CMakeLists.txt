@@ -1,5 +1,4 @@
 set(C_PARSER_GEN_SRCS
-        ${CMAKE_CURRENT_SOURCE_DIR}/C_grammarBaseListener.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/C_grammarBaseVisitor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/C_grammarLexer.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/C_grammarListener.cpp
