@@ -73,7 +73,6 @@ unset(BUILD_TESTS CACHE)
 include(ExternalProject)
 
 set(ANTLR_URL "https://www.antlr.org/download/${ANTLR_JAR}")
-file(MAKE_DIRECTORY ${ANTLR_DIR})
 
 if(NOT EXISTS ${ANTLR_CLASSPATH})
     message(STATUS "Downloading ${ANTLR_JAR} from ${ANTLR_URL}")
