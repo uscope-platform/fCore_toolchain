@@ -38,6 +38,7 @@ namespace fcore::emulator_v2 {
             dp.n_channels = bundles[i].active_channels;
             dp.name = bundles[i].name;
             dp.program = bundles[i].program;
+            dp.n_outputs = bundles[i].n_outputs;
             for(int j = 0; j<bundles[i].input.size(); j++) {
                 dp.inputs.push_back({});
                 dp.inputs[j].name = bundles[i].input[j].name;
@@ -100,6 +101,10 @@ namespace fcore::emulator_v2 {
             b.sampling_frequency = core.sampling_frequency;
             b.execution_order = core.order;
             b.active_channels = core.channels;
+            b.n_outputs = core.outputs.size();
+            for(auto &mem:core.memories) {
+                if(mem.is_output) b.n_outputs++;
+            }
             b.efi_selector = e_b.get_efi_implementation(core.options["efi_implementation"]);
             b.comparator_type = e_b.get_comparator_type(core.options["comparators"]);
 
