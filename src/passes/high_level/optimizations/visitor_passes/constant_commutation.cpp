@@ -16,8 +16,6 @@
 
 #include "passes/high_level/optimizations/visitor_passes/constant_commutation.hpp"
 
-#include <gmp.h>
-
 namespace fcore {
     constant_commutation::constant_commutation() : pass_base("constant commutation"){
     }
