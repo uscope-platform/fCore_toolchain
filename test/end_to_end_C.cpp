@@ -2008,3 +2008,40 @@ TEST(EndToEndC, common_csel_c_operand) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+
+TEST(EndToEndC, expression_in_csel_else) {
+
+    std::vector<std::string> file_content = {R""""(
+
+        void main(){
+
+            float mem, in_c;
+            if(mem>=1024.0){
+                mem = 0;
+            } else {
+                mem += in_c;
+            }
+        }
+
+    )""""};
+
+    std::vector<std::string> includes;
+
+
+    std::unordered_map<std::string, core_iom> dma_map;
+    dma_map["mem"] = {core_iom_memory, {12}, false};
+    dma_map["in_c"]    = {core_iom_input, {13}, false};
+
+    fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
+    compiler.set_dma_map(dma_map);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+    std::vector<uint32_t> gold_standard = {0x70003, 0xc, 0x3f000c, 0x1000d, 0xc, 0xc,
+        0x46, 0x44800000, 0x7f849, 0x40fe1, 0x4007b, 0x7e006e, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}

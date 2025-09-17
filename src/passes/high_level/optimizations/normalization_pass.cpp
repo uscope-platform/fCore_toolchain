@@ -45,6 +45,8 @@ namespace fcore{
             if(!expr->is_immediate()){
                 if(auto lhs = expr->get_lhs())
                     if(lhs.value()->node_type != hl_ast_node_type_operand) return false;
+                if(auto ths = expr->get_ths())
+                    if(ths.value()->node_type != hl_ast_node_type_operand) return false;
 
                 if(expr->get_rhs()->node_type != hl_ast_node_type_operand) return false;
             }
@@ -87,11 +89,14 @@ namespace fcore{
 
         std::shared_ptr<ast_node> rhs = n->get_rhs();
 
-        norm_pair_t np_l;
+        norm_pair_t np_l, np_t;
         norm_pair_t np_r = process_node_by_type(rhs);
 
 
 
+        if(auto ths = n->get_ths()) {
+            np_t = process_node_by_type(ths.value());
+        };
         if(auto lhs = n->get_lhs()) {
             np_l = process_node_by_type(lhs.value());
         };
@@ -103,6 +108,10 @@ namespace fcore{
 
         if(!np_r.second.empty()) {
             ret_val.second.insert(ret_val.second.end(), np_r.second.begin(), np_r.second.end());
+        }
+
+        if(!np_t.second.empty()) {
+            ret_val.second.insert(ret_val.second.end(), np_t.second.begin(), np_t.second.end());
         }
 
         if(n->get_type() == ast_expression::ASSIGN){
@@ -141,6 +150,23 @@ namespace fcore{
                 ret_val.second.push_back(def);
                 std::shared_ptr<ast_operand> op = std::make_shared<ast_operand>(var);
                 std::static_pointer_cast<ast_expression>(ret_val.first)->set_lhs(op);
+            }
+        }
+
+        if(auto ths = n->get_ths()) {
+            if(ths.value()->node_type == hl_ast_node_type_expr){
+                std::string int_exp = "intermediate_expression_"+std::to_string(intermediate_ordinal);
+                std::shared_ptr<variable> var = std::make_shared<variable>(int_exp);
+                std::shared_ptr<ast_definition> def = std::make_shared<ast_definition>(
+                        int_exp,
+                        get_expression_type(std::static_pointer_cast<ast_expression>(np_t.first)),
+                        var
+                );
+                ++intermediate_ordinal;
+                def->set_scalar_initializer(np_t.first);
+                ret_val.second.push_back(def);
+                std::shared_ptr<ast_operand> op = std::make_shared<ast_operand>(var);
+                std::static_pointer_cast<ast_expression>(ret_val.first)->set_ths(op);
             }
         }
         return ret_val;
