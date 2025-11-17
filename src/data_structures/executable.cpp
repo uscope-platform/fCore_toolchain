@@ -32,15 +32,20 @@ namespace fcore{
         split_word(executable[0], metadata);
 
         executable.erase(executable.begin(), executable.begin()+2);
-        for(int i = 0; i< metadata[0]-1; i++){
-            sections["io_remapping"].push_back(executable[i]);
+        for(auto &i:executable){
+            if(i==0xC) break;
+            else(sections["io_remapping"].push_back(i));
         }
-        executable.erase(executable.begin(), executable.begin()+metadata[0]);
+
+        uint32_t io_table_lenght = sections["io_remapping"].size() +1;
+        executable.erase(executable.begin(), executable.begin()+io_table_lenght);
+
         for(auto &i:executable){
             if(i==0xC) break;
             else(sections["common_io_map"].push_back(i));
         }
-        executable.erase(executable.begin(), executable.begin() + sections["common_io_map"].size() + 1);
+        io_table_lenght = sections["common_io_map"].size() +1;
+        executable.erase(executable.begin(), executable.begin()+io_table_lenght);
 
         sections["code"].insert(sections["code"].end(),executable.begin(), executable.end());
     }

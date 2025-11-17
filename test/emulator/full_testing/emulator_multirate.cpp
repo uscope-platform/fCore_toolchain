@@ -348,7 +348,7 @@ TEST(emulator_multirate, emulator_interconnect_multirate) {
                                 "common_io": false
                             },
                             "source": {
-                                "type": "series",
+                                "type": "external",
                                 "value": [1, 1, 2, 2]
                             }
                         }

@@ -23,6 +23,8 @@ namespace fcore::emulator_v2 {
         sources_map.clear();
         destinations_map.clear();
 
+        std::unordered_set<std::string> external_endpoints;
+
         for(auto &core:specs.cores) {
             for(auto &in:core.inputs) {
                 core_endpoint ep;
@@ -34,6 +36,7 @@ namespace fcore::emulator_v2 {
                 ep.endpoint_class = core_iom_input;
                 ep.metadata = in.metadata;
                 if(in.source_type == random_input || in.source_type == waveform_input) waveform_inputs.insert({core.id, in.name});
+                else if(in.source_type == external_input) external_endpoints.insert(core.id + "." + in.name);
                 destinations_map[core.id][in.name] = ep;
             }
             for(auto &out:core.outputs) {
@@ -70,6 +73,7 @@ namespace fcore::emulator_v2 {
 
                     if(mem.is_input) {
                         destinations_map[core.id][mem.name] = ep;
+                        external_endpoints.insert(core.id + "." + mem.name);
                     }
                     if(mem.is_output | !mem.is_input) {
                         sources_map[core.id][mem.name] = ep;
@@ -99,6 +103,10 @@ namespace fcore::emulator_v2 {
                 throw std::runtime_error("Destination core " + dst_core + " does not have a port named " + dst_port);
             }
 
+            if(!external_endpoints.contains(dst_core + "." + dst_port)) {
+                spdlog::warn("Attempted to use DMA interconnect on an input not marked as externally sourced");
+                continue;
+            }
             auto source_descriptor= sources_map.at(src_core).at(src_port);
             auto dest_descriptor= destinations_map.at(dst_core).at(dst_port);
             id.source = {src_core, src_port};

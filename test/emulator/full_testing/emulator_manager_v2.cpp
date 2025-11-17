@@ -685,7 +685,7 @@ TEST(emulator_manager_v2, emulator_interconnect_input_override) {
                 "common_io": false
               },
               "source": {
-                "type":"constant",
+                "type":"external",
                 "value": 322.0
               }
             }
@@ -1146,3 +1146,175 @@ TEST(emulator_manager_v2, emulation_repeatability) {
 
     EXPECT_EQ(res_1, res_2);
 }
+
+
+
+TEST(emulator_manager_v2, emulator_interconnect_priority) {
+
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+    "version": 2,
+    "cores": [
+        {
+            "id": "new_core_1",
+            "order": 1,
+            "inputs": [
+                {
+                    "name": "in",
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": true,
+                        "common_io": false
+                    },
+                    "source": {
+                        "ton": [0],
+                        "von": [0],
+                        "duty": [0],
+                        "type": "constant",
+                        "voff": [0],
+                        "phase": [0],
+                        "shape": "square",
+                        "value": [1],
+                        "period": [0],
+                        "tdelay": [0],
+                        "amplitude": [0],
+                        "dc_offset": [0],
+                        "frequency": [0]
+                    },
+                    "vector_size": 1,
+                    "is_vector": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "is_vector": false,
+                    "vector_size": 1,
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": true,
+                        "common_io": false
+                    }
+                }
+            ],
+            "memory_init": [
+                {
+                    "name": "mem",
+                    "vector_size": 1,
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": true
+                    },
+                    "is_output": false,
+                    "is_input": false,
+                    "is_vector": false,
+                    "value": [
+                        0
+                    ]
+                }
+            ],
+            "deployment": {
+                "rom_address": 0,
+                "has_reciprocal": false,
+                "control_address": 0
+            },
+            "channels": 1,
+            "program": {
+                "content": "void main(){\n  float mem;\n  float out;\n  float in;\n\n  mem += in;\n  \n  mem = mem > 1024.0 ? 0.0: mem;\n  \n  out = mem*2.3;\n}",
+                "headers": []
+            },
+            "options": {
+                "comparators": "reducing",
+                "efi_implementation": "efi_none"
+            },
+            "sampling_frequency": 2
+        },
+        {
+            "id": "new_core_2",
+            "order": 2,
+            "inputs": [
+                {
+                    "name": "in",
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": true,
+                        "common_io": false
+                    },
+                    "source": {
+                        "type": "constant",
+                        "value": [5],
+                        "shape": "square",
+                        "von": [0 ],
+                        "voff": [0],
+                        "tdelay": [0],
+                        "ton": [0],
+                        "period": [0],
+                        "dc_offset": [0],
+                        "amplitude": [0],
+                        "frequency": [0],
+                        "phase": [0],
+                        "duty": [0]
+                    },
+                    "vector_size": 1,
+                    "is_vector": false
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "out",
+                    "is_vector": false,
+                    "vector_size": 1,
+                    "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": true,
+                        "common_io": false
+                    }
+                }
+            ],
+            "memory_init": [],
+            "deployment": {
+                "rom_address": 0,
+                "has_reciprocal": false,
+                "control_address": 0
+            },
+            "channels": 1,
+            "program": {
+                "content": "void main(){\n  float mem;\n  float out;\n  float in;\n  \n  out = in*5.0;\n}",
+                "headers": []
+            },
+            "options": {
+                "comparators": "reducing",
+                "efi_implementation": "efi_none"
+            },
+            "sampling_frequency": 2
+        }
+    ],
+    "interconnect": [
+        {
+            "source": "new_core_1.out",
+            "source_channel": -1,
+            "destination": "new_core_2.in",
+            "destination_channel": -1
+        }
+    ],
+    "emulation_time": 1,
+    "deployment_mode": false
+})");
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+    manager.emulate();
+    auto res_obj = manager.get_results();
+    auto dbg = res_obj.dump(4);
+    std::vector<float> res_0 = res_obj["new_core_2"]["outputs"]["out"]["0"][0];
+    ASSERT_FLOAT_EQ(res_0[0], 25.0);
+    ASSERT_FLOAT_EQ(res_0[1], 25.0);
+}
+
+
+
