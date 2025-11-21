@@ -62,10 +62,10 @@ namespace fcore {
             return retval;
         };
 
-        std::__detail::_Node_iterator<std::pair<const std::basic_string<char>, std::shared_ptr<variable>>, false, true> begin() {return map.begin();}
-        std::__detail::_Node_const_iterator<std::pair<const std::basic_string<char>, std::shared_ptr<variable>>, false, true> begin() const { return map.begin();}
-        std::__detail::_Node_iterator<std::pair<const std::basic_string<char>, std::shared_ptr<variable>>, false, true> end() {return map.end();}
-        std::__detail::_Node_const_iterator<std::pair<const std::basic_string<char>, std::shared_ptr<variable>>, false, true> end() const { return map.end();}
+        std::unordered_map<std::string, std::shared_ptr<variable>>::iterator begin() {return map.begin();}
+        std::unordered_map<std::string, std::shared_ptr<variable>>::const_iterator begin() const { return map.begin();}
+        std::unordered_map<std::string, std::shared_ptr<variable>>::iterator  end() {return map.end();}
+        std::unordered_map<std::string, std::shared_ptr<variable>>::const_iterator  end() const { return map.end();}
 
     private:
         unsigned int n_inputs_ = 0;

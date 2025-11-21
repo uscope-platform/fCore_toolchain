@@ -32,20 +32,38 @@ set(TEST_SOURCES
 
 
 add_executable(test_target ${TEST_SOURCES})
-target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES}
-        fcore_cc_lib
-        fcore_has_lib
-        fcore_dis_lib
-        fcore_emu_lib
-        pthread
-        Ip_floating_point_v7_1_bitacc_cmodel
-        spdlog::spdlog
-        GTest::gtest
-        GTest::gtest_main
-        GTest::gmock
-        GTest::gmock_main
+
+
+if(${INCLUDE_EMULATOR})
+        target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES}
+                fcore_cc_lib
+                fcore_has_lib
+                fcore_dis_lib
+                fcore_emu_lib
+                pthread
+                Ip_floating_point_v7_1_bitacc_cmodel
+                spdlog::spdlog
+                GTest::gtest
+                GTest::gtest_main
+                GTest::gmock
+                GTest::gmock_main
         )
 
+else()
+        target_link_libraries(test_target PUBLIC ${GTEST_LIBRARIES}
+                fcore_cc_lib
+                fcore_has_lib
+                fcore_dis_lib
+                fcore_emu_lib
+                pthread
+                spdlog::spdlog
+                GTest::gtest
+                GTest::gtest_main
+                GTest::gmock
+                GTest::gmock_main
+        )
+
+endif(${INCLUDE_EMULATOR})
 
 add_dependencies(test_target schema_assembler)
 
