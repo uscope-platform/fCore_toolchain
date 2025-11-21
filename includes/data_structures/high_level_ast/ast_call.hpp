@@ -21,6 +21,7 @@
 #include "data_structures/high_level_ast/ast_operand.hpp"
 
 #include <string>
+#include <sstream>
 #include <utility>
 
 namespace fcore{

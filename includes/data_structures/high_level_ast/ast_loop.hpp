@@ -18,6 +18,7 @@
 #define FCORE_TOOLCHAIN_AST_LOOP_HPP
 
 #include <utility>
+#include <sstream>
 
 #include "data_structures/high_level_ast/ast_node.hpp"
 #include "data_structures/high_level_ast/ast_definition.hpp"
