@@ -17,6 +17,7 @@
 #define FCORE_TOOLCHAIN_ASSEMBLY_GENERATOR_H
 
 #include <fstream>
+#include <sstream>
 
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 

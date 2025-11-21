@@ -20,6 +20,7 @@
 #include <vector>
 #include <set>
 #include <fstream>
+#include <sstream>
 #include <memory>
 
 #include "data_structures/executable.hpp"

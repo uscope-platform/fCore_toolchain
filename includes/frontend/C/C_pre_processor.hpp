@@ -18,6 +18,7 @@
 
 #include <fstream>
 #include <filesystem>
+#include <sstream>
 #include <regex>
 
 #include "tools/define.hpp"

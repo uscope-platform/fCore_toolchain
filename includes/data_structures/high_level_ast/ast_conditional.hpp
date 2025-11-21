@@ -17,6 +17,7 @@
 #define FCORE_TOOLCHAIN_AST_CONDITIONAL_HPP
 
 #include "data_structures/high_level_ast/ast_node.hpp"
+#include <sstream>
 
 
 namespace fcore{
