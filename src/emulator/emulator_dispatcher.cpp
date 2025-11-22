@@ -162,7 +162,7 @@ namespace fcore {
         }
     }
 
-    std::unordered_map<std::string, disassembled_program> emulator_dispatcher::disassemble() {
+    std::map<std::string, disassembled_program> emulator_dispatcher::disassemble() {
         switch(version) {
             case 1:
                 throw std::runtime_error("Emulator schema version 1 is no longer supported");
@@ -184,7 +184,7 @@ namespace fcore {
         }
     }
 
-    std::unordered_map<std::string, std::vector<memory_init_value>>  emulator_dispatcher::get_memory_initializations() {
+    std::map<std::string, std::vector<memory_init_value>>  emulator_dispatcher::get_memory_initializations() {
         std::unordered_map<std::string, std::vector<memory_init_value>> ret;
         if(version == 1) {
             throw std::runtime_error("Emulator schema version 1 is no longer supported");

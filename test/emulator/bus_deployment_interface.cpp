@@ -950,7 +950,7 @@ TEST(bus_deployment_interface, memory_to_memory_interface) {
 
 
     auto inits = manager.get_memory_initializations();
-    std::unordered_map<std::string, std::vector<memory_init_value>> expected_inits;
+    std::map<std::string, std::vector<memory_init_value>> expected_inits;
     memory_init_value m;
     m.address = {1};
     m.value = std::vector<float>{0};

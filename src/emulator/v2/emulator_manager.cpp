@@ -492,10 +492,10 @@ namespace fcore::emulator_v2 {
     }
 
 
-    std::unordered_map<std::string, std::vector<memory_init_value>> emulator_manager::get_memory_init_values() {
+    std::map<std::string, std::vector<memory_init_value>> emulator_manager::get_memory_init_values() {
 
         auto engine = ic_manager.get_bus_engine();
-        std::unordered_map<std::string, std::vector<memory_init_value>> ret;
+        std::map<std::string, std::vector<memory_init_value>> ret;
         for(auto &core:emu_spec.cores) {
             for(const auto& mem_init: core.memories) {
                 memory_init_value val;
@@ -516,8 +516,8 @@ namespace fcore::emulator_v2 {
     }
 
 
-    std::unordered_map<std::string, disassembled_program> emulator_manager::disassemble() {
-        std::unordered_map<std::string, disassembled_program> ret;
+    std::map<std::string, disassembled_program> emulator_manager::disassemble() {
+        std::map<std::string, disassembled_program> ret;
 
         for(auto &p:get_programs()){
             fcore_dis d(p.program.binary);

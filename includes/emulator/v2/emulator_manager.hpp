@@ -53,7 +53,7 @@ namespace fcore::emulator_v2{
 
         void set_multichannel_debug(bool mc);
 
-        std::unordered_map<std::string, disassembled_program>  disassemble();
+        std::map<std::string, disassembled_program>  disassemble();
 
         nlohmann::json get_results();
         std::vector<program_bundle> get_programs();
@@ -69,15 +69,15 @@ namespace fcore::emulator_v2{
         std::vector<deployer_interconnect_slot> get_interconnects();
 
         deployment_options get_deployment_options(const std::string &core_id) {return emu_spec.get_deployment_options(core_id);}
-        std::unordered_map<std::string, std::vector<memory_init_value>> get_memory_init_values();
-        std::unordered_map<std::string, std::string> dump_bus() {return ic_manager.get_bus_engine()->dump_bus();}
+        std::map<std::string, std::vector<memory_init_value>> get_memory_init_values();
+        std::map<std::string, std::string> dump_bus() {return ic_manager.get_bus_engine()->dump_bus();}
     private:
         void run_cores(bool in_progress);
 
         debug_checkpoint augment_checkpoint_info(debug_checkpoint &in);
 
 
-        std::unordered_map<std::string, std::string> errors;
+        std::map<std::string, std::string> errors;
         bool debug_autogen;
         bool multichannel_debug;
 

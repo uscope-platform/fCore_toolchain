@@ -41,10 +41,10 @@ namespace fcore {
         nlohmann::json get_results();
 
         void set_profiler(const std::shared_ptr<instrumentation_core> &prof);
-        std::unordered_map<std::string, disassembled_program>  disassemble();
+        std::map<std::string, disassembled_program>  disassemble();
 
         std::vector<deployed_program> get_programs();
-        std::unordered_map<std::string, std::vector<memory_init_value>> get_memory_initializations();
+        std::map<std::string, std::vector<memory_init_value>> get_memory_initializations();
 
         std::vector<deployed_core_inputs> get_inputs(const std::string &core);
 

@@ -125,7 +125,7 @@ namespace fcore::emulator_v2 {
 
         core_endpoint get_slot_source(const std::string & core, const std::string & slot_name);
 
-        std::unordered_map<std::string, std::string> dump_bus();
+        std::map<std::string, std::string> dump_bus();
 
         std::vector<output_metadata> get_outputs();
 
