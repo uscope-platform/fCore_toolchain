@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "passes/high_level/optimizations/conditional_implementation_pass.h"
+#include <spdlog/spdlog.h>
 
 namespace fcore{
 
@@ -258,7 +259,7 @@ namespace fcore{
             std::shared_ptr<ast_node> if_block;
             std::shared_ptr<ast_node> else_block;
         };
-        std::unordered_map<std::string, ternary_map_t> ternary_map;
+        std::map<std::string, ternary_map_t> ternary_map;
         for(auto &raw_expr: node->get_if_block()) {
             if(raw_expr->node_type != hl_ast_node_type_expr) {
                 throw("Encountered conditional block which can't be implemented with ternary");
@@ -271,7 +272,8 @@ namespace fcore{
             if(if_block.size() != 1) {
                 throw("nested if/else ternarization is not supported");
             }
-            ternary_map[std::static_pointer_cast<ast_operand>(expr->get_lhs().value())->get_name()] = {
+            auto var = std::static_pointer_cast<ast_operand>(expr->get_lhs().value())->get_name();
+            ternary_map[var] = {
                 expr->get_lhs().value(), if_block[0], nullptr};
         }
 
@@ -302,7 +304,6 @@ namespace fcore{
                     ternary_extraction++;
                 }
             }
-
             if(ternary_map.contains(name)) {
                 ternary_map[name].else_block = else_block[0];
             } else {
