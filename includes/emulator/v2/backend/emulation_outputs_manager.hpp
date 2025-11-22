@@ -17,7 +17,7 @@
 #ifndef FCORE_TOOLCHAIN_EMULATION_OUTPUTS_MANAGER_V2_HPP
 #define FCORE_TOOLCHAIN_EMULATION_OUTPUTS_MANAGER_V2_HPP
 
-#include <unordered_map>
+#include <map>
 #include <string>
 #include <nlohmann/json.hpp>
 
@@ -33,7 +33,7 @@ namespace fcore::emulator_v2{
 
     class emulation_outputs_manager {
     public:
-        void set_runners(const std::shared_ptr<std::unordered_map<std::string, emulator_runner>> &r){runners = r;}
+        void set_runners(const std::shared_ptr<std::map<std::string, emulator_runner>> &r){runners = r;}
         void process_specs(const std::shared_ptr<bus_allocator> &bus_engine);
         void process_outputs(
             const std::vector<core_step_metadata> &metadata,
@@ -59,7 +59,7 @@ namespace fcore::emulator_v2{
         void clear();
     private:
         std::shared_ptr<bus_allocator> bus_engine;
-        std::shared_ptr<std::unordered_map<std::string, emulator_runner>> runners;
+        std::shared_ptr<std::map<std::string, emulator_runner>> runners;
 
         std::map<std::string,std::map<std::string, emulator_output>> data_section;
 

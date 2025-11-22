@@ -185,7 +185,6 @@ namespace fcore {
     }
 
     std::map<std::string, std::vector<memory_init_value>>  emulator_dispatcher::get_memory_initializations() {
-        std::unordered_map<std::string, std::vector<memory_init_value>> ret;
         if(version == 1) {
             throw std::runtime_error("Emulator schema version 1 is no longer supported");
         } else if(version == 2) {

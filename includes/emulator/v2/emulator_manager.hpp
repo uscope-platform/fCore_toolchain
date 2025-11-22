@@ -96,7 +96,7 @@ namespace fcore::emulator_v2{
 
         std::shared_ptr<instrumentation_core> profiler;
 
-        std::shared_ptr<std::unordered_map<std::string, emulator_runner>> runners;
+        std::shared_ptr<std::map<std::string, emulator_runner>> runners;
 
         emulator_specs emu_spec;
 

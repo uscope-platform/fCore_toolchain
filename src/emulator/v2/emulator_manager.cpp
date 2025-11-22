@@ -23,7 +23,7 @@ namespace fcore::emulator_v2 {
         debug_autogen = false;
         current_channel = 0;
         multichannel_debug = true;
-        runners = std::make_shared<std::unordered_map<std::string, emulator_runner>>();
+        runners = std::make_shared<std::map<std::string, emulator_runner>>();
         interactive_restart_point = 0;
     }
 

@@ -65,7 +65,7 @@ namespace fcore::emulator_v2{
 
         void clear();
         uint64_t get_current_step() const { return sim_length*simulation_frequency - progress; };
-        std::unordered_map<std::string, bool> get_enabled_cores() { return enabled_cores_map; };
+        std::map<std::string, bool> get_enabled_cores() { return enabled_cores_map; };
     private:
 
         std::vector<core_metadata> cores;
@@ -73,7 +73,7 @@ namespace fcore::emulator_v2{
         float sim_length;
         uint32_t simulation_frequency;
         bool empty_step;
-        std::unordered_map<std::string, bool> enabled_cores_map;
+        std::map<std::string, bool> enabled_cores_map;
     };
 }
 

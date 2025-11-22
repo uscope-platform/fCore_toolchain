@@ -22,7 +22,7 @@ namespace fcore::emulator_v2 {
         bus_engine = std::make_shared<bus_allocator>();
     }
 
-    void interconnect_manager::run_interconnect(const std::string &core_name, std::unordered_map<std::string, bool> enabled_cores) {
+    void interconnect_manager::run_interconnect(const std::string &core_name, std::map<std::string, bool> enabled_cores) {
         spdlog::trace("Processing interconnects for core {0}", core_name);
         auto interconnects = bus_engine->get_interconnects();
         for(const auto &ic: interconnects) {

@@ -29,11 +29,11 @@ namespace fcore::emulator_v2 {
     public:
         interconnect_manager();
         void set_emulation_specs(const emulator_specs &specs);
-        void set_runners(const std::shared_ptr<std::unordered_map<std::string, emulator_runner>> &r){runners = r;}
+        void set_runners(const std::shared_ptr<std::map<std::string, emulator_runner>> &r){runners = r;}
         std::shared_ptr<bus_allocator> get_bus_engine(){ return bus_engine;}
         void clear_repeater();
 
-        void run_interconnect(const std::string &core_name, std::unordered_map<std::string, bool> enabled_cores);
+        void run_interconnect(const std::string &core_name, std::map<std::string, bool> enabled_cores);
 
     private:
 
@@ -46,7 +46,7 @@ namespace fcore::emulator_v2 {
 
         std::shared_ptr<bus_allocator> bus_engine;
 
-        std::shared_ptr<std::unordered_map<std::string, emulator_runner>> runners;
+        std::shared_ptr<std::map<std::string, emulator_runner>> runners;
         multirate_io_repeater output_repeater;
     };
 }
