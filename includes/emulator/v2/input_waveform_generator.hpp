@@ -37,9 +37,9 @@ namespace fcore::emulator_v2 {
         double produce_waveform(const square_wave_parameters &p, double time, uint32_t channel);
         double produce_waveform(const triangle_wave_parameters &p, double time, uint32_t channel);
         double produce_waveform(const sine_wave_parameters &p, double time, uint32_t channel);
-        std::unordered_map<std::string, std::variant<square_wave_parameters, sine_wave_parameters, triangle_wave_parameters>> parameters;
+        std::map<std::string, std::variant<square_wave_parameters, sine_wave_parameters, triangle_wave_parameters>> parameters;
         double sampling_period = 0;
-        std::unordered_map<std::string, std::vector<uint64_t>> current_sample;
+        std::map<std::string, std::vector<uint64_t>> current_sample;
     };
 }
 
