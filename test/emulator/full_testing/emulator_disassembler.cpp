@@ -155,9 +155,9 @@ TEST(emulator_disassembler, emulator_disassemble) {
     auto res = manager.disassemble();
 
 
-    std::unordered_map<uint16_t, translation_table_entry> producer_io = {{2,{"out", 3}},{3,{"input_2",1}}, {4,{"input_1",2}}};
+    std::unordered_map<uint16_t, translation_table_entry> producer_io = {{2,{"out", 3}},{3,{"input_2",2}}, {4,{"input_1",1}}};
     std::unordered_map<uint16_t, translation_table_entry> producer_common_io = {};
-    disassembled_program producer_reference = {producer_io,producer_common_io, "add r2, r1, r3\nstop\n"};
+    disassembled_program producer_reference = {producer_io,producer_common_io, "add r1, r2, r3\nstop\n"};
 
     std::unordered_map<uint16_t, translation_table_entry> reducer_io = {{1,{"out",3}},{3,{"input_data_2",2}}, {4,{"input_data_1",1}}};
     std::unordered_map<uint16_t, translation_table_entry> reducer_common_io = {};

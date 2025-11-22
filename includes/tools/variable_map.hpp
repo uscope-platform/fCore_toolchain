@@ -62,16 +62,16 @@ namespace fcore {
             return retval;
         };
 
-        std::unordered_map<std::string, std::shared_ptr<variable>>::iterator begin() {return map.begin();}
-        std::unordered_map<std::string, std::shared_ptr<variable>>::const_iterator begin() const { return map.begin();}
-        std::unordered_map<std::string, std::shared_ptr<variable>>::iterator  end() {return map.end();}
-        std::unordered_map<std::string, std::shared_ptr<variable>>::const_iterator  end() const { return map.end();}
+        std::map<std::string, std::shared_ptr<variable>>::iterator begin() {return map.begin();}
+        std::map<std::string, std::shared_ptr<variable>>::const_iterator begin() const { return map.begin();}
+        std::map<std::string, std::shared_ptr<variable>>::iterator  end() {return map.end();}
+        std::map<std::string, std::shared_ptr<variable>>::const_iterator  end() const { return map.end();}
 
     private:
         unsigned int n_inputs_ = 0;
         unsigned int n_outputs_ = 0;
         unsigned int n_variables_ = 0;
-        std::unordered_map<std::string, std::shared_ptr<variable>> map;
+        std::map<std::string, std::shared_ptr<variable>> map;
     };
 }
 
