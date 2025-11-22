@@ -447,7 +447,7 @@ TEST(bus_deployment_interface, scalar_interconnect) {
     e.destination_id = "";
     e.destination_name = "";
     e.type = "o";
-    e.source_io_address = 3;
+    e.source_io_address = 2;
     e.source_channel = 0;
     e.destination_bus_address = 4;
     e.destination_channel = 0;
@@ -462,7 +462,7 @@ TEST(bus_deployment_interface, scalar_interconnect) {
     e.source_id = "test_move";
     e.source_name = "out";
     e.type = "o";
-    e.source_io_address = 2;
+    e.source_io_address = 3;
     e.source_channel = 0;
     e.destination_bus_address = 5;
     e.destination_channel = 0;

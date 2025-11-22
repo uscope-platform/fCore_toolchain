@@ -16,12 +16,8 @@
 #define FCORE_TOOLCHAIN_EMULATION_SEQUENCER_V2_HPP
 
 #include <vector>
-#include <unordered_map>
+#include <map>
 #include <string>
-#include <cstdint>
-#include <numeric>
-#include <algorithm>
-#include <stdexcept>
 
 #include "data_structures/common/program_metadata.hpp"
 

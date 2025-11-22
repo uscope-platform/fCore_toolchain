@@ -17,7 +17,7 @@
 #define EMULATOR_METADATA_COMMON_HPP
 
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <vector>
 #include <cstdint>
 

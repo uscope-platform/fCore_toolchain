@@ -147,8 +147,8 @@ namespace fcore::emulator_v2 {
 
         std::set<uint32_t> global_forbidden_addresses;
 
-        std::unordered_map<std::string, std::map<std::string, core_endpoint>> sources_map;
-        std::unordered_map<std::string, std::map<std::string, core_endpoint>> destinations_map;
+        std::map<std::string, std::map<std::string, core_endpoint>> sources_map;
+        std::map<std::string, std::map<std::string, core_endpoint>> destinations_map;
 
         std::set<std::pair<std::string, std::string>> waveform_inputs;
 
