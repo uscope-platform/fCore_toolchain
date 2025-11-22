@@ -398,7 +398,7 @@ TEST(emulator_manager_v2, emulator_compilation) {
           },
           "source": {
             "type":"series",
-            "value": [15.7,67.4]
+            "value": [15.7,66.7]
           }
         },
         {
@@ -412,7 +412,7 @@ TEST(emulator_manager_v2, emulator_compilation) {
           },
           "source": {
             "type":"series",
-            "value": [42.92, -5.8]
+            "value": [42.7, -5.4]
           }
         }
       ],
@@ -458,7 +458,7 @@ TEST(emulator_manager_v2, emulator_compilation) {
     manager.emulate();
     auto res = manager.get_results()["test"];
 
-    std::vector<uint32_t> reference = {59,62};
+    std::vector<uint32_t> reference = {58,61};
     std::vector<uint32_t> result = res["outputs"]["out"]["0"][0];
     ASSERT_EQ(result, reference);
 }
