@@ -19,7 +19,7 @@
 #include <utility>
 #include <vector>
 #include <set>
-#include <unordered_map>
+#include <map>
 #include <string>
 
 #include "data_structures/common/io_map_entry.hpp"
@@ -43,7 +43,7 @@ namespace fcore{
 
     private:
 
-        std::unordered_map<std::string, std::vector<uint32_t>> sections;
+        std::map<std::string, std::vector<uint32_t>> sections;
     };
 }
 

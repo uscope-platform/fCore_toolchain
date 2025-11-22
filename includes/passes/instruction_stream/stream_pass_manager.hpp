@@ -38,8 +38,8 @@ namespace fcore{
         };
 
         stream_pass_manager(
-                std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
-                const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map,
+                std::shared_ptr<std::map<std::string, memory_range_t>> &bm,
+                const std::shared_ptr<std::map<std::string, std::vector<io_map_entry>>>& all_map,
                 std::shared_ptr<instrumentation_core> &prof,
                 mode m
         );
@@ -49,8 +49,8 @@ namespace fcore{
                 mode m
         );
         void constructs_pass_manager(
-                std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
-                const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map,
+                std::shared_ptr<std::map<std::string, memory_range_t>> &bm,
+                const std::shared_ptr<std::map<std::string, std::vector<io_map_entry>>>& all_map,
                 std::shared_ptr<instrumentation_core> &prof,
                 mode m
         );

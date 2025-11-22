@@ -52,20 +52,20 @@ namespace fcore::emulator_v2 {
         std::pair<fcore_program,std::set<io_map_entry>> compile_program_c(
                 std::vector<std::string> &contents,
                 std::vector<std::string> &inc,
-                std::unordered_map<std::string, core_iom> &map,
+                std::map<std::string, core_iom> &map,
                 std::string core_name
         );
         std::pair<fcore_program,std::set<io_map_entry>> compile_program_asm(
                 std::vector<std::string> &contents,
                 std::vector<std::string> &inc,
-                std::unordered_map<std::string, core_iom> &map,
+                std::map<std::string, core_iom> &map,
                 std::string core_name
                 );
 
 
         std::shared_ptr<instrumentation_core> profiler = std::make_shared<instrumentation_core>();
 
-        std::unordered_map<std::string, core_iom> process_ioms(
+        std::map<std::string, core_iom> process_ioms(
                 const std::vector<emulator_interconnect> &input_connections,
                 const std::vector<emulator_interconnect> &output_connections,
                 std::vector<emulator_input_specs> inputs,

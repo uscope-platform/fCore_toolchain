@@ -37,8 +37,8 @@ namespace fcore{
     bool operator==(const translation_table_entry& lhs, const translation_table_entry& rhs);
 
     struct disassembled_program{
-        std::unordered_map<uint16_t, translation_table_entry> translation_table;
-        std::unordered_map<uint16_t, translation_table_entry> common_io_translation_table;
+        std::map<uint16_t, translation_table_entry> translation_table;
+        std::map<uint16_t, translation_table_entry> common_io_translation_table;
         std::string program;
 
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(disassembled_program, translation_table,common_io_translation_table, program)
@@ -57,7 +57,7 @@ namespace fcore{
         void write_disassembled_program(const std::string& output_file);
     private:
         void process_stream(instruction_stream program_stream);
-        std::unordered_map<uint16_t, uint16_t> io_map;
+        std::map<uint16_t, uint16_t> io_map;
         std::unique_ptr<assembly_generator> gen;
         std::string error_code;
     };

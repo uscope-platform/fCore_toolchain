@@ -400,7 +400,7 @@ TEST(HlPassesTest, simple_normalization) {
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
 
-    std::unordered_map<std::string, variable_class_t> io_spec;
+    std::map<std::string, variable_class_t> io_spec;
     io_spec["a"] = {variable_output_type, false};
 
     C_language_parser parser(in, result_def);
@@ -480,7 +480,7 @@ TEST(HlPassesTest, hl_ast_lowering) {
     C_language_parser parser(in, result_def);
     parser.pre_process({});
 
-    std::unordered_map<std::string, variable_class_t> io_spec;
+    std::map<std::string, variable_class_t> io_spec;
     parser.parse(io_spec);
 
     std::string ep = "main";
@@ -538,7 +538,7 @@ TEST(HlPassesTest, loop_unrolling_array) {
 
     C_language_parser parser(in, result_def);
     parser.pre_process({});
-    std::unordered_map<std::string, variable_class_t> io_spec;
+    std::map<std::string, variable_class_t> io_spec;
     parser.parse(io_spec);
 
     std::string ep = "main";
@@ -608,7 +608,7 @@ TEST(HlPassesTest, test_matrix_scalarization) {
 
     C_language_parser parser(in, result_def);
     parser.pre_process({});
-    std::unordered_map<std::string, variable_class_t> io_spec;
+    std::map<std::string, variable_class_t> io_spec;
     parser.parse(io_spec);
 
     std::string ep = "main";
@@ -726,7 +726,7 @@ TEST(HlPassesTest, function_inlining_array) {
 
     C_language_parser parser(in, result_def);
     parser.pre_process({});
-    std::unordered_map<std::string, variable_class_t> io_spec;
+    std::map<std::string, variable_class_t> io_spec;
     parser.parse(io_spec);
 
     std::string ep = "main";
@@ -782,7 +782,7 @@ TEST(HlPassesTest, function_return_inlining) {
 
     std::istringstream in(test_content);
 
-    std::unordered_map<std::string, variable_class_t> io_spec;
+    std::map<std::string, variable_class_t> io_spec;
     io_spec["ret"] = {variable_output_type, false};
     io_spec["test_in"] = {variable_input_type, false};
 
@@ -960,7 +960,7 @@ TEST(HlPassesTest, nested_function_inlining) {
 
     std::istringstream in(test_content);
 
-    std::unordered_map<std::string, variable_class_t> io_spec;
+    std::map<std::string, variable_class_t> io_spec;
     io_spec["input_1"] = {variable_input_type, false};
     io_spec["memory_2"] = {variable_memory_type, false};
 
@@ -1058,7 +1058,7 @@ TEST(HlPassesTest, complex_division_implementation) {
 
     std::istringstream in(test_content);
 
-    std::unordered_map<std::string, variable_class_t> io_spec;
+    std::map<std::string, variable_class_t> io_spec;
     io_spec["a"] = {variable_input_type, false};
 
     std::shared_ptr<define_map> result_def = std::make_shared<define_map>();
@@ -1139,7 +1139,7 @@ TEST(HlPassesTest, comparison_flipping) {
 
     C_language_parser parser(in, result_def);
     parser.pre_process({});
-    std::unordered_map<std::string, variable_class_t> io_spec;
+    std::map<std::string, variable_class_t> io_spec;
     parser.parse(io_spec);
 
     std::string ep = "main";

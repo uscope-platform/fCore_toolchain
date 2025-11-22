@@ -16,7 +16,7 @@
 #ifndef FCORE_TOOLCHAIN_DEFINE_MAP_HPP
 #define FCORE_TOOLCHAIN_DEFINE_MAP_HPP
 
-#include <unordered_map>
+#include <map>
 #include <string>
 #include <memory>
 #include <utility>
@@ -33,13 +33,13 @@ namespace fcore {
         unsigned int count(const std::string& key);
 
         unsigned int size() {return defines.size();};
-        std::unordered_map<std::string, std::shared_ptr<define>>::iterator begin() {return defines.begin();}
-        std::unordered_map<std::string, std::shared_ptr<define>>::const_iterator begin() const { return defines.begin();}
-        std::unordered_map<std::string, std::shared_ptr<define>>::iterator end() {return defines.end();}
-        std::unordered_map<std::string, std::shared_ptr<define>>::const_iterator end() const { return defines.end();}
+        std::map<std::string, std::shared_ptr<define>>::iterator begin() {return defines.begin();}
+        std::map<std::string, std::shared_ptr<define>>::const_iterator begin() const { return defines.begin();}
+        std::map<std::string, std::shared_ptr<define>>::iterator end() {return defines.end();}
+        std::map<std::string, std::shared_ptr<define>>::const_iterator end() const { return defines.end();}
 
     private:
-        std::unordered_map<std::string, std::shared_ptr<define>> defines;
+        std::map<std::string, std::shared_ptr<define>> defines;
     };
 }
 

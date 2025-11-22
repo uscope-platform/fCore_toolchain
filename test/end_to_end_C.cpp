@@ -32,7 +32,7 @@ TEST(EndToEndC, fcore_cc) {
 
     std::vector<std::string> includes;
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_output, {10}};
 
     fcore_cc compiler(file_content, includes);
@@ -58,7 +58,7 @@ TEST(EndToEndC, end_to_end_intrinsics) {
 
     std::vector<std::string> includes;
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_input, {10}};
     
     fcore_cc compiler(file_content, includes);
@@ -87,7 +87,7 @@ TEST(EndToEndC, exceptionHandling) {
 
     std::vector<std::string> includes;
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["v_cells"] = {core_iom_input, {59}};
     dma_map["v_arms"] = {core_iom_output, {60,61}};
 
@@ -115,7 +115,7 @@ TEST(EndToEndC, json_writing) {
 
     std::string test_json = "/tmp/e2e_c_json_test.json";
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_input, {10}};
 
     fcore_cc compiler(file_content, includes);
@@ -156,7 +156,7 @@ TEST(EndToEndC, iom) {
     std::vector<std::string> includes;
     
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_memory, {1}};
     dma_map["b"] = {core_iom_input, {2}};
     dma_map["c"] = {core_iom_memory, {4}};
@@ -191,7 +191,7 @@ TEST(EndToEndC, conditional) {
 
     std::vector<std::string> includes;
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["test"] = {core_iom_output, {7}};
 
     
@@ -232,7 +232,7 @@ TEST(EndToEndC, loop) {
 
     std::vector<std::string> includes;
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["h"] = {core_iom_input, {1,2,3,4}};
     dma_map["k"] = {core_iom_input, {5,6,7,8}};
     dma_map["b"] = {core_iom_output, {9,10,11,12}};
@@ -271,7 +271,7 @@ TEST(EndToEndC, nested_loop) {
 
     std::vector<std::string> includes;
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["h"] = {core_iom_input, {1,2,3,4}};
     dma_map["a"] = {core_iom_input, {5,6,7,8}};
     dma_map["c"] = {core_iom_output, {9,10,11,12}};
@@ -313,7 +313,7 @@ TEST(EndToEndC, array_initialization) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["c"] = {core_iom_input, {7}};
 
     fcore_cc compiler(file_content, includes);
@@ -346,7 +346,7 @@ TEST(EndToEndC, array_initialization_through_function) {
 
     std::vector<std::string> includes;
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["c"] = {core_iom_output, {18}};
 
     fcore_cc compiler(file_content, includes);
@@ -386,7 +386,7 @@ TEST(EndToEndC, constant_argument_inlining) {
 
     std::vector<std::string> includes;
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["c"] = {core_iom_output, {18}};
 
     fcore_cc compiler(file_content, includes);
@@ -418,7 +418,7 @@ TEST(EndToEndC, array_io_definition) {
 
     std::vector<std::string> includes;
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_input, {4,7}};
     dma_map["b"] = {core_iom_output, {3}};
     dma_map["c"] = {core_iom_output, {8,9}};
@@ -459,7 +459,7 @@ TEST(EndToEndC, multidimensional_array_io_definition) {
     )""""};
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_input, {4,7}};
     dma_map["c"] = {core_iom_output, {8,9,10,11}};
     dma_map["d"] = {core_iom_memory, {12,13,16,18}};
@@ -491,7 +491,7 @@ TEST(EndToEndC, iom_initialization){
     )""""};
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["c"] = {core_iom_output, {8,9,10,11}};
     dma_map["b"] = {core_iom_output, {20}};
 
@@ -520,7 +520,7 @@ TEST(EndToEndC, test_move){
     )""""};
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_input, {1}};
     dma_map["test"] = {core_iom_output, {10}};
 
@@ -553,7 +553,7 @@ TEST(EndToEndC, test_complex_normalization){
     )""""};
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_input, {1}};
     dma_map["b"] = {core_iom_input, {2}};
     dma_map["test"] = {core_iom_memory, {10}};
@@ -583,7 +583,7 @@ TEST(EndToEndC, register_allocation){
     )""""};
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_input, {1}};
     dma_map["test"] = {core_iom_memory, {10}};
 
@@ -621,7 +621,7 @@ TEST(EndToEndC, function_inlining_expression) {
         }
     )""""};
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["test_in"] = {core_iom_input, {25}};
     dma_map["integ"] = {core_iom_memory, {6}};
 
@@ -663,7 +663,7 @@ TEST(EndToEndC, essential_variable_initialization) {
     }
     )""""};
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["test_in"] = {core_iom_input, {25}};
     dma_map["test_out"] = {core_iom_output, {5}};
     dma_map["test_var"] = {core_iom_output, {7}};
@@ -703,7 +703,7 @@ TEST(EndToEndC, test_constant_propagation) {
     }
     )""""};
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_input, {5}};
     dma_map["switching_cell"] = {core_iom_memory, {17,18}};
 
@@ -736,7 +736,7 @@ TEST(EndToEndC, negative_leading_sum) {
     )""""};
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_input, {2}};
     dma_map["b"] = {core_iom_input, {3}};
     dma_map["c"] = {core_iom_output, {7}};
@@ -777,7 +777,7 @@ TEST(EndToEndC, function_vars_mangling) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["b"] = {core_iom_input, {2}};
     dma_map["a"] = {core_iom_input, {1}};
     dma_map["c"] = {core_iom_output, {10}};
@@ -816,7 +816,7 @@ TEST(EndToEndC, constant_merging) {
 
     std::vector<std::string> includes;
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_input, {10,11}};
     dma_map["b"] = {core_iom_output, {12,13}};
 
@@ -850,7 +850,7 @@ TEST(EndToEndC, zero_assignment_removal) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_input, {10}};
     dma_map["b"] = {core_iom_output, {12}};
 
@@ -889,7 +889,7 @@ TEST(EndToEndC, loop_index_expression) {
 
     std::vector<std::string> includes;
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["v_cells"] = {core_iom_input, {40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59}};
     dma_map["v_arms"] = {core_iom_output, {60,61}};
 
@@ -927,7 +927,7 @@ TEST(EndToEndC, loop_index_expression_multidim) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["v_cells"] = {core_iom_input, {40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59}};
     dma_map["v_arms"] = {core_iom_output, {60,61}};
 
@@ -965,7 +965,7 @@ TEST(EndToEndC, contiguos_array_allocation) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["c"] = {core_iom_input, {2}};
     dma_map["out_1"] = {core_iom_output, {7}};
     dma_map["out_2"] = {core_iom_output, {6}};
@@ -1013,7 +1013,7 @@ TEST(EndToEndC, efi_load_elimination) {
 
     std::vector<std::string> includes;
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["theta"] = {core_iom_input, {1}};
     dma_map["s_th"] = {core_iom_output, {15}};
     dma_map["c_th"] = {core_iom_output, {17}};
@@ -1073,7 +1073,7 @@ TEST(EndToEndC, efi_load_elimination_in_func) {
 
     std::vector<std::string> includes;
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["theta"] = {core_iom_input, {1}};
     dma_map["s_th"] = {core_iom_output, {15}};
     dma_map["c_th"] = {core_iom_output, {17}};
@@ -1110,7 +1110,7 @@ TEST(EndToEndC, constant_conversion) {
 
     std::vector<std::string> includes;
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["v_err"] = {core_iom_output, {2}};
     dma_map["v_err2"] = {core_iom_output, {3}};
 
@@ -1141,7 +1141,7 @@ TEST(EndToEndC, constant_squaring) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["dt"] = {core_iom_output, {5}};
     dma_map["dt2"] = {core_iom_output, {6}};
 
@@ -1171,7 +1171,7 @@ TEST(EndToEndC, test_multiple_constant_op) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["angle_test"] = {core_iom_output, {5}};
 
 
@@ -1203,7 +1203,7 @@ TEST(EndToEndC, test_constant_expression_output) {
 
     std::vector<std::string> includes;
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["v_cap"] = {core_iom_memory, {63}};
     dma_map["v_cap_s"] = {core_iom_output, {22}};
     dma_map["v_out"] = {core_iom_output, {20}};
@@ -1236,7 +1236,7 @@ TEST(EndToEndC, test_ternary_operator) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_input, {3}};
     dma_map["c"] = {core_iom_output, {2}};
 
@@ -1277,7 +1277,7 @@ TEST(EndToEndC, test_include) {
     )""""};
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_input, {3}};
     dma_map["b"] = {core_iom_input, {4}};
     dma_map["c"] = {core_iom_output, {2}};
@@ -1313,7 +1313,7 @@ TEST(EndToEndC, test_ternary_return) {
 
     std::vector<std::string> include_content;
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_input, {3}};
     dma_map["b"] = {core_iom_output, {4}};
 
@@ -1345,7 +1345,7 @@ TEST(EndToEndC, common_io_space) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["a"] = {core_iom_input, {10}, true};
     dma_map["b"] = {core_iom_input, {12}, false};
     dma_map["c"] = {core_iom_output, {3}, false};
@@ -1378,7 +1378,7 @@ TEST(EndToEndC, self_assigned_conditional_select) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["theta"] = {core_iom_memory, {10}, false};
 
     fcore_cc compiler(file_content, includes);
@@ -1407,7 +1407,7 @@ TEST(EndToEndC, uninitialized_variable) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["k"] = {core_iom_memory, {10}, false};
 
     fcore_cc compiler(file_content, includes);
@@ -1445,7 +1445,7 @@ TEST(EndToEndC, struct_propagation) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["in"] = {core_iom_input, {10}, false};
 
     fcore_cc compiler(file_content, includes);
@@ -1488,7 +1488,7 @@ TEST(EndToEndC, struct_multi_propagation) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["in"] = {core_iom_input, {10}, false};
 
     fcore_cc compiler(file_content, includes);
@@ -1530,7 +1530,7 @@ TEST(EndToEndC, struct_field_assign) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["in"] = {core_iom_input, {10}, false};
 
     fcore_cc compiler(file_content, includes);
@@ -1574,7 +1574,7 @@ TEST(EndToEndC, struct_self_referenced_field_assignment) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["in"] = {core_iom_input, {10}, false};
 
     fcore_cc compiler(file_content, includes);
@@ -1618,7 +1618,7 @@ TEST(EndToEndC, struct_nested_self_referenced_field_assignment) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["in"] = {core_iom_input, {10}, false};
 
     fcore_cc compiler(file_content, includes);
@@ -1649,7 +1649,7 @@ TEST(EndToEndC, mult_commutative_constant_evaluation) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["in"] = {core_iom_input, {10}, false};
 
     fcore_cc compiler(file_content, includes);
@@ -1681,7 +1681,7 @@ TEST(EndToEndC, avoid_commutative_constant_evaluation) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["in"] = {core_iom_input, {10}, false};
 
     fcore_cc compiler(file_content, includes);
@@ -1712,7 +1712,7 @@ TEST(EndToEndC, add_commutative_constant_evaluation) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["in"] = {core_iom_input, {10}, false};
 
     fcore_cc compiler(file_content, includes);
@@ -1743,7 +1743,7 @@ TEST(EndToEndC, add_sub_commutation) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["in"] = {core_iom_input, {10}, false};
 
     fcore_cc compiler(file_content, includes);
@@ -1776,7 +1776,7 @@ TEST(EndToEndC, sub_add_commutation) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["in"] = {core_iom_input, {10}, false};
 
     fcore_cc compiler(file_content, includes);
@@ -1813,7 +1813,7 @@ TEST(EndToEndC, csel_crash) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["i_out"]   = {core_iom_input, {10}, false};
     dma_map["i_load"]  = {core_iom_input, {11}, false};
     dma_map["v_cross"] = {core_iom_input, {12}, false};
@@ -1856,7 +1856,7 @@ TEST(EndToEndC, multi_csel_wrong_condition) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["v_cross"] = {core_iom_input, {12}, false};
     dma_map["v_in"]    = {core_iom_input, {13}, false};
     dma_map["fault"]   = {core_iom_input, {14}, false};
@@ -1906,7 +1906,7 @@ TEST(EndToEndC, conditional_cselization) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["i_load"] = {core_iom_input, {12}, false};
     dma_map["i_out"]    = {core_iom_input, {13}, false};
     dma_map["mode"]   = {core_iom_input, {14}, false};
@@ -1952,7 +1952,7 @@ TEST(EndToEndC, ternary_in_if) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["v_cross"] = {core_iom_input, {12}, false};
     dma_map["v_in"]    = {core_iom_input, {13}, false};
     dma_map["mode"]   = {core_iom_input, {14}, false};
@@ -1990,7 +1990,7 @@ TEST(EndToEndC, common_csel_c_operand) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["v_cross"] = {core_iom_input, {12}, false};
     dma_map["v_in"]    = {core_iom_input, {13}, true};
     dma_map["fault"]   = {core_iom_input, {15}, false};
@@ -2029,7 +2029,7 @@ TEST(EndToEndC, expression_in_csel_else) {
     std::vector<std::string> includes;
 
 
-    std::unordered_map<std::string, core_iom> dma_map;
+    std::map<std::string, core_iom> dma_map;
     dma_map["mem"] = {core_iom_memory, {12}, false};
     dma_map["in_c"]    = {core_iom_input, {13}, false};
 

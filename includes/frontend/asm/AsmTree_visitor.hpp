@@ -27,7 +27,7 @@
 
 namespace fcore{
 
-    typedef std::unordered_map<std::string, std::shared_ptr<variable>>  varmap_t;
+    typedef std::map<std::string, std::shared_ptr<variable>>  varmap_t;
 
     class AsmTree_visitor : public  asm_parser::asm_grammarBaseListener{
     public:

@@ -18,7 +18,7 @@
 
 namespace fcore{
 
-    fcore_has::fcore_has(std::istream &input,bool print_debug, const std::unordered_map<std::string, std::vector<uint32_t>>& m) {
+    fcore_has::fcore_has(std::istream &input,bool print_debug, const std::map<std::string, std::vector<uint32_t>>& m) {
         dma_map = m;
         construct_assembler(input,print_debug);
     }
@@ -39,7 +39,7 @@ namespace fcore{
             //TODO: implement instruction info stuff
             instruction_stream program_stream = sman.process_stream(target_parser.program);
 
-            auto amap = std::make_shared<std::unordered_map<std::string, std::vector<io_map_entry>>>();
+            auto amap = std::make_shared<std::map<std::string, std::vector<io_map_entry>>>();
 
             for(auto &item:dma_map){
                 io_map_entry e(-1,item.second[0],"m");

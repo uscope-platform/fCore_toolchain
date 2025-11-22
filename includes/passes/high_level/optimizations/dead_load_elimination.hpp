@@ -39,7 +39,7 @@ namespace fcore{
         void search_usages(std::shared_ptr<ast_operand> element);
         void search_constants(std::shared_ptr<ast_node> element);
         std::shared_ptr<ast_node> purge_dead_loads(std::shared_ptr<ast_node> element);
-        std::unordered_map<std::string, load_t> last_loads_map;
+        std::map<std::string, load_t> last_loads_map;
         bool efi_mode;
     };
 }

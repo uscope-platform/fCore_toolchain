@@ -45,8 +45,8 @@ namespace fcore {
 
     private:
 
-        std::stack<std::unordered_map<std::string, c_types_t>> scopes_stack;
-        std::unordered_map<std::string, c_types_t> current_scope;
+        std::stack<std::map<std::string, c_types_t>> scopes_stack;
+        std::map<std::string, c_types_t> current_scope;
 
         void setup_frame();
         void teardown_frame();

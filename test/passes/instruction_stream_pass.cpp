@@ -36,7 +36,7 @@ TEST(virtual_instructions, virtual_instruction_implementation) {
     instruction_stream program_stream;
     program_stream.push_back(instruction_variant(pseudo_instruction("mov", args)));
 
-    auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
+    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
     std::shared_ptr<io_map> allocation_map;
 
     auto ic =  std::make_shared<instrumentation_core>();
@@ -64,7 +64,7 @@ TEST(virtual_instructions, ternary_reduction) {
     instruction_stream program_stream;
     program_stream.push_back(instruction_variant(pseudo_instruction("mov", args)));
 
-    auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
+    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
     std::shared_ptr<io_map> allocation_map;
 
     auto ic =  std::make_shared<instrumentation_core>();

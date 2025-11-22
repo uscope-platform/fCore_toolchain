@@ -37,7 +37,7 @@ namespace fcore{
         C_language_parser(const std::string &path, std::shared_ptr<define_map> def_map);
 
         void pre_process(const std::vector<std::string> &abs_includes);
-        void parse(std::unordered_map<std::string, variable_class_t> dma_specs);
+        void parse(std::map<std::string, variable_class_t> dma_specs);
         std::shared_ptr<ast_code_block> AST;
         std::string error;
 

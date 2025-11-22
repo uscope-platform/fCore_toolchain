@@ -29,7 +29,7 @@
 namespace fcore{
     class fcore_has {
     public:
-        fcore_has(std::istream &input, bool print_debug, const std::unordered_map<std::string, std::vector<uint32_t>>& m);
+        fcore_has(std::istream &input, bool print_debug, const std::map<std::string, std::vector<uint32_t>>& m);
         void construct_assembler(std::istream &input, bool print_debug);
 
         static std::vector<std::istream*> process_includes(const std::vector<std::string>& include_files, const std::string& include_directory);
@@ -38,17 +38,17 @@ namespace fcore{
         std::vector<uint32_t> get_executable();
         std::vector<uint32_t> get_raw_code();
         std::string get_errors();
-        struct program_info get_program_info() { return length_info;}
+        program_info get_program_info() { return length_info;}
         void write_hexfile(const std::string& ouput_file);
         void write_verilog_memfile(const std::string& ouput_file);
         void write_json(const std::string& output_file);
         uint32_t get_program_size();
-        void set_io_map(const std::unordered_map<std::string, std::vector<uint32_t>>& m){dma_map = m;};
+        void set_io_map(const std::map<std::string, std::vector<uint32_t>>& m){dma_map = m;};
     private:
-        std::unordered_map<std::string, std::vector<uint32_t>> dma_map;
+        std::map<std::string, std::vector<uint32_t>> dma_map;
         binary_generator writer;
         std::string error_code;
-        struct program_info length_info;
+        program_info length_info;
         nlohmann::json dump;
     };
 }

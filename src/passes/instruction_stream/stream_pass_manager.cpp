@@ -18,8 +18,8 @@
 
 namespace fcore{
 
-    stream_pass_manager::stream_pass_manager(std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
-                                                    const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map,
+    stream_pass_manager::stream_pass_manager(std::shared_ptr<std::map<std::string, memory_range_t>> &bm,
+                                                    const std::shared_ptr<std::map<std::string, std::vector<io_map_entry>>>& all_map,
                                                     std::shared_ptr<instrumentation_core> &prof,
                                                     mode m
     ) {
@@ -32,15 +32,15 @@ namespace fcore{
         mode m
         ) {
 
-        auto bm = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
-        auto am = std::make_shared<std::unordered_map<std::string, std::vector<io_map_entry>>>();
+        auto bm = std::make_shared<std::map<std::string, memory_range_t>>();
+        auto am = std::make_shared<std::map<std::string, std::vector<io_map_entry>>>();
         constructs_pass_manager( bm, am, prof, m);
     }
 
 
     void
-    stream_pass_manager::constructs_pass_manager(std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &bm,
-                                                        const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map,
+    stream_pass_manager::constructs_pass_manager(std::shared_ptr<std::map<std::string, memory_range_t>> &bm,
+                                                        const std::shared_ptr<std::map<std::string, std::vector<io_map_entry>>>& all_map,
                                                         std::shared_ptr<instrumentation_core> &prof,
                                                         mode m
     ) {
@@ -48,7 +48,7 @@ namespace fcore{
         optimizer_mode = m;
         ic = std::make_shared<instruction_count>();
         auto var_map = std::make_shared<variable_map>();
-        auto  io_assignment_map = std::make_shared<std::unordered_map<std::string, std::pair<int, int>>>();
+        auto  io_assignment_map = std::make_shared<std::map<std::string, std::pair<int, int>>>();
         passes.push_back(std::make_shared<virtual_operations_implementation>());
         passes.push_back(std::make_shared<uninitialized_variable_detection>());
         passes.push_back(std::make_shared<ternary_deconfliction>());

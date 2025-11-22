@@ -53,7 +53,7 @@ namespace fcore::emulator_v2{
             std::vector<uint32_t> addresses,
                 uint32_t active_channels
         );
-        void set_initial_values(const std::unordered_map<std::string,std::unordered_map<std::string, std::vector<uint32_t>>> &ivs){initial_values = ivs;}
+        void set_initial_values(const std::map<std::string,std::map<std::string, std::vector<uint32_t>>> &ivs){initial_values = ivs;}
         void set_simulation_frequency(uint32_t freq);
         nlohmann::json get_emulation_output(const std::string& core_id);
         void clear();
@@ -61,9 +61,9 @@ namespace fcore::emulator_v2{
         std::shared_ptr<bus_allocator> bus_engine;
         std::shared_ptr<std::unordered_map<std::string, emulator_runner>> runners;
 
-        std::unordered_map<std::string,std::unordered_map<std::string, emulator_output>> data_section;
+        std::map<std::string,std::map<std::string, emulator_output>> data_section;
 
-        std::unordered_map<std::string,std::unordered_map<std::string, std::vector<uint32_t>>> initial_values;
+        std::map<std::string,std::map<std::string, std::vector<uint32_t>>> initial_values;
     };
 }
 

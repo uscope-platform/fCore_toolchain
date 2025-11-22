@@ -31,8 +31,8 @@ namespace fcore{
     public:
         register_allocation(
                 std::shared_ptr<variable_map> vmap,
-                std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm,
-                const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
+                std::shared_ptr<std::map<std::string, memory_range_t>> &ebm,
+                const std::shared_ptr<std::map<std::string, std::vector<io_map_entry>>>& all_map
         );
 
         void setup() override;
@@ -46,9 +46,9 @@ namespace fcore{
         std::shared_ptr<variable_map> var_map;
         std::vector<bool> excluded;
 
-        std::unordered_map<std::string, std::pair<int, int>> allocated_contiguous_arrays;
-        std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>> allocation_map;
-        std::unordered_map<std::string, int> memory_vars;
+        std::map<std::string, std::pair<int, int>> allocated_contiguous_arrays;
+        std::shared_ptr<std::map<std::string, std::vector<io_map_entry>>> allocation_map;
+        std::map<std::string, int> memory_vars;
     };
 }
 

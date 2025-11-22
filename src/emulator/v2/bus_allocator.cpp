@@ -230,9 +230,9 @@ namespace fcore::emulator_v2 {
     }
 
 
-    std::unordered_map<std::string, core_iom> bus_allocator::get_dma_io(const std::string &core_name) {
+    std::map<std::string, core_iom> bus_allocator::get_dma_io(const std::string &core_name) {
 
-        std::unordered_map<std::string, core_iom> ret_val;
+        std::map<std::string, core_iom> ret_val;
          for(auto &[port_name, endpoint]:sources_map[core_name]) {
             if(ret_val.contains(port_name)) {
 

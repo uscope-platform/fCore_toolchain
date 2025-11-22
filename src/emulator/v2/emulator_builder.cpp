@@ -21,7 +21,7 @@ namespace fcore::emulator_v2{
         engine = bus_engine;
     }
 
-    std::unordered_map<std::string, core_iom> emulator_builder::process_ioms(
+    std::map<std::string, core_iom> emulator_builder::process_ioms(
             const std::vector<emulator_interconnect> &input_connections,
             const std::vector<emulator_interconnect> &output_connections,
             std::vector<emulator_input_specs> inputs,
@@ -31,7 +31,7 @@ namespace fcore::emulator_v2{
     ) {
 
 
-        std::unordered_map<std::string, core_iom> result;
+        std::map<std::string, core_iom> result;
 
         std::set<uint32_t> assigned_inputs;
         std::set<uint32_t> assigned_outputs;
@@ -100,7 +100,7 @@ namespace fcore::emulator_v2{
             std::set<io_map_entry> &am
     ) {
 
-        std::unordered_map<std::string, core_iom> dma_io = engine->get_dma_io(core_spec.id);
+        std::map<std::string, core_iom> dma_io = engine->get_dma_io(core_spec.id);
         std::vector<std::string> content = {core_spec.program.content};
 
 
@@ -180,7 +180,7 @@ namespace fcore::emulator_v2{
     std::pair<fcore_program,std::set<io_map_entry>>  emulator_builder::compile_program_c(
             std::vector<std::string> &content,
             std::vector<std::string> &headers,
-            std::unordered_map<std::string, core_iom> &dma_io,
+            std::map<std::string, core_iom> &dma_io,
             std::string core_name
     ) {
 
@@ -213,10 +213,10 @@ namespace fcore::emulator_v2{
     std::pair<fcore_program,std::set<io_map_entry>>  emulator_builder::compile_program_asm(
             std::vector<std::string> &contents,
             std::vector<std::string> &inc,
-            std::unordered_map<std::string, core_iom> &map,
+            std::map<std::string, core_iom> &map,
             std::string core_name
     ) {
-        std::unordered_map<std::string, std::vector<uint32_t>> io_map;
+        std::map<std::string, std::vector<uint32_t>> io_map;
 
         std::set<io_map_entry> io_map_out;
         for(int i = 1; i<64; i++){

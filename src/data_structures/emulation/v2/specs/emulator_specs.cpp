@@ -71,11 +71,11 @@ namespace fcore::emulator_v2 {
         throw std::runtime_error("core with ID: " + core_id + " not found");
     }
 
-    std::unordered_map<std::string, std::unordered_map<std::string, std::vector<uint32_t>>> emulator_specs::
+    std::map<std::string, std::map<std::string, std::vector<uint32_t>>> emulator_specs::
     get_outputs_initial_values() const {
-        std::unordered_map<std::string,std::unordered_map<std::string, std::vector<uint32_t>>> output_ivs;
+        std::map<std::string,std::map<std::string, std::vector<uint32_t>>> output_ivs;
 
-        std::unordered_map<std::string,std::unordered_map<std::string, std::vector<uint32_t>>> inputs_ivs;
+        std::map<std::string,std::map<std::string, std::vector<uint32_t>>> inputs_ivs;
         for(auto &c:cores) {
             for(auto &in: c.inputs) {
                 std::vector<uint32_t> data;

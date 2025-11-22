@@ -44,9 +44,9 @@ namespace fcore {
         void add_bound_identifier(const std::shared_ptr<variable> & var, int reg);
         bool is_allocated(const std::shared_ptr<variable> &var) {return identifiers_map.contains(var->get_identifier());};
     private:
-        std::unordered_map<std::string, std::shared_ptr<variable>> identifiers_map;
+        std::map<std::string, std::shared_ptr<variable>> identifiers_map;
         std::vector<std::vector<range_t>> reg_map;
-        std::unordered_map<std::string, std::shared_ptr<variable>> common_io_map;
+        std::map<std::string, std::shared_ptr<variable>> common_io_map;
         std::set<uint32_t> used_common_io;
     };
 }

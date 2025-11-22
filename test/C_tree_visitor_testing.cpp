@@ -35,7 +35,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        parser.parse(std::unordered_map<std::string, variable_class_t>());
+        parser.parse(std::map<std::string, variable_class_t>());
         std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
 
         std::shared_ptr<ast_expression> res_1 = std::static_pointer_cast<ast_expression>(
@@ -104,7 +104,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        parser.parse(std::unordered_map<std::string, variable_class_t>());
+        parser.parse(std::map<std::string, variable_class_t>());
         std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
 
         auto res = std::static_pointer_cast<ast_operand>(results[0]->get_scalar_initializer())->get_int_value();
@@ -122,7 +122,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         auto results = parser.get_globals();
@@ -177,7 +177,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         auto results = parser.get_globals();
@@ -222,7 +222,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         std::vector<std::shared_ptr<ast_definition>> results =  parser.get_globals();
@@ -267,7 +267,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         std::vector<std::shared_ptr<ast_definition>> results =  parser.get_globals();
@@ -324,7 +324,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         std::vector<std::shared_ptr<ast_definition>> results =  parser.get_globals();
@@ -371,7 +371,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
@@ -408,7 +408,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
@@ -447,7 +447,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
@@ -485,7 +485,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
@@ -536,7 +536,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         std::vector<std::shared_ptr<ast_node>> func_body;
@@ -612,7 +612,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         std::shared_ptr<ast_function_def> results = std::static_pointer_cast<ast_function_def>(parser.get_functions()[0]);
@@ -670,7 +670,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         std::shared_ptr<ast_function_def> result = std::static_pointer_cast<ast_function_def>(parser.get_functions()[0]);
@@ -714,7 +714,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         auto var = std::make_shared<variable>("c");
@@ -753,7 +753,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
 
@@ -804,7 +804,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         auto result = std::static_pointer_cast<ast_conditional>(std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body()[0]);
@@ -864,7 +864,7 @@ namespace fcore{
             }
         )"""");
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         io_spec["a"] = {variable_input_type, false};
         io_spec["h"] = {variable_input_type, false};
         io_spec["j"] = {variable_output_type, false};
@@ -961,7 +961,7 @@ namespace fcore{
         }
         )"""");
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         io_spec["a"] = {variable_input_type, false};
         io_spec["h"] = {variable_input_type, false};
         io_spec["j"] = {variable_output_type, false};
@@ -1097,7 +1097,7 @@ namespace fcore{
         }
         )"""");
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         io_spec["b"] = {variable_output_type, false};
 
         auto result_def = std::make_shared<define_map>();
@@ -1183,7 +1183,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         std::vector<std::shared_ptr<ast_node>> result = std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body();
@@ -1253,7 +1253,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         auto def = std::static_pointer_cast<ast_definition>(std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body()[0]);
@@ -1279,7 +1279,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
         auto fun = parser.AST->get_content()[0];
         auto result = std::static_pointer_cast<ast_function_def>(fun)->get_body()[0];
@@ -1330,7 +1330,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
 
         auto fun = parser.AST->get_content()[0];
@@ -1378,7 +1378,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
         auto globals = parser.get_globals();
         ASSERT_EQ(globals.size(), 1);
@@ -1412,7 +1412,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
         auto fun = parser.AST->get_content()[0];
         auto result = std::static_pointer_cast<ast_definition>(std::static_pointer_cast<ast_function_def>(fun)->get_body()[0]);
@@ -1443,7 +1443,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
         auto fun = parser.AST->get_content()[0];
         auto res_def = std::static_pointer_cast<ast_function_def>(fun)->get_body()[0];
@@ -1488,7 +1488,7 @@ namespace fcore{
         C_language_parser parser(test_content, result_def);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
         auto result = std::static_pointer_cast<ast_function_def>( parser.AST->get_content()[0]);
 
@@ -1545,7 +1545,7 @@ namespace fcore{
         C_language_parser parser(test_content, def_map);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
         auto fun = parser.AST->get_content()[0];
         auto result = std::static_pointer_cast<ast_function_def>(fun)->get_body();
@@ -1599,7 +1599,7 @@ namespace fcore{
         C_language_parser parser(test_content, def_map);
         parser.pre_process({});
 
-        std::unordered_map<std::string, variable_class_t> io_spec;
+        std::map<std::string, variable_class_t> io_spec;
         parser.parse(io_spec);
         auto fun = parser.AST->get_content()[0];
         auto result = std::static_pointer_cast<ast_function_def>(fun)->get_body();

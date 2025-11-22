@@ -36,9 +36,9 @@ namespace fcore{
 
         uint32_t instr_ctr;
         uint32_t last_pass;
-        std::unordered_map<std::string, uint32_t> ternaries_map;
-        std::unordered_map<std::string, std::shared_ptr<variable>> substitution_map;
-        std::unordered_map<std::string, uint32_t> conditions_map;
+        std::map<std::string, uint32_t> ternaries_map;
+        std::map<std::string, std::shared_ptr<variable>> substitution_map;
+        std::map<std::string, uint32_t> conditions_map;
     };
 }
 

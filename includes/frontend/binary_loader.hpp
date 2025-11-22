@@ -42,8 +42,8 @@ namespace fcore{
         std::pair<instruction_variant, instruction_variant> process_load_constant(uint32_t instruction, uint32_t raw_constant);
         static instruction_variant process_conversion_instr(uint32_t instruction);
         static uint32_t to_littleEndian(uint32_t in_num);
-        std::unordered_map<uint16_t, uint16_t> get_io_mapping();
-        std::unordered_map<uint16_t, uint16_t> get_common_io_mapping();
+        std::map<uint16_t, uint16_t> get_io_mapping();
+        std::map<uint16_t, uint16_t> get_common_io_mapping();
         std::set<io_map_entry> get_io_mapping_set();
     private:
         instruction_stream program_stream;

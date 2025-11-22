@@ -35,7 +35,7 @@
 namespace fcore {
 
 
-    typedef std::unordered_map<std::string, std::vector<io_map_entry>> io_map;
+    typedef std::map<std::string, std::vector<io_map_entry>> io_map;
 
     class fcore_cc {
     public:
@@ -56,17 +56,17 @@ namespace fcore {
 
         std::pair<std::shared_ptr<ast_code_block>, std::vector<std::shared_ptr<ast_definition>>> get_hl_ast();
 
-        void set_dma_map(std::unordered_map<std::string, core_iom> &map){dma_spec = map;};
+        void set_dma_map(std::map<std::string, core_iom> &map){dma_spec = map;};
         void set_core_info(core_info &i) {info = i;};
         program_info get_program_info() { return length_info;}
 
-        static nlohmann::json dump_iom_map(std::unordered_map<std::string, core_iom> &map);
-        static std::unordered_map<std::string, core_iom> load_iom_map(const nlohmann::json &raw_map);
+        static nlohmann::json dump_iom_map(std::map<std::string, core_iom> &map);
+        static std::map<std::string, core_iom> load_iom_map(const nlohmann::json &raw_map);
     private:
         void merge_includes(const std::vector<std::shared_ptr<ast_code_block>>& i);
         std::shared_ptr<ast_code_block>  parse_include(std::istream &file, std::shared_ptr<define_map> def_map);
-        void parse(std::unordered_map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map);
-        void optimize(std::unordered_map<std::string, std::vector<uint32_t >> &dma_map);
+        void parse(std::map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map);
+        void optimize(std::map<std::string, std::vector<uint32_t >> &dma_map);
         void analyze_program_length(std::shared_ptr<instruction_count> c);
         std::ifstream input_file_stream;
         std::istringstream input_string_stream;
@@ -75,7 +75,7 @@ namespace fcore {
         bool include_is_paths;
         bool logging;
 
-        std::unordered_map<std::string, core_iom> dma_spec;
+        std::map<std::string, core_iom> dma_spec;
 
         std::shared_ptr<ast_code_block> hl_ast;
         std::vector<std::shared_ptr<ast_definition>> globals;
@@ -85,8 +85,8 @@ namespace fcore {
         std::string error_code;
         nlohmann::json dump;
 
-        std::unordered_map<std::string, std::vector<uint32_t >> dma_io_map;
-        std::unordered_map<std::string, variable_class_t> dma_io_spec;
+        std::map<std::string, std::vector<uint32_t >> dma_io_map;
+        std::map<std::string, variable_class_t> dma_io_spec;
         std::shared_ptr<io_map> allocation_map;
 
         core_info info;

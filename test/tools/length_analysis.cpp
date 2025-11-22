@@ -30,7 +30,7 @@ std::vector<std::string> file_content = {R""""(
 
 std::vector<std::string> include_content;
 
-std::unordered_map<std::string, core_iom> dma_map;
+std::map<std::string, core_iom> dma_map;
 dma_map["out"] = {core_iom_output, {5,6}};
 
 fcore_cc compiler(file_content, include_content);

@@ -38,7 +38,7 @@ namespace fcore{
         dma_type_mem=2,
     } dma_type;
 
-    typedef std::unordered_map<std::string, std::shared_ptr<variable>>  varmap_t;
+    typedef std::map<std::string, std::shared_ptr<variable>>  varmap_t;
 
     class C_Tree_visitor : public  C_parser::C_grammarBaseListener{
     public:
@@ -102,7 +102,7 @@ namespace fcore{
 
         void exitStructSpecifier(C_parser::C_grammarParser::StructSpecifierContext *ctx) override;
 
-        void set_dma_specs(std::unordered_map<std::string, variable_class_t> ds) {dma_specs = std::move(ds);};
+        void set_dma_specs(std::map<std::string, variable_class_t> ds) {dma_specs = std::move(ds);};
         std::shared_ptr<ast_code_block> get_ast(){
             return root;
         };
@@ -125,7 +125,7 @@ namespace fcore{
         std::vector<std::shared_ptr<ast_node>> argument_vector;
         std::vector<std::shared_ptr<ast_node>> array_dimentions;
 
-        std::unordered_map<std::string, std::vector<int>> array_shapes_map;
+        std::map<std::string, std::vector<int>> array_shapes_map;
 
         std::shared_ptr<ast_function_def> current_function;
 
@@ -149,7 +149,7 @@ namespace fcore{
         std::stack<std::shared_ptr<ast_node>> outer_block_current_item;
 
         std::stack<std::string> outer_block_types;
-        std::unordered_map<std::string, variable_class_t> dma_specs;
+        std::map<std::string, variable_class_t> dma_specs;
 
         bool in_function_declaration;
         bool in_function_body;

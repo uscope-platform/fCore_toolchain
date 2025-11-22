@@ -36,7 +36,7 @@ namespace fcore::emulator_v2 {
     };
 
 
-    static std::unordered_map<std::string, register_data_type > data_type_map = {
+    static std::map<std::string, register_data_type > data_type_map = {
             {"float", type_float},
             {"integer", type_uint}
     };
@@ -46,7 +46,7 @@ namespace fcore::emulator_v2 {
         vector_endpoint = 1
     } endpoint_type;
 
-    static std::unordered_map<std::string, endpoint_type > endpoint_type_map = {
+    static std::map<std::string, endpoint_type > endpoint_type_map = {
             {"scalar", scalar_endpoint},
             {"vector", vector_endpoint}
     };

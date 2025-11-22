@@ -160,7 +160,7 @@ namespace fcore {
         bool has_reciprocal;
     };
 
-    static std::unordered_map<std::string, source_type_t > source_type_map = {
+    static std::map<std::string, source_type_t > source_type_map = {
         {"constant", constant_input},
         {"file", time_series_input},
         {"series", time_series_input},

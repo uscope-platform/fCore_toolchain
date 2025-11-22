@@ -18,7 +18,7 @@
 
 #include <string>
 #include <memory>
-#include <unordered_map>
+#include <map>
 #include <utility>
 
 #include "data_structures/high_level_ast/high_level_ast.hpp"
@@ -45,8 +45,8 @@ namespace fcore{
 
     private:
 
-        std::unordered_map<std::string, std::unordered_map<std::string , std::vector<constant>>> constants_map;
-        std::unordered_map<std::string, std::unordered_map<std::string, bool>> purge_map;
+        std::map<std::string, std::map<std::string , std::vector<constant>>> constants_map;
+        std::map<std::string, std::map<std::string, bool>> purge_map;
     };
 }
 

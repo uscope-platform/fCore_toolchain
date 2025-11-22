@@ -23,8 +23,8 @@ namespace fcore{
 
     register_allocation::register_allocation(
             std::shared_ptr<variable_map> vmap,
-            std::shared_ptr<std::unordered_map<std::string, memory_range_t>> &ebm,
-            const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& all_map
+            std::shared_ptr<std::map<std::string, memory_range_t>> &ebm,
+            const std::shared_ptr<std::map<std::string, std::vector<io_map_entry>>>& all_map
     ) : stream_pass_base("register allocation", 1, true, global_pass) {
 
         allocation_map = all_map;

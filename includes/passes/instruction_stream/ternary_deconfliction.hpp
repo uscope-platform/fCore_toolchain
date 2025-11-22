@@ -28,8 +28,8 @@ namespace fcore {
         void map_ternaries(const instruction_variant &element);
 
 
-        std::unordered_map<std::string, uint32_t> condition_usage_map;
-        std::unordered_map<std::string, uint32_t> condition_progressives;
+        std::map<std::string, uint32_t> condition_usage_map;
+        std::map<std::string, uint32_t> condition_progressives;
         std::vector<instruction_variant>deconflict(instruction_variant &element);
     };
 }

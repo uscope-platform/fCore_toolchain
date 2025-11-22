@@ -33,7 +33,7 @@ TEST( cFrontend, preprocessor_define) {
         }
     )"""");
 
-    std::unordered_map<std::string, variable_class_t> io_spec;
+    std::map<std::string, variable_class_t> io_spec;
     io_spec["a"] = {variable_input_type, false};
 
     auto dmap = std::make_shared<define_map>();
@@ -57,7 +57,7 @@ TEST( cFrontend, preprocessor_define) {
 TEST( cFrontend, preprocessor_include) {
     std::string input_file = "c_prep/test_include.c";
 
-    std::unordered_map<std::string, variable_class_t> io_spec;
+    std::map<std::string, variable_class_t> io_spec;
     io_spec["a"] = {variable_input_type, false};
 
     auto dmap = std::make_shared<define_map>();

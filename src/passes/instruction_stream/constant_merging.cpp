@@ -17,7 +17,7 @@
 
 namespace fcore{
 
-    constant_merging::constant_merging(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam) :
+    constant_merging::constant_merging(std::shared_ptr<std::map<std::string, std::pair<int,int>>> lam) :
             stream_pass_base("constant merging pass", 1, false, high_level_pass){
         delete_intercalated_const = false;
         assignments_map = std::move(lam);

@@ -42,11 +42,11 @@ namespace fcore {
         void process_function_def(const std::shared_ptr<ast_function_def> &f_def);
         void process_function_call(const std::shared_ptr<ast_call> &call);
 
-        std::stack<std::unordered_map<std::string, c_types_t>> scopes_stack;
-        std::unordered_map<std::string, c_types_t> current_scope;
+        std::stack<std::map<std::string, c_types_t>> scopes_stack;
+        std::map<std::string, c_types_t> current_scope;
 
-        std::unordered_map<std::string, std::vector<std::pair<std::string, c_types_t>>> definitions;
-        std::unordered_map<std::string, std::vector<c_types_t>> builtins;
+        std::map<std::string, std::vector<std::pair<std::string, c_types_t>>> definitions;
+        std::map<std::string, std::vector<c_types_t>> builtins;
     };
 }
 

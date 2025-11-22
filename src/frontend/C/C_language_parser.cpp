@@ -45,7 +45,7 @@ namespace fcore{
         preprocessed_content = preproc->get_preprocessed_file();
     }
 
-    void C_language_parser::parse(std::unordered_map<std::string, variable_class_t> dma_specs) {
+    void C_language_parser::parse(std::map<std::string, variable_class_t> dma_specs) {
 
         std::istringstream ss(preprocessed_content);
         ANTLRInputStream input(ss);

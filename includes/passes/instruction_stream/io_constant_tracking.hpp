@@ -21,12 +21,12 @@
 namespace fcore{
     class io_constant_tracking : public stream_pass_base{
     public:
-        io_constant_tracking(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam);
+        io_constant_tracking(std::shared_ptr<std::map<std::string, std::pair<int,int>>> lam);
         std::optional<instruction_variant> apply_pass(const instruction_variant &element, uint32_t n)  override;
     private:
         void add_assignment(const std::string&);
         int index;
-        std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> last_assignment_map;
+        std::shared_ptr<std::map<std::string, std::pair<int,int>>> last_assignment_map;
     };
 }
 #endif //FCORE_TOOLCHAIN_IO_CONSTANT_TRACKING_H

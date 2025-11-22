@@ -104,7 +104,7 @@ namespace fcore{
         return {hl_ast, globals};
     }
 
-    void fcore_cc::parse(std::unordered_map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map) {
+    void fcore_cc::parse(std::map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map) {
         error_code = "";
         C_language_parser target_parser;
         if(type == "string"){
@@ -122,7 +122,7 @@ namespace fcore{
         if (profiling_core != nullptr) profiling_core->end_event("program_parsing");
     }
 
-    void fcore_cc::optimize(std::unordered_map<std::string, std::vector<uint32_t>> &dma_map) {
+    void fcore_cc::optimize(std::map<std::string, std::vector<uint32_t>> &dma_map) {
 
         std::string ep = "main";
         hl_manager = create_hl_pass_manager(ep);
@@ -137,7 +137,7 @@ namespace fcore{
 
         allocation_map = std::make_shared<io_map>();
 
-        auto bindings_map = std::make_shared<std::unordered_map<std::string, memory_range_t>>();
+        auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
         stream_pass_manager sman( bindings_map, allocation_map, profiling_core, stream_pass_manager::high_level_language);
         program_stream = sman.process_stream(program_stream);
 
@@ -195,7 +195,7 @@ namespace fcore{
     }
 
     std::shared_ptr<ast_code_block>  fcore_cc::parse_include(std::istream &input, std::shared_ptr<define_map> def_map) {
-        std::unordered_map<std::string, variable_class_t> dma_specs;
+        std::map<std::string, variable_class_t> dma_specs;
         C_language_parser target_parser(input, def_map);
         target_parser.pre_process({});
         target_parser.parse(std::move(dma_specs));
@@ -231,7 +231,7 @@ namespace fcore{
                                     info.fixed_core_overhead + c->load*info.load_overhead;
     }
 
-    nlohmann::json fcore_cc::dump_iom_map(std::unordered_map<std::string, core_iom> &map) {
+    nlohmann::json fcore_cc::dump_iom_map(std::map<std::string, core_iom> &map) {
         nlohmann::json ret;
         for(auto &item:map){
             ret[item.first] = nlohmann::json();
@@ -251,8 +251,8 @@ namespace fcore{
         return ret;
     }
 
-    std::unordered_map<std::string, core_iom> fcore_cc::load_iom_map(const nlohmann::json &raw_map) {
-        std::unordered_map<std::string, core_iom> ret;
+    std::map<std::string, core_iom> fcore_cc::load_iom_map(const nlohmann::json &raw_map) {
+        std::map<std::string, core_iom> ret;
 
         for(auto &obj:raw_map.items()){
             core_iom iom;

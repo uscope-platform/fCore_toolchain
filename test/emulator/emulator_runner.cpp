@@ -72,7 +72,7 @@ TEST(Emulator_runner, run_simple_emulator) {
         stop
     )");
 
-    std::unordered_map<std::string, std::vector<uint32_t>> io_map = {{"r2", {2}}, {"r1", {1}}, {"r3", {3}}};
+    std::map<std::string, std::vector<uint32_t>> io_map = {{"r2", {2}}, {"r1", {1}}, {"r3", {3}}};
 
     fcore_has has(stream, false, io_map);
 
@@ -114,7 +114,7 @@ TEST(Emulator_runner, run_simple_emulator_inputs) {
         stop
     )");
 
-    std::unordered_map<std::string, std::vector<uint32_t>> io_map = {{"r2", {2}}, {"r1", {1}}, {"r3", {3}}};
+    std::map<std::string, std::vector<uint32_t>> io_map = {{"r2", {2}}, {"r1", {1}}, {"r3", {3}}};
 
     fcore_has has(stream, false, io_map);
 
@@ -158,7 +158,7 @@ TEST(Emulator_runner, breakpoint) {
         stop
     )");
 
-    std::unordered_map<std::string, std::vector<uint32_t>> io_map = {{"r63", {63}}};
+    std::map<std::string, std::vector<uint32_t>> io_map = {{"r63", {63}}};
 
     fcore_has has(stream, false, io_map);
 
@@ -197,7 +197,7 @@ TEST(Emulator_runner, continue_emulation) {
         stop
     )");
 
-    std::unordered_map<std::string, std::vector<uint32_t>> io_map = {{"r63", {63}}};
+    std::map<std::string, std::vector<uint32_t>> io_map = {{"r63", {63}}};
 
     fcore_has has(stream, false, io_map);
 
@@ -270,7 +270,7 @@ TEST(Emulator_runner, single_stepping) {
         stop
     )");
 
-    std::unordered_map<std::string, std::vector<uint32_t>> io_map = {{"r63", {63}}};
+    std::map<std::string, std::vector<uint32_t>> io_map = {{"r63", {63}}};
 
     fcore_has has(stream, false, io_map);
 
@@ -328,7 +328,7 @@ TEST(Emulator_runner, single_step_conclusion) {
         stop
     )");
 
-    std::unordered_map<std::string, std::vector<uint32_t>> io_map = {{"r63", {63}}};
+    std::map<std::string, std::vector<uint32_t>> io_map = {{"r63", {63}}};
 
     fcore_has has(stream, false, io_map);
 

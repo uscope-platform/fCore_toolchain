@@ -25,14 +25,14 @@
 namespace fcore{
     class constant_merging : public stream_pass_base {
     public:
-        constant_merging(std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> lam);
+        constant_merging(std::shared_ptr<std::map<std::string, std::pair<int,int>>> lam);
         std::optional<instruction_variant> apply_pass(const instruction_variant &element, uint32_t n) override;
 
     private:
         std::set<std::string> processed_constants;
-        std::unordered_map<float, std::shared_ptr<variable>> float_const_map;
-        std::unordered_map<uint32_t, std::shared_ptr<variable>> int_const_map;
-        std::unordered_map<std::string, std::shared_ptr<variable>> reassignments_map;
+        std::map<float, std::shared_ptr<variable>> float_const_map;
+        std::map<uint32_t, std::shared_ptr<variable>> int_const_map;
+        std::map<std::string, std::shared_ptr<variable>> reassignments_map;
         void map_exclusions(const instruction_variant &element);
         instruction_variant merge_register_inst(register_instruction& instr);
         instruction_variant merge_ternary_inst(ternary_instruction& instr);
@@ -43,7 +43,7 @@ namespace fcore{
         bool is_last_io_assignment(const std::shared_ptr<variable> &dest);
         bool delete_intercalated_const;
         int idx;
-        std::shared_ptr<std::unordered_map<std::string, std::pair<int,int>>> assignments_map;
+        std::shared_ptr<std::map<std::string, std::pair<int,int>>> assignments_map;
     };
 }
 

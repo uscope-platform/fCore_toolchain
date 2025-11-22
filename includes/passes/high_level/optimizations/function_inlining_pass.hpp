@@ -36,17 +36,17 @@ namespace fcore{
         std::vector<std::shared_ptr<ast_node>> process_function_call(std::shared_ptr<ast_call> element);
 
 
-        std::shared_ptr<ast_node> substitute_arguments(const std::shared_ptr<ast_node> &statement, std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters);
-        std::shared_ptr<ast_node> substitute_loop_arguments(const std::shared_ptr<ast_loop> &statement, std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters);
-        std::shared_ptr<ast_node> substitute_conditional_arguments(const std::shared_ptr<ast_conditional> &statement, std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters);
-        std::shared_ptr<ast_node> substitute_expression_arguments(const std::shared_ptr<ast_expression> &statement, std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters);
-        std::shared_ptr<ast_node> substitute_definition_arguments(const std::shared_ptr<ast_definition> &statement, std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters);
-        std::shared_ptr<ast_node> substitute_operand_arguments(const std::shared_ptr<ast_operand> &statement, std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters);
-        std::shared_ptr<ast_node> substitute_code_block(const std::shared_ptr<ast_code_block> &statement, std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters);
-        std::shared_ptr<ast_node> substitute_call_arguments(const std::shared_ptr<ast_call> &statement, std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters);
+        std::shared_ptr<ast_node> substitute_arguments(const std::shared_ptr<ast_node> &statement, std::map<std::string, std::shared_ptr<ast_node>> parameters);
+        std::shared_ptr<ast_node> substitute_loop_arguments(const std::shared_ptr<ast_loop> &statement, std::map<std::string, std::shared_ptr<ast_node>> parameters);
+        std::shared_ptr<ast_node> substitute_conditional_arguments(const std::shared_ptr<ast_conditional> &statement, std::map<std::string, std::shared_ptr<ast_node>> parameters);
+        std::shared_ptr<ast_node> substitute_expression_arguments(const std::shared_ptr<ast_expression> &statement, std::map<std::string, std::shared_ptr<ast_node>> parameters);
+        std::shared_ptr<ast_node> substitute_definition_arguments(const std::shared_ptr<ast_definition> &statement, std::map<std::string, std::shared_ptr<ast_node>> parameters);
+        std::shared_ptr<ast_node> substitute_operand_arguments(const std::shared_ptr<ast_operand> &statement, std::map<std::string, std::shared_ptr<ast_node>> parameters);
+        std::shared_ptr<ast_node> substitute_code_block(const std::shared_ptr<ast_code_block> &statement, std::map<std::string, std::shared_ptr<ast_node>> parameters);
+        std::shared_ptr<ast_node> substitute_call_arguments(const std::shared_ptr<ast_call> &statement, std::map<std::string, std::shared_ptr<ast_node>> parameters);
 
     private:
-        std::unordered_map<std::string, std::shared_ptr<ast_function_def>> functions_map;
+        std::map<std::string, std::shared_ptr<ast_function_def>> functions_map;
     };
 }
 

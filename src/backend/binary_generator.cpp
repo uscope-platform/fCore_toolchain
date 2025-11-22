@@ -19,8 +19,8 @@ namespace fcore{
 
     void binary_generator::process_stream(
             const instruction_stream& stream,
-            const std::unordered_map<std::string, std::vector<uint32_t>>& dma_map,
-            const std::shared_ptr<std::unordered_map<std::string, std::vector<io_map_entry>>>& allocation_map,
+            const std::map<std::string, std::vector<uint32_t>>& dma_map,
+            const std::shared_ptr<std::map<std::string, std::vector<io_map_entry>>>& allocation_map,
             bool debug_print
     ) {
         auto code_sect = std::vector<uint32_t>();
@@ -90,8 +90,8 @@ namespace fcore{
     }
 
     void binary_generator::process_stream(const instruction_stream &stream, bool debug_print) {
-        auto dma_map = std::unordered_map<std::string, std::vector<uint32_t>>();
-        auto am = std::make_shared<std::unordered_map<std::string, std::vector<io_map_entry>>>();
+        auto dma_map = std::map<std::string, std::vector<uint32_t>>();
+        auto am = std::make_shared<std::map<std::string, std::vector<io_map_entry>>>();
         process_stream(stream, dma_map, am, debug_print);
     }
 

@@ -19,7 +19,7 @@
 
 #include <cstdint>
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <vector>
 #include <nlohmann/json.hpp>
 
@@ -55,7 +55,7 @@ namespace fcore {
         core_iom_memory = 2
     } core_iom_type;
 
-    static std::unordered_map<std::string, core_iom_type> core_iom_type_translator = {
+    static std::map<std::string, core_iom_type> core_iom_type_translator = {
         {"input", core_iom_input},
         {"output", core_iom_output},
         {"memory", core_iom_memory}

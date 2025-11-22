@@ -214,7 +214,7 @@ namespace fcore{
 
         // MAP ARGUMENTS OF  THE CALL WITH its name
         int idx = 0;
-        std::unordered_map<std::string, std::shared_ptr<ast_node>> arguments_map;
+        std::map<std::string, std::shared_ptr<ast_node>> arguments_map;
         for(const auto& arg: f_call->get_arguments()){
             std::string arg_name = f_def->get_parameters_list()[idx]->get_name();
             arguments_map[arg_name] = ast_node::deep_copy(arg);
@@ -245,7 +245,7 @@ namespace fcore{
     }
 
     std::shared_ptr<ast_node> function_inlining_pass::substitute_arguments(const std::shared_ptr<ast_node> &statement,
-                                                                                            std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters) {
+                                                                                            std::map<std::string, std::shared_ptr<ast_node>> parameters) {
         std::shared_ptr<ast_node> retval = statement;
         if (statement->node_type == hl_ast_node_type_expr){
             return substitute_expression_arguments(std::static_pointer_cast<ast_expression>(statement), parameters);
@@ -267,7 +267,7 @@ namespace fcore{
 
     std::shared_ptr<ast_node>
     function_inlining_pass::substitute_loop_arguments(const std::shared_ptr<ast_loop> &statement,
-                                                             std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters) {
+                                                             std::map<std::string, std::shared_ptr<ast_node>> parameters) {
 
         std::vector<std::shared_ptr<ast_node>> tmp_vect;
         for(auto &item: statement->get_loop_content()){
@@ -289,7 +289,7 @@ namespace fcore{
 
     std::shared_ptr<ast_node>
     function_inlining_pass::substitute_conditional_arguments(const std::shared_ptr<ast_conditional> &statement,
-                                                                    std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters) {
+                                                                    std::map<std::string, std::shared_ptr<ast_node>> parameters) {
 
         std::vector<std::shared_ptr<ast_node>> tmp_vect;
         for(auto &item: statement->get_if_block()){
@@ -309,7 +309,7 @@ namespace fcore{
 
     std::shared_ptr<ast_node>
     function_inlining_pass::substitute_expression_arguments(const std::shared_ptr<ast_expression> &statement,
-                                                                   std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters) {
+                                                                   std::map<std::string, std::shared_ptr<ast_node>> parameters) {
         if(statement->is_immediate()){
             return statement;
         }
@@ -331,7 +331,7 @@ namespace fcore{
 
     std::shared_ptr<ast_node>
     function_inlining_pass::substitute_definition_arguments(const std::shared_ptr<ast_definition> &statement,
-                                                                   std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters) {
+                                                                   std::map<std::string, std::shared_ptr<ast_node>> parameters) {
         if(statement->is_initialized()){
             std::shared_ptr<ast_node> tmp = statement->get_scalar_initializer();
             std::shared_ptr<ast_node> substituted_node = substitute_arguments(tmp, parameters);
@@ -365,7 +365,7 @@ namespace fcore{
     }
     std::shared_ptr<ast_node>
     function_inlining_pass::substitute_code_block(const std::shared_ptr<ast_code_block> &statement,
-                                                         std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters) {
+                                                         std::map<std::string, std::shared_ptr<ast_node>> parameters) {
 
         std::shared_ptr<ast_code_block> ret_code_block = std::make_shared<ast_code_block>();
 
@@ -382,7 +382,7 @@ namespace fcore{
 
     std::shared_ptr<ast_node>
     function_inlining_pass::substitute_operand_arguments(const std::shared_ptr<ast_operand> &old_operand,
-                                                                std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters) {
+                                                                std::map<std::string, std::shared_ptr<ast_node>> parameters) {
 
 
         std::string old_operand_name = old_operand->get_name();
@@ -437,7 +437,7 @@ namespace fcore{
 
     std::shared_ptr<ast_node>
     function_inlining_pass::substitute_call_arguments(const std::shared_ptr<ast_call> &statement,
-                                                             std::unordered_map<std::string, std::shared_ptr<ast_node>> parameters) {
+                                                             std::map<std::string, std::shared_ptr<ast_node>> parameters) {
 
         std::vector<std::shared_ptr<ast_node>> tmp_args;
 
