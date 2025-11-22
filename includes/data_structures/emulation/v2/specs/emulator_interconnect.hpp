@@ -34,7 +34,7 @@ namespace fcore::emulator_v2 {
         dma_link_partial=5
     }dma_channel_type;
 
-    static std::unordered_map<std::string, dma_channel_type > interconnect_type_map = {
+    static std::map<std::string, dma_channel_type > interconnect_type_map = {
             {"scalar_transfer", dma_link_scalar},
             {"scatter_transfer", dma_link_scatter},
             {"gather_transfer", dma_link_gather},
