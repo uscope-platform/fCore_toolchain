@@ -136,6 +136,7 @@ namespace fcore{
 
     bool ast_expression::is_constant() {
         bool res  = true;
+        if(expression_t == NOP) return false;
         if(rhs->node_type == hl_ast_node_type_operand) {
             res &= std::static_pointer_cast<ast_operand>(rhs)->is_constant();
         } else {

@@ -2045,3 +2045,39 @@ TEST(EndToEndC, expression_in_csel_else) {
     ASSERT_EQ(gold_standard, result);
 
 }
+
+TEST(EndToEndC, end_to_end_no_arg_intrinsic ) {
+
+    std::vector<std::string> file_content = {R""""(
+
+
+
+        int main(){
+
+            float a, b;
+            nop();
+            float c = a + b;
+        }
+
+    )""""};
+
+    std::vector<std::string> includes;
+
+
+    std::map<std::string, core_iom> dma_map;
+    dma_map["a"] = {core_iom_input, {12}, false};
+    dma_map["b"]    = {core_iom_input, {13}, false};
+    dma_map["c"]    = {core_iom_output, {14}, false};
+
+    fcore_cc compiler(file_content, includes);
+    compiler.enable_logging();
+    compiler.set_dma_map(dma_map);
+    compiler.compile();
+    std::vector<uint32_t> result =  compiler.get_executable();
+
+    std::vector<uint32_t> gold_standard = {0x30004, 0xc, 0x1000c, 0x2000d, 0x3000e, 0xc, 0xc,
+        0x0, 0x61021, 0xc};
+
+    ASSERT_EQ(gold_standard, result);
+
+}

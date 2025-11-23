@@ -31,9 +31,13 @@ int main(int argc, char **argv) {
     std::ifstream ifs(input_file);
     nlohmann::json spec = nlohmann::json::parse(ifs);
     try{
-        fcore::schema_validator_base validator(fcore::compiler_input, spec["varsion"]);
+        fcore::schema_validator_base validator(fcore::compiler_input);
         validator.validate(spec);
     } catch(std::invalid_argument &ex){
+        exit(-1);
+    } catch(nlohmann::detail::type_error &err) {
+        spdlog::critical("Invalid spec file");
+        spdlog::critical(err.what());
         exit(-1);
     }
 

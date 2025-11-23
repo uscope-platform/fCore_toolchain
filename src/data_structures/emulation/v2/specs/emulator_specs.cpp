@@ -28,7 +28,7 @@ namespace fcore::emulator_v2 {
         cores.clear();
 
         try{
-            schema_validator_base validator(emulator_input, 2);
+            schema_validator_base validator(emulator_input);
             validator.validate(spec_obj);
         } catch(std::invalid_argument &ex){
             throw std::runtime_error("Failed to validate emulator schema");

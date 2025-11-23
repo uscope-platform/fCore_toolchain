@@ -23,14 +23,14 @@ using namespace fcore;
 TEST(emulator_schema, validation_success) {
     std::ifstream ifs("emu/schemas/valid_emulator_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    schema_validator_base validator(emulator_input, 2);
+    schema_validator_base validator(emulator_input);
     EXPECT_NO_THROW(validator.validate(spec));
 }
 
 TEST(emulator_schema, validation_fail_no_cores) {
     std::ifstream ifs("emu/schemas/valid_emulator_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    schema_validator_base validator(emulator_input,2);
+    schema_validator_base validator(emulator_input);
     spec.erase("cores");
     testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(spec), std::invalid_argument);
@@ -43,7 +43,7 @@ TEST(emulator_schema, validation_fail_no_cores) {
 TEST(emulator_schema, validation_fail_no_program) {
     std::ifstream ifs("emu/schemas/valid_emulator_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    schema_validator_base validator(emulator_input,2);
+    schema_validator_base validator(emulator_input);
     spec["cores"][0].erase("program");
     testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(spec), std::invalid_argument);
@@ -57,7 +57,7 @@ TEST(emulator_schema, validation_fail_no_program) {
 TEST(compiler_schema, validation_success) {
     std::ifstream ifs("emu/schemas/valid_compiler_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    schema_validator_base validator(compiler_input,2);
+    schema_validator_base validator(compiler_input);
     EXPECT_NO_THROW(validator.validate(spec));
 
 }
@@ -66,7 +66,7 @@ TEST(compiler_schema, validation_success) {
 TEST(compiler_schema, validation_fail_no_input) {
     std::ifstream ifs("emu/schemas/valid_compiler_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    schema_validator_base validator(compiler_input,2);
+    schema_validator_base validator(compiler_input);
     spec.erase("input_file");
     testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(spec), std::invalid_argument);
@@ -79,7 +79,7 @@ TEST(compiler_schema, validation_fail_no_input) {
 TEST(compiler_schema, validation_success_ints_as_floats) {
     std::ifstream ifs("emu/schemas/msgpackd_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    schema_validator_base validator(emulator_input,2);
+    schema_validator_base validator(emulator_input);
     EXPECT_NO_THROW(validator.validate(spec));
 
 }
@@ -87,7 +87,7 @@ TEST(compiler_schema, validation_success_ints_as_floats) {
 TEST(compiler_schema, validation_fail_ints_as_floats) {
     std::ifstream ifs("emu/schemas/msgpackd_schema_fail.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
-    schema_validator_base validator(emulator_input,2);
+    schema_validator_base validator(emulator_input);
 
     EXPECT_NO_THROW(validator.validate(spec));
 
@@ -145,7 +145,7 @@ TEST(emulator_schema, waveform_square_success) {
         "emulation_time": 1,
         "deployment_mode": false
     })");
-    schema_validator_base validator(emulator_input, 2);
+    schema_validator_base validator(emulator_input);
     EXPECT_NO_THROW(validator.validate(specs));
 }
 
@@ -193,7 +193,7 @@ TEST(emulator_schema, waveform_missing_shape_fail) {
         "emulation_time": 1,
         "deployment_mode": false
     })");
-    schema_validator_base validator(emulator_input,2);
+    schema_validator_base validator(emulator_input);
     testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(specs), std::invalid_argument);
 
@@ -246,7 +246,7 @@ TEST(emulator_schema, waveform_missing_square_parameter_fail) {
         "emulation_time": 1,
         "deployment_mode": false
     })");
-    schema_validator_base validator(emulator_input,2);
+    schema_validator_base validator(emulator_input);
     testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(specs), std::invalid_argument);
 
@@ -299,7 +299,7 @@ TEST(emulator_schema, waveform_sine) {
         "emulation_time": 1,
         "deployment_mode": false
     })");
-    schema_validator_base validator(emulator_input, 2);
+    schema_validator_base validator(emulator_input);
     EXPECT_NO_THROW(validator.validate(specs));
 }
 
@@ -346,7 +346,7 @@ TEST(emulator_schema, waveform_sine_missing_parameter_fail) {
         "emulation_time": 1,
         "deployment_mode": false
     })");
-    schema_validator_base validator(emulator_input,2);
+    schema_validator_base validator(emulator_input);
     testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(specs), std::invalid_argument);
 
@@ -400,7 +400,7 @@ TEST(emulator_schema, waveform_triangle) {
         "emulation_time": 1,
         "deployment_mode": false
     })");
-    schema_validator_base validator(emulator_input, 2);
+    schema_validator_base validator(emulator_input);
     EXPECT_NO_THROW(validator.validate(specs));
 }
 
@@ -448,7 +448,7 @@ TEST(emulator_schema, waveform_triangle_missing_parameter_fail) {
         "emulation_time": 1,
         "deployment_mode": false
     })");
-    schema_validator_base validator(emulator_input,2);
+    schema_validator_base validator(emulator_input);
     testing::internal::CaptureStderr();
     EXPECT_THROW(validator.validate(specs), std::invalid_argument);
 

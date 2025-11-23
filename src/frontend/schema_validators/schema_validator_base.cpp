@@ -17,7 +17,7 @@
 
 namespace fcore{
 
-    schema_validator_base::schema_validator_base(const json_type& schema_type, int version ) {
+    schema_validator_base::schema_validator_base(const json_type& schema_type) {
 
         nlohmann::json chosen_schema_doc;
 

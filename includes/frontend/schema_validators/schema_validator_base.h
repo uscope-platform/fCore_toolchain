@@ -36,7 +36,7 @@ namespace fcore{
 
     class schema_validator_base {
     public:
-        schema_validator_base(const json_type& schema_file, int version );
+        schema_validator_base(const json_type& schema_file);
         void validate(const nlohmann::json &spec_file);
     private:
         valijson::Schema schema;
