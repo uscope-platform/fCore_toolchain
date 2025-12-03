@@ -12,7 +12,11 @@ option(INCLUDE_COVERAGE "Build with support for code coverage" OFF)
 
 option(USE_CONAN "Use the conan package manager for dependency management" OFF)
 
-set(CMAKE_LINKER_TYPE MOLD)
+find_program(MOLD_EXECUTABLE mold)
+
+if (MOLD_EXECUTABLE)
+    set(CMAKE_LINKER_TYPE MOLD)
+endif ()
 
 set(ANTLR_VERSION 4.13.2)
 SET(ANTLR_JAR antlr-${ANTLR_VERSION}-complete.jar)
