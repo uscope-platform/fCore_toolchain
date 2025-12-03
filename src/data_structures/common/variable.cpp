@@ -126,8 +126,19 @@ namespace fcore{
             case var_type_scalar:
             case var_type_array:
                 return name;
+            case var_type_struct:
+                return struct_accessor_to_string();
         }
         return "";
+    }
+
+    std::string variable::struct_accessor_to_string() const {
+        std::string ret = "";
+        for(int i = 0; i < struct_accessors.size()-1; i++) {
+            ret += struct_accessors[i] + ".";
+        }
+        ret += struct_accessors.back();
+        return ret;
     }
 
 

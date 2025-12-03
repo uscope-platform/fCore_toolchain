@@ -42,11 +42,12 @@ namespace fcore{
                 for(auto &item:array_index){
                     ret_val += '[' + ast_node::pretty_print(item) + ']';
                 }
+                break;
             }
-
-        }
-        for(auto &id:inner_variable->get_struct_accessors()) {
-            ret_val += "." + id;
+            case var_type_struct: {
+                ret_val  = inner_variable->to_str();
+                break;
+            }
         }
         return ret_val;
     }

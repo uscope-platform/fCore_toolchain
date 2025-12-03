@@ -103,6 +103,7 @@ namespace fcore{
 
         [[nodiscard]] std::string to_str();
 
+        std::string struct_accessor_to_string() const;
         static bool is_explicit_register(std::string s);
         static bool is_terminal() { return true;};
 
