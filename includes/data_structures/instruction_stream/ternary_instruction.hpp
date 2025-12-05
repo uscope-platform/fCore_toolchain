@@ -53,7 +53,7 @@ namespace fcore{
         std::vector<std::shared_ptr<variable>> get_arguments() const {return {operand_a, operand_b, operand_c, destination};};
         void set_arguments(const std::vector<std::shared_ptr<variable>> &a);
 
-        std::string get_opcode(){return opcode;};
+         std::string get_opcode() const {return opcode;};
 
     private:
         std::shared_ptr<variable> operand_a;

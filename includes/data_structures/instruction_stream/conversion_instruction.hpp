@@ -52,7 +52,7 @@ namespace fcore{
             return retval;
         };
 
-        std::string get_opcode(){return opcode;};
+        std::string get_opcode() const {return opcode;};
     private:
         std::shared_ptr<variable> source;
         std::shared_ptr<variable> destination;

@@ -107,8 +107,37 @@ namespace fcore{
         opcode_bset = 22,
         opcode_bsel = 25,
         opcode_xor = 26,
-        opcode_csel =27,
+        opcode_csel =27
     }opcode_table_t;
+
+
+     static std::map<std::string, uint8_t> fcore_execution_latencies {
+         {"nop", 0},
+         {"add", 6},
+         {"sub", 6},
+         {"mul", 6},
+         {"itf", 4},
+         {"fti", 4},
+         {"ldc", 1},
+         {"bgt", 1},
+         {"ble", 1},
+         {"beq", 1},
+         {"bne", 1},
+         {"stop", 0},
+         {"and", 2},
+         {"or", 2},
+         {"not", 2},
+        {"satp", 3},
+        {"satn", 3},
+        {"rec", 9},
+        {"popcnt", 3},
+        {"abs", 2},
+        {"efi", 0},
+        {"bset", 2},
+        {"bsel", 2},
+        {"xor", 2},
+        {"csel", 2}
+    };
 
 
     static std::map <std::string, uint32_t>  fcore_opcodes {

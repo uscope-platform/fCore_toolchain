@@ -23,6 +23,7 @@
 #include <set>
 
 namespace fcore{
+
     class io_map_entry{
     public:
         io_map_entry(int32_t i, int32_t c, const std::string &t) {io_addr =i; core_addr = c; type = t;};
@@ -58,7 +59,6 @@ namespace fcore{
             return {};
         }
     };
-
 
 }
 

@@ -3,6 +3,7 @@ set(TEST_SOURCES
         data_model/Instruction_classes.cpp
         passes/instruction_stream_pass.cpp
         passes/type_checking.cpp
+        passes/pipeline_hazards.cpp
         passes/semantic_analysis.cpp
         passes/hl_passes.cpp
         end_to_end_asm.cpp

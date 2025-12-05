@@ -22,6 +22,7 @@
 #include <nlohmann/json.hpp>
 
 #include "tools/variable_map.hpp"
+#include "data_structures/common/io_map.hpp"
 #include "tools/define_map.hpp"
 #include "frontend/C/C_language_parser.hpp"
 #include "backend/binary_generator.hpp"
@@ -34,8 +35,6 @@
 
 namespace fcore {
 
-
-    typedef std::map<std::string, std::vector<io_map_entry>> io_map;
 
     class fcore_cc {
     public:
