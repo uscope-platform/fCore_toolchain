@@ -62,7 +62,8 @@ namespace fcore {
         auto dest  = node.get_destination()->get_bound_reg();
         auto op_a  = node.get_operand_a()->get_bound_reg();
         auto op_b  = node.get_operand_b()->get_bound_reg();
-        if(dest == -1 || op_a == -1 || (op_b == -1 && node.get_opcode() != "efi")) {
+
+        if( (dest == -1 && node.get_opcode() != "bset" )|| op_a == -1 || (op_b == -1 && node.get_opcode() != "efi")) {
             throw std::runtime_error("Encountered unbound register while inserting pipeline delay slots");
         }
         get_stalls(op_a, result);
