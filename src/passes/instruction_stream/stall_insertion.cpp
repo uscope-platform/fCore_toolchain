@@ -81,10 +81,21 @@ namespace fcore {
     }
 
     std::vector<instruction_variant> stall_insertion::process(const ternary_instruction &node) {
-        auto dest = node.get_destination()->get_bound_reg();
+        std::vector<instruction_variant>  result;
+        auto dest  = node.get_destination()->get_bound_reg();
+        auto op_a  = node.get_operand_a()->get_bound_reg();
+        auto op_b  = node.get_operand_b()->get_bound_reg();
+        auto op_c = node.get_operand_c()->get_bound_reg();
+        if(dest == -1 || op_a == -1 || op_b == -1|| op_c == -1) {
+            throw std::runtime_error("Encountered unbound register while inserting pipeline delay slots");
+        }
+        get_stalls(op_a, result);
+        get_stalls(op_b, result);
+        get_stalls(op_c, result);
+        result.emplace_back(node);
         operations_tracker[dest] =  fcore_execution_latencies[node.get_opcode()];
         advance_tracker(dest);
-        return {instruction_variant(node)};
+        return result;
     }
 
     std::vector<instruction_variant>  stall_insertion::process(const conversion_instruction &node) {
