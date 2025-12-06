@@ -28,6 +28,10 @@ namespace fcore{
         explicit intercalated_constant(float constant);
         explicit intercalated_constant(uint32_t constant);
         uint32_t emit() const;
+        intercalated_constant(const intercalated_constant& other) = default;
+        intercalated_constant(intercalated_constant&& other) noexcept = default;
+        intercalated_constant& operator=(const intercalated_constant& other) = default;
+        intercalated_constant& operator=(intercalated_constant&& other) noexcept = default;
         void print() const;
         std::string to_string() const;
         std::string disassemble() const;

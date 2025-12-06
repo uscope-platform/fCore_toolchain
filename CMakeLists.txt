@@ -34,7 +34,7 @@ if(${INCLUDE_EMULATOR})
     install(FILES third_party/fp_ip_cmodel/lib/libmpfr.so.4 DESTINATION lib/x86_64-linux-gnu)
 endif(${INCLUDE_EMULATOR})
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
@@ -61,6 +61,10 @@ find_package(spdlog CONFIG REQUIRED)
 find_package(valijson REQUIRED)
 find_package(antlr4-runtime CONFIG REQUIRED)
 find_package(fmt REQUIRED)
+
+if(nlohmann_json_FOUND)
+    include_directories(${nlohmann_json_INCLUDE_DIRS})
+endif()
 
 add_subdirectory(includes/asm_parser)
 add_subdirectory(includes/C_parser)

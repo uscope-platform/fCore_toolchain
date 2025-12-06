@@ -23,13 +23,17 @@
 
 using namespace fcore;
 
-TEST(pipeline_hazards, simple_stall) {
+TEST(pipeline_hazards, reg_instruction_stall_a) {
 
 
     auto r3 = std::make_shared<variable>("r3");
+    r3->set_bound_reg(3);
     auto r4 = std::make_shared<variable>("r4");
+    r4->set_bound_reg(4);
     auto r5 = std::make_shared<variable>("r5");
+    r5->set_bound_reg(5);
     auto r6 = std::make_shared<variable>("r6");
+    r6->set_bound_reg(6);
 
 
     binary_generator writer;
@@ -46,9 +50,114 @@ TEST(pipeline_hazards, simple_stall) {
     stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
     program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>());
 
-    writer.process_stream(program_stream, false);
+    writer.process_stream(program_stream, true);
 
     std::vector<uint32_t> result = writer.get_code();
-    std::vector<uint32_t> gold_standard = {0x8006E};
+    std::vector<uint32_t> gold_standard = {0xa2061, 0, 0, 0, 0, 0, 0, 0xc20a1};
+    ASSERT_EQ(result, gold_standard);
+}
+
+
+TEST(pipeline_hazards, reg_instruction_stall_b) {
+
+
+    auto r3 = std::make_shared<variable>("r3");
+    r3->set_bound_reg(3);
+    auto r4 = std::make_shared<variable>("r4");
+    r4->set_bound_reg(4);
+    auto r5 = std::make_shared<variable>("r5");
+    r5->set_bound_reg(5);
+    auto r6 = std::make_shared<variable>("r6");
+    r6->set_bound_reg(6);
+
+
+    binary_generator writer;
+
+    instruction_stream program_stream;
+    program_stream.push_back(instruction_variant(register_instruction("add", r3, r4, r5)));
+    program_stream.push_back(instruction_variant(register_instruction("add", r4, r5, r6)));
+
+    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
+    std::shared_ptr<io_map> allocation_map;
+
+    auto ic =  std::make_shared<instrumentation_core>();
+
+    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
+    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>());
+
+    writer.process_stream(program_stream, true);
+
+    std::vector<uint32_t> result = writer.get_code();
+    std::vector<uint32_t> gold_standard = {0xa2061, 0, 0, 0, 0, 0, 0, 0xc2881};
+    ASSERT_EQ(result, gold_standard);
+}
+
+
+TEST(pipeline_hazards, reg_instruction_stall_a_b) {
+
+
+    auto r3 = std::make_shared<variable>("r3");
+    r3->set_bound_reg(3);
+    auto r4 = std::make_shared<variable>("r4");
+    r4->set_bound_reg(4);
+    auto r5 = std::make_shared<variable>("r5");
+    r5->set_bound_reg(5);
+    auto r6 = std::make_shared<variable>("r6");
+    r6->set_bound_reg(6);
+
+
+    binary_generator writer;
+
+    instruction_stream program_stream;
+    program_stream.push_back(instruction_variant(register_instruction("add", r3, r4, r5)));
+    program_stream.push_back(instruction_variant(register_instruction("add", r5, r5, r6)));
+
+    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
+    std::shared_ptr<io_map> allocation_map;
+
+    auto ic =  std::make_shared<instrumentation_core>();
+
+    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
+    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>());
+
+    writer.process_stream(program_stream, true);
+
+    std::vector<uint32_t> result = writer.get_code();
+    std::vector<uint32_t> gold_standard = {0xa2061, 0, 0, 0, 0, 0, 0, 0xc28a1};
+    ASSERT_EQ(result, gold_standard);
+}
+
+
+TEST(pipeline_hazards, conv_instruction_stall) {
+
+
+    auto r3 = std::make_shared<variable>("r3");
+    r3->set_bound_reg(3);
+    auto r4 = std::make_shared<variable>("r4");
+    r4->set_bound_reg(4);
+    auto r5 = std::make_shared<variable>("r5");
+    r5->set_bound_reg(5);
+    auto r6 = std::make_shared<variable>("r6");
+    r6->set_bound_reg(6);
+
+
+    binary_generator writer;
+
+    instruction_stream program_stream;
+    program_stream.push_back(instruction_variant(conversion_instruction("itf", r3,  r5)));
+    program_stream.push_back(instruction_variant(conversion_instruction("fti", r5, r6)));
+
+    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
+    std::shared_ptr<io_map> allocation_map;
+
+    auto ic =  std::make_shared<instrumentation_core>();
+
+    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
+    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>());
+
+    writer.process_stream(program_stream, true);
+
+    std::vector<uint32_t> result = writer.get_code();
+    std::vector<uint32_t> gold_standard = {0xa2061, 0, 0, 0, 0, 0xc28a1};
     ASSERT_EQ(result, gold_standard);
 }

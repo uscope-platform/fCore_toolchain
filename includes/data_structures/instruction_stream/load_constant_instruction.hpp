@@ -32,6 +32,10 @@ namespace fcore{
         load_constant_instruction(std::string op, std::shared_ptr<variable> dest, std::shared_ptr<variable> c);
         uint32_t emit() const;
         void print() const;
+        load_constant_instruction(const load_constant_instruction& other) = default;
+        load_constant_instruction(load_constant_instruction&& other) noexcept = default;
+        load_constant_instruction& operator=(const load_constant_instruction& other) = default;
+        load_constant_instruction& operator=(load_constant_instruction&& other) noexcept = default;
         std::string to_string() const;
         std::string disassemble() const;
 

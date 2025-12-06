@@ -52,7 +52,12 @@ namespace fcore{
                 retval &= args_equal;
             }
             return retval;
-        };
+        }
+
+        pseudo_instruction(const pseudo_instruction& other) = default;
+        pseudo_instruction(pseudo_instruction&& other) noexcept = default;
+        pseudo_instruction& operator=(const pseudo_instruction& other) = default;
+        pseudo_instruction& operator=(pseudo_instruction&& other) noexcept = default;;
 
         std::string get_opcode(){return opcode;};
     private:

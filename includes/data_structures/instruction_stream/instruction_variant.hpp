@@ -32,7 +32,6 @@
 namespace fcore{
     class instruction_variant {
     public:
-
         explicit instruction_variant(const independent_instruction &t): content(t){};
         explicit instruction_variant(const intercalated_constant &t): content(t){};
         explicit instruction_variant(const load_constant_instruction &t): content(t){};
@@ -40,9 +39,10 @@ namespace fcore{
         explicit instruction_variant(const pseudo_instruction &t): content(t){};
         explicit instruction_variant(const register_instruction &t): content(t){};
         explicit instruction_variant(const ternary_instruction &t): content(t){};
-        instruction_variant(const instruction_variant &old_obj): content(old_obj.content){};
-
-
+        instruction_variant(const instruction_variant& other) = default;
+        instruction_variant(instruction_variant&& other) noexcept = default;
+        instruction_variant& operator=(const instruction_variant& other) = default;
+        instruction_variant& operator=(instruction_variant&& other) noexcept = default;
 
         friend bool operator==(const instruction_variant& lhs, const instruction_variant& rhs){
             return lhs.content == rhs.content;
@@ -71,7 +71,7 @@ namespace fcore{
                 ternary_instruction
         > get_content() const {return content;};
 
-    private:const
+    private:
         std::variant<
                 conversion_instruction,
                 independent_instruction,

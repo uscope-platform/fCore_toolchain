@@ -30,6 +30,10 @@
 namespace fcore{
     class conversion_instruction {
     public:
+        conversion_instruction(const conversion_instruction& other) = default;
+        conversion_instruction(conversion_instruction&& other) noexcept = default;
+        conversion_instruction& operator=(const conversion_instruction& other) = default;
+        conversion_instruction& operator=(conversion_instruction&& other) noexcept = default;
         conversion_instruction(std::string op, std::shared_ptr<variable> s, std::shared_ptr<variable> d);
         uint32_t emit() const;
         void print() const;

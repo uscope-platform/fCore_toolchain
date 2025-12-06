@@ -24,13 +24,17 @@ namespace fcore{
     class stall_insertion : public stream_pass_base{
     public:
         stall_insertion();
-        std::optional<instruction_variant> apply_pass(const instruction_variant &element, uint32_t current_scan) override;
+
+        std::vector<instruction_variant> apply_vector_mutable_pass(instruction_variant &element, uint32_t n) override;
+
     private:
 
-        std::optional<instruction_variant> process(const register_instruction &node);
-        std::optional<instruction_variant> process(const conversion_instruction &node);
-        std::optional<instruction_variant> process(const load_constant_instruction &node);
-        std::optional<instruction_variant> process(const ternary_instruction &node);
+        void get_stalls(uint8_t reg, std::vector<instruction_variant> &instructions);
+
+        std::vector<instruction_variant> process(const register_instruction &node);
+        std::vector<instruction_variant> process(const conversion_instruction &node);
+        std::vector<instruction_variant> process(const load_constant_instruction &node);
+        std::vector<instruction_variant> process(const ternary_instruction &node);
         std::array<uint8_t, 1<<fcore_register_address_width> operations_tracker;
     };
 

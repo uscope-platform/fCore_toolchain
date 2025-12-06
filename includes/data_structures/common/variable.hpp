@@ -73,6 +73,10 @@ namespace fcore{
         int get_linear_index();
         int get_linear_index(const std::vector<int>& idx);
         float get_float_val() const;
+        variable(const variable& other) = default;
+        variable(variable&& other) noexcept = default;
+        variable& operator=(const variable& other) = default;
+        variable& operator=(variable&& other) noexcept = default;
         int get_int_value() const;
 
         static std::string  type_to_string(const c_types_t &t);

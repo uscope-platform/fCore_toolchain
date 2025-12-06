@@ -30,8 +30,13 @@ namespace fcore{
     public:
         explicit independent_instruction(std::string opcode);
         uint32_t emit() const;
+
         std::string disassemble() const;
         void print() const;
+        independent_instruction(const independent_instruction& other) = default;
+        independent_instruction(independent_instruction&& other) noexcept = default;
+        independent_instruction& operator=(const independent_instruction& other) = default;
+        independent_instruction& operator=(independent_instruction&& other) noexcept = default;
         std::string to_string() const;
         int instruction_count() const;
 

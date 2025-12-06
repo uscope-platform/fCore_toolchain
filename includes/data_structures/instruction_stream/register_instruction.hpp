@@ -30,6 +30,10 @@ namespace fcore{
         uint32_t emit() const;
         std::string disassemble() const;
         void print() const;
+        register_instruction(const register_instruction& other) = default;
+        register_instruction(register_instruction&& other) noexcept = default;
+        register_instruction& operator=(const register_instruction& other) = default;
+        register_instruction& operator=(register_instruction&& other) noexcept = default;
         std::string to_string() const;
         int instruction_count() const;
 
