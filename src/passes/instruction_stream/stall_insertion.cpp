@@ -17,7 +17,8 @@
 
 namespace fcore {
     stall_insertion::stall_insertion()
-    : stream_pass_base("stall insertion", 1, true, high_level_pass) {
+    : stream_pass_base("stall insertion", 1, true, high_level_pass),
+    operations_tracker({}) {
         is_vector = true;
     }
 
@@ -45,11 +46,15 @@ namespace fcore {
         while(operations_tracker[reg] > 0){
             // INSERT NOP
             res.emplace_back(independent_instruction("nop"));
-            for (auto &i:operations_tracker){
-                if (i> 0) i--;
-            }
+            advance_tracker(-1);
         }
         instructions.insert(instructions.end(), res.begin(), res.end());
+    }
+
+    void stall_insertion::advance_tracker(int exclusion){
+        for (int i =0; i<operations_tracker.size(); i++){
+            if (operations_tracker[i]> 0 && i != exclusion) operations_tracker[i]--;
+        }
     }
 
     std::vector<instruction_variant> stall_insertion::process(const register_instruction &node){
@@ -60,20 +65,25 @@ namespace fcore {
         if(dest == -1 || op_a == -1 || op_b == -1) {
             throw std::runtime_error("Encountered unbound register while inserting pipeline delay slots");
         }
-        operations_tracker[dest] = fcore_execution_latencies[node.get_opcode()];
         get_stalls(op_a, result);
         get_stalls(op_b, result);
         result.emplace_back(node);
+        operations_tracker[dest] = fcore_execution_latencies[node.get_opcode()];
+        advance_tracker(dest);
         return result;
     }
 
     std::vector<instruction_variant> stall_insertion::process(const load_constant_instruction &node) {
-        operations_tracker[node.get_destination()->get_bound_reg()] = fcore_execution_latencies["ldc"];
+        auto dest = node.get_destination()->get_bound_reg();
+        operations_tracker[dest] = fcore_execution_latencies["ldc"];
+        advance_tracker(dest);
         return {instruction_variant(node)};
     }
 
     std::vector<instruction_variant> stall_insertion::process(const ternary_instruction &node) {
-        operations_tracker[node.get_destination()->get_bound_reg()] = fcore_execution_latencies[node.get_opcode()];
+        auto dest = node.get_destination()->get_bound_reg();
+        operations_tracker[dest] =  fcore_execution_latencies[node.get_opcode()];
+        advance_tracker(dest);
         return {instruction_variant(node)};
     }
 
@@ -84,9 +94,10 @@ namespace fcore {
         if(dest == -1 || src == -1) {
             throw std::runtime_error("Encountered unbound register while inserting pipeline delay slots");
         }
-        operations_tracker[dest] = fcore_execution_latencies[node.get_opcode()];
         get_stalls(src, result);
         result.emplace_back(node);
+        operations_tracker[dest] =  fcore_execution_latencies[node.get_opcode()];
+        advance_tracker(dest);
         return result;
     }
 

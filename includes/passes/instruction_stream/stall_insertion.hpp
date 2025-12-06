@@ -30,13 +30,15 @@ namespace fcore{
     private:
 
         void get_stalls(uint8_t reg, std::vector<instruction_variant> &instructions);
-
+        void advance_tracker(int exclusion);
         std::vector<instruction_variant> process(const register_instruction &node);
         std::vector<instruction_variant> process(const conversion_instruction &node);
         std::vector<instruction_variant> process(const load_constant_instruction &node);
         std::vector<instruction_variant> process(const ternary_instruction &node);
         std::array<uint8_t, 1<<fcore_register_address_width> operations_tracker;
     };
+
+
 
 }
 
