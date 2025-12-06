@@ -30,5 +30,7 @@
 #include "passes/instruction_stream/instruction_counting_pass.hpp"
 #include "passes/instruction_stream/virtual_operations_implementation.hpp"
 #include "passes/instruction_stream/ternary_deconfliction.hpp"
+#include "passes/instruction_stream/stall_insertion.hpp"
+#include "passes/instruction_stream/bound_register_assignment.hpp"
 
 #endif //STREAM_PASSES_HPP

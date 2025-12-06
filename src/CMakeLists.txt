@@ -36,6 +36,8 @@ set(FCORE_COMMON_SRCS_I
         passes/high_level/infrastructure/hl_observing_visitor.cpp
         passes/instruction_stream/ternary_deconfliction.cpp
         passes/instruction_stream/stall_insertion.cpp
+        passes/instruction_stream/bound_register_assignment.cpp
+        ../includes/passes/instruction_stream/bound_register_assignment.hpp
 )
 
 

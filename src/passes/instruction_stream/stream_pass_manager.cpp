@@ -59,6 +59,8 @@ namespace fcore{
         passes.push_back(std::make_shared<variable_lifetime_mapping>(var_map));
         passes.push_back(std::make_shared<register_allocation>(var_map, bm,all_map));
         passes.push_back(std::make_shared<zero_assignment_removal_pass>());
+        passes.push_back(std::make_shared<bound_register_assignment>());
+        passes.push_back(std::make_shared<stall_insertion>());
         passes.push_back(std::make_shared<instruction_counting_pass>(ic));
 
         profiler = prof;
