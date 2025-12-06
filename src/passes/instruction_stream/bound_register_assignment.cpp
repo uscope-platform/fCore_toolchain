@@ -81,7 +81,7 @@ namespace fcore {
     }
 
     int bound_register_assignment::get_register_number(std::string n) {
-        if (n == "constant") return -1;
+        if (n.ends_with("constant")) return -1;
         return std::stoi(n.erase(0,1));
     }
 }
