@@ -49,7 +49,7 @@ namespace fcore{
     constexpr int fcore_opcode_width = 5;
 
     constexpr int fcore_n_common_io_registers = 32;
-
+    constexpr  int fcore_max_binary_size = 4096;
     constexpr int n_operands = 3;
 
     static uint32_t get_opcode(uint32_t instr) {

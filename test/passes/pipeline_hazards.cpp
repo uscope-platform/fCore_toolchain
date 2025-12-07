@@ -14,8 +14,8 @@
 
 
 #include <gtest/gtest.h>
+#include <pstl/algorithm_fwd.h>
 
-#include "passes/instruction_stream/stall_insertion.hpp"
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "backend/binary_generator.hpp"
 #include "data_structures/instruction_stream/instruction_stream.hpp"
@@ -270,3 +270,56 @@ TEST(pipeline_hazards, ldc_stall) {
     std::vector<uint32_t> gold_standard = {0x86,0x40900000, 0, 0x1885};
     ASSERT_EQ(result, gold_standard);
 }
+
+
+
+
+TEST(pipeline_hazards, result_collision_voidance) {
+
+
+    auto r2 = std::make_shared<variable>("r2");
+    r2->set_bound_reg(2);
+    auto r3 = std::make_shared<variable>("r3");
+    r3->set_bound_reg(3);
+    auto r5 = std::make_shared<variable>("r5");
+    r5->set_bound_reg(5);
+    auto r7 = std::make_shared<variable>("r7");
+    r7->set_bound_reg(7);
+    auto r6 = std::make_shared<variable>("r6");
+    r6->set_bound_reg(6);
+
+
+    auto const1 = std::make_shared<variable>("constant",1.0f);
+    auto const2 = std::make_shared<variable>("constant",2.0f);
+    auto const3 = std::make_shared<variable>("constant",5);
+
+    binary_generator writer;
+
+    instruction_stream program_stream;
+    program_stream.push_back(instruction_variant(load_constant_instruction("ldc",r3, const1)));
+    program_stream.push_back(instruction_variant(intercalated_constant(1.0f)));
+    program_stream.push_back(instruction_variant(load_constant_instruction("ldc",r2, const2)));
+    program_stream.push_back(instruction_variant(intercalated_constant(2.0f)));
+    program_stream.push_back(instruction_variant(load_constant_instruction("ldc",r5, const3)));
+    program_stream.push_back(instruction_variant(intercalated_constant(static_cast<uint32_t>(5))));
+
+    program_stream.push_back(instruction_variant(register_instruction("add", r3, r2,r6)));
+    program_stream.push_back(instruction_variant(independent_instruction("nop")));
+    program_stream.push_back(instruction_variant(conversion_instruction("itf", r5, r7)));
+
+
+    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
+    std::shared_ptr<io_map> allocation_map;
+
+    auto ic =  std::make_shared<instrumentation_core>();
+
+    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
+    program_stream = sman.apply_pass(program_stream, std::make_shared<result_deconfliction>());
+
+    writer.process_stream(program_stream, true);
+
+    std::vector<uint32_t> result = writer.get_code();
+    std::vector<uint32_t> gold_standard = {0x66,0x3F800000, 0x46,0x40000000, 0xa6, 5, 0xc1061, 0, 0, 0x38a4};
+    ASSERT_EQ(result, gold_standard);
+}
+

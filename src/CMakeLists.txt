@@ -38,6 +38,8 @@ set(FCORE_COMMON_SRCS_I
         passes/instruction_stream/stall_insertion.cpp
         passes/instruction_stream/bound_register_assignment.cpp
         ../includes/passes/instruction_stream/bound_register_assignment.hpp
+        passes/instruction_stream/result_deconfliction.cpp
+        ../includes/passes/instruction_stream/result_deconfliction.hpp
 )
 
 

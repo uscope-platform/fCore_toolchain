@@ -43,7 +43,7 @@ namespace fcore{
             return element;
         }
 
-        virtual std::vector<instruction_variant> apply_vector_mutable_pass(instruction_variant &element, uint32_t n) {
+        virtual std::vector<instruction_variant> apply_vector_mutable_pass(instruction_variant &element, uint32_t n_pass, uint32_t n_instuction) {
             return {element};
         }
 

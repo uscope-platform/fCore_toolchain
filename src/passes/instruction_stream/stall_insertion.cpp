@@ -22,7 +22,8 @@ namespace fcore {
         is_vector = true;
     }
 
-    std::vector<instruction_variant> stall_insertion::apply_vector_mutable_pass(instruction_variant &element, uint32_t n){
+    std::vector<instruction_variant> stall_insertion::apply_vector_mutable_pass(instruction_variant &element,
+        uint32_t n_pass, uint32_t n_instuction){
 
         auto var = element.get_content();
         if(std::holds_alternative<register_instruction>(var)) {

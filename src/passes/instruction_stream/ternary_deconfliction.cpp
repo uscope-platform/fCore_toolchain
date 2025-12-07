@@ -23,11 +23,11 @@ namespace fcore {
     }
 
     std::vector<instruction_variant> ternary_deconfliction::apply_vector_mutable_pass(instruction_variant &element,
-        uint32_t n) {
-            if(n==0) {
+        uint32_t n_pass, uint32_t n_instruction) {
+            if(n_pass==0) {
                 map_ternaries(element);
                 return {};
-            } else if(n==1) {
+            } else if(n_pass==1) {
                 return deconflict(element);
             } else {
                 throw std::runtime_error("Invalid pass number");

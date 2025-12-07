@@ -32,5 +32,6 @@
 #include "passes/instruction_stream/ternary_deconfliction.hpp"
 #include "passes/instruction_stream/stall_insertion.hpp"
 #include "passes/instruction_stream/bound_register_assignment.hpp"
+#include "passes/instruction_stream/result_deconfliction.hpp"
 
 #endif //STREAM_PASSES_HPP

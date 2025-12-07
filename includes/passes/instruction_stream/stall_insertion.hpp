@@ -25,7 +25,7 @@ namespace fcore{
     public:
         stall_insertion();
 
-        std::vector<instruction_variant> apply_vector_mutable_pass(instruction_variant &element, uint32_t n) override;
+        std::vector<instruction_variant> apply_vector_mutable_pass(instruction_variant &element, uint32_t n_pass, uint32_t n_instuction) override;
 
     private:
 

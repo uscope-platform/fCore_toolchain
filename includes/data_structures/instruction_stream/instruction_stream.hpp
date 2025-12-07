@@ -29,6 +29,14 @@ namespace fcore{
         bool empty();
         unsigned long size();
 
+        instruction_variant& operator[](size_t i) {
+            return stream_store[i];
+        }
+
+        const instruction_variant& operator[](size_t i) const {
+            return stream_store[i];
+        }
+
         instruction_variant last() {return stream_store.back();};
         instruction_variant get(ssize_t i) {return stream_store[i];};
 
