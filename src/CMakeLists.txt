@@ -186,7 +186,7 @@ add_executable(fCore_emu fcore_emu_main.cpp)
 
 
 add_library(fcore_emu_lib_gp ${FCORE_EMU_SRCS}
-        emulator/v2/backend/gp_executor.cpp
+        emulator/v2/backend/execution/gp_executor.cpp
 )
 target_compile_definitions(fcore_emu_lib_gp PUBLIC GENERAL_PURPOSE_EMULATION=1)
 target_link_libraries(fcore_emu_lib_gp PUBLIC
@@ -206,7 +206,7 @@ add_dependencies(fCore_emu_gp schema_assembler)
 if(${INCLUDE_EMULATOR})
 
     add_library(fcore_emu_lib ${FCORE_EMU_SRCS}
-            emulator/v2/backend/ba_executor.cpp
+            emulator/v2/backend/execution/ba_executor.cpp
     )
     target_compile_definitions(fcore_emu_lib PUBLIC GENERAL_PURPOSE_EMULATION=0)
 
@@ -217,7 +217,7 @@ if(${INCLUDE_EMULATOR})
     install(FILES ../third_party/fp_ip_cmodel/lib/libIp_floating_point_v7_1_bitacc_cmodel.so
             DESTINATION ${CMAKE_INSTALL_LIBDIR})
 else ()
-    add_library(fcore_emu_lib ${FCORE_EMU_SRCS} emulator/v2/backend/gp_executor.cpp)
+    add_library(fcore_emu_lib ${FCORE_EMU_SRCS} emulator/v2/backend/execution/gp_executor.cpp)
     target_compile_definitions(fcore_emu_lib PUBLIC GENERAL_PURPOSE_EMULATION=1)
 
 endif(${INCLUDE_EMULATOR})

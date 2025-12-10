@@ -26,7 +26,7 @@
 #include "fCore_isa.hpp"
 
 #if GENERAL_PURPOSE_EMULATION==1
-    #include "emulator/v2/backend/gp_executor.hpp"
+    #include "executor/gp_executor.hpp"
 #else
     #include "emulator/v2/backend/ba_executor.hpp"
 #endif
