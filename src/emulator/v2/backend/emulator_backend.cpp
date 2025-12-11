@@ -139,7 +139,7 @@ namespace fcore::emulator_v2{
         uint32_t writeback_address = op_a;
         switch (opcode) {
             case opcode_csel:
-                result = execute_csel(a, b, c);
+                result = exec.execute_csel(a, b, c);
                 break;
             default:
                 throw std::runtime_error("Encountered the following unimplemented operation: " + fcore_opcodes_reverse[opcode]);
@@ -211,11 +211,11 @@ namespace fcore::emulator_v2{
             case opcode_efi:
                 return execute_efi(op_a, op_b, dest);
             case opcode_bset:
-                result = execute_bset(working_memory->at(op_a), working_memory->at(op_b), working_memory->at(dest));
+                result = exec.execute_bset(working_memory->at(op_a), working_memory->at(op_b), working_memory->at(dest));
                 writeback_address = op_a;
                 break;
             case opcode_bsel:
-                result = execute_bsel(a, b);
+                result = exec.execute_bsel(a, b);
                 break;
             default:
                 throw std::runtime_error("Encountered the following unimplemented operation: " + fcore_opcodes_reverse[opcode]);
@@ -283,10 +283,6 @@ namespace fcore::emulator_v2{
     }
 
 
-    uint32_t emulator_backend::execute_or(uint32_t a, uint32_t b) {
-        return exec.execute_or(a,b);
-    }
-
 
     void emulator_backend::execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest) {
         efi_backend.emulate_efi(efi_selector, op_a, op_b, dest, working_memory);
@@ -301,39 +297,7 @@ namespace fcore::emulator_v2{
         return gp_executor::uint32_to_float(u);
     }
 
-    uint32_t emulator_backend::execute_bset(uint32_t a, uint32_t b, uint32_t c){
-        return exec.execute_bset(a,b,c);
-    }
 
-    uint32_t emulator_backend::execute_bsel(uint32_t a, uint32_t b) {
-        return exec.execute_bsel(a, b);
-    }
-
-    uint32_t emulator_backend::execute_xor(uint32_t a, uint32_t b) {
-        return exec.execute_xor(a, b);
-    }
-
-
-    uint32_t emulator_backend::execute_csel(uint32_t a, uint32_t b, uint32_t c) {
-        return exec.execute_csel(a, b, c);
-    }
-
-    uint32_t emulator_backend::process_comparison_output(bool val) {
-
-        if(comparator_type== comparator_full) {
-            if(val){
-                return 0xffffffff;
-            } else {
-                return 0;
-            }
-        } else if(comparator_type==comparator_reducing){
-            return val;
-        } else if(comparator_type == comparator_none) {
-            throw std::runtime_error("The emulator has encountered a comparison instruction on core "+core_name+" which does not have comparators.");
-        } else{
-            throw std::runtime_error("The emulator has encountered a comparison instruction, however an unknown type was selected in the spec file");
-        }
-    }
 
     debug_checkpoint emulator_backend::produce_checkpoint(bool round_complete) {
         debug_checkpoint ret;
