@@ -173,40 +173,40 @@ namespace fcore::emulator_v2{
         uint32_t writeback_address = dest;
         switch (opcode) {
             case opcode_add:
-                result = execute_add(a, b);
+                result = exec.execute_add(a, b);
                 break;
             case opcode_sub:
-                result = execute_sub(a, b);
+                result = exec.execute_sub(a, b);
                 break;
             case opcode_mul:
-                result = execute_mul(a, b);
+                result = exec.execute_mul(a, b);
                 break;
             case opcode_and:
-                result = execute_and(a, b);
+                result = exec.execute_and(a, b);
                 break;
             case opcode_or:
-                result = execute_or(a, b);
+                result = exec.execute_or(a, b);
                 break;
             case opcode_xor:
-                result = execute_xor(a, b);
+                result = exec.execute_xor(a, b);
                 break;
             case opcode_satp:
-                result = execute_satp(a, b);
+                result = exec.execute_satp(a, b);
                 break;
             case opcode_satn:
-                result  = execute_satn(a, b);
+                result  = exec.execute_satn(a, b);
                 break;
             case opcode_beq:
-                result = execute_compare_eq(a, b);
+                result = exec.execute_compare_eq(a, b, comparator_type);
                 break;
             case opcode_bne:
-                result = execute_compare_ne(a, b);
+                result = exec.execute_compare_ne(a, b, comparator_type);
                 break;
             case opcode_bgt:
-                result = execute_compare_gt(a, b);
+                result = exec.execute_compare_gt(a, b, comparator_type);
                 break;
             case opcode_ble:
-                result = execute_compare_le(a, b);
+                result = exec.execute_compare_le(a, b, comparator_type);
                 break;
             case opcode_efi:
                 return execute_efi(op_a, op_b, dest);
@@ -253,22 +253,22 @@ namespace fcore::emulator_v2{
 
         switch (opcode) {
             case opcode_rec:
-                result = execute_rec(src);
+                result = exec.execute_rec(src);
                 break;
             case opcode_fti:
-                result = execute_fti(src);
+                result = exec.execute_fti(src);
                 break;
             case opcode_itf:
-                result = execute_itf(src);
+                result = exec.execute_itf(src);
                 break;
             case opcode_not:
-                result = execute_not(src);
+                result = exec.execute_not(src);
                 break;
             case opcode_abs:
-                result = execute_abs(src);
+                result = exec.execute_abs(src);
                 break;
             case opcode_popcnt:
-                result = execute_popcnt(src);
+                result = exec.execute_popcnt(src);
                 break;
             default:
                 throw std::runtime_error("Encountered the following unimplemented operation: " + fcore_opcodes_reverse[opcode]);
@@ -282,125 +282,11 @@ namespace fcore::emulator_v2{
         working_memory->at(dest) = val;
     }
 
-    uint32_t emulator_backend::execute_add(uint32_t a, uint32_t b) {
-        return exec.execute_add(a, b);
-    }
-
-    uint32_t emulator_backend::execute_sub(uint32_t a, uint32_t b) {
-        return exec.execute_sub(a, b);
-    }
-
-    uint32_t emulator_backend::execute_mul(uint32_t a, uint32_t b) {
-        return exec.execute_mul(a, b);
-    }
-
-    uint32_t emulator_backend::execute_rec(uint32_t a) {
-        return exec.execute_rec(a);
-    }
-
-    uint32_t emulator_backend::execute_fti(uint32_t a) {
-        return exec.execute_fti(a);
-    }
-
-
-    uint32_t emulator_backend::execute_itf(uint32_t a) {
-        return exec.execute_itf(a);
-    }
-
-    uint32_t emulator_backend::execute_compare_gt(uint32_t a, uint32_t b) {
-        bool sign_a = (1<<31) & a;
-        bool sign_b = (1<<31) & b;
-
-        bool res;
-
-        if(sign_a & sign_b) {
-            res = a < b;
-        }else if(sign_a & !sign_b){
-            res = false;
-        } else if(!sign_a & sign_b){
-            res = true;
-        } else {
-            res = a>b;
-        }
-
-        return process_comparison_output(res);
-    }
-
-    uint32_t emulator_backend::execute_compare_le(uint32_t a, uint32_t b) {
-        bool sign_a = (1<<31) & a;
-        bool sign_b = (1<<31) & b;
-
-        bool res;
-        if(a == b){
-            res = true;
-        } else if(sign_a & sign_b) {
-            res = a>b;
-        }else if(sign_a & !sign_b){
-            res = true;
-        } else if(!sign_a & sign_b){
-            res = false;
-        }else {
-            res = a<=b;
-        }
-        return process_comparison_output(res);
-    }
-
-    uint32_t emulator_backend::execute_compare_eq(uint32_t a, uint32_t b) {
-        return process_comparison_output(a==b);
-    }
-
-    uint32_t emulator_backend::execute_compare_ne(uint32_t a, uint32_t b) {
-        return process_comparison_output(a!=b);
-    }
 
     uint32_t emulator_backend::execute_or(uint32_t a, uint32_t b) {
-        return a | b;
+        return exec.execute_or(a,b);
     }
 
-    uint32_t emulator_backend::execute_and(uint32_t a, uint32_t b) {
-        return a & b;
-    }
-
-    uint32_t emulator_backend::execute_not(uint32_t a) {
-        return ~a;
-    }
-
-    uint32_t emulator_backend::execute_abs(uint32_t a) {
-        return a&0x7fffffff;
-    }
-
-    uint32_t emulator_backend::execute_popcnt(uint32_t a) {
-        return std::bitset<32>(a).count();
-    }
-
-    uint32_t emulator_backend::execute_satp(uint32_t a, uint32_t b) {
-        float raw_a = uint32_to_float(a);
-        float raw_b = uint32_to_float(b);
-
-        float raw_res;
-
-        if(raw_a>raw_b){
-            raw_res = raw_b;
-        } else {
-            raw_res = raw_a;
-        }
-
-        return float_to_uint32(raw_res);
-    }
-
-    uint32_t emulator_backend::execute_satn(uint32_t a, uint32_t b) {
-        float raw_a = uint32_to_float(a);
-        float raw_b = uint32_to_float(b);
-
-        float raw_res;
-        if(raw_a<raw_b){
-            raw_res = raw_b;
-        } else {
-            raw_res = raw_a;
-        }
-
-        return float_to_uint32(raw_res);
-    }
 
     void emulator_backend::execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest) {
         efi_backend.emulate_efi(efi_selector, op_a, op_b, dest, working_memory);
@@ -408,38 +294,28 @@ namespace fcore::emulator_v2{
 
 
     uint32_t emulator_backend::float_to_uint32(float f) {
-        uint32_t ret;
-        memcpy(&ret, &f, sizeof(f));
-        return ret;
+        return gp_executor::float_to_uint32(f);
     }
 
     float emulator_backend::uint32_to_float(uint32_t u) {
-        float ret;
-        memcpy(&ret, &u, sizeof(u));
-        return ret;
+        return gp_executor::uint32_to_float(u);
     }
 
-    uint32_t emulator_backend::execute_bset(uint32_t a, uint32_t b, uint32_t c) {
-        std::bitset<32> bits(a);
-        bits[b] = c;
-        return bits.to_ulong();
+    uint32_t emulator_backend::execute_bset(uint32_t a, uint32_t b, uint32_t c){
+        return exec.execute_bset(a,b,c);
     }
 
     uint32_t emulator_backend::execute_bsel(uint32_t a, uint32_t b) {
-        return (a & (1<<b))>>b;
+        return exec.execute_bsel(a, b);
     }
 
     uint32_t emulator_backend::execute_xor(uint32_t a, uint32_t b) {
-        return a ^ b;
+        return exec.execute_xor(a, b);
     }
 
 
     uint32_t emulator_backend::execute_csel(uint32_t a, uint32_t b, uint32_t c) {
-        if(a & 0x1){
-            return b;
-        } else {
-            return c;
-        }
+        return exec.execute_csel(a, b, c);
     }
 
     uint32_t emulator_backend::process_comparison_output(bool val) {

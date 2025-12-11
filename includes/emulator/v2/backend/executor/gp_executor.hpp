@@ -29,10 +29,10 @@ namespace fcore::emulator_v2{
         uint32_t execute_rec(uint32_t a) override;
         uint32_t execute_fti(uint32_t a) override;
         uint32_t execute_itf(uint32_t a) override;
-    private:
-
         static uint32_t float_to_uint32(float f);
         static float uint32_to_float(uint32_t u);
+    private:
+
     };
 }
 

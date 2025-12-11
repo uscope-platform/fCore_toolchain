@@ -37,9 +37,7 @@ set(FCORE_COMMON_SRCS_I
         passes/instruction_stream/ternary_deconfliction.cpp
         passes/instruction_stream/stall_insertion.cpp
         passes/instruction_stream/bound_register_assignment.cpp
-        ../includes/passes/instruction_stream/bound_register_assignment.hpp
         passes/instruction_stream/result_deconfliction.cpp
-        ../includes/passes/instruction_stream/result_deconfliction.hpp
 )
 
 
@@ -115,6 +113,7 @@ set(FCORE_EMU_SRCS
         data_structures/emulation/v2/emulation_program.cpp
         emulator/v2/input_waveform_generator.cpp
         emulator/v2/backend/emulator_backend.cpp
+        emulator/v2/backend/execution/executor_base.cpp
         emulator/v2/backend/emulation_outputs_manager.cpp
         emulator/v2/backend/efi_dispatcher.cpp
         emulator/v2/emulator_builder.cpp

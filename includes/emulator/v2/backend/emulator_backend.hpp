@@ -85,27 +85,11 @@ namespace fcore::emulator_v2{
         void run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags);
         void run_load_constant_instruction(uint32_t dest, uint32_t val);
 
-        uint32_t execute_add(uint32_t a, uint32_t b);
-        uint32_t execute_sub(uint32_t a, uint32_t b);
-        uint32_t execute_mul(uint32_t a, uint32_t b);
-        uint32_t execute_rec(uint32_t a);
-        uint32_t execute_fti(uint32_t a);
-        uint32_t execute_itf(uint32_t a);
-        static uint32_t execute_not(uint32_t a);
-        static uint32_t execute_and(uint32_t a, uint32_t b);
-        uint32_t execute_abs(uint32_t a);
-        uint32_t execute_popcnt(uint32_t a);
-        uint32_t execute_satp(uint32_t a, uint32_t b);
-        uint32_t execute_satn(uint32_t a, uint32_t b);
         uint32_t execute_bset(uint32_t a, uint32_t b, uint32_t c);
         uint32_t execute_bsel(uint32_t a, uint32_t b);
         uint32_t execute_csel(uint32_t a, uint32_t b, uint32_t c);
-        static uint32_t execute_or(uint32_t a, uint32_t b);
-        static uint32_t execute_xor(uint32_t a, uint32_t b);
-        uint32_t execute_compare_gt(uint32_t a, uint32_t b);
-        uint32_t execute_compare_le(uint32_t a, uint32_t b);
-        uint32_t execute_compare_eq(uint32_t a, uint32_t b);
-        uint32_t execute_compare_ne(uint32_t a, uint32_t b);
+        uint32_t execute_or(uint32_t a, uint32_t b);
+        uint32_t execute_xor(uint32_t a, uint32_t b);
         void execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest);
 
         uint32_t process_comparison_output(bool val);

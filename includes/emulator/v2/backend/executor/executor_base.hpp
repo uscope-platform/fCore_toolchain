@@ -15,7 +15,14 @@
 #ifndef FCORE_TOOLCHAIN_EXECUTOR_BASE_HPP
 #define FCORE_TOOLCHAIN_EXECUTOR_BASE_HPP
 
-namespace fcore {
+
+#include <cstdint>
+#include <cstring>
+#include <bitset>
+
+#include "data_structures/emulation/v2/emulator_metadata.hpp"
+
+namespace fcore::emulator_v2 {
     class executor_base{
     public:
         virtual uint32_t execute_add(uint32_t a, uint32_t b){ return 0;}
@@ -24,7 +31,28 @@ namespace fcore {
         virtual uint32_t execute_rec(uint32_t a){ return 0;}
         virtual uint32_t execute_fti(uint32_t a){ return 0;}
         virtual uint32_t execute_itf(uint32_t a){ return 0;}
+
+        uint32_t execute_not(uint32_t a);
+        uint32_t execute_and(uint32_t a, uint32_t b);
+        uint32_t execute_abs(uint32_t a);
+        uint32_t execute_popcnt(uint32_t a);
+        uint32_t execute_satp(uint32_t a, uint32_t b);
+        uint32_t execute_satn(uint32_t a, uint32_t b);
+        uint32_t execute_bset(uint32_t a, uint32_t b, uint32_t c);
+        uint32_t execute_bsel(uint32_t a, uint32_t b);
+        uint32_t execute_csel(uint32_t a, uint32_t b, uint32_t c);
+        uint32_t execute_or(uint32_t a, uint32_t b);
+        uint32_t execute_xor(uint32_t a, uint32_t b);
+        uint32_t execute_compare_gt(uint32_t a, uint32_t b, comparator_type_t comparator_type);
+        uint32_t execute_compare_le(uint32_t a, uint32_t b, comparator_type_t comparator_type);
+        uint32_t execute_compare_eq(uint32_t a, uint32_t b, comparator_type_t comparator_type);
+        uint32_t execute_compare_ne(uint32_t a, uint32_t b, comparator_type_t comparator_type);
+
+        static uint32_t float_to_uint32(float f);
+        static float uint32_to_float(uint32_t u);
     private:
+
+        uint32_t process_comparison_output(bool val, comparator_type_t comparator_type);
     };
 }
 

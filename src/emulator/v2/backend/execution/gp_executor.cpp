@@ -61,14 +61,10 @@ namespace fcore::emulator_v2{
     }
 
     uint32_t gp_executor::float_to_uint32(float f) {
-        uint32_t ret;
-        memcpy(&ret, &f, sizeof(f));
-        return ret;
+        return std::bit_cast<uint32_t, float>(f);
     }
 
     float gp_executor::uint32_to_float(uint32_t u) {
-        float ret;
-        memcpy(&ret, &u, sizeof(u));
-        return ret;
+        return std::bit_cast<float, uint32_t>(u);
     }
 }
