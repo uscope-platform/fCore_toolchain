@@ -21,6 +21,7 @@
 #include <vector>
 #include <memory>
 #include "data_structures/common/variable.hpp"
+#include "fCore_isa.hpp"
 
 namespace fcore{
     class intercalated_constant {
@@ -51,13 +52,13 @@ namespace fcore{
         std::vector<std::shared_ptr<variable>> get_arguments() const {return {};};
 
 
-        std::string get_opcode(){return opcode;};
+        opcode_table_t get_opcode(){return opcode;};
 
     private:
         float float_const;
         uint32_t int_const;
         bool is_float;
-        std::string opcode;
+        opcode_table_t opcode;
     };
 }
 

@@ -60,7 +60,9 @@ namespace fcore{
         }, content);
     }
 
-
-
-
+    opcode_table_t instruction_variant::get_opcode(){
+        return std::visit([](auto &var) -> opcode_table_t {
+            return var.get_opcode();
+        }, content);
+    }
 }

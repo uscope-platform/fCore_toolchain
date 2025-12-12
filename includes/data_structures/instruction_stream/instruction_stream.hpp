@@ -28,6 +28,7 @@ namespace fcore{
         unsigned long size(instruction_stream & stream);
         bool empty();
         unsigned long size();
+        void insert(const instruction_variant &item, int64_t position);
 
         instruction_variant& operator[](size_t i) {
             return stream_store[i];

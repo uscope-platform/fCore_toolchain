@@ -61,6 +61,8 @@ namespace fcore{
         std::vector<std::shared_ptr<variable>> get_arguments();
         std::vector<std::shared_ptr<variable>> get_arguments() const;
 
+        opcode_table_t get_opcode();
+
         std::variant<
                 conversion_instruction,
                 independent_instruction,

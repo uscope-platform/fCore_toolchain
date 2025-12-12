@@ -226,8 +226,8 @@ namespace fcore{
 
     void fcore_cc::insert_stop(instruction_stream &program_stream) {
         if(std::holds_alternative<independent_instruction>(program_stream.last().get_content())){
-            auto instr = std::get<independent_instruction>(program_stream.last().get_content());
-            if(instr.get_opcode() != opcode_stop){
+            auto opcode = program_stream.last().get_opcode();
+            if(opcode != opcode_stop){
                 program_stream.push_back(instruction_variant(independent_instruction(opcode_stop)));
             }
         } else {
@@ -241,7 +241,7 @@ namespace fcore{
         auto last_instruction_idx = program_stream.size()-2;
         for(int i =program_stream.size()-2;i>0; i--){
             if (std::holds_alternative<independent_instruction>(program_stream[i].get_content())) {
-                auto instr = std::get<independent_instruction>(program_stream.last().get_content()).get_opcode();
+                auto instr = program_stream.last().get_opcode();
                 if(instr != opcode_nop){
                     last_instruction_idx = i;
                     break;
@@ -251,8 +251,11 @@ namespace fcore{
                 break;
             }
         }
-        auto last_instruction = program_stream[last_instruction_idx];
-        int i = 0;
+        auto last_instruction_latency = fcore_execution_latencies[program_stream[last_instruction_idx].get_opcode()];
+        auto present_nops = program_stream.size()-2-last_instruction_idx;
+        for(int i = 0; i< last_instruction_latency; i++) {
+            program_stream.insert(instruction_variant(independent_instruction(opcode_nop)), -1);
+        }
     }
 
     nlohmann::json fcore_cc::dump_iom_map(std::map<std::string, core_iom> &map) {

@@ -231,7 +231,7 @@ TEST(emulator_manager_v2, emulator_asm) {
                     "efi_implementation": "none"
                 },
                 "program": {
-                    "content": "ldc r42, 12.5000\nldc r3, 3.2000\nadd r3, r42, r12\nstop\n",
+                    "content": "ldc r42, 12.5000\nldc r3, 3.2000\nnop\nadd r3, r42, r12\nnop\nnop\nnop\nnop\nnop\nnop\nstop\n",
                     "type":"asm",
                     "headers": []
                 },

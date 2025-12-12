@@ -43,7 +43,9 @@ namespace fcore{
         return stream_store.size();
     }
 
-
-
+    void instruction_stream::insert(const instruction_variant& item, int64_t position){
+        if (position>0) stream_store.insert(stream_store.begin()+position, item);
+        else stream_store.insert(stream_store.end()+position, item);
+    }
 }
 
