@@ -67,6 +67,8 @@ namespace fcore {
         void parse(std::map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map);
         void optimize(std::map<std::string, std::vector<uint32_t >> &dma_map);
         void analyze_program_length(std::shared_ptr<instruction_count> c);
+        void insert_stop(instruction_stream &program_stream);
+        void flush_pipeline(instruction_stream &program_stream);
         std::ifstream input_file_stream;
         std::istringstream input_string_stream;
         std::string type;

@@ -40,6 +40,7 @@ namespace fcore::emulator_v2{
         uint32_t data;
         uint32_t destination;
         uint8_t pipeline_del;
+        std::string opcode;
     };
 
     class BreakpointException : public std::runtime_error {
@@ -96,6 +97,7 @@ namespace fcore::emulator_v2{
 
         void execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest);
 
+        operation_result solve_writeback_conflict(std::vector<operation_result> writes);
 
         #if GENERAL_PURPOSE_EMULATION==1
                 gp_executor exec;

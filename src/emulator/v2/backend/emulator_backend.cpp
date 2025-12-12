@@ -104,10 +104,20 @@ namespace fcore::emulator_v2{
             default:
                 break;
         }
-        std::erase_if(results_pipeline, [&](auto& res) {
-            working_memory[res.destination] = res.data;
-            return true;
+        std::vector<operation_result> retire_set;
+        std::erase_if(results_pipeline, [&](operation_result& res) {
+            if(res.pipeline_del == 0) {
+                retire_set.push_back(res);
+                return true;
+            } else {
+                res.pipeline_del--;
+                return false;
+            }
         });
+        if (!retire_set.empty()){
+            const auto wb_op = solve_writeback_conflict(retire_set);
+            working_memory[wb_op.destination] = wb_op.data;
+        }
     }
 
     operation_result emulator_backend::run_ternary_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags) {
@@ -286,6 +296,12 @@ namespace fcore::emulator_v2{
 
     void emulator_backend::execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest) {
         efi_backend.emulate_efi(efi_selector, op_a, op_b, dest, working_memory);
+    }
+
+    operation_result emulator_backend::solve_writeback_conflict(std::vector<operation_result> writes) {
+        if (writes.size()==1) return writes[0];
+        spdlog::warn("Writeback collision detected on core {}", core_name);
+        return writes[0];
     }
 
     uint32_t emulator_backend::float_to_uint32(float f) {

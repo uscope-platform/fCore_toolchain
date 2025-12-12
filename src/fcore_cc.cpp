@@ -147,15 +147,8 @@ namespace fcore{
         if(program_stream.empty()){
             program_stream.push_back(instruction_variant(independent_instruction("stop")));
         }
-        if(std::holds_alternative<independent_instruction>(program_stream.last().get_content())){
-            auto instr = std::get<independent_instruction>(program_stream.last().get_content());
-            if(instr.get_opcode() != "stop"){
-                program_stream.push_back(instruction_variant(independent_instruction("stop")));
-            }
-        } else {
-            program_stream.push_back(instruction_variant(independent_instruction("stop")));
-        }
-
+        insert_stop(program_stream);
+        flush_pipeline(program_stream);
         writer.process_stream(program_stream,dma_map,allocation_map, logging);
     }
 
@@ -229,6 +222,37 @@ namespace fcore{
 
         length_info.fixed_portion = c->stop * info.stop_duration +
                                     info.fixed_core_overhead + c->load*info.load_overhead;
+    }
+
+    void fcore_cc::insert_stop(instruction_stream &program_stream) {
+        if(std::holds_alternative<independent_instruction>(program_stream.last().get_content())){
+            auto instr = std::get<independent_instruction>(program_stream.last().get_content());
+            if(instr.get_opcode() != "stop"){
+                program_stream.push_back(instruction_variant(independent_instruction("stop")));
+            }
+        } else {
+            program_stream.push_back(instruction_variant(independent_instruction("stop")));
+        }
+
+    }
+
+    void fcore_cc::flush_pipeline(instruction_stream &program_stream) {
+
+        auto last_instruction_idx = program_stream.size()-2;
+        for(int i =program_stream.size()-2;i>0; i--){
+            if (std::holds_alternative<independent_instruction>(program_stream[i].get_content())) {
+                auto instr = std::get<independent_instruction>(program_stream.last().get_content()).get_opcode();
+                if(instr != "nop"){
+                    last_instruction_idx = i;
+                    break;
+                }
+            }  else {
+                last_instruction_idx = i;
+                break;
+            }
+        }
+        auto last_instruction = program_stream[last_instruction_idx];
+        int i = 0;
     }
 
     nlohmann::json fcore_cc::dump_iom_map(std::map<std::string, core_iom> &map) {
