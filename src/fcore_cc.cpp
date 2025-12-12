@@ -239,9 +239,11 @@ namespace fcore{
     void fcore_cc::flush_pipeline(instruction_stream &program_stream) {
 
         auto last_instruction_idx = program_stream.size()-2;
-        for(int i =program_stream.size()-2;i>0; i--){
-            if (std::holds_alternative<independent_instruction>(program_stream[i].get_content())) {
-                auto instr = program_stream.last().get_opcode();
+        for(int64_t i = program_stream.size()-2;i>=0; i--){
+            if (std::holds_alternative<intercalated_constant>(program_stream[i].get_content())) {
+                continue;
+            } else if (std::holds_alternative<independent_instruction>(program_stream[i].get_content())) {
+                auto instr = program_stream[i].get_opcode();
                 if(instr != opcode_nop){
                     last_instruction_idx = i;
                     break;
@@ -251,7 +253,8 @@ namespace fcore{
                 break;
             }
         }
-        auto last_instruction_latency = fcore_execution_latencies[program_stream[last_instruction_idx].get_opcode()];
+        auto opcode = program_stream[last_instruction_idx].get_opcode();
+        auto last_instruction_latency = fcore_execution_latencies[opcode];
         auto present_nops = program_stream.size()-2-last_instruction_idx;
         for(int i = 0; i< last_instruction_latency; i++) {
             program_stream.insert(instruction_variant(independent_instruction(opcode_nop)), -1);

@@ -41,7 +41,7 @@ compiler.compile();
 auto exec = compiler.get_executable();
 
 std::vector<uint32_t> reference_program = {
-        0x50003,
+        0x60003,
         0xc,
         0x10005,
         0x20006,
@@ -51,10 +51,11 @@ std::vector<uint32_t> reference_program = {
         0x4179999a,
         0x46,
         0x4189999a,
+        0x0,
         0xc
     };
 
-    ASSERT_EQ(exec.size(), 11);
+    ASSERT_EQ(exec.size(), 12);
     ASSERT_EQ(exec, reference_program);
 
 
