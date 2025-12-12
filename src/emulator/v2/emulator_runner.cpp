@@ -30,10 +30,10 @@ namespace fcore::emulator_v2 {
         backend.set_efi_selector(prog.efi_selector);
         backend.set_comparator_type(prog.comparator_type);
 
-        common_io_memory = std::make_shared<std::vector<uint32_t>>(32, 0); // TODO: make the number of common io cells a parameter
+        common_io_memory = std::vector<uint32_t>(32, 0); // TODO: make the number of common io cells a parameter
 
         for(int i = 0; i<prog.active_channels; i++){
-            emulators_memory[i] = std::make_shared<std::vector<uint32_t>>(2 << (fcore_register_address_width - 1), 0);
+            emulators_memory[i] = std::vector<uint32_t>(2 << (fcore_register_address_width - 1), 0);
         }
 
 
@@ -84,16 +84,14 @@ namespace fcore::emulator_v2 {
     }
 
     void emulator_runner::emulation_phase(uint32_t channel, int init_point) {
-        auto mem = emulators_memory[channel];
         backend.set_debugging(multichannel_debug || channel == 0);
-        backend.setup_memory(mem, common_io_memory);
+        backend.setup_memory(emulators_memory[channel], common_io_memory);
         backend.run_round(init_point);
     }
 
     debug_checkpoint emulator_runner::step_over(uint32_t channel) {
-        auto mem = emulators_memory[channel];
         backend.set_debugging(multichannel_debug || channel == 0);
-        backend.setup_memory(mem, common_io_memory);
+        backend.setup_memory(emulators_memory[channel], common_io_memory);
         return backend.step_over();
     }
 
@@ -194,9 +192,9 @@ namespace fcore::emulator_v2 {
             throw std::runtime_error("Attempted read from unavailable channel: " + std::to_string(channel) + " of core: " + core_name);
         }
         if(is_common){
-            return common_io_memory->at(core_reg);
+            return common_io_memory[core_reg];
         } else {
-            return  emulators_memory[channel]->at(core_reg);
+            return  emulators_memory[channel][core_reg];
         }
 
     }
@@ -218,9 +216,9 @@ namespace fcore::emulator_v2 {
         }
         if(core_reg != 0) {
             if (is_common) {
-                common_io_memory->at(core_reg) = data;
+                common_io_memory[core_reg] = data;
             } else {
-                emulators_memory[channel]->at(core_reg) = data;
+                emulators_memory[channel][core_reg] = data;
             }
         }
         return true;

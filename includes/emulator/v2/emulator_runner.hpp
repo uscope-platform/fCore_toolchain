@@ -70,7 +70,7 @@ namespace fcore::emulator_v2 {
         program_bundle program;
         std::string core_name;
 
-        std::shared_ptr<std::vector<uint32_t>> common_io_memory;
+        std::vector<uint32_t> common_io_memory;
         std::map<std::string, uint32_t> current_inputs;
 
         std::map<std::string, std::set<std::string>> input_override;

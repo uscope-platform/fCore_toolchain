@@ -19,13 +19,12 @@ namespace fcore::emulator_v2{
 
 
     void emulator_backend::setup_memory(
-            std::shared_ptr<std::vector<uint32_t>> channel_mem,
-            const std::shared_ptr<std::vector<uint32_t>> &common_mem
+        std::span<uint32_t> channel_mem,
+        std::span<uint32_t> common_mem
     ) {
         spdlog::trace("Setup memory");
-        working_memory = std::move(channel_mem);
+        working_memory = channel_mem;
         common_io = common_mem;
-
     }
 
     void emulator_backend::run_round(
@@ -106,7 +105,7 @@ namespace fcore::emulator_v2{
                 break;
         }
         std::erase_if(results_pipeline, [&](auto& res) {
-            working_memory->at(res.destination) = res.data;
+            working_memory[res.destination] = res.data;
             return true;
         });
     }
@@ -120,21 +119,21 @@ namespace fcore::emulator_v2{
         uint32_t a,b,c;
 
         if(io_flags[0]){
-            a = common_io->at(op_a);
+            a = common_io[op_a];
         } else {
-            a = working_memory->at(op_a);
+            a = working_memory[op_a];
         }
 
         if(io_flags[1]){
-            b = common_io->at(op_b);
+            b = common_io[op_b];
         } else {
-            b = working_memory->at(op_b);
+            b = working_memory[op_b];
         }
 
         if(io_flags[2]){
-            c = common_io->at(op_c);
+            c = common_io[op_c];
         } else {
-            c = working_memory->at(op_c);
+            c = working_memory[op_c];
         }
 
         uint32_t result;
@@ -161,15 +160,15 @@ namespace fcore::emulator_v2{
 
         uint32_t a, b;
         if(io_flags[0]){
-            a = common_io->at(op_a);
+            a = common_io[op_a];
         } else {
-            a = working_memory->at(op_a);
+            a = working_memory[op_a];
         }
 
         if(io_flags[1]){
-            b = common_io->at(op_b);
+            b = common_io[op_b];
         } else {
-            b = working_memory->at(op_b);
+            b = working_memory[op_b];
         }
 
         uint32_t result;
@@ -212,7 +211,7 @@ namespace fcore::emulator_v2{
                 result = exec.execute_compare_le(a, b, comparator_type);
                 break;
             case opcode_bset:
-                result = exec.execute_bset(working_memory->at(op_a), working_memory->at(op_b), working_memory->at(dest));
+                result = exec.execute_bset(working_memory[op_a], working_memory[op_b], working_memory[dest]);
                 writeback_address = op_a;
                 break;
             case opcode_bsel:
@@ -244,9 +243,9 @@ namespace fcore::emulator_v2{
 
         uint32_t src;
         if(io_flags[0]){
-            src = common_io->at(operands[0]);
+            src = common_io[operands[0]];
         } else {
-            src = working_memory->at(operands[0]);
+            src = working_memory[operands[0]];
         }
         uint32_t dest = operands[1];
 
@@ -303,7 +302,7 @@ namespace fcore::emulator_v2{
         debug_checkpoint ret;
         ret.core_name = core_name;
         ret.completed_round = round_complete;
-        ret.memory_view = *working_memory;
+        ret.memory_view = std::vector(working_memory.begin(), working_memory.end());
         ret.breakpoint = current_instruction;
         if(round_complete)
             ret.status = "complete";

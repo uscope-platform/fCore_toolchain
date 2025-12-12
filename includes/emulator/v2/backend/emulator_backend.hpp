@@ -54,7 +54,10 @@ namespace fcore::emulator_v2{
         emulator_backend() = default;
         void set_program(std::vector<uint32_t> p) {prog.process_raw_program(p);};
         void set_comparator_type(const comparator_type_t &t){comparator_type = t;};
-        void setup_memory(std::shared_ptr<std::vector<uint32_t>> channel_mem, const std::shared_ptr<std::vector<uint32_t>> &common_mem);
+        void setup_memory(
+            std::span<uint32_t> channel_mem,
+            std::span<uint32_t> common_mem
+        );
         void run_round(int init_point);
 
         void reset_instruction_pointer() {current_instruction =0;};
@@ -112,9 +115,8 @@ namespace fcore::emulator_v2{
 
         efi_dispatcher efi_backend;
 
-
-        std::shared_ptr<std::vector<uint32_t>> working_memory;
-        std::shared_ptr<std::vector<uint32_t>> common_io;
+        std::span<uint32_t> working_memory;
+        std::span<uint32_t> common_io;
 
         std::vector<operation_result> results_pipeline;
 

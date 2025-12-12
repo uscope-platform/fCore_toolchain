@@ -28,7 +28,7 @@ namespace fcore::emulator_v2 {
 // FORWARD DECLARATIONS
     class emulator_backend;
 
-    typedef std::unordered_map<uint32_t , std::shared_ptr<std::vector<uint32_t>>> core_memory_pool_t;
+    typedef std::unordered_map<uint32_t , std::vector<uint32_t>> core_memory_pool_t;
 
     typedef enum {
         efi_none = 0,

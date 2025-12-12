@@ -50,12 +50,12 @@ namespace fcore::emulator_v2{
 
     public:
         void set_core_name(std::string name) {core_name = std::move(name);};
-        void emulate_efi(efi_implementation_t function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m);
+        void emulate_efi(efi_implementation_t function, uint32_t op_a, uint32_t op_b, uint32_t dest,  std::span<uint32_t>m);
     private:
-        void efi_sort_exec(uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m);
+        void efi_sort_exec(uint32_t op_a, uint32_t op_b, uint32_t dest, std::span<uint32_t>m);
         static uint32_t float_to_uint32(float f);
         static float uint32_to_float(uint32_t u);
-        void efi_trig_exec(uint32_t op_a, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m);
+        void efi_trig_exec(uint32_t op_a, uint32_t dest, std::span<uint32_t>m);
         std::string core_name;
     };
 

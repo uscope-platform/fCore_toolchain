@@ -17,7 +17,7 @@
 
 namespace fcore::emulator_v2{
 
-    void efi_dispatcher::emulate_efi(efi_implementation_t function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
+    void efi_dispatcher::emulate_efi(efi_implementation_t function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::span<uint32_t>m) {
         if(function == efi_sort){
             efi_sort_exec(op_a, op_b, dest, m);
         } else if(function ==efi_trig) {
@@ -29,23 +29,23 @@ namespace fcore::emulator_v2{
         }
     }
 
-    void efi_dispatcher::efi_sort_exec(uint32_t op_a, uint32_t op_b, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
+    void efi_dispatcher::efi_sort_exec(uint32_t op_a, uint32_t op_b, uint32_t dest,  std::span<uint32_t>m) {
 
 
-        bool descending_order  = m->at(op_a) != 1;
+        bool descending_order  = m[op_a] != 1;
         std::vector<cell> cells;
         std::vector<uint32_t> idx;
         idx.reserve(op_b-1);
         cells.reserve(op_b-1);
 
         for (uint32_t i = 1; i < op_b; i++) {
-            cells.emplace_back(uint32_to_float(m->at(op_a+i)), i, descending_order);
+            cells.emplace_back(uint32_to_float(m[op_a+i]), i, descending_order);
         }
 
         std::sort(cells.begin(), cells.end());
 
         for (uint32_t i = 0; i < cells.size(); ++i) {
-            m->at(dest+i) = (uint32_t)cells[i].idx-1;
+            m[dest+i] = (uint32_t)cells[i].idx-1;
         }
     }
 
@@ -72,11 +72,11 @@ namespace fcore::emulator_v2{
         return s.x = x;
     }
 
-    void efi_dispatcher::efi_trig_exec(uint32_t op_a, uint32_t dest, std::shared_ptr<std::vector<uint32_t>>m) {
+    void efi_dispatcher::efi_trig_exec(uint32_t op_a, uint32_t dest, std::span<uint32_t>m) {
 
-        int opcode  = m->at(op_a);
+        int opcode  = m[op_a];
 
-        uint32_t theta = m->at(op_a+1);
+        uint32_t theta = m[op_a+1];
 
         double angle_deg = theta/65536.0*360.0;
 
@@ -90,7 +90,7 @@ namespace fcore::emulator_v2{
         }
         float scaled_res = raw_result*32768;
         int result = round(scaled_res);
-        m->at(dest) = result;
+        m[dest] = result;
     }
 
 }

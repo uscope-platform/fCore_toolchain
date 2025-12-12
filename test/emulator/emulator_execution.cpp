@@ -49,6 +49,7 @@ TEST(Emulator_execution, emulator_add) {
     manager.process();
     manager.emulate();
     auto res_obj = manager.get_results();
+    auto dbg = res_obj.dump(4);
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 3.8, 1e-6);
 
