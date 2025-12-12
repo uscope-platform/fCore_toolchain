@@ -36,6 +36,12 @@
 namespace fcore::emulator_v2{
 
 
+    struct operation_result{
+        uint32_t data;
+        uint32_t destination;
+        uint8_t pipeline_del;
+    };
+
     class BreakpointException : public std::runtime_error {
     public:
         BreakpointException(const debug_checkpoint& checkpoint)
@@ -79,15 +85,14 @@ namespace fcore::emulator_v2{
 
         void run_instruction_by_type(const uint32_t& opcode, std::array<uint32_t, 3> operands, std::array<bool, 3> io_flags);
 
-        void run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags);
-        void run_ternary_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags);
+        operation_result run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags);
+        operation_result run_ternary_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags);
         void run_independent_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands);
-        void run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags);
-        void run_load_constant_instruction(uint32_t dest, uint32_t val);
+        operation_result run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags);
+        operation_result run_load_constant_instruction(uint32_t dest, uint32_t val);
 
         void execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest);
 
-        uint32_t process_comparison_output(bool val);
 
         #if GENERAL_PURPOSE_EMULATION==1
                 gp_executor exec;
@@ -111,6 +116,7 @@ namespace fcore::emulator_v2{
         std::shared_ptr<std::vector<uint32_t>> working_memory;
         std::shared_ptr<std::vector<uint32_t>> common_io;
 
+        std::vector<operation_result> results_pipeline;
 
         std::set<uint32_t> breakpoints;
 

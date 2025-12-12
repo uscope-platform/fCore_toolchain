@@ -47,11 +47,9 @@ namespace fcore::emulator_v2{
 
             spdlog::trace("Running instruction {0}: opcode = {1}", current_instruction, fcore_opcodes_reverse[opcode]);
 
-            if(opcode == fcore_opcodes["ldc"]){
-                run_load_constant_instruction(operands[0], prog[current_instruction].load_constant);
-            } else{
-                run_instruction_by_type(opcode, operands, io_flags);
-            }
+
+            run_instruction_by_type(opcode, operands, io_flags);
+
             if(stop_requested){
                 break;
             }
@@ -68,11 +66,7 @@ namespace fcore::emulator_v2{
         auto opcode = get_opcode(prog[current_instruction].instruction);
         auto operands  = get_operands(prog[current_instruction].instruction);
         auto io_flags =get_common_io_flags(prog[current_instruction].instruction);
-        if(opcode == fcore_opcodes["ldc"]){
-            run_load_constant_instruction(operands[0], prog[current_instruction].load_constant);
-        } else{
-            run_instruction_by_type(opcode, operands, io_flags);
-        }
+        run_instruction_by_type(opcode, operands, io_flags);
 
         debug_checkpoint res;
 
@@ -96,20 +90,28 @@ namespace fcore::emulator_v2{
                 run_independent_instruction(opcode, operands);
                 break;
             case isa_register_instruction:
-                run_register_instruction(opcode,operands, io_flags);
+                if (opcode == opcode_efi) execute_efi(operands[0], operands[1], operands[2]);
+                else results_pipeline.push_back(run_register_instruction(opcode,operands, io_flags));
                 break;
             case isa_conversion_instruction:
-                run_conversion_instruction(opcode, operands, io_flags);
+                results_pipeline.push_back(run_conversion_instruction(opcode, operands, io_flags));
                 break;
-            case isa_ternary_instruction:
-                run_ternary_instruction(opcode,operands, io_flags);
+        case isa_ternary_instruction:
+                results_pipeline.push_back(run_ternary_instruction(opcode,operands, io_flags));
+                break;
+            case isa_load_constant_instruction:
+                results_pipeline.push_back(run_load_constant_instruction(operands[0], prog[current_instruction].load_constant));
                 break;
             default:
                 break;
         }
+        std::erase_if(results_pipeline, [&](auto& res) {
+            working_memory->at(res.destination) = res.data;
+            return true;
+        });
     }
 
-    void emulator_backend::run_ternary_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags) {
+    operation_result emulator_backend::run_ternary_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags) {
 
         uint32_t op_a = operands[0];
         uint32_t op_b = operands[1];
@@ -145,10 +147,11 @@ namespace fcore::emulator_v2{
                 throw std::runtime_error("Encountered the following unimplemented operation: " + fcore_opcodes_reverse[opcode]);
         }
 
-        working_memory->at(writeback_address) = result;
+        auto op = static_cast<uint32_t>(opcode);
+        return {result, writeback_address, fcore_execution_latencies[fcore_opcodes_reverse[op]]};
     }
 
-    void emulator_backend::run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags) {
+    operation_result emulator_backend::run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags) {
 
 
         uint32_t dest = operands[2];
@@ -208,8 +211,6 @@ namespace fcore::emulator_v2{
             case opcode_ble:
                 result = exec.execute_compare_le(a, b, comparator_type);
                 break;
-            case opcode_efi:
-                return execute_efi(op_a, op_b, dest);
             case opcode_bset:
                 result = exec.execute_bset(working_memory->at(op_a), working_memory->at(op_b), working_memory->at(dest));
                 writeback_address = op_a;
@@ -220,8 +221,8 @@ namespace fcore::emulator_v2{
             default:
                 throw std::runtime_error("Encountered the following unimplemented operation: " + fcore_opcodes_reverse[opcode]);
         }
-
-        working_memory->at(writeback_address) = result;
+        auto op = static_cast<uint32_t>(opcode);
+        return {result, writeback_address, fcore_execution_latencies[fcore_opcodes_reverse[op]]};
     }
 
     void emulator_backend::run_independent_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands) {
@@ -238,7 +239,7 @@ namespace fcore::emulator_v2{
 
     }
 
-    void emulator_backend::run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags) {
+    operation_result emulator_backend::run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags) {
 
 
         uint32_t src;
@@ -274,20 +275,19 @@ namespace fcore::emulator_v2{
                 throw std::runtime_error("Encountered the following unimplemented operation: " + fcore_opcodes_reverse[opcode]);
         }
 
-        working_memory->at(dest) = result;
+        auto op = static_cast<uint32_t>(opcode);
+        return {result, dest, fcore_execution_latencies[fcore_opcodes_reverse[op]]};
 
     }
 
-    void emulator_backend::run_load_constant_instruction(uint32_t dest, uint32_t val) {
-        working_memory->at(dest) = val;
+    operation_result emulator_backend::run_load_constant_instruction(uint32_t dest, uint32_t val) {
+        return {val, dest, fcore_execution_latencies["ldc"]};
     }
-
 
 
     void emulator_backend::execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest) {
         efi_backend.emulate_efi(efi_selector, op_a, op_b, dest, working_memory);
     }
-
 
     uint32_t emulator_backend::float_to_uint32(float f) {
         return gp_executor::float_to_uint32(f);
