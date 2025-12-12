@@ -69,6 +69,12 @@ TEST(Emulator_runner, run_simple_emulator) {
 
     std::istringstream stream(R"(
         add r2, r1, r3
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )");
 
@@ -111,6 +117,12 @@ TEST(Emulator_runner, run_simple_emulator_inputs) {
 
     std::istringstream stream(R"(
         add r2, r1, r3
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )");
 
@@ -152,9 +164,28 @@ TEST(Emulator_runner, breakpoint) {
 
     std::istringstream stream(R"(
         ldc r1, 1.000000
+        nop
         add r63, r1, r63
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         add r63, r1, r63
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         add r63, r1, r63
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )");
 
@@ -173,7 +204,7 @@ TEST(Emulator_runner, breakpoint) {
     auto bus_engine = std::make_shared<bus_allocator>();
     emulator_runner uut(bundle, bus_engine);
 
-    uint32_t line = 2;
+    uint32_t line = 10;
 
     uut.add_breakpoint(line);
 
@@ -191,9 +222,28 @@ TEST(Emulator_runner, continue_emulation) {
 
     std::istringstream stream(R"(
         ldc r1, 1.000000
+        nop
         add r63, r1, r63
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         add r63, r1, r63
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         add r63, r1, r63
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )");
 
@@ -215,7 +265,7 @@ TEST(Emulator_runner, continue_emulation) {
     auto bus_engine = std::make_shared<bus_allocator>();
     emulator_runner uut(bundle, bus_engine);
 
-    uint32_t line = 2;
+    uint32_t line = 10;
 
     uut.add_breakpoint(line);
 
@@ -264,9 +314,28 @@ TEST(Emulator_runner, single_stepping) {
 
     std::istringstream stream(R"(
         ldc r1, 1.000000
+        nop
         add r63, r1, r63
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         add r63, r1, r63
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         add r63, r1, r63
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )");
 
@@ -287,7 +356,7 @@ TEST(Emulator_runner, single_stepping) {
     auto bus_engine = std::make_shared<bus_allocator>();
     emulator_runner uut(bundle, bus_engine);
 
-    uint32_t line = 2;
+    uint32_t line = 14;
 
     uut.add_breakpoint(line);
 
@@ -299,11 +368,13 @@ TEST(Emulator_runner, single_stepping) {
         EXPECT_EQ(ex.data.memory_view[63], 0x3f800000);
     }
 
+    uut.step_over(0);
+    uut.step_over(0);
     auto checkpoint = uut.step_over(0);
 
     EXPECT_EQ(checkpoint.status, "in_progress");
     EXPECT_EQ(checkpoint.core_name, "test_prog");
-    EXPECT_EQ(checkpoint.breakpoint, 3);
+    EXPECT_EQ(checkpoint.breakpoint, 17);
     EXPECT_EQ(checkpoint.completed_round, false);
     EXPECT_TRUE(checkpoint.inputs.empty());
     std::vector<uint32_t> expected_mem(64, 0);
@@ -311,20 +382,45 @@ TEST(Emulator_runner, single_stepping) {
     expected_mem[63] = 0x40000000;
     EXPECT_EQ(checkpoint.memory_view, expected_mem);
 
+    uut.step_over(0);
+    uut.step_over(0);
+    uut.step_over(0);
+    uut.step_over(0);
+
+
 
     auto result = uut.dma_read(20, 0);
     EXPECT_EQ(result, 0x40000000);
 }
 
 
-TEST(Emulator_runner, single_step_conclusion) {
+TEST(Emulator_runner, single_step_conclusionp) {
 
     std::istringstream stream(R"(
         ldc r63, 52.5000
         ldc r1, 2.000000
+        nop
         add r63, r1, r63
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         mul r63, r1, r63
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         sub r63, r1, r63
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )");
 
@@ -345,7 +441,7 @@ TEST(Emulator_runner, single_step_conclusion) {
     auto bus_engine = std::make_shared<bus_allocator>();
     emulator_runner uut(bundle, bus_engine);
 
-    uint32_t line = 5;
+    uint32_t line = 24;
 
     uut.add_breakpoint(line);
 

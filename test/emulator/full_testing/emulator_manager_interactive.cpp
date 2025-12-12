@@ -83,7 +83,14 @@ TEST(emulator_manager_interactive, uninterrupted_run) {
     std::string program = R"(
         ldc r42, 12.5000
         ldc r3, 3.2000
+        nop
         add r3, r42, r12
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
     uint32_t n_steps = 1;
@@ -107,7 +114,14 @@ TEST(emulator_manager_interactive, breakpoint) {
     std::string program = R"(
         ldc r42, 12.5000
         ldc r3, 3.2000
+        nop
         add r3, r42, r12
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
     uint32_t n_steps = 1;
@@ -117,7 +131,7 @@ TEST(emulator_manager_interactive, breakpoint) {
     emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
-    manager.add_breakpoint("test_0", 2);
+    manager.add_breakpoint("test_0", 3);
     auto breakpoint = manager.emulate();
     EXPECT_TRUE(breakpoint.has_value());
 
@@ -128,7 +142,7 @@ TEST(emulator_manager_interactive, breakpoint) {
     expected.status = "in_progress";
     expected.core_name = "test_0";
     expected.next_program = "test_0";
-    expected.breakpoint = 2;
+    expected.breakpoint = 3;
     expected.completed_round = false;
     expected.memory_view.resize(64, 0);
     expected.memory_view[3] = 0x404ccccd;
@@ -149,7 +163,14 @@ TEST(emulator_manager_interactive, continue_emulation) {
     std::string program = R"(
         ldc r42, 12.5000
         ldc r3, 3.2000
+        nop
         add r3, r42, r12
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
     uint32_t n_steps = 1;
@@ -159,10 +180,10 @@ TEST(emulator_manager_interactive, continue_emulation) {
     emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
-    manager.add_breakpoint("test_0", 2);
+    manager.add_breakpoint("test_0", 3);
     auto bp_1 = manager.emulate();
     EXPECT_TRUE(bp_1.has_value());
-    EXPECT_EQ(bp_1.value().breakpoint, 2);
+    EXPECT_EQ(bp_1.value().breakpoint, 3);
     auto breakpoint = manager.continue_emulation();
     EXPECT_TRUE(breakpoint.has_value());
     auto result = breakpoint.value();
@@ -191,7 +212,14 @@ TEST(emulator_manager_interactive, step_over) {
     std::string program = R"(
         ldc r42, 12.5000
         ldc r3, 3.2000
+        nop
         add r3, r42, r12
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
     uint32_t n_steps = 1;
@@ -201,21 +229,21 @@ TEST(emulator_manager_interactive, step_over) {
     emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
-    manager.add_breakpoint("test_0", 2);
+    manager.add_breakpoint("test_0", 3);
     auto bp_1 = manager.emulate();
     EXPECT_TRUE(bp_1.has_value());
-    EXPECT_EQ(bp_1.value().breakpoint, 2);
+    EXPECT_EQ(bp_1.value().breakpoint, 3);
     auto breakpoint = manager.step_over();
 
     debug_checkpoint expected;
     expected.status = "in_progress";
     expected.core_name = "test_0";
     expected.next_program = "test_0";
-    expected.breakpoint = 3;
+    expected.breakpoint = 4;
     expected.completed_round = false;
     expected.memory_view.resize(64, 0);
     expected.memory_view[3] = 0x404ccccd;
-    expected.memory_view[12] = 0x417b3333;
+    expected.memory_view[12] = 0;
     expected.memory_view[42] = 0x41480000;
     expected.progress.channel =0;
     expected.progress.total_steps = 1;
@@ -233,7 +261,14 @@ TEST(emulator_manager_interactive, step_over_round_end) {
     std::string program = R"(
         ldc r42, 12.5000
         ldc r3, 3.2000
+        nop
         add r3, r42, r12
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
     uint32_t n_steps = 2;
@@ -243,10 +278,10 @@ TEST(emulator_manager_interactive, step_over_round_end) {
     emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
-    manager.add_breakpoint("test_0", 3);
+    manager.add_breakpoint("test_0", 10);
     auto bp_1 = manager.emulate();
     EXPECT_TRUE(bp_1.has_value());
-    EXPECT_EQ(bp_1.value().breakpoint, 3);
+    EXPECT_EQ(bp_1.value().breakpoint, 10);
     auto breakpoint = manager.step_over();
 
     debug_checkpoint expected;
@@ -274,14 +309,28 @@ TEST(emulator_manager_interactive, two_programs_continue) {
     std::string program_a = R"(
         ldc r42, 12.5000
         ldc r3, 3.2000
+        nop
         add r3, r42, r12
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
 
     std::string program_b = R"(
         ldc r45, 1.5000
         ldc r4, 332.2000
+        nop
         sub r45, r4, r14
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
     uint32_t n_steps = 1;
@@ -332,14 +381,28 @@ TEST(emulator_manager_interactive, second_program_breakpoint) {
     std::string program_a = R"(
         ldc r42, 12.5000
         ldc r3, 3.2000
+        nop
         add r3, r42, r12
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
 
     std::string program_b = R"(
         ldc r43, 1.5000
         ldc r4, 332.2000
+        nop
         sub r43, r4, r13
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
     uint32_t n_steps = 1;
@@ -350,12 +413,12 @@ TEST(emulator_manager_interactive, second_program_breakpoint) {
     emulator_dispatcher manager;
     manager.set_specs(spec);
     manager.process();
-    manager.add_breakpoint("test_1", 3);
+    manager.add_breakpoint("test_1", 10);
     auto bp_1 = manager.emulate();
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().core_name, "test_1");
-    EXPECT_EQ(bp_1.value().breakpoint, 3);
-    manager.remove_breakpoint("test_1", 3);
+    EXPECT_EQ(bp_1.value().breakpoint, 10);
+    manager.remove_breakpoint("test_1", 10);
     auto breakpoint = manager.continue_emulation();
 
     debug_checkpoint expected;
@@ -389,14 +452,28 @@ TEST(emulator_manager_interactive, two_programs_step_over) {
     std::string program_a = R"(
         ldc r42, 12.5000
         ldc r3, 3.2000
+        nop
         add r3, r42, r12
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
 
     std::string program_b = R"(
         ldc r43, 1.5000
         ldc r4, 332.2000
+        nop
         sub r43, r4, r13
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
     uint32_t n_steps = 1;
@@ -449,12 +526,20 @@ TEST(emulator_manager_interactive, first_core_correct_restart) {
 
     std::string program_a = R"(
         ldc r42, 12.5000
+        nop
         add r12, r42, r12
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
 
     std::string program_b = R"(
         ldc r43, 1.5000
+        nop
         stop
     )";
     uint32_t n_steps = 2;
@@ -488,7 +573,14 @@ TEST(emulator_manager_interactive, continue_emulation_multichannel) {
 
     std::string program = R"(
         ldc r42, 12.5000
+        nop
         add r12, r42, r12
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
     uint32_t n_steps = 2;
@@ -519,7 +611,14 @@ TEST(emulator_manager_interactive, multichannel_cross_channel_stepover) {
 
     std::string program = R"(
         ldc r42, 12.5000
+        nop
         add r12, r42, r12
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
     uint32_t n_steps = 2;
@@ -551,7 +650,14 @@ TEST(emulator_manager_interactive, multichannel_stepover_restart) {
 
     std::string program = R"(
         ldc r42, 12.5000
+        nop
         add r12, r42, r12
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
     uint32_t n_steps = 2;
@@ -585,7 +691,14 @@ TEST(emulator_manager_interactive, multichannel_breakpoint) {
 
     std::string program = R"(
         ldc r42, 12.5000
+        nop
         add r12, r42, r12
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
     uint32_t n_steps = 2;
@@ -627,7 +740,14 @@ TEST(emulator_manager_interactive, disable_multichannel_debug) {
 
     std::string program = R"(
         ldc r42, 12.5000
+        nop
         add r12, r42, r12
+        nop
+        nop
+        nop
+        nop
+        nop
+        nop
         stop
     )";
     uint32_t n_steps = 2;
