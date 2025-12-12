@@ -20,37 +20,37 @@ namespace fcore{
     high_level_ast_lowering::high_level_ast_lowering() {
 
         expr_instruction_mapping = {
-                {ast_expression::ADD, "add"},
-                {ast_expression::SUB, "sub"},
-                {ast_expression::MULT, "mul"},
-                {ast_expression::PRE_INCR, "add"},
-                {ast_expression::POST_INCR, "add"},
-                {ast_expression::PRE_DECR, "sub"},
-                {ast_expression::POST_DECR, "sub"},
-                {ast_expression::AND_B, "and"},
-                {ast_expression::OR_B, "or"},
-                {ast_expression::NOT_B, "not"},
-                {ast_expression::XOR_B, "xor"},
-                {ast_expression::EQ, "beq"},
-                {ast_expression::NEQ, "bne"},
-                {ast_expression::NEG, "neg"},
-                {ast_expression::LT, "bgt"},
-                {ast_expression::GT, "bgt"},
-                {ast_expression::LTE, "ble"},
-                {ast_expression::GTE, "ble"},
-                {ast_expression::RECIPROCAL, "rec"},
-                {ast_expression::ITF, "itf"},
-                {ast_expression::FTI, "fti"},
-                {ast_expression::SATP, "satp"},
-                {ast_expression::SATN, "satn"},
-                {ast_expression::POPCNT, "popcnt"},
-                {ast_expression::ABS, "abs"},
-                {ast_expression::EFI, "efi"},
-                {ast_expression::BSEL, "bsel"},
-                {ast_expression::BSET, "bset"},
-                {ast_expression::NOP, "nop"},
-                {ast_expression::XOR_B, "xor"},
-                {ast_expression::CSEL, "csel"}
+                {ast_expression::ADD, opcode_add},
+                {ast_expression::SUB, opcode_sub},
+                {ast_expression::MULT, opcode_mul},
+                {ast_expression::PRE_INCR, opcode_add},
+                {ast_expression::POST_INCR, opcode_add},
+                {ast_expression::PRE_DECR, opcode_sub},
+                {ast_expression::POST_DECR, opcode_sub},
+                {ast_expression::AND_B, opcode_and},
+                {ast_expression::OR_B, opcode_or},
+                {ast_expression::NOT_B, opcode_not},
+                {ast_expression::XOR_B, opcode_xor},
+                {ast_expression::EQ, opcode_beq},
+                {ast_expression::NEQ, opcode_bne},
+                {ast_expression::NEG, opcode_neg},
+                {ast_expression::LT, opcode_bgt},
+                {ast_expression::GT, opcode_bgt},
+                {ast_expression::LTE, opcode_ble},
+                {ast_expression::GTE, opcode_ble},
+                {ast_expression::RECIPROCAL, opcode_rec},
+                {ast_expression::ITF, opcode_itf},
+                {ast_expression::FTI, opcode_fti},
+                {ast_expression::SATP, opcode_satp},
+                {ast_expression::SATN, opcode_satn},
+                {ast_expression::POPCNT, opcode_popcnt},
+                {ast_expression::ABS, opcode_abs},
+                {ast_expression::EFI, opcode_efi},
+                {ast_expression::BSEL, opcode_bsel},
+                {ast_expression::BSET, opcode_bset},
+                {ast_expression::NOP, opcode_nop},
+                {ast_expression::XOR_B, opcode_xor},
+                {ast_expression::CSEL, opcode_csel}
         };
     }
 
@@ -151,7 +151,7 @@ namespace fcore{
 
 
         ast_expression::expression_type op_type = input->get_type();
-        std::string opcode = expr_instruction_mapping[op_type];
+        opcode_table_t opcode = expr_instruction_mapping[op_type];
         if(!fcore_implemented_operations[op_type]){
             throw std::runtime_error("The required operation is not implementable on the fCore hardware");
         }
@@ -166,7 +166,7 @@ namespace fcore{
 
 
         ast_expression::expression_type op_type = input->get_type();
-        std::string opcode = expr_instruction_mapping[op_type];
+        opcode_table_t opcode = expr_instruction_mapping[op_type];
         if(!fcore_implemented_operations[op_type]) {
             throw std::runtime_error("The required operation is not implementable on the fCore hardware");
         }
@@ -182,7 +182,7 @@ namespace fcore{
                                                                std::shared_ptr<variable> dest) {
 
         ast_expression::expression_type op_type = input->get_type();
-        std::string opcode = expr_instruction_mapping[op_type];
+        opcode_table_t opcode = expr_instruction_mapping[op_type];
         if(!fcore_implemented_operations[op_type]) {
             throw std::runtime_error("The required operation is not implementable on the fCore hardware");
         }
@@ -207,7 +207,7 @@ namespace fcore{
             var = input->get_variable();
             std::shared_ptr<variable> op_b = std::make_shared<variable>("r0");
             std::vector<std::shared_ptr<variable>> args = {var, op_b, dest};
-            return create_ast_node(isa_register_instruction, args, "or");
+            return create_ast_node(isa_register_instruction, args, opcode_or);
         }
         std::vector<std::shared_ptr<variable>> args = {std::move(dest), var};
         if(args[0]->get_variable_class().iom_spec == variable_regular_type){
@@ -215,12 +215,12 @@ namespace fcore{
                 args[0]->set_bound_reg(0);
             }
         }
-        return create_ast_node(isa_load_constant_instruction, args, "ldc");
+        return create_ast_node(isa_load_constant_instruction, args, opcode_ldc);
 
     }
 
     std::optional<instruction_variant>
-    high_level_ast_lowering::create_ast_node(isa_instruction_type t, std::vector<std::shared_ptr<variable>> args, const std::string& op) {
+    high_level_ast_lowering::create_ast_node(isa_instruction_type t, std::vector<std::shared_ptr<variable>> args, const opcode_table_t& op) {
 
 
         switch (t) {
@@ -246,7 +246,7 @@ namespace fcore{
     high_level_ast_lowering::process_immediate_expression(std::shared_ptr<ast_expression> input) {
 
         ast_expression::expression_type op_type = input->get_type();
-        std::string opcode = expr_instruction_mapping[op_type];
+        opcode_table_t opcode = expr_instruction_mapping[op_type];
         if(!fcore_implemented_operations[op_type]){
             throw std::runtime_error("The required operation is not implementable on the fCore hardware");
         }

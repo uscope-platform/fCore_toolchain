@@ -46,7 +46,7 @@ namespace fcore {
         std::vector<instruction_variant> res;
         while(operations_tracker[reg] > 0){
             // INSERT NOP
-            res.emplace_back(independent_instruction("nop"));
+            res.emplace_back(independent_instruction(opcode_nop));
             advance_tracker(-1);
         }
         instructions.insert(instructions.end(), res.begin(), res.end());
@@ -64,7 +64,7 @@ namespace fcore {
         auto op_a  = node.get_operand_a()->get_bound_reg();
         auto op_b  = node.get_operand_b()->get_bound_reg();
 
-        if( (dest == -1 && node.get_opcode() != "bset" )|| op_a == -1 || (op_b == -1 && node.get_opcode() != "efi")) {
+        if( (dest == -1 && node.get_opcode() != opcode_bset )|| op_a == -1 || (op_b == -1 && node.get_opcode() != opcode_efi)) {
             throw std::runtime_error("Encountered unbound register while inserting pipeline delay slots");
         }
         get_stalls(op_a, result);
@@ -77,7 +77,7 @@ namespace fcore {
 
     std::vector<instruction_variant> stall_insertion::process(const load_constant_instruction &node) {
         auto dest = node.get_destination()->get_bound_reg();
-        operations_tracker[dest] = fcore_execution_latencies["ldc"];
+        operations_tracker[dest] = fcore_execution_latencies[opcode_ldc];
         advance_tracker(dest);
         return {instruction_variant(node)};
     }

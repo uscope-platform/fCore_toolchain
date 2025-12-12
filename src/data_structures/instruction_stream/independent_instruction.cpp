@@ -18,7 +18,7 @@
 
 namespace fcore{
 
-    independent_instruction::independent_instruction(std::string op) {
+    independent_instruction::independent_instruction(opcode_table_t op) {
         opcode = std::move(op);
     }
 
@@ -35,7 +35,7 @@ namespace fcore{
     }
 
     std::string independent_instruction::to_string() const {
-        return "OPCODE: " + opcode;
+        return "OPCODE: " + fcore_string_map[opcode];
     }
 
     int  independent_instruction::instruction_count() const{
@@ -43,7 +43,7 @@ namespace fcore{
     }
 
     std::string independent_instruction::disassemble() const {
-        return opcode;
+        return fcore_string_map[opcode];
     }
 
 }

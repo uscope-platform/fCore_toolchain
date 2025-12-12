@@ -15,9 +15,11 @@
 
 #include "data_structures/instruction_stream/pseudo_instruction.hpp"
 
+#include "fCore_isa.hpp"
+
 
 namespace fcore{
-    pseudo_instruction::pseudo_instruction(std::string op, std::vector<std::shared_ptr<variable>> args){
+    pseudo_instruction::pseudo_instruction(opcode_table_t op, std::vector<std::shared_ptr<variable>> args){
             opcode = std::move(op);
             arguments = std::move(args);
     }

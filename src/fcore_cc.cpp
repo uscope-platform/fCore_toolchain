@@ -145,7 +145,7 @@ namespace fcore{
 
 
         if(program_stream.empty()){
-            program_stream.push_back(instruction_variant(independent_instruction("stop")));
+            program_stream.push_back(instruction_variant(independent_instruction(opcode_stop)));
         }
         insert_stop(program_stream);
         flush_pipeline(program_stream);
@@ -227,11 +227,11 @@ namespace fcore{
     void fcore_cc::insert_stop(instruction_stream &program_stream) {
         if(std::holds_alternative<independent_instruction>(program_stream.last().get_content())){
             auto instr = std::get<independent_instruction>(program_stream.last().get_content());
-            if(instr.get_opcode() != "stop"){
-                program_stream.push_back(instruction_variant(independent_instruction("stop")));
+            if(instr.get_opcode() != opcode_stop){
+                program_stream.push_back(instruction_variant(independent_instruction(opcode_stop)));
             }
         } else {
-            program_stream.push_back(instruction_variant(independent_instruction("stop")));
+            program_stream.push_back(instruction_variant(independent_instruction(opcode_stop)));
         }
 
     }
@@ -242,7 +242,7 @@ namespace fcore{
         for(int i =program_stream.size()-2;i>0; i--){
             if (std::holds_alternative<independent_instruction>(program_stream[i].get_content())) {
                 auto instr = std::get<independent_instruction>(program_stream.last().get_content()).get_opcode();
-                if(instr != "nop"){
+                if(instr != opcode_nop){
                     last_instruction_idx = i;
                     break;
                 }

@@ -17,7 +17,7 @@
 
 namespace fcore{
 
-    ternary_instruction::ternary_instruction(std::string op, std::shared_ptr<variable> op_a,
+    ternary_instruction::ternary_instruction(opcode_table_t op, std::shared_ptr<variable> op_a,
                                                     std::shared_ptr<variable> op_b, std::shared_ptr<variable> op_c,
                                                     std::shared_ptr<variable> dest){
         operand_a = std::move(op_a);
@@ -63,7 +63,7 @@ namespace fcore{
     }
 
     std::string ternary_instruction::disassemble() const{
-        return opcode + " " + operand_a->get_name() + ", " + operand_b->get_name() +
+        return fcore_string_map[opcode] + " " + operand_a->get_name() + ", " + operand_b->get_name() +
                ", " + operand_c->get_name()  + ", " + destination->get_name();
     }
 
@@ -76,7 +76,7 @@ namespace fcore{
     }
 
     std::string ternary_instruction::to_string() const {
-        return "OPCODE: " + opcode +  " OPERAND A: " + operand_a->to_str() + " OPERAND B: " + operand_b->to_str() +
+        return "OPCODE: " + fcore_string_map[opcode] +  " OPERAND A: " + operand_a->to_str() + " OPERAND B: " + operand_b->to_str() +
         " OPERAND C: " + operand_c->to_str() + " DESTINATION: " + destination->to_str();
     }
 

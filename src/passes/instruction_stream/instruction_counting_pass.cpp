@@ -27,7 +27,7 @@ namespace fcore{
 
         if(std::holds_alternative<register_instruction>(var)) {
             auto instr = std::get<register_instruction>(var);
-            if (instr.get_opcode() == "efi") {
+            if (instr.get_opcode() == opcode_efi) {
                 count->efi++;
             } else {
                 count->regular++;
@@ -36,7 +36,7 @@ namespace fcore{
             count->load++;
         } else if(std::holds_alternative<independent_instruction>(var)){
             auto instr = std::get<independent_instruction>(var);
-            if (instr.get_opcode() == "stop") {
+            if (instr.get_opcode() == opcode_stop) {
                 count->stop++;
             } else {
                 count->regular++;

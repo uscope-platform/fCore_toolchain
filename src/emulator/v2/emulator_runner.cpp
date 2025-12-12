@@ -76,7 +76,7 @@ namespace fcore::emulator_v2 {
             if(section == code_section_index){
                 program.push_back(instr);
             }
-            if(instr == fcore_opcodes["stop"]){
+            if(instr == fcore_opcodes[opcode_stop]){
                 section++;
             }
         }

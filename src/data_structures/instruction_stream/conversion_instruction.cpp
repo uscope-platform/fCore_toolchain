@@ -16,7 +16,7 @@
 #include "data_structures/instruction_stream/conversion_instruction.hpp"
 
 namespace fcore{
-    conversion_instruction::conversion_instruction(std::string op, std::shared_ptr<variable> s, std::shared_ptr<variable> d) {
+    conversion_instruction::conversion_instruction(opcode_table_t op, std::shared_ptr<variable> s, std::shared_ptr<variable> d) {
         source = std::move(s);
         destination = std::move(d);
         opcode = std::move(op);
@@ -43,7 +43,7 @@ namespace fcore{
     }
 
     std::string conversion_instruction::to_string() const {
-        return "OPCODE: " + opcode + " SOURCE: " + source->to_str() + " DESTINATION: " + destination->to_str();
+        return "OPCODE: " + fcore_string_map[opcode] + " SOURCE: " + source->to_str() + " DESTINATION: " + destination->to_str();
     }
 
     int conversion_instruction::instruction_count() const{
@@ -56,7 +56,7 @@ namespace fcore{
     }
 
     std::string conversion_instruction::disassemble() const {
-        return opcode + " " + source->get_name() + ", " + destination->get_name();
+        return fcore_string_map[opcode] + " " + source->get_name() + ", " + destination->get_name();
     }
 
 }

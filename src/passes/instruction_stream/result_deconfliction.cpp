@@ -29,7 +29,7 @@ namespace fcore {
 
         auto var = element.get_content();
         if (n_pass == 0){
-            std::string opcode;
+            opcode_table_t opcode;
             if(std::holds_alternative<register_instruction>(var)) {
                 opcode = std::get<register_instruction>(var).get_opcode();
             } else if(std::holds_alternative<conversion_instruction>(var)){
@@ -49,7 +49,7 @@ namespace fcore {
             allocated_writeback_slots[writeback_index] = true;
         } else {
             if (delay_slot_addresses.contains(n_instruction)){
-                result.emplace_back(independent_instruction("nop"));
+                result.emplace_back(independent_instruction(opcode_nop));
                 result.emplace_back(element);
             } else {
                 result.emplace_back(element);

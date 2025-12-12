@@ -18,7 +18,7 @@
 
 namespace fcore {
 
-    load_constant_instruction::load_constant_instruction(std::string op, std::shared_ptr<variable> dest, std::shared_ptr<variable> c){
+    load_constant_instruction::load_constant_instruction(opcode_table_t op, std::shared_ptr<variable> dest, std::shared_ptr<variable> c){
         destination = std::move(dest);
         constant = std::move(c);
         opcode = std::move(op);
@@ -38,7 +38,7 @@ namespace fcore {
     }
 
     std::string load_constant_instruction::to_string() const {
-        return "OPCODE: " + opcode + " DESTINATION: " + destination->to_str() + " CONSTANT(NEXT INSTRUCTION): " + constant->to_str();
+        return "OPCODE: " + fcore_string_map[opcode] + " DESTINATION: " + destination->to_str() + " CONSTANT(NEXT INSTRUCTION): " + constant->to_str();
     }
 
     int load_constant_instruction::instruction_count() const {
@@ -60,7 +60,7 @@ namespace fcore {
     }
 
     std::string load_constant_instruction::disassemble() const{
-        return opcode + " " + destination->get_name() + ", ";
+        return fcore_string_map[opcode] + " " + destination->get_name() + ", ";
     }
 
     bool load_constant_instruction::is_float() {

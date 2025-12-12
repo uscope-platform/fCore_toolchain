@@ -29,7 +29,7 @@ namespace fcore{
 
     class load_constant_instruction {
     public:
-        load_constant_instruction(std::string op, std::shared_ptr<variable> dest, std::shared_ptr<variable> c);
+        load_constant_instruction(opcode_table_t op, std::shared_ptr<variable> dest, std::shared_ptr<variable> c);
         uint32_t emit() const;
         void print() const;
         load_constant_instruction(const load_constant_instruction& other) = default;
@@ -58,12 +58,12 @@ namespace fcore{
             return retval;
         };
 
-        std::string get_opcode(){return opcode;};
+        opcode_table_t get_opcode(){return opcode;};
 
     private:
         std::shared_ptr<variable> destination;
         std::shared_ptr<variable> constant;
-        std::string opcode;
+        opcode_table_t opcode;
     };
 }
 

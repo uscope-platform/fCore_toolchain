@@ -57,7 +57,7 @@ namespace fcore {
                 condition_progressives[t_name]++;
                 auto new_cond = std::make_shared<variable>(condition_name);
                 register_instruction move(
-                    fcore_opcodes_reverse[opcode_or],
+                    opcode_or,
                     t.get_operand_a(),
                     std::make_shared<variable>("r0"),
                     new_cond

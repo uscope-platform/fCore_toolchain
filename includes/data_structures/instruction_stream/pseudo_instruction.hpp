@@ -19,13 +19,14 @@
 #include <utility>
 #include <iostream>
 
+#include "fCore_isa.hpp"
 #include "data_structures/common/variable.hpp"
 
 namespace fcore{
 
     class pseudo_instruction {
     public:
-        pseudo_instruction(std::string op, std::vector<std::shared_ptr<variable>> args);
+        pseudo_instruction(opcode_table_t op, std::vector<std::shared_ptr<variable>> args);
 
         std::vector<std::shared_ptr<variable>> get_arguments() const {return arguments;};
         void set_arguments(std::vector<std::shared_ptr<variable>> a) {arguments = std::move(a);};
@@ -59,10 +60,10 @@ namespace fcore{
         pseudo_instruction& operator=(const pseudo_instruction& other) = default;
         pseudo_instruction& operator=(pseudo_instruction&& other) noexcept = default;;
 
-        std::string get_opcode(){return opcode;};
+        opcode_table_t get_opcode(){return opcode;};
     private:
         std::vector<std::shared_ptr<variable>> arguments;
-        std::string opcode;
+        opcode_table_t opcode;
     };
 }
 

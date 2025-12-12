@@ -44,7 +44,7 @@ namespace fcore::emulator_v2{
                 throw BreakpointException(produce_checkpoint(false));
             }
 
-            spdlog::trace("Running instruction {0}: opcode = {1}", current_instruction, fcore_opcodes_reverse[opcode]);
+            spdlog::trace("Running instruction {0}: opcode = {1}", current_instruction, fcore_string_map[opcode]);
 
 
             run_instruction_by_type(opcode, operands, io_flags);
@@ -290,7 +290,7 @@ namespace fcore::emulator_v2{
     }
 
     operation_result emulator_backend::run_load_constant_instruction(uint32_t dest, uint32_t val) {
-        return {val, dest, fcore_execution_latencies["ldc"]};
+        return {val, dest, fcore_execution_latencies[opcode_ldc]};
     }
 
 

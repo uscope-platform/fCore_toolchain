@@ -25,7 +25,7 @@
 namespace fcore{
     class ternary_instruction {
     public:
-        ternary_instruction(std::string op, std::shared_ptr<variable> op_a, std::shared_ptr<variable> op_b, std::shared_ptr<variable> op_c, std::shared_ptr<variable> dest);
+        ternary_instruction(opcode_table_t op, std::shared_ptr<variable> op_a, std::shared_ptr<variable> op_b, std::shared_ptr<variable> op_c, std::shared_ptr<variable> dest);
         uint32_t emit() const;
         std::string disassemble() const;
         ternary_instruction(const ternary_instruction& other) = default;
@@ -57,7 +57,7 @@ namespace fcore{
         std::vector<std::shared_ptr<variable>> get_arguments() const {return {operand_a, operand_b, operand_c, destination};};
         void set_arguments(const std::vector<std::shared_ptr<variable>> &a);
 
-         std::string get_opcode() const {return opcode;};
+         opcode_table_t get_opcode() const {return opcode;};
 
     private:
         std::shared_ptr<variable> operand_a;
@@ -65,7 +65,7 @@ namespace fcore{
         std::shared_ptr<variable> operand_c;
         std::shared_ptr<variable> destination;
 
-        std::string opcode;
+        opcode_table_t opcode;
     };
 
 }

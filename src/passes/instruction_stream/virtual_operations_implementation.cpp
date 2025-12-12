@@ -28,20 +28,20 @@ namespace fcore{
         auto var = element.get_content();
         if(std::holds_alternative<pseudo_instruction>(var)) {
             auto instr = std::get<pseudo_instruction>(var);
-            std::string opcode = instr.get_opcode();
+            opcode_table_t opcode = instr.get_opcode();
             auto arguments = instr.get_arguments();
-            if(opcode ==  "mov"){
+            if(opcode ==  opcode_mov){
                 arguments.push_back(arguments[1]);
                 variable zero("r0");
                 arguments[1] = std::make_shared<variable>(zero);
-            } else if(opcode == "neg"){
+            } else if(opcode == opcode_neg){
                 variable zero("r0");
                 arguments.insert(arguments.begin(), std::make_shared<variable>(zero));
                 arguments.push_back(arguments[1]);
 
             }
 
-            std::string new_opcode = fcore_pseudo_op[instr.get_opcode()];
+            opcode_table_t new_opcode = fcore_pseudo_op[instr.get_opcode()];
             switch (fcore_op_types[new_opcode]) {
                 case isa_register_instruction:
                     return instruction_variant(register_instruction(new_opcode, arguments[0], arguments[1], arguments[2]));

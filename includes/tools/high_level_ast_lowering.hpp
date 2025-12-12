@@ -40,8 +40,8 @@ namespace fcore {
         std::optional<instruction_variant> process_regular_expression(std::shared_ptr<ast_expression> input, std::shared_ptr<variable> dest);
         std::shared_ptr<ast_code_block> input_ast;
 
-        std::optional<instruction_variant> create_ast_node(isa_instruction_type t, std::vector<std::shared_ptr<variable>> args, const std::string& op);
-        std::map<ast_expression::expression_type, std::string> expr_instruction_mapping;
+        std::optional<instruction_variant> create_ast_node(isa_instruction_type t, std::vector<std::shared_ptr<variable>> args, const opcode_table_t& op);
+        std::map<ast_expression::expression_type, opcode_table_t> expr_instruction_mapping;
 
     };
 }

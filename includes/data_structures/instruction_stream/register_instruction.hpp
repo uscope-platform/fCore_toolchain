@@ -26,7 +26,7 @@ namespace fcore{
 
     class register_instruction {
     public:
-        register_instruction(std::string op, std::shared_ptr<variable> op_a, std::shared_ptr<variable> op_b, std::shared_ptr<variable> dest);
+        register_instruction(opcode_table_t op, std::shared_ptr<variable> op_a, std::shared_ptr<variable> op_b, std::shared_ptr<variable> dest);
         uint32_t emit() const;
         std::string disassemble() const;
         void print() const;
@@ -54,14 +54,14 @@ namespace fcore{
         std::vector<std::shared_ptr<variable>> get_arguments() const {return {operand_a, operand_b, destination};};
         void set_arguments(const std::vector<std::shared_ptr<variable>> &a);
 
-        std::string get_opcode()const {return opcode;};
+        opcode_table_t get_opcode()const {return opcode;};
 
     private:
         std::shared_ptr<variable> operand_a;
         std::shared_ptr<variable> operand_b;
         std::shared_ptr<variable> destination;
 
-        std::string opcode;
+        opcode_table_t opcode;
     };
 }
 

@@ -39,8 +39,8 @@ TEST(pipeline_hazards, reg_instruction_stall_a) {
     binary_generator writer;
 
     instruction_stream program_stream;
-    program_stream.push_back(instruction_variant(register_instruction("add", r3, r4, r5)));
-    program_stream.push_back(instruction_variant(register_instruction("add", r5, r4, r6)));
+    program_stream.push_back(instruction_variant(register_instruction(opcode_add, r3, r4, r5)));
+    program_stream.push_back(instruction_variant(register_instruction(opcode_add, r5, r4, r6)));
 
     auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
     std::shared_ptr<io_map> allocation_map;
@@ -74,8 +74,8 @@ TEST(pipeline_hazards, reg_instruction_stall_b) {
     binary_generator writer;
 
     instruction_stream program_stream;
-    program_stream.push_back(instruction_variant(register_instruction("add", r3, r4, r5)));
-    program_stream.push_back(instruction_variant(register_instruction("add", r4, r5, r6)));
+    program_stream.push_back(instruction_variant(register_instruction(opcode_add, r3, r4, r5)));
+    program_stream.push_back(instruction_variant(register_instruction(opcode_add, r4, r5, r6)));
 
     auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
     std::shared_ptr<io_map> allocation_map;
@@ -107,8 +107,8 @@ TEST(pipeline_hazards, conv_instruction_stall) {
     binary_generator writer;
 
     instruction_stream program_stream;
-    program_stream.push_back(instruction_variant(conversion_instruction("itf", r3,  r5)));
-    program_stream.push_back(instruction_variant(conversion_instruction("fti", r5, r6)));
+    program_stream.push_back(instruction_variant(conversion_instruction(opcode_itf, r3,  r5)));
+    program_stream.push_back(instruction_variant(conversion_instruction(opcode_fti, r5, r6)));
 
     auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
     std::shared_ptr<io_map> allocation_map;
@@ -145,10 +145,10 @@ TEST(pipeline_hazards, partial_stall_needed) {
     binary_generator writer;
 
     instruction_stream program_stream;
-    program_stream.push_back(instruction_variant(register_instruction("add", r3, r4, r5)));
-    program_stream.push_back(instruction_variant(register_instruction("add", r3, r4, r7)));
-    program_stream.push_back(instruction_variant(register_instruction("add", r3, r4, r7)));
-    program_stream.push_back(instruction_variant(register_instruction("add", r5, r4, r6)));
+    program_stream.push_back(instruction_variant(register_instruction(opcode_add, r3, r4, r5)));
+    program_stream.push_back(instruction_variant(register_instruction(opcode_add, r3, r4, r7)));
+    program_stream.push_back(instruction_variant(register_instruction(opcode_add, r3, r4, r7)));
+    program_stream.push_back(instruction_variant(register_instruction(opcode_add, r5, r4, r6)));
 
     auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
     std::shared_ptr<io_map> allocation_map;
@@ -182,8 +182,8 @@ TEST(pipeline_hazards, csel_source_stall) {
     binary_generator writer;
 
     instruction_stream program_stream;
-    program_stream.push_back(instruction_variant(ternary_instruction("csel", r6, r4, r5, r6)));
-    program_stream.push_back(instruction_variant(register_instruction("add", r4,r6, r4)));
+    program_stream.push_back(instruction_variant(ternary_instruction(opcode_csel, r6, r4, r5, r6)));
+    program_stream.push_back(instruction_variant(register_instruction(opcode_add, r4,r6, r4)));
 
     auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
     std::shared_ptr<io_map> allocation_map;
@@ -217,8 +217,8 @@ TEST(pipeline_hazards, csel_destination_stall) {
     binary_generator writer;
 
     instruction_stream program_stream;
-    program_stream.push_back(instruction_variant(register_instruction("add", r4,r6, r4)));
-    program_stream.push_back(instruction_variant(ternary_instruction("csel", r6, r4, r5, r6)));
+    program_stream.push_back(instruction_variant(register_instruction(opcode_add, r4,r6, r4)));
+    program_stream.push_back(instruction_variant(ternary_instruction(opcode_csel, r6, r4, r5, r6)));
 
 
     auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
@@ -251,9 +251,9 @@ TEST(pipeline_hazards, ldc_stall) {
     binary_generator writer;
 
     instruction_stream program_stream;
-    program_stream.push_back(instruction_variant(load_constant_instruction("ldc",r4, const_var)));
+    program_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc,r4, const_var)));
     program_stream.push_back(instruction_variant(intercalated_constant(4.5f)));
-    program_stream.push_back(instruction_variant(conversion_instruction("fti", r4, r3)));
+    program_stream.push_back(instruction_variant(conversion_instruction(opcode_fti, r4, r3)));
 
 
     auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
@@ -296,16 +296,16 @@ TEST(pipeline_hazards, result_collision_voidance) {
     binary_generator writer;
 
     instruction_stream program_stream;
-    program_stream.push_back(instruction_variant(load_constant_instruction("ldc",r3, const1)));
+    program_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc,r3, const1)));
     program_stream.push_back(instruction_variant(intercalated_constant(1.0f)));
-    program_stream.push_back(instruction_variant(load_constant_instruction("ldc",r2, const2)));
+    program_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc,r2, const2)));
     program_stream.push_back(instruction_variant(intercalated_constant(2.0f)));
-    program_stream.push_back(instruction_variant(load_constant_instruction("ldc",r5, const3)));
+    program_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc,r5, const3)));
     program_stream.push_back(instruction_variant(intercalated_constant(static_cast<uint32_t>(5))));
 
-    program_stream.push_back(instruction_variant(register_instruction("add", r3, r2,r6)));
-    program_stream.push_back(instruction_variant(independent_instruction("nop")));
-    program_stream.push_back(instruction_variant(conversion_instruction("itf", r5, r7)));
+    program_stream.push_back(instruction_variant(register_instruction(opcode_add, r3, r2,r6)));
+    program_stream.push_back(instruction_variant(independent_instruction(opcode_nop)));
+    program_stream.push_back(instruction_variant(conversion_instruction(opcode_itf, r5, r7)));
 
 
     auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();

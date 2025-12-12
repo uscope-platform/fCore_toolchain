@@ -27,7 +27,7 @@ namespace fcore::emulator_v2{
             auto opcode = get_opcode(raw_program[i]);
 
             inst.instruction = raw_program[i];
-            if(opcode == fcore_opcodes["ldc"]){
+            if(opcode == fcore_opcodes[opcode_ldc]){
                 inst.load_constant = raw_program[i+1];
                 i++;
             }

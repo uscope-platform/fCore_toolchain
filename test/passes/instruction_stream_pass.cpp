@@ -34,7 +34,7 @@ TEST(virtual_instructions, virtual_instruction_implementation) {
     binary_generator writer;
 
     instruction_stream program_stream;
-    program_stream.push_back(instruction_variant(pseudo_instruction("mov", args)));
+    program_stream.push_back(instruction_variant(pseudo_instruction(opcode_mov, args)));
 
     auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
     std::shared_ptr<io_map> allocation_map;
@@ -62,7 +62,7 @@ TEST(virtual_instructions, ternary_reduction) {
     binary_generator writer;
 
     instruction_stream program_stream;
-    program_stream.push_back(instruction_variant(pseudo_instruction("mov", args)));
+    program_stream.push_back(instruction_variant(pseudo_instruction(opcode_mov, args)));
 
     auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
     std::shared_ptr<io_map> allocation_map;

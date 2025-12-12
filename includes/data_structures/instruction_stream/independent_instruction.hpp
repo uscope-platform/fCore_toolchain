@@ -28,7 +28,7 @@
 namespace fcore{
     class independent_instruction {
     public:
-        explicit independent_instruction(std::string opcode);
+        explicit independent_instruction(opcode_table_t opcode);
         uint32_t emit() const;
 
         std::string disassemble() const;
@@ -47,11 +47,11 @@ namespace fcore{
             return rhs.opcode == lhs.opcode;
         };
 
-        std::string get_opcode(){return opcode;};
+        opcode_table_t get_opcode(){return opcode;};
 
     private:
 
-        std::string opcode;
+        opcode_table_t opcode;
     };
 }
 

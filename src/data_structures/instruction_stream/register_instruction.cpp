@@ -19,7 +19,7 @@
 
 namespace fcore{
 
-    register_instruction::register_instruction(std::string op, std::shared_ptr<variable> op_a, std::shared_ptr<variable> op_b,
+    register_instruction::register_instruction(opcode_table_t op, std::shared_ptr<variable> op_a, std::shared_ptr<variable> op_b,
                                                           std::shared_ptr<variable> dest) {
         operand_a = std::move(op_a);
         operand_b = std::move(op_b);
@@ -58,7 +58,7 @@ namespace fcore{
     }
 
     std::string register_instruction::to_string() const {
-        return "OPCODE: " + opcode + " OPERAND A: " + operand_a->to_str() + " OPERAND B: " + operand_b->to_str() +
+        return "OPCODE: " + fcore_string_map[opcode] + " OPERAND A: " + operand_a->to_str() + " OPERAND B: " + operand_b->to_str() +
                   " DESTINATION: " + destination->to_str();
     }
 
@@ -73,7 +73,7 @@ namespace fcore{
     }
 
     std::string register_instruction::disassemble()const {
-        return opcode + " " + operand_a->get_name() + ", " + operand_b->get_name() + ", " + destination->get_name();
+        return fcore_string_map[opcode] + " " + operand_a->get_name() + ", " + operand_b->get_name() + ", " + destination->get_name();
     }
 
 

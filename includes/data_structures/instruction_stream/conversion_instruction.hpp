@@ -34,7 +34,7 @@ namespace fcore{
         conversion_instruction(conversion_instruction&& other) noexcept = default;
         conversion_instruction& operator=(const conversion_instruction& other) = default;
         conversion_instruction& operator=(conversion_instruction&& other) noexcept = default;
-        conversion_instruction(std::string op, std::shared_ptr<variable> s, std::shared_ptr<variable> d);
+        conversion_instruction(opcode_table_t op, std::shared_ptr<variable> s, std::shared_ptr<variable> d);
         uint32_t emit() const;
         void print() const;
         std::string to_string() const;
@@ -56,11 +56,11 @@ namespace fcore{
             return retval;
         };
 
-        std::string get_opcode() const {return opcode;};
+        opcode_table_t get_opcode() const {return opcode;};
     private:
         std::shared_ptr<variable> source;
         std::shared_ptr<variable> destination;
-        std::string opcode;
+        opcode_table_t opcode;
     };
 }
 

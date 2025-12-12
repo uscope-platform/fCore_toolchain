@@ -50,17 +50,17 @@ namespace fcore{
         op_b->set_used(true);
         std::shared_ptr<variable> dest = std::make_shared<variable>(dest_str);
 
-        program.push_back(instruction_variant(register_instruction(opcode, op_a, op_b, dest)));
+        program.push_back(instruction_variant(register_instruction(fcore_opcode_string_reverse[opcode], op_a, op_b, dest)));
     }
 
     void AsmTree_visitor::exitConv_instr(asm_parser::asm_grammarParser::Conv_instrContext *ctx) {
-        std::string opcode = ctx->conv_opcode()->getText();
+        std::string opcode= ctx->conv_opcode()->getText();
 
         std::shared_ptr<variable> op_a = std::make_shared<variable>(ctx->operand(0)->getText());
         op_a->set_used(true);
         std::shared_ptr<variable> op_b = std::make_shared<variable>(ctx->operand(1)->getText());
 
-        program.push_back(instruction_variant(conversion_instruction(opcode, op_a, op_b)));
+        program.push_back(instruction_variant(conversion_instruction(fcore_opcode_string_reverse[opcode], op_a, op_b)));
     }
 
     void AsmTree_visitor::exitBranch_instr(asm_parser::asm_grammarParser::Branch_instrContext *ctx) {
@@ -72,7 +72,7 @@ namespace fcore{
         op_b->set_used(true);
         std::shared_ptr<variable> dest = std::make_shared<variable>(ctx->operand(2)->getText());
 
-        program.push_back(instruction_variant(register_instruction(opcode, op_a, op_b, dest)));
+        program.push_back(instruction_variant(register_instruction(fcore_opcode_string_reverse[opcode], op_a, op_b, dest)));
     }
 
     void AsmTree_visitor::exitPseudo_instr(asm_parser::asm_grammarParser::Pseudo_instrContext *ctx) {
@@ -109,7 +109,7 @@ namespace fcore{
             arguments.push_back(dest);
         }
 
-        program.push_back(instruction_variant(pseudo_instruction(opcode,arguments)));
+        program.push_back(instruction_variant(pseudo_instruction(fcore_opcode_string_reverse[opcode],arguments)));
 
     }
 
@@ -117,7 +117,7 @@ namespace fcore{
         std::string opcode = ctx->getText();
 
 
-        program.push_back(instruction_variant(independent_instruction(opcode)));
+        program.push_back(instruction_variant(independent_instruction(fcore_opcode_string_reverse[opcode])));
     }
 
     void AsmTree_visitor::exitLoad_instr(asm_parser::asm_grammarParser::Load_instrContext *ctx) {
@@ -134,12 +134,12 @@ namespace fcore{
         std::shared_ptr<intercalated_constant> constant_node;
         if(ctx->FloatingPointLiteral() != nullptr){
             immediate = std::make_shared<variable>("constant", std::stof(ctx->FloatingPointLiteral()->getText()));
-            program.push_back(instruction_variant(load_constant_instruction("ldc", dest, immediate)));
+            program.push_back(instruction_variant(load_constant_instruction(opcode_ldc, dest, immediate)));
             program.push_back(instruction_variant(intercalated_constant(immediate->get_float_val())));
         } else if(ctx->integer_const() != nullptr){
             uint32_t const_val =  std::stoul(ctx->integer_const()->getText(), nullptr, 0);
             immediate = std::make_shared<variable>("constant",*(int*)&const_val);
-            program.push_back(instruction_variant(load_constant_instruction("ldc", dest, immediate)));
+            program.push_back(instruction_variant(load_constant_instruction(opcode_ldc, dest, immediate)));
             program.push_back(instruction_variant(intercalated_constant(const_val)));
         }
 

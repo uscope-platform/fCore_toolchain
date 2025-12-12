@@ -29,7 +29,7 @@ TEST(InstructionClasses, register_instruction) {
     std::shared_ptr<variable> op_b = std::make_shared<variable>("r3");
     std::shared_ptr<variable> dest = std::make_shared<variable>("r4");
 
-    register_instruction instr("add", op_a, op_b, dest);
+    register_instruction instr(opcode_add, op_a, op_b, dest);
 
     ASSERT_EQ(instr.emit(), 0x81841);
 
@@ -47,7 +47,7 @@ TEST(InstructionClasses, register_instruction) {
 
 TEST(InstructionClasses, independent_instruction ) {
 
-    independent_instruction instr("stop");
+    independent_instruction instr(opcode_stop);
 
 
     ASSERT_EQ( instr.emit(), 0xc);
@@ -70,7 +70,7 @@ TEST(InstructionClasses, variant_instruction_emit) {
     std::shared_ptr<variable> op_b = std::make_shared<variable>("r3");
     std::shared_ptr<variable> dest = std::make_shared<variable>("r4");
 
-    register_instruction instr("add", op_a, op_b, dest);
+    register_instruction instr(opcode_add, op_a, op_b, dest);
 
     instruction_variant var(instr);
 
