@@ -89,6 +89,10 @@ int main(int argc, char **argv) {
         cc_engine.write_json(output_file);
     }
 
+    auto info = cc_engine.get_program_info();
+
+    spdlog::info("Fixed Portion: {} cycles", info.fixed_portion);
+    spdlog::info("Per channel portion: {} cycles", info.per_channel_portion);
     return 0;
 }
 
