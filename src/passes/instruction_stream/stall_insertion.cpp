@@ -16,9 +16,10 @@
 #include "passes/instruction_stream/stall_insertion.hpp"
 
 namespace fcore {
-    stall_insertion::stall_insertion()
+    stall_insertion::stall_insertion(int n_channels)
     : stream_pass_base("stall insertion", 1, true, high_level_pass),
     operations_tracker({}) {
+        active_channels = n_channels;
         is_vector = true;
     }
 
@@ -54,7 +55,13 @@ namespace fcore {
 
     void stall_insertion::advance_tracker(int exclusion){
         for (int i =0; i<operations_tracker.size(); i++){
-            if (operations_tracker[i]> 0 && i != exclusion) operations_tracker[i]--;
+            if (operations_tracker[i]> 0 && i != exclusion){
+                if (active_channels > operations_tracker[i]) {
+                    operations_tracker[i] = 0;
+                }else {
+                    operations_tracker[i] = operations_tracker[i]-active_channels;
+                }
+            }
         }
     }
 
@@ -75,14 +82,14 @@ namespace fcore {
         get_stalls(op_a, result);
         get_stalls(op_b, result);
         result.emplace_back(node);
-        operations_tracker[dest] = fcore_execution_latencies[node.get_opcode()];
+        operations_tracker[dest] =  get_latency(node.get_opcode());
         advance_tracker(dest);
         return result;
     }
 
     std::vector<instruction_variant> stall_insertion::process(const load_constant_instruction &node) {
         auto dest = node.get_destination()->get_bound_reg();
-        operations_tracker[dest] = fcore_execution_latencies[opcode_ldc];
+        operations_tracker[dest] =  get_latency(opcode_ldc);
         advance_tracker(dest);
         return {instruction_variant(node)};
     }
@@ -100,7 +107,7 @@ namespace fcore {
         get_stalls(op_b, result);
         get_stalls(op_c, result);
         result.emplace_back(node);
-        operations_tracker[dest] =  fcore_execution_latencies[node.get_opcode()];
+        operations_tracker[dest] =  get_latency(node.get_opcode());
         advance_tracker(dest);
         return result;
     }
@@ -114,7 +121,7 @@ namespace fcore {
         }
         get_stalls(src, result);
         result.emplace_back(node);
-        operations_tracker[dest] =  fcore_execution_latencies[node.get_opcode()];
+        operations_tracker[dest] =  get_latency(node.get_opcode());
         advance_tracker(dest);
         return result;
     }

@@ -48,12 +48,47 @@ TEST(pipeline_hazards, reg_instruction_stall_a) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>());
+    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
 
     writer.process_stream(program_stream, true);
 
     std::vector<uint32_t> result = writer.get_code();
     std::vector<uint32_t> gold_standard = {0xa2061, 0, 0, 0, 0, 0, 0, 0xc20a1};
+    ASSERT_EQ(result, gold_standard);
+}
+
+
+TEST(pipeline_hazards, reg_instruction_stall_a_2_ch) {
+
+
+    auto r3 = std::make_shared<variable>("r3");
+    r3->set_bound_reg(3);
+    auto r4 = std::make_shared<variable>("r4");
+    r4->set_bound_reg(4);
+    auto r5 = std::make_shared<variable>("r5");
+    r5->set_bound_reg(5);
+    auto r6 = std::make_shared<variable>("r6");
+    r6->set_bound_reg(6);
+
+
+    binary_generator writer;
+
+    instruction_stream program_stream;
+    program_stream.push_back(instruction_variant(register_instruction(opcode_add, r3, r4, r5)));
+    program_stream.push_back(instruction_variant(register_instruction(opcode_add, r5, r4, r6)));
+
+    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
+    std::shared_ptr<io_map> allocation_map;
+
+    auto ic =  std::make_shared<instrumentation_core>();
+
+    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
+    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(2));
+
+    writer.process_stream(program_stream, true);
+
+    std::vector<uint32_t> result = writer.get_code();
+    std::vector<uint32_t> gold_standard = {0xa2061, 0, 0, 0, 0xc20a1};
     ASSERT_EQ(result, gold_standard);
 }
 
@@ -83,7 +118,7 @@ TEST(pipeline_hazards, reg_instruction_stall_b) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>());
+    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
 
     writer.process_stream(program_stream, true);
 
@@ -116,7 +151,7 @@ TEST(pipeline_hazards, conv_instruction_stall) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>());
+    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
 
     writer.process_stream(program_stream, true);
 
@@ -156,7 +191,7 @@ TEST(pipeline_hazards, partial_stall_needed) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>());
+    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
 
     writer.process_stream(program_stream, true);
 
@@ -191,7 +226,7 @@ TEST(pipeline_hazards, csel_source_stall) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>());
+    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
 
     writer.process_stream(program_stream, true);
 
@@ -227,7 +262,7 @@ TEST(pipeline_hazards, csel_destination_stall) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>());
+    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
 
     writer.process_stream(program_stream, true);
 
@@ -262,7 +297,7 @@ TEST(pipeline_hazards, ldc_stall) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>());
+    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
 
     writer.process_stream(program_stream, true);
 
@@ -273,8 +308,40 @@ TEST(pipeline_hazards, ldc_stall) {
 
 
 
+TEST(pipeline_hazards, ldc_stall_3_ch) {
 
-TEST(pipeline_hazards, result_collision_voidance) {
+
+    auto r3 = std::make_shared<variable>("r3");
+    r3->set_bound_reg(3);
+    auto r4 = std::make_shared<variable>("r4");
+    r4->set_bound_reg(4);
+    auto const_var = std::make_shared<variable>("constant",4.5f);
+
+
+    binary_generator writer;
+
+    instruction_stream program_stream;
+    program_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc,r4, const_var)));
+    program_stream.push_back(instruction_variant(intercalated_constant(4.5f)));
+    program_stream.push_back(instruction_variant(conversion_instruction(opcode_fti, r4, r3)));
+
+
+    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
+    std::shared_ptr<io_map> allocation_map;
+
+    auto ic =  std::make_shared<instrumentation_core>();
+
+    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
+    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(3));
+
+    writer.process_stream(program_stream, true);
+
+    std::vector<uint32_t> result = writer.get_code();
+    std::vector<uint32_t> gold_standard = {0x86,0x40900000, 0x1885};
+    ASSERT_EQ(result, gold_standard);
+}
+
+TEST(pipeline_hazards, result_collision_avoidance) {
 
 
     auto r2 = std::make_shared<variable>("r2");
