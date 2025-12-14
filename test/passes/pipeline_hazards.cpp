@@ -42,12 +42,9 @@ TEST(pipeline_hazards, reg_instruction_stall_a) {
     program_stream.push_back(instruction_variant(register_instruction(opcode_add, r3, r4, r5)));
     program_stream.push_back(instruction_variant(register_instruction(opcode_add, r5, r4, r6)));
 
-    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
-    std::shared_ptr<io_map> allocation_map;
-
     auto ic =  std::make_shared<instrumentation_core>();
 
-    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
+    stream_pass_manager sman(ic, stream_pass_manager::asm_language, 1);
     program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
 
     writer.process_stream(program_stream, true);
@@ -77,12 +74,9 @@ TEST(pipeline_hazards, reg_instruction_stall_a_2_ch) {
     program_stream.push_back(instruction_variant(register_instruction(opcode_add, r3, r4, r5)));
     program_stream.push_back(instruction_variant(register_instruction(opcode_add, r5, r4, r6)));
 
-    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
-    std::shared_ptr<io_map> allocation_map;
-
     auto ic =  std::make_shared<instrumentation_core>();
 
-    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
+    stream_pass_manager sman(ic, stream_pass_manager::asm_language, 2);
     program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(2));
 
     writer.process_stream(program_stream, true);
@@ -112,12 +106,9 @@ TEST(pipeline_hazards, reg_instruction_stall_b) {
     program_stream.push_back(instruction_variant(register_instruction(opcode_add, r3, r4, r5)));
     program_stream.push_back(instruction_variant(register_instruction(opcode_add, r4, r5, r6)));
 
-    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
-    std::shared_ptr<io_map> allocation_map;
-
     auto ic =  std::make_shared<instrumentation_core>();
 
-    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
+    stream_pass_manager sman(ic, stream_pass_manager::asm_language, 1);
     program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
 
     writer.process_stream(program_stream, true);
@@ -145,12 +136,10 @@ TEST(pipeline_hazards, conv_instruction_stall) {
     program_stream.push_back(instruction_variant(conversion_instruction(opcode_itf, r3,  r5)));
     program_stream.push_back(instruction_variant(conversion_instruction(opcode_fti, r5, r6)));
 
-    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
-    std::shared_ptr<io_map> allocation_map;
 
     auto ic =  std::make_shared<instrumentation_core>();
 
-    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
+    stream_pass_manager sman(ic, stream_pass_manager::asm_language, 1);
     program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
 
     writer.process_stream(program_stream, true);
@@ -185,12 +174,9 @@ TEST(pipeline_hazards, partial_stall_needed) {
     program_stream.push_back(instruction_variant(register_instruction(opcode_add, r3, r4, r7)));
     program_stream.push_back(instruction_variant(register_instruction(opcode_add, r5, r4, r6)));
 
-    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
-    std::shared_ptr<io_map> allocation_map;
-
     auto ic =  std::make_shared<instrumentation_core>();
 
-    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
+    stream_pass_manager sman(ic, stream_pass_manager::asm_language, 1);
     program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
 
     writer.process_stream(program_stream, true);
@@ -220,12 +206,10 @@ TEST(pipeline_hazards, csel_source_stall) {
     program_stream.push_back(instruction_variant(ternary_instruction(opcode_csel, r6, r4, r5, r6)));
     program_stream.push_back(instruction_variant(register_instruction(opcode_add, r4,r6, r4)));
 
-    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
-    std::shared_ptr<io_map> allocation_map;
 
     auto ic =  std::make_shared<instrumentation_core>();
 
-    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
+    stream_pass_manager sman(ic, stream_pass_manager::asm_language, 1);
     program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
 
     writer.process_stream(program_stream, true);
@@ -256,12 +240,9 @@ TEST(pipeline_hazards, csel_destination_stall) {
     program_stream.push_back(instruction_variant(ternary_instruction(opcode_csel, r6, r4, r5, r6)));
 
 
-    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
-    std::shared_ptr<io_map> allocation_map;
-
     auto ic =  std::make_shared<instrumentation_core>();
 
-    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
+    stream_pass_manager sman(ic, stream_pass_manager::asm_language, 1);
     program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
 
     writer.process_stream(program_stream, true);
@@ -291,12 +272,10 @@ TEST(pipeline_hazards, ldc_stall) {
     program_stream.push_back(instruction_variant(conversion_instruction(opcode_fti, r4, r3)));
 
 
-    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
-    std::shared_ptr<io_map> allocation_map;
 
     auto ic =  std::make_shared<instrumentation_core>();
 
-    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
+    stream_pass_manager sman( ic, stream_pass_manager::asm_language, 1);
     program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
 
     writer.process_stream(program_stream, true);
@@ -326,12 +305,9 @@ TEST(pipeline_hazards, ldc_stall_3_ch) {
     program_stream.push_back(instruction_variant(conversion_instruction(opcode_fti, r4, r3)));
 
 
-    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
-    std::shared_ptr<io_map> allocation_map;
-
     auto ic =  std::make_shared<instrumentation_core>();
 
-    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
+    stream_pass_manager sman( ic, stream_pass_manager::asm_language, 3);
     program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(3));
 
     writer.process_stream(program_stream, true);
@@ -375,13 +351,11 @@ TEST(pipeline_hazards, result_collision_avoidance) {
     program_stream.push_back(instruction_variant(conversion_instruction(opcode_itf, r5, r7)));
 
 
-    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
-    std::shared_ptr<io_map> allocation_map;
 
     auto ic =  std::make_shared<instrumentation_core>();
 
-    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<result_deconfliction>());
+    stream_pass_manager sman( ic, stream_pass_manager::asm_language, 1);
+    program_stream = sman.apply_pass(program_stream, std::make_shared<result_deconfliction>(1));
 
     writer.process_stream(program_stream, true);
 
@@ -390,3 +364,40 @@ TEST(pipeline_hazards, result_collision_avoidance) {
     ASSERT_EQ(result, gold_standard);
 }
 
+
+
+
+TEST(pipeline_hazards, ldc_after_mul) {
+
+
+    auto r1 = std::make_shared<variable>("r1");
+    r1->set_bound_reg(1);
+    auto r2 = std::make_shared<variable>("r2");
+    r2->set_bound_reg(2);
+    auto r6 = std::make_shared<variable>("r6");
+    r6->set_bound_reg(6);
+    auto r3 = std::make_shared<variable>("r3");
+    r3->set_bound_reg(3);
+    auto const1 = std::make_shared<variable>("constant",1.0f);
+
+    binary_generator writer;
+
+    instruction_stream program_stream;
+    program_stream.push_back(instruction_variant(register_instruction(opcode_mul, r6, r1,r2)));
+    program_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc,r1, const1)));
+    program_stream.push_back(instruction_variant(intercalated_constant(1.0f)));
+    program_stream.push_back(instruction_variant(register_instruction(opcode_mul, r2, r1,r3)));
+
+
+
+    auto ic =  std::make_shared<instrumentation_core>();
+
+    stream_pass_manager sman( ic, stream_pass_manager::asm_language, 2);
+    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(2));
+
+    writer.process_stream(program_stream, true);
+
+    std::vector<uint32_t> result = writer.get_code();
+    std::vector<uint32_t> gold_standard = {0x408c3, 0x26,0x3F800000, 0, 0, 0x60843};
+    ASSERT_EQ(result, gold_standard);
+}

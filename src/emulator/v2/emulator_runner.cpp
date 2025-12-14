@@ -85,13 +85,13 @@ namespace fcore::emulator_v2 {
 
     void emulator_runner::emulation_phase(uint32_t channel, int init_point) {
         backend.set_debugging(multichannel_debug || channel == 0);
-        backend.setup_memory(emulators_memory[channel], common_io_memory);
+        backend.setup_memory(emulators_memory[channel], common_io_memory, active_channels);
         backend.run_round(init_point);
     }
 
     debug_checkpoint emulator_runner::step_over(uint32_t channel) {
         backend.set_debugging(multichannel_debug || channel == 0);
-        backend.setup_memory(emulators_memory[channel], common_io_memory);
+        backend.setup_memory(emulators_memory[channel], common_io_memory, active_channels);
         return backend.step_over();
     }
 

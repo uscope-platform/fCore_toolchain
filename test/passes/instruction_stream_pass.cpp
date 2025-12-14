@@ -36,11 +36,8 @@ TEST(virtual_instructions, virtual_instruction_implementation) {
     instruction_stream program_stream;
     program_stream.push_back(instruction_variant(pseudo_instruction(opcode_mov, args)));
 
-    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
-    std::shared_ptr<io_map> allocation_map;
-
     auto ic =  std::make_shared<instrumentation_core>();
-    stream_pass_manager sman(bindings_map, allocation_map, ic,stream_pass_manager::asm_language);
+    stream_pass_manager sman( ic,stream_pass_manager::asm_language, 1);
     program_stream = sman.process_stream(program_stream);
 
     writer.process_stream(program_stream, false);
@@ -64,12 +61,9 @@ TEST(virtual_instructions, ternary_reduction) {
     instruction_stream program_stream;
     program_stream.push_back(instruction_variant(pseudo_instruction(opcode_mov, args)));
 
-    auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
-    std::shared_ptr<io_map> allocation_map;
-
     auto ic =  std::make_shared<instrumentation_core>();
 
-    stream_pass_manager sman( bindings_map, allocation_map, ic, stream_pass_manager::asm_language);
+    stream_pass_manager sman( ic, stream_pass_manager::asm_language, 1);
     program_stream = sman.process_stream(program_stream);
 
     writer.process_stream(program_stream, false);

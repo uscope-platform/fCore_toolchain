@@ -53,13 +53,15 @@ namespace fcore::emulator_v2 {
                 std::vector<std::string> &contents,
                 std::vector<std::string> &inc,
                 std::map<std::string, core_iom> &map,
-                std::string core_name
+                std::string core_name,
+                uint8_t n_channels
         );
         std::pair<fcore_program,std::set<io_map_entry>> compile_program_asm(
                 std::vector<std::string> &contents,
                 std::vector<std::string> &inc,
                 std::map<std::string, core_iom> &map,
-                std::string core_name
+                std::string core_name,
+                uint8_t n_channels
                 );
 
 

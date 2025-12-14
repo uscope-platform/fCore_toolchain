@@ -57,7 +57,8 @@ namespace fcore::emulator_v2{
         void set_comparator_type(const comparator_type_t &t){comparator_type = t;};
         void setup_memory(
             std::span<uint32_t> channel_mem,
-            std::span<uint32_t> common_mem
+            std::span<uint32_t> common_mem,
+            uint8_t ac
         );
         void run_round(int init_point);
 
@@ -105,10 +106,11 @@ namespace fcore::emulator_v2{
                 ba_executor exec;
         #endif
 
-         int current_instruction = -1;
+        int current_instruction = -1;
 
         bool stop_requested = false;
         bool debugging_enabled = true;
+        uint8_t active_channels = 1;
 
         std::string core_name;
         emulation_program prog;

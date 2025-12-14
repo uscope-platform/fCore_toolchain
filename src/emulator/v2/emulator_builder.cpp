@@ -108,11 +108,11 @@ namespace fcore::emulator_v2{
 
         fcore_program ret_val;
         if(core_spec.program.type==  prog_type_asm){
-            auto [prog, io_map] = compile_program_asm(content, headers, dma_io,  core_spec.id);
+            auto [prog, io_map] = compile_program_asm(content, headers, dma_io,  core_spec.id, core_spec.channels);
             am = io_map;
             ret_val = prog;
         } else {
-            auto [prog, io_map] = compile_program_c(content, headers, dma_io,  core_spec.id);
+            auto [prog, io_map] = compile_program_c(content, headers, dma_io,  core_spec.id,  core_spec.channels);
             am = io_map;
             ret_val = prog;
         }
@@ -181,13 +181,14 @@ namespace fcore::emulator_v2{
             std::vector<std::string> &content,
             std::vector<std::string> &headers,
             std::map<std::string, core_iom> &dma_io,
-            std::string core_name
+            std::string core_name,
+            uint8_t n_channels
     ) {
 
         fcore_cc compiler(content, headers);
         compiler.set_profiler(profiler);
         compiler.set_dma_map(dma_io);
-        bool result = compiler.compile();
+        bool result = compiler.compile(n_channels);
 
 
         if(!result){
@@ -214,7 +215,8 @@ namespace fcore::emulator_v2{
             std::vector<std::string> &contents,
             std::vector<std::string> &inc,
             std::map<std::string, core_iom> &map,
-            std::string core_name
+            std::string core_name,
+            uint8_t n_channels
     ) {
         std::map<std::string, std::vector<uint32_t>> io_map;
 

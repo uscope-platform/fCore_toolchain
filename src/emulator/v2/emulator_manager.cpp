@@ -371,6 +371,7 @@ namespace fcore::emulator_v2 {
                     runners->at(core.id).add_waveform(in.name, in.waveform_parameters);
                 }
             }
+            runners->at(core.id).set_active_channels(core.channels);
             runners->at(core.id).set_wavegen_sampling_frequency(sim_freq);
         }
 

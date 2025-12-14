@@ -18,12 +18,11 @@
 
 namespace fcore{
 
-    stream_pass_manager::stream_pass_manager(std::shared_ptr<std::map<std::string, memory_range_t>> &bm,
-                                                    const std::shared_ptr<std::map<std::string, std::vector<io_map_entry>>>& all_map,
-                                                    std::shared_ptr<instrumentation_core> &prof,
-                                                    mode m
+    stream_pass_manager::stream_pass_manager(std::shared_ptr<instrumentation_core> &prof,
+                                            mode m,
+                                            uint8_t n_channels
     ) {
-        constructs_pass_manager(bm, all_map, prof, m);
+        constructs_pass_manager( prof, m, n_channels);
     }
 
     stream_pass_manager::stream_pass_manager(
@@ -32,19 +31,18 @@ namespace fcore{
         mode m
         ) {
 
-        auto bm = std::make_shared<std::map<std::string, memory_range_t>>();
-        auto am = std::make_shared<std::map<std::string, std::vector<io_map_entry>>>();
-        constructs_pass_manager( bm, am, prof, m);
+        constructs_pass_manager( prof, m, 1);
     }
 
 
     void
-    stream_pass_manager::constructs_pass_manager(std::shared_ptr<std::map<std::string, memory_range_t>> &bm,
-                                                        const std::shared_ptr<std::map<std::string, std::vector<io_map_entry>>>& all_map,
-                                                        std::shared_ptr<instrumentation_core> &prof,
-                                                        mode m
+    stream_pass_manager::constructs_pass_manager(
+        std::shared_ptr<instrumentation_core> &prof,
+        mode m,
+        uint8_t n_channels
     ) {
-
+        allocation_map = std::make_shared<std::map<std::string, std::vector<io_map_entry>>>();
+        bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
         optimizer_mode = m;
         ic = std::make_shared<instruction_count>();
         auto var_map = std::make_shared<variable_map>();
@@ -57,11 +55,11 @@ namespace fcore{
         passes.push_back(std::make_shared<constant_merging>(io_assignment_map));
         passes.push_back(std::make_shared<variable_mapping>(var_map));
         passes.push_back(std::make_shared<variable_lifetime_mapping>(var_map));
-        passes.push_back(std::make_shared<register_allocation>(var_map, bm,all_map));
+        passes.push_back(std::make_shared<register_allocation>(var_map, bindings_map, allocation_map));
         passes.push_back(std::make_shared<zero_assignment_removal_pass>());
         passes.push_back(std::make_shared<bound_register_assignment>());
-        passes.push_back(std::make_shared<stall_insertion>(1));
-        passes.push_back(std::make_shared<result_deconfliction>());
+        passes.push_back(std::make_shared<stall_insertion>(n_channels));
+        passes.push_back(std::make_shared<result_deconfliction>(n_channels));
         passes.push_back(std::make_shared<instruction_counting_pass>(ic));
 
         profiler = prof;

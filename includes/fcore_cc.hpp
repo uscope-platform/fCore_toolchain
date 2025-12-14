@@ -43,7 +43,7 @@ namespace fcore {
         void set_profiler(const std::shared_ptr<instrumentation_core> &ic){profiling_core = ic;};
         void enable_logging(){logging = true;};
         void parse_dma_spec();
-        bool compile();
+        bool compile(uint8_t n_channels);
         std::set<io_map_entry>  get_io_map();
         std::vector<uint32_t> get_raw_code();
         std::vector<uint32_t> get_executable();
@@ -65,7 +65,7 @@ namespace fcore {
         void merge_includes(const std::vector<std::shared_ptr<ast_code_block>>& i);
         std::shared_ptr<ast_code_block>  parse_include(std::istream &file, std::shared_ptr<define_map> def_map);
         void parse(std::map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map);
-        void optimize(std::map<std::string, std::vector<uint32_t >> &dma_map);
+        void optimize(std::map<std::string, std::vector<uint32_t >> &dma_map,uint8_t n_channels);
         void analyze_program_length(std::shared_ptr<instruction_count> c);
         void insert_stop(instruction_stream &program_stream);
         void flush_pipeline(instruction_stream &program_stream);

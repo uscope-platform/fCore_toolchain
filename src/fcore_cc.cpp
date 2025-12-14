@@ -35,7 +35,7 @@ namespace fcore{
         logging = print_debug;
     }
 
-    bool fcore_cc::compile() {
+    bool fcore_cc::compile(uint8_t n_channels) {
         auto def_map = std::make_shared<define_map>();
 
         if (profiling_core != nullptr) profiling_core->set_phase("parsing");
@@ -58,7 +58,7 @@ namespace fcore{
             parse_dma_spec();
             parse(dma_io_spec, def_map);
             merge_includes(includes_ASTs);
-            optimize(dma_io_map);
+            optimize(dma_io_map, n_channels);
         } catch(std::runtime_error &e){
             std::string error = e.what();
             error_code = e.what();
@@ -122,7 +122,7 @@ namespace fcore{
         if (profiling_core != nullptr) profiling_core->end_event("program_parsing");
     }
 
-    void fcore_cc::optimize(std::map<std::string, std::vector<uint32_t>> &dma_map) {
+    void fcore_cc::optimize(std::map<std::string, std::vector<uint32_t>> &dma_map, uint8_t n_channels) {
 
         std::string ep = "main";
         hl_manager = create_hl_pass_manager(ep);
@@ -134,13 +134,15 @@ namespace fcore{
         translator.set_input_ast(hl_ast);
         instruction_stream program_stream  = translator.translate();
 
-
-        allocation_map = std::make_shared<io_map>();
-
-        auto bindings_map = std::make_shared<std::map<std::string, memory_range_t>>();
-        stream_pass_manager sman( bindings_map, allocation_map, profiling_core, stream_pass_manager::high_level_language);
+        stream_pass_manager sman(
+            profiling_core,
+            stream_pass_manager::high_level_language,
+            n_channels
+        );
         program_stream = sman.process_stream(program_stream);
 
+        allocation_map = sman.get_allocation_map();
+        auto bindings_map = sman.get_bindings_map();
         analyze_program_length(sman.get_instruction_count());
 
 

@@ -45,7 +45,7 @@ namespace fcore::emulator_v2 {
 
         void inputs_phase(const core_step_metadata& info, uint32_t  channel);
         void emulation_phase(uint32_t  channel, int init_point);
-
+        void set_active_channels(uint8_t ac) {active_channels = ac;}
         void reset_instruction_pointer() {backend.reset_instruction_pointer();}
         debug_checkpoint step_over(uint32_t channel);
         debug_checkpoint get_end_state();
@@ -69,6 +69,8 @@ namespace fcore::emulator_v2 {
 
         program_bundle program;
         std::string core_name;
+
+        uint8_t active_channels;
 
         std::vector<uint32_t> common_io_memory;
         std::map<std::string, uint32_t> current_inputs;

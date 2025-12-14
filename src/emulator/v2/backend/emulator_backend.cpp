@@ -20,11 +20,13 @@ namespace fcore::emulator_v2{
 
     void emulator_backend::setup_memory(
         std::span<uint32_t> channel_mem,
-        std::span<uint32_t> common_mem
+        std::span<uint32_t> common_mem,
+        uint8_t ac
     ) {
         spdlog::trace("Setup memory");
         working_memory = channel_mem;
         common_io = common_mem;
+        active_channels = ac;
     }
 
     void emulator_backend::run_round(
@@ -106,11 +108,11 @@ namespace fcore::emulator_v2{
         }
         std::vector<operation_result> retire_set;
         std::erase_if(results_pipeline, [&](operation_result& res) {
-            if(res.pipeline_del == 0) {
+            if(res.pipeline_del <= 0) {
                 retire_set.push_back(res);
                 return true;
             } else {
-                res.pipeline_del--;
+                res.pipeline_del -= active_channels;
                 return false;
             }
         });

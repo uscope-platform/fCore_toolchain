@@ -38,10 +38,9 @@ namespace fcore{
         };
 
         stream_pass_manager(
-                std::shared_ptr<std::map<std::string, memory_range_t>> &bm,
-                const std::shared_ptr<std::map<std::string, std::vector<io_map_entry>>>& all_map,
                 std::shared_ptr<instrumentation_core> &prof,
-                mode m
+                mode m,
+                uint8_t n_channels
         );
         stream_pass_manager(
                 std::vector<int> &io_res,
@@ -49,16 +48,19 @@ namespace fcore{
                 mode m
         );
         void constructs_pass_manager(
-                std::shared_ptr<std::map<std::string, memory_range_t>> &bm,
-                const std::shared_ptr<std::map<std::string, std::vector<io_map_entry>>>& all_map,
                 std::shared_ptr<instrumentation_core> &prof,
-                mode m
+                mode m,
+                uint8_t n_channels
         );
 
         instruction_stream process_stream(instruction_stream stream);
         instruction_stream apply_pass(instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass);
-        std::shared_ptr<instruction_count> get_instruction_count() {return ic;};
+        std::shared_ptr<instruction_count> get_instruction_count() {return ic;}
+        std::shared_ptr<std::map<std::string, std::vector<io_map_entry>>> get_allocation_map(){return allocation_map;}
+        std::shared_ptr<std::map<std::string, memory_range_t>> get_bindings_map(){return bindings_map;}
     private:
+        std::shared_ptr<std::map<std::string, std::vector<io_map_entry>>> allocation_map;
+        std::shared_ptr<std::map<std::string, memory_range_t>> bindings_map;
         mode optimizer_mode;
         std::vector<std::shared_ptr<stream_pass_base>> passes;
         std::shared_ptr<instruction_count> ic;

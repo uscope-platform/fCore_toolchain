@@ -17,9 +17,10 @@
 
 namespace fcore {
 
-    result_deconfliction::result_deconfliction() :
+    result_deconfliction::result_deconfliction(uint8_t ac) :
     stream_pass_base("results deconfliction", 2, true, high_level_pass){
         is_vector = true;
+        active_channels = ac;
     }
 
 
@@ -43,7 +44,7 @@ namespace fcore {
             } else {
                 throw std::runtime_error("ERROR: unknown instruction type");
             }
-
+            // TODO: EVALUATE HOW THE MULTICHANNEL MODE AFFECTS WRITEBACK collisions
             auto writeback_index = n_instruction + fcore_execution_latencies[opcode];
             if (allocated_writeback_slots[writeback_index]) delay_slot_addresses.insert(n_instruction);
             allocated_writeback_slots[writeback_index] = true;

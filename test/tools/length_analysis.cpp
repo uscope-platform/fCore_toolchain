@@ -37,7 +37,7 @@ fcore_cc compiler(file_content, include_content);
 compiler.enable_logging();
 compiler.set_dma_map(dma_map);
 
-compiler.compile();
+compiler.compile(1);
 auto exec = compiler.get_executable();
 
 std::vector<uint32_t> reference_program = {
