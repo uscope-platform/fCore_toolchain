@@ -311,11 +311,17 @@ TEST(emulator_multichannel, emulator_multichannel_mem_init) {
     manager.emulate();
 
     auto res_obj = manager.get_results();
-
-    std::vector<float> res = res_obj["test"]["outputs"]["out"]["0"][0];
+    auto dbg = res_obj.dump();
+    std::vector<float> res = res_obj["test"]["outputs"]["mem"]["0"][0];
+    ASSERT_FLOAT_EQ(res[0], 100.1);
+    ASSERT_FLOAT_EQ(res[1], 100.2);
+    res =  static_cast<std::vector<float>>(res_obj["test"]["outputs"]["mem"]["1"][0]);
+    ASSERT_FLOAT_EQ(res[0], 500.1);
+    ASSERT_FLOAT_EQ(res[1], 500.2);
+    res =  static_cast<std::vector<float>>(res_obj["test"]["outputs"]["out"]["0"][0]);
     ASSERT_FLOAT_EQ(res[0], 250.0);
     ASSERT_FLOAT_EQ(res[1], 250.25);
-    res = (std::vector<float>) res_obj["test"]["outputs"]["out"]["1"][0];
+    res = static_cast<std::vector<float>>(res_obj["test"]["outputs"]["out"]["1"][0]);
     ASSERT_FLOAT_EQ(res[0], 1250.0);
     ASSERT_FLOAT_EQ(res[1], 1250.25);
 }
