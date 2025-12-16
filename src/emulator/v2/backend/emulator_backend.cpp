@@ -108,11 +108,12 @@ namespace fcore::emulator_v2{
         }
         std::vector<operation_result> retire_set;
         std::erase_if(results_pipeline, [&](operation_result& res) {
-            if(res.pipeline_del <= 0) {
+            if(res.pipeline_del == 0) {
                 retire_set.push_back(res);
                 return true;
             } else {
-                res.pipeline_del -= active_channels;
+                if (active_channels > res.pipeline_del) res.pipeline_del = 0;
+                else res.pipeline_del -= active_channels;
                 return false;
             }
         });
