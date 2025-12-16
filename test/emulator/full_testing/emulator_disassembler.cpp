@@ -385,7 +385,7 @@ TEST(emulator_disassembler, emulator_disassemble_common_csel_c_operand) {
         {3,{"fault", 1}}
     };
     std::map<uint16_t, translation_table_entry> common_io = {{4, {"v_in",1}}};
-    disassembled_program test_reference = {io,common_io, "bne r1, r0, r2\nnop\ncsel r2, r63, r1c, r2\nnop\nnop\nor r2, r0, r1\nnop\nnop\nstop\n"};
+    disassembled_program test_reference = {io,common_io, "bne r1, r0, r2\ncsel r2, r63, r1c, r2\nnop\nor r2, r0, r1\nnop\nnop\nstop\n"};
 
     EXPECT_EQ(res["hv bus"].program, test_reference.program);
     EXPECT_EQ(res["hv bus"].translation_table, test_reference.translation_table);

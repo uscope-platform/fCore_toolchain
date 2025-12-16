@@ -204,6 +204,7 @@ TEST(Emulator_runner, breakpoint) {
     auto bus_engine = std::make_shared<bus_allocator>();
     emulator_runner uut(bundle, bus_engine);
 
+    uut.set_active_channels(1);
     uint32_t line = 10;
 
     uut.add_breakpoint(line);
@@ -264,6 +265,7 @@ TEST(Emulator_runner, continue_emulation) {
     bundle.input.clear();
     auto bus_engine = std::make_shared<bus_allocator>();
     emulator_runner uut(bundle, bus_engine);
+    uut.set_active_channels(2);
 
     uint32_t line = 10;
 
@@ -355,7 +357,7 @@ TEST(Emulator_runner, single_stepping) {
     bundle.input.clear();
     auto bus_engine = std::make_shared<bus_allocator>();
     emulator_runner uut(bundle, bus_engine);
-
+    uut.set_active_channels(1);
     uint32_t line = 14;
 
     uut.add_breakpoint(line);
