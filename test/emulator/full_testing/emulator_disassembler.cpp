@@ -157,7 +157,7 @@ TEST(emulator_disassembler, emulator_disassemble) {
 
     std::map<uint16_t, translation_table_entry> producer_io = {{1,{"out", 3}},{3,{"input_1",1}}, {4,{"input_2",2}}};
     std::map<uint16_t, translation_table_entry> producer_common_io = {};
-    disassembled_program producer_reference = {producer_io,producer_common_io, "add r1, r2, r3\nnop\nnop\nnop\nnop\nnop\nnop\nstop\n"};
+    disassembled_program producer_reference = {producer_io,producer_common_io, "add r1, r2, r3\nnop\nnop\nnop\nstop\n"};
 
     std::map<uint16_t, translation_table_entry> reducer_io = {{2,{"out",3}},{3,{"input_data_1",1}}, {4,{"input_data_2",2}}};
     std::map<uint16_t, translation_table_entry> reducer_common_io = {};
@@ -263,7 +263,7 @@ TEST(emulator_disassembler, emulator_disassemble_common_io) {
 
     std::map<uint16_t, translation_table_entry> io = {{1,{"out", 1}}};
     std::map<uint16_t, translation_table_entry> common_io = {{2, {"input_1",1}}, {3, {"input_2",2}}};
-    disassembled_program test_reference = {io,common_io, "add r1c, r2c, r1\nnop\nnop\nnop\nnop\nnop\nnop\nstop\n"};
+    disassembled_program test_reference = {io,common_io, "add r1c, r2c, r1\nnop\nnop\nnop\nstop\n"};
 
     EXPECT_EQ(res["test"].program, test_reference.program);
     EXPECT_EQ(res["test"].translation_table, test_reference.translation_table);
@@ -385,7 +385,7 @@ TEST(emulator_disassembler, emulator_disassemble_common_csel_c_operand) {
         {3,{"fault", 1}}
     };
     std::map<uint16_t, translation_table_entry> common_io = {{4, {"v_in",1}}};
-    disassembled_program test_reference = {io,common_io, "bne r1, r0, r2\ncsel r2, r63, r1c, r2\nnop\nor r2, r0, r1\nnop\nnop\nstop\n"};
+    disassembled_program test_reference = {io,common_io, "bne r1, r0, r2\ncsel r2, r63, r1c, r2\nnop\nor r2, r0, r1\nnop\nstop\n"};
 
     EXPECT_EQ(res["hv bus"].program, test_reference.program);
     EXPECT_EQ(res["hv bus"].translation_table, test_reference.translation_table);

@@ -150,7 +150,7 @@ namespace fcore{
             program_stream.push_back(instruction_variant(independent_instruction(opcode_stop)));
         }
         insert_stop(program_stream);
-        flush_pipeline(program_stream);
+        flush_pipeline(program_stream, n_channels);
         writer.process_stream(program_stream,dma_map,allocation_map, logging);
     }
 
@@ -238,7 +238,7 @@ namespace fcore{
 
     }
 
-    void fcore_cc::flush_pipeline(instruction_stream &program_stream) {
+    void fcore_cc::flush_pipeline(instruction_stream &program_stream, uint8_t n_channels) {
 
         auto last_instruction_idx = program_stream.size()-2;
         for(int64_t i = program_stream.size()-2;i>=0; i--){
@@ -257,8 +257,7 @@ namespace fcore{
         }
         auto opcode = program_stream[last_instruction_idx].get_opcode();
         auto last_instruction_latency = fcore_execution_latencies[opcode];
-        auto present_nops = program_stream.size()-2-last_instruction_idx;
-        for(int i = 0; i< last_instruction_latency; i++) {
+        for(int i = 0; i< ceil(last_instruction_latency/n_channels); i++) {
             program_stream.insert(instruction_variant(independent_instruction(opcode_nop)), -1);
         }
     }

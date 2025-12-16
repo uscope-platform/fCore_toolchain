@@ -68,7 +68,7 @@ namespace fcore {
         void optimize(std::map<std::string, std::vector<uint32_t >> &dma_map,uint8_t n_channels);
         void analyze_program_length(std::shared_ptr<instruction_count> c);
         void insert_stop(instruction_stream &program_stream);
-        void flush_pipeline(instruction_stream &program_stream);
+        void flush_pipeline(instruction_stream &program_stream, uint8_t n_channels);
         std::ifstream input_file_stream;
         std::istringstream input_string_stream;
         std::string type;
