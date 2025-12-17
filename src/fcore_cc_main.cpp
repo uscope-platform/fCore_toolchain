@@ -70,7 +70,12 @@ int main(int argc, char **argv) {
         auto map = fcore::fcore_cc::load_iom_map(spec["dma_io"]);
         cc_engine.set_dma_map(map);
     }
-    bool compilation_result = cc_engine.compile();
+    uint8_t n_channels = 1;
+    if(spec.contains("channels")) {
+        n_channels = spec["channels"];
+    }
+
+    bool compilation_result = cc_engine.compile(n_channels);
 
     if(!compilation_result){
         spdlog::critical(cc_engine.get_errors());
