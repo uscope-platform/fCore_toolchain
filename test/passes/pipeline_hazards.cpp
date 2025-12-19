@@ -401,3 +401,50 @@ TEST(pipeline_hazards, ldc_after_mul) {
     std::vector<uint32_t> gold_standard = {0x408c3, 0x26,0x3F800000, 0, 0, 0x60843};
     ASSERT_EQ(result, gold_standard);
 }
+
+
+
+
+
+TEST(pipeline_hazards, multichannel_conflict) {
+
+
+    auto r1 = std::make_shared<variable>("r1");
+    r1->set_bound_reg(1);
+    auto r3 = std::make_shared<variable>("r3");
+    r3->set_bound_reg(3);
+    auto r2 = std::make_shared<variable>("r2");
+    r2->set_bound_reg(2);
+    auto r1c = std::make_shared<variable>("r1c");
+    r1c->set_bound_reg(1);
+    r1c->set_variable_class({variable_input_type, true});
+    auto r63 = std::make_shared<variable>("r63");
+    r63->set_bound_reg(63);
+
+    auto c1 = std::make_shared<variable>("constant",3.5f);
+    auto c2 = std::make_shared<variable>("constant",1024.0f);
+
+
+    binary_generator writer;
+
+    instruction_stream program_stream;
+    program_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc,r1, c1)));
+    program_stream.push_back(instruction_variant(intercalated_constant(3.5f)));
+    program_stream.push_back(instruction_variant(register_instruction(opcode_mul, r63, r1,r2)));
+    program_stream.push_back(instruction_variant(register_instruction(opcode_add, r63, r1c,r1)));
+    program_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc,r3, c2)));
+    program_stream.push_back(instruction_variant(intercalated_constant(1024.0f)));
+
+
+
+    auto ic =  std::make_shared<instrumentation_core>();
+
+    stream_pass_manager sman( ic, stream_pass_manager::asm_language, 3);
+    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(2));
+
+    writer.process_stream(program_stream, true);
+
+    std::vector<uint32_t> result = writer.get_code();
+    std::vector<uint32_t> gold_standard = {0x26,0x40600000, 0x40FE3, 0x1020FE1, 0, 0x66, 0x44800000};
+    ASSERT_EQ(result, gold_standard);
+}
