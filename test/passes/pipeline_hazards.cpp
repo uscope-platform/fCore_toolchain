@@ -14,8 +14,6 @@
 
 
 #include <gtest/gtest.h>
-#include <pstl/algorithm_fwd.h>
-
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "backend/binary_generator.hpp"
 #include "data_structures/instruction_stream/instruction_stream.hpp"
