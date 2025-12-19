@@ -234,7 +234,7 @@ namespace fcore::emulator_v2{
                 throw std::runtime_error("Encountered the following unimplemented operation: " + fcore_opcodes_reverse[opcode]);
         }
         auto op = static_cast<uint32_t>(opcode);
-        return {result, writeback_address, fcore_execution_latencies[fcore_opcodes_reverse[op]]};
+        return {result, writeback_address, fcore_execution_latencies[fcore_opcodes_reverse[op]], opcode};
     }
 
     void emulator_backend::run_independent_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands) {
@@ -288,12 +288,12 @@ namespace fcore::emulator_v2{
         }
 
         auto op = static_cast<uint32_t>(opcode);
-        return {result, dest, fcore_execution_latencies[fcore_opcodes_reverse[op]]};
+        return {result, dest, fcore_execution_latencies[fcore_opcodes_reverse[op]], opcode};
 
     }
 
     operation_result emulator_backend::run_load_constant_instruction(uint32_t dest, uint32_t val) {
-        return {val, dest, fcore_execution_latencies[opcode_ldc]};
+        return {val, dest, fcore_execution_latencies[opcode_ldc], opcode_ldc};
     }
 
 
@@ -304,15 +304,26 @@ namespace fcore::emulator_v2{
     operation_result emulator_backend::solve_writeback_conflict(std::vector<operation_result> writes) {
         if (writes.size()==1) return writes[0];
         spdlog::warn("Writeback collision detected on core {}", core_name);
-        return writes[0];
+        int selected_index = 0;
+        std::vector<std::pair<uint8_t, operation_result>> ordered_retires;
+        ordered_retires.emplace_back(writeback_priorities.at(writes[0].opcode), writes[0]);
+        for(int i=1; i<writes.size(); i++) {
+            auto first_retire = ordered_retires.front();
+            if(first_retire.first < writeback_priorities.at(writes[i].opcode)) {
+                ordered_retires.insert(ordered_retires.begin(), {writeback_priorities.at(writes[i].opcode), writes[i]});
+            } else {
+                ordered_retires.emplace_back(writeback_priorities.at(writes[i].opcode), writes[i]);
+            }
+        }
+        return ordered_retires[0].second;
     }
 
     uint32_t emulator_backend::float_to_uint32(float f) {
-        return gp_executor::float_to_uint32(f);
+        return executor_base::float_to_uint32(f);
     }
 
     float emulator_backend::uint32_to_float(uint32_t u) {
-        return gp_executor::uint32_to_float(u);
+        return executor_base::uint32_to_float(u);
     }
 
 

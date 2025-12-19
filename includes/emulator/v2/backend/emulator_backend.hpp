@@ -28,7 +28,7 @@
 #if GENERAL_PURPOSE_EMULATION==1
     #include "executor/gp_executor.hpp"
 #else
-    #include "emulator/v2/backend/ba_executor.hpp"
+    #include "executor/ba_executor.hpp"
 #endif
 
 #include "emulator/emulator_metadata_common.hpp"
@@ -40,7 +40,7 @@ namespace fcore::emulator_v2{
         uint32_t data;
         uint32_t destination;
         uint8_t pipeline_del;
-        std::string opcode;
+        opcode_table_t opcode;
     };
 
     class BreakpointException : public std::runtime_error {

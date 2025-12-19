@@ -335,6 +335,38 @@ namespace fcore{
             std::make_pair(opcode_mov, opcode_or),
             std::make_pair(opcode_neg, opcode_sub)
     };
+
+
+    // Global map to simulate the backend state
+    static const std::map<opcode_table_t, uint8_t> writeback_priorities = {
+        {opcode_add, 0},
+        {opcode_sub, 0},
+        {opcode_mul, 1},
+        {opcode_rec, 2},
+        {opcode_fti, 3},
+        {opcode_itf, 4},
+        {opcode_satn, 5},
+        {opcode_satp, 5},
+        {opcode_and, 6},
+        {opcode_or, 6},
+        {opcode_xor, 6},
+        {opcode_not, 6},
+        {opcode_beq, 7},
+        {opcode_bne, 7},
+        {opcode_bgt, 7},
+        {opcode_ble, 7},
+        {opcode_ldc, 8},
+        {opcode_popcnt, 9},
+        {opcode_bset, 9},
+        {opcode_bsel, 9},
+        {opcode_abs, 10},
+        {opcode_csel, 11},
+        {opcode_nop, 999},
+        {opcode_efi, 999},
+        {opcode_stop, 999},
+    };
+
+
 }
 
 
