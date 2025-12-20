@@ -218,7 +218,7 @@ namespace fcore{
 
     }
 
-    void fcore_cc::analyze_program_length(std::shared_ptr<struct instruction_count> c) {
+    void fcore_cc::analyze_program_length(std::shared_ptr<instruction_count> c) {
 
         length_info.per_channel_portion = c->regular + c->efi * info.efi_lenght + c->load;
 
@@ -242,8 +242,8 @@ namespace fcore{
 
         auto last_instruction_idx = program_stream.size()-2;
         for(int64_t i = program_stream.size()-2;i>=0; i--){
-            if (std::holds_alternative<intercalated_constant>(program_stream[i].get_content())) {
-                continue;
+            if (std::holds_alternative<load_constant_instruction>(program_stream[i].get_content())){
+                i--;
             } else if (std::holds_alternative<independent_instruction>(program_stream[i].get_content())) {
                 auto instr = program_stream[i].get_opcode();
                 if(instr != opcode_nop){

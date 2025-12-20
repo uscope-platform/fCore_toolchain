@@ -35,7 +35,7 @@ namespace fcore{
         } else if(std::holds_alternative<ternary_instruction>(var)){
             auto instr = std::get<ternary_instruction>(var);
             map_ternary_instr(instr);
-        } else if(std::holds_alternative<independent_instruction>(var) || std::holds_alternative<intercalated_constant>(var) ) {
+        } else if(std::holds_alternative<independent_instruction>(var) ) {
             // INDEPENDENT INSTRUCTIONS AND INTERCALATED CONSTANTS DO NOT USE VARIABLES
         } else {
             throw std::runtime_error("Invalid instruction type reached variable mapping stage");

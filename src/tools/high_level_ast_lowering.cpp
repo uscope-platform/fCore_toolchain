@@ -62,18 +62,6 @@ namespace fcore{
 
             if(auto lowered_instr = translate_node(i)){
                 out.push_back(lowered_instr.value());
-                if(std::holds_alternative<load_constant_instruction>(lowered_instr.value().get_content())){
-                    auto load_instr = std::get<load_constant_instruction>(lowered_instr.value().get_content());
-                    std::shared_ptr<intercalated_constant> constant;
-                    if(load_instr.is_float()){
-                        float desired_constant = load_instr.get_constant_f();
-                        out.push_back(instruction_variant(intercalated_constant(desired_constant)));
-                        constant = std::make_shared<intercalated_constant>(desired_constant);
-                    } else {
-                        uint32_t desired_constant = load_instr.get_constant_i();
-                        out.push_back(instruction_variant(intercalated_constant(desired_constant)));
-                    }
-                }
             }
         }
 
@@ -236,8 +224,6 @@ namespace fcore{
                 return instruction_variant(pseudo_instruction(op, args));
             case isa_ternary_instruction:
                 return instruction_variant(ternary_instruction(op, args[0], args[1], args[2], args[3]));
-            case isa_intercalated_constant:
-                return {};
         }
         return {};
     }

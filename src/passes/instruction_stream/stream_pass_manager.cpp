@@ -91,11 +91,10 @@ namespace fcore{
         instruction_stream retval;
         pass->setup();
         for(int i = 0; i<pass->n_scans;i++){
-            for(int j = 0; j < in_stream.size(); j++){
-                auto instr = in_stream[j];
+            for(auto instr : in_stream){
                 if(pass->is_mutable){
                     if(pass->is_vector) {
-                        auto pass_result = pass->apply_vector_mutable_pass(instr, i, j);
+                        auto pass_result = pass->apply_vector_mutable_pass(instr, i);
                         for(auto &item:pass_result) retval.push_back(item);
                     } else {
                         if(auto proc_val = pass->apply_mutable_pass(instr, i))
@@ -106,6 +105,7 @@ namespace fcore{
                         retval.push_back(proc_val.value());
                 }
             }
+            pass->inter_pass();
         }
         return retval;
     }

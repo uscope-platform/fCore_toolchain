@@ -30,7 +30,13 @@ namespace fcore {
         uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
         raw_instr += fcore_opcodes[opcode] & opcode_mask;
         raw_instr += (destination->get_value().first & register_mask) << fcore_opcode_width;
-        return {raw_instr};
+        uint32_t intercalated_const;
+        if (constant->is_float()){
+            intercalated_const = std::bit_cast<uint32_t>(constant->get_float_val());
+        } else {
+            intercalated_const = constant->get_int_value();
+        }
+        return {raw_instr, intercalated_const};
     }
 
     void load_constant_instruction::print() const {
@@ -60,7 +66,10 @@ namespace fcore {
     }
 
     std::string load_constant_instruction::disassemble() const{
-        return fcore_string_map[opcode] + " " + destination->get_name() + ", ";
+        std::string c;
+        if (constant->is_float()) c = std::to_string(constant->get_float_val());
+        else c = std::to_string(constant->get_int_value());
+        return fcore_string_map[opcode] + " " + destination->get_name() + ", " + c + "\n";
     }
 
     bool load_constant_instruction::is_float() {

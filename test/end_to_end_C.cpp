@@ -2115,7 +2115,7 @@ TEST(EndToEndC, end_to_end_no_arg_intrinsic ) {
     ASSERT_EQ(gold_standard, result);
 
 }
-
+#include "fcore_dis.hpp"
 
 TEST(EndToEndC, multichannel_delay_slots) {
 
@@ -2146,6 +2146,12 @@ TEST(EndToEndC, multichannel_delay_slots) {
     compiler.set_dma_map(dma_map);
     compiler.compile(2);
     std::vector<uint32_t> result =  compiler.get_executable();
+
+
+
+    fcore_dis disassembler(result);
+
+    std::string dbg = disassembler.get_disassembled_program_text();
 
 
     std::vector<uint32_t> gold_standard = {0xF0005, 0xc, 0x3f0001,0x10002, 0x3e0004, 0x3000A, 0xc, 0xc, 0x7c0fe1,

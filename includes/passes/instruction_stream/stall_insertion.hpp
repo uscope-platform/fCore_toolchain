@@ -25,7 +25,7 @@ namespace fcore{
     public:
         stall_insertion(int n_channels);
 
-        std::vector<instruction_variant> apply_vector_mutable_pass(instruction_variant &element, uint32_t n_pass, uint32_t n_instuction) override;
+        std::vector<instruction_variant> apply_vector_mutable_pass(instruction_variant &element, uint32_t n_pass) override;
 
     private:
         uint8_t get_latency(opcode_table_t opcode){

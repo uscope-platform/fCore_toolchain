@@ -33,13 +33,6 @@ namespace fcore{
             } else {
                 return element;
             }
-        } else if(std::holds_alternative<intercalated_constant>(var)){
-            if(delete_intercalated_const){
-                delete_intercalated_const = false;
-                return {};
-            } else {
-                return element;
-            }
         }  else {
             return element;
         }

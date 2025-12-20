@@ -33,7 +33,7 @@ namespace fcore{
             return process_load_instr(std::get<load_constant_instruction>(var));
         } else if(std::holds_alternative<ternary_instruction>(var)){
             return process_ternary_instr(std::get<ternary_instruction>(var));
-        } else if( std::holds_alternative<intercalated_constant>(var) || std::holds_alternative<independent_instruction>(var) || std::holds_alternative<pseudo_instruction>(var)){
+        } else if(  std::holds_alternative<independent_instruction>(var) || std::holds_alternative<pseudo_instruction>(var)){
             return element;
         } else {
             throw std::runtime_error("ERROR: unknown instruction type");

@@ -86,7 +86,7 @@ TEST(InstructionClasses, load_instruction) {
 
     load_constant_instruction instr(opcode_ldc, op_a, std::make_shared<variable>("constant", 2.56f));
 
-    ASSERT_EQ(instr.emit(), std::vector<uint32_t>({0x46}));
+    ASSERT_EQ(instr.emit(), std::vector<uint32_t>({0x46, 0x4023D70A}));
 
     std::stringstream buffer;
     std::streambuf * old = std::cout.rdbuf(buffer.rdbuf());

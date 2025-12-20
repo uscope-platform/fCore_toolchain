@@ -131,16 +131,13 @@ namespace fcore{
         std::shared_ptr<variable> dest = std::make_shared<variable>(dest_str);
         std::shared_ptr<variable> immediate;
 
-        std::shared_ptr<intercalated_constant> constant_node;
         if(ctx->FloatingPointLiteral() != nullptr){
             immediate = std::make_shared<variable>("constant", std::stof(ctx->FloatingPointLiteral()->getText()));
             program.push_back(instruction_variant(load_constant_instruction(opcode_ldc, dest, immediate)));
-            program.push_back(instruction_variant(intercalated_constant(immediate->get_float_val())));
         } else if(ctx->integer_const() != nullptr){
             uint32_t const_val =  std::stoul(ctx->integer_const()->getText(), nullptr, 0);
             immediate = std::make_shared<variable>("constant",*(int*)&const_val);
             program.push_back(instruction_variant(load_constant_instruction(opcode_ldc, dest, immediate)));
-            program.push_back(instruction_variant(intercalated_constant(const_val)));
         }
 
     }

@@ -23,7 +23,7 @@ namespace fcore {
     }
 
     std::vector<instruction_variant> ternary_deconfliction::apply_vector_mutable_pass(instruction_variant &element,
-        uint32_t n_pass, uint32_t n_instruction) {
+        uint32_t n_pass) {
             if(n_pass==0) {
                 map_ternaries(element);
                 return {};

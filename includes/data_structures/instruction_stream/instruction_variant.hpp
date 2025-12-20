@@ -22,7 +22,6 @@
 
 #include "conversion_instruction.hpp"
 #include "independent_instruction.hpp"
-#include "intercalated_constant.hpp"
 #include "load_constant_instruction.hpp"
 #include "pseudo_instruction.hpp"
 #include "register_instruction.hpp"
@@ -33,7 +32,6 @@ namespace fcore{
     class instruction_variant {
     public:
         explicit instruction_variant(const independent_instruction &t): content(t){};
-        explicit instruction_variant(const intercalated_constant &t): content(t){};
         explicit instruction_variant(const load_constant_instruction &t): content(t){};
         explicit instruction_variant(const conversion_instruction &t): content(t){};
         explicit instruction_variant(const pseudo_instruction &t): content(t){};
@@ -66,7 +64,6 @@ namespace fcore{
         std::variant<
                 conversion_instruction,
                 independent_instruction,
-                intercalated_constant,
                 load_constant_instruction,
                 pseudo_instruction,
                 register_instruction,
@@ -77,7 +74,6 @@ namespace fcore{
         std::variant<
                 conversion_instruction,
                 independent_instruction,
-                intercalated_constant,
                 load_constant_instruction,
                 pseudo_instruction,
                 register_instruction,

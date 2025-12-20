@@ -25,10 +25,13 @@ namespace fcore {
     class result_deconfliction :public stream_pass_base{
     public:
         result_deconfliction(uint8_t ac);
+        void setup() override;
         std::vector<instruction_variant> apply_vector_mutable_pass(instruction_variant &element,
-            uint32_t n_pass, uint32_t n_instuction) override;
+            uint32_t n_pass) override;
+        void inter_pass() override;
     private:
         std::bitset<fcore_max_binary_size+150> allocated_writeback_slots;
+        int instruction_counter;
         uint8_t active_channels;
         std::set<uint32_t> delay_slot_addresses;
     };

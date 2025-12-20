@@ -24,7 +24,7 @@ namespace fcore {
     }
 
     std::vector<instruction_variant> stall_insertion::apply_vector_mutable_pass(instruction_variant &element,
-        uint32_t n_pass, uint32_t n_instuction){
+        uint32_t n_pass){
 
         auto var = element.get_content();
         if(std::holds_alternative<register_instruction>(var)) {
@@ -35,7 +35,7 @@ namespace fcore {
             return process(std::get<load_constant_instruction>(var));
         } else if(std::holds_alternative<ternary_instruction>(var)){
             return process(std::get<ternary_instruction>(var));
-        } else if( std::holds_alternative<intercalated_constant>(var) || std::holds_alternative<independent_instruction>(var) || std::holds_alternative<pseudo_instruction>(var)){
+        } else if( std::holds_alternative<independent_instruction>(var) || std::holds_alternative<pseudo_instruction>(var)){
             return {element};
         } else {
             throw std::runtime_error("ERROR: unknown instruction type");
@@ -88,7 +88,7 @@ namespace fcore {
     }
 
     std::vector<instruction_variant> stall_insertion::process(const load_constant_instruction &node) {
-        auto dest = node.get_destination()->get_bound_reg();
+         auto dest = node.get_destination()->get_bound_reg();
         operations_tracker[dest] =  get_latency(opcode_ldc);
         advance_tracker(dest);
         return {instruction_variant(node)};

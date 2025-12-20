@@ -28,7 +28,6 @@ namespace fcore{
         isa_pseudo_instruction = 4,
         isa_conversion_instruction = 6,
         isa_load_constant_instruction = 7,
-        isa_intercalated_constant= 8,
         isa_ternary_instruction = 9,
     }isa_instruction_type;
 
@@ -39,7 +38,7 @@ namespace fcore{
             case isa_pseudo_instruction: return "isa_pseudo_instruction";
             case isa_conversion_instruction: return "isa_conversion_instruction";
             case isa_load_constant_instruction: return "isa_load_constant_instruction";
-            case isa_intercalated_constant: return "isa_intercalated_constant";
+
             case isa_ternary_instruction: return  "isa_ternary_instruction";
             default: return "unknown_isa_instr_type";
         }

@@ -41,8 +41,6 @@ namespace fcore{
             } else {
                 count->regular++;
             }
-        } else if(!std::holds_alternative<intercalated_constant>(var)){
-            count->regular++;
         }
 
         return element;

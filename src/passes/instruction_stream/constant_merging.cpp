@@ -39,8 +39,6 @@ namespace fcore{
             return merge_load_const_instr(std::get<load_constant_instruction>(var));
         } else if(std::holds_alternative<ternary_instruction>(var)){
             return merge_ternary_inst(std::get<ternary_instruction>(var));
-        } else if(std::holds_alternative<intercalated_constant>(var)){
-            return merge_interc_const(std::get<intercalated_constant>(var));
         } else if(std::holds_alternative<independent_instruction>(var)){
             return element;
         } else if(std::holds_alternative<pseudo_instruction>(var)){
@@ -63,7 +61,7 @@ namespace fcore{
             dest = std::get<load_constant_instruction>(var).get_destination();
         } else if(std::holds_alternative<ternary_instruction>(var)){
             dest = std::get<ternary_instruction>(var).get_destination();
-        } else if(std::holds_alternative<independent_instruction>(var) || std::holds_alternative<intercalated_constant>(var) || std::holds_alternative<pseudo_instruction>(var) ) {
+        } else if(std::holds_alternative<independent_instruction>(var) || std::holds_alternative<pseudo_instruction>(var) ) {
             return;
         } else {
             throw std::runtime_error("Invalid instruction type reached variable mapping stage");
@@ -175,15 +173,6 @@ namespace fcore{
         }
     }
 
-    std::optional<instruction_variant> constant_merging::merge_interc_const(intercalated_constant &instr) {
-        if(!delete_intercalated_const){
-            return instruction_variant(instr);
-        } else {
-            delete_intercalated_const = false;
-            return {};
-        }
-
-    }
 
     std::shared_ptr<variable> constant_merging::get_merged_constant(std::shared_ptr<variable> v) {
         auto var_name = v->get_identifier();

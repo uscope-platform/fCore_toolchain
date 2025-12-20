@@ -38,12 +38,13 @@ namespace fcore{
         }
 
         virtual void setup() {}
+        virtual void inter_pass() {}
 
         virtual std::optional<instruction_variant> apply_mutable_pass(instruction_variant &element, uint32_t n) {
             return element;
         }
 
-        virtual std::vector<instruction_variant> apply_vector_mutable_pass(instruction_variant &element, uint32_t n_pass, uint32_t n_instuction) {
+        virtual std::vector<instruction_variant> apply_vector_mutable_pass(instruction_variant &element, uint32_t n_pass) {
             return {element};
         }
 

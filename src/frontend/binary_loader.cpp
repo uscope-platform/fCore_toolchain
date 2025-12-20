@@ -69,9 +69,7 @@ namespace fcore{
                     program_stream.push_back(process_conversion_instr(instruction));
                     break;
                 case isa_load_constant_instruction:{
-                    auto pair =process_load_constant(instruction,*(it + 1));
-                    program_stream.push_back(pair.first);
-                    program_stream.push_back(pair.second);
+                    program_stream.push_back(process_load_constant(instruction,*(it + 1)));
                     ++it;
                     break;
                 }
@@ -81,7 +79,6 @@ namespace fcore{
                 }
                     // Pseudo instructions and intercalated constants are either not present in the stream, or dont have an opcode
                 case isa_pseudo_instruction:
-                case isa_intercalated_constant:
                     throw std::runtime_error("something went wront during binary program loading.");
                     break;
             }
@@ -162,8 +159,7 @@ namespace fcore{
         return instruction_variant(independent_instruction(fcore_opcodes_reverse[opcode]));
     }
 
-    std::pair<instruction_variant, instruction_variant>
-    binary_loader::process_load_constant(uint32_t instruction, uint32_t raw_constant) {
+    instruction_variant binary_loader::process_load_constant(uint32_t instruction, uint32_t raw_constant) {
         float constant;
         std::memcpy(&constant, &raw_constant, sizeof(float));
 
@@ -173,10 +169,7 @@ namespace fcore{
         std::shared_ptr<variable> dest_var  = std::make_shared<variable>("r" + std::to_string(destination));
         std::shared_ptr<variable> f_const  = std::make_shared<variable>("constant", constant);
 
-        auto instr =instruction_variant(load_constant_instruction(fcore_opcodes_reverse[opcode],dest_var, f_const));
-
-
-        return {instr, instruction_variant(intercalated_constant(constant))};
+        return instruction_variant(load_constant_instruction(fcore_opcodes_reverse[opcode],dest_var, f_const));
     }
 
     instruction_variant binary_loader::process_conversion_instr(uint32_t instruction) {

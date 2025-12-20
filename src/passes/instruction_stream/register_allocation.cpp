@@ -125,7 +125,6 @@ namespace fcore{
             overloads{[&arguments](register_instruction &i){ i.set_arguments(arguments); return instruction_variant(i);}},
             overloads{[&arguments](conversion_instruction &i){ i.set_arguments(arguments); return instruction_variant(i);}},
             overloads{[&arguments](independent_instruction &i){ i.set_arguments(arguments); return instruction_variant(i);}},
-            overloads{[&arguments](intercalated_constant &i){ i.set_arguments(arguments); return instruction_variant(i);}},
             overloads{[&arguments](pseudo_instruction &i){ i.set_arguments(arguments); return instruction_variant(i);}},
             overloads{[&arguments](ternary_instruction &i){ i.set_arguments(arguments); return instruction_variant(i);}},
             overloads{[&arguments](load_constant_instruction &i){ i.set_arguments(arguments); return instruction_variant(i);}}

@@ -38,7 +38,6 @@ namespace fcore{
         instruction_variant merge_ternary_inst(ternary_instruction& instr);
         instruction_variant merge_conv_instr(conversion_instruction& instr);
         std::optional<instruction_variant> merge_load_const_instr(load_constant_instruction& instr);
-        std::optional<instruction_variant> merge_interc_const(intercalated_constant& instr);
         std::shared_ptr<variable> get_merged_constant(std::shared_ptr<variable> v);
         bool is_last_io_assignment(const std::shared_ptr<variable> &dest);
         bool delete_intercalated_const;

@@ -266,7 +266,6 @@ TEST(pipeline_hazards, ldc_stall) {
 
     instruction_stream program_stream;
     program_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc,r4, const_var)));
-    program_stream.push_back(instruction_variant(intercalated_constant(4.5f)));
     program_stream.push_back(instruction_variant(conversion_instruction(opcode_fti, r4, r3)));
 
 
@@ -299,7 +298,6 @@ TEST(pipeline_hazards, ldc_stall_3_ch) {
 
     instruction_stream program_stream;
     program_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc,r4, const_var)));
-    program_stream.push_back(instruction_variant(intercalated_constant(4.5f)));
     program_stream.push_back(instruction_variant(conversion_instruction(opcode_fti, r4, r3)));
 
 
@@ -338,11 +336,8 @@ TEST(pipeline_hazards, result_collision_avoidance) {
 
     instruction_stream program_stream;
     program_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc,r3, const1)));
-    program_stream.push_back(instruction_variant(intercalated_constant(1.0f)));
     program_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc,r2, const2)));
-    program_stream.push_back(instruction_variant(intercalated_constant(2.0f)));
     program_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc,r5, const3)));
-    program_stream.push_back(instruction_variant(intercalated_constant(static_cast<uint32_t>(5))));
 
     program_stream.push_back(instruction_variant(register_instruction(opcode_add, r3, r2,r6)));
     program_stream.push_back(instruction_variant(independent_instruction(opcode_nop)));
@@ -383,7 +378,6 @@ TEST(pipeline_hazards, ldc_after_mul) {
     instruction_stream program_stream;
     program_stream.push_back(instruction_variant(register_instruction(opcode_mul, r6, r1,r2)));
     program_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc,r1, const1)));
-    program_stream.push_back(instruction_variant(intercalated_constant(1.0f)));
     program_stream.push_back(instruction_variant(register_instruction(opcode_mul, r2, r1,r3)));
 
 
@@ -427,11 +421,9 @@ TEST(pipeline_hazards, multichannel_conflict) {
 
     instruction_stream program_stream;
     program_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc,r1, c1)));
-    program_stream.push_back(instruction_variant(intercalated_constant(3.5f)));
     program_stream.push_back(instruction_variant(register_instruction(opcode_mul, r63, r1,r2)));
     program_stream.push_back(instruction_variant(register_instruction(opcode_add, r63, r1c,r1)));
     program_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc,r3, c2)));
-    program_stream.push_back(instruction_variant(intercalated_constant(1024.0f)));
 
 
 
