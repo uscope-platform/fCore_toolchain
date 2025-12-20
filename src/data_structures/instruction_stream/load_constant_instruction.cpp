@@ -24,17 +24,17 @@ namespace fcore {
         opcode = std::move(op);
     }
 
-    uint32_t load_constant_instruction::emit() const{
+    std::vector<uint32_t> load_constant_instruction::emit() const{
         uint32_t raw_instr = 0;
         uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
         uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
         raw_instr += fcore_opcodes[opcode] & opcode_mask;
         raw_instr += (destination->get_value().first & register_mask) << fcore_opcode_width;
-        return raw_instr;
+        return {raw_instr};
     }
 
     void load_constant_instruction::print() const {
-        std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> " <<  to_string() <<std::endl;
+        std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit()[0] << " -> " <<  to_string() <<std::endl;
     }
 
     std::string load_constant_instruction::to_string() const {

@@ -26,7 +26,7 @@ namespace fcore{
     class ternary_instruction {
     public:
         ternary_instruction(opcode_table_t op, std::shared_ptr<variable> op_a, std::shared_ptr<variable> op_b, std::shared_ptr<variable> op_c, std::shared_ptr<variable> dest);
-        uint32_t emit() const;
+        std::vector<uint32_t> emit() const;
         std::string disassemble() const;
         ternary_instruction(const ternary_instruction& other) = default;
         ternary_instruction(ternary_instruction&& other) noexcept = default;

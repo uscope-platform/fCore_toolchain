@@ -27,7 +27,7 @@ namespace fcore{
         opcode = std::move(op);
     }
 
-    uint32_t ternary_instruction::emit() const{
+    std::vector<uint32_t> ternary_instruction::emit() const{
         if(*operand_a != *destination){
             throw std::runtime_error("ERROR: for ternary instructions operand a and destinations need to be equal");
         }
@@ -58,7 +58,7 @@ namespace fcore{
             raw_instr += 1 <<  (fcore_opcode_width+3*fcore_register_address_width +2);
         }
 
-        return raw_instr;
+        return {raw_instr};
 
     }
 
@@ -72,7 +72,7 @@ namespace fcore{
     }
 
     void ternary_instruction::print() const{
-        std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> " << to_string() <<std::endl;
+        std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit()[0] << " -> " << to_string() <<std::endl;
     }
 
     std::string ternary_instruction::to_string() const {

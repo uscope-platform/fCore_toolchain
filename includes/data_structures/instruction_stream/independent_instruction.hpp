@@ -29,7 +29,7 @@ namespace fcore{
     class independent_instruction {
     public:
         explicit independent_instruction(opcode_table_t opcode);
-        uint32_t emit() const;
+        std::vector<uint32_t> emit() const;
 
         std::string disassemble() const;
         void print() const;

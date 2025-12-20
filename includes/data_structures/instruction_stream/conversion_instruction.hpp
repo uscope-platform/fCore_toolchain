@@ -35,7 +35,7 @@ namespace fcore{
         conversion_instruction& operator=(const conversion_instruction& other) = default;
         conversion_instruction& operator=(conversion_instruction&& other) noexcept = default;
         conversion_instruction(opcode_table_t op, std::shared_ptr<variable> s, std::shared_ptr<variable> d);
-        uint32_t emit() const;
+        std::vector<uint32_t> emit() const;
         void print() const;
         std::string to_string() const;
         std::string disassemble() const;

@@ -51,7 +51,7 @@ namespace fcore{
         [[nodiscard]] bool is_pseudo() const { return std::holds_alternative<pseudo_instruction>(content);};
 
 
-        uint32_t emit()const;
+        std::vector<uint32_t> emit()const;
         std::string to_string()const;
         void print() const;
         std::string disassemble()const;

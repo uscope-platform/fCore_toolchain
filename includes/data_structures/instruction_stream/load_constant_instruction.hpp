@@ -30,7 +30,7 @@ namespace fcore{
     class load_constant_instruction {
     public:
         load_constant_instruction(opcode_table_t op, std::shared_ptr<variable> dest, std::shared_ptr<variable> c);
-        uint32_t emit() const;
+        std::vector<uint32_t> emit() const;
         void print() const;
         load_constant_instruction(const load_constant_instruction& other) = default;
         load_constant_instruction(load_constant_instruction&& other) noexcept = default;

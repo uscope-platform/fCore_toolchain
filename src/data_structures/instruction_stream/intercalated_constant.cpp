@@ -30,14 +30,14 @@ namespace fcore {
     }
 
 
-    uint32_t intercalated_constant::emit()const {
+    std::vector<uint32_t> intercalated_constant::emit()const {
         uint32_t  raw_instr = 0;
         if(is_float){
             memcpy(&raw_instr, &float_const, sizeof(raw_instr));
         } else {
             raw_instr = int_const;
         }
-        return raw_instr;
+        return {raw_instr};
     }
 
     void intercalated_constant::print() const{

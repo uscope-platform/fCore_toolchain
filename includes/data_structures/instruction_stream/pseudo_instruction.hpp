@@ -32,7 +32,7 @@ namespace fcore{
         void set_arguments(std::vector<std::shared_ptr<variable>> a) {arguments = std::move(a);};
         int instruction_count() const;
 
-        uint32_t emit() const{ return 0;};
+        std::vector<uint32_t> emit() const{ return {};};
         std::string to_string() const {return "";}
         void print() const {}
         std::string disassemble() const{return "";}

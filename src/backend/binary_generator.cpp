@@ -25,7 +25,8 @@ namespace fcore{
     ) {
         auto code_sect = std::vector<uint32_t>();
         for(const auto& item:stream){
-            code_sect.push_back(item.emit());
+            auto instructions = item.emit();
+            code_sect.insert(code_sect.end(), instructions.begin(), instructions.end());
             progress_counter++;
             if(debug_print) {
                 std::cout << progress_counter << std::endl;

@@ -31,7 +31,7 @@ TEST(InstructionClasses, register_instruction) {
 
     register_instruction instr(opcode_add, op_a, op_b, dest);
 
-    ASSERT_EQ(instr.emit(), 0x81841);
+    ASSERT_EQ(instr.emit(), std::vector<uint32_t>({0x81841}));
 
     std::stringstream buffer;
     std::streambuf * old = std::cout.rdbuf(buffer.rdbuf());
@@ -50,7 +50,7 @@ TEST(InstructionClasses, independent_instruction ) {
     independent_instruction instr(opcode_stop);
 
 
-    ASSERT_EQ( instr.emit(), 0xc);
+    ASSERT_EQ( instr.emit(), std::vector<uint32_t>({0xc}));
 
     std::stringstream buffer;
     std::streambuf * old = std::cout.rdbuf(buffer.rdbuf());
@@ -74,7 +74,7 @@ TEST(InstructionClasses, variant_instruction_emit) {
 
     instruction_variant var(instr);
 
-    ASSERT_EQ(var.emit(), 0x81841);
+    ASSERT_EQ(var.emit(),std::vector<uint32_t>({0x81841}));
 
 
 }

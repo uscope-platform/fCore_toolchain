@@ -22,7 +22,7 @@ namespace fcore{
         opcode = std::move(op);
     }
 
-    uint32_t conversion_instruction::emit() const {
+    std::vector<uint32_t> conversion_instruction::emit() const {
         uint32_t raw_instr = 0;
         uint32_t opcode_mask = std::pow(2, fcore_opcode_width)-1;
         uint32_t register_mask = std::pow(2, fcore_register_address_width)-1;
@@ -35,11 +35,11 @@ namespace fcore{
             raw_instr += 1 <<  (fcore_opcode_width+2*fcore_register_address_width);
         }
 
-        return raw_instr;
+        return {raw_instr};
     }
 
     void conversion_instruction::print() const {
-        std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit() << " -> " << to_string() <<std::endl;
+        std::cout << std::setfill('0') << std::setw(4) <<  std::hex << emit()[0] << " -> " << to_string() <<std::endl;
     }
 
     std::string conversion_instruction::to_string() const {

@@ -18,8 +18,8 @@
 
 namespace fcore{
 
-    uint32_t fcore::instruction_variant::emit() const {
-        return std::visit([this](auto &var) -> uint32_t {
+    std::vector<uint32_t> instruction_variant::emit() const {
+        return std::visit([this](auto &var) -> std::vector<uint32_t> {
             return var.emit();
         }, content);
 
@@ -31,25 +31,25 @@ namespace fcore{
         }, content);
     }
 
-    void fcore::instruction_variant::print() const{
+    void instruction_variant::print() const{
         std::visit([](auto &var) -> void {
             var.print();
         }, content);
     }
 
-    std::string fcore::instruction_variant::disassemble() const {
+    std::string instruction_variant::disassemble() const {
         return std::visit([](auto &var) -> std::string {
             return var.disassemble();
         }, content);
     }
 
-    int fcore::instruction_variant::instruction_count() const{
+    int instruction_variant::instruction_count() const{
         return std::visit([](auto &var) -> int {
             return var.instruction_count();
         }, content);
     }
 
-    std::vector<std::shared_ptr<variable>> fcore::instruction_variant::get_arguments() {
+    std::vector<std::shared_ptr<variable>> instruction_variant::get_arguments() {
         return std::visit([](auto &var) -> std::vector<std::shared_ptr<variable>> {
             return var.get_arguments();
         }, content);
