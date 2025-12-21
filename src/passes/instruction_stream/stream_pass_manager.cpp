@@ -90,23 +90,28 @@ namespace fcore{
     stream_pass_manager::apply_pass(instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass) {
         instruction_stream retval;
         pass->setup();
-        for(int i = 0; i<pass->n_scans;i++){
-            for(auto instr : in_stream){
-                if(pass->is_mutable){
-                    if(pass->is_vector) {
-                        auto pass_result = pass->apply_vector_mutable_pass(instr, i);
-                        for(auto &item:pass_result) retval.push_back(item);
+        if (pass->is_standalone) {
+            retval = pass->standalone(in_stream);
+        } else {
+            for(int i = 0; i<pass->n_scans;i++){
+                for(auto instr : in_stream){
+                    if(pass->is_mutable){
+                        if(pass->is_vector) {
+                            auto pass_result = pass->apply_vector_mutable_pass(instr, i);
+                            for(auto &item:pass_result) retval.push_back(item);
+                        } else {
+                            if(auto proc_val = pass->apply_mutable_pass(instr, i))
+                                retval.push_back(proc_val.value());
+                        }
                     } else {
-                        if(auto proc_val = pass->apply_mutable_pass(instr, i))
+                        if(auto proc_val = pass->apply_pass(instr, i))
                             retval.push_back(proc_val.value());
                     }
-                } else {
-                    if(auto proc_val = pass->apply_pass(instr, i))
-                        retval.push_back(proc_val.value());
                 }
+                pass->inter_pass();
             }
-            pass->inter_pass();
         }
+
         return retval;
     }
 

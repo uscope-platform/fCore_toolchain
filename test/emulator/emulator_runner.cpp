@@ -396,7 +396,7 @@ TEST(Emulator_runner, single_stepping) {
 }
 
 
-TEST(Emulator_runner, single_step_conclusionp) {
+TEST(Emulator_runner, single_step_conclusion) {
 
     std::istringstream stream(R"(
         ldc r63, 52.5000

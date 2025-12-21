@@ -34,11 +34,13 @@ namespace fcore{
             this->n_scans = n_scans;
             this->is_mutable = is_mutable;
             this->is_vector = false;
+            this->is_standalone = false;
             this->pass_type= type;
         }
 
         virtual void setup() {}
         virtual void inter_pass() {}
+        virtual instruction_stream standalone(const instruction_stream &in_stream) {return in_stream;}
 
         virtual std::optional<instruction_variant> apply_mutable_pass(instruction_variant &element, uint32_t n) {
             return element;
@@ -61,6 +63,7 @@ namespace fcore{
         uint32_t n_scans;
         bool is_mutable;
         bool is_vector;
+        bool is_standalone;
     private:
         std::string name;
     };

@@ -430,11 +430,11 @@ TEST(pipeline_hazards, multichannel_conflict) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman( ic, stream_pass_manager::asm_language, 3);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(2));
+    program_stream = sman.apply_pass(program_stream, std::make_shared<result_deconfliction>(4));
 
     writer.process_stream(program_stream, true);
 
     std::vector<uint32_t> result = writer.get_code();
-    std::vector<uint32_t> gold_standard = {0x26,0x40600000, 0x40FE3, 0x1020FE1, 0, 0x66, 0x44800000};
+    std::vector<uint32_t> gold_standard = {0x26,0x40600000, 0x40FE3, 0x1020FE1, 0, 0, 0x66, 0x44800000};
     ASSERT_EQ(result, gold_standard);
 }
