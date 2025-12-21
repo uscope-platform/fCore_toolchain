@@ -21,6 +21,7 @@ namespace fcore {
     stream_pass_base("results deconfliction", 2, true, high_level_pass){
         is_standalone = true;
         active_channels = ac;
+        allocated_writeback_slots = std::vector(fcore_max_binary_size*active_channels, false);
     }
 
     instruction_stream result_deconfliction::standalone(const instruction_stream& in_stream){
@@ -28,10 +29,9 @@ namespace fcore {
         bool deconfliction_done = false;
         std::optional<instruction_stream> pass_result;
         while (!deconfliction_done){
-            allocated_writeback_slots = std::vector(fcore_max_binary_size*active_channels, false);
+            std::ranges::fill(allocated_writeback_slots, false);
             pass_result = deconflict(out_stream);
             deconfliction_done = pass_result.has_value();
-            allocated_writeback_slots.clear();
         }
         return pass_result.value();
     }
@@ -42,15 +42,14 @@ namespace fcore {
             if (opcode == opcode_stop){
                 return in;
             }
+            if (opcode == opcode_nop || opcode == opcode_efi ) continue;
             for (int j = 0 ; j<active_channels; j++){
                 auto writeback_index = i*active_channels + fcore_execution_latencies[opcode] +j;
-                if (opcode == opcode_nop || opcode == opcode_efi ) {
-                } else if (allocated_writeback_slots[writeback_index]){
+                if (allocated_writeback_slots[writeback_index]){
                     in.insert(instruction_variant(independent_instruction(opcode_nop)), i);
                     return {};
-                } else {
-                    allocated_writeback_slots[writeback_index] = true;
                 }
+                allocated_writeback_slots[writeback_index] = true;
             }
         }
         return in;
