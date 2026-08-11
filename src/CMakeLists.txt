@@ -125,9 +125,15 @@ set(FCORE_EMU_SRCS
         emulator/emulator_dispatcher.cpp
         )
 
+    set(FCORE_FUZZ_SRCS
+            fuzzer/fuzzer.cpp
+            fuzzer/fuzzer_rng.cpp
+            fuzzer/fuzzer_rng.cpp
+            ../includes/fuzzer/fuzzer_rng.hpp
+    )
 
 
-set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_DIS_SRCS} ${FCORE_EMU_SRCS} PARENT_SCOPE)
+set(FCORE_SRCS ${FCORE_COMMON_SRCS_I} ${FCORE_CC_SRCS} ${FCORE_AS_SRCS} ${FCORE_DIS_SRCS} ${FCORE_EMU_SRCS} ${FCORE_FUZZER_SRCS} PARENT_SCOPE)
 
 add_library(common_srcs ${FCORE_COMMON_SRCS_I})
 
@@ -137,6 +143,13 @@ target_link_libraries(common_srcs PUBLIC
 )
 
 add_library(fcore_has_lib ${FCORE_AS_SRCS} ${ASM_PARSER_SRCS})
+target_link_libraries(fcore_has_lib PUBLIC
+        common_srcs
+        antlr4_static
+        spdlog::spdlog
+)
+
+add_library(fcore_fuzz_lib ${FCORE_FUZZ_SRCS})
 target_link_libraries(fcore_has_lib PUBLIC
         common_srcs
         antlr4_static
