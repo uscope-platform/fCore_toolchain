@@ -15,33 +15,18 @@
 #include "fuzzer/fuzzer_rng.hpp"
 
 
-// Default constructor seeds with hardware entropy
-fuzzer_rng::fuzzer_rng(
-    std::pair<uint32_t,uint32_t> uniform_bounds,
-    std::pair<float, float> normal_parameters) :
-rng(std::random_device{}()),
-unif_dist(uniform_bounds.first, uniform_bounds.second),
-normal_dist(normal_parameters.first, normal_parameters.second)
-{
+fuzzer_rng::fuzzer_rng(uint32_t seed, std::pair<float, float> normal_parameters) :
+    rng(seed),
+    normal_dist(normal_parameters.first, normal_parameters.second) {
 
 }
 
-// Explicit seed constructor (useful for deterministic fuzzing runs)
-fuzzer_rng::fuzzer_rng(uint32_t seed) : rng(seed) {}
 
-uint32_t fuzzer_rng::generate_int() {
-    return unif_dist(rng);
+uint32_t fuzzer_rng::generate_int(std::pair<uint32_t, uint32_t> bounds) {
+    auto dist = std::uniform_int_distribution(bounds.first, bounds.second);
+    return dist(rng);
 }
 
-
-std::vector<uint32_t> fuzzer_rng::generate_int_vect(uint32_t size) {
-    std::vector<uint32_t> vec;
-    vec.reserve(size);
-    for (uint32_t i = 0; i < size; ++i) {
-        vec.push_back(generate_int());
-    }
-    return vec;
-}
 
 float fuzzer_rng::generate_float() {
     return normal_dist(rng);

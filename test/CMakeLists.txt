@@ -27,6 +27,7 @@ set(TEST_SOURCES
         tools/length_analysis.cpp
         tools/deep_copy.cpp
         tools/expression_evaluator.cpp
+        fuzzer/fuzzer.cpp
 )
 
 
@@ -40,6 +41,7 @@ if(${INCLUDE_EMULATOR})
                 fcore_cc_lib
                 fcore_has_lib
                 fcore_dis_lib
+                fcore_fuzz_lib
                 fcore_emu_lib
                 pthread
                 Ip_floating_point_v7_1_bitacc_cmodel
@@ -55,6 +57,7 @@ else()
                 fcore_cc_lib
                 fcore_has_lib
                 fcore_dis_lib
+                fcore_fuzz_lib
                 fcore_emu_lib
                 pthread
                 spdlog::spdlog

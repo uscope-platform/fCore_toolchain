@@ -12,22 +12,19 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-#ifndef FCORE_TOOLCHAIN_FUZZER_RNG_HPP
-#define FCORE_TOOLCHAIN_FUZZER_RNG_HPP
-#include <vector>
-#include <cstdint>
-#include <random>
-
-class fuzzer_rng {
-public:
-    fuzzer_rng(uint32_t seed, std::pair<float, float> normal_parameters);
-    uint32_t generate_int(std::pair<uint32_t,uint32_t> bounds);
-    float generate_float();
-    std::vector<float> generate_float_vect_normal(uint32_t size);
-private:
-    std::mt19937 rng;
-    std::normal_distribution<float> normal_dist;
-};
 
 
-#endif //FCORE_TOOLCHAIN_FUZZER_RNG_HPP
+
+#include <gtest/gtest.h>
+
+#include "fuzzer/fuzzer.hpp"
+namespace fcore {
+    TEST( fuzzer, program_generation) {
+        fuzzer_config cfg;
+        cfg.rng_seed = 1523;
+        cfg.rng_float_params = {125, 20};
+        cfg.active_regs = 9;
+        fuzzer f(cfg);
+        auto res = f.generate_binary();
+    }
+}

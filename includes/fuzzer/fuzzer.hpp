@@ -18,14 +18,50 @@
 
 #include <cstdint>
 #include <vector>
+#include <map>
+#include <set>
 
+#include "fuzzer/fuzzer_rng.hpp"
+#include "fCore_isa.hpp"
+#include "data_structures/instruction_stream/instruction_stream.hpp"
 
-class fuzzer {
-public:
-    void fuzz();
-    std::vector<uint32_t> generate_binary();
-private:
-};
+namespace fcore{
+    struct fuzzer_config {
+        uint8_t min_inputs = 1;
+        uint8_t max_inputs = 5;
+        uint8_t active_regs = 5;
+        uint8_t min_program_size = 3;
+        uint16_t max_program_size = 150;
+        uint32_t rng_seed;
+        std::pair<float, float> rng_float_params;
+    };
 
+    class fuzzer {
+    public:
+        explicit fuzzer(const fuzzer_config &config);
+        std::vector<uint32_t> generate_binary();
+    private:
+        instruction_variant generate_instruction(uint32_t dest, std::vector<uint32_t>& active_registers);
+        conversion_instruction generate_conversion_instruction(opcode_table_t op, uint32_t dest, std::vector<unsigned int>& available_inputs);
+        register_instruction generate_register_instruction(opcode_table_t op, uint32_t dest, std::vector<unsigned int>& available_inputs);
+        load_constant_instruction generate_constant_instruction(opcode_table_t op, uint32_t dest, std::vector<unsigned int>& available_inputs);
+        ternary_instruction generate_ternary_instruction(opcode_table_t op, uint32_t dest, std::vector<unsigned int>& available_inputs);
+        std::string generate_register(std::vector<unsigned int>& available_inputs);
+        std::vector<opcode_table_t> opcodes = {
+            // 0 inputs needed
+            opcode_ldc,
+            // 1 input needed
+            opcode_itf, opcode_fti, opcode_not, opcode_rec, opcode_abs, opcode_popcnt, opcode_xor,
+            // 2 inputs needed
+            opcode_add, opcode_sub, opcode_mul, opcode_bgt, opcode_ble, opcode_beq,
+            opcode_bne, opcode_and, opcode_or, opcode_satp, opcode_satn, opcode_bset, opcode_bsel,
+            // 3 inputs needed
+            opcode_csel
+        };
+        std::array<size_t, 4> opcode_inputs_bounds = {1, 8, 21, 22};
+        fuzzer_rng rng;
+        fuzzer_config config;
+    };
 
+}
 #endif //FCORE_TOOLCHAIN_FUZZER_HPP

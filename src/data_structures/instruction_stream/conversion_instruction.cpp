@@ -16,9 +16,9 @@
 #include "data_structures/instruction_stream/conversion_instruction.hpp"
 
 namespace fcore{
-    conversion_instruction::conversion_instruction(opcode_table_t op, std::shared_ptr<variable> s, std::shared_ptr<variable> d) {
-        source = std::move(s);
-        destination = std::move(d);
+    conversion_instruction::conversion_instruction(opcode_table_t op, std::shared_ptr<variable> src, std::shared_ptr<variable> dest) {
+        source = std::move(src);
+        destination = std::move(dest);
         opcode = std::move(op);
     }
 

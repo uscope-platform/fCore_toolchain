@@ -14,12 +14,99 @@
 //  limitations under the License.
 #include "fuzzer/fuzzer.hpp"
 
-void fuzzer::fuzz() {
-}
+namespace fcore {
+    fuzzer::fuzzer(const fuzzer_config& config) : rng(config.rng_seed, config.rng_float_params), config(config){
+        if (config.max_inputs > config.active_regs){
+            throw std::runtime_error("There needs to be enough registers active to fit all the possible inputs");
+        }
+    }
 
-std::vector<uint32_t> fuzzer::generate_binary() {
-    // 1: select the number of inputs to generate
-    // 2: select the program size
-    // 3: generate instructions in a loop until the size goal is met
-    // 4: compile injecting the instruction stream post register allocation
+    std::vector<uint32_t> fuzzer::generate_binary() {
+        std::map<uint32_t, float> inputs;
+        std::vector<uint32_t> active_registers;
+        instruction_stream program;
+        uint8_t n_inputs = rng.generate_int({config.min_inputs, config.max_inputs});
+        for (int i = 0; i < n_inputs; i++){
+            int reg_n = 0;
+            do {
+                reg_n =  rng.generate_int({1, config.active_regs});
+            } while (inputs.contains(reg_n));
+            active_registers.push_back(reg_n);
+            inputs[reg_n] = rng.generate_float();
+        }
+        auto size = rng.generate_int({config.min_program_size, config.max_program_size});
+
+        for (int i = 0; i < size; i++) {
+            auto reg_n =  rng.generate_int({1, config.active_regs});
+            program.push_back(generate_instruction(reg_n, active_registers));
+            if (!std::ranges::contains(active_registers, reg_n)) active_registers.push_back(reg_n);
+        }
+        int i = 0;
+        return {};
+    }
+
+    instruction_variant fuzzer::generate_instruction(uint32_t dest,std::vector<uint32_t>& active_registers) {
+        auto max_opcode = opcode_inputs_bounds[std::min<size_t>(3, active_registers.size())];
+        auto idx = rng.generate_int({0, max_opcode-1});
+        auto opcode = opcodes[idx];
+        switch (fcore_op_types[opcode]) {
+            case isa_conversion_instruction:
+                return instruction_variant(generate_conversion_instruction(opcode, dest, active_registers));
+            case isa_register_instruction:
+                return instruction_variant(generate_register_instruction(opcode, dest, active_registers));
+            case isa_load_constant_instruction:
+                return instruction_variant(generate_constant_instruction(opcode, dest, active_registers));
+            case isa_ternary_instruction:
+                return instruction_variant(generate_ternary_instruction(opcode, dest, active_registers));
+            case isa_independent_instruction:
+            case isa_pseudo_instruction:
+            default:
+                throw std::runtime_error("attempted generation of an instruction type unsuitable for fuzzing");
+        }
+    }
+    conversion_instruction fuzzer::generate_conversion_instruction(opcode_table_t op, uint32_t dest, std::vector<unsigned int>& available_inputs){
+        std::string dst = "r" + std::to_string(dest);
+        return {op,
+            std::make_shared<variable>(generate_register(available_inputs)),
+            std::make_shared<variable>(dst)
+        };
+    }
+
+    register_instruction fuzzer::generate_register_instruction(opcode_table_t op, uint32_t dest, std::vector<unsigned int>& available_inputs){
+        std::string dst = "r" + std::to_string(dest);
+        return {
+            op,
+            std::make_shared<variable>(generate_register(available_inputs)),
+            std::make_shared<variable>(generate_register(available_inputs)),
+            std::make_shared<variable>(dst)
+        };
+    }
+
+    load_constant_instruction fuzzer::generate_constant_instruction(opcode_table_t op, uint32_t dest, std::vector<unsigned int>& available_inputs){
+        std::string dst = "r" + std::to_string(dest);
+        auto c_val = rng.generate_float();
+        auto c = std::make_shared<variable>("constant" + std::to_string(c_val), c_val);
+        return {
+            op,
+            std::make_shared<variable>(dst),
+            c
+        };
+    }
+
+    ternary_instruction fuzzer::generate_ternary_instruction(opcode_table_t op, uint32_t dest, std::vector<unsigned int>& available_inputs){
+        std::string dst = "r" + std::to_string(dest);
+        return {
+            op,
+            std::make_shared<variable>(generate_register(available_inputs)),
+            std::make_shared<variable>(generate_register(available_inputs)),
+            std::make_shared<variable>(generate_register(available_inputs)),
+            std::make_shared<variable>(dst)
+        };
+    }
+
+    std::string fuzzer::generate_register(std::vector<unsigned int>& available_inputs) {
+        auto reg = available_inputs[rng.generate_int({0, available_inputs.size()-1})];
+        if (!std::ranges::contains(available_inputs, reg)) available_inputs.push_back(reg);
+        return "r" + std::to_string(reg);
+    }
 }
