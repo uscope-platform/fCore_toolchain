@@ -22,8 +22,8 @@ namespace fcore {
         }
     }
 
-    std::vector<uint32_t> fuzzer::generate_binary() {
-        std::map<uint32_t, float> inputs;
+    fuzzing_package fuzzer::generate_binary() {
+        fuzzing_package result;
         std::vector<uint32_t> active_registers;
         instruction_stream program;
         uint8_t n_inputs = rng.generate_int({config.min_inputs, config.max_inputs});
@@ -31,9 +31,9 @@ namespace fcore {
             int reg_n = 0;
             do {
                 reg_n =  rng.generate_int({1, config.active_regs});
-            } while (inputs.contains(reg_n));
+            } while (result.inputs.contains(reg_n));
             active_registers.push_back(reg_n);
-            inputs[reg_n] = rng.generate_float();
+            result.inputs[reg_n] = rng.generate_float();
         }
         auto size = rng.generate_int({config.min_program_size, config.max_program_size});
 
@@ -42,7 +42,9 @@ namespace fcore {
             program.push_back(generate_instruction(reg_n, active_registers));
             if (!std::ranges::contains(active_registers, reg_n)) active_registers.push_back(reg_n);
         }
-        return compile_binary(program);
+        program.push_back(instruction_variant(independent_instruction(opcode_stop)));
+        result.binary = compile_binary(program);
+        return result;
     }
 
     std::vector<uint32_t> fuzzer::compile_binary(const instruction_stream& s){
