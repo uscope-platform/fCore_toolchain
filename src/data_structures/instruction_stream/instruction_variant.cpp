@@ -31,9 +31,9 @@ namespace fcore{
         }, content);
     }
 
-    std::string instruction_variant::to_python() const {
+    std::string instruction_variant::to_c() const {
         return std::visit([this](auto &var) -> std::string {
-            return var.to_python();
+            return var.to_c();
         }, content);
     }
     void instruction_variant::print() const{

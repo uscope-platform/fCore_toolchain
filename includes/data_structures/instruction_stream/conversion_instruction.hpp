@@ -39,7 +39,7 @@ namespace fcore{
         void print() const;
         std::string to_string() const;
         std::string disassemble() const;
-        std::string to_python() const;
+        std::string to_c() const {return "";}
         int instruction_count() const;
 
         std::shared_ptr<variable> get_source() const {return source;};

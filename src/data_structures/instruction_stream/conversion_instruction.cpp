@@ -59,9 +59,6 @@ namespace fcore{
         return fcore_string_map[opcode] + " " + source->get_name() + ", " + destination->get_name();
     }
 
-    std::string conversion_instruction::to_python() const {
-        return "";
-    }
 }
 
 

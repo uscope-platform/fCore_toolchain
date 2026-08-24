@@ -34,7 +34,7 @@ namespace fcore{
 
         std::vector<uint32_t> emit() const{ return {};};
         std::string to_string() const {return "";}
-        std::string to_python() const {return "";}
+        std::string to_c() const {return "";}
         void print() const {}
         std::string disassemble() const{return "";}
 

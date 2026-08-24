@@ -37,7 +37,7 @@ namespace fcore{
         load_constant_instruction& operator=(const load_constant_instruction& other) = default;
         load_constant_instruction& operator=(load_constant_instruction&& other) noexcept = default;
         std::string to_string() const;
-        std::string to_python() const {return "";}
+        std::string to_c() const {return "";}
         std::string disassemble() const;
 
         int instruction_count() const;

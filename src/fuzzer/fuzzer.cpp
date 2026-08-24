@@ -144,7 +144,7 @@ namespace fcore {
             r_stream << fmt::format("r{} = {}\n", reg, val);
         }
         for (auto &instr: s){
-            r_stream <<  fmt::format("{}\n", instr.to_python());
+            r_stream <<  instr.to_c() + "\n";
         }
         pkg.reference = r_stream.str();
     }

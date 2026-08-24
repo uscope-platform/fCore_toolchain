@@ -35,7 +35,7 @@ namespace fcore{
         register_instruction& operator=(const register_instruction& other) = default;
         register_instruction& operator=(register_instruction&& other) noexcept = default;
         std::string to_string() const;
-        std::string to_python() const {return "";}
+        std::string to_c() const {return "";}
         int instruction_count() const;
 
         friend bool operator==(const register_instruction& lhs, const register_instruction& rhs){
