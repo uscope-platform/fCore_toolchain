@@ -23,7 +23,9 @@
 
 #include "fuzzer/fuzzer_rng.hpp"
 #include "fCore_isa.hpp"
+#include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "data_structures/instruction_stream/instruction_stream.hpp"
+#include "backend/binary_generator.hpp"
 
 namespace fcore{
     struct fuzzer_config {
@@ -41,6 +43,7 @@ namespace fcore{
         explicit fuzzer(const fuzzer_config &config);
         std::vector<uint32_t> generate_binary();
     private:
+        std::vector<uint32_t> compile_binary(const instruction_stream &s);
         instruction_variant generate_instruction(uint32_t dest, std::vector<uint32_t>& active_registers);
         conversion_instruction generate_conversion_instruction(opcode_table_t op, uint32_t dest, std::vector<unsigned int>& available_inputs);
         register_instruction generate_register_instruction(opcode_table_t op, uint32_t dest, std::vector<unsigned int>& available_inputs);

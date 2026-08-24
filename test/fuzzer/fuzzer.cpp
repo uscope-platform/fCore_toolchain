@@ -26,5 +26,6 @@ namespace fcore {
         cfg.active_regs = 9;
         fuzzer f(cfg);
         auto res = f.generate_binary();
+        EXPECT_FALSE(res.empty());
     }
 }

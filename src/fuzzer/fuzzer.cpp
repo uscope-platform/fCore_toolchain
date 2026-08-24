@@ -14,6 +14,7 @@
 //  limitations under the License.
 #include "fuzzer/fuzzer.hpp"
 
+
 namespace fcore {
     fuzzer::fuzzer(const fuzzer_config& config) : rng(config.rng_seed, config.rng_float_params), config(config){
         if (config.max_inputs > config.active_regs){
@@ -41,8 +42,30 @@ namespace fcore {
             program.push_back(generate_instruction(reg_n, active_registers));
             if (!std::ranges::contains(active_registers, reg_n)) active_registers.push_back(reg_n);
         }
-        int i = 0;
-        return {};
+        return compile_binary(program);
+    }
+
+    std::vector<uint32_t> fuzzer::compile_binary(const instruction_stream& s){
+
+        std::shared_ptr<instrumentation_core> ic = nullptr;
+
+        std::vector<int> io_res;
+        stream_pass_manager sman(io_res, ic, stream_pass_manager::asm_language);
+
+
+        instruction_stream program_stream = sman.process_stream(s);
+
+        auto amap = std::make_shared<std::map<std::string, std::vector<io_map_entry>>>();
+
+        std::map<std::string, std::vector<uint32_t>> dma_map;
+
+        for(auto &item:dma_map){
+            io_map_entry e(-1,item.second[0],"m");
+            amap->insert({item.first, {e}});
+        }
+        binary_generator writer;
+        writer.process_stream(program_stream, dma_map, amap, false);
+        return writer.generate_hex(false);
     }
 
     instruction_variant fuzzer::generate_instruction(uint32_t dest,std::vector<uint32_t>& active_registers) {
@@ -97,7 +120,7 @@ namespace fcore {
         std::string dst = "r" + std::to_string(dest);
         return {
             op,
-            std::make_shared<variable>(generate_register(available_inputs)),
+            std::make_shared<variable>(dst),
             std::make_shared<variable>(generate_register(available_inputs)),
             std::make_shared<variable>(generate_register(available_inputs)),
             std::make_shared<variable>(dst)

@@ -36,7 +36,6 @@ namespace fcore{
             std::vector<int> io_res;
             stream_pass_manager sman(io_res, ic, stream_pass_manager::asm_language);
 
-            //TODO: implement instruction info stuff
             instruction_stream program_stream = sman.process_stream(target_parser.program);
 
             auto amap = std::make_shared<std::map<std::string, std::vector<io_map_entry>>>();
