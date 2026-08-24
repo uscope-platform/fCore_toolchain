@@ -34,6 +34,7 @@ namespace fcore{
         ternary_instruction& operator=(ternary_instruction&& other) noexcept = default;
         void print() const;
         std::string to_string() const;
+        std::string to_python() const {return "";}
         int instruction_count() const;
 
         friend bool operator==(const ternary_instruction& lhs, const ternary_instruction& rhs){

@@ -20,6 +20,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <fmt/format.h>
 
 #include "fuzzer/fuzzer_rng.hpp"
 #include "fCore_isa.hpp"
@@ -41,6 +42,7 @@ namespace fcore{
     struct fuzzing_package {
         std::vector<uint32_t> binary;
         std::map<uint32_t, float> inputs;
+        std::string reference;
     };
 
     class fuzzer {
@@ -48,6 +50,7 @@ namespace fcore{
         explicit fuzzer(const fuzzer_config &config);
         fuzzing_package generate_binary();
     private:
+        static void generate_reference_model(fuzzing_package &pkg, const instruction_stream &s);
         std::vector<uint32_t> compile_binary(const instruction_stream &s);
         instruction_variant generate_instruction(uint32_t dest, std::vector<uint32_t>& active_registers);
         conversion_instruction generate_conversion_instruction(opcode_table_t op, uint32_t dest, std::vector<unsigned int>& available_inputs);

@@ -150,7 +150,7 @@ target_link_libraries(fcore_has_lib PUBLIC
 )
 
 add_library(fcore_fuzz_lib ${FCORE_FUZZ_SRCS})
-target_link_libraries(fcore_has_lib PUBLIC
+target_link_libraries(fcore_fuzz_lib PUBLIC
         common_srcs
         antlr4_static
         spdlog::spdlog

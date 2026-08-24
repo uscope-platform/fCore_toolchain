@@ -51,6 +51,7 @@ namespace fcore{
 
         std::vector<uint32_t> emit()const;
         std::string to_string()const;
+        std::string to_python() const;
         void print() const;
         std::string disassemble()const;
         int instruction_count()const;

@@ -38,6 +38,7 @@ namespace fcore{
         independent_instruction& operator=(const independent_instruction& other) = default;
         independent_instruction& operator=(independent_instruction&& other) noexcept = default;
         std::string to_string() const;
+        std::string to_python() const {return "";}
         int instruction_count() const;
 
         void set_arguments(const std::vector<std::shared_ptr<variable>> &) {};

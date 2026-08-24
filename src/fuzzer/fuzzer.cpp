@@ -44,6 +44,7 @@ namespace fcore {
         }
         program.push_back(instruction_variant(independent_instruction(opcode_stop)));
         result.binary = compile_binary(program);
+        generate_reference_model(result, program);
         return result;
     }
 
@@ -134,4 +135,18 @@ namespace fcore {
         if (!std::ranges::contains(available_inputs, reg)) available_inputs.push_back(reg);
         return "r" + std::to_string(reg);
     }
+
+
+    void fuzzer::generate_reference_model(fuzzing_package &pkg,const instruction_stream &s) {
+
+        std::stringstream r_stream;
+        for (auto &[reg, val]: pkg.inputs){
+            r_stream << fmt::format("r{} = {}\n", reg, val);
+        }
+        for (auto &instr: s){
+            r_stream <<  fmt::format("{}\n", instr.to_python());
+        }
+        pkg.reference = r_stream.str();
+    }
+
 }
