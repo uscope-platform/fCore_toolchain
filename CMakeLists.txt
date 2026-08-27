@@ -95,10 +95,12 @@ add_custom_target(parsers)
 add_dependencies(parsers c_parser_gen asm_parser_gen schema_assembler)
 
 
+file(GLOB EMULATOR_SCHEMA_FILES ${CMAKE_CURRENT_SOURCE_DIR}/includes/schemas/v2/emulator/*.json)
+
 add_custom_command(
         OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/includes/schemas/v2/emulator/emulator_schema_v2.hpp
         COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/includes/schemas/assemble_schema.py ${CMAKE_CURRENT_SOURCE_DIR}
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/includes/schemas/v2/emulator/*.json
+        DEPENDS ${EMULATOR_SCHEMA_FILES}
         COMMENT "Assembling emulator schemas"
 )
 
