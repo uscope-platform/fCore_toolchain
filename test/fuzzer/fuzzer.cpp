@@ -98,12 +98,19 @@ namespace fcore {
             ldc r6, 2.0
             add r2, r1, r5
             mul r5, r6, r3
+            nop
+            nop
+            nop
+            nop
+            nop
+            nop
+            nop
             stop
         )");
 
         std::map<std::string, std::vector<uint32_t>> io_map = {{"r2", {2}}, {"r1", {1}}, {"r3", {3}}};
 
-        fcore_has has(stream, false, io_map);
+        fcore_has has(stream, false, io_map, stream_pass_manager::high_level_language);
 
         std::vector<uint32_t> test_exec = has.get_executable();
         test_exec.erase(test_exec.begin()+2, test_exec.begin()+5);
@@ -134,7 +141,7 @@ namespace fcore {
 
     TEST( fuzzer, emu_fuzzer_e2e) {
         fuzzer_config cfg;
-        cfg.rng_seed = 324;
+        cfg.rng_seed = 143;
         cfg.rng_float_params = {125, 20};
         cfg.max_program_size = 35;
         cfg.active_regs = 9;

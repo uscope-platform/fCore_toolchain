@@ -29,8 +29,18 @@
 namespace fcore{
     class fcore_has {
     public:
-        fcore_has(std::istream &input, bool print_debug, const std::map<std::string, std::vector<uint32_t>>& m);
-        void construct_assembler(std::istream &input, bool print_debug);
+        fcore_has(
+            std::istream &input,
+            bool print_debug,
+            const std::map<std::string, std::vector<uint32_t>>& m,
+            stream_pass_manager::mode opt_mode = stream_pass_manager::asm_language
+        );
+
+        void construct_assembler(
+            std::istream &input,
+            bool print_debug,
+            stream_pass_manager::mode opt_mode
+        );
 
         static std::vector<std::istream*> process_includes(const std::vector<std::string>& include_files, const std::string& include_directory);
 

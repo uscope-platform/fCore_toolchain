@@ -18,13 +18,21 @@
 
 namespace fcore{
 
-    fcore_has::fcore_has(std::istream &input,bool print_debug, const std::map<std::string, std::vector<uint32_t>>& m) {
+    fcore_has::fcore_has(
+        std::istream &input,
+        bool print_debug,
+        const std::map<std::string, std::vector<uint32_t>>& m,
+        stream_pass_manager::mode opt_mode
+    ) {
         dma_map = m;
-        construct_assembler(input,print_debug);
+        construct_assembler(input,print_debug, opt_mode);
     }
 
 
-    void fcore_has::construct_assembler(std::istream &input, bool print_debug) {
+    void fcore_has::construct_assembler(
+        std::istream &input,
+        bool print_debug,
+        stream_pass_manager::mode opt_mode) {
         variable_map tmp_map;
         std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>(tmp_map);
 
@@ -34,7 +42,7 @@ namespace fcore{
             std::shared_ptr<instrumentation_core> ic = nullptr;
 
             std::vector<int> io_res;
-            stream_pass_manager sman(io_res, ic, stream_pass_manager::asm_language);
+            stream_pass_manager sman(io_res, ic, opt_mode);
 
             instruction_stream program_stream = sman.process_stream(target_parser.program);
 

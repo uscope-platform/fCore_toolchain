@@ -62,7 +62,7 @@ namespace fcore {
         std::shared_ptr<instrumentation_core> ic = nullptr;
 
         std::vector<int> io_res;
-        stream_pass_manager sman(io_res, ic, stream_pass_manager::asm_language);
+        stream_pass_manager sman(io_res, ic, stream_pass_manager::high_level_language);
 
 
         instruction_stream program_stream = sman.process_stream(s);

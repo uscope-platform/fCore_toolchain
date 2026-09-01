@@ -609,6 +609,7 @@ namespace fcore::emulator_v2 {
             emulator_runner(fuzz_bundle, dummy_bus)
         });
 
+        runners->at(core_id).set_active_channels(fuzz_bundle.active_channels);
         sequencer.add_core(core_id, fuzz_bundle.sampling_frequency, fuzz_bundle.execution_order, fuzz_bundle.active_channels);
         sequencer.setup_run(1e-3);
         sequencer.calculate_sequence();
