@@ -48,6 +48,15 @@ namespace fcore {
         return result;
     }
 
+    std::vector<uint32_t> fuzzer::emulate(const fuzzing_package& pkg){
+
+        emulator_v2::emulator_manager emu_manager;
+        emu_manager.set_fuzz_package("fuzz_core", pkg);
+        emu_manager.emulate();
+        return emu_manager.dump_memory("fuzz_core",0);
+    }
+
+
     std::vector<uint32_t> fuzzer::compile_binary(const instruction_stream& s){
 
         std::shared_ptr<instrumentation_core> ic = nullptr;

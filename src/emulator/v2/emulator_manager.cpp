@@ -405,6 +405,9 @@ namespace fcore::emulator_v2 {
         }
     }
 
+    std::vector<uint32_t> emulator_manager::dump_memory(const std::string &core_id, uint32_t channel){
+        return runners->at(core_id).dump_memory(channel);
+    }
 
     void emulator_manager::run_cores(bool in_progress) {
         bool is_in_progress = in_progress;
@@ -551,6 +554,64 @@ namespace fcore::emulator_v2 {
 
     void emulator_manager::remove_breakpoint(const std::string &s, uint32_t addr) {
         runners->at(s).remove_breakpoint(addr);
+    }
+
+    void emulator_manager::set_fuzz_package(const std::string &core_id, const fuzzing_package& pkg) {
+        runners->clear();
+        sequencer.clear();
+        outputs_manager.clear();
+        fcore_program fuzz_program;
+        fuzz_program.binary = pkg.binary;
+        fuzz_program.program_length = {};
+        program_bundle fuzz_bundle;
+        fuzz_bundle.name = "fuzz_gadget";
+        fuzz_bundle.sampling_frequency = 1e3;
+        fuzz_bundle.active_channels = 1;
+        fuzz_bundle.execution_order = 1;
+        fuzz_bundle.efi_selector = efi_none;
+        fuzz_bundle.comparator_type = comparator_full;
+        fuzz_bundle.memories = {};
+
+        auto dummy_bus = std::make_shared<bus_allocator>();
+        for (auto &[addr, val]: pkg.inputs){
+            emulator_input_specs in;
+            in.name = "in_" + std::to_string(addr);
+            in.channel = {0};
+            in.vector_size = 1;
+            in.is_vector = false;
+            in.source_type = constant_input;
+            in.metadata.io_address = {addr};
+            in.metadata.type = type_float;
+            in.data = {std::vector<float>{val}};
+            fuzz_bundle.input.push_back(in);
+
+            core_endpoint ep;
+            ep.core_name = core_id;
+            ep.source_name = in.name;
+            ep.endpoint_class = core_iom_input;
+            ep.is_vector = false;
+            ep.vector_size = 1;
+            ep.channels = 1;
+            ep.bus_addresses = {addr};
+            dummy_bus->add_destination(core_id, in.name, ep);
+        }
+
+        fuzz_bundle.program = fuzz_program;
+
+        for (int i = 0; i<64; i++) {
+            io_map_entry e(i, i, "m");
+            fuzz_bundle.io.insert(e);
+        }
+
+
+        runners->insert({
+            core_id,
+            emulator_runner(fuzz_bundle, dummy_bus)
+        });
+
+        sequencer.add_core(core_id, fuzz_bundle.sampling_frequency, fuzz_bundle.execution_order, fuzz_bundle.active_channels);
+        sequencer.setup_run(1e-3);
+        sequencer.calculate_sequence();
     }
 
     void emulator_manager::set_specs(const nlohmann::json &spec_file) {

@@ -29,6 +29,7 @@
 #include "data_structures/emulation/v2/emulator_metadata.hpp"
 #include "emulator/v2/interconnect_manager.hpp"
 #include "emulator/v2/emulator_runner.hpp"
+#include "fuzzer/fuzzer_metadata.hpp"
 
 namespace fcore::emulator_v2{
 
@@ -39,7 +40,9 @@ namespace fcore::emulator_v2{
         void enable_debug_mode() {debug_autogen = true;}
 
         std::vector<deployed_program> deploy_programs();
-        void set_profiler(const std::shared_ptr<instrumentation_core> &prof){ this->profiler = prof;};
+        void set_profiler(const std::shared_ptr<instrumentation_core> &prof){ this->profiler = prof;}
+
+        void set_fuzz_package(const std::string &core_id, const fuzzing_package& pkg);
         void set_specs(const nlohmann::json &spec_file);
         std::set<uint32_t> get_breakpoints(const std::string &id);
         void process();
@@ -71,6 +74,7 @@ namespace fcore::emulator_v2{
         deployment_options get_deployment_options(const std::string &core_id) {return emu_spec.get_deployment_options(core_id);}
         std::map<std::string, std::vector<memory_init_value>> get_memory_init_values();
         std::map<std::string, std::string> dump_bus() {return ic_manager.get_bus_engine()->dump_bus();}
+        std::vector<uint32_t> dump_memory(const std::string &core_id, uint32_t channel);
     private:
         void run_cores(bool in_progress);
 

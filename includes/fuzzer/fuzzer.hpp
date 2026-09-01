@@ -27,28 +27,17 @@
 #include "passes/instruction_stream/stream_pass_manager.hpp"
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "backend/binary_generator.hpp"
+#include "emulator/v2/emulator_manager.hpp"
+#include "fuzzer/fuzzer_metadata.hpp"
 
 namespace fcore{
-    struct fuzzer_config {
-        uint8_t min_inputs = 1;
-        uint8_t max_inputs = 5;
-        uint8_t active_regs = 5;
-        uint8_t min_program_size = 3;
-        uint16_t max_program_size = 150;
-        uint32_t rng_seed;
-        std::pair<float, float> rng_float_params;
-    };
 
-    struct fuzzing_package {
-        std::vector<uint32_t> binary;
-        std::map<uint32_t, float> inputs;
-        std::string reference;
-    };
 
     class fuzzer {
     public:
         explicit fuzzer(const fuzzer_config &config);
         fuzzing_package generate_binary();
+        std::vector<uint32_t> emulate(const fuzzing_package &pkg);
     private:
         static void generate_reference_model(fuzzing_package &pkg, const instruction_stream &s);
         std::vector<uint32_t> compile_binary(const instruction_stream &s);

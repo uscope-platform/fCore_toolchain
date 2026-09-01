@@ -85,4 +85,70 @@ namespace fcore {
         }
 
     }
+
+    TEST( fuzzer, program_execution) {
+        fuzzer_config cfg;
+        cfg.rng_seed = 1523;
+        cfg.rng_float_params = {125, 20};
+        cfg.max_program_size = 35;
+        cfg.active_regs = 9;
+        fuzzer f(cfg);
+
+        std::istringstream stream(R"(
+            ldc r6, 2.0
+            add r2, r1, r5
+            mul r5, r6, r3
+            stop
+        )");
+
+        std::map<std::string, std::vector<uint32_t>> io_map = {{"r2", {2}}, {"r1", {1}}, {"r3", {3}}};
+
+        fcore_has has(stream, false, io_map);
+
+        std::vector<uint32_t> test_exec = has.get_executable();
+        test_exec.erase(test_exec.begin()+2, test_exec.begin()+5);
+        fuzzing_package pkg;
+        pkg.binary = test_exec;
+        pkg.inputs = {
+                {2, 153.097794},
+                {1, 124.245865},
+        };
+        auto mem = f.emulate(pkg);
+        std::vector<float> result(mem.size());
+        std::transform(mem.begin(), mem.end(), result.begin(),
+                       [](uint32_t val) { return std::bit_cast<float>(val); });
+
+        std::vector<float> expected_result(mem.size());
+        expected_result[1] = 124.245865;
+        expected_result[2] = 153.097794;
+        expected_result[5] = expected_result[1] + expected_result[2];
+        expected_result[6] = 2.0;
+        expected_result[3] = (expected_result[1] + expected_result[2])*2    ;
+
+        for (int i = 0; i<result.size(); i++){
+            EXPECT_FLOAT_EQ(result[i], expected_result[i]);
+        }
+    }
+
+
+
+    TEST( fuzzer, emu_fuzzer_e2e) {
+        fuzzer_config cfg;
+        cfg.rng_seed = 324;
+        cfg.rng_float_params = {125, 20};
+        cfg.max_program_size = 35;
+        cfg.active_regs = 9;
+        fuzzer f(cfg);
+
+
+        auto pkg = f.generate_binary();
+        auto mem = f.emulate(pkg);
+        std::vector<float> result(mem.size());
+        std::transform(mem.begin(), mem.end(), result.begin(),
+                       [](uint32_t val) { return std::bit_cast<float>(val); });
+
+        int i = 0;
+    }
+
+
 }

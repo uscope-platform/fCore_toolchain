@@ -57,6 +57,9 @@ namespace fcore::emulator_v2 {
 
         std::map<std::string, uint32_t> get_inputs() {return current_inputs;}
 
+        std::vector<uint32_t> dump_memory(uint32_t channel){
+            return emulators_memory.at(channel);
+        }
     private:
 
         std::mt19937 gen;

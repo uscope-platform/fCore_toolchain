@@ -37,6 +37,7 @@ set(FCORE_COMMON_SRCS_I
         passes/instruction_stream/stall_insertion.cpp
         passes/instruction_stream/bound_register_assignment.cpp
         passes/instruction_stream/result_deconfliction.cpp
+        ../includes/fuzzer/fuzzer_metadata.hpp
 )
 
 
@@ -129,7 +130,6 @@ set(FCORE_EMU_SRCS
             fuzzer/fuzzer.cpp
             fuzzer/fuzzer_rng.cpp
             fuzzer/fuzzer_rng.cpp
-            ../includes/fuzzer/fuzzer_rng.hpp
     )
 
 
@@ -149,12 +149,6 @@ target_link_libraries(fcore_has_lib PUBLIC
         spdlog::spdlog
 )
 
-add_library(fcore_fuzz_lib ${FCORE_FUZZ_SRCS})
-target_link_libraries(fcore_fuzz_lib PUBLIC
-        common_srcs
-        antlr4_static
-        spdlog::spdlog
-)
 
 
 add_executable(fCore_has fcore_has_main.cpp)
@@ -247,6 +241,16 @@ target_link_libraries(fCore_emu
         CLI11::CLI11
 )
 add_dependencies(fCore_emu schema_assembler)
+
+
+
+add_library(fcore_fuzz_lib ${FCORE_FUZZ_SRCS})
+target_link_libraries(fcore_fuzz_lib PUBLIC
+        common_srcs
+        antlr4_static
+        spdlog::spdlog
+        fcore_emu_lib
+)
 
 add_custom_target(toolchain)
 add_dependencies(toolchain fCore_has fCore_cc fCore_dis fCore_emu schema_assembler)
