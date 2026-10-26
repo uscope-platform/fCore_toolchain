@@ -60,7 +60,8 @@ namespace fcore{
 
     class hl_acting_visitor {
     public:
-        /// Fails if the tree is malformed or if the callbacks asked to stop, in which case the tree is left half processed.
+        /// Fails if the tree is malformed. If the callbacks asked to stop the tree is returned half processed and the
+        /// party that asked for it is expected to report why.
         [[nodiscard]] result<std::shared_ptr<ast_code_block>> visit(const hl_acting_visitor_operations &operations,const std::shared_ptr<ast_code_block> &node);
     private:
         std::vector<std::shared_ptr<ast_node>> process_node_by_type(const std::shared_ptr<ast_node> &node);

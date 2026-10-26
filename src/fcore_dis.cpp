@@ -30,13 +30,13 @@ namespace fcore{
 
     fcore_dis::fcore_dis(std::istream &input, bin_loader_input_type_t in_type) {
         binary_loader dis;
-        finish_loading(dis.load_stream(input, in_type), dis);
+        finish_loading(catching([&]{return dis.load_stream(input, in_type);}), dis);
     }
 
 
     fcore_dis::fcore_dis(const std::vector<uint32_t> &mem) {
         binary_loader dis;
-        finish_loading(dis.load_program(mem), dis);
+        finish_loading(catching([&]{return dis.load_program(mem);}), dis);
     }
 
     void fcore_dis::finish_loading(result<void> loaded, binary_loader &loader) {

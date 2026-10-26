@@ -22,6 +22,7 @@
 
 #include <nlohmann/json.hpp>
 #include "tools/array_linearizer.hpp"
+#include "errors/invariants.hpp"
 
 
 namespace fcore{
@@ -85,14 +86,14 @@ namespace fcore{
             if(variable_type == var_type_float_const){
                 const_f = f;
             } else {
-                throw std::runtime_error("Setting the floating point value of a non floating point variable is not allowed");
+                invariant_violated("setting the floating point value of a non floating point variable");
             }
         }
         void set_immediate(const int i){
             if(variable_type == var_type_int_const){
                 const_i = i;
             } else {
-                throw std::runtime_error("Setting the integer  value of a non integer point variable is not allowed");
+                invariant_violated("setting the integer value of a non integer variable");
             }
         }
 

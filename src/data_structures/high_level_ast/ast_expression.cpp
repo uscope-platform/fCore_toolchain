@@ -164,7 +164,7 @@ namespace fcore{
         return res;
     }
 
-    std::shared_ptr<ast_operand> ast_expression::evaluate(const std::shared_ptr<ast_expression> &node) {
+    result<std::shared_ptr<ast_operand>> ast_expression::evaluate(const std::shared_ptr<ast_expression> &node) {
         return expression_evaluator::evaluate_expression(node);
     }
 

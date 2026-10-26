@@ -69,3 +69,15 @@ TEST(pass_errors, failed_pass_does_not_poison_the_next_run) {
     EXPECT_FALSE(engine.run_semantic_analysis(bad_ast, bad_globals));
     EXPECT_TRUE(engine.run_semantic_analysis(good_ast, good_globals));
 }
+
+TEST(pass_errors, constant_that_the_evaluator_can_not_compute_is_an_error) {
+    // known limitation, see CONSTANT_FOLDING_ISSUE.md
+    std::vector<std::string> input = {"float main(){ float a = abs(2.0); return a; }"};
+    std::vector<std::string> includes;
+
+    fcore_cc compiler(input, includes);
+    auto compilation = compiler.compile(1);
+    ASSERT_FALSE(compilation);
+    EXPECT_EQ(compilation.error().code, error_code::not_supported);
+    EXPECT_EQ(compilation.error().message, "the operation can not be evaluated at compile time");
+}

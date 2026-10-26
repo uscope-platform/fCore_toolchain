@@ -66,6 +66,28 @@ namespace fcore {
         if constexpr (!std::is_void_v<T>) return std::move(r).value();
     }
 
+    template<typename T>
+    inline constexpr bool is_result_v = false;
+    template<typename T>
+    inline constexpr bool is_result_v<result<T>> = true;
+
+    namespace detail {
+        /// Translates the exception being handled into a failure, to be called from inside a catch block.
+        inline std::unexpected<error> from_current_exception() {
+            try {
+                throw;
+            } catch (const error_exception &e) {
+                return std::unexpected<error>(e.get());
+            } catch (const std::invalid_argument &e) {
+                return fail(error_code::invalid_argument, e.what());
+            } catch (const std::exception &e) {
+                return fail(error_code::unknown, e.what());
+            } catch (...) {
+                return fail(error_code::unknown, "unknown exception");
+            }
+        }
+    }
+
     /// exception -> result, for not yet migrated callees called from migrated callers.
     template<typename F>
     auto catching(F &&f) -> result<std::invoke_result_t<F>> {
@@ -76,12 +98,19 @@ namespace fcore {
             } else {
                 return std::forward<F>(f)();
             }
-        } catch (const error_exception &e) {
-            return std::unexpected<error>(e.get());
-        } catch (const std::invalid_argument &e) {
-            return fail(error_code::invalid_argument, e.what());
-        } catch (const std::exception &e) {
-            return fail(error_code::unknown, e.what());
+        } catch (...) {
+            return detail::from_current_exception();
+        }
+    }
+
+    /// Same for callees that already return a result, which is handed back as it is instead of being nested.
+    template<typename F>
+        requires is_result_v<std::invoke_result_t<F>>
+    auto catching(F &&f) -> std::invoke_result_t<F> {
+        try {
+            return std::forward<F>(f)();
+        } catch (...) {
+            return detail::from_current_exception();
         }
     }
 

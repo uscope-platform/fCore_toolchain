@@ -94,7 +94,9 @@ TEST(hl_expression, expression_evaluation) {
     op = std::make_shared<ast_operand>(var);
     e_div->set_rhs(op);
 
-    auto result = ast_expression::evaluate(e_div);
+    auto evaluation = ast_expression::evaluate(e_div);
+    ASSERT_TRUE(evaluation);
+    auto result = evaluation.value();
 
     var = std::make_shared<variable>("constant", 3.7714285f);
     auto reference = std::make_shared<ast_operand>(var);

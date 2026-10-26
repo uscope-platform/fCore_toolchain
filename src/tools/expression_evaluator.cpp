@@ -19,7 +19,7 @@
 namespace fcore{
 
 
-    std::shared_ptr<ast_operand>
+    expression_evaluator::evaluated_t
     expression_evaluator::evaluate_expression(std::shared_ptr<ast_expression> expression) {
         if(expression->is_unary()) {
             return evaluate_unary_expression(expression);
@@ -32,18 +32,13 @@ namespace fcore{
 
 
 
-    std::shared_ptr<ast_operand>
+    expression_evaluator::evaluated_t
     expression_evaluator::evaluate_unary_expression(std::shared_ptr<ast_expression> expression) {
         std::shared_ptr<ast_operand> retval;
 
-        std::shared_ptr<ast_operand> rhs;
-        if(expression->get_rhs()->node_type ==hl_ast_node_type_expr){
-            rhs = evaluate_expression_side(std::static_pointer_cast<ast_expression>(expression->get_rhs()));
-        } else if(expression->get_rhs()->node_type ==hl_ast_node_type_operand) {
-            rhs = std::static_pointer_cast<ast_operand>(expression->get_rhs());
-        } else {
-            throw std::runtime_error("node type not expected during expression evaluation");
-        }
+        auto rhs_side = evaluate_expression_side(expression->get_rhs());
+        if(!rhs_side) return fail(std::move(rhs_side).error());
+        std::shared_ptr<ast_operand> rhs = rhs_side.value();
 
         c_types_t expr_type = c_type_int;
         //In order for the result type to be flating point either the operand is a float or the expression is reciprocal, which
@@ -59,14 +54,18 @@ namespace fcore{
                 std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
                 retval = std::make_shared<ast_operand>(var);
 
-                retval->set_immediate(evaluate_unary_expr_f(operand, expression->get_type()));
+                auto evaluation = evaluate_unary_expr_f(operand, expression->get_type());
+                if(!evaluation) return fail(std::move(evaluation).error().with_context("evaluating " + expression->pretty_print()));
+                retval->set_immediate(evaluation.value());
             } else {
                 int operand = rhs->get_int_value();
 
                 std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
                 retval = std::make_shared<ast_operand>(var);
 
-                retval->set_immediate(evaluate_unary_expr_i(operand, expression->get_type()));
+                auto evaluation = evaluate_unary_expr_i(operand, expression->get_type());
+                if(!evaluation) return fail(std::move(evaluation).error().with_context("evaluating " + expression->pretty_print()));
+                retval->set_immediate(evaluation.value());
             }
         } else {
             if(expr_type == c_type_float){
@@ -89,28 +88,18 @@ namespace fcore{
         return retval;
     }
 
-    std::shared_ptr<ast_operand>
+    expression_evaluator::evaluated_t
     expression_evaluator::evaluate_regular_expression(std::shared_ptr<ast_expression> expression) {
 
         std::shared_ptr<ast_operand> retval;
 
-        std::shared_ptr<ast_operand> lhs;
-        if(expression->get_lhs().value()->node_type ==hl_ast_node_type_expr){
-            lhs = evaluate_expression_side(std::static_pointer_cast<ast_expression>(expression->get_lhs().value()));
-        } else if(expression->get_lhs().value()->node_type ==hl_ast_node_type_operand) {
-            lhs = std::static_pointer_cast<ast_operand>(expression->get_lhs().value());
-        } else {
-            throw std::runtime_error("node type not expected during expression evaluation");
-        }
+        auto lhs_side = evaluate_expression_side(expression->get_lhs().value());
+        if(!lhs_side) return fail(std::move(lhs_side).error());
+        std::shared_ptr<ast_operand> lhs = lhs_side.value();
 
-        std::shared_ptr<ast_operand> rhs;
-        if(expression->get_rhs()->node_type ==hl_ast_node_type_expr){
-            rhs = evaluate_expression_side(std::static_pointer_cast<ast_expression>(expression->get_rhs()));
-        } else if(expression->get_rhs()->node_type ==hl_ast_node_type_operand) {
-            rhs = std::static_pointer_cast<ast_operand>(expression->get_rhs());
-        } else {
-            throw std::runtime_error("node type not expected during expression evaluation");
-        }
+        auto rhs_side = evaluate_expression_side(expression->get_rhs());
+        if(!rhs_side) return fail(std::move(rhs_side).error());
+        std::shared_ptr<ast_operand> rhs = rhs_side.value();
 
         c_types_t expr_type = c_type_int;
 
@@ -124,7 +113,9 @@ namespace fcore{
             int op_b = rhs->get_int_value();
 
 
-            int operand = evaluate_regular_expr_i(op_a, op_b, expression->get_type());
+            auto evaluation = evaluate_regular_expr_i(op_a, op_b, expression->get_type());
+            if(!evaluation) return fail(std::move(evaluation).error().with_context("evaluating " + expression->pretty_print()));
+            int operand = evaluation.value();
 
             std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
             retval = std::make_shared<ast_operand>(var);
@@ -133,7 +124,9 @@ namespace fcore{
             float op_a = lhs->get_float_val();
             float op_b = rhs->get_float_val();
 
-            float operand = evaluate_regular_expr_f(op_a, op_b, expression->get_type());
+            auto evaluation = evaluate_regular_expr_f(op_a, op_b, expression->get_type());
+            if(!evaluation) return fail(std::move(evaluation).error().with_context("evaluating " + expression->pretty_print()));
+            float operand = evaluation.value();
 
             std::shared_ptr<variable> var = std::make_shared<variable>("constant", operand);
             retval = std::make_shared<ast_operand>(var);
@@ -145,20 +138,19 @@ namespace fcore{
 
 
 
-    std::shared_ptr<ast_operand>
+    expression_evaluator::evaluated_t
     expression_evaluator::evaluate_expression_side(const std::shared_ptr<ast_node> &side) {
-        std::shared_ptr<ast_operand> retval;
-
         if(side->node_type == hl_ast_node_type_operand){
-            retval = std::static_pointer_cast<ast_operand>(side);
-        } else{
-            retval = evaluate_expression(std::static_pointer_cast<ast_expression>(side));
+            return std::static_pointer_cast<ast_operand>(side);
         }
-        return retval;
+        if(side->node_type == hl_ast_node_type_expr){
+            return evaluate_expression(std::static_pointer_cast<ast_expression>(side));
+        }
+        return fail(error_code::internal_error, "node type not expected during expression evaluation");
     }
 
 
-    float expression_evaluator::evaluate_unary_expr_f(float operand, ast_expression::expression_type operation) {
+    result<float> expression_evaluator::evaluate_unary_expr_f(float operand, ast_expression::expression_type operation) {
         switch (operation) {
             case ast_expression::RECIPROCAL:
                 return 1/operand;
@@ -175,12 +167,12 @@ namespace fcore{
             case ast_expression::FTI:
                 return operand;
             default:
-                throw std::runtime_error("Internal error: this condition should not have been possible");
+                return fail(error_code::not_supported, "the operation can not be evaluated at compile time");
 
         }
     }
 
-    int expression_evaluator::evaluate_unary_expr_i(int operand, ast_expression::expression_type operation) {
+    result<int> expression_evaluator::evaluate_unary_expr_i(int operand, ast_expression::expression_type operation) {
         switch (operation) {
             case ast_expression::RECIPROCAL:
                 return 1/operand;
@@ -197,13 +189,13 @@ namespace fcore{
             case ast_expression::ITF:
                 return operand;
             default:
-                throw std::runtime_error("Internal error: this condition should not have been possible");
+                return fail(error_code::not_supported, "the operation can not be evaluated at compile time");
 
         }
     }
 
 
-    float expression_evaluator::evaluate_regular_expr_f(float operand_a, float operand_b, ast_expression::expression_type operation) {
+    result<float> expression_evaluator::evaluate_regular_expr_f(float operand_a, float operand_b, ast_expression::expression_type operation) {
         switch (operation) {
             case ast_expression::ADD:
                 return operand_a+operand_b;
@@ -230,11 +222,11 @@ namespace fcore{
             case ast_expression::SATN:
                 return operand_a<operand_b?operand_b:operand_a;
             default:
-                throw std::runtime_error("Internal Unexpected constant expression");
+                return fail(error_code::not_supported, "the operation can not be evaluated at compile time");
         }
     }
 
-    int expression_evaluator::evaluate_regular_expr_i(int operand_a, int operand_b, ast_expression::expression_type operation) {
+    result<int> expression_evaluator::evaluate_regular_expr_i(int operand_a, int operand_b, ast_expression::expression_type operation) {
         switch (operation) {
             case ast_expression::ADD:
                 return operand_a+operand_b;
@@ -277,7 +269,7 @@ namespace fcore{
             case ast_expression::SATN:
                 return operand_a<operand_b?operand_b:operand_a;
             default:
-                throw std::runtime_error("Internal Unexpected constant expression");
+                return fail(error_code::not_supported, "the operation can not be evaluated at compile time");
         }
     }
 
@@ -298,37 +290,22 @@ namespace fcore{
         }
     }
 
-    std::shared_ptr<ast_operand>
+    expression_evaluator::evaluated_t
     expression_evaluator::evaluate_ternary_expression(std::shared_ptr<ast_expression> expression) {
 
         std::shared_ptr<ast_operand> retval;
 
-        std::shared_ptr<ast_operand> lhs;
-        if(expression->get_lhs().value()->node_type ==hl_ast_node_type_expr){
-            lhs = evaluate_expression_side(std::static_pointer_cast<ast_expression>(expression->get_lhs().value()));
-        } else if(expression->get_lhs().value()->node_type ==hl_ast_node_type_operand) {
-            lhs = std::static_pointer_cast<ast_operand>(expression->get_lhs().value());
-        } else {
-            throw std::runtime_error("node type not expected during expression evaluation");
-        }
+        auto lhs_side = evaluate_expression_side(expression->get_lhs().value());
+        if(!lhs_side) return fail(std::move(lhs_side).error());
+        std::shared_ptr<ast_operand> lhs = lhs_side.value();
 
-        std::shared_ptr<ast_operand> rhs;
-        if(expression->get_rhs()->node_type ==hl_ast_node_type_expr){
-            rhs = evaluate_expression_side(std::static_pointer_cast<ast_expression>(expression->get_rhs()));
-        } else if(expression->get_rhs()->node_type ==hl_ast_node_type_operand) {
-            rhs = std::static_pointer_cast<ast_operand>(expression->get_rhs());
-        } else {
-            throw std::runtime_error("node type not expected during expression evaluation");
-        }
+        auto rhs_side = evaluate_expression_side(expression->get_rhs());
+        if(!rhs_side) return fail(std::move(rhs_side).error());
+        std::shared_ptr<ast_operand> rhs = rhs_side.value();
 
-        std::shared_ptr<ast_operand> ths;
-        if(expression->get_ths().value()->node_type ==hl_ast_node_type_expr){
-            ths = evaluate_expression_side(std::static_pointer_cast<ast_expression>(expression->get_ths().value()));
-        } else if(expression->get_rhs()->node_type ==hl_ast_node_type_operand) {
-            ths = std::static_pointer_cast<ast_operand>(expression->get_ths().value());
-        } else {
-            throw std::runtime_error("node type not expected during expression evaluation");
-        }
+        auto ths_side = evaluate_expression_side(expression->get_ths().value());
+        if(!ths_side) return fail(std::move(ths_side).error());
+        std::shared_ptr<ast_operand> ths = ths_side.value();
 
         c_types_t expr_type = c_type_int;
 

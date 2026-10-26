@@ -15,6 +15,7 @@
 
 #include <gtest/gtest.h>
 
+#include "errors/invariants.hpp"
 #include "errors/result.hpp"
 
 using namespace fcore;
@@ -94,4 +95,29 @@ TEST(result, bridge_exception_to_result) {
     auto round_trip = catching([] { return value_or_throw(parse_positive(-1)); });
     ASSERT_FALSE(round_trip);
     EXPECT_EQ(round_trip.error().code, error_code::invalid_argument);
+}
+
+TEST(invariants, violation_aborts_with_message_and_location) {
+    EXPECT_DEATH(invariant_violated("broken state"), "internal error: broken state");
+    EXPECT_DEATH(invariant_violated("broken state"), "error.cpp");
+}
+
+TEST(invariants, ensure_only_aborts_when_the_condition_fails) {
+    ensure(true, "never printed");
+    EXPECT_DEATH(ensure(false, "condition failed"), "condition failed");
+}
+
+TEST(result, bridge_keeps_results_unnested_and_catches_everything) {
+    auto passthrough = catching([]() -> result<int> { return 3; });
+    static_assert(std::is_same_v<decltype(passthrough), result<int>>);
+    EXPECT_EQ(passthrough.value(), 3);
+
+    auto failed = catching([]() -> result<int> { return fail(error_code::io_error, "disk"); });
+    ASSERT_FALSE(failed);
+    EXPECT_EQ(failed.error().code, error_code::io_error);
+
+    // not derived from std::exception, e.g. a thrown string literal
+    auto odd = catching([]() -> int { throw "oops"; });
+    ASSERT_FALSE(odd);
+    EXPECT_EQ(odd.error().code, error_code::unknown);
 }

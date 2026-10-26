@@ -36,15 +36,11 @@ namespace fcore{
 
         last_error.reset();
 
-        asm_language_parser target_parser(std::make_shared<variable_map>());
-        auto parsed = target_parser.parse(input);
-        if(!parsed){
-            last_error = parsed.error();
-            return parsed;
-        }
+        // the stream passes and the writer still report failures by throwing
+        auto assembled = catching([&]() -> result<void> {
+            asm_language_parser target_parser(std::make_shared<variable_map>());
+            if(auto parsed = target_parser.parse(input); !parsed) return parsed;
 
-        // the passes and the writer still report failures by throwing
-        auto assembled = catching([&]{
             std::shared_ptr<instrumentation_core> ic = nullptr;
 
             std::vector<int> io_res;
@@ -60,6 +56,7 @@ namespace fcore{
             }
 
             writer.process_stream(program_stream, dma_map, amap, print_debug);
+            return {};
         });
         if(!assembled) last_error = assembled.error();
         return assembled;

@@ -164,7 +164,12 @@ namespace fcore{
         const_cond_expr->set_lhs(lhs_op);
         const_cond_expr->set_rhs(rhs_op);
 
-        std::shared_ptr<ast_operand> result_op =  ast_expression::evaluate(const_cond_expr);
+        auto evaluated_condition = ast_expression::evaluate(const_cond_expr);
+        if(!evaluated_condition){
+            report(std::move(evaluated_condition).error().with_context("evaluating a constant condition"));
+            return {};
+        }
+        std::shared_ptr<ast_operand> result_op = evaluated_condition.value();
         bool result;
         if(result_op->get_type() == var_type_int_const) result = result_op->get_int_value();
         if(result_op->get_type() == var_type_float_const) result = result_op->get_float_val() == 1;

@@ -21,6 +21,7 @@
 #include "ast_node.hpp"
 #include "ast_call.hpp"
 #include "ast_conditional.hpp"
+#include "errors/result.hpp"
 
 namespace fcore{
 
@@ -110,7 +111,8 @@ namespace fcore{
         void swap_operands();
 
         bool is_constant();
-        static std::shared_ptr<ast_operand> evaluate(const std::shared_ptr<ast_expression> &node);
+        /// Computes a constant expression, fails if it contains an operation that is not computable at compile time
+        [[nodiscard]] static result<std::shared_ptr<ast_operand>> evaluate(const std::shared_ptr<ast_expression> &node);
 
         friend bool operator==(const ast_expression& lhs, const ast_expression& rhs);
 

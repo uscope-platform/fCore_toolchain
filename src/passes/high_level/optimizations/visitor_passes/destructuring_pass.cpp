@@ -82,7 +82,12 @@ namespace fcore {
                         auto old_inits = inst->get_initializers();
                         for(int i = 0; i< defs.size(); i++) {
                             if(defs[i]->get_name() == lhs->get_variable()->get_struct_accessors()[0]) {
-                                old_inits[i] = ast_expression::evaluate(rhs);
+                                auto evaluated = ast_expression::evaluate(rhs);
+                                if(!evaluated){
+                                    report(std::move(evaluated).error().with_context("evaluating a struct initializer"));
+                                    return {exp};
+                                }
+                                old_inits[i] = evaluated.value();
                             }
                         }
                         inst->add_initializers(old_inits);

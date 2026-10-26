@@ -28,16 +28,22 @@ namespace fcore{
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;
 
-        ops.post.visit_expression = process_expression;
+        ops.post.visit_expression = [this](std::shared_ptr<ast_expression> exp) { return process_expression(std::move(exp)); };
+        ops.should_stop = stop_condition();
 
-        return visitor.visit(ops, element);
+        return finish(visitor.visit(ops, element));
 
     }
 
 
     std::vector<std::shared_ptr<ast_node>>  constant_folding_pass::process_expression(std::shared_ptr<ast_expression> exp) {
         if(exp->is_constant()){
-            return {ast_expression::evaluate(exp)};
+            auto evaluated = ast_expression::evaluate(exp);
+            if(!evaluated){
+                report(std::move(evaluated).error());
+                return {exp};
+            }
+            return {evaluated.value()};
         } else return {exp};
     }
 

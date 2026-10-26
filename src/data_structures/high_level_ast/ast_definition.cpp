@@ -17,6 +17,7 @@
 #include "data_structures/high_level_ast/ast_definition.hpp"
 #include "data_structures/high_level_ast/ast_struct.hpp"
 #include <utility>
+#include "errors/invariants.hpp"
 
 namespace fcore {
 
@@ -59,7 +60,7 @@ namespace fcore {
     }
 
     void ast_definition::set_scalar_initializer(const std::shared_ptr<ast_node> &init, uint32_t idx) {
-        if(initializer.size()<idx) throw std::runtime_error("Error: Attempt to set undefined initializer");
+        ensure(idx < initializer.size(), "attempt to set an initializer that does not exist");
         initializer[idx] = init;
     }
 

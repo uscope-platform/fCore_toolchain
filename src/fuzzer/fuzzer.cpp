@@ -13,6 +13,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 #include "fuzzer/fuzzer.hpp"
+#include "errors/invariants.hpp"
 
 
 namespace fcore {
@@ -96,7 +97,7 @@ namespace fcore {
             case isa_independent_instruction:
             case isa_pseudo_instruction:
             default:
-                throw std::runtime_error("attempted generation of an instruction type unsuitable for fuzzing");
+                invariant_violated("attempted generation of an instruction type unsuitable for fuzzing");
         }
     }
     conversion_instruction fuzzer::generate_conversion_instruction(opcode_table_t op, uint32_t dest, std::vector<unsigned int>& available_inputs){

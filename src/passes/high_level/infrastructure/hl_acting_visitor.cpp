@@ -29,8 +29,8 @@ namespace fcore{
             new_content.insert(new_content.end(), process_result.begin(), process_result.end());
         }
         if(failure) return fail(failure.value());
-        if(stopped()) return fail(error_code::internal_error, "AST visit interrupted without a reported failure");
-        ret_val->set_content(new_content);
+        // an interruption asked for by the callbacks is not a failure of the visitor, whoever asked for it reports why
+        if(!stopped()) ret_val->set_content(new_content);
         return ret_val;
     }
 

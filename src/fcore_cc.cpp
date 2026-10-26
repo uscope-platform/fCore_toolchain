@@ -37,6 +37,14 @@ namespace fcore{
 
     result<void> fcore_cc::compile(uint8_t n_channels) {
         last_error.reset();
+
+        // parts of the toolchain still report failures by throwing
+        auto compiled = catching([&]{return run_compilation(n_channels);});
+        if(!compiled) last_error = compiled.error();
+        return compiled;
+    }
+
+    result<void> fcore_cc::run_compilation(uint8_t n_channels) {
         auto def_map = std::make_shared<define_map>();
 
         if (profiling_core != nullptr) profiling_core->set_phase("parsing");
@@ -54,8 +62,7 @@ namespace fcore{
                     include_ast = parse_include(ifs, def_map);
                 }
                 if(!include_ast){
-                    last_error = std::move(include_ast).error().with_context("parsing header");
-                    return fail(last_error.value());
+                    return fail(std::move(include_ast).error().with_context("parsing header"));
                 }
                 includes_ASTs.push_back(include_ast.value());
             }
@@ -63,15 +70,10 @@ namespace fcore{
         if (profiling_core != nullptr) profiling_core->end_event("parse headers");
 
         parse_dma_spec();
-        if(auto parsed = parse(dma_io_spec, def_map); !parsed){
-            last_error = parsed.error();
-            return parsed;
-        }
+        if(auto parsed = parse(dma_io_spec, def_map); !parsed) return parsed;
 
         merge_includes(includes_ASTs);
-        auto compiled = optimize(dma_io_map, n_channels);
-        if(!compiled) last_error = compiled.error();
-        return compiled;
+        return optimize(dma_io_map, n_channels);
     }
 
 
@@ -146,27 +148,25 @@ namespace fcore{
         if(!lowered) return fail(std::move(lowered).error());
         instruction_stream program_stream  = lowered.value();
 
-        // the stream passes and the writer still report failures by throwing
-        return catching([&]{
-            stream_pass_manager sman(
-                profiling_core,
-                stream_pass_manager::high_level_language,
-                n_channels
-            );
-            program_stream = sman.process_stream(program_stream);
+        stream_pass_manager sman(
+            profiling_core,
+            stream_pass_manager::high_level_language,
+            n_channels
+        );
+        program_stream = sman.process_stream(program_stream);
 
-            allocation_map = sman.get_allocation_map();
-            auto bindings_map = sman.get_bindings_map();
-            analyze_program_length(sman.get_instruction_count());
+        allocation_map = sman.get_allocation_map();
+        auto bindings_map = sman.get_bindings_map();
+        analyze_program_length(sman.get_instruction_count());
 
 
-            if(program_stream.empty()){
-                program_stream.push_back(instruction_variant(independent_instruction(opcode_stop)));
-            }
-            insert_stop(program_stream);
-            flush_pipeline(program_stream, n_channels);
-            writer.process_stream(program_stream,dma_map,allocation_map, logging);
-        });
+        if(program_stream.empty()){
+            program_stream.push_back(instruction_variant(independent_instruction(opcode_stop)));
+        }
+        insert_stop(program_stream);
+        flush_pipeline(program_stream, n_channels);
+        writer.process_stream(program_stream,dma_map,allocation_map, logging);
+        return {};
     }
 
     void fcore_cc::parse_dma_spec() {

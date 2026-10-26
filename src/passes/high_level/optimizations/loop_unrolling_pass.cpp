@@ -124,7 +124,12 @@ namespace fcore{
                 report(error(error_code::lowering_error, "Loop initialization statement is not a compile time constant"));
                 return 0;
             }
-            initializer = ast_expression::evaluate(std::static_pointer_cast<ast_expression>(raw_initializer));
+            auto evaluated = ast_expression::evaluate(std::static_pointer_cast<ast_expression>(raw_initializer));
+            if(!evaluated){
+                report(std::move(evaluated).error().with_context("evaluating the loop initializer"));
+                return 0;
+            }
+            initializer = evaluated.value();
         } else if(raw_initializer->node_type == hl_ast_node_type_operand){
             initializer = std::static_pointer_cast<ast_operand>(raw_initializer);
             if(initializer->get_type() == var_type_float_const){
@@ -156,7 +161,11 @@ namespace fcore{
 
         std::shared_ptr<ast_expression> loop_cond = update_loop_condition(condition, loop_var);
         auto expr = ast_expression::evaluate(loop_cond);
-        bool res = expr->get_int_value();
+        if(!expr){
+            report(std::move(expr).error().with_context("evaluating the loop condition"));
+            return false;
+        }
+        bool res = expr.value()->get_int_value();
         ++current_loop_iteration;
         return res;
     }

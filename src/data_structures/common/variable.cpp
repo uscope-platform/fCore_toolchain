@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "data_structures/common/variable.hpp"
+#include "errors/invariants.hpp"
 
 namespace fcore{
 
@@ -98,7 +99,7 @@ namespace fcore{
         if(is_constant()){
             return std::make_pair(const_i, false);
         }
-        throw std::runtime_error("Invalid operation: the compiler tried to get the numeric value of a variable");
+        invariant_violated("the compiler tried to get the numeric value of a variable that is neither a register nor a constant");
     }
 
     float variable::get_float_val() const {

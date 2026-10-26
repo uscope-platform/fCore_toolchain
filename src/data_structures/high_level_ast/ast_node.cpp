@@ -25,6 +25,7 @@
 #include "data_structures/high_level_ast/ast_loop.hpp"
 #include "data_structures/high_level_ast/ast_code_block.hpp"
 #include "data_structures/high_level_ast/ast_struct.hpp"
+#include "errors/invariants.hpp"
 
 
 namespace fcore{
@@ -106,7 +107,7 @@ namespace fcore{
         if(node->node_type == hl_ast_node_type_struct) {
             return ast_struct::deep_copy(std::static_pointer_cast<ast_struct>(node));
         }
-        throw std::runtime_error("HL ast node with unknown type");
+        invariant_violated("HL ast node with unknown type");
 
     }
 
@@ -159,7 +160,7 @@ namespace fcore{
         if(node->node_type == hl_ast_node_type_struct) {
             return std::static_pointer_cast<ast_struct>(node)->pretty_print();
         }
-        throw std::runtime_error("HL ast node with unknown type");
+        invariant_violated("HL ast node with unknown type");
     }
 
 
