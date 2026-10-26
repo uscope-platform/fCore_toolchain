@@ -14,6 +14,7 @@
 // limitations under the License.
 
 #include "passes/instruction_stream/variable_mapping.hpp"
+#include "errors/invariants.hpp"
 namespace fcore{
     variable_mapping::variable_mapping(std::shared_ptr<variable_map> &v) :
             stream_pass_base("Variable mapping", 1,  false, global_pass){
@@ -38,7 +39,7 @@ namespace fcore{
         } else if(std::holds_alternative<independent_instruction>(var) ) {
             // INDEPENDENT INSTRUCTIONS AND INTERCALATED CONSTANTS DO NOT USE VARIABLES
         } else {
-            throw std::runtime_error("Invalid instruction type reached variable mapping stage");
+            invariant_violated("invalid instruction type reached the variable mapping stage");
         }
         return element;
     }

@@ -14,6 +14,7 @@
 
 
 #include "passes/instruction_stream/stall_insertion.hpp"
+#include "errors/invariants.hpp"
 
 namespace fcore {
     stall_insertion::stall_insertion(int n_channels)
@@ -38,7 +39,7 @@ namespace fcore {
         } else if( std::holds_alternative<independent_instruction>(var) || std::holds_alternative<pseudo_instruction>(var)){
             return {element};
         } else {
-            throw std::runtime_error("ERROR: unknown instruction type");
+            invariant_violated("unknown instruction type in the stall insertion pass");
         }
 
     }
@@ -77,7 +78,8 @@ namespace fcore {
             op_b = node.get_operand_b()->get_int_value();
         }
         if( op_a == -1 || (op_b == -1 && node.get_opcode() != opcode_efi)) {
-            throw std::runtime_error("Encountered unbound register while inserting pipeline delay slots");
+            report(error(error_code::pipeline_hazard, "Encountered unbound register while inserting pipeline delay slots"));
+            return {};
         }
         get_stalls(op_a, result);
         get_stalls(op_b, result);
@@ -101,7 +103,8 @@ namespace fcore {
         auto op_b  = node.get_operand_b()->get_bound_reg();
         auto op_c = node.get_operand_c()->get_bound_reg();
         if(dest == -1 || op_a == -1 || op_b == -1|| op_c == -1) {
-            throw std::runtime_error("Encountered unbound register while inserting pipeline delay slots");
+            report(error(error_code::pipeline_hazard, "Encountered unbound register while inserting pipeline delay slots"));
+            return {};
         }
         get_stalls(op_a, result);
         get_stalls(op_b, result);
@@ -117,7 +120,8 @@ namespace fcore {
         auto dest  = node.get_destination()->get_bound_reg();
         auto src  = node.get_source()->get_bound_reg();
         if(dest == -1 || src == -1) {
-            throw std::runtime_error("Encountered unbound register while inserting pipeline delay slots");
+            report(error(error_code::pipeline_hazard, "Encountered unbound register while inserting pipeline delay slots"));
+            return {};
         }
         get_stalls(src, result);
         result.emplace_back(node);

@@ -53,8 +53,8 @@ namespace fcore{
                 uint8_t n_channels
         );
 
-        instruction_stream process_stream(instruction_stream stream);
-        instruction_stream apply_pass(instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass);
+        [[nodiscard]] result<instruction_stream> process_stream(instruction_stream stream);
+        [[nodiscard]] result<instruction_stream> apply_pass(instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass);
         std::shared_ptr<instruction_count> get_instruction_count() {return ic;}
         std::shared_ptr<std::map<std::string, std::vector<io_map_entry>>> get_allocation_map(){return allocation_map;}
         std::shared_ptr<std::map<std::string, memory_range_t>> get_bindings_map(){return bindings_map;}

@@ -19,14 +19,16 @@
 #include <memory>
 
 
+#include "errors/result.hpp"
+
 namespace fcore{
     typedef std::pair<uint32_t, uint32_t> memory_range_t;
 
     class memory_tracker {
     public:
         explicit memory_tracker(memory_range_t r);
-        memory_range_t get_free_memory_range(uint32_t size);
-        uint32_t get_free_memory_cell();
+        [[nodiscard]] result<memory_range_t> get_free_memory_range(uint32_t size);
+        [[nodiscard]] result<uint32_t> get_free_memory_cell();
         void reserve_register(uint32_t r);
 
     private:

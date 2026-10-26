@@ -14,6 +14,7 @@
 //
 
 #include "passes/instruction_stream/constant_merging.hpp"
+#include "errors/invariants.hpp"
 
 namespace fcore{
 
@@ -44,7 +45,7 @@ namespace fcore{
         } else if(std::holds_alternative<pseudo_instruction>(var)){
             return element;
         } else {
-            throw std::runtime_error("Invalid instruction type reached variable mapping stage");
+            invariant_violated("invalid instruction type reached the constant merging stage");
         }
     }
 
@@ -64,7 +65,7 @@ namespace fcore{
         } else if(std::holds_alternative<independent_instruction>(var) || std::holds_alternative<pseudo_instruction>(var) ) {
             return;
         } else {
-            throw std::runtime_error("Invalid instruction type reached variable mapping stage");
+            invariant_violated("invalid instruction type reached the constant merging stage");
         }
 
         if(processed_constants.contains(dest->get_identifier())){

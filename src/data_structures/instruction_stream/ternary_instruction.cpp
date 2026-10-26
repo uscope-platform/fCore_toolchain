@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "data_structures/instruction_stream/ternary_instruction.hpp"
+#include "errors/invariants.hpp"
 
 
 namespace fcore{
@@ -29,7 +30,7 @@ namespace fcore{
 
     std::vector<uint32_t> ternary_instruction::emit() const{
         if(*operand_a != *destination){
-            throw std::runtime_error("ERROR: for ternary instructions operand a and destinations need to be equal");
+            invariant_violated("for ternary instructions operand a and destination need to be equal");
         }
 
         uint32_t raw_instr = 0;

@@ -99,6 +99,7 @@ namespace fcore{
                             if(!reg_map.is_used({i,item->get_size()}, item) & !excluded[i]){
                                 found = true;
                                 allocate_array(item, i);
+                                if(failed()) return element;
                                 item = reg_map.get_identifier(item);
                                 break;
                             }
@@ -112,8 +113,9 @@ namespace fcore{
                         }
                     }
                     if(!found){
-                        std::cout<<"ERROR: The register assignment phase run out of registers with variables still to assign."<< std::endl;
-                        exit(-1);
+                        report(error(error_code::register_allocation,
+                                     "The register assignment phase run out of registers with variables still to assign"));
+                        return element;
                     }
                 }
             }
@@ -165,7 +167,8 @@ namespace fcore{
     void register_allocation::allocate_array(std::shared_ptr<variable> &var, int reg_addr) {
         if(var->get_variable_class().common_io){
             // TODO: ALLOCATE REGISTER IN SCALAR IO SPACE
-            throw std::runtime_error("Feature not yet implemented");
+            report(error(error_code::not_supported, "Contiguous arrays in the common io space are not supported yet"));
+            return;
 
         } else {
             std::pair<int, int> reg_pair = {reg_addr, var->get_size()};

@@ -49,47 +49,55 @@ namespace fcore{
     }
 
 
-    std::shared_ptr<ast_operand> constants_tracker::get_constant(const std::string &s, int instr_idx, std::vector<uint32_t> array_idx) {
+    result<std::shared_ptr<ast_operand>> constants_tracker::get_constant(const std::string &s, int instr_idx, std::vector<uint32_t> array_idx) {
         auto idx = stringify_index(array_idx);
-        for(auto &item:constants_map[s][idx]){
-            if(instr_idx>=item.validity_range.first && (instr_idx<item.validity_range.second || item.validity_range.second == -1)) {
-                purge_map[s][idx] = true;
-                return item.value;
+        // a lookup must not insert the constant it is looking for, that would leave an empty range behind
+        const auto by_name = constants_map.find(s);
+        if(by_name != constants_map.end()){
+            const auto by_index = by_name->second.find(idx);
+            if(by_index != by_name->second.end()){
+                for(auto &item:by_index->second){
+                    if(instr_idx>=item.validity_range.first && (instr_idx<item.validity_range.second || item.validity_range.second == -1)) {
+                        purge_map[s][idx] = true;
+                        return item.value;
+                    }
+                }
             }
         }
-        throw std::runtime_error("Error: tracked constant not found");
+        return fail(error_code::internal_error, "tracked constant not found");
     }
 
     void constants_tracker::clear() {
         constants_map.clear();
     }
 
-    void constants_tracker::terminate_constant_range(const std::string &s, int instr_idx, std::vector<uint32_t> array_idx) {
+    result<void> constants_tracker::terminate_constant_range(const std::string &s, int instr_idx, std::vector<uint32_t> array_idx) {
 
         if(constants_map.contains(s)){
             auto idx = stringify_index(array_idx);
-            if(constants_map[s].contains(idx)){
+            if(constants_map[s].contains(idx) && !constants_map[s][idx].empty()){
                 constants_map[s][idx].back().validity_range.second = instr_idx;
-                return;
+                return {};
             } else{
-                throw std::runtime_error("Error: attempted termination of a range belonging to a non constant array member");
+                return fail(error_code::internal_error, "attempted termination of a range belonging to a non constant array member");
             }
         } else{
-            throw std::runtime_error("Error: constant whose range need termination not found");
+            return fail(error_code::internal_error, "constant whose range need termination not found");
         }
 
     }
 
-    void constants_tracker::terminate_all_constant_ranges(const std::string &s, int instr_idx) {
+    result<void> constants_tracker::terminate_all_constant_ranges(const std::string &s, int instr_idx) {
 
         if(constants_map.contains(s)){
             for(auto&range:constants_map[s]){
-                if(range.second.back().validity_range.second == -1){
+                if(!range.second.empty() && range.second.back().validity_range.second == -1){
                     range.second.back().validity_range.second = instr_idx;
                 }
             }
+            return {};
         }
-        throw std::runtime_error("Error: constant whose range need termination not found");
+        return fail(error_code::internal_error, "constant whose range need termination not found");
     }
 
 

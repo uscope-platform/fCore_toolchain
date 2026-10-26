@@ -38,7 +38,9 @@ TEST(virtual_instructions, virtual_instruction_implementation) {
 
     auto ic =  std::make_shared<instrumentation_core>();
     stream_pass_manager sman( ic,stream_pass_manager::asm_language, 1);
-    program_stream = sman.process_stream(program_stream);
+    auto processed = sman.process_stream(program_stream);
+    ASSERT_TRUE(processed);
+    program_stream = processed.value();
 
     writer.process_stream(program_stream, false);
 
@@ -64,7 +66,9 @@ TEST(virtual_instructions, ternary_reduction) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman( ic, stream_pass_manager::asm_language, 1);
-    program_stream = sman.process_stream(program_stream);
+    auto processed = sman.process_stream(program_stream);
+    ASSERT_TRUE(processed);
+    program_stream = processed.value();
 
     writer.process_stream(program_stream, false);
 

@@ -67,8 +67,7 @@ namespace fcore{
     }
 
 
-    instruction_stream stream_pass_manager::process_stream(instruction_stream stream) {
-        int pass_n = 0;
+    result<instruction_stream> stream_pass_manager::process_stream(instruction_stream stream) {
         instruction_stream ret_val = std::move(stream);
         for(auto &pass:passes){
 
@@ -78,18 +77,21 @@ namespace fcore{
 
             if(pass_enabled){
                 if(profiler != nullptr)  profiler->start_event(pass->get_name(), false);
-                ret_val = apply_pass(ret_val, pass);
+                auto pass_res = apply_pass(ret_val, pass);
                 if(profiler != nullptr) profiler->end_event(pass->get_name());
+                if(!pass_res) return fail(std::move(pass_res).error().with_context("running stream pass: " + pass->get_name()));
+                ret_val = std::move(pass_res).value();
             }
-            pass_n++;
         }
         return ret_val;
     }
 
-    instruction_stream
+    result<instruction_stream>
     stream_pass_manager::apply_pass(instruction_stream& in_stream, const std::shared_ptr<stream_pass_base>& pass) {
         instruction_stream retval;
+        pass->take_failure();
         pass->setup();
+        if(auto failure = pass->take_failure()) return fail(std::move(failure).value());
         if (pass->is_standalone) {
             retval = pass->standalone(in_stream);
         } else {
@@ -107,14 +109,16 @@ namespace fcore{
                         if(auto proc_val = pass->apply_pass(instr, i))
                             retval.push_back(proc_val.value());
                     }
+                    if(pass->failed()) break;
                 }
+                if(pass->failed()) break;
                 pass->inter_pass();
             }
         }
 
+        if(auto failure = pass->take_failure()) return fail(std::move(failure).value());
         return retval;
     }
 
 
 }
-

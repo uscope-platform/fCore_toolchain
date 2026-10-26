@@ -78,8 +78,8 @@ namespace fcore {
         is_valid |= var->get_type() == var_type_int_const;
         is_valid |= var->is_explicit_register(var->get_name());
         if(!is_valid) {
-            auto errror = std::format("ERROR: Variable '{}' is used before initialization", var->get_name());
-            throw std::runtime_error(errror);
+            report(error(error_code::semantic_error,
+                         std::format("ERROR: Variable '{}' is used before initialization", var->get_name())));
         }
     }
 }

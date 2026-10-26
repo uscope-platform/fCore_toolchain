@@ -9,6 +9,7 @@ set(TEST_SOURCES
         errors/error.cpp
         errors/frontend_errors.cpp
         errors/pass_errors.cpp
+        errors/backend_errors.cpp
         end_to_end_asm.cpp
         testing_main.cpp
         end_to_end_C.cpp

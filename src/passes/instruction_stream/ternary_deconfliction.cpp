@@ -15,6 +15,7 @@
 // limitations under the License.
 
 #include "passes/instruction_stream/ternary_deconfliction.hpp"
+#include "errors/invariants.hpp"
 
 namespace fcore {
     ternary_deconfliction::ternary_deconfliction() : stream_pass_base("Ternary deconfliction", 2, true, high_level_pass){
@@ -30,7 +31,7 @@ namespace fcore {
             } else if(n_pass==1) {
                 return deconflict(element);
             } else {
-                throw std::runtime_error("Invalid pass number");
+                invariant_violated("ternary deconfliction has two passes only");
             }
     }
 

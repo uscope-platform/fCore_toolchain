@@ -36,7 +36,7 @@ namespace fcore{
 
         last_error.reset();
 
-        // the stream passes and the writer still report failures by throwing
+        // exceptions of the standard library are turned into errors at this boundary
         auto assembled = catching([&]() -> result<void> {
             asm_language_parser target_parser(std::make_shared<variable_map>());
             if(auto parsed = target_parser.parse(input); !parsed) return parsed;
@@ -46,7 +46,9 @@ namespace fcore{
             std::vector<int> io_res;
             stream_pass_manager sman(io_res, ic, opt_mode);
 
-            instruction_stream program_stream = sman.process_stream(target_parser.program);
+            auto processed = sman.process_stream(target_parser.program);
+            if(!processed) return fail(std::move(processed).error());
+            instruction_stream program_stream = processed.value();
 
             auto amap = std::make_shared<std::map<std::string, std::vector<io_map_entry>>>();
 

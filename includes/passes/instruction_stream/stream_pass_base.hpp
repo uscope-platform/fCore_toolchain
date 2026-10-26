@@ -16,6 +16,9 @@
 #ifndef FCORE_TOOLCHAIN_STREAM_PASS_BASE_HPP
 #define FCORE_TOOLCHAIN_STREAM_PASS_BASE_HPP
 
+#include <optional>
+
+#include "errors/result.hpp"
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 
 namespace fcore{
@@ -56,6 +59,15 @@ namespace fcore{
 
         std::string get_name() {return name;}
 
+        [[nodiscard]] bool failed() const {return failure.has_value();}
+
+        /// The failure reported while the pass was running, if any. Clears it, the pass can be reused.
+        std::optional<error> take_failure() {
+            auto taken = std::move(failure);
+            failure.reset();
+            return taken;
+        }
+
         virtual ~stream_pass_base() = default;
 
         stream_pass_type pass_type;
@@ -64,8 +76,14 @@ namespace fcore{
         bool is_mutable;
         bool is_vector;
         bool is_standalone;
+    protected:
+        /// Records a failure found while processing an element, the manager stops the pass at the first one.
+        void report(error e) {
+            if(!failure) failure = std::move(e);
+        }
     private:
         std::string name;
+        std::optional<error> failure;
     };
 }
 

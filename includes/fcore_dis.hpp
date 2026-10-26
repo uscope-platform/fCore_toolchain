@@ -58,7 +58,7 @@ namespace fcore{
         disassembled_program get_diassembled_object();
         void write_disassembled_program(const std::string& output_file);
     private:
-        void process_stream(instruction_stream program_stream);
+        result<void> process_stream(instruction_stream program_stream);
         std::map<uint16_t, uint16_t> io_map;
         std::unique_ptr<assembly_generator> gen;
         void finish_loading(result<void> loaded, binary_loader &loader);

@@ -29,6 +29,7 @@ namespace fcore{
 
         for(auto & i : content){
             bool const_found = map_constants(i, instr_idx);
+            if(failed()) return finish(element);
             if(!const_found) {
                 new_content.push_back(i);
                 instr_idx++;
@@ -48,6 +49,7 @@ namespace fcore{
 
         for(uint32_t i = 0; i<new_content.size(); ++i){
             auto new_item = propagate_constant(new_content[i],i);
+            if(failed()) return finish(element);
             content.push_back(new_item);
         }
         new_content.clear();
@@ -59,7 +61,7 @@ namespace fcore{
 
         element->set_content(new_content);
 
-        return element;
+        return finish(element);
 
     }
 
@@ -164,8 +166,12 @@ namespace fcore{
                 if(!indices.empty()){
                     if(tracker.is_constant(element->get_name(), instr_idx, indices)){
 
-                        std::shared_ptr<ast_operand> new_const = tracker.get_constant(element->get_name(), instr_idx,
-                                                                                         indices);
+                        auto tracked = tracker.get_constant(element->get_name(), instr_idx, indices);
+                        if(!tracked){
+                            report(std::move(tracked).error());
+                            return element;
+                        }
+                        std::shared_ptr<ast_operand> new_const = tracked.value();
                         new_const->get_variable()->set_variable_class(element->get_variable()->get_variable_class());
                         std::string var_name = element->get_name();
                         for(auto &item:indices){
@@ -179,7 +185,12 @@ namespace fcore{
 
             } else{
                 if(tracker.is_constant(element->get_name(), instr_idx , {0})){
-                    std::shared_ptr<ast_operand> new_const = tracker.get_constant(element->get_name(), instr_idx, {0});
+                    auto tracked = tracker.get_constant(element->get_name(), instr_idx, {0});
+                    if(!tracked){
+                        report(std::move(tracked).error());
+                        return element;
+                    }
+                    std::shared_ptr<ast_operand> new_const = tracked.value();
                     new_const->set_name(element->get_name());
                     new_const->get_variable()->set_variable_class(element->get_variable()->get_variable_class());
                     ret_operand =  new_const;
@@ -301,15 +312,21 @@ namespace fcore{
         if(needs_termination(element, instr_idx)){
             if(!lhs->get_array_index().empty()){
                 if(lhs->get_array_index()[0]->node_type != hl_ast_node_type_operand){
-                    tracker.terminate_all_constant_ranges(lhs->get_name(), instr_idx+1);
+                    if(auto terminated = tracker.terminate_all_constant_ranges(lhs->get_name(), instr_idx+1); !terminated){
+                        report(std::move(terminated).error());
+                    }
                 } else{
                     std::vector<uint32_t> indices = get_index_array(lhs);
                     if(!indices.empty()){
-                        tracker.terminate_constant_range(lhs->get_name(), instr_idx+1, indices);
+                        if(auto terminated = tracker.terminate_constant_range(lhs->get_name(), instr_idx+1, indices); !terminated){
+                            report(std::move(terminated).error());
+                        }
                     }
                 }
             } else {
-                tracker.terminate_constant_range(lhs->get_name(), instr_idx+1, {0});
+                if(auto terminated = tracker.terminate_constant_range(lhs->get_name(), instr_idx+1, {0}); !terminated){
+                    report(std::move(terminated).error());
+                }
             }
         }
     }

@@ -15,6 +15,7 @@
 //
 
 #include "passes/instruction_stream/bound_register_mapping.hpp"
+#include "errors/invariants.hpp"
 
 namespace fcore{
 
@@ -36,7 +37,7 @@ namespace fcore{
         } else if(  std::holds_alternative<independent_instruction>(var) || std::holds_alternative<pseudo_instruction>(var)){
             return element;
         } else {
-            throw std::runtime_error("ERROR: unknown instruction type");
+            invariant_violated("unknown instruction type in the bound register mapping pass");
         }
 
     }

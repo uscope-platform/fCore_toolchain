@@ -46,11 +46,12 @@ namespace fcore{
             return;
         }
 
-        // the stream passes and the generator still report failures by throwing
-        auto disassembled = catching([&]{
-            process_stream(loader.get_program_stream());
+        // exceptions of the standard library are turned into errors at this boundary
+        auto disassembled = catching([&]() -> result<void> {
+            if(auto processed = process_stream(loader.get_program_stream()); !processed) return processed;
             gen->set_common_io_map(loader.get_common_io_mapping());
             gen->set_io_map(loader.get_io_mapping());
+            return {};
         });
         if(!disassembled) last_error = std::move(disassembled).error();
     }
@@ -81,13 +82,16 @@ namespace fcore{
         gen->write_program(output_file);
     }
 
-    void fcore_dis::process_stream(instruction_stream program_stream) {
+    result<void> fcore_dis::process_stream(instruction_stream program_stream) {
         std::vector<int> io_res;
 
         std::shared_ptr<instrumentation_core> ic = nullptr;
         stream_pass_manager sman(io_res, ic,stream_pass_manager::asm_language);
-        program_stream = sman.process_stream(program_stream);
+        auto processed = sman.process_stream(program_stream);
+        if(!processed) return fail(std::move(processed).error());
+        program_stream = processed.value();
         gen = std::make_unique<assembly_generator>(program_stream);
+        return {};
 
     }
 

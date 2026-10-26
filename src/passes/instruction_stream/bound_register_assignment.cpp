@@ -14,6 +14,7 @@
 
 
 #include "passes/instruction_stream/bound_register_assignment.hpp"
+#include "errors/invariants.hpp"
 
 namespace fcore {
     bound_register_assignment::bound_register_assignment() :
@@ -35,7 +36,7 @@ namespace fcore {
         } else if(  std::holds_alternative<independent_instruction>(var) || std::holds_alternative<pseudo_instruction>(var)){
             return {element};
         } else {
-            throw std::runtime_error("ERROR: unknown instruction type");
+            invariant_violated("unknown instruction type in the bound register assignment pass");
         }
     }
 

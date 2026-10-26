@@ -38,7 +38,8 @@ namespace fcore{
     result<void> fcore_cc::compile(uint8_t n_channels) {
         last_error.reset();
 
-        // parts of the toolchain still report failures by throwing
+        // the toolchain does not throw, exceptions of the standard library (std::stoi on a literal that does not fit,
+        // failed allocations...) are turned into errors at this boundary
         auto compiled = catching([&]{return run_compilation(n_channels);});
         if(!compiled) last_error = compiled.error();
         return compiled;
@@ -153,7 +154,9 @@ namespace fcore{
             stream_pass_manager::high_level_language,
             n_channels
         );
-        program_stream = sman.process_stream(program_stream);
+        auto processed = sman.process_stream(program_stream);
+        if(!processed) return fail(std::move(processed).error());
+        program_stream = processed.value();
 
         allocation_map = sman.get_allocation_map();
         auto bindings_map = sman.get_bindings_map();

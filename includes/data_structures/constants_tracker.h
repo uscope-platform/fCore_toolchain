@@ -21,6 +21,7 @@
 #include <map>
 #include <utility>
 
+#include "errors/result.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
 namespace fcore{
@@ -36,10 +37,10 @@ namespace fcore{
     public:
         std::string stringify_index(const std::vector<uint32_t>& v);
         void add_constant(const std::string& s, std::shared_ptr<ast_operand> op, int instr_idx, std::vector<uint32_t> array_idx);
-        void terminate_constant_range(const std::string &s, int instr_idx, std::vector<uint32_t> array_idx);
-        void terminate_all_constant_ranges(const std::string &s, int instr_idx);
+        [[nodiscard]] result<void> terminate_constant_range(const std::string &s, int instr_idx, std::vector<uint32_t> array_idx);
+        [[nodiscard]] result<void> terminate_all_constant_ranges(const std::string &s, int instr_idx);
         bool is_constant(const std::string& s, int instr_idx, std::vector<uint32_t> array_idx);
-        std::shared_ptr<ast_operand> get_constant(const std::string& s, int instr_idx, std::vector<uint32_t> array_idx);
+        [[nodiscard]] result<std::shared_ptr<ast_operand>> get_constant(const std::string& s, int instr_idx, std::vector<uint32_t> array_idx);
         bool needs_purging(const std::string& s, std::vector<uint32_t> array_idx);
         void clear();
 

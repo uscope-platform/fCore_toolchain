@@ -66,7 +66,10 @@ namespace fcore {
         stream_pass_manager sman(io_res, ic, stream_pass_manager::high_level_language);
 
 
-        instruction_stream program_stream = sman.process_stream(s);
+        // the fuzzer builds valid streams by construction, a failure here is a bug in the toolchain or the generator
+        auto processed = sman.process_stream(s);
+        if(!processed) invariant_violated(processed.error().what());
+        instruction_stream program_stream = processed.value();
 
         auto amap = std::make_shared<std::map<std::string, std::vector<io_map_entry>>>();
 

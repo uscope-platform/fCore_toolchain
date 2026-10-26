@@ -43,7 +43,9 @@ TEST(pipeline_hazards, reg_instruction_stall_a) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman(ic, stream_pass_manager::asm_language, 1);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
+    auto pass_outcome = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
+    ASSERT_TRUE(pass_outcome);
+    program_stream = pass_outcome.value();
 
     writer.process_stream(program_stream, true);
 
@@ -75,7 +77,9 @@ TEST(pipeline_hazards, reg_instruction_stall_a_2_ch) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman(ic, stream_pass_manager::asm_language, 2);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(2));
+    auto pass_outcome = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(2));
+    ASSERT_TRUE(pass_outcome);
+    program_stream = pass_outcome.value();
 
     writer.process_stream(program_stream, true);
 
@@ -107,7 +111,9 @@ TEST(pipeline_hazards, reg_instruction_stall_b) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman(ic, stream_pass_manager::asm_language, 1);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
+    auto pass_outcome = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
+    ASSERT_TRUE(pass_outcome);
+    program_stream = pass_outcome.value();
 
     writer.process_stream(program_stream, true);
 
@@ -138,7 +144,9 @@ TEST(pipeline_hazards, conv_instruction_stall) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman(ic, stream_pass_manager::asm_language, 1);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
+    auto pass_outcome = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
+    ASSERT_TRUE(pass_outcome);
+    program_stream = pass_outcome.value();
 
     writer.process_stream(program_stream, true);
 
@@ -175,7 +183,9 @@ TEST(pipeline_hazards, partial_stall_needed) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman(ic, stream_pass_manager::asm_language, 1);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
+    auto pass_outcome = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
+    ASSERT_TRUE(pass_outcome);
+    program_stream = pass_outcome.value();
 
     writer.process_stream(program_stream, true);
 
@@ -208,7 +218,9 @@ TEST(pipeline_hazards, csel_source_stall) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman(ic, stream_pass_manager::asm_language, 1);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
+    auto pass_outcome = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
+    ASSERT_TRUE(pass_outcome);
+    program_stream = pass_outcome.value();
 
     writer.process_stream(program_stream, true);
 
@@ -241,7 +253,9 @@ TEST(pipeline_hazards, csel_destination_stall) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman(ic, stream_pass_manager::asm_language, 1);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
+    auto pass_outcome = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
+    ASSERT_TRUE(pass_outcome);
+    program_stream = pass_outcome.value();
 
     writer.process_stream(program_stream, true);
 
@@ -273,7 +287,9 @@ TEST(pipeline_hazards, ldc_stall) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman( ic, stream_pass_manager::asm_language, 1);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
+    auto pass_outcome = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(1));
+    ASSERT_TRUE(pass_outcome);
+    program_stream = pass_outcome.value();
 
     writer.process_stream(program_stream, true);
 
@@ -304,7 +320,9 @@ TEST(pipeline_hazards, ldc_stall_3_ch) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman( ic, stream_pass_manager::asm_language, 3);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(3));
+    auto pass_outcome = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(3));
+    ASSERT_TRUE(pass_outcome);
+    program_stream = pass_outcome.value();
 
     writer.process_stream(program_stream, true);
 
@@ -348,7 +366,9 @@ TEST(pipeline_hazards, result_collision_avoidance) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman( ic, stream_pass_manager::asm_language, 1);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<result_deconfliction>(1));
+    auto pass_outcome = sman.apply_pass(program_stream, std::make_shared<result_deconfliction>(1));
+    ASSERT_TRUE(pass_outcome);
+    program_stream = pass_outcome.value();
 
     writer.process_stream(program_stream, true);
 
@@ -385,7 +405,9 @@ TEST(pipeline_hazards, ldc_after_mul) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman( ic, stream_pass_manager::asm_language, 2);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(2));
+    auto pass_outcome = sman.apply_pass(program_stream, std::make_shared<stall_insertion>(2));
+    ASSERT_TRUE(pass_outcome);
+    program_stream = pass_outcome.value();
 
     writer.process_stream(program_stream, true);
 
@@ -430,7 +452,9 @@ TEST(pipeline_hazards, multichannel_conflict) {
     auto ic =  std::make_shared<instrumentation_core>();
 
     stream_pass_manager sman( ic, stream_pass_manager::asm_language, 3);
-    program_stream = sman.apply_pass(program_stream, std::make_shared<result_deconfliction>(4));
+    auto pass_outcome = sman.apply_pass(program_stream, std::make_shared<result_deconfliction>(4));
+    ASSERT_TRUE(pass_outcome);
+    program_stream = pass_outcome.value();
 
     writer.process_stream(program_stream, true);
 

@@ -20,7 +20,7 @@ namespace fcore{
         free_memory.push_back(r);
     }
 
-    memory_range_t memory_tracker::get_free_memory_range(uint32_t size){
+    result<memory_range_t> memory_tracker::get_free_memory_range(uint32_t size){
 
         for(auto & i : free_memory){
             if(i.second-i.first>=size){
@@ -30,13 +30,15 @@ namespace fcore{
             }
         }
 
-        throw std::runtime_error("No free memory range of size "+ std::to_string(size) + " found, manual memory management needed.");
+        return fail(error_code::register_allocation,
+                    "No free memory range of size "+ std::to_string(size) + " found, manual memory management needed.");
 
     };
 
-    uint32_t memory_tracker::get_free_memory_cell(){
-        memory_range_t r = get_free_memory_range(1);
-        return r.first;
+    result<uint32_t> memory_tracker::get_free_memory_cell(){
+        auto range = get_free_memory_range(1);
+        if(!range) return fail(std::move(range).error());
+        return range.value().first;
     }
 
     void memory_tracker::reserve_register(uint32_t r) {
