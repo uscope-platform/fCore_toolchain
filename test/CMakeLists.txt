@@ -6,6 +6,7 @@ set(TEST_SOURCES
         passes/pipeline_hazards.cpp
         passes/semantic_analysis.cpp
         passes/hl_passes.cpp
+        errors/error.cpp
         end_to_end_asm.cpp
         testing_main.cpp
         end_to_end_C.cpp
