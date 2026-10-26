@@ -47,24 +47,10 @@ namespace fcore {
         return r;
     }
 
-    // ---- transitional bridges between exceptions and results -----------------------------------
-    // Removed once the last throw is gone, they let migrated and unmigrated code coexist.
-
-    /// Exception carrying a full error, derives from runtime_error so existing catch blocks keep working.
-    class error_exception : public std::runtime_error {
-    public:
-        explicit error_exception(error e) : std::runtime_error(e.what()), err(std::move(e)) {}
-        [[nodiscard]] const error &get() const { return err; }
-    private:
-        error err;
-    };
-
-    /// result -> exception, for migrated callees called from not yet migrated callers.
-    template<typename T>
-    T value_or_throw(result<T> &&r) {
-        if (!r) throw error_exception(std::move(r).error());
-        if constexpr (!std::is_void_v<T>) return std::move(r).value();
-    }
+    // ---- boundary with code that throws ---------------------------------------------------------
+    // The toolchain does not throw. The standard library and the third party libraries still do (std::stoi on a
+    // literal that does not fit, nlohmann::json on a value of the wrong type, failed allocations...), catching() is the
+    // place where those are turned into errors, at the entry points that can meet them.
 
     template<typename T>
     inline constexpr bool is_result_v = false;
@@ -76,8 +62,6 @@ namespace fcore {
         inline std::unexpected<error> from_current_exception() {
             try {
                 throw;
-            } catch (const error_exception &e) {
-                return std::unexpected<error>(e.get());
             } catch (const std::invalid_argument &e) {
                 return fail(error_code::invalid_argument, e.what());
             } catch (const std::exception &e) {
@@ -88,7 +72,7 @@ namespace fcore {
         }
     }
 
-    /// exception -> result, for not yet migrated callees called from migrated callers.
+    /// Runs a callable that may throw an exception of the standard or of a third party library and returns its outcome.
     template<typename F>
     auto catching(F &&f) -> result<std::invoke_result_t<F>> {
         try {
@@ -103,7 +87,7 @@ namespace fcore {
         }
     }
 
-    /// Same for callees that already return a result, which is handed back as it is instead of being nested.
+    /// Same for callables that already return a result, which is handed back as it is instead of being nested.
     template<typename F>
         requires is_result_v<std::invoke_result_t<F>>
     auto catching(F &&f) -> std::invoke_result_t<F> {

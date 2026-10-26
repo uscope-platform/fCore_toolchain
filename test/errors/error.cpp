@@ -65,18 +65,7 @@ TEST(result, with_context_only_touches_failures) {
     EXPECT_TRUE(good);
 }
 
-TEST(result, bridge_result_to_exception) {
-    EXPECT_EQ(value_or_throw(parse_positive(3)), 3);
-    EXPECT_THROW(value_or_throw(parse_positive(-3)), std::runtime_error);
-    try {
-        value_or_throw(parse_positive(-3));
-        FAIL();
-    } catch (const error_exception &e) {
-        EXPECT_EQ(e.get().code, error_code::invalid_argument);
-    }
-}
-
-TEST(result, bridge_exception_to_result) {
+TEST(result, catching_turns_exceptions_into_errors) {
     auto ok = catching([] { return 5; });
     ASSERT_TRUE(ok);
     EXPECT_EQ(ok.value(), 5);
@@ -91,10 +80,6 @@ TEST(result, bridge_exception_to_result) {
     auto inv = catching([]() -> int { throw std::invalid_argument("bad arg"); });
     EXPECT_EQ(inv.error().code, error_code::invalid_argument);
 
-    // an error that went through value_or_throw keeps its code
-    auto round_trip = catching([] { return value_or_throw(parse_positive(-1)); });
-    ASSERT_FALSE(round_trip);
-    EXPECT_EQ(round_trip.error().code, error_code::invalid_argument);
 }
 
 TEST(invariants, violation_aborts_with_message_and_location) {
@@ -107,7 +92,7 @@ TEST(invariants, ensure_only_aborts_when_the_condition_fails) {
     EXPECT_DEATH(ensure(false, "condition failed"), "condition failed");
 }
 
-TEST(result, bridge_keeps_results_unnested_and_catches_everything) {
+TEST(result, catching_keeps_results_unnested_and_catches_everything) {
     auto passthrough = catching([]() -> result<int> { return 3; });
     static_assert(std::is_same_v<decltype(passthrough), result<int>>);
     EXPECT_EQ(passthrough.value(), 3);

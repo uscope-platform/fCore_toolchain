@@ -31,16 +31,27 @@ int main(int argc, char **argv) {
     CLI11_PARSE(app, argc, argv);
 
     std::ifstream ifs(input_file);
-    nlohmann::json spec = nlohmann::json::parse(ifs);
-    try{
-        fcore::schema_validator_base validator(fcore::compiler_input);
-        if(auto validation = validator.validate(spec); !validation){
-            std::cerr << validation.error().message;
-            exit(-1);
-        }
-    } catch(nlohmann::detail::type_error &err) {
+
+    // the json library throws on a malformed file or on a value of the wrong type
+    auto parsed_spec = fcore::catching([&]{return nlohmann::json::parse(ifs);});
+    if(!parsed_spec){
         spdlog::critical("Invalid spec file");
-        spdlog::critical(err.what());
+        spdlog::critical(parsed_spec.error().what());
+        exit(-1);
+    }
+    nlohmann::json spec = parsed_spec.value();
+
+    auto validation = fcore::catching([&]{
+        fcore::schema_validator_base validator(fcore::compiler_input);
+        return validator.validate(spec);
+    });
+    if(!validation){
+        if(validation.error().code == fcore::error_code::schema_validation){
+            std::cerr << validation.error().message;
+        } else {
+            spdlog::critical("Invalid spec file");
+            spdlog::critical(validation.error().what());
+        }
         exit(-1);
     }
 
