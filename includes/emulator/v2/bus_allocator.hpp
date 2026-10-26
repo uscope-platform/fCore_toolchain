@@ -143,6 +143,7 @@ namespace fcore::emulator_v2 {
     private:
 
         bool is_register(const std::string &r);
+        void reserve_external_addresses(const emulator_specs &specs);
         std::vector<interconnect_descriptor> interconnect_mapping;
 
         std::set<uint32_t> global_forbidden_addresses;

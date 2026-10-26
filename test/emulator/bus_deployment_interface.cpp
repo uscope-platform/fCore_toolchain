@@ -960,3 +960,525 @@ TEST(bus_deployment_interface, memory_to_memory_interface) {
     expected_inits["test_consumer"] = {m};
     EXPECT_EQ(inits, expected_inits);
 }
+
+TEST(bus_deployment_interface, external_input_address_is_reserved) {
+
+    nlohmann::json specs = nlohmann::json::parse( R"({
+      "version": 2,
+      "cores": [
+        {
+          "id": "test",
+          "inputs": [
+            {
+              "name": "input_1",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false,
+                "io_address": [3]
+              },
+              "source": {
+                "type": "series",
+                "value": [15.7,67.4]
+              }
+            },
+            {
+              "name": "input_2",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type": "series",
+                "value": [42.92,-5.8]
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "name": "test_out",
+              "is_vector": true,
+              "vector_size": 2,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              }
+            }
+          ],
+          "memory_init": [],
+          "program": {"content": "void main(){float test_out[2]; float input_1, input_2; test_out[0] = input_1; test_out[1] = input_2;}","headers": []},
+          "order": 1,
+          "options": {
+            "comparators": "reducing",
+            "efi_implementation": "efi_sort"
+          },
+          "channels": 1,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
+          }
+        }
+      ],
+      "interconnect": [],
+      "emulation_time": 2,
+      "deployment_mode": false
+    })");
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+
+    auto inputs = manager.get_inputs("test");
+    EXPECT_EQ(inputs[0].address[0], 3);
+
+    auto slots = manager.get_interconnect_slots();
+    std::vector<deployer_interconnect_slot> expected_slots;
+    deployer_interconnect_slot e;
+    e.source_id = "test";
+    e.source_name = "test_out";
+    e.type = "o";
+    e.source_io_address = 1;
+    e.source_channel = 0;
+    e.destination_bus_address = 4;
+    e.destination_channel = 0;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = false;
+    e.metadata.is_common_io = false;
+    e.metadata.suggested_address = {0};
+    expected_slots.push_back(e);
+
+    e.source_id = "test";
+    e.source_name = "test_out";
+    e.type = "o";
+    e.source_io_address = 2;
+    e.source_channel = 0;
+    e.destination_bus_address = 5;
+    e.destination_channel = 0;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = false;
+    e.metadata.is_common_io = false;
+    e.metadata.suggested_address = {0};
+    expected_slots.push_back(e);
+
+    EXPECT_EQ(slots, expected_slots);
+}
+
+TEST(bus_deployment_interface, external_output_goes_to_its_address) {
+
+    nlohmann::json specs = nlohmann::json::parse( R"({
+      "version": 2,
+      "cores": [
+        {
+          "id": "test",
+          "inputs": [
+            {
+              "name": "input_1",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type": "series",
+                "value": [15.7,67.4]
+              }
+            },
+            {
+              "name": "input_2",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type": "series",
+                "value": [42.92,-5.8]
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "name": "test_out",
+              "is_vector": true,
+              "vector_size": 2,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false,
+                "io_address": [200, 201]
+              }
+            }
+          ],
+          "memory_init": [],
+          "program": {"content": "void main(){float test_out[2]; float input_1, input_2; test_out[0] = input_1; test_out[1] = input_2;}","headers": []},
+          "order": 1,
+          "options": {
+            "comparators": "reducing",
+            "efi_implementation": "efi_sort"
+          },
+          "channels": 1,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
+          }
+        }
+      ],
+      "interconnect": [],
+      "emulation_time": 2,
+      "deployment_mode": false
+    })");
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+
+    auto slots = manager.get_interconnect_slots();
+    std::vector<deployer_interconnect_slot> expected_slots;
+    deployer_interconnect_slot e;
+    e.source_id = "test";
+    e.source_name = "test_out";
+    e.type = "o";
+    e.source_io_address = 1;
+    e.source_channel = 0;
+    e.destination_bus_address = 200;
+    e.destination_channel = 0;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = false;
+    e.metadata.is_common_io = false;
+    e.metadata.suggested_address = {0};
+    expected_slots.push_back(e);
+
+    e.source_id = "test";
+    e.source_name = "test_out";
+    e.type = "o";
+    e.source_io_address = 2;
+    e.source_channel = 0;
+    e.destination_bus_address = 201;
+    e.destination_channel = 0;
+    e.metadata.type = type_float;
+    e.metadata.width = 32;
+    e.metadata.is_signed = false;
+    e.metadata.is_common_io = false;
+    e.metadata.suggested_address = {0};
+    expected_slots.push_back(e);
+
+    EXPECT_EQ(slots, expected_slots);
+}
+
+TEST(bus_deployment_interface, external_address_taken_twice) {
+
+    nlohmann::json specs = nlohmann::json::parse( R"({
+      "version": 2,
+      "cores": [
+        {
+          "id": "test",
+          "inputs": [
+            {
+              "name": "input_1",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false,
+                "io_address": [201]
+              },
+              "source": {
+                "type": "series",
+                "value": [15.7,67.4]
+              }
+            },
+            {
+              "name": "input_2",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type": "series",
+                "value": [42.92,-5.8]
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "name": "test_out",
+              "is_vector": true,
+              "vector_size": 2,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false,
+                "io_address": [200, 201]
+              }
+            }
+          ],
+          "memory_init": [],
+          "program": {"content": "void main(){float test_out[2]; float input_1, input_2; test_out[0] = input_1; test_out[1] = input_2;}","headers": []},
+          "order": 1,
+          "options": {
+            "comparators": "reducing",
+            "efi_implementation": "efi_sort"
+          },
+          "channels": 1,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
+          }
+        }
+      ],
+      "interconnect": [],
+      "emulation_time": 2,
+      "deployment_mode": false
+    })");
+
+    emulator_dispatcher manager;
+    EXPECT_THROW(manager.set_specs(specs), std::runtime_error);
+}
+
+TEST(bus_deployment_interface, external_address_out_of_range) {
+
+    nlohmann::json specs = nlohmann::json::parse( R"({
+      "version": 2,
+      "cores": [
+        {
+          "id": "test",
+          "inputs": [
+            {
+              "name": "input_1",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false,
+                "io_address": [4096]
+              },
+              "source": {
+                "type": "series",
+                "value": [15.7,67.4]
+              }
+            },
+            {
+              "name": "input_2",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type": "series",
+                "value": [42.92,-5.8]
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "name": "test_out",
+              "is_vector": true,
+              "vector_size": 2,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              }
+            }
+          ],
+          "memory_init": [],
+          "program": {"content": "void main(){float test_out[2]; float input_1, input_2; test_out[0] = input_1; test_out[1] = input_2;}","headers": []},
+          "order": 1,
+          "options": {
+            "comparators": "reducing",
+            "efi_implementation": "efi_sort"
+          },
+          "channels": 1,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
+          }
+        }
+      ],
+      "interconnect": [],
+      "emulation_time": 2,
+      "deployment_mode": false
+    })");
+
+    emulator_dispatcher manager;
+    EXPECT_THROW(manager.set_specs(specs), std::runtime_error);
+}
+
+TEST(bus_deployment_interface, external_input_cannot_be_interconnect_destination) {
+
+    nlohmann::json specs = nlohmann::json::parse(R"({
+        "version":2,
+        "cores": [
+            {
+                "id": "test",
+                "inputs": [
+                    {
+                        "name": "input_1",
+                        "is_vector": false,
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": true,
+                            "common_io":false
+                        },
+                        "source": {
+                            "type": "constant",
+                            "value": [
+                                31.2
+                            ]
+                        }
+                    },
+                    {
+                        "name": "input_2",
+                        "is_vector": false,
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": true,
+                            "common_io":false
+                        },
+                        "source": {
+                            "type": "constant",
+                            "value": [
+                                32.7
+                            ]
+                        }
+                    }
+                ],
+                "outputs": [
+                    {
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": true,
+                            "common_io":false
+                        },
+                        "is_vector": false,
+                        "name": "out"
+                    },
+                    {
+                        "metadata": {
+                            "type": "integer",
+                            "width": 32,
+                            "signed": true,
+                            "common_io":false
+                        },
+                        "is_vector": false,
+                        "name": "out2"
+                    }
+                ],
+                "memory_init": [],
+                "program": {
+                    "content": "int main(){float input_1; float input_2; float out; out = input_1 + input_2 ; out2=fti(out);}",
+                    "headers": []
+                },
+                "order": 1,
+                "options": {
+                    "comparators": "reducing",
+                    "efi_implementation": "efi_sort"
+                },
+                "channels": 1,
+                "sampling_frequency": 1,
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
+            },
+            {
+                "id": "test_move",
+                "inputs": [
+                    {
+                        "name": "input",
+                        "is_vector": false,
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": true,
+                            "common_io":false,
+                            "io_address": [50]
+                        },
+                        "source":{
+                            "type": "constant",
+                            "value":[0]
+                        }
+                    }
+                ],
+                "outputs": [
+                    {
+                        "is_vector": false,
+                        "metadata": {
+                            "type": "float",
+                            "width": 32,
+                            "signed": true,
+                            "common_io":false
+                        },
+                        "name": "out"
+                    }
+                ],
+                "memory_init": [],
+                "program": {
+                    "content": "int main(){float input; float out; float val = itf(input); out = fti(val+1.0);}",
+                    "headers": []
+                },
+                "order": 2,
+                "options": {
+                    "comparators": "reducing",
+                    "efi_implementation": "efi_sort"
+                },
+                "channels": 1,
+                "sampling_frequency": 1,
+                "deployment": {
+                    "has_reciprocal": false,
+                    "control_address": 18316525568,
+                    "rom_address": 17179869184
+                }
+            }
+        ],
+        "interconnect": [
+            {
+                "source": "test.out2",
+                "destination": "test_move.input"
+            }
+        ],
+        "emulation_time": 2,
+        "deployment_mode": false
+    }
+    )");
+
+    emulator_dispatcher manager;
+    EXPECT_THROW(manager.set_specs(specs), std::runtime_error);
+}

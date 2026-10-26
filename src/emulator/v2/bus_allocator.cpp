@@ -18,10 +18,51 @@
 
 namespace fcore::emulator_v2 {
 
+    /// The destination of the DMA is 12 bits wide
+    static constexpr uint32_t max_bus_address = 0xFFF;
+
+    /// The ports with an io_address are bound to the address that the outside world gave them: it cannot be moved, so
+    /// the rest of the ports are placed around them. Only the inputs that listen to the same address can share it.
+    void bus_allocator::reserve_external_addresses(const emulator_specs &specs) {
+        // the port that owns each address, and if it is one that the core writes
+        std::map<uint32_t, std::pair<std::string, bool>> owners;
+
+        auto reserve = [&](const std::string &core, const std::string &port, const std::vector<uint32_t> &addresses, bool is_output) {
+            auto name = core + "." + port;
+            for(auto address: addresses) {
+                if(address > max_bus_address) {
+                    throw std::runtime_error("The io_address " + std::to_string(address) + " of " + name + " is over the maximum of " + std::to_string(max_bus_address));
+                }
+                auto [owner, inserted] = owners.try_emplace(address, name, is_output);
+                if(!inserted && (is_output || owner->second.second || owner->second.first == name)) {
+                    throw std::runtime_error("The io_address " + std::to_string(address) + " of " + name + " is already taken by " + owner->second.first);
+                }
+                global_forbidden_addresses.insert(address);
+            }
+        };
+
+        for(auto &core:specs.cores) {
+            for(auto &in:core.inputs) {
+                reserve(core.id, in.name, in.metadata.io_address, false);
+            }
+            for(auto &out:core.outputs) {
+                reserve(core.id, out.name, out.metadata.io_address, true);
+            }
+            for(auto &mem:core.memories) {
+                if(mem.is_input && mem.is_output && !mem.metadata.io_address.empty()) {
+                    throw std::runtime_error("The memory " + core.id + "." + mem.name + " is both input and output, it cannot have an io_address");
+                }
+                reserve(core.id, mem.name, mem.metadata.io_address, !mem.is_input);
+            }
+        }
+    }
+
     void bus_allocator::set_emulation_specs(const emulator_specs &specs) {
 
         sources_map.clear();
         destinations_map.clear();
+
+        reserve_external_addresses(specs);
 
         std::unordered_set<std::string> external_endpoints;
 
@@ -35,7 +76,14 @@ namespace fcore::emulator_v2 {
                 ep.vector_size = in.vector_size;
                 ep.endpoint_class = core_iom_input;
                 ep.metadata = in.metadata;
-                if(in.source_type == random_input || in.source_type == waveform_input) waveform_inputs.insert({core.id, in.name});
+                if(!in.metadata.io_address.empty()) {
+                    // fed by the outside world at its address: the source is for the emulation only, the hardware ignores it
+                    if(in.source_type == external_input) {
+                        throw std::runtime_error("The input " + core.id + "." + in.name + " has an io_address and an external source, nothing feeds it in the emulation");
+                    }
+                    ep.bus_addresses = in.metadata.io_address;
+                }
+                else if(in.source_type == random_input || in.source_type == waveform_input) waveform_inputs.insert({core.id, in.name});
                 else if(in.source_type == external_input) external_endpoints.insert(core.id + "." + in.name);
                 destinations_map[core.id][in.name] = ep;
             }
@@ -72,6 +120,7 @@ namespace fcore::emulator_v2 {
                     ep.metadata = mem.metadata;
 
                     if(mem.is_input) {
+                        ep.bus_addresses = mem.metadata.io_address;
                         destinations_map[core.id][mem.name] = ep;
                         external_endpoints.insert(core.id + "." + mem.name);
                     }
@@ -101,6 +150,13 @@ namespace fcore::emulator_v2 {
             }
             if(!destinations_map.at(dst_core).contains(dst_port)) {
                 throw std::runtime_error("Destination core " + dst_core + " does not have a port named " + dst_port);
+            }
+
+            if(!destinations_map.at(dst_core).at(dst_port).metadata.io_address.empty()) {
+                throw std::runtime_error("The destination " + ic.destination_endpoint + " has an io_address, it is fed by the outside world and cannot be the destination of an interconnect");
+            }
+            if(!sources_map.at(src_core).at(src_port).metadata.io_address.empty()) {
+                throw std::runtime_error("The source " + ic.source_endpoint + " has an io_address, it is sent to the outside world and cannot be the source of an interconnect");
             }
 
             if(!external_endpoints.contains(dst_core + "." + dst_port)) {
@@ -264,6 +320,10 @@ namespace fcore::emulator_v2 {
     }
 
     uint32_t bus_allocator::get_free_address(const std::string &core, const std::string &output, uint32_t array_index) {
+        // the outside world reads it at the address that it gave it, which was reserved
+        auto &external_address = sources_map.at(core).at(output).metadata.io_address;
+        if(!external_address.empty()) return external_address.at(array_index);
+
         auto addr = allocate_bus_address(1, {}, {0});
         global_forbidden_addresses.insert(addr[0]);
         return addr[0];
