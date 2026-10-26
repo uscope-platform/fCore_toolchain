@@ -77,6 +77,35 @@ TEST(backend_errors, stall_insertion_rejects_unbound_registers) {
     EXPECT_EQ(outcome.error().code, error_code::pipeline_hazard);
 }
 
+TEST(backend_errors, stall_insertion_rejects_an_unbound_destination_for_every_instruction_kind) {
+    auto bound = std::make_shared<variable>("r3");
+    bound->set_bound_reg(3);
+    auto bound_b = std::make_shared<variable>("r4");
+    bound_b->set_bound_reg(4);
+    auto unbound = std::make_shared<variable>("r7");
+
+    auto ic = std::make_shared<instrumentation_core>();
+    stream_pass_manager sman(ic, stream_pass_manager::asm_language, 1);
+
+    instruction_stream register_stream;
+    register_stream.push_back(instruction_variant(register_instruction(opcode_add, bound, bound_b, unbound)));
+    auto register_outcome = sman.apply_pass(register_stream, std::make_shared<stall_insertion>(1));
+    ASSERT_FALSE(register_outcome);
+    EXPECT_EQ(register_outcome.error().code, error_code::pipeline_hazard);
+
+    instruction_stream constant_stream;
+    constant_stream.push_back(instruction_variant(load_constant_instruction(opcode_ldc, unbound, std::make_shared<variable>("constant", 1.0f))));
+    auto constant_outcome = sman.apply_pass(constant_stream, std::make_shared<stall_insertion>(1));
+    ASSERT_FALSE(constant_outcome);
+    EXPECT_EQ(constant_outcome.error().code, error_code::pipeline_hazard);
+
+    instruction_stream conversion_stream;
+    conversion_stream.push_back(instruction_variant(conversion_instruction(opcode_itf, bound, unbound)));
+    auto conversion_outcome = sman.apply_pass(conversion_stream, std::make_shared<stall_insertion>(1));
+    ASSERT_FALSE(conversion_outcome);
+    EXPECT_EQ(conversion_outcome.error().code, error_code::pipeline_hazard);
+}
+
 TEST(backend_errors, failed_stream_pass_can_be_reused) {
     auto r3 = std::make_shared<variable>("r3");
     auto r4 = std::make_shared<variable>("r4");

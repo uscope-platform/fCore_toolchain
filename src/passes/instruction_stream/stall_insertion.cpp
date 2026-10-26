@@ -77,7 +77,7 @@ namespace fcore {
         if (node.get_opcode() == opcode_efi)    {
             op_b = node.get_operand_b()->get_int_value();
         }
-        if( op_a == -1 || (op_b == -1 && node.get_opcode() != opcode_efi)) {
+        if( dest == -1 || op_a == -1 || (op_b == -1 && node.get_opcode() != opcode_efi)) {
             report(error(error_code::pipeline_hazard, "Encountered unbound register while inserting pipeline delay slots"));
             return {};
         }
@@ -90,7 +90,11 @@ namespace fcore {
     }
 
     std::vector<instruction_variant> stall_insertion::process(const load_constant_instruction &node) {
-         auto dest = node.get_destination()->get_bound_reg();
+        auto dest = node.get_destination()->get_bound_reg();
+        if(dest == -1) {
+            report(error(error_code::pipeline_hazard, "Encountered unbound register while inserting pipeline delay slots"));
+            return {};
+        }
         operations_tracker[dest] =  get_latency(opcode_ldc);
         advance_tracker(dest);
         return {instruction_variant(node)};
