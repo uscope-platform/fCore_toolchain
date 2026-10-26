@@ -139,6 +139,11 @@ namespace fcore::emulator_v2 {
                     dci.metadata.width = in.metadata.width;
                     dci.source_type = in. source_type;
                     dci.waveform_parameters = in.waveform_parameters;
+                    if(!in.metadata.io_address.empty()) {
+                        // fed by the outside world through the bus: the source is for the emulation only
+                        dci.source_type = external_input;
+                        dci.data = {};
+                    }
                     ret.push_back(dci);
                 }
                 return ret;

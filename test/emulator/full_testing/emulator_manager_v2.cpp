@@ -1411,3 +1411,101 @@ TEST(emulator_manager_v2, emulator_external_io_address_input) {
         ASSERT_FLOAT_EQ(result[i], reference[i]);
     }
 }
+
+
+TEST(emulator_manager_v2, emulator_external_io_address_output) {
+
+    nlohmann::json specs = nlohmann::json::parse( R"({
+      "version": 2,
+      "cores": [
+        {
+          "id": "test",
+          "inputs": [
+            {
+              "name": "input_1",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type": "series",
+                "value": [15.7,67.4]
+              }
+            },
+            {
+              "name": "input_2",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              },
+              "source": {
+                "type": "series",
+                "value": [42.92,-5.8]
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "name": "test_out",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false,
+                "io_address": [20]
+              }
+            }
+          ],
+          "memory_init": [],
+          "program": {
+            "content": "int main() {float input_1;float input_2;float test_out;test_out = input_1 + input_2;}",
+            "headers": []
+          },
+          "order": 1,
+          "options": {
+            "comparators": "reducing",
+            "efi_implementation": "efi_sort"
+          },
+          "channels": 1,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
+          }
+        }
+      ],
+      "interconnect": [],
+      "emulation_time": 2,
+      "deployment_mode": false
+    })");
+
+
+    emulator_dispatcher manager;
+    manager.set_specs(specs);
+    manager.process();
+
+    // the output is sent to the address that the outside world reads it at, the core keeps its own address for it
+    auto slots = manager.get_interconnect_slots();
+    ASSERT_EQ(slots.size(), 1);
+    EXPECT_EQ(slots[0].source_name, "test_out");
+    EXPECT_EQ(slots[0].destination_bus_address, 20);
+    EXPECT_NE(slots[0].source_io_address, 20);
+
+    manager.emulate();
+    auto res_obj = manager.get_results();
+
+    std::vector<float>  result = std::vector<float>(res_obj["test"]["outputs"]["test_out"]["0"][0]);
+    std::vector<float> reference = {58.62, 61.6};
+    ASSERT_EQ(result.size(), reference.size());
+    for(int i = 0; i<result.size(); ++i){
+        ASSERT_FLOAT_EQ(result[i], reference[i]);
+    }
+}
