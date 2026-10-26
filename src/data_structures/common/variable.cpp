@@ -160,6 +160,7 @@ namespace fcore{
         copied_var->array_index = original->array_index;
         copied_var->struct_accessors = original->struct_accessors;
         copied_var->c_type = original->c_type;
+        copied_var->raw_bits = original->raw_bits;
         return copied_var;
     }
 

@@ -1024,7 +1024,7 @@ TEST(EndToEndC, efi_load_elimination) {
         trig_in[0] = 0;
         s_th = efi(trig_in, 2);
         s_th = 0.000030518*s_th;
-        trig_in[0] = 1;
+        trig_in[0] = raw(1);
         c_th = efi(trig_in, 2);
     }
     )""""};
@@ -1072,7 +1072,7 @@ TEST(EndToEndC, efi_load_elimination_in_func) {
 
             float efi_in[2];
 
-            efi_in[0] = 1;
+            efi_in[0] = raw(1);
             efi_in[1] = theta;
 
             float cos_theta = efi(efi_in, 2);
@@ -1117,7 +1117,7 @@ TEST(EndToEndC, constant_conversion) {
     std::vector<std::string> file_content = {R""""(
         int main(){
 
-            float v_ref=15;
+            float v_ref=raw(15);
             float v_ref2=14.0;
 
             float v_err = itf(v_ref);
@@ -2158,4 +2158,80 @@ TEST(EndToEndC, multichannel_delay_slots) {
         0x26, 0x40A00000, 0,  0, 0x40fc3, 0x26, 0x3e2aaaab, 0, 0, 0x60843, 0, 0, 0, 0xc};
 
     ASSERT_EQ(gold_standard, result);
+}
+namespace {
+    std::vector<uint32_t> compile_with_output_a(const std::string &source) {
+        std::vector<std::string> file_content = {source};
+        std::vector<std::string> includes;
+        std::map<std::string, core_iom> dma_map;
+        dma_map["a"] = {core_iom_output, {10}};
+
+        fcore_cc compiler(file_content, includes);
+        compiler.set_dma_map(dma_map);
+        auto compiled = compiler.compile(1);
+        EXPECT_TRUE(compiled) << compiler.get_errors();
+        return compiled ? compiler.get_executable() : std::vector<uint32_t>{};
+    }
+}
+
+TEST(EndToEndC, integer_literal_in_float_initializer_is_converted) {
+    auto implicit = compile_with_output_a("void main(){ float a = 1024; }");
+    auto explicit_ = compile_with_output_a("void main(){ float a = 1024.0; }");
+    ASSERT_FALSE(explicit_.empty());
+    EXPECT_EQ(implicit, explicit_);
+}
+
+TEST(EndToEndC, integer_literal_in_float_assignment_is_converted) {
+    auto implicit = compile_with_output_a("void main(){ float a = 0.0; a = 3; }");
+    auto explicit_ = compile_with_output_a("void main(){ float a = 0.0; a = 3.0; }");
+    ASSERT_FALSE(explicit_.empty());
+    EXPECT_EQ(implicit, explicit_);
+}
+
+TEST(EndToEndC, integer_literal_next_to_float_variable_is_converted) {
+    auto implicit = compile_with_output_a("void main(){ float b = 2.5; float a = b * 4 + 1; }");
+    auto explicit_ = compile_with_output_a("void main(){ float b = 2.5; float a = b * 4.0 + 1.0; }");
+    ASSERT_FALSE(explicit_.empty());
+    EXPECT_EQ(implicit, explicit_);
+}
+
+TEST(EndToEndC, integer_literal_in_float_array_initializer_is_converted) {
+    auto implicit = compile_with_output_a("void main(){ float arr[2] = {1, 2}; float a = arr[1]; }");
+    auto explicit_ = compile_with_output_a("void main(){ float arr[2] = {1.0, 2.0}; float a = arr[1]; }");
+    ASSERT_FALSE(explicit_.empty());
+    EXPECT_EQ(implicit, explicit_);
+}
+
+TEST(EndToEndC, integer_literal_in_float_argument_is_converted) {
+    auto implicit = compile_with_output_a("float twice(float x){ return x * 2; } void main(){ float a = twice(3); }");
+    auto explicit_ = compile_with_output_a("float twice(float x){ return x * 2.0; } void main(){ float a = twice(3.0); }");
+    ASSERT_FALSE(explicit_.empty());
+    EXPECT_EQ(implicit, explicit_);
+}
+
+TEST(EndToEndC, integer_literal_in_float_return_is_converted) {
+    auto implicit = compile_with_output_a("float one(){ return 1; } void main(){ float a = one(); }");
+    auto explicit_ = compile_with_output_a("float one(){ return 1.0; } void main(){ float a = one(); }");
+    ASSERT_FALSE(explicit_.empty());
+    EXPECT_EQ(implicit, explicit_);
+}
+
+TEST(EndToEndC, integer_literals_in_integer_context_are_untouched) {
+    auto implicit = compile_with_output_a("void main(){ int a = 1024; a = a + 3; }");
+    ASSERT_FALSE(implicit.empty());
+}
+
+TEST(EndToEndC, raw_literal_in_float_initializer_is_not_converted) {
+    auto raw = compile_with_output_a("void main(){ float a = raw(1024); }");
+    auto converted = compile_with_output_a("void main(){ float a = 1024; }");
+    ASSERT_FALSE(raw.empty());
+    ASSERT_FALSE(converted.empty());
+    EXPECT_NE(raw, converted);
+}
+
+TEST(EndToEndC, raw_requires_an_integer_literal) {
+    std::vector<std::string> file_content = {"void main(){ float b = 1.0; float a = raw(b); }"};
+    std::vector<std::string> includes;
+    fcore_cc compiler(file_content, includes);
+    EXPECT_FALSE(compiler.compile(1));
 }

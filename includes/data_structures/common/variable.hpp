@@ -175,6 +175,10 @@ namespace fcore{
         void set_c_type(c_types_t type){c_type = type;};
         c_types_t get_c_type(){ return c_type;};
 
+        /// An integer literal wrapped in raw() is a bit pattern, it is never converted to a float implicitly
+        void set_raw_bits(bool raw){raw_bits = raw;};
+        bool is_raw_bits() const {return raw_bits;};
+
     private:
         std::vector<std::string> struct_accessors;
         variable_class_t variable_class;
@@ -197,6 +201,7 @@ namespace fcore{
         std::vector<int> array_index;
 
         c_types_t c_type;
+        bool raw_bits = false;
     };
 }
 

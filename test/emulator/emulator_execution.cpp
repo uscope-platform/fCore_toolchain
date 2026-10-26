@@ -348,7 +348,7 @@ TEST(Emulator_execution, emulator_ble) {
 
 
 TEST(Emulator_execution, emulator_efi) {
-    auto program = "int main(){float sort_input[4] = {1, 5.0, 0.5, 50.0};float sort_output[4];sort_output = efi(sort_input, 4);}";
+    auto program = "int main(){float sort_input[4] = {0, 5.0, 0.5, 50.0};sort_input[0] = raw(1);float sort_output[4];sort_output = efi(sort_input, 4);}";
 
     auto specs = prepare_spec(program, 1, 1,
                              {}, {}, {});

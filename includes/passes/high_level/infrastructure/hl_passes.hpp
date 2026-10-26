@@ -25,6 +25,7 @@
 #include "passes/high_level/optimizations/normalization_pass.hpp"
 #include "passes/high_level/optimizations/visitor_passes/intrinsics_implementation_pass.hpp"
 #include "passes/high_level/optimizations/visitor_passes/comparison_flipping.hpp"
+#include "passes/high_level/optimizations/visitor_passes/literal_coercion_pass.hpp"
 #include "passes/high_level/optimizations/visitor_passes/dead_variable_elimination.hpp"
 #include "passes/high_level/optimizations/visitor_passes/constant_folding_pass.hpp"
 #include "passes/high_level/optimizations/constant_propagation.hpp"
@@ -48,6 +49,7 @@ namespace fcore{
     ){
         hl_pass_manager manager;
 
+        manager.add_optimization_pass("Literal Coercion", std::make_shared<literal_coercion_pass>());
         manager.add_optimization_pass("Division Implementation", std::make_shared<division_implementation_pass>());
         manager.add_optimization_pass("Intrinsics Implementation", std::make_shared<intrinsics_implementation_pass>());
         manager.add_optimization_pass("Comparison flipping pass", std::make_shared<comparison_flipping>());
