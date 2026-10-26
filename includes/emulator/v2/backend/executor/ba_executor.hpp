@@ -28,12 +28,12 @@ namespace fcore::emulator_v2{
     class ba_executor : public executor_base {
     public:
         ba_executor();
-        uint32_t execute_add(uint32_t a, uint32_t b) override;
-        uint32_t execute_sub(uint32_t a, uint32_t b) override;
-        uint32_t execute_mul(uint32_t a, uint32_t b) override;
-        uint32_t execute_rec(uint32_t a) override;
-        uint32_t execute_fti(uint32_t a) override;
-        uint32_t execute_itf(uint32_t a) override;
+        result<uint32_t> execute_add(uint32_t a, uint32_t b) override;
+        result<uint32_t> execute_sub(uint32_t a, uint32_t b) override;
+        result<uint32_t> execute_mul(uint32_t a, uint32_t b) override;
+        result<uint32_t> execute_rec(uint32_t a) override;
+        result<uint32_t> execute_fti(uint32_t a) override;
+        result<uint32_t> execute_itf(uint32_t a) override;
     private:
         xip_fpo_t xil_a, xil_b, xil_res;
         xip_fpo_fix_t xil_a_fixed_point;

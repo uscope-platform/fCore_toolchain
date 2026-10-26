@@ -15,6 +15,7 @@
 // limitations under the License.
 
 #include "data_structures/emulation/v2/emulation_program.hpp"
+#include "errors/invariants.hpp"
 
 
 
@@ -36,9 +37,7 @@ namespace fcore::emulator_v2{
     }
 
     emulation_instruction &emulation_program::operator[](int idx) {
-        if (idx >= program.size()) {
-            throw std::range_error("out of bound access");
-        }
+        ensure(idx >= 0 && idx < program.size(), "access to an instruction outside of the emulated program");
         return program[idx];
     }
 }

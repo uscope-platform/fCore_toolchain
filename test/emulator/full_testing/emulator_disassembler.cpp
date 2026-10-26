@@ -18,6 +18,7 @@
 #include <fstream>
 
 #include "emulator/emulator_dispatcher.hpp"
+#include "result_helpers.hpp"
 
 using namespace fcore;
 using namespace fcore::emulator_v2;
@@ -150,9 +151,9 @@ TEST(emulator_disassembler, emulator_disassemble) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    auto execs = manager.get_programs();
-    auto res = manager.disassemble();
+    ASSERT_TRUE(manager.set_specs(specs));
+    auto execs = expect_value(manager.get_programs());
+    auto res = expect_value(manager.disassemble());
 
 
     std::map<uint16_t, translation_table_entry> producer_io = {{1,{"out", 3}},{3,{"input_1",1}}, {4,{"input_2",2}}};
@@ -257,9 +258,9 @@ TEST(emulator_disassembler, emulator_disassemble_common_io) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    auto execs = manager.get_programs();
-    auto res = manager.disassemble();
+    ASSERT_TRUE(manager.set_specs(specs));
+    auto execs = expect_value(manager.get_programs());
+    auto res = expect_value(manager.disassemble());
 
     std::map<uint16_t, translation_table_entry> io = {{1,{"out", 1}}};
     std::map<uint16_t, translation_table_entry> common_io = {{2, {"input_1",1}}, {3, {"input_2",2}}};
@@ -375,9 +376,9 @@ TEST(emulator_disassembler, emulator_disassemble_common_csel_c_operand) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    auto execs = manager.get_programs();
-    auto res = manager.disassemble();
+    ASSERT_TRUE(manager.set_specs(specs));
+    auto execs = expect_value(manager.get_programs());
+    auto res = expect_value(manager.disassemble());
 
     std::map<uint16_t, translation_table_entry> io = {
         {1,{"v_cross", 63}},

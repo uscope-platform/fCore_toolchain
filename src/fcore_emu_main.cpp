@@ -76,37 +76,36 @@ int main(int argc, char **argv) {
     std::shared_ptr<fcore::instrumentation_core> profiler = std::make_shared<fcore::instrumentation_core>();
 
     nlohmann::json profiling_data;
-    try{
-        fcore::emulator_v2::emulator_manager emu_manager;
-        emu_manager.set_specs(specs);
-        if(debug_autogen) emu_manager.enable_debug_mode();
-        emu_manager.set_profiler(profiler);
-        emu_manager.process();
-        profiler->set_phase("emulation");
-        profiler->start_event("execution", true);
-        emu_manager.emulate();
-        profiler->end_event("execution");
-        results = emu_manager.get_results();
-        profiling_data = profiler->dump();
 
-        if(dump_bus) {
-            auto bus = emu_manager.dump_bus();
-            std::ofstream ss("bus.txt");
-            for(auto &b: bus) {
-             ss << b.first << " --- " << b.second << std::endl;
-            }
-            ss.close();
-            exit(0);
+    auto exit_on_error = [](const auto &outcome) {
+        if(!outcome){
+            spdlog::critical(outcome.error().what());
+            exit(-1);
         }
-    } catch (std::runtime_error &err) {
-        spdlog::critical(err.what());
-        exit(-1);
-    } catch (std::domain_error &err){
-        spdlog::critical("Duplicate bus address detected");
-        std::ofstream ss("duplicates.json");
-        ss<<err.what();
+    };
+
+    fcore::emulator_v2::emulator_manager emu_manager;
+    exit_on_error(emu_manager.set_specs(specs));
+    if(debug_autogen) emu_manager.enable_debug_mode();
+    emu_manager.set_profiler(profiler);
+    exit_on_error(emu_manager.process());
+    profiler->set_phase("emulation");
+    profiler->start_event("execution", true);
+    exit_on_error(emu_manager.emulate());
+    profiler->end_event("execution");
+    auto emulation_results = emu_manager.get_results();
+    exit_on_error(emulation_results);
+    results = emulation_results.value();
+    profiling_data = profiler->dump();
+
+    if(dump_bus) {
+        auto bus = emu_manager.dump_bus();
+        std::ofstream ss("bus.txt");
+        for(auto &b: bus) {
+         ss << b.first << " --- " << b.second << std::endl;
+        }
         ss.close();
-        exit(-1);
+        exit(0);
     }
 
 

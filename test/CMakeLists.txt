@@ -10,6 +10,7 @@ set(TEST_SOURCES
         errors/frontend_errors.cpp
         errors/pass_errors.cpp
         errors/backend_errors.cpp
+        errors/emulator_errors.cpp
         end_to_end_asm.cpp
         testing_main.cpp
         end_to_end_C.cpp
@@ -38,6 +39,7 @@ set(TEST_SOURCES
 
 
 add_executable(test_target ${TEST_SOURCES})
+target_include_directories(test_target PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 
 if(${INCLUDE_EMULATOR})

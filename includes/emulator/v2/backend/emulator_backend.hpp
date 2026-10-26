@@ -20,6 +20,7 @@
 #include <set>
 #include <spdlog/spdlog.h>
 
+#include "errors/result.hpp"
 #include "efi_dispatcher.h"
 #include "data_structures/emulation/v2/emulation_program.hpp"
 #include "data_structures/emulation/v2/emulator_metadata.hpp"
@@ -43,12 +44,8 @@ namespace fcore::emulator_v2{
         opcode_table_t opcode;
     };
 
-    class BreakpointException : public std::runtime_error {
-    public:
-        BreakpointException(const debug_checkpoint& checkpoint)
-                : std::runtime_error("internal exception"), data(checkpoint) {}
-            debug_checkpoint data;
-    };
+    /// A round either completes, nothing is returned, or hits a breakpoint, in which case the checkpoint is returned.
+    typedef std::optional<debug_checkpoint> round_outcome_t;
 
     class emulator_backend {
     public:
@@ -60,11 +57,11 @@ namespace fcore::emulator_v2{
             std::span<uint32_t> common_mem,
             uint8_t ac
         );
-        void run_round(int init_point);
+        [[nodiscard]] result<round_outcome_t> run_round(int init_point);
 
         void reset_instruction_pointer() {current_instruction =0;};
 
-        debug_checkpoint step_over();
+        [[nodiscard]] result<debug_checkpoint> step_over();
         void set_efi_selector(const efi_implementation_t sel){ efi_selector = sel;};
 
         std::set<uint32_t> get_breakpoints() {return breakpoints;};
@@ -88,15 +85,16 @@ namespace fcore::emulator_v2{
     private:
 
 
-        void run_instruction_by_type(const uint32_t& opcode, std::array<uint32_t, 3> operands, std::array<bool, 3> io_flags);
+        result<void> run_instruction_by_type(const uint32_t& opcode, std::array<uint32_t, 3> operands, std::array<bool, 3> io_flags);
+        result<void> queue_result(result<operation_result> op);
 
-        operation_result run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags);
-        operation_result run_ternary_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags);
-        void run_independent_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands);
-        operation_result run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags);
+        result<operation_result> run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags);
+        result<operation_result> run_ternary_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags);
+        result<void> run_independent_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands);
+        result<operation_result> run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags);
         operation_result run_load_constant_instruction(uint32_t dest, uint32_t val);
 
-        void execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest);
+        result<void> execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest);
 
         operation_result solve_writeback_conflict(std::vector<operation_result> writes);
 

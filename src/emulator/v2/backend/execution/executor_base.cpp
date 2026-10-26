@@ -88,7 +88,7 @@ namespace fcore::emulator_v2 {
         return a ^ b;
     }
 
-    uint32_t executor_base::execute_compare_gt(uint32_t a, uint32_t b, comparator_type_t comparator_type) {
+    result<uint32_t> executor_base::execute_compare_gt(uint32_t a, uint32_t b, comparator_type_t comparator_type) {
         bool sign_a = (1<<31) & a;
         bool sign_b = (1<<31) & b;
 
@@ -107,7 +107,7 @@ namespace fcore::emulator_v2 {
         return process_comparison_output(res, comparator_type);
     }
 
-    uint32_t executor_base::execute_compare_le(uint32_t a, uint32_t b, comparator_type_t comparator_type){
+    result<uint32_t> executor_base::execute_compare_le(uint32_t a, uint32_t b, comparator_type_t comparator_type){
         bool sign_a = (1<<31) & a;
         bool sign_b = (1<<31) & b;
 
@@ -126,11 +126,11 @@ namespace fcore::emulator_v2 {
         return process_comparison_output(res, comparator_type);
     }
 
-    uint32_t executor_base::execute_compare_eq(uint32_t a, uint32_t b, comparator_type_t comparator_type){
+    result<uint32_t> executor_base::execute_compare_eq(uint32_t a, uint32_t b, comparator_type_t comparator_type){
         return process_comparison_output(a==b, comparator_type);
     }
 
-    uint32_t executor_base::execute_compare_ne(uint32_t a, uint32_t b, comparator_type_t comparator_type){
+    result<uint32_t> executor_base::execute_compare_ne(uint32_t a, uint32_t b, comparator_type_t comparator_type){
         return process_comparison_output(a!=b, comparator_type);
     }
 
@@ -143,7 +143,7 @@ namespace fcore::emulator_v2 {
     }
 
 
-    uint32_t executor_base::process_comparison_output(bool val, comparator_type_t comparator_type) {
+    result<uint32_t> executor_base::process_comparison_output(bool val, comparator_type_t comparator_type) {
 
         if(comparator_type== comparator_full) {
             if(val){
@@ -154,9 +154,9 @@ namespace fcore::emulator_v2 {
         } else if(comparator_type==comparator_reducing){
             return val;
         } else if(comparator_type == comparator_none) {
-            throw std::runtime_error("The emulator has encountered a comparison instruction on core which does not have comparators.");
+            return fail(error_code::emulation_error, "The emulator has encountered a comparison instruction on a core which does not have comparators");
         } else{
-            throw std::runtime_error("The emulator has encountered a comparison instruction, however an unknown type was selected in the spec file");
+            return fail(error_code::spec_error, "The emulator has encountered a comparison instruction, however an unknown comparator type was selected in the spec file");
         }
     }
 

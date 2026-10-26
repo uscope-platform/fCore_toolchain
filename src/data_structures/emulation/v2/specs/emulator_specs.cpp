@@ -23,7 +23,7 @@
 
 namespace fcore::emulator_v2 {
 
-    void emulator_specs::parse(const nlohmann::json &spec_obj) {
+    result<void> emulator_specs::parse(const nlohmann::json &spec_obj) {
         std::set<uint32_t> current_orders;
 
         interconnects.clear();
@@ -31,45 +31,47 @@ namespace fcore::emulator_v2 {
 
         schema_validator_base validator(emulator_input);
         if(auto validation = validator.validate(spec_obj); !validation){
-            std::cerr << validation.error().message;
-            throw std::runtime_error("Failed to validate emulator schema");
+            return fail(std::move(validation).error().with_context("validating the emulator specification"));
         }
 
         if(spec_obj["version"] != 2) {
-            throw std::runtime_error("Wrong emulator input schema version");
+            return fail(error_code::not_supported, "Wrong emulator input schema version");
         }
 
         for(auto &is: spec_obj["interconnect"]){
             auto i = process_interconnect(is);
-            interconnects.push_back(i);
+            if(!i) return fail(std::move(i).error().with_context("processing an interconnect"));
+            interconnects.push_back(i.value());
         }
 
         for(const auto &cs:spec_obj["cores"]){
             auto c = process_core(cs);
-            cores.push_back(c);
-            if(current_orders.contains(c.order)){
-                throw std::runtime_error("Core ID: " + c.id + " has duplicate order field");
+            if(!c) return fail(std::move(c).error());
+            cores.push_back(c.value());
+            if(current_orders.contains(c.value().order)){
+                return fail(error_code::spec_error, "Core ID: " + c.value().id + " has duplicate order field");
             }
-            current_orders.insert(c.order);
+            current_orders.insert(c.value().order);
         }
 
 
         emulation_time = spec_obj["emulation_time"];
         custom_deploy_mode = spec_obj["deployment_mode"];
+        return {};
     }
 
-    emulator_core emulator_specs::get_core_by_id(const std::string &id) {
+    result<emulator_core> emulator_specs::get_core_by_id(const std::string &id) {
         for(auto &c: cores){
             if(c.id == id) return c;
         }
-        throw std::runtime_error("core with ID: " + id + " not found");
+        return fail(error_code::invalid_argument, "core with ID: " + id + " not found");
     }
 
-    deployment_options emulator_specs::get_deployment_options(const std::string &core_id) {
+    result<deployment_options> emulator_specs::get_deployment_options(const std::string &core_id) {
         for(auto &c: cores) {
             if(c.id == core_id) return c.deployment;
         }
-        throw std::runtime_error("core with ID: " + core_id + " not found");
+        return fail(error_code::invalid_argument, "core with ID: " + core_id + " not found");
     }
 
     std::map<std::string, std::map<std::string, std::vector<uint32_t>>> emulator_specs::
@@ -124,7 +126,7 @@ namespace fcore::emulator_v2 {
         return output_ivs;
     }
 
-    emulator_output_specs emulator_specs::process_output(const nlohmann::json &o) {
+    result<emulator_output_specs> emulator_specs::process_output(const nlohmann::json &o) {
         emulator_output_specs out;
         out.metadata.type = data_type_map[o["metadata"]["type"]];
         out.metadata.width = o["metadata"]["width"];
@@ -149,12 +151,14 @@ namespace fcore::emulator_v2 {
             out.metadata.suggested_address = std::vector<uint32_t>(out.vector_size, 0);
         }
 
-        out.metadata.io_address = process_io_address(o["metadata"], out.vector_size, out.name);
+        auto io_address = process_io_address(o["metadata"], out.vector_size, out.name);
+        if(!io_address) return fail(std::move(io_address).error());
+        out.metadata.io_address = io_address.value();
 
         return out;
     }
 
-    emulator_input_specs emulator_specs::process_input(const nlohmann::json &i) {
+    result<emulator_input_specs> emulator_specs::process_input(const nlohmann::json &i) {
         emulator_input_specs in;
 
 
@@ -177,7 +181,9 @@ namespace fcore::emulator_v2 {
         }else if(in.is_vector) {
             in.metadata.suggested_address =  std::vector<uint32_t>(in.vector_size, 0);;
         }
-        in.metadata.io_address = process_io_address(i["metadata"], in.vector_size, in.name);
+        auto io_address = process_io_address(i["metadata"], in.vector_size, in.name);
+        if(!io_address) return fail(std::move(io_address).error());
+        in.metadata.io_address = io_address.value();
 
         in.metadata.is_common_io = i["metadata"]["common_io"];
 
@@ -234,7 +240,7 @@ namespace fcore::emulator_v2 {
                 p.duty = static_cast<std::vector<double>>(source_obj["duty"]);
                 in.waveform_parameters  = p;
             } else {
-                throw std::runtime_error(fmt::format("Unsupported waveform shape ({0}) for input {1}", i["shape"].dump(), in.name));
+                return fail(error_code::spec_error, fmt::format("Unsupported waveform shape ({0}) for input {1}", source_obj["shape"].dump(), in.name));
             }
         } else {
             if(source_obj.contains("value")) {
@@ -270,16 +276,16 @@ namespace fcore::emulator_v2 {
         return in;
     }
 
-    std::vector<uint32_t> emulator_specs::process_io_address(const nlohmann::json &metadata, uint32_t vector_size, const std::string &name) {
+    result<std::vector<uint32_t>> emulator_specs::process_io_address(const nlohmann::json &metadata, uint32_t vector_size, const std::string &name) {
         if(!metadata.contains("io_address")) return {};
         auto addresses = static_cast<std::vector<uint32_t>>(metadata["io_address"]);
         if(addresses.size() != vector_size) {
-            throw std::runtime_error(fmt::format("The io_address of {0} has {1} elements, the port has {2}", name, addresses.size(), vector_size));
+            return fail(error_code::spec_error, fmt::format("The io_address of {0} has {1} elements, the port has {2}", name, addresses.size(), vector_size));
         }
         return addresses;
     }
 
-    emulator_core emulator_specs::process_core(const nlohmann::json &core_obj) {
+    result<emulator_core> emulator_specs::process_core(const nlohmann::json &core_obj) {
         emulator_core c;
         c.id = core_obj["id"];
         c.order = core_obj["order"];
@@ -299,24 +305,29 @@ namespace fcore::emulator_v2 {
         c.program.headers = core_obj["program"]["headers"];
 
         for(auto &o: core_obj["outputs"]){
-            c.outputs.push_back(process_output(o));
+            auto output = process_output(o);
+            if(!output) return fail(std::move(output).error().with_context("processing an output of core " + c.id));
+            c.outputs.push_back(output.value());
         }
 
         for(auto &m: core_obj["memory_init"]){
             auto mem = process_memory(m);
-            c.memories.push_back(mem);
+            if(!mem) return fail(std::move(mem).error().with_context("processing a memory of core " + c.id));
+            c.memories.push_back(mem.value());
         }
 
 
         for(auto &i: core_obj["inputs"]){
-            c.inputs.push_back(process_input(i));
+            auto input = process_input(i);
+            if(!input) return fail(std::move(input).error().with_context("processing an input of core " + c.id));
+            c.inputs.push_back(input.value());
         }
 
         double rom_address = core_obj["deployment"]["rom_address"];
         double control_address = core_obj["deployment"]["control_address"];
 
         if(!check_float_intness(rom_address) || !check_float_intness(control_address)){
-            throw std::runtime_error("Both rom and control addresses for core " + c.id + " should be integer like numbers");
+            return fail(error_code::spec_error, "Both rom and control addresses for core " + c.id + " should be integer like numbers");
         }
         c.deployment.rom_address = rom_address;
         c.deployment.control_address = control_address;
@@ -325,13 +336,13 @@ namespace fcore::emulator_v2 {
         return c;
     }
 
-    emulator_interconnect emulator_specs::process_interconnect(const nlohmann::json &ic) {
+    result<emulator_interconnect> emulator_specs::process_interconnect(const nlohmann::json &ic) {
         emulator_interconnect interconnect;
 
         interconnect.destination_endpoint = ic["destination"];
         interconnect.source_endpoint = ic["source"];
         if(ic.contains("source_channel") && !ic.contains("destination_channel"))
-            throw std::runtime_error("Either both source and destination channels need to be specified or none of them");
+            return fail(error_code::spec_error, "Either both source and destination channels need to be specified or none of them");
         if(ic.contains("source_channel"))
             interconnect.source_channel = ic["source_channel"];
         else
@@ -344,7 +355,7 @@ namespace fcore::emulator_v2 {
         return interconnect;
     }
 
-    emulator_memory_specs emulator_specs::process_memory(const nlohmann::json &m) {
+    result<emulator_memory_specs> emulator_specs::process_memory(const nlohmann::json &m) {
         emulator_memory_specs mem;
 
         mem.name = m["name"];
@@ -371,7 +382,9 @@ namespace fcore::emulator_v2 {
 
         mem.is_output = m["is_output"];
         mem.is_input = m["is_input"];
-        mem.metadata.io_address = process_io_address(m["metadata"], mem.vector_size, mem.name);
+        auto io_address = process_io_address(m["metadata"], mem.vector_size, mem.name);
+        if(!io_address) return fail(std::move(io_address).error());
+        mem.metadata.io_address = io_address.value();
 
         if(mem.metadata.type == type_float){
             std::vector<float> value;

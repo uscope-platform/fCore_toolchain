@@ -29,16 +29,19 @@
 #include "backend/binary_generator.hpp"
 #include "emulator/v2/emulator_manager.hpp"
 #include "fuzzer/fuzzer_metadata.hpp"
+#include "errors/result.hpp"
 
 namespace fcore{
 
 
     class fuzzer {
     public:
-        explicit fuzzer(const fuzzer_config &config);
+        /// Fails if the configuration is not consistent, for example if the inputs do not fit in the active registers
+        [[nodiscard]] static result<fuzzer> create(const fuzzer_config &config);
         fuzzing_package generate_binary();
-        std::vector<uint32_t> emulate(const fuzzing_package &pkg);
+        [[nodiscard]] result<std::vector<uint32_t>> emulate(const fuzzing_package &pkg);
     private:
+        explicit fuzzer(const fuzzer_config &config);
         static void generate_reference_model(fuzzing_package &pkg, const instruction_stream &s);
         std::vector<uint32_t> compile_binary(const instruction_stream &s);
         instruction_variant generate_instruction(uint32_t dest, std::vector<uint32_t>& active_registers);

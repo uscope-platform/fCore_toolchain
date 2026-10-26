@@ -53,23 +53,25 @@ namespace fcore::emulator_v2 {
         return ret;
     }
 
-    void emulator_manager::process() {
+    result<void> emulator_manager::process() {
 
         if(emu_spec.cores.empty()){
-            throw std::runtime_error("No cores section found in the emulator specification file");
+            return fail(error_code::spec_error, "No cores section found in the emulator specification file");
         }
         // Parse specification file;
 
         programs = get_programs();
 
-        for(auto &e: errors){
-            if(!e.second.empty()){
-                throw std::runtime_error("CORE " + e.first + ": " + e.second);
-            }
+        if(!errors.empty()){
+            // the first failing core is reported, the rest are available through get_results
+            const auto &[core_id, core_error] = *errors.begin();
+            error failed_core = core_error;
+            failed_core.message = "CORE " + core_id + ": " + failed_core.message;
+            return fail(std::move(failed_core));
         }
 
         for(auto &core:emu_spec.cores){
-            sequencer.add_core(core.id, core.sampling_frequency, core.order, core.channels);
+            if(auto added = sequencer.add_core(core.id, core.sampling_frequency, core.order, core.channels); !added) return added;
 
         }
         outputs_manager.process_specs(ic_manager.get_bus_engine());
@@ -79,12 +81,15 @@ namespace fcore::emulator_v2 {
         outputs_manager.set_initial_values(emu_spec.get_outputs_initial_values());
 
         for(auto &p:programs){
-            emulator_runner r(p, ic_manager.get_bus_engine());
-            runners->insert({p.name, r});
+            auto r = emulator_runner::create(p, ic_manager.get_bus_engine());
+            if(!r) return fail(std::move(r).error().with_context("setting up the runner of core " + p.name));
+            runners->insert({p.name, r.value()});
         }
+        return {};
     }
 
     std::vector<program_bundle> emulator_manager::get_programs() {
+        errors.clear();
         auto bus_engine = ic_manager.get_bus_engine();
         emulator_builder e_b(debug_autogen, bus_engine);
         e_b.set_profiler(profiler);
@@ -108,12 +113,10 @@ namespace fcore::emulator_v2 {
             b.efi_selector = e_b.get_efi_implementation(core.options["efi_implementation"]);
             b.comparator_type = e_b.get_comparator_type(core.options["comparators"]);
 
-            try{
-
-                b.program = e_b.compile_program(core, b.io);
-
-            } catch(std::runtime_error &e){
-                errors[core.id] = e.what();
+            if(auto compiled = e_b.compile_program(core, b.io)){
+                b.program = compiled.value();
+            } else {
+                errors[core.id] = std::move(compiled).error();
             }
 
             res.push_back(b);
@@ -121,7 +124,7 @@ namespace fcore::emulator_v2 {
         return res;
     }
 
-    std::vector<deployed_core_inputs> emulator_manager::get_inputs(const std::string &core) {
+    result<std::vector<deployed_core_inputs>> emulator_manager::get_inputs(const std::string &core) {
         std::vector<deployed_core_inputs> ret;
         auto engine = ic_manager.get_bus_engine();
         for(const auto& prog:emu_spec.cores) {
@@ -149,7 +152,7 @@ namespace fcore::emulator_v2 {
                 return ret;
             }
         }
-        throw std::runtime_error("Could not find core " + core);
+        return fail(error_code::invalid_argument, "Could not find core " + core);
     }
 
     std::vector<deployer_interconnect_slot> emulator_manager::process_scalar_channel(const interconnect_descriptor &ic) {
@@ -355,7 +358,7 @@ namespace fcore::emulator_v2 {
         return slots;
     }
 
-    std::optional<debug_checkpoint> emulator_manager::emulate() {
+    result<std::optional<debug_checkpoint>> emulator_manager::emulate() {
         interactive_restart_point = 0;
         ic_manager.clear_repeater();
         ic_manager.set_runners(runners);
@@ -381,40 +384,46 @@ namespace fcore::emulator_v2 {
         }
 
         spdlog::info("EMULATION START");
-        try{
-            currently_active_core = sequencer.get_core_by_order(1);
-            run_cores(false);
-            spdlog::info("EMULATION DONE");
-            return {};
-        } catch (BreakpointException &ex) {
-            interactive_restart_point = ex.data.breakpoint;
-            return augment_checkpoint_info(ex.data);
+        auto first_core = sequencer.get_core_by_order(1);
+        if(!first_core) return fail(std::move(first_core).error());
+        currently_active_core = first_core.value();
+
+        auto outcome = run_cores(false);
+        if(!outcome) return fail(std::move(outcome).error());
+        if(auto hit = outcome.value(); hit.has_value()){
+            interactive_restart_point = hit.value().breakpoint;
+            return std::optional<debug_checkpoint>{augment_checkpoint_info(hit.value())};
         }
+        spdlog::info("EMULATION DONE");
+        return std::optional<debug_checkpoint>{};
     }
 
 
-    std::optional<debug_checkpoint> emulator_manager::continue_emulation() {
-        try{
-            run_cores(true);
-            auto end_state = runners->at(currently_active_core).get_end_state();
-            end_state.next_program = "";
-            end_state.inputs =  runners->at(currently_active_core).get_inputs();
-            end_state.progress = sequencer.get_progress();
-            end_state.progress.channel = current_channel-1;
-
-            spdlog::info("EMULATION DONE");
-            return end_state;
-        } catch (BreakpointException &ex) {
-            interactive_restart_point = ex.data.breakpoint;
-            return augment_checkpoint_info(ex.data);
+    result<std::optional<debug_checkpoint>> emulator_manager::continue_emulation() {
+        auto outcome = run_cores(true);
+        if(!outcome) return fail(std::move(outcome).error());
+        if(auto hit = outcome.value(); hit.has_value()){
+            interactive_restart_point = hit.value().breakpoint;
+            return std::optional<debug_checkpoint>{augment_checkpoint_info(hit.value())};
         }
+
+        auto end_state = runners->at(currently_active_core).get_end_state();
+        end_state.next_program = "";
+        end_state.inputs =  runners->at(currently_active_core).get_inputs();
+        end_state.progress = sequencer.get_progress();
+        end_state.progress.channel = current_channel-1;
+
+        spdlog::info("EMULATION DONE");
+        return std::optional<debug_checkpoint>{end_state};
     }
 
-    std::vector<uint32_t> emulator_manager::dump_memory(const std::string &core_id, uint32_t channel){
-        return runners->at(core_id).dump_memory(channel);
+    result<std::vector<uint32_t>> emulator_manager::dump_memory(const std::string &core_id, uint32_t channel){
+        const auto runner = runners->find(core_id);
+        if(runner == runners->end()) return fail(error_code::invalid_argument, "Could not find core " + core_id);
+        return runner->second.dump_memory(channel);
     }
 
-    void emulator_manager::run_cores(bool in_progress) {
+    result<round_outcome_t> emulator_manager::run_cores(bool in_progress) {
         bool is_in_progress = in_progress;
         do{
             auto running_cores = sequencer.get_running_cores();
@@ -428,44 +437,69 @@ namespace fcore::emulator_v2 {
                     do {
                         spdlog::trace("Start round {} for core {} on channel {}, from instruction {}",
                         sequencer.get_current_step(),core.id, current_channel, interactive_restart_point);
-                        runners->at(core.id).inputs_phase(core, current_channel);
-                        runners->at(core.id).emulation_phase(current_channel, interactive_restart_point);
+                        if(auto inputs = runners->at(core.id).inputs_phase(core, current_channel); !inputs){
+                            return fail(std::move(inputs).error());
+                        }
+                        auto outcome = runners->at(core.id).emulation_phase(current_channel, interactive_restart_point);
+                        if(!outcome) return fail(std::move(outcome).error());
+                        // a breakpoint was hit, the emulation is suspended here
+                        if(outcome.value().has_value()) return outcome;
+
                         runners->at(core.id).reset_instruction_pointer();
                         interactive_restart_point = 0;
-                        currently_active_core = sequencer.get_next_core_by_order(core.order);
+                        auto next_core = sequencer.get_next_core_by_order(core.order);
+                        if(!next_core) return fail(std::move(next_core).error());
+                        currently_active_core = next_core.value();
                         current_channel++;
                     } while (current_channel < core.n_channels);
                     is_in_progress = false;
                 } else {
                     runners->at(core.id).advance_inputs();
                 }
-                outputs_manager.process_outputs(running_cores, core.id);
-                ic_manager.run_interconnect(core.id, sequencer.get_enabled_cores());
+                if(auto outputs = outputs_manager.process_outputs(running_cores, core.id); !outputs) return fail(std::move(outputs).error());
+                if(auto interconnects = ic_manager.run_interconnect(core.id, sequencer.get_enabled_cores()); !interconnects){
+                    return fail(std::move(interconnects).error());
+                }
             }
             sequencer.advance_emulation();
         } while (!sequencer.sim_complete());
+        return round_outcome_t{};
     }
 
 
-    debug_checkpoint emulator_manager::step_over() {
+    result<debug_checkpoint> emulator_manager::step_over() {
         spdlog::trace("step over of core: {0}, channel {1}", currently_active_core, current_channel);
-        auto current_core = sequencer.get_core_by_id(currently_active_core);
-        auto checkpoint = runners->at(currently_active_core).step_over(current_channel);
+        auto current_core_result = sequencer.get_core_by_id(currently_active_core);
+        if(!current_core_result) return fail(std::move(current_core_result).error());
+        const auto current_core = current_core_result.value();
+
+        auto stepped = runners->at(currently_active_core).step_over(current_channel);
+        if(!stepped) return fail(std::move(stepped).error());
+        auto checkpoint = stepped.value();
+
         interactive_restart_point++;
         if(checkpoint.completed_round){
-            ic_manager.run_interconnect(current_core.id, sequencer.get_enabled_cores());
+            if(auto interconnects = ic_manager.run_interconnect(current_core.id, sequencer.get_enabled_cores()); !interconnects){
+                return fail(std::move(interconnects).error());
+            }
             runners->at(currently_active_core).reset_instruction_pointer();
             if (current_channel==current_core.n_channels-1) {
                 current_channel = 0;
-                if(sequencer.is_last_in_sequence(currently_active_core)){
+                auto last_in_sequence = sequencer.is_last_in_sequence(currently_active_core);
+                if(!last_in_sequence) return fail(std::move(last_in_sequence).error());
+                if(last_in_sequence.value()){
                     sequencer.advance_emulation();
-                    outputs_manager.process_outputs(sequencer.get_running_cores(), "");
+                    if(auto outputs = outputs_manager.process_outputs(sequencer.get_running_cores(), ""); !outputs){
+                        return fail(std::move(outputs).error());
+                    }
                 }
             } else {
                 current_channel++;
             }
 
-            currently_active_core = sequencer.get_next_core_by_order(current_core.order);
+            auto next_core = sequencer.get_next_core_by_order(current_core.order);
+            if(!next_core) return fail(std::move(next_core).error());
+            currently_active_core = next_core.value();
             if(sequencer.sim_complete()){
                 checkpoint.status = "complete";
             } else {
@@ -484,14 +518,16 @@ namespace fcore::emulator_v2 {
 
 
 
-    nlohmann::json emulator_manager::get_results() {
+    result<nlohmann::json> emulator_manager::get_results() {
         nlohmann::json res;
         for(auto &item:programs){
             nlohmann::json j;
             nlohmann::json outputs_json;
 
-            j["outputs"] = outputs_manager.get_emulation_output(item.name);
-            j["error_code"] = errors[item.name];
+            auto output = outputs_manager.get_emulation_output(item.name);
+            if(!output) return fail(std::move(output).error());
+            j["outputs"] = output.value();
+            j["error_code"] = errors.contains(item.name) ? errors.at(item.name).what() : "";
             res[item.name] = j;
         }
 
@@ -553,15 +589,21 @@ namespace fcore::emulator_v2 {
         return ret;
     }
 
-    void emulator_manager::add_breakpoint(const std::string &s, uint32_t addr) {
-        runners->at(s).add_breakpoint(addr);
+    result<void> emulator_manager::add_breakpoint(const std::string &s, uint32_t addr) {
+        const auto runner = runners->find(s);
+        if(runner == runners->end()) return fail(error_code::invalid_argument, "Could not find core " + s);
+        runner->second.add_breakpoint(addr);
+        return {};
     }
 
-    void emulator_manager::remove_breakpoint(const std::string &s, uint32_t addr) {
-        runners->at(s).remove_breakpoint(addr);
+    result<void> emulator_manager::remove_breakpoint(const std::string &s, uint32_t addr) {
+        const auto runner = runners->find(s);
+        if(runner == runners->end()) return fail(error_code::invalid_argument, "Could not find core " + s);
+        runner->second.remove_breakpoint(addr);
+        return {};
     }
 
-    void emulator_manager::set_fuzz_package(const std::string &core_id, const fuzzing_package& pkg) {
+    result<void> emulator_manager::set_fuzz_package(const std::string &core_id, const fuzzing_package& pkg) {
         runners->clear();
         sequencer.clear();
         outputs_manager.clear();
@@ -609,23 +651,26 @@ namespace fcore::emulator_v2 {
         }
 
 
-        runners->insert({
-            core_id,
-            emulator_runner(fuzz_bundle, dummy_bus)
-        });
+        auto runner = emulator_runner::create(fuzz_bundle, dummy_bus);
+        if(!runner) return fail(std::move(runner).error());
+        runners->insert({core_id, runner.value()});
 
         runners->at(core_id).set_active_channels(fuzz_bundle.active_channels);
-        sequencer.add_core(core_id, fuzz_bundle.sampling_frequency, fuzz_bundle.execution_order, fuzz_bundle.active_channels);
+        if(auto added = sequencer.add_core(core_id, fuzz_bundle.sampling_frequency, fuzz_bundle.execution_order, fuzz_bundle.active_channels); !added) return added;
         sequencer.setup_run(1e-3);
         sequencer.calculate_sequence();
+        return {};
     }
 
-    void emulator_manager::set_specs(const nlohmann::json &spec_file) {
+    result<void> emulator_manager::set_specs(const nlohmann::json &spec_file) {
         runners->clear();
         sequencer.clear();
         outputs_manager.clear();
-        emu_spec.parse(spec_file);
-        ic_manager.set_emulation_specs(emu_spec);
+        // the json library throws when a value does not have the expected type, the schema should have prevented it
+        return catching([&]() -> result<void> {
+            if(auto parsed = emu_spec.parse(spec_file); !parsed) return parsed;
+            return ic_manager.set_emulation_specs(emu_spec);
+        });
     }
 
     std::set<uint32_t> emulator_manager::get_breakpoints(const std::string &id) {

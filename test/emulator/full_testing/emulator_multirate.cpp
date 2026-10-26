@@ -19,6 +19,7 @@
 #include <fstream>
 
 #include "emulator/emulator_dispatcher.hpp"
+#include "result_helpers.hpp"
 
 using namespace fcore;
 using namespace fcore::emulator_v2;
@@ -110,11 +111,11 @@ TEST(emulator_multirate, emulator_simple_multirate) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
     auto dbg = res_obj.dump(4);
 
@@ -254,11 +255,11 @@ TEST(emulator_multirate, emulator_input_multirate) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
     auto dbg = res_obj.dump(4);
 
@@ -399,11 +400,11 @@ TEST(emulator_multirate, emulator_interconnect_multirate) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
     auto dbg = res_obj.dump(4);
 
@@ -548,11 +549,11 @@ TEST(emulator_multirate, multirate_interconnect_initializaiton) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
     auto dbg = res_obj.dump(4);
 
@@ -697,11 +698,11 @@ TEST(emulator_multirate, multirate_multichannel_interconnect_initializaiton) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
     auto dbg = res_obj.dump(4);
 

@@ -30,6 +30,7 @@
 #include "emulator/v2/interconnect_manager.hpp"
 #include "emulator/v2/emulator_runner.hpp"
 #include "fuzzer/fuzzer_metadata.hpp"
+#include "errors/result.hpp"
 
 namespace fcore::emulator_v2{
 
@@ -42,25 +43,26 @@ namespace fcore::emulator_v2{
         std::vector<deployed_program> deploy_programs();
         void set_profiler(const std::shared_ptr<instrumentation_core> &prof){ this->profiler = prof;}
 
-        void set_fuzz_package(const std::string &core_id, const fuzzing_package& pkg);
-        void set_specs(const nlohmann::json &spec_file);
+        [[nodiscard]] result<void> set_fuzz_package(const std::string &core_id, const fuzzing_package& pkg);
+        [[nodiscard]] result<void> set_specs(const nlohmann::json &spec_file);
         std::set<uint32_t> get_breakpoints(const std::string &id);
-        void process();
+        [[nodiscard]] result<void> process();
 
-        std::optional<debug_checkpoint> emulate();
-        debug_checkpoint step_over();
-        std::optional<debug_checkpoint> continue_emulation();
+        /// Nothing is returned when the emulation completes, or the checkpoint of the breakpoint that interrupted it
+        [[nodiscard]] result<std::optional<debug_checkpoint>> emulate();
+        [[nodiscard]] result<debug_checkpoint> step_over();
+        [[nodiscard]] result<std::optional<debug_checkpoint>> continue_emulation();
 
-        void add_breakpoint(const std::string &s, uint32_t addr);
-        void remove_breakpoint(const std::string &s, uint32_t addr);
+        [[nodiscard]] result<void> add_breakpoint(const std::string &s, uint32_t addr);
+        [[nodiscard]] result<void> remove_breakpoint(const std::string &s, uint32_t addr);
 
         void set_multichannel_debug(bool mc);
 
         std::map<std::string, disassembled_program>  disassemble();
 
-        nlohmann::json get_results();
+        [[nodiscard]] result<nlohmann::json> get_results();
         std::vector<program_bundle> get_programs();
-        std::vector<deployed_core_inputs> get_inputs(const std::string &core);
+        [[nodiscard]] result<std::vector<deployed_core_inputs>> get_inputs(const std::string &core);
 
         std::vector<deployer_interconnect_slot> process_scalar_channel(const interconnect_descriptor & ic);
         std::vector<deployer_interconnect_slot> process_scatter_channel(const interconnect_descriptor & ic);
@@ -71,17 +73,17 @@ namespace fcore::emulator_v2{
 
         std::vector<deployer_interconnect_slot> get_interconnects();
 
-        deployment_options get_deployment_options(const std::string &core_id) {return emu_spec.get_deployment_options(core_id);}
+        [[nodiscard]] result<deployment_options> get_deployment_options(const std::string &core_id) {return emu_spec.get_deployment_options(core_id);}
         std::map<std::string, std::vector<memory_init_value>> get_memory_init_values();
         std::map<std::string, std::string> dump_bus() {return ic_manager.get_bus_engine()->dump_bus();}
-        std::vector<uint32_t> dump_memory(const std::string &core_id, uint32_t channel);
+        [[nodiscard]] result<std::vector<uint32_t>> dump_memory(const std::string &core_id, uint32_t channel);
     private:
-        void run_cores(bool in_progress);
+        result<round_outcome_t> run_cores(bool in_progress);
 
         debug_checkpoint augment_checkpoint_info(debug_checkpoint &in);
 
 
-        std::map<std::string, std::string> errors;
+        std::map<std::string, error> errors;
         bool debug_autogen;
         bool multichannel_debug;
 

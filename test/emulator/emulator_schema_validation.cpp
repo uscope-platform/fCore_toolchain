@@ -94,15 +94,11 @@ TEST(compiler_schema, validation_fail_ints_as_floats) {
 
     EXPECT_TRUE(validator.validate(spec));
 
-    try{
-        emulator_specs s;
-        s.parse(spec);
-        EXPECT_TRUE(false);
-    } catch (std::runtime_error &e){
-        std::string message = e.what();
-        std::string correct_message = "Both rom and control addresses for core test should be integer like numbers";
-        EXPECT_EQ(message, correct_message);
-    }
+    emulator_specs s;
+    auto parsed = s.parse(spec);
+    ASSERT_FALSE(parsed);
+    EXPECT_EQ(parsed.error().code, error_code::spec_error);
+    EXPECT_EQ(parsed.error().message, "Both rom and control addresses for core test should be integer like numbers");
 }
 
 

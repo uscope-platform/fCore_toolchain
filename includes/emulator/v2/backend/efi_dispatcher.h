@@ -24,6 +24,7 @@
 #include <cstring>
 #include <algorithm>
 
+#include "errors/result.hpp"
 #include "data_structures/emulation/v2/emulator_metadata.hpp"
 
 namespace fcore::emulator_v2{
@@ -50,7 +51,7 @@ namespace fcore::emulator_v2{
 
     public:
         void set_core_name(std::string name) {core_name = std::move(name);};
-        void emulate_efi(efi_implementation_t function, uint32_t op_a, uint32_t op_b, uint32_t dest,  std::span<uint32_t>m);
+        [[nodiscard]] result<void> emulate_efi(efi_implementation_t function, uint32_t op_a, uint32_t op_b, uint32_t dest,  std::span<uint32_t>m);
     private:
         void efi_sort_exec(uint32_t op_a, uint32_t op_b, uint32_t dest, std::span<uint32_t>m);
         static uint32_t float_to_uint32(float f);

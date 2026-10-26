@@ -18,6 +18,7 @@
 
 #include "../emulator_test_helpers.hpp"
 #include "emulator/emulator_dispatcher.hpp"
+#include "result_helpers.hpp"
 
 using namespace fcore;
 using namespace fcore::emulator_v2;
@@ -98,11 +99,11 @@ TEST(emulator_manager_interactive, uninterrupted_run) {
     auto spec = prepare_asm_spec({program}, n_steps, {12, 42}, 1);
 
     emulator_dispatcher manager;
-    manager.set_specs(spec);
-    manager.process();
-    manager.emulate();
-    auto dbg = manager.get_results().dump(4);
-    float res = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0][0];
+    ASSERT_TRUE(manager.set_specs(spec));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto dbg = expect_value(manager.get_results()).dump(4);
+    float res = expect_value(manager.get_results())["test_0"]["outputs"]["r12"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, 15.7f);
 
 }
@@ -129,10 +130,10 @@ TEST(emulator_manager_interactive, breakpoint) {
     auto spec = prepare_asm_spec({program}, n_steps, {12, 42}, 1);
 
     emulator_dispatcher manager;
-    manager.set_specs(spec);
-    manager.process();
-    manager.add_breakpoint("test_0", 3);
-    auto breakpoint = manager.emulate();
+    ASSERT_TRUE(manager.set_specs(spec));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.add_breakpoint("test_0", 3));
+    auto breakpoint = expect_value(manager.emulate());
     EXPECT_TRUE(breakpoint.has_value());
 
     auto result = breakpoint.value();
@@ -178,13 +179,13 @@ TEST(emulator_manager_interactive, continue_emulation) {
     auto spec = prepare_asm_spec({program}, n_steps, {12, 42}, 1);
 
     emulator_dispatcher manager;
-    manager.set_specs(spec);
-    manager.process();
-    manager.add_breakpoint("test_0", 3);
-    auto bp_1 = manager.emulate();
+    ASSERT_TRUE(manager.set_specs(spec));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.add_breakpoint("test_0", 3));
+    auto bp_1 = expect_value(manager.emulate());
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 3);
-    auto breakpoint = manager.continue_emulation();
+    auto breakpoint = expect_value(manager.continue_emulation());
     EXPECT_TRUE(breakpoint.has_value());
     auto result = breakpoint.value();
 
@@ -227,13 +228,13 @@ TEST(emulator_manager_interactive, step_over) {
     auto spec = prepare_asm_spec({program}, n_steps, {12, 42}, 1);
 
     emulator_dispatcher manager;
-    manager.set_specs(spec);
-    manager.process();
-    manager.add_breakpoint("test_0", 3);
-    auto bp_1 = manager.emulate();
+    ASSERT_TRUE(manager.set_specs(spec));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.add_breakpoint("test_0", 3));
+    auto bp_1 = expect_value(manager.emulate());
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 3);
-    auto breakpoint = manager.step_over();
+    auto breakpoint = expect_value(manager.step_over());
 
     debug_checkpoint expected;
     expected.status = "in_progress";
@@ -276,13 +277,13 @@ TEST(emulator_manager_interactive, step_over_round_end) {
     auto spec = prepare_asm_spec({program}, n_steps, {12, 42}, 1);
 
     emulator_dispatcher manager;
-    manager.set_specs(spec);
-    manager.process();
-    manager.add_breakpoint("test_0", 10);
-    auto bp_1 = manager.emulate();
+    ASSERT_TRUE(manager.set_specs(spec));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.add_breakpoint("test_0", 10));
+    auto bp_1 = expect_value(manager.emulate());
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 10);
-    auto breakpoint = manager.step_over();
+    auto breakpoint = expect_value(manager.step_over());
 
     debug_checkpoint expected;
     expected.status = "in_progress";
@@ -339,14 +340,14 @@ TEST(emulator_manager_interactive, two_programs_continue) {
     spec["cores"][1]["outputs"][0]["name"] = "r14";
 
     emulator_dispatcher manager;
-    manager.set_specs(spec);
-    manager.process();
-    manager.add_breakpoint("test_0", 3);
-    auto bp_1 = manager.emulate();
+    ASSERT_TRUE(manager.set_specs(spec));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.add_breakpoint("test_0", 3));
+    auto bp_1 = expect_value(manager.emulate());
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 3);
-    manager.remove_breakpoint("test_0", 3);
-    auto breakpoint = manager.continue_emulation();
+    ASSERT_TRUE(manager.remove_breakpoint("test_0", 3));
+    auto breakpoint = expect_value(manager.continue_emulation());
 
     debug_checkpoint expected;
     expected.status = "complete";
@@ -364,13 +365,13 @@ TEST(emulator_manager_interactive, two_programs_continue) {
     expected.progress.period = 1;
 
     EXPECT_EQ(expected, breakpoint);
-    auto dbg = manager.get_results().dump(4);
-    auto results = manager.get_results();
+    auto dbg = expect_value(manager.get_results()).dump(4);
+    auto results = expect_value(manager.get_results());
 
-    float res = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0][0];
+    float res = expect_value(manager.get_results())["test_0"]["outputs"]["r12"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, 15.7f);
 
-     res = manager.get_results()["test_1"]["outputs"]["r14"]["0"][0][0];
+     res = expect_value(manager.get_results())["test_1"]["outputs"]["r14"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, -330.7f);
 };
 
@@ -411,15 +412,15 @@ TEST(emulator_manager_interactive, second_program_breakpoint) {
     spec["cores"][1]["outputs"][0]["name"] = "r13";
 
     emulator_dispatcher manager;
-    manager.set_specs(spec);
-    manager.process();
-    manager.add_breakpoint("test_1", 10);
-    auto bp_1 = manager.emulate();
+    ASSERT_TRUE(manager.set_specs(spec));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.add_breakpoint("test_1", 10));
+    auto bp_1 = expect_value(manager.emulate());
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().core_name, "test_1");
     EXPECT_EQ(bp_1.value().breakpoint, 10);
-    manager.remove_breakpoint("test_1", 10);
-    auto breakpoint = manager.continue_emulation();
+    ASSERT_TRUE(manager.remove_breakpoint("test_1", 10));
+    auto breakpoint = expect_value(manager.continue_emulation());
 
     debug_checkpoint expected;
     expected.status = "complete";
@@ -437,13 +438,13 @@ TEST(emulator_manager_interactive, second_program_breakpoint) {
     expected.progress.period = 1;
 
     EXPECT_EQ(expected, breakpoint);
-    auto dbg = manager.get_results().dump(4);
-    auto results = manager.get_results();
+    auto dbg = expect_value(manager.get_results()).dump(4);
+    auto results = expect_value(manager.get_results());
 
-    float res = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0][0];
+    float res = expect_value(manager.get_results())["test_0"]["outputs"]["r12"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, 15.7f);
 
-    res = manager.get_results()["test_1"]["outputs"]["r13"]["0"][0][0];
+    res = expect_value(manager.get_results())["test_1"]["outputs"]["r13"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, -330.7f);
 };
 
@@ -482,15 +483,15 @@ TEST(emulator_manager_interactive, two_programs_step_over) {
     spec["cores"][1]["outputs"][0]["name"] = "r13";
 
     emulator_dispatcher manager;
-    manager.set_specs(spec);
-    manager.process();
-    manager.add_breakpoint("test_0", 3);
-    auto bp_1 = manager.emulate();
+    ASSERT_TRUE(manager.set_specs(spec));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.add_breakpoint("test_0", 3));
+    auto bp_1 = expect_value(manager.emulate());
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 3);
-    manager.remove_breakpoint("test_0", 3);
-    manager.step_over();
-    auto breakpoint = manager.continue_emulation();
+    ASSERT_TRUE(manager.remove_breakpoint("test_0", 3));
+    ASSERT_TRUE(manager.step_over());
+    auto breakpoint = expect_value(manager.continue_emulation());
 
 
     debug_checkpoint expected;
@@ -509,8 +510,8 @@ TEST(emulator_manager_interactive, two_programs_step_over) {
     expected.progress.period = 1;
 
     EXPECT_EQ(expected, breakpoint);
-    auto dbg = manager.get_results().dump(4);
-    auto results = manager.get_results();
+    auto dbg = expect_value(manager.get_results()).dump(4);
+    auto results = expect_value(manager.get_results());
 
     float res = results["test_0"]["outputs"]["r12"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, 15.7f);
@@ -548,23 +549,23 @@ TEST(emulator_manager_interactive, first_core_correct_restart) {
 
     spec["cores"][1]["outputs"][0]["name"] = "r43";
     emulator_dispatcher manager;
-    manager.set_specs(spec);
-    manager.process();
-    manager.add_breakpoint("test_0", 2);
-    auto bp = manager.emulate();
+    ASSERT_TRUE(manager.set_specs(spec));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.add_breakpoint("test_0", 2));
+    auto bp = expect_value(manager.emulate());
     EXPECT_TRUE(bp.has_value());
     EXPECT_EQ(bp.value().breakpoint, 2);
-    manager.remove_breakpoint("test_0", 2);
+    ASSERT_TRUE(manager.remove_breakpoint("test_0", 2));
 
-    manager.step_over();
-    manager.step_over();
-    manager.step_over();
-    manager.step_over();
-    manager.step_over();
-    manager.continue_emulation();
-    auto results = manager.get_results().dump(4);
+    ASSERT_TRUE(manager.step_over());
+    ASSERT_TRUE(manager.step_over());
+    ASSERT_TRUE(manager.step_over());
+    ASSERT_TRUE(manager.step_over());
+    ASSERT_TRUE(manager.step_over());
+    ASSERT_TRUE(manager.continue_emulation());
+    auto results = expect_value(manager.get_results()).dump(4);
 
-    float res = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0][1];
+    float res = expect_value(manager.get_results())["test_0"]["outputs"]["r12"]["0"][0][1];
     EXPECT_FLOAT_EQ(res, 25.f);
 };
 
@@ -588,20 +589,20 @@ TEST(emulator_manager_interactive, continue_emulation_multichannel) {
     auto spec = prepare_asm_spec({program}, n_steps, {12}, 2);
 
     emulator_dispatcher manager;
-    manager.set_specs(spec);
-    manager.process();
-    manager.add_breakpoint("test_0", 2);
-    auto bp_1 = manager.emulate();
+    ASSERT_TRUE(manager.set_specs(spec));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.add_breakpoint("test_0", 2));
+    auto bp_1 = expect_value(manager.emulate());
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 2);
-    manager.remove_breakpoint("test_0", 2);
-    auto breakpoint = manager.continue_emulation();
-    auto results = manager.get_results();
+    ASSERT_TRUE(manager.remove_breakpoint("test_0", 2));
+    auto breakpoint = expect_value(manager.continue_emulation());
+    auto results = expect_value(manager.get_results());
     auto test = results.dump(4);
 
     std::vector<float> expected =  {12.5, 25.00};
-    std::vector<float> res_1 = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0];
-    std::vector<float> res_2 = manager.get_results()["test_0"]["outputs"]["r12"]["1"][0];
+    std::vector<float> res_1 = expect_value(manager.get_results())["test_0"]["outputs"]["r12"]["0"][0];
+    std::vector<float> res_2 = expect_value(manager.get_results())["test_0"]["outputs"]["r12"]["1"][0];
 
     EXPECT_EQ(res_1, expected);
     EXPECT_EQ(res_2, expected);
@@ -626,21 +627,21 @@ TEST(emulator_manager_interactive, multichannel_cross_channel_stepover) {
     auto spec = prepare_asm_spec({program}, n_steps, {12}, 2);
 
     emulator_dispatcher manager;
-    manager.set_specs(spec);
-    manager.process();
-    manager.add_breakpoint("test_0", 2);
-    auto bp_1 = manager.emulate();
+    ASSERT_TRUE(manager.set_specs(spec));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.add_breakpoint("test_0", 2));
+    auto bp_1 = expect_value(manager.emulate());
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 2);
-    manager.remove_breakpoint("test_0", 2);
-    manager.step_over();
-    auto breakpoint = manager.continue_emulation();
-    auto results = manager.get_results();
+    ASSERT_TRUE(manager.remove_breakpoint("test_0", 2));
+    ASSERT_TRUE(manager.step_over());
+    auto breakpoint = expect_value(manager.continue_emulation());
+    auto results = expect_value(manager.get_results());
     auto test = results.dump(4);
 
     std::vector<float> expected =  {12.5, 25.00};
-    std::vector<float> res_0 = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0];
-    std::vector<float> res_1 = manager.get_results()["test_0"]["outputs"]["r12"]["1"][0];
+    std::vector<float> res_0 = expect_value(manager.get_results())["test_0"]["outputs"]["r12"]["0"][0];
+    std::vector<float> res_1 = expect_value(manager.get_results())["test_0"]["outputs"]["r12"]["1"][0];
 
     EXPECT_EQ(res_0, expected);
     EXPECT_EQ(res_1, expected);
@@ -665,21 +666,21 @@ TEST(emulator_manager_interactive, multichannel_stepover_restart) {
     auto spec = prepare_asm_spec({program}, n_steps, {12}, 2);
 
     emulator_dispatcher manager;
-    manager.set_specs(spec);
-    manager.process();
-    manager.add_breakpoint("test_0", 1);
-    auto bp_1 = manager.emulate();
+    ASSERT_TRUE(manager.set_specs(spec));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.add_breakpoint("test_0", 1));
+    auto bp_1 = expect_value(manager.emulate());
     EXPECT_TRUE(bp_1.has_value());
     EXPECT_EQ(bp_1.value().breakpoint, 1);
-    manager.remove_breakpoint("test_0", 1);
-    manager.step_over();
-    auto breakpoint = manager.continue_emulation();
-    auto results = manager.get_results();
+    ASSERT_TRUE(manager.remove_breakpoint("test_0", 1));
+    ASSERT_TRUE(manager.step_over());
+    auto breakpoint = expect_value(manager.continue_emulation());
+    auto results = expect_value(manager.get_results());
     auto test = results.dump(4);
 
     std::vector<float> expected =  {12.5, 25.00};
-    std::vector<float> res_0 = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0];
-    std::vector<float> res_1 = manager.get_results()["test_0"]["outputs"]["r12"]["1"][0];
+    std::vector<float> res_0 = expect_value(manager.get_results())["test_0"]["outputs"]["r12"]["0"][0];
+    std::vector<float> res_1 = expect_value(manager.get_results())["test_0"]["outputs"]["r12"]["1"][0];
 
     EXPECT_EQ(res_0, expected);
     EXPECT_EQ(res_1, expected);
@@ -706,30 +707,30 @@ TEST(emulator_manager_interactive, multichannel_breakpoint) {
     auto spec = prepare_asm_spec({program}, n_steps, {12}, 2);
 
     emulator_dispatcher manager;
-    manager.set_specs(spec);
+    ASSERT_TRUE(manager.set_specs(spec));
     manager.set_multichannel_debug(true);
-    manager.process();
-    manager.add_breakpoint("test_0", 1);
-    auto bp = manager.emulate();
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.add_breakpoint("test_0", 1));
+    auto bp = expect_value(manager.emulate());
     EXPECT_TRUE(bp.has_value());
     EXPECT_EQ(bp.value().breakpoint, 1);
     EXPECT_EQ(bp.value().progress.channel, 0);
     EXPECT_EQ(bp.value().progress.current, 1);
 
 
-    bp = manager.continue_emulation();
+    bp = expect_value(manager.continue_emulation());
     EXPECT_EQ(bp.value().breakpoint, 1);
     EXPECT_EQ(bp.value().progress.channel, 1);
     EXPECT_EQ(bp.value().progress.current, 1);
     EXPECT_FALSE(bp.value().completed_round);
-    manager.remove_breakpoint("test_0", 1);
-    bp = manager.continue_emulation();
+    ASSERT_TRUE(manager.remove_breakpoint("test_0", 1));
+    bp = expect_value(manager.continue_emulation());
     EXPECT_TRUE(bp.value().completed_round);
-    auto results = manager.get_results();
+    auto results = expect_value(manager.get_results());
 
     std::vector<float> expected =  {12.5, 25.00};
-    std::vector<float> res_0 = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0];
-    std::vector<float> res_1 = manager.get_results()["test_0"]["outputs"]["r12"]["1"][0];
+    std::vector<float> res_0 = expect_value(manager.get_results())["test_0"]["outputs"]["r12"]["0"][0];
+    std::vector<float> res_1 = expect_value(manager.get_results())["test_0"]["outputs"]["r12"]["1"][0];
 
     EXPECT_EQ(res_0, expected);
     EXPECT_EQ(res_1, expected);
@@ -755,30 +756,30 @@ TEST(emulator_manager_interactive, disable_multichannel_debug) {
     auto spec = prepare_asm_spec({program}, n_steps, {12}, 2);
 
     emulator_dispatcher manager;
-    manager.set_specs(spec);
+    ASSERT_TRUE(manager.set_specs(spec));
     manager.set_multichannel_debug(false);
-    manager.process();
-    manager.add_breakpoint("test_0", 1);
-    auto bp = manager.emulate();
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.add_breakpoint("test_0", 1));
+    auto bp = expect_value(manager.emulate());
     EXPECT_TRUE(bp.has_value());
     EXPECT_EQ(bp.value().breakpoint, 1);
     EXPECT_EQ(bp.value().progress.channel, 0);
     EXPECT_EQ(bp.value().progress.current, 1);
 
 
-    bp = manager.continue_emulation();
+    bp = expect_value(manager.continue_emulation());
 
     EXPECT_EQ(bp.value().breakpoint, 1);
     EXPECT_EQ(bp.value().progress.channel, 0);
     EXPECT_EQ(bp.value().progress.current, 2);
 
-    bp = manager.continue_emulation();
+    bp = expect_value(manager.continue_emulation());
     EXPECT_TRUE(bp.value().completed_round);
-    auto results = manager.get_results();
+    auto results = expect_value(manager.get_results());
 
     std::vector<float> expected =  {12.5, 25.00};
-    std::vector<float> res_0 = manager.get_results()["test_0"]["outputs"]["r12"]["0"][0];
-    std::vector<float> res_1 = manager.get_results()["test_0"]["outputs"]["r12"]["1"][0];
+    std::vector<float> res_0 = expect_value(manager.get_results())["test_0"]["outputs"]["r12"]["0"][0];
+    std::vector<float> res_1 = expect_value(manager.get_results())["test_0"]["outputs"]["r12"]["1"][0];
 
     EXPECT_EQ(res_0, expected);
     EXPECT_EQ(res_1, expected);

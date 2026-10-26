@@ -14,215 +14,112 @@
 
 #include "emulator/emulator_dispatcher.hpp"
 namespace fcore {
-    void emulator_dispatcher::enable_debug_mode() {
-        if(version == 1) {
-            throw std::runtime_error("Emulator schema version 1 is no longer supported");
-        } else if(version == 2) {
-            v2.enable_debug_mode();
-        } else {
-            throw std::runtime_error("Invalid version");
-        }
+    result<void> emulator_dispatcher::require_v2() const {
+        if(version == 2) return {};
+        if(version == 1) return fail(error_code::not_supported, "Emulator schema version 1 is no longer supported");
+        return fail(error_code::invalid_argument, "No emulator specification was loaded");
     }
 
-    void emulator_dispatcher::set_specs(const nlohmann::json &spec_file) {
+    result<void> emulator_dispatcher::enable_debug_mode() {
+        if(auto supported = require_v2(); !supported) return supported;
+        v2.enable_debug_mode();
+        return {};
+    }
+
+    result<void> emulator_dispatcher::set_specs(const nlohmann::json &spec_file) {
         if(!spec_file.contains("version")) {
-            throw std::runtime_error("Invalid spec file, missing version field");
+            return fail(error_code::spec_error, "Invalid spec file, missing version field");
         }
         if(spec_file["version"] != 1 && spec_file["version"] != 2) {
-            throw std::runtime_error("Invalid spec file, version field must be 1 or 2");
+            return fail(error_code::spec_error, "Invalid spec file, version field must be 1 or 2");
         }
         version = spec_file["version"];
-        switch(version) {
-            case 1:
-                throw std::runtime_error("Emulator schema version 1 is no longer supported");
-            case 2:
-                v2 = emulator_v2::emulator_manager();
-                v2.set_specs(spec_file);
-                break;
-            default:
-                throw std::runtime_error("Invalid version");
-                break;
-        }
+        if(auto supported = require_v2(); !supported) return supported;
+
+        v2 = emulator_v2::emulator_manager();
+        return v2.set_specs(spec_file);
     }
 
-    std::set<uint32_t> emulator_dispatcher::get_breakpoints(const std::string &id) {
-        switch(version) {
-            case 1:
-                throw std::runtime_error("Emulator schema version 1 is no longer supported");
-            case 2:
-            return v2.get_breakpoints(id);
-            default:
-                throw std::runtime_error("Invalid version");
-        }
+    result<std::set<uint32_t>> emulator_dispatcher::get_breakpoints(const std::string &id) {
+        if(auto supported = require_v2(); !supported) return fail(std::move(supported).error());
+        return v2.get_breakpoints(id);
     }
 
-    void emulator_dispatcher::process() {
-        switch(version) {
-            case 1:
-                throw std::runtime_error("Emulator schema version 1 is no longer supported");
-            case 2:
-                v2.process();
-                break;
-            default:
-                throw std::runtime_error("Invalid version");
-        }
+    result<void> emulator_dispatcher::process() {
+        if(auto supported = require_v2(); !supported) return supported;
+        return v2.process();
     }
 
-    std::optional<debug_checkpoint> emulator_dispatcher::emulate() {
-        switch(version) {
-            case 1:
-                throw std::runtime_error("Emulator schema version 1 is no longer supported");
-            case 2:
-                return v2.emulate();
-            default:
-                throw std::runtime_error("Invalid version");
-        }
-        
+    result<std::optional<debug_checkpoint>> emulator_dispatcher::emulate() {
+        if(auto supported = require_v2(); !supported) return fail(std::move(supported).error());
+        return v2.emulate();
     }
 
-    debug_checkpoint emulator_dispatcher::step_over() {
-        switch(version) {
-            case 1:
-                throw std::runtime_error("Emulator schema version 1 is no longer supported");
-            case 2:
-            return v2.step_over();
-            default:
-                throw std::runtime_error("Invalid version");
-        }
-
+    result<debug_checkpoint> emulator_dispatcher::step_over() {
+        if(auto supported = require_v2(); !supported) return fail(std::move(supported).error());
+        return v2.step_over();
     }
 
-    std::optional<debug_checkpoint> emulator_dispatcher::continue_emulation() {
-        switch(version) {
-            case 1:
-                throw std::runtime_error("Emulator schema version 1 is no longer supported");
-            case 2:
-                return v2.continue_emulation();
-            default:
-                throw std::runtime_error("Invalid version");
-        }
+    result<std::optional<debug_checkpoint>> emulator_dispatcher::continue_emulation() {
+        if(auto supported = require_v2(); !supported) return fail(std::move(supported).error());
+        return v2.continue_emulation();
     }
 
-    void emulator_dispatcher::add_breakpoint(const std::string &s, uint32_t addr) {
-        switch(version) {
-            case 1:
-                throw std::runtime_error("Emulator schema version 1 is no longer supported");
-            case 2:
-                v2.add_breakpoint(s, addr);
-                break;
-            default:
-                throw std::runtime_error("Invalid version");
-        }
+    result<void> emulator_dispatcher::add_breakpoint(const std::string &s, uint32_t addr) {
+        if(auto supported = require_v2(); !supported) return supported;
+        return v2.add_breakpoint(s, addr);
     }
 
-    void emulator_dispatcher::remove_breakpoint(const std::string &s, uint32_t addr) {
-        switch(version) {
-            case 1:
-                throw std::runtime_error("Emulator schema version 1 is no longer supported");
-            case 2:
-                v2.remove_breakpoint(s, addr);
-                break;
-            default:
-                throw std::runtime_error("Invalid version");
-        }
+    result<void> emulator_dispatcher::remove_breakpoint(const std::string &s, uint32_t addr) {
+        if(auto supported = require_v2(); !supported) return supported;
+        return v2.remove_breakpoint(s, addr);
     }
 
-    void emulator_dispatcher::set_multichannel_debug(bool mc) {
-        switch(version) {
-            case 1:
-                throw std::runtime_error("Emulator schema version 1 is no longer supported");
-            case 2:
-                v2.set_multichannel_debug(mc);
-                break;
-            default:
-                throw std::runtime_error("Invalid version");
-        }
+    result<void> emulator_dispatcher::set_multichannel_debug(bool mc) {
+        if(auto supported = require_v2(); !supported) return supported;
+        v2.set_multichannel_debug(mc);
+        return {};
     }
 
-    nlohmann::json emulator_dispatcher::get_results() {
-        switch(version) {
-            case 1:
-                throw std::runtime_error("Emulator schema version 1 is no longer supported");
-            case 2:
-                return v2.get_results();
-            default:
-                throw std::runtime_error("Invalid version");
-        }
+    result<nlohmann::json> emulator_dispatcher::get_results() {
+        if(auto supported = require_v2(); !supported) return fail(std::move(supported).error());
+        return v2.get_results();
     }
 
-    void emulator_dispatcher::set_profiler(const std::shared_ptr<instrumentation_core> &prof) {
-        switch(version) {
-            case 1:
-                throw std::runtime_error("Emulator schema version 1 is no longer supported");
-            case 2:
-                v2.set_profiler(prof);
-                break;
-            default:
-                throw std::runtime_error("Invalid version");
-        }
+    result<void> emulator_dispatcher::set_profiler(const std::shared_ptr<instrumentation_core> &prof) {
+        if(auto supported = require_v2(); !supported) return supported;
+        v2.set_profiler(prof);
+        return {};
     }
 
-    std::map<std::string, disassembled_program> emulator_dispatcher::disassemble() {
-        switch(version) {
-            case 1:
-                throw std::runtime_error("Emulator schema version 1 is no longer supported");
-            case 2:
-                return v2.disassemble();
-            default:
-                throw std::runtime_error("Invalid version");
-        }
+    result<std::map<std::string, disassembled_program>> emulator_dispatcher::disassemble() {
+        if(auto supported = require_v2(); !supported) return fail(std::move(supported).error());
+        return v2.disassemble();
     }
 
-    std::vector<deployed_program> emulator_dispatcher::get_programs() {
-        if(version == 1) {
-            throw std::runtime_error("Emulator schema version 1 is no longer supported");
-        } else if(version == 2) {
-            return v2.deploy_programs();
-
-        } else {
-            throw std::runtime_error("Invalid version");
-        }
+    result<std::vector<deployed_program>> emulator_dispatcher::get_programs() {
+        if(auto supported = require_v2(); !supported) return fail(std::move(supported).error());
+        return v2.deploy_programs();
     }
 
-    std::map<std::string, std::vector<memory_init_value>>  emulator_dispatcher::get_memory_initializations() {
-        if(version == 1) {
-            throw std::runtime_error("Emulator schema version 1 is no longer supported");
-        } else if(version == 2) {
-            return v2.get_memory_init_values();
-        } else {
-            throw std::runtime_error("Invalid version");
-        }
+    result<std::map<std::string, std::vector<memory_init_value>>> emulator_dispatcher::get_memory_initializations() {
+        if(auto supported = require_v2(); !supported) return fail(std::move(supported).error());
+        return v2.get_memory_init_values();
     }
 
-    std::vector<deployed_core_inputs> emulator_dispatcher::get_inputs(const std::string &core) {
-        std::vector<deployed_core_inputs> ret;
-        if(version == 1) {
-            throw std::runtime_error("Emulator schema version 1 is no longer supported");
-        } else if(version == 2) {
-            return v2.get_inputs(core);
-        } else {
-            throw std::runtime_error("Invalid version");
-        }
+    result<std::vector<deployed_core_inputs>> emulator_dispatcher::get_inputs(const std::string &core) {
+        if(auto supported = require_v2(); !supported) return fail(std::move(supported).error());
+        return v2.get_inputs(core);
     }
 
-    std::vector<deployer_interconnect_slot> emulator_dispatcher::get_interconnect_slots() {
-        if(version == 1) {
-            throw std::runtime_error("Emulator schema version 1 is no longer supported");
-        } else if(version == 2) {
-            return v2.get_interconnects();
-        } else {
-            throw std::runtime_error("Invalid version");
-        }
+    result<std::vector<deployer_interconnect_slot>> emulator_dispatcher::get_interconnect_slots() {
+        if(auto supported = require_v2(); !supported) return fail(std::move(supported).error());
+        return v2.get_interconnects();
     }
 
-    deployment_options emulator_dispatcher::get_deployment_options(const std::string &core) {
-        if(version == 1) {
-            throw std::runtime_error("Emulator schema version 1 is no longer supported");
-        } else if(version == 2) {
-            return v2.get_deployment_options(core);
-        } else {
-            throw std::runtime_error("Invalid version");
-        }
+    result<deployment_options> emulator_dispatcher::get_deployment_options(const std::string &core) {
+        if(auto supported = require_v2(); !supported) return fail(std::move(supported).error());
+        return v2.get_deployment_options(core);
     }
 
 }

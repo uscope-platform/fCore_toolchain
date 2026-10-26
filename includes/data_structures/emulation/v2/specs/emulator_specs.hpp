@@ -23,6 +23,7 @@
 #include "emulator_core.hpp"
 #include "emulator_interconnect.hpp"
 #include "frontend/schema_validators/schema_validator_base.h"
+#include "errors/result.hpp"
 
 
 
@@ -31,10 +32,10 @@ namespace fcore::emulator_v2 {
     class emulator_specs {
     public:
         emulator_specs() = default;
-        void parse(const nlohmann::json &spec_obj);
-        emulator_core get_core_by_id(const std::string &id);
+        [[nodiscard]] result<void> parse(const nlohmann::json &spec_obj);
+        [[nodiscard]] result<emulator_core> get_core_by_id(const std::string &id);
 
-        deployment_options get_deployment_options(const std::string &core_id);
+        [[nodiscard]] result<deployment_options> get_deployment_options(const std::string &core_id);
 
         std::map<std::string,std::map<std::string, std::vector<uint32_t>>> get_outputs_initial_values()const;
         std::vector<emulator_core> cores;
@@ -43,12 +44,12 @@ namespace fcore::emulator_v2 {
         bool custom_deploy_mode;
     private:
 
-        emulator_core process_core(const nlohmann::json &o);
-        emulator_interconnect process_interconnect(const nlohmann::json &ic);
-        emulator_output_specs process_output(const nlohmann::json &o);
-        emulator_input_specs process_input(const nlohmann::json &i);
-        emulator_memory_specs process_memory(const nlohmann::json &m);
-        std::vector<uint32_t> process_io_address(const nlohmann::json &metadata, uint32_t vector_size, const std::string &name);
+        result<emulator_core> process_core(const nlohmann::json &o);
+        result<emulator_interconnect> process_interconnect(const nlohmann::json &ic);
+        result<emulator_output_specs> process_output(const nlohmann::json &o);
+        result<emulator_input_specs> process_input(const nlohmann::json &i);
+        result<emulator_memory_specs> process_memory(const nlohmann::json &m);
+        result<std::vector<uint32_t>> process_io_address(const nlohmann::json &metadata, uint32_t vector_size, const std::string &name);
 
 
         bool check_float_intness(double d){

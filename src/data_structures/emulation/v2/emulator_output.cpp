@@ -15,6 +15,7 @@
 // limitations under the License.
 
 #include "data_structures/emulation/v2/emulator_output.hpp"
+#include "errors/invariants.hpp"
 
 namespace fcore::emulator_v2{
 
@@ -34,22 +35,14 @@ namespace fcore::emulator_v2{
     }
 
     void emulator_output::add_data_point(const std::vector<uint32_t>& dp, uint32_t channel) {
-        if(dp.size()!=vector_size){
-            auto message = "Wrong dimension for output data point";
-            spdlog::critical(message);
-            throw std::runtime_error(message);
-        }
+        ensure(dp.size()==vector_size, "Wrong dimension for output data point");
         for(int n = 0; n<vector_size; n++){
             data[channel][n].push_back(dp[n]);
         }
     }
 
     void emulator_output::add_data_point(uint32_t dp, uint32_t channel) {
-        if(vector_size!=1){
-            auto message = "Attempted to add a single value to an output vector";
-            spdlog::critical(message);
-            throw std::runtime_error(message);
-        }
+        ensure(vector_size==1, "Attempted to add a single value to an output vector");
         data[channel][0].push_back(dp);
     }
 

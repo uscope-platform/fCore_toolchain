@@ -17,6 +17,7 @@
 #ifndef FCORE_TOOLCHAIN_EMULATOR_RUNNER_V2_HPP
 #define FCORE_TOOLCHAIN_EMULATOR_RUNNER_V2_HPP
 
+#include "errors/result.hpp"
 #include "data_structures/emulation/v2/program_bundle.hpp"
 #include "emulator/v2/backend/emulator_backend.hpp"
 #include "emulator/v2/emulation_sequencer.hpp"
@@ -32,7 +33,8 @@ namespace fcore::emulator_v2 {
     class emulator_runner {
     public:
 
-        explicit emulator_runner(program_bundle &prog, const std::shared_ptr<bus_allocator> &bus_engine);
+        /// Builds the runner and writes the initial values of the memories of the core
+        [[nodiscard]] static result<emulator_runner> create(program_bundle &prog, const std::shared_ptr<bus_allocator> &bus_engine);
 
         void set_wavegen_sampling_frequency(const double &sf) {waveforms_generator.set_sampling_frequency(sf);}
         void add_waveform(const std::string& in, std::variant<square_wave_parameters, sine_wave_parameters, triangle_wave_parameters> p);
@@ -43,24 +45,30 @@ namespace fcore::emulator_v2 {
         void remove_breakpoint(uint32_t addr) {backend.remove_breakpoint(addr);}
         std::set<uint32_t> get_breakpoints() {return backend.get_breakpoints();}
 
-        void inputs_phase(const core_step_metadata& info, uint32_t  channel);
-        void emulation_phase(uint32_t  channel, int init_point);
+        [[nodiscard]] result<void> inputs_phase(const core_step_metadata& info, uint32_t  channel);
+        [[nodiscard]] result<round_outcome_t> emulation_phase(uint32_t  channel, int init_point);
         void set_active_channels(uint8_t ac) {active_channels = ac;}
         void reset_instruction_pointer() {backend.reset_instruction_pointer();}
-        debug_checkpoint step_over(uint32_t channel);
+        [[nodiscard]] result<debug_checkpoint> step_over(uint32_t channel);
         debug_checkpoint get_end_state();
 
-        std::optional<uint32_t> dma_read(uint32_t address, uint32_t channel);
-        bool dma_write(uint32_t address, uint32_t channel, uint32_t data);
+        [[nodiscard]] result<uint32_t> dma_read(uint32_t address, uint32_t channel);
+        [[nodiscard]] result<void> dma_write(uint32_t address, uint32_t channel, uint32_t data);
 
         void set_multichannel_debug(bool mc_debug){ multichannel_debug = mc_debug; }
 
         std::map<std::string, uint32_t> get_inputs() {return current_inputs;}
 
-        std::vector<uint32_t> dump_memory(uint32_t channel){
-            return emulators_memory.at(channel);
+        [[nodiscard]] result<std::vector<uint32_t>> dump_memory(uint32_t channel){
+            const auto memory = emulators_memory.find(channel);
+            if(memory == emulators_memory.end()){
+                return fail(error_code::invalid_argument, "Attempted to dump the memory of an unavailable channel: " + std::to_string(channel) + " of core: " + core_name);
+            }
+            return memory->second;
         }
     private:
+        emulator_runner(program_bundle &prog, const std::shared_ptr<bus_allocator> &bus_engine);
+        result<void> initialize_memories();
 
         std::mt19937 gen;
         std::uniform_int_distribution<> distrib;

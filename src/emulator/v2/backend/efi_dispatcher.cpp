@@ -17,16 +17,17 @@
 
 namespace fcore::emulator_v2{
 
-    void efi_dispatcher::emulate_efi(efi_implementation_t function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::span<uint32_t>m) {
+    result<void> efi_dispatcher::emulate_efi(efi_implementation_t function, uint32_t op_a, uint32_t op_b, uint32_t dest, std::span<uint32_t>m) {
         if(function == efi_sort){
             efi_sort_exec(op_a, op_b, dest, m);
         } else if(function ==efi_trig) {
             efi_trig_exec(op_a, dest, m);
         } else if(function ==efi_none) {
-            throw std::runtime_error("The emulator has encountered an EFI instruction on core "+core_name+" which does not have an EFI interface.");
+            return fail(error_code::emulation_error, "The emulator has encountered an EFI instruction on core "+core_name+" which does not have an EFI interface");
         } else{
-            throw std::runtime_error("The emulator has encountered an EFI instruction, however an unknown implementation was selected in the spec file");
+            return fail(error_code::spec_error, "The emulator has encountered an EFI instruction, however an unknown implementation was selected in the spec file");
         }
+        return {};
     }
 
     void efi_dispatcher::efi_sort_exec(uint32_t op_a, uint32_t op_b, uint32_t dest,  std::span<uint32_t>m) {

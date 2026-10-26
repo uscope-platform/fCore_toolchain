@@ -22,6 +22,7 @@
 
 #include "data_structures/common/program_metadata.hpp"
 #include "data_structures/emulation/v2/specs/emulator_specs.hpp"
+#include "errors/result.hpp"
 
 namespace fcore::emulator_v2 {
 
@@ -108,7 +109,7 @@ namespace fcore::emulator_v2 {
     class bus_allocator {
     public:
         bus_allocator() = default;
-        void set_emulation_specs(const emulator_specs &specs);
+        [[nodiscard]] result<void> set_emulation_specs(const emulator_specs &specs);
         void allocate_bus_addresses(std::vector<interconnect_descriptor> &interconnects);
         void update_sources(std::vector<interconnect_descriptor> &interconnects);
         void allocate_additional_outputs();
@@ -143,7 +144,7 @@ namespace fcore::emulator_v2 {
     private:
 
         bool is_register(const std::string &r);
-        void reserve_external_addresses(const emulator_specs &specs);
+        result<void> reserve_external_addresses(const emulator_specs &specs);
         std::vector<interconnect_descriptor> interconnect_mapping;
 
         std::set<uint32_t> global_forbidden_addresses;

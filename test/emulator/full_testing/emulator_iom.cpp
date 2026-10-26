@@ -18,6 +18,7 @@
 
 #include "../emulator_test_helpers.hpp"
 #include "emulator/emulator_dispatcher.hpp"
+#include "result_helpers.hpp"
 
 using namespace fcore;
 using namespace fcore::emulator_v2;
@@ -98,11 +99,11 @@ TEST(emulator_iom, emulator_inputs) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
     auto dbg = res_obj.dump(4);
 
@@ -189,11 +190,11 @@ TEST(emulator_iom, emulator_random_inputs) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
     auto dbg = res_obj.dump(4);
 
@@ -294,12 +295,12 @@ TEST(emulator_iom, emulator_outputs) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res = manager.get_results()["test"];
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res = expect_value(manager.get_results())["test"];
 
-    auto dbg = manager.get_results().dump(4);
+    auto dbg = expect_value(manager.get_results()).dump(4);
 
     std::vector<float> reference = {58.6199989, 120.220001};
     std::vector<float> test_out = res["outputs"]["out"]["0"][0];
@@ -397,11 +398,11 @@ TEST(emulator_iom, emulator_memory) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    uint32_t res = manager.get_results()["test"]["outputs"]["out"]["0"][0][1];
+    uint32_t res = expect_value(manager.get_results())["test"]["outputs"]["out"]["0"][0][1];
 
     ASSERT_EQ(res, 0x42f470a4);
 
@@ -512,10 +513,10 @@ TEST(emulator_iom, emulator_memory_to_memory_inteconnect) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res = manager.get_results()["test_consumer"];
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res = expect_value(manager.get_results())["test_consumer"];
 
     std::vector<uint32_t> reference = {0x4019999A, 0x4099999A};
     std::vector<uint32_t> result = res["outputs"]["out"]["0"][0];
@@ -598,10 +599,10 @@ TEST(emulator_iom, emulator_compilation_memory) {
 })");
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res = manager.get_results()["test"];
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res = expect_value(manager.get_results())["test"];
 
     std::vector<uint32_t> reference = {15,83};
     std::vector<uint32_t> result = res["outputs"]["out"]["0"][0];
@@ -689,16 +690,16 @@ TEST(emulator_iom, emulator_memory_as_output) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    std::string dbg = manager.get_results().dump(4);
+    std::string dbg = expect_value(manager.get_results()).dump(4);
 
-    float res = manager.get_results()["test"]["outputs"]["mem"]["0"][0][0];
+    float res = expect_value(manager.get_results())["test"]["outputs"]["mem"]["0"][0][0];
 
     ASSERT_FLOAT_EQ(res, 60.62);
-    res = manager.get_results()["test"]["outputs"]["mem"]["0"][0][1];
+    res = expect_value(manager.get_results())["test"]["outputs"]["mem"]["0"][0][1];
 
     ASSERT_FLOAT_EQ(res, 122.22);
 }
@@ -764,10 +765,10 @@ nlohmann::json specs = nlohmann::json::parse(
     })");
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res = manager.get_results()["test"];
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res = expect_value(manager.get_results())["test"];
 
     std::vector<float> reference = {58.62,58.62};
     std::vector<float> result = res["outputs"]["out"]["0"][0];
@@ -836,10 +837,10 @@ nlohmann::json specs = nlohmann::json::parse(
     })");
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res = manager.get_results()["test"];
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res = expect_value(manager.get_results())["test"];
 
     std::vector<float> reference = {58.62,61.6000023};
     std::vector<float> result = res["outputs"]["out"]["0"][0];
@@ -909,10 +910,10 @@ nlohmann::json specs = nlohmann::json::parse(
     })");
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res = manager.get_results()["test"];
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res = expect_value(manager.get_results())["test"];
 
     std::vector<float> reference = {57.00,57.00};
     std::vector<float> result = res["outputs"]["out"]["0"][0];
@@ -981,10 +982,10 @@ nlohmann::json specs = nlohmann::json::parse(
     })");
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res = manager.get_results()["test"];
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res = expect_value(manager.get_results())["test"];
 
     std::vector<float> reference = {57.00,62};
     std::vector<float> result = res["outputs"]["out"]["0"][0];
@@ -1056,10 +1057,10 @@ nlohmann::json specs = nlohmann::json::parse(
     })");
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res = manager.get_results()["test"];
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res = expect_value(manager.get_results())["test"];
     auto dbg = res.dump(4);
     std::vector<float> reference = {58.62,61.6000023};
     std::vector<float> result = res["outputs"]["out"]["0"][0];
@@ -1181,10 +1182,10 @@ TEST(emulator_iom, emulator_same_name_outputs) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res = expect_value(manager.get_results());
 
     std::vector<float> reference = {1.2, 2.4};
     std::vector<float> result = res["test_producer"]["outputs"]["mem"]["0"][0];
@@ -1308,10 +1309,10 @@ TEST(emulator_iom, emulator_iom_common_io_csel) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res = expect_value(manager.get_results());
 
     std::vector<float> reference = {1000,1000,20,20};
     std::vector<float> result = res["test"]["outputs"]["v_out"]["0"][0];
@@ -1398,10 +1399,10 @@ TEST(emulator_iom, emulator_waveform_input) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res = expect_value(manager.get_results());
     auto dbg = res.dump(4);
 
 

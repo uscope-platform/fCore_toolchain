@@ -18,6 +18,7 @@
 
 #include "emulator/v2/emulator_runner.hpp"
 #include "fcore_has.hpp"
+#include "result_helpers.hpp"
 
 using namespace fcore;
 using namespace fcore::emulator_v2;
@@ -99,15 +100,17 @@ TEST(Emulator_runner, run_simple_emulator) {
     ep.bus_addresses = {1};
     bus_engine->add_destination("test_prog", "b", ep);
 
-    emulator_runner uut(bundle, bus_engine);
+    auto uut_created = emulator_runner::create(bundle, bus_engine);
+    ASSERT_TRUE(uut_created);
+    auto uut = uut_created.value();
 
     core_step_metadata m;
     m.id = "test_prog";
     m.running = true;
     m.order = 0;
     m.step_n = 0;
-    uut.inputs_phase(m, 0);
-    uut.emulation_phase(0, 0);
+    ASSERT_TRUE(uut.inputs_phase(m, 0));
+    ASSERT_TRUE(uut.emulation_phase(0, 0));
     auto result = uut.dma_read(10, 0);
     ASSERT_EQ(result, 0x40733333);
 }
@@ -141,7 +144,9 @@ TEST(Emulator_runner, run_simple_emulator_inputs) {
 
     bundle.input.clear();
     auto bus_engine = std::make_shared<bus_allocator>();
-    emulator_runner uut(bundle, bus_engine);
+    auto uut_created = emulator_runner::create(bundle, bus_engine);
+    ASSERT_TRUE(uut_created);
+    auto uut = uut_created.value();
 
 
     core_step_metadata m;
@@ -153,7 +158,7 @@ TEST(Emulator_runner, run_simple_emulator_inputs) {
     EXPECT_TRUE(res);
     res =  uut.dma_write(1, 0, 0x3fc00000);
     EXPECT_TRUE(res);
-    uut.emulation_phase(0, 0);
+    ASSERT_TRUE(uut.emulation_phase(0, 0));
     auto result = uut.dma_read(10, 0);
     ASSERT_EQ(result, 0x40733333);
 }
@@ -202,20 +207,21 @@ TEST(Emulator_runner, breakpoint) {
 
     bundle.input.clear();
     auto bus_engine = std::make_shared<bus_allocator>();
-    emulator_runner uut(bundle, bus_engine);
+    auto uut_created = emulator_runner::create(bundle, bus_engine);
+    ASSERT_TRUE(uut_created);
+    auto uut = uut_created.value();
 
     uut.set_active_channels(1);
     uint32_t line = 10;
 
     uut.add_breakpoint(line);
 
-    try{
-        uut.emulation_phase(0, 0);
-        ASSERT_TRUE(false);
-    } catch (BreakpointException &ex){
-        EXPECT_EQ(ex.data.breakpoint, line);
-        EXPECT_EQ(ex.data.memory_view[63], 0x3f800000);
-    }
+    auto outcome = uut.emulation_phase(0, 0);
+    ASSERT_TRUE(outcome);
+    ASSERT_TRUE(outcome.value().has_value());
+    const auto &hit = outcome.value().value();
+        EXPECT_EQ(hit.breakpoint, line);
+        EXPECT_EQ(hit.memory_view[63], 0x3f800000);
 }
 
 
@@ -264,22 +270,23 @@ TEST(Emulator_runner, continue_emulation) {
 
     bundle.input.clear();
     auto bus_engine = std::make_shared<bus_allocator>();
-    emulator_runner uut(bundle, bus_engine);
+    auto uut_created = emulator_runner::create(bundle, bus_engine);
+    ASSERT_TRUE(uut_created);
+    auto uut = uut_created.value();
     uut.set_active_channels(2);
 
     uint32_t line = 10;
 
     uut.add_breakpoint(line);
 
-    try{
-        uut.emulation_phase(0, 0);
-        ASSERT_TRUE(false);
-    } catch (BreakpointException &ex) {
-        EXPECT_EQ(ex.data.breakpoint, line);
-        EXPECT_EQ(ex.data.memory_view[63], 0x3f800000);
-    }
+    auto outcome = uut.emulation_phase(0, 0);
+    ASSERT_TRUE(outcome);
+    ASSERT_TRUE(outcome.value().has_value());
+    const auto &hit = outcome.value().value();
+        EXPECT_EQ(hit.breakpoint, line);
+        EXPECT_EQ(hit.memory_view[63], 0x3f800000);
     uut.remove_breakpoint(line);
-    uut.emulation_phase(0, line);
+    ASSERT_TRUE(uut.emulation_phase(0, line));
 
     auto result = uut.dma_read(20, 0);
     EXPECT_EQ(result, 0x40400000);
@@ -356,23 +363,24 @@ TEST(Emulator_runner, single_stepping) {
 
     bundle.input.clear();
     auto bus_engine = std::make_shared<bus_allocator>();
-    emulator_runner uut(bundle, bus_engine);
+    auto uut_created = emulator_runner::create(bundle, bus_engine);
+    ASSERT_TRUE(uut_created);
+    auto uut = uut_created.value();
     uut.set_active_channels(1);
     uint32_t line = 14;
 
     uut.add_breakpoint(line);
 
-    try{
-        uut.emulation_phase(0, 0);
-        ASSERT_TRUE(false);
-    } catch (BreakpointException &ex){
-        EXPECT_EQ(ex.data.breakpoint, line);
-        EXPECT_EQ(ex.data.memory_view[63], 0x3f800000);
-    }
+    auto outcome = uut.emulation_phase(0, 0);
+    ASSERT_TRUE(outcome);
+    ASSERT_TRUE(outcome.value().has_value());
+    const auto &hit = outcome.value().value();
+        EXPECT_EQ(hit.breakpoint, line);
+        EXPECT_EQ(hit.memory_view[63], 0x3f800000);
 
-    uut.step_over(0);
-    uut.step_over(0);
-    auto checkpoint = uut.step_over(0);
+    ASSERT_TRUE(uut.step_over(0));
+    ASSERT_TRUE(uut.step_over(0));
+    auto checkpoint = expect_value(uut.step_over(0));
 
     EXPECT_EQ(checkpoint.status, "in_progress");
     EXPECT_EQ(checkpoint.core_name, "test_prog");
@@ -384,10 +392,10 @@ TEST(Emulator_runner, single_stepping) {
     expected_mem[63] = 0x40000000;
     EXPECT_EQ(checkpoint.memory_view, expected_mem);
 
-    uut.step_over(0);
-    uut.step_over(0);
-    uut.step_over(0);
-    uut.step_over(0);
+    ASSERT_TRUE(uut.step_over(0));
+    ASSERT_TRUE(uut.step_over(0));
+    ASSERT_TRUE(uut.step_over(0));
+    ASSERT_TRUE(uut.step_over(0));
 
 
 
@@ -441,21 +449,22 @@ TEST(Emulator_runner, single_step_conclusion) {
 
     bundle.input.clear();
     auto bus_engine = std::make_shared<bus_allocator>();
-    emulator_runner uut(bundle, bus_engine);
+    auto uut_created = emulator_runner::create(bundle, bus_engine);
+    ASSERT_TRUE(uut_created);
+    auto uut = uut_created.value();
 
     uint32_t line = 24;
 
     uut.add_breakpoint(line);
 
-    try{
-        uut.emulation_phase(0, 0);
-        ASSERT_TRUE(false);
-    } catch (BreakpointException &ex){
-        EXPECT_EQ(ex.data.breakpoint, line);
-        EXPECT_EQ(ex.data.memory_view[63], 0x42d60000);
-    }
+    auto outcome = uut.emulation_phase(0, 0);
+    ASSERT_TRUE(outcome);
+    ASSERT_TRUE(outcome.value().has_value());
+    const auto &hit = outcome.value().value();
+        EXPECT_EQ(hit.breakpoint, line);
+        EXPECT_EQ(hit.memory_view[63], 0x42d60000);
 
-    auto checkpoint = uut.step_over(0);
+    auto checkpoint = expect_value(uut.step_over(0));
 
     EXPECT_EQ(checkpoint.status, "complete");
     EXPECT_EQ(checkpoint.core_name, "test_prog");
@@ -464,3 +473,81 @@ TEST(Emulator_runner, single_step_conclusion) {
     EXPECT_TRUE(checkpoint.inputs.empty());
 }
 
+
+
+namespace {
+    /// Runs the assembly on a core with the given options and returns the outcome of the emulation of the first round
+    result<round_outcome_t> run_asm_on_core(const std::string &code, comparator_type_t comparators, efi_implementation_t efi) {
+        std::istringstream stream(code);
+        std::map<std::string, std::vector<uint32_t>> io_map = {{"r1", {1}}, {"r2", {2}}, {"r3", {3}}};
+        fcore_has has(stream, false, io_map);
+
+        auto bundle = prepare_test_bundle(has.get_executable());
+        bundle.comparator_type = comparators;
+        bundle.efi_selector = efi;
+        bundle.input.clear();
+
+        auto bus_engine = std::make_shared<bus_allocator>();
+        auto created = emulator_runner::create(bundle, bus_engine);
+        if(!created) return fail(std::move(created).error());
+        auto runner = created.value();
+        runner.set_active_channels(1);
+        return runner.emulation_phase(0, 0);
+    }
+}
+
+TEST(Emulator_runner, dma_access_to_an_unmapped_address_fails) {
+    std::istringstream stream("add r2, r1, r3\nstop\n");
+    std::map<std::string, std::vector<uint32_t>> io_map = {{"r2", {2}}, {"r1", {1}}, {"r3", {3}}};
+    fcore_has has(stream, false, io_map);
+    auto bundle = prepare_test_bundle(has.get_executable());
+    auto bus_engine = std::make_shared<bus_allocator>();
+    auto created = emulator_runner::create(bundle, bus_engine);
+    ASSERT_TRUE(created);
+    auto uut = created.value();
+
+    auto unmapped_read = uut.dma_read(999, 0);
+    ASSERT_FALSE(unmapped_read);
+    EXPECT_EQ(unmapped_read.error().code, error_code::emulation_error);
+
+    auto unmapped_write = uut.dma_write(999, 0, 1);
+    ASSERT_FALSE(unmapped_write);
+    EXPECT_EQ(unmapped_write.error().code, error_code::emulation_error);
+}
+
+TEST(Emulator_runner, dma_access_to_an_unavailable_channel_fails) {
+    std::istringstream stream("add r2, r1, r3\nstop\n");
+    std::map<std::string, std::vector<uint32_t>> io_map = {{"r2", {2}}, {"r1", {1}}, {"r3", {3}}};
+    fcore_has has(stream, false, io_map);
+    auto bundle = prepare_test_bundle(has.get_executable());
+    auto bus_engine = std::make_shared<bus_allocator>();
+    auto created = emulator_runner::create(bundle, bus_engine);
+    ASSERT_TRUE(created);
+    auto uut = created.value();
+
+    EXPECT_FALSE(uut.dma_read(10, 5));
+    EXPECT_FALSE(uut.dma_write(0, 5, 1));
+    EXPECT_FALSE(uut.dump_memory(5));
+    EXPECT_TRUE(uut.dump_memory(0));
+}
+
+TEST(Emulator_runner, comparison_on_a_core_without_comparators_fails) {
+    auto outcome = run_asm_on_core("bgt r1, r2, r3\nnop\nnop\nnop\nnop\nnop\nnop\nstop\n", comparator_none, efi_none);
+    ASSERT_FALSE(outcome);
+    EXPECT_EQ(outcome.error().code, error_code::emulation_error);
+    // where it happened is attached while the error travels up
+    ASSERT_FALSE(outcome.error().context.empty());
+    EXPECT_NE(outcome.error().context.front().find("running instruction 0"), std::string::npos);
+}
+
+TEST(Emulator_runner, efi_on_a_core_without_an_efi_interface_fails) {
+    auto outcome = run_asm_on_core("efi r1, r2, r3\nnop\nstop\n", comparator_full, efi_none);
+    ASSERT_FALSE(outcome);
+    EXPECT_EQ(outcome.error().code, error_code::emulation_error);
+}
+
+TEST(Emulator_runner, valid_program_completes_without_a_breakpoint) {
+    auto outcome = run_asm_on_core("add r3, r1, r2\nnop\nnop\nnop\nnop\nnop\nnop\nstop\n", comparator_full, efi_none);
+    ASSERT_TRUE(outcome);
+    EXPECT_FALSE(outcome.value().has_value());
+}

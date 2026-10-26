@@ -20,9 +20,9 @@
 
 namespace fcore::emulator_v2{
 
-    void emulation_sequencer::add_core(const std::string& core_id, uint32_t frequency, uint32_t order, uint32_t n_channels) {
+    result<void> emulation_sequencer::add_core(const std::string& core_id, uint32_t frequency, uint32_t order, uint32_t n_channels) {
         if(order==0){
-            throw std::runtime_error("The execution order must an integer greater than 1");
+            return fail(error_code::spec_error, "The execution order of core " + core_id + " must be an integer greater than 0");
         }
         core_metadata s;
         s.id = core_id;
@@ -31,6 +31,7 @@ namespace fcore::emulator_v2{
         s.exec_order = order;
         s.n_channels = n_channels;
         cores.push_back(s);
+        return {};
     }
 
     void emulation_sequencer::calculate_sequence() {
@@ -105,7 +106,7 @@ namespace fcore::emulator_v2{
         enabled_cores_map.clear();
     }
 
-    core_step_metadata emulation_sequencer::get_core_by_id(const std::string &id) {
+    result<core_step_metadata> emulation_sequencer::get_core_by_id(const std::string &id) {
         for(auto &c:cores){
             if(c.id == id){
                 core_step_metadata m;
@@ -117,20 +118,20 @@ namespace fcore::emulator_v2{
                 return m;
             }
         }
-        throw std::runtime_error("Core " + id + " not found");
+        return fail(error_code::invalid_argument, "Core " + id + " not found");
     }
 
-    bool emulation_sequencer::is_last_in_sequence(const std::string &id) {
+    result<bool> emulation_sequencer::is_last_in_sequence(const std::string &id) {
         for(auto &c:cores) {
             if (c.id == id) {
                 if(c.exec_order == cores.size()) return true;
                 else return false;
             }
         }
-        throw std::runtime_error("Core " + id + " not found");
+        return fail(error_code::invalid_argument, "Core " + id + " not found");
     }
 
-    std::string emulation_sequencer::get_next_core_by_order(uint32_t n_step) {
+    result<std::string> emulation_sequencer::get_next_core_by_order(uint32_t n_step) {
         uint32_t next_order = 1;
         if(n_step != cores.size()){
             next_order = n_step + 1;
@@ -138,13 +139,13 @@ namespace fcore::emulator_v2{
         return get_core_by_order(next_order);
     }
 
-    std::string emulation_sequencer::get_core_by_order(uint32_t n_step) {
+    result<std::string> emulation_sequencer::get_core_by_order(uint32_t n_step) {
         for(auto &c:cores){
             if(c.exec_order == n_step){
                 return c.id;
             }
         }
-        throw std::runtime_error("Core with exection order " + std::to_string(n_step) + " not found");
+        return fail(error_code::invalid_argument, "Core with execution order " + std::to_string(n_step) + " not found");
     }
 
     emulation_progress_stat emulation_sequencer::get_progress() const {

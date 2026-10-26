@@ -27,6 +27,7 @@
 #include "emulator/v2/bus_allocator.hpp"
 #include "fcore_cc.hpp"
 #include "fcore_has.hpp"
+#include "errors/result.hpp"
 
 
 namespace fcore::emulator_v2 {
@@ -35,7 +36,7 @@ namespace fcore::emulator_v2 {
     public:
         emulator_builder(bool dbg, const std::shared_ptr<bus_allocator> &bus_engine);
         void set_profiler(const std::shared_ptr<instrumentation_core> &prof) {profiler = prof;};
-        fcore_program compile_program(
+        [[nodiscard]] result<fcore_program> compile_program(
                 const emulator_core& core_spec,
                 std::set<io_map_entry> &am
         );
@@ -49,14 +50,14 @@ namespace fcore::emulator_v2 {
         comparator_type_t get_comparator_type(const std::string &s);
     private:
 
-        std::pair<fcore_program,std::set<io_map_entry>> compile_program_c(
+        result<std::pair<fcore_program,std::set<io_map_entry>>> compile_program_c(
                 std::vector<std::string> &contents,
                 std::vector<std::string> &inc,
                 std::map<std::string, core_iom> &map,
                 std::string core_name,
                 uint8_t n_channels
         );
-        std::pair<fcore_program,std::set<io_map_entry>> compile_program_asm(
+        result<std::pair<fcore_program,std::set<io_map_entry>>> compile_program_asm(
                 std::vector<std::string> &contents,
                 std::vector<std::string> &inc,
                 std::map<std::string, core_iom> &map,

@@ -16,6 +16,7 @@
 #include <gtest/gtest.h>
 
 #include "emulator/emulator_dispatcher.hpp"
+#include "result_helpers.hpp"
 
 using namespace fcore;
 
@@ -94,10 +95,10 @@ TEST(bus_deployment_interface, single_core) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
 
-    auto slots = manager.get_interconnect_slots();
+    auto slots = expect_value(manager.get_interconnect_slots());
     std::vector<deployer_interconnect_slot> expected_slots;
     deployer_interconnect_slot e;
     e.source_id = "test";
@@ -207,10 +208,10 @@ TEST(bus_deployment_interface, single_core_multichannel) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
 
-    auto slots = manager.get_interconnect_slots();
+    auto slots = expect_value(manager.get_interconnect_slots());
     std::vector<deployer_interconnect_slot> expected_slots;
     deployer_interconnect_slot e;
     e.source_id = "test";
@@ -418,9 +419,9 @@ TEST(bus_deployment_interface, scalar_interconnect) {
     )");
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    auto slots = manager.get_interconnect_slots();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    auto slots = expect_value(manager.get_interconnect_slots());
 
 
     std::vector<deployer_interconnect_slot> expected_slots;
@@ -615,10 +616,10 @@ TEST(bus_deployment_interface, multi_core_random_inputs) {
     )");
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    auto inputs_0 = manager.get_inputs("test");
-    auto inputs_1 = manager.get_inputs("test_move");
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    auto inputs_0 = expect_value(manager.get_inputs("test"));
+    auto inputs_1 = expect_value(manager.get_inputs("test_move"));
 
     EXPECT_NE(inputs_0[0].address[0], inputs_1[0].address[0]);
     EXPECT_NE(inputs_0[1].address[0], inputs_1[0].address[0]);
@@ -725,9 +726,9 @@ TEST(bus_deployment_interface, scatter_interconnect) {
     })");
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    auto slots = manager.get_interconnect_slots();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    auto slots = expect_value(manager.get_interconnect_slots());
 
     std::vector<deployer_interconnect_slot> expected_slots;
     deployer_interconnect_slot e;
@@ -906,9 +907,9 @@ TEST(bus_deployment_interface, memory_to_memory_interface) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    auto slots = manager.get_interconnect_slots();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    auto slots = expect_value(manager.get_interconnect_slots());
 
     std::vector<deployer_interconnect_slot> expected_slots;
     deployer_interconnect_slot e;
@@ -949,7 +950,7 @@ TEST(bus_deployment_interface, memory_to_memory_interface) {
     EXPECT_EQ(slots, expected_slots);
 
 
-    auto inits = manager.get_memory_initializations();
+    auto inits = expect_value(manager.get_memory_initializations());
     std::map<std::string, std::vector<memory_init_value>> expected_inits;
     memory_init_value m;
     m.address = {1};
@@ -1034,13 +1035,13 @@ TEST(bus_deployment_interface, external_input_address_is_reserved) {
     })");
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
 
-    auto inputs = manager.get_inputs("test");
+    auto inputs = expect_value(manager.get_inputs("test"));
     EXPECT_EQ(inputs[0].address[0], 3);
 
-    auto slots = manager.get_interconnect_slots();
+    auto slots = expect_value(manager.get_interconnect_slots());
     std::vector<deployer_interconnect_slot> expected_slots;
     deployer_interconnect_slot e;
     e.source_id = "test";
@@ -1147,10 +1148,10 @@ TEST(bus_deployment_interface, external_output_goes_to_its_address) {
     })");
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
 
-    auto slots = manager.get_interconnect_slots();
+    auto slots = expect_value(manager.get_interconnect_slots());
     std::vector<deployer_interconnect_slot> expected_slots;
     deployer_interconnect_slot e;
     e.source_id = "test";
@@ -1258,7 +1259,7 @@ TEST(bus_deployment_interface, external_address_taken_twice) {
     })");
 
     emulator_dispatcher manager;
-    EXPECT_THROW(manager.set_specs(specs), std::runtime_error);
+    EXPECT_FALSE(manager.set_specs(specs));
 }
 
 TEST(bus_deployment_interface, external_address_out_of_range) {
@@ -1334,7 +1335,7 @@ TEST(bus_deployment_interface, external_address_out_of_range) {
     })");
 
     emulator_dispatcher manager;
-    EXPECT_THROW(manager.set_specs(specs), std::runtime_error);
+    EXPECT_FALSE(manager.set_specs(specs));
 }
 
 TEST(bus_deployment_interface, external_input_cannot_be_interconnect_destination) {
@@ -1480,7 +1481,7 @@ TEST(bus_deployment_interface, external_input_cannot_be_interconnect_destination
     )");
 
     emulator_dispatcher manager;
-    EXPECT_THROW(manager.set_specs(specs), std::runtime_error);
+    EXPECT_FALSE(manager.set_specs(specs));
 }
 
 TEST(bus_deployment_interface, external_address_shared_in_a_core) {
@@ -1557,7 +1558,7 @@ TEST(bus_deployment_interface, external_address_shared_in_a_core) {
     })");
 
     emulator_dispatcher manager;
-    EXPECT_THROW(manager.set_specs(specs), std::runtime_error);
+    EXPECT_FALSE(manager.set_specs(specs));
 }
 
 TEST(bus_deployment_interface, external_input_is_not_set_up_by_the_deployment) {
@@ -1633,11 +1634,11 @@ TEST(bus_deployment_interface, external_input_is_not_set_up_by_the_deployment) {
     })");
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
 
     // the input that the outside world feeds takes its data from the bus, the deployment ignores its source
-    auto inputs = manager.get_inputs("test");
+    auto inputs = expect_value(manager.get_inputs("test"));
     EXPECT_EQ(inputs[0].source_type, external_input);
     EXPECT_TRUE(inputs[0].data.empty());
 

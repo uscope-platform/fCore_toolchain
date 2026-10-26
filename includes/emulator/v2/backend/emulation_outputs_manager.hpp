@@ -28,6 +28,7 @@
 
 #include "emulator/v2/emulator_runner.hpp"
 #include "emulator/v2/bus_allocator.hpp"
+#include "errors/result.hpp"
 
 namespace fcore::emulator_v2{
 
@@ -35,19 +36,19 @@ namespace fcore::emulator_v2{
     public:
         void set_runners(const std::shared_ptr<std::map<std::string, emulator_runner>> &r){runners = r;}
         void process_specs(const std::shared_ptr<bus_allocator> &bus_engine);
-        void process_outputs(
+        [[nodiscard]] result<void> process_outputs(
             const std::vector<core_step_metadata> &metadata,
             const std::string &core
         );
 
-        bool process_scalar_output(
+        [[nodiscard]] result<void> process_scalar_output(
                 std::string core_id,
                 emulator_output &out,
                 uint32_t address,
                 uint32_t active_channels
         );
 
-        bool process_vector_output(
+        [[nodiscard]] result<void> process_vector_output(
                 std::string core_id,
                 emulator_output &out,
             std::vector<uint32_t> addresses,
@@ -55,7 +56,7 @@ namespace fcore::emulator_v2{
         );
         void set_initial_values(const std::map<std::string,std::map<std::string, std::vector<uint32_t>>> &ivs){initial_values = ivs;}
         void set_simulation_frequency(uint32_t freq);
-        nlohmann::json get_emulation_output(const std::string& core_id);
+        [[nodiscard]] result<nlohmann::json> get_emulation_output(const std::string& core_id);
         void clear();
     private:
         std::shared_ptr<bus_allocator> bus_engine;

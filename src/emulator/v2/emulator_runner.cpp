@@ -23,6 +23,8 @@ namespace fcore::emulator_v2 {
         gen.seed(542);
         core_name = prog.name;
         multichannel_debug = false;
+        // set_active_channels overrides it, it used to be left uninitialized when that was not called
+        active_channels = prog.active_channels;
         bus_engine = engine;
         backend.set_core_name(core_name);
         program = prog;
@@ -37,20 +39,6 @@ namespace fcore::emulator_v2 {
         }
 
 
-        for(auto &init_val: bus_engine->get_memories(core_name)){
-            for(int i = 0; i< prog.active_channels; i++){
-                if(init_val.initial_value.size()== prog.active_channels) {
-                    auto res = dma_write(init_val.bus_addresses[0], i, init_val.initial_value[i]);
-                    if(!res) throw std::runtime_error("Unable to initialize memory (" +core_name + "." + init_val.source_name + "[" + std::to_string(i) + "])");
-                } else {
-                    auto res = dma_write(init_val.bus_addresses[0], i, init_val.initial_value[0]);
-                    if(!res) throw std::runtime_error("Unable to initialize memory (" +core_name + "." + init_val.source_name);
-                }
-
-            }
-        }
-
-
         for(auto &ic : bus_engine->get_interconnects()) {
             if(prog.name==ic.destination.core_name) {
                 for(auto &i:program.input) {
@@ -61,6 +49,25 @@ namespace fcore::emulator_v2 {
             }
         }
 
+    }
+
+    result<emulator_runner> emulator_runner::create(program_bundle &prog, const std::shared_ptr<bus_allocator> &engine) {
+        emulator_runner runner(prog, engine);
+        if(auto initialized = runner.initialize_memories(); !initialized) return fail(std::move(initialized).error());
+        return runner;
+    }
+
+    result<void> emulator_runner::initialize_memories() {
+        for(auto &init_val: bus_engine->get_memories(core_name)){
+            for(int i = 0; i< program.active_channels; i++){
+                auto initial_value = init_val.initial_value.size()== program.active_channels ? init_val.initial_value[i] : init_val.initial_value[0];
+                if(auto res = dma_write(init_val.bus_addresses[0], i, initial_value); !res){
+                    return fail(std::move(res).error().with_context(
+                        "initializing the memory " + core_name + "." + init_val.source_name + "[" + std::to_string(i) + "]"));
+                }
+            }
+        }
+        return {};
     }
 
     void emulator_runner::add_waveform(const std::string &in,
@@ -83,20 +90,20 @@ namespace fcore::emulator_v2 {
         return program;
     }
 
-    void emulator_runner::emulation_phase(uint32_t channel, int init_point) {
+    result<round_outcome_t> emulator_runner::emulation_phase(uint32_t channel, int init_point) {
         backend.set_debugging(multichannel_debug || channel == 0);
         backend.setup_memory(emulators_memory[channel], common_io_memory, active_channels);
-        backend.run_round(init_point);
+        return backend.run_round(init_point);
     }
 
-    debug_checkpoint emulator_runner::step_over(uint32_t channel) {
+    result<debug_checkpoint> emulator_runner::step_over(uint32_t channel) {
         backend.set_debugging(multichannel_debug || channel == 0);
         backend.setup_memory(emulators_memory[channel], common_io_memory, active_channels);
         return backend.step_over();
     }
 
 
-    void emulator_runner::inputs_phase(const core_step_metadata &info, uint32_t channel) {
+    result<void> emulator_runner::inputs_phase(const core_step_metadata &info, uint32_t channel) {
 
 
         if(info.running){
@@ -129,7 +136,7 @@ namespace fcore::emulator_v2 {
 
                     } else  {
                         if(in.data.size() <= channel) {
-                            throw std::runtime_error(" The series input for channel " + std::to_string(channel) + " was not found");
+                            return fail(error_code::spec_error, "The series input for channel " + std::to_string(channel) + " was not found");
                         }
                         if(in.is_vector) {
                             for(auto &i:in.data) {
@@ -169,59 +176,50 @@ namespace fcore::emulator_v2 {
                         spdlog::trace("Applying input {} to register ({},{}) of core {}", input_val[i], addr, channel, core_name);
                     }
 
-                    auto res = dma_write(addr, channel, input_val[i]);
-                    if(!res) throw std::runtime_error("Unable to apply input (" +in.name + "[" + std::to_string(i) + "])");
+                    if(auto res = dma_write(addr, channel, input_val[i]); !res){
+                        return fail(std::move(res).error().with_context("applying the input " + in.name + "[" + std::to_string(i) + "]"));
+                    }
                 }
             }
         }
+        return {};
     }
 
-    std::optional<uint32_t>  emulator_runner::dma_read(uint32_t address, uint32_t channel) {
+    result<uint32_t> emulator_runner::dma_read(uint32_t address, uint32_t channel) {
 
-        uint32_t core_reg = 0;
-        bool is_common;
-
-        if(auto core_addr = io_map_entry::get_io_map_entry_by_io_addr(program.io, address)){
-            core_reg = core_addr->core_addr;
-            is_common = core_addr->common_io;
-        } else {
-            return {};
+        const auto core_addr = io_map_entry::get_io_map_entry_by_io_addr(program.io, address);
+        if(!core_addr){
+            return fail(error_code::emulation_error, "The io address " + std::to_string(address) + " is not mapped on core: " + core_name);
         }
 
         if(emulators_memory.size()< channel+1){
-            throw std::runtime_error("Attempted read from unavailable channel: " + std::to_string(channel) + " of core: " + core_name);
+            return fail(error_code::emulation_error, "Attempted read from unavailable channel: " + std::to_string(channel) + " of core: " + core_name);
         }
-        if(is_common){
-            return common_io_memory[core_reg];
+        if(core_addr->common_io){
+            return common_io_memory[core_addr->core_addr];
         } else {
-            return  emulators_memory[channel][core_reg];
+            return emulators_memory[channel][core_addr->core_addr];
         }
 
     }
 
-    bool emulator_runner::dma_write(uint32_t address, uint32_t channel, uint32_t data) {
+    result<void> emulator_runner::dma_write(uint32_t address, uint32_t channel, uint32_t data) {
 
-        uint32_t core_reg = 0;
-        bool is_common;
-
-        if(auto core_addr = io_map_entry::get_io_map_entry_by_io_addr(program.io, address)){
-            core_reg = core_addr->core_addr;
-            is_common = core_addr->common_io;
-        } else {
-            return false;
-
+        const auto core_addr = io_map_entry::get_io_map_entry_by_io_addr(program.io, address);
+        if(!core_addr){
+            return fail(error_code::emulation_error, "The io address " + std::to_string(address) + " is not mapped on core: " + core_name);
         }
         if(emulators_memory.size()< channel+1){
-            throw std::runtime_error("Attempted write to unavailable channel: " + std::to_string(channel) + " of core: " + core_name);
+            return fail(error_code::emulation_error, "Attempted write to unavailable channel: " + std::to_string(channel) + " of core: " + core_name);
         }
-        if(core_reg != 0) {
-            if (is_common) {
-                common_io_memory[core_reg] = data;
+        if(core_addr->core_addr != 0) {
+            if (core_addr->common_io) {
+                common_io_memory[core_addr->core_addr] = data;
             } else {
-                emulators_memory[channel][core_reg] = data;
+                emulators_memory[channel][core_addr->core_addr] = data;
             }
         }
-        return true;
+        return {};
     }
 
     debug_checkpoint emulator_runner::get_end_state() {

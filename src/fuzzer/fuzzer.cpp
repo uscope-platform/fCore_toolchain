@@ -18,9 +18,13 @@
 
 namespace fcore {
     fuzzer::fuzzer(const fuzzer_config& config) : rng(config.rng_seed, config.rng_float_params), config(config){
+    }
+
+    result<fuzzer> fuzzer::create(const fuzzer_config& config) {
         if (config.max_inputs > config.active_regs){
-            throw std::runtime_error("There needs to be enough registers active to fit all the possible inputs");
+            return fail(error_code::invalid_argument, "There needs to be enough registers active to fit all the possible inputs");
         }
+        return fuzzer(config);
     }
 
     fuzzing_package fuzzer::generate_binary() {
@@ -49,11 +53,11 @@ namespace fcore {
         return result;
     }
 
-    std::vector<uint32_t> fuzzer::emulate(const fuzzing_package& pkg){
+    result<std::vector<uint32_t>> fuzzer::emulate(const fuzzing_package& pkg){
 
         emulator_v2::emulator_manager emu_manager;
-        emu_manager.set_fuzz_package("fuzz_core", pkg);
-        emu_manager.emulate();
+        if(auto set = emu_manager.set_fuzz_package("fuzz_core", pkg); !set) return fail(std::move(set).error());
+        if(auto emulated = emu_manager.emulate(); !emulated) return fail(std::move(emulated).error());
         return emu_manager.dump_memory("fuzz_core",0);
     }
 

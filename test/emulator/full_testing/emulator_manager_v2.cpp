@@ -18,6 +18,7 @@
 
 #include "../emulator_test_helpers.hpp"
 #include "emulator/emulator_dispatcher.hpp"
+#include "result_helpers.hpp"
 
 using namespace fcore;
 using namespace fcore::emulator_v2;
@@ -97,10 +98,10 @@ TEST(emulator_manager_v2, emulator_executable_format) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
 
     std::vector<float>  result = std::vector<float>(res_obj["test"]["outputs"]["test_out"]["0"][0]);
     std::vector<float> reference = {58.62, 61.6};
@@ -187,19 +188,13 @@ TEST(emulator_manager_v2, emulator_compile_error) {
   "deployment_mode": false
 })");
 
-    EXPECT_THROW({
-        try{
-            emulator_dispatcher manager;
-            manager.set_specs(specs);
-            manager.process();
-        }
-        catch( const std::runtime_error& e ) {
-
-         // the pass manager appends which pass failed after the message
-         EXPECT_TRUE( std::string(e.what()).starts_with("CORE test: Function UNDEFINED is not defined") );
-         throw;
-        }
-    }, std::runtime_error );
+    emulator_dispatcher manager;
+    ASSERT_TRUE(manager.set_specs(specs));
+    auto processed = manager.process();
+    ASSERT_FALSE(processed);
+    // the pass manager appends which pass failed after the message
+    EXPECT_TRUE(processed.error().message.starts_with("CORE test: Function UNDEFINED is not defined"));
+    EXPECT_EQ(processed.error().code, error_code::undefined_variable);
 }
 
 TEST(emulator_manager_v2, emulator_asm) {
@@ -251,15 +246,15 @@ TEST(emulator_manager_v2, emulator_asm) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
 
-    auto dbg = manager.get_results().dump(4);
-    float res = manager.get_results()["test"]["outputs"]["r12"]["0"][0][0];
+    auto dbg = expect_value(manager.get_results()).dump(4);
+    float res = expect_value(manager.get_results())["test"]["outputs"]["r12"]["0"][0][0];
     ASSERT_FLOAT_EQ(res, 15.7f);
 
 }
@@ -341,11 +336,11 @@ TEST(emulator_manager_v2, emulator_consecutive_runs) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
 
     auto dbg = res_obj.dump(4);
@@ -362,11 +357,11 @@ TEST(emulator_manager_v2, emulator_consecutive_runs) {
     check_f[1] = emulator_backend::uint32_to_float(check_vector[1]);
     ASSERT_EQ(res, check_vector);
 
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    std::vector<uint32_t> res2 = manager.get_results()["test"]["outputs"]["out"]["0"][0];
+    std::vector<uint32_t> res2 = expect_value(manager.get_results())["test"]["outputs"]["out"]["0"][0];
     check_vector = {0x426a7ae1, 0x42f070a4};
 
     res_f[0] = emulator_backend::uint32_to_float(res2[0]);
@@ -454,10 +449,10 @@ TEST(emulator_manager_v2, emulator_compilation) {
 })");
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res = manager.get_results()["test"];
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res = expect_value(manager.get_results())["test"];
 
     std::vector<uint32_t> reference = {58,61};
     std::vector<uint32_t> result = res["outputs"]["out"]["0"][0];
@@ -592,10 +587,10 @@ TEST(emulator_manager_v2, emulator_compilation_interconnect) {
     }
     )");
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res = expect_value(manager.get_results());
     auto dbg = res.dump(4);
     std::vector<uint32_t> reference = {57,61};
     std::vector<uint32_t> result = res["test"]["outputs"]["out"]["0"][0];
@@ -733,10 +728,10 @@ TEST(emulator_manager_v2, emulator_interconnect_input_override) {
     }
     )");
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res = expect_value(manager.get_results());
     auto dbg = res.dump(4);
     std::vector<uint32_t> reference = {57,61};
     std::vector<uint32_t> result = res["test"]["outputs"]["out"]["0"][0];
@@ -822,11 +817,11 @@ TEST(emulator_manager_v2, emulator_header) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
     std::vector<float> res = res_obj["test"]["outputs"]["out"]["0"][0];
     auto dbg = res_obj.dump(4);
@@ -911,11 +906,11 @@ TEST(emulator_manager_v2, emulator_common_io) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
     std::vector<float> res = res_obj["test"]["outputs"]["c"]["0"][0];
     ASSERT_FLOAT_EQ(res[0], 6.0);
@@ -1004,10 +999,10 @@ TEST(emulator_manager_v2, emulator_multiple_common_io) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     auto dbg = res_obj.dump(4);
     std::vector<float> res_0 = res_obj["test"]["outputs"]["out"]["0"][0];
     ASSERT_FLOAT_EQ(res_0[1], 35.2);
@@ -1134,15 +1129,15 @@ TEST(emulator_manager_v2, emulation_repeatability) {
 })");
 
     emulator_dispatcher dispatcher;
-    dispatcher.set_specs(specs);
-    dispatcher.process();
-    dispatcher.emulate();
-    auto res_1 = dispatcher.get_results();
+    ASSERT_TRUE(dispatcher.set_specs(specs));
+    ASSERT_TRUE(dispatcher.process());
+    ASSERT_TRUE(dispatcher.emulate());
+    auto res_1 = expect_value(dispatcher.get_results());
 
-    dispatcher.set_specs(specs);
-    dispatcher.process();
-    dispatcher.emulate();
-    auto res_2 = dispatcher.get_results();
+    ASSERT_TRUE(dispatcher.set_specs(specs));
+    ASSERT_TRUE(dispatcher.process());
+    ASSERT_TRUE(dispatcher.emulate());
+    auto res_2 = expect_value(dispatcher.get_results());
 
 
     EXPECT_EQ(res_1, res_2);
@@ -1307,10 +1302,10 @@ TEST(emulator_manager_v2, emulator_interconnect_priority) {
     "deployment_mode": false
 })");
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     auto dbg = res_obj.dump(4);
     std::vector<float> res_0 = res_obj["new_core_2"]["outputs"]["out"]["0"][0];
     ASSERT_FLOAT_EQ(res_0[0], 25.0);
@@ -1394,16 +1389,16 @@ TEST(emulator_manager_v2, emulator_external_io_address_input) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
 
     // the input that the outside world feeds listens at its address, the other one is placed by the allocator
-    auto inputs = manager.get_inputs("test");
+    auto inputs = expect_value(manager.get_inputs("test"));
     EXPECT_EQ(inputs[0].address[0], 10);
     EXPECT_NE(inputs[1].address[0], 10);
 
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
 
     std::vector<float>  result = std::vector<float>(res_obj["test"]["outputs"]["test_out"]["0"][0]);
     std::vector<float> reference = {58.62, 61.6};
@@ -1490,18 +1485,18 @@ TEST(emulator_manager_v2, emulator_external_io_address_output) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
 
     // the output is sent to the address that the outside world reads it at, the core keeps its own address for it
-    auto slots = manager.get_interconnect_slots();
+    auto slots = expect_value(manager.get_interconnect_slots());
     ASSERT_EQ(slots.size(), 1);
     EXPECT_EQ(slots[0].source_name, "test_out");
     EXPECT_EQ(slots[0].destination_bus_address, 20);
     EXPECT_NE(slots[0].source_io_address, 20);
 
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
 
     std::vector<float>  result = std::vector<float>(res_obj["test"]["outputs"]["test_out"]["0"][0]);
     std::vector<float> reference = {58.62, 61.6};

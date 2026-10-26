@@ -20,6 +20,7 @@
 #include <string>
 
 #include "data_structures/common/program_metadata.hpp"
+#include "errors/result.hpp"
 
 namespace fcore::emulator_v2{
     struct core_metadata {
@@ -41,7 +42,7 @@ namespace fcore::emulator_v2{
 
     class emulation_sequencer {
     public:
-        void add_core(const std::string &core_id, uint32_t frequency, uint32_t order, uint32_t n_channels);
+        [[nodiscard]] result<void> add_core(const std::string &core_id, uint32_t frequency, uint32_t order, uint32_t n_channels);
         void setup_run(double sim_l);
         void calculate_sequence();
 
@@ -54,10 +55,10 @@ namespace fcore::emulator_v2{
         std::vector<core_step_metadata> get_running_cores();
         void advance_emulation() { progress--;}
 
-        core_step_metadata get_core_by_id(const std::string &id);
-        std::string get_next_core_by_order(uint32_t n_step);
-        std::string get_core_by_order(uint32_t n_step);
-        bool is_last_in_sequence(const std::string &id);
+        [[nodiscard]] result<core_step_metadata> get_core_by_id(const std::string &id);
+        [[nodiscard]] result<std::string> get_next_core_by_order(uint32_t n_step);
+        [[nodiscard]] result<std::string> get_core_by_order(uint32_t n_step);
+        [[nodiscard]] result<bool> is_last_in_sequence(const std::string &id);
 
         void clear();
         uint64_t get_current_step() const { return sim_length*simulation_frequency - progress; };

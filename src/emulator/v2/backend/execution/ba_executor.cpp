@@ -24,7 +24,7 @@ namespace fcore::emulator_v2{
         xip_fpo_fix_init2(xil_a_fixed_point, 32, 0);
     }
 
-    uint32_t ba_executor::execute_add(uint32_t a, uint32_t b) {
+    result<uint32_t> ba_executor::execute_add(uint32_t a, uint32_t b) {
         if(b==0){ // I must be doing something wrong... investigate why these are necessary
             return a;
         } else if(a==0){
@@ -35,69 +35,69 @@ namespace fcore::emulator_v2{
 
         xip_fpo_exc_t exc = xip_fpo_add(xil_res, xil_a, xil_b);
         if ( exc != 0) {
-            throw std::runtime_error("An exception occurred in the addition of"+ std::to_string(a) + " and " + std::to_string(b));
+            return fail(error_code::emulation_error, "An exception occurred in the addition of "+ std::to_string(a) + " and " + std::to_string(b));
         }
 
         auto fv = xip_fpo_get_flt(xil_res);
         return float_to_uint32(fv);
     }
 
-    uint32_t ba_executor::execute_sub(uint32_t a, uint32_t b) {
+    result<uint32_t> ba_executor::execute_sub(uint32_t a, uint32_t b) {
         xip_fpo_set_flt(xil_a, uint32_to_float(a));
         xip_fpo_set_flt(xil_b, uint32_to_float(b));
 
         xip_fpo_exc_t exc = xip_fpo_sub(xil_res, xil_a, xil_b);
 
         if ( exc != 0) {
-            throw std::runtime_error("An exception occurred in the subtraction of"+ std::to_string(a) + " and " + std::to_string(b));
+            return fail(error_code::emulation_error, "An exception occurred in the subtraction of "+ std::to_string(a) + " and " + std::to_string(b));
         }
 
         return float_to_uint32(xip_fpo_get_flt(xil_res));
     }
 
-    uint32_t ba_executor::execute_mul(uint32_t a, uint32_t b) {
+    result<uint32_t> ba_executor::execute_mul(uint32_t a, uint32_t b) {
         xip_fpo_set_flt(xil_a, uint32_to_float(a));
         xip_fpo_set_flt(xil_b, uint32_to_float(b));
 
         xip_fpo_exc_t exc = xip_fpo_mul(xil_res, xil_a, xil_b);
         if ( exc != 0) {
-            throw std::runtime_error("An exception occurred in the multiplication of"+ std::to_string(a) + " and " + std::to_string(b));
+            return fail(error_code::emulation_error, "An exception occurred in the multiplication of "+ std::to_string(a) + " and " + std::to_string(b));
         }
 
         return float_to_uint32(xip_fpo_get_flt(xil_res));
     }
 
-    uint32_t ba_executor::execute_rec(uint32_t a) {
+    result<uint32_t> ba_executor::execute_rec(uint32_t a) {
         xip_fpo_set_flt(xil_a, uint32_to_float(a));
 
         xip_fpo_exc_t exc = xip_fpo_rec(xil_res, xil_a);
 
         if ( exc != 0) {
-            throw std::runtime_error("An exception occurred during the calculation of the reciprocal of"+ std::to_string(a));
+            return fail(error_code::emulation_error, "An exception occurred during the calculation of the reciprocal of "+ std::to_string(a));
         }
 
         auto res = xip_fpo_get_flt(xil_res);
         return float_to_uint32(res);
     }
 
-    uint32_t ba_executor::execute_fti(uint32_t a) {
+    result<uint32_t> ba_executor::execute_fti(uint32_t a) {
         xip_fpo_set_flt(xil_a, uint32_to_float(a));
 
         xip_fpo_exc_t exc = xip_fpo_flttofix(xil_a_fixed_point, xil_a);
 
         if ( exc != 0) {
-            throw std::runtime_error("An exception occurred during the conversion of "+ std::to_string(a) + "to float from integer");
+            return fail(error_code::emulation_error, "An exception occurred during the conversion of "+ std::to_string(a) + " from float to integer");
         }
         return (uint32_t) xip_fpo_fix_get_si(xil_a_fixed_point);
     }
 
 
-    uint32_t ba_executor::execute_itf(uint32_t a) {
+    result<uint32_t> ba_executor::execute_itf(uint32_t a) {
         xip_fpo_fix_set_si(xil_a_fixed_point, (int32_t)a);
         xip_fpo_exc_t exc = xip_fpo_fixtoflt(xil_res, xil_a_fixed_point);
 
         if ( exc != 0) {
-            throw std::runtime_error("An exception occurred during the conversion of "+ std::to_string(a) + "to integer from float");
+            return fail(error_code::emulation_error, "An exception occurred during the conversion of "+ std::to_string(a) + " from integer to float");
         }
         auto fv = xip_fpo_get_flt(xil_res);
         return float_to_uint32(fv);

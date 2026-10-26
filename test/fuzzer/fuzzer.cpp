@@ -18,6 +18,7 @@
 #include <gtest/gtest.h>
 
 #include "fuzzer/fuzzer.hpp"
+#include "result_helpers.hpp"
 namespace fcore {
     TEST( fuzzer, program_generation) {
         fuzzer_config cfg;
@@ -25,7 +26,9 @@ namespace fcore {
         cfg.rng_float_params = {125, 20};
         cfg.max_program_size = 35;
         cfg.active_regs = 9;
-        fuzzer f(cfg);
+        auto created = fuzzer::create(cfg);
+        ASSERT_TRUE(created);
+        auto f = created.value();
         auto res = f.generate_binary();
         EXPECT_FALSE(res.binary.empty());
         ASSERT_GT(res.binary.size(), 1);
@@ -92,7 +95,9 @@ namespace fcore {
         cfg.rng_float_params = {125, 20};
         cfg.max_program_size = 35;
         cfg.active_regs = 9;
-        fuzzer f(cfg);
+        auto created = fuzzer::create(cfg);
+        ASSERT_TRUE(created);
+        auto f = created.value();
 
         std::istringstream stream(R"(
             ldc r6, 2.0
@@ -120,7 +125,7 @@ namespace fcore {
                 {2, 153.097794},
                 {1, 124.245865},
         };
-        auto mem = f.emulate(pkg);
+        auto mem = expect_value(f.emulate(pkg));
         std::vector<float> result(mem.size());
         std::transform(mem.begin(), mem.end(), result.begin(),
                        [](uint32_t val) { return std::bit_cast<float>(val); });
@@ -145,11 +150,13 @@ namespace fcore {
         cfg.rng_float_params = {125, 20};
         cfg.max_program_size = 35;
         cfg.active_regs = 9;
-        fuzzer f(cfg);
+        auto created = fuzzer::create(cfg);
+        ASSERT_TRUE(created);
+        auto f = created.value();
 
 
         auto pkg = f.generate_binary();
-        auto mem = f.emulate(pkg);
+        auto mem = expect_value(f.emulate(pkg));
         std::vector<float> result(mem.size());
         std::transform(mem.begin(), mem.end(), result.begin(),
                        [](uint32_t val) { return std::bit_cast<float>(val); });
@@ -158,4 +165,13 @@ namespace fcore {
     }
 
 
+}
+
+TEST(fuzzer, configuration_with_more_inputs_than_registers_is_rejected) {
+    fuzzer_config cfg;
+    cfg.max_inputs = 10;
+    cfg.active_regs = 4;
+    auto created = fcore::fuzzer::create(cfg);
+    ASSERT_FALSE(created);
+    EXPECT_EQ(created.error().code, fcore::error_code::invalid_argument);
 }

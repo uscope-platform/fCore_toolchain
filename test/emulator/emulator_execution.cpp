@@ -18,6 +18,7 @@
 
 #include "emulator_test_helpers.hpp"
 #include "emulator/v2/emulator_manager.hpp"
+#include "result_helpers.hpp"
 
 using namespace fcore::emulator_v2;
 
@@ -29,10 +30,10 @@ TEST(Emulator_execution, emulator_load) {
     auto specs = prepare_spec(program, 1, 1,
                              {}, {{"test", "float"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 5.0, 1e-6);
 }
@@ -45,10 +46,10 @@ TEST(Emulator_execution, emulator_add) {
     auto specs = prepare_spec(program, 1, 1,
      {{"a", 2.3,"float"},{"b", 1.5, "float"}}, {{"test", "float"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     auto dbg = res_obj.dump(4);
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 3.8, 1e-6);
@@ -62,10 +63,10 @@ TEST(Emulator_execution, emulator_sub) {
     auto specs = prepare_spec(program, 1, 1,
                              {{"a", 2.3,"float"},{"b", 1.5, "float"}}, {{"test", "float"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 0.8, 1e-6);
 }
@@ -76,10 +77,10 @@ TEST(Emulator_execution, emulator_mul) {
     auto specs = prepare_spec(program, 1, 1,
                              {{"a", 2.3,"float"},{"b", 1.5, "float"}}, {{"test", "float"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 3.45, 1e-6);
 }
@@ -91,10 +92,10 @@ TEST(Emulator_execution, emulator_rec) {
     auto specs = prepare_spec(program, 1, 1,
                              {{"a", 2,"float"}}, {{"test", "float"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 0.5, 1e-6);
 }
@@ -105,10 +106,10 @@ TEST(Emulator_execution, emulator_itf) {
     auto specs = prepare_spec(program, 1, 1,
                              {{"a", 2,"integer"}}, {{"test", "float"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 2, 1e-6);
 }
@@ -120,10 +121,10 @@ TEST(Emulator_execution, emulator_fti) {
     auto specs = prepare_spec(program, 1, 1,
                              {{"a", 2.3,"float"}}, {{"test", "integer"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     auto dbg = res_obj.dump();
     uint32_t result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 2);
@@ -136,10 +137,10 @@ TEST(Emulator_execution, emulator_and) {
     auto specs = prepare_spec(program, 1, 1,
                              {{"a", 0x5,"integer"}, {"b", 0xd,"integer"}}, {{"test", "integer"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     int result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 5);
 }
@@ -151,10 +152,10 @@ TEST(Emulator_execution, emulator_or) {
     auto specs = prepare_spec(program, 1, 1,
                              {{"a", 0x5,"integer"}, {"b", 0xA,"integer"}}, {{"test", "integer"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     int result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 15);
 }
@@ -166,10 +167,10 @@ TEST(Emulator_execution, emulator_not) {
     auto specs = prepare_spec(program, 1, 1,
                              {{"a", 0x210C,"integer"}}, {{"test", "integer"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     int result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0xFFFFDEF3);
 }
@@ -183,20 +184,20 @@ TEST(Emulator_execution, emulator_satn) {
     auto specs = prepare_spec(program, 1, 1,
                              {{"a", -10,"float"}}, {{"test", "float"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, -5, 1e-6);
 
     specs = prepare_spec(program, 1, 1,
                              {{"a", -3,"float"}}, {{"test", "float"}}, {});
     manager = emulator_manager();
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    res_obj = expect_value(manager.get_results());
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, -3, 1e-6);
 }
@@ -209,19 +210,19 @@ TEST(Emulator_execution, emulator_satp) {
     auto specs = prepare_spec(program, 1, 1,
                              {{"a", 10,"float"}}, {{"test", "float"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 5, 1e-6);
     specs = prepare_spec(program, 1, 1,
                         {{"a", 3,"float"}}, {{"test", "float"}}, {});
     manager = emulator_manager();
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    res_obj = expect_value(manager.get_results());
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 3, 1e-6);
 }
@@ -233,20 +234,20 @@ TEST(Emulator_execution, emulator_beq) {
     auto specs = prepare_spec(program, 1, 1,
                              {{"a", 10.0,"float"}, {"b", 10.0,"float"}}, {{"test", "integer"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     uint32_t result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0xffffffff);
 
     specs = prepare_spec(program, 1, 1,
                         {{"a", 10.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
     manager = emulator_manager();
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    res_obj = expect_value(manager.get_results());
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0);
 
@@ -260,20 +261,20 @@ TEST(Emulator_execution, emulator_bne) {
     auto specs = prepare_spec(program, 1, 1,
                              {{"a", 15.0,"float"}, {"b", 10.0,"float"}}, {{"test", "integer"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     uint32_t result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0xffffffff);
 
     specs = prepare_spec(program, 1, 1,
                         {{"a", 5.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
     manager = emulator_manager();
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    res_obj = expect_value(manager.get_results());
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0);
 
@@ -287,20 +288,20 @@ TEST(Emulator_execution, emulator_bgt) {
     auto specs = prepare_spec(program, 1, 1,
                              {{"a", 15.0,"float"}, {"b", 10.0,"float"}}, {{"test", "integer"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     uint32_t result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0xffffffff);
 
     specs = prepare_spec(program, 1, 1,
                         {{"a", 5.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
     manager = emulator_manager();
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    res_obj = expect_value(manager.get_results());
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0);
 
@@ -313,30 +314,30 @@ TEST(Emulator_execution, emulator_ble) {
     auto specs = prepare_spec(program, 1, 1,
                              {{"a", 5.0,"float"}, {"b", 10.0,"float"}}, {{"test", "integer"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     uint32_t result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0xffffffff);
 
     specs = prepare_spec(program, 1, 1,
                         {{"a", 5.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
     manager = emulator_manager();
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    res_obj = expect_value(manager.get_results());
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0xffffffff);
 
     specs = prepare_spec(program, 1, 1,
                         {{"a", 15.0,"float"}, {"b", 5.0,"float"}}, {{"test", "integer"}}, {});
     manager = emulator_manager();
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    res_obj = expect_value(manager.get_results());
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0);
 
@@ -367,11 +368,11 @@ TEST(Emulator_execution, emulator_efi) {
 
     std::string dbg = specs.dump();
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto  res_obj = manager.get_results()["test"]["outputs"]["sort_output"]["0"];
+    auto  res_obj = expect_value(manager.get_results())["test"]["outputs"]["sort_output"]["0"];
 
     ASSERT_EQ(res_obj[0][0], 1);
     ASSERT_EQ(res_obj[1][0], 0);
@@ -385,10 +386,10 @@ TEST(Emulator_execution, emulator_bset) {
     auto specs = prepare_spec(program, 1, 1,
                              {{"a", 5,"integer"}}, {{"test", "integer"}}, {});
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     uint32_t result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0xd);
 
@@ -397,10 +398,10 @@ TEST(Emulator_execution, emulator_bset) {
     specs = prepare_spec(program, 1, 1,
                              {{"a", 5,"integer"}}, {{"test", "integer"}}, {});
     manager = emulator_manager();
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    res_obj = expect_value(manager.get_results());
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_EQ(result, 0x1);
 }
@@ -414,20 +415,20 @@ TEST(Emulator_execution, emulator_csel) {
                              {{"a", 2,"float"}}, {{"test", "float"}}, {});
 
     emulator_manager manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res_obj = expect_value(manager.get_results());
     float result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 150.0, 1e-6);
 
     specs = prepare_spec(program, 1, 1,
                         {{"a", -1,"float"}}, {{"test", "float"}}, {});
     manager = emulator_manager();
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    res_obj = manager.get_results();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    res_obj = expect_value(manager.get_results());
     result = res_obj["test"]["outputs"]["test"]["0"][0][0];
     EXPECT_NEAR(result, 200.0, 1e-6);
 }

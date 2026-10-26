@@ -95,7 +95,7 @@ namespace fcore::emulator_v2{
     }
 
 
-    fcore_program emulator_builder::compile_program(
+    result<fcore_program> emulator_builder::compile_program(
             const emulator_core& core_spec,
             std::set<io_map_entry> &am
     ) {
@@ -108,13 +108,15 @@ namespace fcore::emulator_v2{
 
         fcore_program ret_val;
         if(core_spec.program.type==  prog_type_asm){
-            auto [prog, io_map] = compile_program_asm(content, headers, dma_io,  core_spec.id, core_spec.channels);
-            am = io_map;
-            ret_val = prog;
+            auto compiled = compile_program_asm(content, headers, dma_io,  core_spec.id, core_spec.channels);
+            if(!compiled) return fail(std::move(compiled).error());
+            am = compiled.value().second;
+            ret_val = compiled.value().first;
         } else {
-            auto [prog, io_map] = compile_program_c(content, headers, dma_io,  core_spec.id,  core_spec.channels);
-            am = io_map;
-            ret_val = prog;
+            auto compiled = compile_program_c(content, headers, dma_io,  core_spec.id,  core_spec.channels);
+            if(!compiled) return fail(std::move(compiled).error());
+            am = compiled.value().second;
+            ret_val = compiled.value().first;
         }
 
         if(debug_autogen){
@@ -177,7 +179,7 @@ namespace fcore::emulator_v2{
         return program;
     }
 
-    std::pair<fcore_program,std::set<io_map_entry>>  emulator_builder::compile_program_c(
+    result<std::pair<fcore_program,std::set<io_map_entry>>>  emulator_builder::compile_program_c(
             std::vector<std::string> &content,
             std::vector<std::string> &headers,
             std::map<std::string, core_iom> &dma_io,
@@ -188,8 +190,7 @@ namespace fcore::emulator_v2{
         fcore_cc compiler(content, headers);
         compiler.set_profiler(profiler);
         compiler.set_dma_map(dma_io);
-        // the emulator builder still reports failures by throwing
-        value_or_throw(compiler.compile(n_channels));
+        if(auto compiled = compiler.compile(n_channels); !compiled) return fail(std::move(compiled).error());
 
         if(debug_autogen){
 
@@ -204,10 +205,10 @@ namespace fcore::emulator_v2{
         fcore_program ret_val;
         ret_val.binary = compiler.get_executable();
         ret_val.program_length = compiler.get_program_info();
-        return {ret_val, compiler.get_io_map()};
+        return std::make_pair(ret_val, compiler.get_io_map());
     }
 
-    std::pair<fcore_program,std::set<io_map_entry>>  emulator_builder::compile_program_asm(
+    result<std::pair<fcore_program,std::set<io_map_entry>>>  emulator_builder::compile_program_asm(
             std::vector<std::string> &contents,
             std::vector<std::string> &inc,
             std::map<std::string, core_iom> &map,
@@ -226,12 +227,12 @@ namespace fcore::emulator_v2{
 
         std::stringstream iss(contents[0]);
         fcore_has assembler(iss, false, io_map);
-        if(assembler.get_error()) throw error_exception(assembler.get_error().value());
+        if(assembler.get_error()) return fail(assembler.get_error().value());
 
         fcore_program ret_val;
         ret_val.binary = assembler.get_executable();
         ret_val.program_length = assembler.get_program_info();
 
-        return {ret_val, io_map_out};
+        return std::make_pair(ret_val, io_map_out);
     }
 }

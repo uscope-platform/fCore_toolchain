@@ -29,7 +29,7 @@ namespace fcore::emulator_v2{
         active_channels = ac;
     }
 
-    void emulator_backend::run_round(
+    result<round_outcome_t> emulator_backend::run_round(
             int init_point
     ) {
 
@@ -43,13 +43,16 @@ namespace fcore::emulator_v2{
 
             if(breakpoints.contains(current_instruction) & !skip_breakpoint & debugging_enabled){
                 spdlog::trace("Breakpoint Hit at line {0}",  current_instruction);
-                throw BreakpointException(produce_checkpoint(false));
+                return round_outcome_t{produce_checkpoint(false)};
             }
 
             spdlog::trace("Running instruction {0}: opcode = {1}", current_instruction, fcore_string_map[opcode]);
 
 
-            run_instruction_by_type(opcode, operands, io_flags);
+            if(auto executed = run_instruction_by_type(opcode, operands, io_flags); !executed){
+                return fail(std::move(executed).error().with_context(
+                    "running instruction " + std::to_string(current_instruction) + " of core " + core_name));
+            }
 
             if(stop_requested){
                 break;
@@ -57,17 +60,21 @@ namespace fcore::emulator_v2{
         }
         current_instruction = -1;
         stop_requested = false;
+        return round_outcome_t{};
 
     }
 
-    debug_checkpoint emulator_backend::step_over() {
+    result<debug_checkpoint> emulator_backend::step_over() {
         if(current_instruction == -1) {
             reset_instruction_pointer();
         };
         auto opcode = get_opcode(prog[current_instruction].instruction);
         auto operands  = get_operands(prog[current_instruction].instruction);
         auto io_flags =get_common_io_flags(prog[current_instruction].instruction);
-        run_instruction_by_type(opcode, operands, io_flags);
+        if(auto executed = run_instruction_by_type(opcode, operands, io_flags); !executed){
+            return fail(std::move(executed).error().with_context(
+                "running instruction " + std::to_string(current_instruction) + " of core " + core_name));
+        }
 
         debug_checkpoint res;
 
@@ -84,21 +91,28 @@ namespace fcore::emulator_v2{
         return res;
     }
 
-    void emulator_backend::run_instruction_by_type(const uint32_t& raw_opcode, std::array<uint32_t, 3> operands, std::array<bool, 3> io_flags) {
+    result<void> emulator_backend::queue_result(result<operation_result> op) {
+        if(!op) return fail(std::move(op).error());
+        results_pipeline.push_back(op.value());
+        return {};
+    }
+
+    result<void> emulator_backend::run_instruction_by_type(const uint32_t& raw_opcode, std::array<uint32_t, 3> operands, std::array<bool, 3> io_flags) {
         auto opcode = static_cast<opcode_table_t>(raw_opcode);
+        result<void> issued;
         switch (fcore_op_types[fcore_opcodes_reverse[opcode]]) {
             case isa_independent_instruction:
-                run_independent_instruction(opcode, operands);
+                issued = run_independent_instruction(opcode, operands);
                 break;
             case isa_register_instruction:
-                if (opcode == opcode_efi) execute_efi(operands[0], operands[1], operands[2]);
-                else results_pipeline.push_back(run_register_instruction(opcode,operands, io_flags));
+                if (opcode == opcode_efi) issued = execute_efi(operands[0], operands[1], operands[2]);
+                else issued = queue_result(run_register_instruction(opcode,operands, io_flags));
                 break;
             case isa_conversion_instruction:
-                results_pipeline.push_back(run_conversion_instruction(opcode, operands, io_flags));
+                issued = queue_result(run_conversion_instruction(opcode, operands, io_flags));
                 break;
-        case isa_ternary_instruction:
-                results_pipeline.push_back(run_ternary_instruction(opcode,operands, io_flags));
+            case isa_ternary_instruction:
+                issued = queue_result(run_ternary_instruction(opcode,operands, io_flags));
                 break;
             case isa_load_constant_instruction:
                 results_pipeline.push_back(run_load_constant_instruction(operands[0], prog[current_instruction].load_constant));
@@ -106,6 +120,7 @@ namespace fcore::emulator_v2{
             default:
                 break;
         }
+        if(!issued) return issued;
         std::vector<operation_result> retire_set;
         std::erase_if(results_pipeline, [&](operation_result& res) {
             if(res.pipeline_del == 0 || (active_channels > 1 && res.pipeline_del< active_channels)) {
@@ -121,9 +136,10 @@ namespace fcore::emulator_v2{
             const auto wb_op = solve_writeback_conflict(retire_set);
             working_memory[wb_op.destination] = wb_op.data;
         }
+        return {};
     }
 
-    operation_result emulator_backend::run_ternary_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags) {
+    result<operation_result> emulator_backend::run_ternary_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags) {
 
         uint32_t op_a = operands[0];
         uint32_t op_b = operands[1];
@@ -149,21 +165,21 @@ namespace fcore::emulator_v2{
             c = working_memory[op_c];
         }
 
-        uint32_t result;
+        uint32_t op_value;
         uint32_t writeback_address = op_a;
         switch (opcode) {
             case opcode_csel:
-                result = exec.execute_csel(a, b, c);
+                op_value = exec.execute_csel(a, b, c);
                 break;
             default:
-                throw std::runtime_error("Encountered the following unimplemented operation: " + fcore_opcodes_reverse[opcode]);
+                return fail(error_code::not_supported, "Encountered the following unimplemented operation: " + std::string(fcore_string_map[opcode]));
         }
 
         auto op = static_cast<uint32_t>(opcode);
-        return {result, writeback_address, fcore_execution_latencies[fcore_opcodes_reverse[op]]};
+        return operation_result{op_value, writeback_address, fcore_execution_latencies[fcore_opcodes_reverse[op]]};
     }
 
-    operation_result emulator_backend::run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags) {
+    result<operation_result> emulator_backend::run_register_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags) {
 
 
         uint32_t dest = operands[2];
@@ -184,60 +200,75 @@ namespace fcore::emulator_v2{
             b = working_memory[op_b];
         }
 
-        uint32_t result;
+        uint32_t op_value;
+        result<uint32_t> computed;
         uint32_t writeback_address = dest;
         switch (opcode) {
             case opcode_add:
-                result = exec.execute_add(a, b);
+                computed = exec.execute_add(a, b);
+                if(!computed) return fail(std::move(computed).error());
+                op_value = computed.value();
                 break;
             case opcode_sub:
-                result = exec.execute_sub(a, b);
+                computed = exec.execute_sub(a, b);
+                if(!computed) return fail(std::move(computed).error());
+                op_value = computed.value();
                 break;
             case opcode_mul:
-                result = exec.execute_mul(a, b);
+                computed = exec.execute_mul(a, b);
+                if(!computed) return fail(std::move(computed).error());
+                op_value = computed.value();
                 break;
             case opcode_and:
-                result = exec.execute_and(a, b);
+                op_value = exec.execute_and(a, b);
                 break;
             case opcode_or:
-                result = exec.execute_or(a, b);
+                op_value = exec.execute_or(a, b);
                 break;
             case opcode_xor:
-                result = exec.execute_xor(a, b);
+                op_value = exec.execute_xor(a, b);
                 break;
             case opcode_satp:
-                result = exec.execute_satp(a, b);
+                op_value = exec.execute_satp(a, b);
                 break;
             case opcode_satn:
-                result  = exec.execute_satn(a, b);
+                op_value  = exec.execute_satn(a, b);
                 break;
             case opcode_beq:
-                result = exec.execute_compare_eq(a, b, comparator_type);
+                computed = exec.execute_compare_eq(a, b, comparator_type);
+                if(!computed) return fail(std::move(computed).error());
+                op_value = computed.value();
                 break;
             case opcode_bne:
-                result = exec.execute_compare_ne(a, b, comparator_type);
+                computed = exec.execute_compare_ne(a, b, comparator_type);
+                if(!computed) return fail(std::move(computed).error());
+                op_value = computed.value();
                 break;
             case opcode_bgt:
-                result = exec.execute_compare_gt(a, b, comparator_type);
+                computed = exec.execute_compare_gt(a, b, comparator_type);
+                if(!computed) return fail(std::move(computed).error());
+                op_value = computed.value();
                 break;
             case opcode_ble:
-                result = exec.execute_compare_le(a, b, comparator_type);
+                computed = exec.execute_compare_le(a, b, comparator_type);
+                if(!computed) return fail(std::move(computed).error());
+                op_value = computed.value();
                 break;
             case opcode_bset:
-                result = exec.execute_bset(working_memory[op_a], working_memory[op_b], working_memory[dest]);
+                op_value = exec.execute_bset(working_memory[op_a], working_memory[op_b], working_memory[dest]);
                 writeback_address = op_a;
                 break;
             case opcode_bsel:
-                result = exec.execute_bsel(a, b);
+                op_value = exec.execute_bsel(a, b);
                 break;
             default:
-                throw std::runtime_error("Encountered the following unimplemented operation: " + fcore_opcodes_reverse[opcode]);
+                return fail(error_code::not_supported, "Encountered the following unimplemented operation: " + std::string(fcore_string_map[opcode]));
         }
         auto op = static_cast<uint32_t>(opcode);
-        return {result, writeback_address, fcore_execution_latencies[fcore_opcodes_reverse[op]], opcode};
+        return operation_result{op_value, writeback_address, fcore_execution_latencies[fcore_opcodes_reverse[op]], opcode};
     }
 
-    void emulator_backend::run_independent_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands) {
+    result<void> emulator_backend::run_independent_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands) {
 
         switch (opcode) {
             case opcode_nop:
@@ -246,12 +277,12 @@ namespace fcore::emulator_v2{
                 stop_requested = true;
                 break;
             default:
-                throw std::runtime_error("Encountered the following unimplemented operation: " + fcore_opcodes_reverse[opcode]);
+                return fail(error_code::not_supported, "Encountered the following unimplemented operation: " + std::string(fcore_string_map[opcode]));
         }
-
+        return {};
     }
 
-    operation_result emulator_backend::run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags) {
+    result<operation_result> emulator_backend::run_conversion_instruction(opcode_table_t opcode, const std::array<uint32_t, 3> &operands, std::array<bool, 3> io_flags) {
 
 
         uint32_t src;
@@ -262,33 +293,40 @@ namespace fcore::emulator_v2{
         }
         uint32_t dest = operands[1];
 
-        uint32_t result;
+        uint32_t op_value;
+        result<uint32_t> computed;
 
         switch (opcode) {
             case opcode_rec:
-                result = exec.execute_rec(src);
+                computed = exec.execute_rec(src);
+                if(!computed) return fail(std::move(computed).error());
+                op_value = computed.value();
                 break;
             case opcode_fti:
-                result = exec.execute_fti(src);
+                computed = exec.execute_fti(src);
+                if(!computed) return fail(std::move(computed).error());
+                op_value = computed.value();
                 break;
             case opcode_itf:
-                result = exec.execute_itf(src);
+                computed = exec.execute_itf(src);
+                if(!computed) return fail(std::move(computed).error());
+                op_value = computed.value();
                 break;
             case opcode_not:
-                result = exec.execute_not(src);
+                op_value = exec.execute_not(src);
                 break;
             case opcode_abs:
-                result = exec.execute_abs(src);
+                op_value = exec.execute_abs(src);
                 break;
             case opcode_popcnt:
-                result = exec.execute_popcnt(src);
+                op_value = exec.execute_popcnt(src);
                 break;
             default:
-                throw std::runtime_error("Encountered the following unimplemented operation: " + fcore_opcodes_reverse[opcode]);
+                return fail(error_code::not_supported, "Encountered the following unimplemented operation: " + std::string(fcore_string_map[opcode]));
         }
 
         auto op = static_cast<uint32_t>(opcode);
-        return {result, dest, fcore_execution_latencies[fcore_opcodes_reverse[op]], opcode};
+        return operation_result{op_value, dest, fcore_execution_latencies[fcore_opcodes_reverse[op]], opcode};
 
     }
 
@@ -297,8 +335,8 @@ namespace fcore::emulator_v2{
     }
 
 
-    void emulator_backend::execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest) {
-        efi_backend.emulate_efi(efi_selector, op_a, op_b, dest, working_memory);
+    result<void> emulator_backend::execute_efi(uint32_t op_a, uint32_t op_b, uint32_t dest) {
+        return efi_backend.emulate_efi(efi_selector, op_a, op_b, dest, working_memory);
     }
 
     operation_result emulator_backend::solve_writeback_conflict(std::vector<operation_result> writes) {

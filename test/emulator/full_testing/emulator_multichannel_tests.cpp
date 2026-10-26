@@ -18,6 +18,7 @@
 
 #include "../emulator_test_helpers.hpp"
 #include "emulator/emulator_dispatcher.hpp"
+#include "result_helpers.hpp"
 
 using namespace fcore;
 using namespace fcore::emulator_v2;
@@ -106,12 +107,12 @@ TEST(emulator_multichannel, emulator_partial_memory_to_memory) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
-    auto res = manager.get_results()["test_producer"];
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
+    auto res = expect_value(manager.get_results())["test_producer"];
 
-    auto dbg = manager.get_results().dump(4);
+    auto dbg = expect_value(manager.get_results()).dump(4);
 
     std::vector<float> reference_0 = {5, 10};
     std::vector<float> result_0 = res["outputs"]["out"]["0"][0];
@@ -222,11 +223,11 @@ TEST(emulator_multichannel, emulator_multichannel) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
     std::vector<float> res = res_obj["test"]["outputs"]["out"]["0"][0];
     ASSERT_FLOAT_EQ(res[0], 35.2);
@@ -306,11 +307,11 @@ TEST(emulator_multichannel, emulator_multichannel_mem_init) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
     auto dbg = res_obj.dump();
     std::vector<float> res = res_obj["test"]["outputs"]["mem"]["0"][0];
     ASSERT_FLOAT_EQ(res[0], 100.1);
@@ -404,11 +405,11 @@ TEST(emulator_multichannel, emulator_multichannel_input_file) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
 
     std::vector<float> res = res_obj["test"]["outputs"]["out"]["0"][0];
@@ -550,11 +551,11 @@ TEST(emulator_multichannel, emulator_multichannel_gather_transfer) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
     auto dbg = res_obj.dump(4);
     std::vector<float> res = res_obj["test_producer"]["outputs"]["out"]["0"][0];
     ASSERT_FLOAT_EQ(res[0], 62.4);
@@ -665,11 +666,11 @@ TEST(emulator_multichannel, emulator_multichannel_scatter_transfer) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
     auto res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"]["0"][0];
 
@@ -799,11 +800,11 @@ TEST(emulator_multichannel, emulator_multichannel_vector_transfer) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
     auto res = (std::vector<float>) res_obj["test_consumer"]["outputs"]["out"]["0"][0];
     ASSERT_FLOAT_EQ(res[0], 218.4);
@@ -912,11 +913,11 @@ TEST(emulator_multichannel, emulator_multichannel_2d_vector_transfer) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
 
     std::vector<float> res = res_obj["test_consumer"]["outputs"]["consumer_out"]["0"][0];
@@ -1008,11 +1009,11 @@ TEST(emulator_multichannel, emulator_multichannel_input) {
 
 
     emulator_dispatcher manager;
-    manager.set_specs(specs);
-    manager.process();
-    manager.emulate();
+    ASSERT_TRUE(manager.set_specs(specs));
+    ASSERT_TRUE(manager.process());
+    ASSERT_TRUE(manager.emulate());
 
-    auto res_obj = manager.get_results();
+    auto res_obj = expect_value(manager.get_results());
 
 
     std::vector<float> res = res_obj["test_producer"]["outputs"]["out"]["0"][0];
