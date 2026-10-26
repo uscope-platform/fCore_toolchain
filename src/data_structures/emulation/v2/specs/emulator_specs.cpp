@@ -148,6 +148,8 @@ namespace fcore::emulator_v2 {
             out.metadata.suggested_address = std::vector<uint32_t>(out.vector_size, 0);
         }
 
+        out.metadata.io_address = process_io_address(o["metadata"], out.vector_size, out.name);
+
         return out;
     }
 
@@ -174,9 +176,7 @@ namespace fcore::emulator_v2 {
         }else if(in.is_vector) {
             in.metadata.suggested_address =  std::vector<uint32_t>(in.vector_size, 0);;
         }
-        if(i["metadata"].contains("io_address")) {
-            in.metadata.io_address = static_cast<std::vector<uint32_t>>(i["metadata"]["io_address"]);
-        }
+        in.metadata.io_address = process_io_address(i["metadata"], in.vector_size, in.name);
 
         in.metadata.is_common_io = i["metadata"]["common_io"];
 
@@ -267,6 +267,15 @@ namespace fcore::emulator_v2 {
 
 
         return in;
+    }
+
+    std::vector<uint32_t> emulator_specs::process_io_address(const nlohmann::json &metadata, uint32_t vector_size, const std::string &name) {
+        if(!metadata.contains("io_address")) return {};
+        auto addresses = static_cast<std::vector<uint32_t>>(metadata["io_address"]);
+        if(addresses.size() != vector_size) {
+            throw std::runtime_error(fmt::format("The io_address of {0} has {1} elements, the port has {2}", name, addresses.size(), vector_size));
+        }
+        return addresses;
     }
 
     emulator_core emulator_specs::process_core(const nlohmann::json &core_obj) {
@@ -361,6 +370,7 @@ namespace fcore::emulator_v2 {
 
         mem.is_output = m["is_output"];
         mem.is_input = m["is_input"];
+        mem.metadata.io_address = process_io_address(m["metadata"], mem.vector_size, mem.name);
 
         if(mem.metadata.type == type_float){
             std::vector<float> value;

@@ -76,7 +76,9 @@ namespace fcore {
         }
 
         std::vector<uint32_t> suggested_address = {0};
-        std::vector<uint32_t> io_address = {0};
+        /// Address on the bus fixed by the outside world, one for each element of the port. Empty when the port is not
+        /// bound to one: the allocator is free to place it (and only suggests, see suggested_address)
+        std::vector<uint32_t> io_address = {};
         register_data_type type;
         uint16_t width;
         bool is_signed;

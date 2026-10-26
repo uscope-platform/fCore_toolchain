@@ -98,10 +98,6 @@
             },
             "source": {
               "$ref": "#/$defs/input_source"
-            },
-            "emulation_source": {
-              "$ref": "#/$defs/input_source",
-              "title": "Where the data comes from in an emulation, for an input fed from outside the core"
             }
           },
           "allOf": [

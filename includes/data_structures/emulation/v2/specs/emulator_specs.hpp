@@ -48,6 +48,7 @@ namespace fcore::emulator_v2 {
         emulator_output_specs process_output(const nlohmann::json &o);
         emulator_input_specs process_input(const nlohmann::json &i);
         emulator_memory_specs process_memory(const nlohmann::json &m);
+        std::vector<uint32_t> process_io_address(const nlohmann::json &metadata, uint32_t vector_size, const std::string &name);
 
 
         bool check_float_intness(double d){
