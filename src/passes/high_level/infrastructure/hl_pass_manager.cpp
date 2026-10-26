@@ -21,7 +21,7 @@
 namespace fcore{
 
 
-    std::shared_ptr<ast_code_block>  hl_pass_manager::run_repeating_pass_group(
+    pass_result hl_pass_manager::run_repeating_pass_group(
         std::shared_ptr<ast_code_block> &subtree,
         const std::vector<std::shared_ptr<pass_base>> &group,
         const std::vector<std::shared_ptr<ast_definition>> &globals
@@ -37,8 +37,9 @@ namespace fcore{
 
                 if(ic != nullptr) ic->start_event(pass->get_name(), false);
                 auto pass_res = pass->process_global(std::static_pointer_cast<ast_code_block>(subtree), globals);
-                working_tree =  pass_res;
                 if(ic != nullptr) ic->end_event(pass->get_name());
+                if(!pass_res) return fail(std::move(pass_res).error().with_context("running pass: " + pass->get_name()));
+                working_tree = pass_res.value();
 
             }
             ++run_number;
@@ -74,7 +75,7 @@ namespace fcore{
         analysis_passes.push_back(p);
     }
 
-    std::shared_ptr<ast_code_block> hl_pass_manager::run_optimizations(const std::shared_ptr<ast_code_block>& AST,const std::vector<std::shared_ptr<ast_definition>> &globals) {
+    pass_result hl_pass_manager::run_optimizations(const std::shared_ptr<ast_code_block>& AST,const std::vector<std::shared_ptr<ast_definition>> &globals) {
         auto working_ast = std::static_pointer_cast<ast_code_block>(ast_node::deep_copy(AST));
 
         for(auto& p:optimization_passes){
@@ -84,24 +85,29 @@ namespace fcore{
 
                     if (ic != nullptr) ic->start_event(pass->get_name(), false);
                     auto pass_res = pass->process_global(std::static_pointer_cast<ast_code_block>(working_ast), globals);
-                    working_ast =  pass_res;
                     if (ic != nullptr) ic->end_event(pass->get_name());
+                    if(!pass_res) return fail(std::move(pass_res).error().with_context("running pass: " + pass->get_name()));
+                    working_ast = pass_res.value();
                 }
             } else if(p.type == repeating_pass_group) {
                 if (p.enabled) {
-                    working_ast = run_repeating_pass_group(working_ast, p.pass, globals);
+                    auto group_res = run_repeating_pass_group(working_ast, p.pass, globals);
+                    if(!group_res) return fail(std::move(group_res).error().with_context("running pass group: " + p.name));
+                    working_ast = group_res.value();
                 }
             } else if(p.type == unique_pass_group) {
                 if(p.enabled){
                     for(auto &pass:p.pass){
 
                         if(ic != nullptr) ic->start_event(pass->get_name(), false);
-                        working_ast =  pass->process_global(std::static_pointer_cast<ast_code_block>(working_ast), globals);
+                        auto pass_res = pass->process_global(std::static_pointer_cast<ast_code_block>(working_ast), globals);
                         if(ic != nullptr) ic->end_event(pass->get_name());
+                        if(!pass_res) return fail(std::move(pass_res).error().with_context("running pass: " + pass->get_name()));
+                        working_ast = pass_res.value();
                     }
                 }
             } else {
-                throw std::runtime_error("ERROR: unexpected pass type");
+                return fail(error_code::internal_error, "unexpected pass type");
             }
 
 
@@ -109,7 +115,7 @@ namespace fcore{
         return working_ast;
     }
 
-    void hl_pass_manager::run_semantic_analysis(
+    result<void> hl_pass_manager::run_semantic_analysis(
         std::shared_ptr<ast_code_block> AST,
         const std::vector<std::shared_ptr<ast_definition>> &globals
     ) {
@@ -118,20 +124,22 @@ namespace fcore{
         for(const auto& p:analysis_passes) {
             for(int i = 0; i<p.repetitions; i++) {
                 if (ic != nullptr) ic->start_event(p.pass->get_name(), false);
-                p.pass->process_global(AST, globals);
+                auto pass_res = p.pass->process_global(AST, globals);
                 if (ic != nullptr) ic->end_event(p.pass->get_name());
+                if(!pass_res) return fail(std::move(pass_res).error().with_context("running analysis: " + p.name));
             }
         }
+        return {};
     }
 
-    void hl_pass_manager::enable_pass(const std::string &name) {
+    result<void> hl_pass_manager::enable_pass(const std::string &name) {
         for(auto& p:optimization_passes) {
             if(p.name == name) {
                 p.enabled = true;
-                return;
+                return {};
             }
         }
-        throw std::runtime_error("Required pass not found");
+        return fail(error_code::invalid_argument, "Required pass not found: " + name);
     }
 
     void hl_pass_manager::disable_all() {

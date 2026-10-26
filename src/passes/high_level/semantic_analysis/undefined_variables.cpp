@@ -22,7 +22,7 @@ namespace fcore {
 
     }
 
-    std::shared_ptr<ast_code_block> undefined_variables::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
+    pass_result undefined_variables::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
         hl_observing_visitor_operations ops;
         hl_observing_visitor visitor;
 
@@ -42,9 +42,10 @@ namespace fcore {
         ops.post.visit_definition = [this]<typename T0>(T0 && placeholder) { process_definition(std::forward<T0>(placeholder)); };
 
 
-        visitor.visit(ops, element);
+        ops.should_stop = stop_condition();
+        auto visited = visitor.visit(ops, element);
 
-        return element;
+        return finish(visited, element);
     }
 
 
@@ -59,12 +60,11 @@ namespace fcore {
         }
     }
 
-    void undefined_variables::process_operand(const std::shared_ptr<ast_operand> &op) const {
+    void undefined_variables::process_operand(const std::shared_ptr<ast_operand> &op) {
         if(!current_stack.contains(op->get_name())) {
             auto type = op->get_type();
             if(type != var_type_float_const && type != var_type_int_const) {
-                // report error and exit;
-                throw std::runtime_error("Undefined variable: " + op->get_name());
+                report(error(error_code::undefined_variable, "Undefined variable: " + op->get_name()));
             }
         }
     }

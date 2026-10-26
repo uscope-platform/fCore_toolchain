@@ -25,7 +25,7 @@ namespace fcore{
     class operating_assignment_implementation_pass : public pass_base {
     public:
         operating_assignment_implementation_pass();
-        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) override;
+        pass_result process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) override;
         static std::vector<std::shared_ptr<ast_node>>  process_expression(std::shared_ptr<ast_expression> element);
     private:
         static std::shared_ptr<ast_expression> create_top_expression(ast_expression::assignment_type a);

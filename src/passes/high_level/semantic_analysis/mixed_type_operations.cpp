@@ -20,17 +20,18 @@ fcore::mixed_type_operations::mixed_type_operations() : pass_base("mixed_type_op
 
 }
 
-std::shared_ptr<fcore::ast_code_block> fcore::mixed_type_operations::process_global(
+fcore::pass_result fcore::mixed_type_operations::process_global(
     std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
 
         hl_observing_visitor visitor;
 
         hl_observing_visitor_operations ops;
 
-        ops.pre.visit_expression = process_expression;
+        ops.pre.visit_expression = [this](const std::shared_ptr<ast_expression> &exp) { process_expression(exp); };
+        ops.should_stop = stop_condition();
 
-        visitor.visit(ops, element);
-        return element;
+        auto visited = visitor.visit(ops, element);
+        return finish(visited, element);
 
 
 }
@@ -41,12 +42,11 @@ void fcore::mixed_type_operations::process_expression(const std::shared_ptr<ast_
             auto lhs = std::static_pointer_cast<ast_operand>(exp->get_lhs().value());
             auto rhs = std::static_pointer_cast<ast_operand>(exp->get_rhs());
             if(!are_types_compatible(lhs->get_c_type(), rhs->get_c_type())) {
-                const std::string error = fmt::format(
+                report(error(error_code::type_error, fmt::format(
                     "Encountered expression with mixed types: {0} is {1} and {2} is {3}",
                     lhs->get_name(), variable::type_to_string(lhs->get_c_type()),
                     rhs->get_name(), variable::type_to_string(rhs->get_c_type())
-                );
-                throw std::runtime_error(error);
+                )));
             }
         }
     }

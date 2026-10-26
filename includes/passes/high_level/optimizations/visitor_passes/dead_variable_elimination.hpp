@@ -24,7 +24,7 @@ namespace fcore{
     class dead_variable_elimination : public pass_base{
     public:
         explicit dead_variable_elimination();
-        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
+        pass_result process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
 
         std::vector<std::shared_ptr<ast_node>> detect_definition(const std::shared_ptr<ast_definition> &def);
         std::vector<std::shared_ptr<ast_node>> process_definition(const std::shared_ptr<ast_definition> &def);

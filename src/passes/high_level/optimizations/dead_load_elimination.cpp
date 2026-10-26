@@ -20,7 +20,7 @@ namespace fcore{
         efi_mode = false;
     }
 
-    std::shared_ptr<ast_code_block> dead_load_elimination::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
+    pass_result dead_load_elimination::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
         auto retval = std::make_shared<ast_code_block>();
 
         std::vector<std::shared_ptr<ast_node>> new_content;
@@ -29,6 +29,7 @@ namespace fcore{
         for(auto &item:element->get_content()){
             search_constants(item);
             search_usages(item);
+            if(failed()) return finish(retval);
             idx++;
         }
 
@@ -39,7 +40,7 @@ namespace fcore{
             idx++;
         }
         retval->set_content(new_content);
-        return retval;
+        return finish(retval);
     }
 
 
@@ -73,7 +74,7 @@ namespace fcore{
             std::shared_ptr<ast_expression> node = std::static_pointer_cast<ast_expression>(element);
             search_usages(node);
         } else{
-            throw std::runtime_error("unexpected node type in dead load elimination pass");
+            report(error(error_code::internal_error, "unexpected node type in dead load elimination pass"));
         }
     }
 
@@ -84,7 +85,7 @@ namespace fcore{
             } else if(element->get_scalar_initializer()->node_type == hl_ast_node_type_operand){
                 search_usages(std::static_pointer_cast<ast_operand>(element->get_scalar_initializer()));
             } else {
-                throw std::runtime_error("unexpected definition initializer type in dead load elimination pass");
+                report(error(error_code::internal_error, "unexpected definition initializer type in dead load elimination pass"));
             }
         }
     }

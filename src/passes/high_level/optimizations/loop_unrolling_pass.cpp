@@ -21,24 +21,26 @@ namespace fcore{
         current_loop_iteration = 0;
     }
 
-    std::shared_ptr<ast_code_block> loop_unrolling_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
+    pass_result loop_unrolling_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
         auto retval = std::make_shared<ast_code_block>();
         std::vector<std::shared_ptr<ast_node>> new_content;
 
         for(const auto& item:element->get_content()){
             if(item->node_type == hl_ast_node_type_function_def){
                 new_content.push_back(process_function_def(std::static_pointer_cast<ast_function_def>(item)));
+                if(failed()) break;
             } else {
                 if(item->node_type == hl_ast_node_type_loop){
                     std::vector<std::shared_ptr<ast_node>> unrolled_loop = process_loop(std::static_pointer_cast<ast_loop>(item));
                     new_content.insert(new_content.end(), unrolled_loop.begin(), unrolled_loop.end());
+                    if(failed()) break;
                 } else {
                     new_content.push_back(item);
                 }
             }
         }
         retval->set_content(new_content);
-        return retval;
+        return finish(retval);
     }
 
     std::shared_ptr<ast_node>
@@ -51,6 +53,7 @@ namespace fcore{
             if(item->node_type == hl_ast_node_type_loop){
                 std::vector<std::shared_ptr<ast_node>> unrolled_loop = process_loop(std::static_pointer_cast<ast_loop>(item));
                 new_body.insert(new_body.end(), unrolled_loop.begin(), unrolled_loop.end());
+                if(failed()) return retval;
             } else {
                 new_body.push_back(item);
             }
@@ -64,7 +67,8 @@ namespace fcore{
     std::vector<std::shared_ptr<ast_node>> loop_unrolling_pass::process_loop(const std::shared_ptr<ast_loop>& element) {
         std::vector<std::shared_ptr<ast_node>> retval;
         if(!element->get_init_statement()->is_initialized()){
-            throw std::runtime_error("Incomplete loop initialization statement");
+            report(error(error_code::lowering_error, "Incomplete loop initialization statement"));
+            return retval;
         }
         std::vector<std::shared_ptr<ast_node>> new_body;
 
@@ -72,6 +76,7 @@ namespace fcore{
             if(item->node_type ==hl_ast_node_type_loop){
                 std::vector<std::shared_ptr<ast_node>> unrolled_loop = process_loop(std::static_pointer_cast<ast_loop>(item));
                 new_body.insert(new_body.end(), unrolled_loop.begin(), unrolled_loop.end());
+                if(failed()) return retval;
             } else{
                 new_body.push_back(item);
             }
@@ -81,6 +86,7 @@ namespace fcore{
         std::shared_ptr<ast_node> raw_initializer = element->get_init_statement()->get_scalar_initializer();
         std::string loop_var_name = element->get_init_statement()->get_name();
         current_loop_iteration = process_loop_initializer(raw_initializer);
+        if(failed()) return retval;
 
         std::shared_ptr<ast_expression> condition = element->get_condition();
         std::shared_ptr<ast_expression> iter_exp = element->get_iteration_expr();
@@ -101,6 +107,7 @@ namespace fcore{
             var = std::make_shared<variable>(loop_var_name, (int)current_loop_iteration);
             loop_var = std::make_shared<ast_operand>(var);
             retval.insert(retval.end(), new_content.begin(), new_content.end());
+            if(failed()) return retval;
         }
         return retval;
     }
@@ -114,19 +121,23 @@ namespace fcore{
         if(raw_initializer->node_type == hl_ast_node_type_expr){
 
             if(!std::static_pointer_cast<ast_expression>(raw_initializer)->is_constant()){
-                throw std::runtime_error("Loop initialization statement is not a compile time constant");
+                report(error(error_code::lowering_error, "Loop initialization statement is not a compile time constant"));
+                return 0;
             }
             initializer = ast_expression::evaluate(std::static_pointer_cast<ast_expression>(raw_initializer));
         } else if(raw_initializer->node_type == hl_ast_node_type_operand){
             initializer = std::static_pointer_cast<ast_operand>(raw_initializer);
             if(initializer->get_type() == var_type_float_const){
-                throw std::runtime_error("Floating point loop initializers are not supported");
+                report(error(error_code::not_supported, "Floating point loop initializers are not supported"));
+                return 0;
             }
             if(initializer->get_type() != var_type_int_const){
-                throw std::runtime_error("Loop initialization statement is not a compile time constant");
+                report(error(error_code::lowering_error, "Loop initialization statement is not a compile time constant"));
+                return 0;
             }
         } else{
-            throw std::runtime_error("Unsupported loop initialization statement type");
+            report(error(error_code::not_supported, "Unsupported loop initialization statement type"));
+            return 0;
         }
 
         ret_val = initializer->get_int_value();
@@ -139,7 +150,8 @@ namespace fcore{
                                                    std::shared_ptr<ast_operand> &loop_var) {
 
         if(current_loop_iteration ==  max_loop_iterations){
-            throw std::runtime_error("Loops with more than 65536 iterations are not supported");
+            report(error(error_code::not_supported, "Loops with more than 65536 iterations are not supported"));
+            return false;
         }
 
         std::shared_ptr<ast_expression> loop_cond = update_loop_condition(condition, loop_var);
@@ -193,7 +205,8 @@ namespace fcore{
             case hl_ast_node_type_definition:
                 return substitute_index_in_definition(std::static_pointer_cast<ast_definition>(element), idx_name, value);
             default:
-                throw std::runtime_error("An unexpected node type was present in the AST during loop unrolling.");
+                report(error(error_code::internal_error, "An unexpected node type was present in the AST during loop unrolling."));
+                return nullptr;
         }
     }
 

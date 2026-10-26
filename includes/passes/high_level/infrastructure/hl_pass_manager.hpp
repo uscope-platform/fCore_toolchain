@@ -17,6 +17,7 @@
 #define FCORE_TOOLCHAIN_HL_PASS_MANAGER_HPP
 
 
+#include "errors/result.hpp"
 #include "instrumentation/instrumentation_core.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 #include "pass_base.hpp"
@@ -54,24 +55,24 @@ namespace fcore{
 
         void add_analysis_pass(const std::string&name, const std::shared_ptr<pass_base>& pass, uint8_t repetitions);
 
-        [[nodiscard]] std::shared_ptr<ast_code_block> run_optimizations(
+        [[nodiscard]] pass_result run_optimizations(
             const std::shared_ptr<ast_code_block>& AST,
             const std::vector<std::shared_ptr<ast_definition>> &globals
         );
 
-        void run_semantic_analysis(
+        [[nodiscard]] result<void> run_semantic_analysis(
             std::shared_ptr<ast_code_block> AST,
             const std::vector<std::shared_ptr<ast_definition>> &globals
         );
 
-        std::shared_ptr<ast_code_block> run_repeating_pass_group(
+        [[nodiscard]] pass_result run_repeating_pass_group(
             std::shared_ptr<ast_code_block> &subtree,
             const std::vector<std::shared_ptr<pass_base>>& group,
             const std::vector<std::shared_ptr<ast_definition>> &globals
         );
 
         void disable_all();
-        void enable_pass(const std::string& name);
+        [[nodiscard]] result<void> enable_pass(const std::string& name);
 
         void set_profiler(std::shared_ptr<instrumentation_core> &p){
             this->ic = p;

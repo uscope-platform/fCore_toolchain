@@ -17,8 +17,12 @@
 #ifndef FCORE_TOOLCHAIN_HL_AST_VISITOR_HPP
 #define FCORE_TOOLCHAIN_HL_AST_VISITOR_HPP
 
+#include <functional>
 #include <memory>
+#include <optional>
 #include <vector>
+
+#include "errors/result.hpp"
 
 #include "data_structures/high_level_ast/ast_node.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
@@ -49,11 +53,15 @@ namespace fcore{
         };
         pre_operations pre;
         post_operations post;
+
+        /// polled after every callback, the visit stops once it returns true
+        std::function<bool()> should_stop;
     };
 
     class hl_acting_visitor {
     public:
-        std::shared_ptr<ast_code_block> visit(const hl_acting_visitor_operations &operations,const std::shared_ptr<ast_code_block> &node);
+        /// Fails if the tree is malformed or if the callbacks asked to stop, in which case the tree is left half processed.
+        [[nodiscard]] result<std::shared_ptr<ast_code_block>> visit(const hl_acting_visitor_operations &operations,const std::shared_ptr<ast_code_block> &node);
     private:
         std::vector<std::shared_ptr<ast_node>> process_node_by_type(const std::shared_ptr<ast_node> &node);
         std::shared_ptr<ast_node> process_node(const std::shared_ptr<ast_conditional> &cond);
@@ -64,7 +72,9 @@ namespace fcore{
         std::vector<std::shared_ptr<ast_node>>  process_node(const std::shared_ptr<ast_call> &cond);
         std::vector<std::shared_ptr<ast_node>> process_node(const std::shared_ptr<ast_function_def> &def);
         std::shared_ptr<ast_node> process_node(const std::shared_ptr<ast_code_block> &block);
+        [[nodiscard]] bool stopped() const {return failure.has_value() || (ops.should_stop && ops.should_stop());}
         hl_acting_visitor_operations ops;
+        std::optional<error> failure;
 
         std::shared_ptr<ast_node> get_expected_scalar_element(const std::vector<std::shared_ptr<ast_node>> &vect);
 

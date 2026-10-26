@@ -20,7 +20,7 @@ namespace fcore{
         entry_point = std::move(entry_point_name);
     }
 
-    std::shared_ptr<ast_code_block> inlined_function_elimination::process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) {
+    pass_result inlined_function_elimination::process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) {
 
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;

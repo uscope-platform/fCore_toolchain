@@ -26,7 +26,7 @@ namespace fcore {
     class assignments_checks : public pass_base{
     public:
         assignments_checks();
-        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
+        pass_result process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
     private:
 
         void process_definition(const std::shared_ptr<ast_definition> &def);

@@ -23,7 +23,7 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<ast_code_block> constant_folding_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
+    pass_result constant_folding_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
 
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;

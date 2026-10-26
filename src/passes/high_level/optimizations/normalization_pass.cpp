@@ -22,19 +22,20 @@ namespace fcore{
     }
 
 
-    std::shared_ptr<ast_code_block> normalization_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
+    pass_result normalization_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
         auto retval = std::make_shared<ast_code_block>();
 
         std::vector<std::shared_ptr<ast_node>> normalized_body;
 
         for(auto &i: element->get_content()){
             norm_pair_t norm_pair = process_node_by_type(i);
+            if(failed()) return finish(retval);
             normalized_body.insert(normalized_body.end(), norm_pair.second.begin(), norm_pair.second.end());
             normalized_body.push_back(norm_pair.first);
         }
 
         retval->set_content(normalized_body);
-        return retval;
+        return finish(retval);
     }
 
 
@@ -63,7 +64,8 @@ namespace fcore{
         } else if(element->node_type == hl_ast_node_type_operand){
             return true;
         } else{
-            throw std::runtime_error("unexpected block reached the normalization pass");
+            report(error(error_code::internal_error, "unexpected block reached the normalization pass"));
+            return true;
         }
     }
 

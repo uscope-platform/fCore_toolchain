@@ -22,7 +22,7 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<ast_code_block> fuction_mangling_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
+    pass_result fuction_mangling_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
         std::shared_ptr<ast_code_block> ret_val = std::make_shared<ast_code_block>();
 
         std::vector<std::shared_ptr<ast_node>> body;
@@ -47,6 +47,7 @@ namespace fcore{
 
             for(auto &b: node->get_body()){
                 new_func_body.push_back(mangle_node(ast_node::deep_copy(b), node->get_name()));
+                if(failed()) return finish(ret_val);
             }
             mangled_node->set_body(new_func_body);
             if(node->get_return() != nullptr)
@@ -62,7 +63,7 @@ namespace fcore{
         }
 
         ret_val->set_content(body);
-        return ret_val;
+        return finish(ret_val);
     }
 
     std::shared_ptr<ast_node> fuction_mangling_pass::mangle_node(const std::shared_ptr<ast_node>& node, const std::string &function) {
@@ -76,13 +77,15 @@ namespace fcore{
             case hl_ast_node_type_loop:
                 return mangle_node(std::static_pointer_cast<ast_loop>(node), function);
             case hl_ast_node_type_function_def:
-                throw std::runtime_error("Nested function definitions are not supported");
+                report(error(error_code::not_supported, "Nested function definitions are not supported"));
+                return nullptr;
             case hl_ast_node_type_operand:
                 return mangle_node(std::static_pointer_cast<ast_operand>(node), function);
             case hl_ast_node_type_function_call:
                 return mangle_node(std::static_pointer_cast<ast_call>(node), function);
             default:
-                throw std::runtime_error("Encountered unexpected node type in function call mangling");
+                report(error(error_code::internal_error, "Encountered unexpected node type in function call mangling"));
+                return nullptr;
         }
     }
 

@@ -48,13 +48,10 @@ TEST(type_checking, wrong_call_arguments) {
     ASSERT_TRUE(parsed);
     auto [ast, globals] = parsed.value();
 
-    try {
-        engine.run_semantic_analysis(ast, globals);
-        EXPECT_TRUE(false);
-    } catch(const std::runtime_error &err) {
-        std::string msg = err.what();
-        EXPECT_EQ(msg,  "Argument #1 of a call to add is of the wrong type");
-    }
+    auto analysis = engine.run_semantic_analysis(ast, globals);
+    ASSERT_FALSE(analysis);
+    EXPECT_EQ(analysis.error().code, error_code::type_error);
+    EXPECT_EQ(analysis.error().message, "Argument #1 of a call to add is of the wrong type");
 }
 
 TEST(type_checking, int_to_float_assignment) {
@@ -76,13 +73,10 @@ TEST(type_checking, int_to_float_assignment) {
     ASSERT_TRUE(parsed);
     auto [ast, globals] = parsed.value();
 
-    try {
-        engine.run_semantic_analysis(ast, globals);
-        EXPECT_TRUE(false);
-    } catch(const std::runtime_error &err) {
-        std::string msg = err.what();
-        EXPECT_EQ(msg,  "Assignment of an integer (1) to the float variable (a) is prohibited");
-    }
+    auto analysis = engine.run_semantic_analysis(ast, globals);
+    ASSERT_FALSE(analysis);
+    EXPECT_EQ(analysis.error().code, error_code::type_error);
+    EXPECT_EQ(analysis.error().message, "Assignment of an integer (1) to the float variable (a) is prohibited");
 }
 
 
@@ -107,12 +101,9 @@ TEST(type_checking, float_to_int_assignment) {
     ASSERT_TRUE(parsed);
     auto [ast, globals] = parsed.value();
 
-    try {
-        engine.run_semantic_analysis(ast, globals);
-        EXPECT_TRUE(false);
-    } catch(const std::runtime_error &err) {
-        std::string msg = err.what();
-        EXPECT_EQ(msg,  "Assignment of a float (1.5) to the integer variable (a) is prohibited");
-    }
+    auto analysis = engine.run_semantic_analysis(ast, globals);
+    ASSERT_FALSE(analysis);
+    EXPECT_EQ(analysis.error().code, error_code::type_error);
+    EXPECT_EQ(analysis.error().message, "Assignment of a float (1.5) to the integer variable (a) is prohibited");
 }
 

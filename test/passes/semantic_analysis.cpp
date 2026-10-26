@@ -47,13 +47,10 @@ TEST(semantic_analysis, simple_undefined_variable) {
     ASSERT_TRUE(parsed);
     auto [ast, globals] = parsed.value();
 
-    try {
-        engine.run_semantic_analysis(ast, globals);
-        EXPECT_TRUE(false);
-    } catch(const std::runtime_error &err) {
-        std::string msg = err.what();
-        EXPECT_EQ(msg, "Undefined variable: b");
-    }
+    auto analysis = engine.run_semantic_analysis(ast, globals);
+    ASSERT_FALSE(analysis);
+    EXPECT_EQ(analysis.error().code, error_code::undefined_variable);
+    EXPECT_EQ(analysis.error().message, "Undefined variable: b");
 
 }
 
@@ -82,13 +79,10 @@ TEST(semantic_analysis, undefined_variable_in_else) {
     ASSERT_TRUE(parsed);
     auto [ast, globals] = parsed.value();
 
-    try {
-        engine.run_semantic_analysis(ast, globals);
-        EXPECT_TRUE(false);
-    } catch(const std::runtime_error &err) {
-        std::string msg = err.what();
-        EXPECT_EQ(msg, "Undefined variable: b");
-    }
+    auto analysis = engine.run_semantic_analysis(ast, globals);
+    ASSERT_FALSE(analysis);
+    EXPECT_EQ(analysis.error().code, error_code::undefined_variable);
+    EXPECT_EQ(analysis.error().message, "Undefined variable: b");
 
 }
 
@@ -111,12 +105,7 @@ TEST(semantic_analysis, for_loop_variable) {
     ASSERT_TRUE(parsed);
     auto [ast, globals] = parsed.value();
 
-    try {
-        engine.run_semantic_analysis(ast, globals);
-    } catch(const std::runtime_error &err) {
-        spdlog::critical("unexpected error: {}", err.what());
-        EXPECT_TRUE(false);
-    }
+    EXPECT_TRUE(engine.run_semantic_analysis(ast, globals));
 
 }
 
@@ -139,14 +128,10 @@ TEST(semantic_analysis, undefined_for_loop_variable) {
     ASSERT_TRUE(parsed);
     auto [ast, globals] = parsed.value();
 
-    try {
-        engine.run_semantic_analysis(ast, globals);
-        spdlog::critical("The undefined variable j was not caught");
-        EXPECT_TRUE(false);
-    } catch(const std::runtime_error &err) {
-        std::string msg = err.what();
-        EXPECT_EQ(msg, "Undefined variable: j");
-    }
+    auto analysis = engine.run_semantic_analysis(ast, globals);
+    ASSERT_FALSE(analysis);
+    EXPECT_EQ(analysis.error().code, error_code::undefined_variable);
+    EXPECT_EQ(analysis.error().message, "Undefined variable: j");
 
 }
 
@@ -169,14 +154,10 @@ TEST(semantic_analysis, undefined_variable_in_expression) {
     ASSERT_TRUE(parsed);
     auto [ast, globals] = parsed.value();
 
-    try {
-        engine.run_semantic_analysis(ast, globals);
-        spdlog::critical("The undefined variable ba was not caught");
-        EXPECT_TRUE(false);
-    } catch(const std::runtime_error &err) {
-        std::string msg = err.what();
-        EXPECT_EQ(msg, "Undefined variable: ba");
-    }
+    auto analysis = engine.run_semantic_analysis(ast, globals);
+    ASSERT_FALSE(analysis);
+    EXPECT_EQ(analysis.error().code, error_code::undefined_variable);
+    EXPECT_EQ(analysis.error().message, "Undefined variable: ba");
 
 }
 
@@ -211,7 +192,7 @@ TEST(semantic_analysis, type_propagation) {
     auto [ast, globals] = parsed.value();
 
 
-    engine.run_semantic_analysis(ast, globals);
+    ASSERT_TRUE(engine.run_semantic_analysis(ast, globals));
 
 
     auto fcn = std::static_pointer_cast<ast_function_def>(ast->get_content()[0]);
@@ -267,14 +248,10 @@ TEST(semantic_analysis, mixed_type_operation_warning) {
     ASSERT_TRUE(parsed);
     auto [ast, globals] = parsed.value();
 
-    try {
-        engine.run_semantic_analysis(ast, globals);
-        spdlog::critical("The undefined variable ba was not caught");
-        EXPECT_TRUE(false);
-    } catch(const std::runtime_error &err) {
-        std::string msg = err.what();
-        EXPECT_EQ(msg, "Encountered expression with mixed types: a is float and constant is int");
-    }
+    auto analysis = engine.run_semantic_analysis(ast, globals);
+    ASSERT_FALSE(analysis);
+    EXPECT_EQ(analysis.error().code, error_code::type_error);
+    EXPECT_EQ(analysis.error().message, "Encountered expression with mixed types: a is float and constant is int");
 
 }
 
@@ -296,14 +273,10 @@ TEST(semantic_analysis, wrong_argument_for_builtin) {
     ASSERT_TRUE(parsed);
     auto [ast, globals] = parsed.value();
 
-    try {
-        engine.run_semantic_analysis(ast, globals);
-        spdlog::critical("The undefined variable ba was not caught");
-        EXPECT_TRUE(false);
-    } catch(const std::runtime_error &err) {
-        std::string msg = err.what();
-        EXPECT_EQ(msg, "Argument #0 of a call to itf is of the wrong type");
-    }
+    auto analysis = engine.run_semantic_analysis(ast, globals);
+    ASSERT_FALSE(analysis);
+    EXPECT_EQ(analysis.error().code, error_code::type_error);
+    EXPECT_EQ(analysis.error().message, "Argument #0 of a call to itf is of the wrong type");
 
 }
 
@@ -328,13 +301,9 @@ TEST(semantic_analysis, multiple_definitions) {
     auto [ast, globals] = parsed.value();
 
 
-    try {
-        engine.run_semantic_analysis(ast, globals);
-        spdlog::critical("Mixed type operation not caught");
-        EXPECT_TRUE(false);
-    } catch(const std::runtime_error &err) {
-        std::string msg = err.what();
-        EXPECT_EQ(msg, "Encountered expression with mixed types: mem is float and constant is int");
-    }
+    auto analysis = engine.run_semantic_analysis(ast, globals);
+    ASSERT_FALSE(analysis);
+    EXPECT_EQ(analysis.error().code, error_code::type_error);
+    EXPECT_EQ(analysis.error().message, "Encountered expression with mixed types: mem is float and constant is int");
 
 }

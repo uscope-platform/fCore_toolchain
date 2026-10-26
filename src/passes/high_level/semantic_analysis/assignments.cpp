@@ -23,16 +23,17 @@ namespace fcore {
     assignments_checks::assignments_checks() :pass_base("assignments checks") {
     }
 
-    std::shared_ptr<ast_code_block> assignments_checks::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
+    pass_result assignments_checks::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
         hl_observing_visitor visitor;
 
         hl_observing_visitor_operations functions_mapping_ops;
 
         functions_mapping_ops.pre.visit_definition = [this]<typename T0>(T0 && placeholder) { process_definition(std::forward<T0>(placeholder)); };
 
-        visitor.visit(functions_mapping_ops, element);
+        functions_mapping_ops.should_stop = stop_condition();
+        auto visited = visitor.visit(functions_mapping_ops, element);
 
-        return element;
+        return finish(visited, element);
     }
 
     void assignments_checks::process_definition(const std::shared_ptr<ast_definition> &def) {
@@ -43,13 +44,15 @@ namespace fcore {
                 if(op->get_variable()->get_type() != var_type_float_const) {
                     if(def_type == c_type_float) {
                         auto var = fmt::format("Assignment of an integer ({0}) to the float variable ({1}) is prohibited",op->get_float_val(), def->get_name());
-                        throw std::runtime_error(var);
+                        report(error(error_code::type_error, var));
+                        return;
                     }
                 }
                 if(op->get_variable()->get_type() != var_type_int_const && op->get_float_val() != 0.0) {
                     if(def_type == c_type_int || def_type == c_type_long || def_type == c_type_short) {
                         auto var = fmt::format("Assignment of a float ({0}) to the integer variable ({1}) is prohibited",op->get_float_val(), def->get_name());
-                        throw std::runtime_error(var);
+                        report(error(error_code::type_error, var));
+                        return;
                     }
                 }
             }

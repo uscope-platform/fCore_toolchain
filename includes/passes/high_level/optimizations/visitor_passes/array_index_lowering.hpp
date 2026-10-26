@@ -24,7 +24,7 @@ namespace fcore{
     class array_index_lowering : public  pass_base {
     public:
         array_index_lowering();
-        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
+        pass_result process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
     private:
         static std::shared_ptr<ast_node> process_operand(const std::shared_ptr<ast_operand> &op);
     };

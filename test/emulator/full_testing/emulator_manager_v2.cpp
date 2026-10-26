@@ -195,7 +195,8 @@ TEST(emulator_manager_v2, emulator_compile_error) {
         }
         catch( const std::runtime_error& e ) {
 
-         EXPECT_STREQ( "CORE test: Function UNDEFINED is not defined", e.what() );
+         // the pass manager appends which pass failed after the message
+         EXPECT_TRUE( std::string(e.what()).starts_with("CORE test: Function UNDEFINED is not defined") );
          throw;
         }
     }, std::runtime_error );

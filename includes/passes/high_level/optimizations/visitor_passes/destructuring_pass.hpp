@@ -25,7 +25,7 @@ namespace fcore {
     class destructuring_pass : public pass_base{
     public:
         destructuring_pass();
-        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
+        pass_result process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
 
         std::vector<std::shared_ptr<ast_node>> process_definition(const std::shared_ptr<ast_definition> &def);
         std::vector<std::shared_ptr<ast_node>> process_expression(std::shared_ptr<ast_expression> exp);

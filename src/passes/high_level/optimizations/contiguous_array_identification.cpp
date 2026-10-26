@@ -18,10 +18,11 @@ namespace fcore{
     contiguous_array_identification::contiguous_array_identification() : pass_base("contiguous_array_identification"){
     }
 
-    std::shared_ptr<ast_code_block> contiguous_array_identification::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
+    pass_result contiguous_array_identification::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
         std::vector<std::shared_ptr<ast_node>> new_loop_content;
         for(auto &item:element->get_content()){
             new_loop_content.push_back(process_element(item));
+            if(failed()) return finish(element);
         }
         element->set_content(new_loop_content);
 
@@ -29,10 +30,11 @@ namespace fcore{
         new_loop_content.clear();
         for(auto &item:element->get_content()){
             new_loop_content.push_back(process_element(item));
+            if(failed()) return finish(element);
         }
         element->set_content(new_loop_content);
 
-        return element;
+        return finish(element);
     }
 
 
@@ -47,9 +49,11 @@ namespace fcore{
             case hl_ast_node_type_operand:
                 return process_element(std::static_pointer_cast<ast_operand>(element));
             case hl_ast_node_type_code_block:
-                throw std::runtime_error("unexpected code block in contiguous array identification pass");
+                report(error(error_code::internal_error, "unexpected code block in contiguous array identification pass"));
+                return nullptr;
             default:
-                throw std::runtime_error("Internal error, this condition should never happen");
+                report(error(error_code::internal_error, "unexpected node type in contiguous array identification pass"));
+                return nullptr;
         }
 
     }

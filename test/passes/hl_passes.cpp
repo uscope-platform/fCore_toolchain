@@ -53,10 +53,12 @@ TEST(HlPassesTest, divisionImplementation) {
     std::string ep = "main";
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
-    manager.enable_pass("Division Implementation");
+    ASSERT_TRUE(manager.enable_pass("Division Implementation"));
 
 
-    std::shared_ptr<ast_code_block> result =  manager.run_optimizations(input_root, {});
+    auto optimized_1 = manager.run_optimizations(input_root, {});
+    ASSERT_TRUE(optimized_1);
+    std::shared_ptr<ast_code_block> result= optimized_1.value();
 
     std::shared_ptr<ast_expression> mult_exp = std::make_shared<ast_expression>(ast_expression::MULT);
 
@@ -126,11 +128,13 @@ TEST(HlPassesTest, intrinsics_implementation) {
 
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
-    manager.enable_pass("Intrinsics Implementation");
+    ASSERT_TRUE(manager.enable_pass("Intrinsics Implementation"));
 
 
 
-    std::shared_ptr<ast_code_block> result =  manager.run_optimizations(input_root, {});
+    auto optimized_2 = manager.run_optimizations(input_root, {});
+    ASSERT_TRUE(optimized_2);
+    std::shared_ptr<ast_code_block> result= optimized_2.value();
 
     var = std::make_shared<variable>("b");
     std::shared_ptr<ast_definition> def_3 = std::make_shared<ast_definition>("b", c_type_float, var);
@@ -203,10 +207,12 @@ TEST(HlPassesTest, test_operating_assignments_implementation) {
 
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
-    manager.enable_pass("Operating Assignment Implementation");
+    ASSERT_TRUE(manager.enable_pass("Operating Assignment Implementation"));
 
 
-    const std::shared_ptr<ast_code_block>& result = manager.run_optimizations(input_root, {});
+    auto optimized_3 = manager.run_optimizations(input_root, {});
+    ASSERT_TRUE(optimized_3);
+    const std::shared_ptr<ast_code_block>& result= optimized_3.value();
 
     std::shared_ptr<ast_code_block> gold_standard= std::make_shared<ast_code_block>();
 
@@ -331,13 +337,15 @@ TEST(HlPassesTest, function_inlining) {
 
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
-    manager.enable_pass("Function Mangling");
-    manager.enable_pass("Function Inlining");
-    manager.enable_pass("Inlined Function Elimination");
-    manager.enable_pass("Code Block Expansion");
+    ASSERT_TRUE(manager.enable_pass("Function Mangling"));
+    ASSERT_TRUE(manager.enable_pass("Function Inlining"));
+    ASSERT_TRUE(manager.enable_pass("Inlined Function Elimination"));
+    ASSERT_TRUE(manager.enable_pass("Code Block Expansion"));
 
 
-    const std::shared_ptr<ast_code_block>& res =  manager.run_optimizations(input_root, {});
+    auto optimized_4 = manager.run_optimizations(input_root, {});
+    ASSERT_TRUE(optimized_4);
+    const std::shared_ptr<ast_code_block>& res= optimized_4.value();
 
     std::shared_ptr<ast_code_block> gold_standard= std::make_shared<ast_code_block>();
 
@@ -411,14 +419,18 @@ TEST(HlPassesTest, simple_normalization) {
 
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
-    manager.enable_pass("Inlined Function Elimination");
-    manager.enable_pass("Normalization");
+    ASSERT_TRUE(manager.enable_pass("Inlined Function Elimination"));
+    ASSERT_TRUE(manager.enable_pass("Normalization"));
 
     auto globals = parser.get_globals();
-    auto opt_result = manager.run_optimizations(parser.AST, globals);
+    auto optimized_5 = manager.run_optimizations(parser.AST, globals);
+    ASSERT_TRUE(optimized_5);
+    auto opt_result= optimized_5.value();
 
     normalization_pass p;
-    std::shared_ptr<ast_node> raw_result = p.process_global(opt_result, globals);
+    auto processed_result = p.process_global(opt_result, globals);
+    ASSERT_TRUE(processed_result);
+    std::shared_ptr<ast_node> raw_result = processed_result.value();
 
     std::shared_ptr<variable> var = std::make_shared<variable>("intermediate_expression_0");
     std::shared_ptr<ast_definition> def_1 = std::make_shared<ast_definition>("intermediate_expression_0", c_type_float, var);
@@ -487,17 +499,21 @@ TEST(HlPassesTest, hl_ast_lowering) {
 
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
-    manager.enable_pass("Inlined Function Elimination");
-    manager.enable_pass("Normalization");
+    ASSERT_TRUE(manager.enable_pass("Inlined Function Elimination"));
+    ASSERT_TRUE(manager.enable_pass("Normalization"));
 
 
 
-    std::shared_ptr<ast_code_block> normalized_ast = manager.run_optimizations(parser.AST, parser.get_globals());
+    auto optimized_6 = manager.run_optimizations(parser.AST, parser.get_globals());
+    ASSERT_TRUE(optimized_6);
+    std::shared_ptr<ast_code_block> normalized_ast= optimized_6.value();
 
     high_level_ast_lowering tranlator;
 
     tranlator.set_input_ast(normalized_ast);
-    instruction_stream result = tranlator.translate();
+    auto translation = tranlator.translate();
+    ASSERT_TRUE(translation);
+    instruction_stream result = translation.value();
 
     std::string name = "constant";
 
@@ -545,13 +561,15 @@ TEST(HlPassesTest, loop_unrolling_array) {
 
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
-    manager.enable_pass("Inlined Function Elimination");
-    manager.enable_pass("Loop Unrolling");
-    manager.enable_pass("Normalization");
+    ASSERT_TRUE(manager.enable_pass("Inlined Function Elimination"));
+    ASSERT_TRUE(manager.enable_pass("Loop Unrolling"));
+    ASSERT_TRUE(manager.enable_pass("Normalization"));
 
 
 
-    std::shared_ptr<ast_code_block> normalized_ast = manager.run_optimizations(parser.AST, parser.get_globals());
+    auto optimized_7 = manager.run_optimizations(parser.AST, parser.get_globals());
+    ASSERT_TRUE(optimized_7);
+    std::shared_ptr<ast_code_block> normalized_ast= optimized_7.value();
 
     std::shared_ptr<ast_code_block> gold_standard= std::make_shared<ast_code_block>();
 
@@ -615,13 +633,15 @@ TEST(HlPassesTest, test_matrix_scalarization) {
 
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
-    manager.enable_pass("Inlined Function Elimination");
-    manager.enable_pass("Loop Unrolling");
-    manager.enable_pass("Array Flattening");
+    ASSERT_TRUE(manager.enable_pass("Inlined Function Elimination"));
+    ASSERT_TRUE(manager.enable_pass("Loop Unrolling"));
+    ASSERT_TRUE(manager.enable_pass("Array Flattening"));
 
 
 
-    std::shared_ptr<ast_node> normalized_ast = manager.run_optimizations(parser.AST, parser.get_globals());
+    auto optimized_8 = manager.run_optimizations(parser.AST, parser.get_globals());
+    ASSERT_TRUE(optimized_8);
+    std::shared_ptr<ast_node> normalized_ast= optimized_8.value();
 
     std::shared_ptr<ast_code_block> gold_standard= std::make_shared<ast_code_block>();
 
@@ -734,12 +754,14 @@ TEST(HlPassesTest, function_inlining_array) {
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
 
-    manager.enable_pass("Function Mangling");
-    manager.enable_pass("Function Inlining");
-    manager.enable_pass("Inlined Function Elimination");
-    manager.enable_pass("Code Block Expansion");
-    manager.enable_pass("Loop Unrolling");
-    auto result_ast = manager.run_optimizations(parser.AST, parser.get_globals());
+    ASSERT_TRUE(manager.enable_pass("Function Mangling"));
+    ASSERT_TRUE(manager.enable_pass("Function Inlining"));
+    ASSERT_TRUE(manager.enable_pass("Inlined Function Elimination"));
+    ASSERT_TRUE(manager.enable_pass("Code Block Expansion"));
+    ASSERT_TRUE(manager.enable_pass("Loop Unrolling"));
+    auto optimized_9 = manager.run_optimizations(parser.AST, parser.get_globals());
+    ASSERT_TRUE(optimized_9);
+    auto result_ast= optimized_9.value();
 
     std::shared_ptr<ast_node> normalized_ast = result_ast->get_content()[5];
 
@@ -795,7 +817,9 @@ TEST(HlPassesTest, function_return_inlining) {
     hl_pass_manager manager = create_hl_pass_manager(ep);
 
 
-    std::shared_ptr<ast_node> normalized_ast = manager.run_optimizations(parser.AST, parser.get_globals());
+    auto optimized_10 = manager.run_optimizations(parser.AST, parser.get_globals());
+    ASSERT_TRUE(optimized_10);
+    std::shared_ptr<ast_node> normalized_ast= optimized_10.value();
 
     std::shared_ptr<ast_code_block> gold_standard= std::make_shared<ast_code_block>();
 
@@ -865,9 +889,11 @@ TEST(HlPassesTest, complex_normalization) {
 
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
-    manager.enable_pass("Normalization");
+    ASSERT_TRUE(manager.enable_pass("Normalization"));
 
-    input_root =  manager.run_optimizations(input_root, {});
+    auto optimized_11 = manager.run_optimizations(input_root, {});
+    ASSERT_TRUE(optimized_11);
+    input_root= optimized_11.value();
 
 
     var = std::make_shared<variable>("intermediate_expression_0");
@@ -924,9 +950,11 @@ TEST(HlPassesTest, dead_load_elimination) {
 
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
-    manager.enable_pass("Dead Load elimination");
+    ASSERT_TRUE(manager.enable_pass("Dead Load elimination"));
 
-    input_root=  manager.run_optimizations(input_root, {});
+    auto optimized_12 = manager.run_optimizations(input_root, {});
+    ASSERT_TRUE(optimized_12);
+    input_root= optimized_12.value();
 
 
     std::shared_ptr<ast_code_block> gold_standard= std::make_shared<ast_code_block>();
@@ -973,7 +1001,9 @@ TEST(HlPassesTest, nested_function_inlining) {
     hl_pass_manager manager = create_hl_pass_manager(ep);
 
 
-    std::shared_ptr<ast_node> normalized_ast =  manager.run_optimizations(parser.AST, parser.get_globals());
+    auto optimized_13 = manager.run_optimizations(parser.AST, parser.get_globals());
+    ASSERT_TRUE(optimized_13);
+    std::shared_ptr<ast_node> normalized_ast= optimized_13.value();
 
     std::shared_ptr<ast_code_block> gold_standard= std::make_shared<ast_code_block>();
 
@@ -1070,10 +1100,12 @@ TEST(HlPassesTest, complex_division_implementation) {
 
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
-    manager.enable_pass("Division Implementation");
+    ASSERT_TRUE(manager.enable_pass("Division Implementation"));
     
 
-    auto result = manager.run_optimizations(parser.AST, parser.get_globals());
+    auto optimized_14 = manager.run_optimizations(parser.AST, parser.get_globals());
+    ASSERT_TRUE(optimized_14);
+    auto result= optimized_14.value();
 
     std::shared_ptr<ast_code_block> gold_standard= std::make_shared<ast_code_block>();
 
@@ -1147,11 +1179,13 @@ TEST(HlPassesTest, comparison_flipping) {
     hl_pass_manager manager = create_hl_pass_manager(ep);
     manager.disable_all();
 
-    manager.enable_pass("Function Inlining");
-    manager.enable_pass("Inlined Function Elimination");
-    manager.enable_pass("Code Block Expansion");
-    manager.enable_pass("Comparison flipping pass");
-    auto result_ast = manager.run_optimizations(parser.AST, parser.get_globals());
+    ASSERT_TRUE(manager.enable_pass("Function Inlining"));
+    ASSERT_TRUE(manager.enable_pass("Inlined Function Elimination"));
+    ASSERT_TRUE(manager.enable_pass("Code Block Expansion"));
+    ASSERT_TRUE(manager.enable_pass("Comparison flipping pass"));
+    auto optimized_15 = manager.run_optimizations(parser.AST, parser.get_globals());
+    ASSERT_TRUE(optimized_15);
+    auto result_ast= optimized_15.value();
 
     auto init = std::static_pointer_cast<ast_definition>(result_ast->get_content()[1])->get_scalar_initializer();
     EXPECT_EQ(init->node_type,hl_ast_node_type_expr);

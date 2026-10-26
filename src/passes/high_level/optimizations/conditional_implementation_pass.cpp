@@ -21,18 +21,19 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<ast_code_block> conditional_implementation_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
+    pass_result conditional_implementation_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
         std::shared_ptr<ast_code_block> ret_val = std::make_shared<ast_code_block>();
 
         std::vector<std::shared_ptr<ast_node>> body;
 
         for(const auto& item:element->get_content()){
             std::vector<std::shared_ptr<ast_node>> selected_branch = process_block_by_type(item, element);
+            if(failed()) return finish(ret_val);
             body.insert(body.end(),selected_branch.begin(), selected_branch.end());
         }
 
         ret_val->set_content(body);
-        return ret_val;
+        return finish(ret_val);
     }
 
 
@@ -66,6 +67,7 @@ namespace fcore{
             if(loop_instr->node_type == hl_ast_node_type_conditional){
                 std::shared_ptr<ast_conditional> instr_node = std::static_pointer_cast<ast_conditional>(loop_instr);
                 std::vector<std::shared_ptr<ast_node>> selected_branch = process_conditional(instr_node, subtree);
+                if(failed()) return {};
                 new_block_content.insert(new_block_content.end(),selected_branch.begin(), selected_branch.end());
             } else{
                 new_block_content.push_back(loop_instr);
@@ -86,7 +88,8 @@ namespace fcore{
                     if(cond->is_ternary()){
                         node->set_scalar_initializer(process_ternary(cond));
                     } else {
-                        throw std::runtime_error("Unexpected non ternary conditional found in variable initialization");
+                        report(error(error_code::lowering_error, "Unexpected non ternary conditional found in variable initialization"));
+                        return {node};
                     }
                 }
             } else {
@@ -98,7 +101,8 @@ namespace fcore{
                         if(cond->is_ternary()){
                             new_initializer.push_back(process_ternary(cond));
                         } else {
-                            throw std::runtime_error("Unexpected non ternary conditional found in variable initialization");
+                            report(error(error_code::lowering_error, "Unexpected non ternary conditional found in variable initialization"));
+                            return {node};
                         }
                     } else{
                         new_initializer.push_back(item);
@@ -132,6 +136,7 @@ namespace fcore{
         std::shared_ptr<ast_operand> lhs_op, rhs_op;
         auto raw_lhs = get_operands(condition->get_lhs().value(), node, subtree->get_content());
         auto raw_rhs = get_operands(condition->get_rhs(), node, subtree->get_content());
+        if(failed()) return {};
 
         bool ternarize_loop = false;
         if(raw_lhs.has_value()) {
@@ -180,7 +185,8 @@ namespace fcore{
                                                                      const std::vector<std::shared_ptr<ast_node>>& prog_content) {
         std::shared_ptr<ast_operand> retval;
         if(subexpr->node_type == hl_ast_node_type_expr){
-            throw std::runtime_error("OH SNAP! Nested subexpression handling is not implemented yet");
+            report(error(error_code::not_supported, "Nested subexpression handling in conditionals is not implemented yet"));
+            return {};
         } else {
             std::shared_ptr<ast_operand> variable = std::static_pointer_cast<ast_operand>(subexpr);
             for(const auto& i: prog_content){
@@ -215,7 +221,8 @@ namespace fcore{
             if(def.has_value()) {
                 retval = def.value();
             } else {
-                throw std::runtime_error("Variable not found in conditional processing");
+                report(error(error_code::lowering_error, "Variable not found in conditional processing"));
+                return {};
             }
         } else{
             variable_type_t vt = std::static_pointer_cast<ast_operand>(subexpr)->get_type();
@@ -262,15 +269,19 @@ namespace fcore{
         std::map<std::string, ternary_map_t> ternary_map;
         for(auto &raw_expr: node->get_if_block()) {
             if(raw_expr->node_type != hl_ast_node_type_expr) {
-                throw("Encountered conditional block which can't be implemented with ternary");
+                report(error(error_code::not_supported, "Encountered conditional block which can't be implemented with ternary"));
+                return {};
             }
             auto expr = std::static_pointer_cast<ast_expression>(raw_expr);
             if(expr->get_type() != ast_expression::ASSIGN) {
-                throw("Encountered conditional block which can't be implemented with ternary");
+                report(error(error_code::not_supported, "Encountered conditional block which can't be implemented with ternary"));
+                return {};
             }
             auto if_block = process_block_by_type(expr->get_rhs() ,subtree);
+            if(failed()) return {};
             if(if_block.size() != 1) {
-                throw("nested if/else ternarization is not supported");
+                report(error(error_code::not_supported, "nested if/else ternarization is not supported"));
+                return {};
             }
             auto var = std::static_pointer_cast<ast_operand>(expr->get_lhs().value())->get_name();
             ternary_map[var] = {
@@ -279,17 +290,21 @@ namespace fcore{
 
         for(auto &raw_expr: node->get_else_block()) {
             if(raw_expr->node_type != hl_ast_node_type_expr) {
-                throw("Encountered conditional block which can't be implemented with ternary");
+                report(error(error_code::not_supported, "Encountered conditional block which can't be implemented with ternary"));
+                return {};
             }
             auto expr = std::static_pointer_cast<ast_expression>(raw_expr);
             if(expr->get_type() != ast_expression::ASSIGN) {
-                throw("Encountered conditional block which can't be implemented with ternary");
+                report(error(error_code::not_supported, "Encountered conditional block which can't be implemented with ternary"));
+                return {};
             }
             auto name = std::static_pointer_cast<ast_operand>(expr->get_lhs().value())->get_name();
 
             auto else_block = process_block_by_type(expr->get_rhs() ,subtree);
+            if(failed()) return {};
             if(else_block.size() != 1) {
-                throw("nested if/else ternarization is not supported");
+                report(error(error_code::not_supported, "nested if/else ternarization is not supported"));
+                return {};
             }
 
             if(else_block[0]->node_type == hl_ast_node_type_expr) {

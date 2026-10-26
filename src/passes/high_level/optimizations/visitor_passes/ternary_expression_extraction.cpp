@@ -22,7 +22,7 @@ namespace fcore{
         ternary_progressive = 1;
     }
 
-    std::shared_ptr<ast_code_block>
+    pass_result
     ternary_expression_extraction::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
         hl_acting_visitor_operations ops;
         hl_acting_visitor visitor;

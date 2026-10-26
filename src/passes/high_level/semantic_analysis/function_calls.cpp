@@ -24,7 +24,7 @@ namespace fcore {
         builtins.insert({"fti", {c_type_float}});
     }
 
-    std::shared_ptr<ast_code_block> function_calls_checks::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
+    pass_result function_calls_checks::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
 
         hl_observing_visitor visitor;
 
@@ -32,7 +32,8 @@ namespace fcore {
 
         functions_mapping_ops.pre.visit_function_def = [this]<typename T0>(T0 && placeholder) { map_definition(std::forward<T0>(placeholder)); };
 
-        visitor.visit(functions_mapping_ops, element);
+        functions_mapping_ops.should_stop = stop_condition();
+        if(auto mapped = visitor.visit(functions_mapping_ops, element); !mapped) return finish(mapped, element);
 
         hl_observing_visitor_operations ops;
 
@@ -52,9 +53,10 @@ namespace fcore {
         ops.post.visit_definition = [this]<typename T0>(T0 && placeholder) { process_definition(std::forward<T0>(placeholder)); };
 
 
-        visitor.visit(ops, element);
+        ops.should_stop = stop_condition();
+        auto visited = visitor.visit(ops, element);
 
-        return element;
+        return finish(visited, element);
     }
 
 
@@ -77,13 +79,15 @@ namespace fcore {
                 auto arg_type = current_scope[std::static_pointer_cast<ast_operand>(arguments[i])->get_name()];
                 if(builtins.contains(call->get_name())) {
                     if(arg_type != builtins[call->get_name()][i]) {
-                        const std::string error = fmt::format("Argument #{0} of a call to {1} is of the wrong type", i, call->get_name());
-                        throw std::runtime_error(error);
+                        report(error(error_code::type_error,
+                                     fmt::format("Argument #{0} of a call to {1} is of the wrong type", i, call->get_name())));
+                        return;
                     }
                 } else {
                     if(arg_type != definitions[call->get_name()][i].second) {
-                        const std::string error = fmt::format("Argument #{0} of a call to {1} is of the wrong type", i, call->get_name());
-                        throw std::runtime_error(error);
+                        report(error(error_code::type_error,
+                                     fmt::format("Argument #{0} of a call to {1} is of the wrong type", i, call->get_name())));
+                        return;
                     }
                 }
 

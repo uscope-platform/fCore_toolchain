@@ -30,7 +30,7 @@ namespace fcore{
     class dead_load_elimination : public pass_base{
     public:
         explicit dead_load_elimination();
-        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
+        pass_result process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
     private:
         int idx;
         void search_usages(std::shared_ptr<ast_node> element);

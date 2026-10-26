@@ -20,12 +20,12 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<ast_code_block> code_block_inlining_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
+    pass_result code_block_inlining_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
         auto ret_val = std::make_shared<ast_code_block>();
         std::vector<std::shared_ptr<ast_node>> new_content = process_vector(element->get_content());
 
         ret_val->set_content(new_content);
-        return ret_val;
+        return finish(ret_val);
     }
 
 
@@ -36,6 +36,7 @@ namespace fcore{
         for(auto &item:elements){
             std::vector<std::shared_ptr<ast_node>> processed_content = process_element_by_type(item);
             new_content.insert(new_content.end(),processed_content.begin(), processed_content.end());
+            if(failed()) break;
         }
         return new_content;
     }
@@ -80,7 +81,8 @@ namespace fcore{
             if(element->is_scalar()){
                 std::vector<std::shared_ptr<ast_node>> content = process_element_by_type(element->get_scalar_initializer());
                 if(content.size()>1){
-                    throw std::runtime_error("A DEFINITION CAN NOT BE INITIALIZED WITH MORE THAN A SINGLE EXPRESSION");
+                    report(error(error_code::lowering_error, "A definition can not be initialized with more than a single expression"));
+                    return element;
                 } else {
                     element->set_scalar_initializer(content[0]);
                 }
@@ -90,7 +92,8 @@ namespace fcore{
                 for(auto &item:element->get_array_initializer()){
                     std::vector<std::shared_ptr<ast_node>> content = process_element_by_type(item);
                     if(content.size()>1){
-                        throw std::runtime_error("A DEFINITION CAN NOT BE INITIALIZED WITH MORE THAN A SINGLE EXPRESSION");
+                        report(error(error_code::lowering_error, "A definition can not be initialized with more than a single expression"));
+                        return element;
                     } else {
                         init.push_back(content[0]);
                     }

@@ -20,7 +20,7 @@ namespace fcore{
 
     }
 
-    std::shared_ptr<ast_code_block> function_inlining_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
+    pass_result function_inlining_pass::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
 
         for(auto &item:element->get_content()){
             if(item->node_type == hl_ast_node_type_function_def){
@@ -32,13 +32,16 @@ namespace fcore{
         std::vector<std::shared_ptr<ast_node>> new_content;
         for(auto &item:element->get_content()){
             std::vector<std::shared_ptr<ast_node>> processed_elements = process_element(item);
+            if(failed()) return finish(element);
             new_content.insert(new_content.end(), processed_elements.begin(), processed_elements.end());
         }
         element->set_content(new_content);
-        return element;
+        return finish(element);
     }
 
     std::vector<std::shared_ptr<ast_node>> function_inlining_pass::process_element(std::shared_ptr<ast_node> element) {
+        // once a failure is reported the rest of the tree is left untouched, callers expect at least one element back
+        if(failed()) return {element};
         switch (element->node_type) {
             case hl_ast_node_type_expr:
                 return {process_expression(std::static_pointer_cast<ast_expression>(element))};
@@ -63,19 +66,22 @@ namespace fcore{
 
         std::vector<std::shared_ptr<ast_node>> processed_condition = process_expression(element->get_condition());
         if(processed_condition.size()>1){
-            throw std::runtime_error("internal error #5923");
+            report(error(error_code::internal_error, "loop condition expanded to more than one node while inlining functions"));
+            return element;
         }
         element->set_condition(std::static_pointer_cast<ast_expression>(processed_condition[0]));
 
         std::vector<std::shared_ptr<ast_node>> processed_init = process_definition(element->get_init_statement());
         if(processed_init.size()>1){
-            throw std::runtime_error("internal error #5924");
+            report(error(error_code::internal_error, "loop initialization expanded to more than one node while inlining functions"));
+            return element;
         }
         element->set_init_statement(std::static_pointer_cast<ast_definition>(processed_init[0]));
 
         std::vector<std::shared_ptr<ast_node>> processed_iter_expr = process_expression(element->get_iteration_expr());
         if(processed_iter_expr.size()>1){
-            throw std::runtime_error("internal error #5925");
+            report(error(error_code::internal_error, "loop iteration expression expanded to more than one node while inlining functions"));
+            return element;
         }
         element->set_iteration_expr(std::static_pointer_cast<ast_expression>(processed_iter_expr[0]));
 
@@ -207,7 +213,8 @@ namespace fcore{
 
 
         if(functions_map.count(f_call->get_name())==0){
-            throw std::runtime_error("Function " + f_call->get_name() + " is not defined");
+            report(error(error_code::undefined_variable, "Function " + f_call->get_name() + " is not defined"));
+            return {f_call};
         }
 
         std::shared_ptr<ast_function_def> f_def = functions_map[f_call->get_name()];
@@ -339,11 +346,13 @@ namespace fcore{
                 statement->set_scalar_initializer(substituted_node);
             } else if(substituted_node->node_type == hl_ast_node_type_conditional){
                 if(!std::static_pointer_cast<ast_conditional>(substituted_node)->is_ternary()){
-                    throw std::runtime_error("Trying to inline function whose argument is a non ternary conditional node");
+                    report(error(error_code::not_supported, "Trying to inline function whose argument is a non ternary conditional node"));
+                    return statement;
                 }
                 statement->set_scalar_initializer(substituted_node);
             } else {
-                throw std::runtime_error("unexpected node type detected");
+                report(error(error_code::internal_error, "unexpected node type detected while inlining function arguments"));
+                return statement;
             }
         }
 

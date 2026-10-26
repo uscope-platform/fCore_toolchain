@@ -22,7 +22,7 @@ namespace fcore {
 
     }
 
-    std::shared_ptr<ast_code_block> destructuring_pass::process_global(
+    pass_result destructuring_pass::process_global(
         std::shared_ptr<ast_code_block> element,
         const std::vector<std::shared_ptr<ast_definition>> &globals
     ) {
@@ -36,12 +36,13 @@ namespace fcore {
 
         ops.post.visit_definition = [this](auto && arg) { return process_definition(std::forward<decltype(arg)>(arg));};
         ops.post.visit_expression = [this](auto && arg) { return process_expression(std::forward<decltype(arg)>(arg));};
-        visitor.visit(ops, element);
+        ops.should_stop = stop_condition();
+        if(auto collected = visitor.visit(ops, element); !collected) return finish(std::move(collected));
 
         hl_acting_visitor_operations ops2;
         ops2.post.visit_operand    = [this](auto && arg) { return process_operand(std::forward<decltype(arg)>(arg));};
-        auto result =  visitor.visit(ops2, element);
-        return result;
+        ops2.should_stop = stop_condition();
+        return finish(visitor.visit(ops2, element));
     }
 
     std::vector<std::shared_ptr<ast_node>> destructuring_pass::process_definition(
@@ -99,9 +100,13 @@ namespace fcore {
 
         if(var->get_struct_accessors().empty()) return {op};
         if(var->get_struct_accessors().size() > 1) {
-            throw std::runtime_error("Nested structs are not supported yet: "+ op->get_name());
+            report(error(error_code::not_supported, "Nested structs are not supported yet: "+ op->get_name()));
+            return op;
         }
-        if(!struct_instances.contains(op->get_name())) throw std::runtime_error("Encountered an undefined struct: "+ op->get_name());
+        if(!struct_instances.contains(op->get_name())) {
+            report(error(error_code::undefined_variable, "Encountered an undefined struct: "+ op->get_name()));
+            return op;
+        }
         auto defs = struct_instances[op->get_name()]->get_definitions();
         auto inits = struct_instances[op->get_name()]->get_initializers();
 
@@ -115,7 +120,9 @@ namespace fcore {
                 }
             }
         }
-        throw std::runtime_error("Encountered an undefined field ("+ op->get_variable()->get_struct_accessors()[0] + ") in struct: "+ op->get_name());
+        report(error(error_code::undefined_variable,
+                     "Encountered an undefined field ("+ op->get_variable()->get_struct_accessors()[0] + ") in struct: "+ op->get_name()));
+        return op;
     }
 
 }

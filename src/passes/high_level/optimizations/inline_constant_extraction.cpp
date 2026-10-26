@@ -20,7 +20,7 @@ namespace fcore{
         n_var = 0;
     }
 
-    std::shared_ptr<ast_code_block>
+    pass_result
     inline_constant_extraction::process_global(std::shared_ptr<ast_code_block> element, const std::vector<std::shared_ptr<ast_definition>> &globals) {
         auto retval = std::make_shared<ast_code_block>();
         std::vector<std::shared_ptr<ast_node>> new_content;
@@ -33,13 +33,14 @@ namespace fcore{
             } else if(item->node_type == hl_ast_node_type_expr){
                 std::shared_ptr<ast_expression> node = std::static_pointer_cast<ast_expression>(item);
                 auto res = process_node(node);
+                if(failed()) return finish(retval);
                 new_content.insert(new_content.end(), res.begin(), res.end());
             } else{
                 new_content.push_back(item);
             }
         }
         retval->set_content(new_content);
-        return retval;
+        return finish(retval);
     }
 
 
@@ -47,7 +48,8 @@ namespace fcore{
     std::vector<std::shared_ptr<ast_node>> inline_constant_extraction::process_node(const std::shared_ptr<ast_expression> &element) {
         std::vector<std::shared_ptr<ast_node>> ret_val;
         if(!element->is_immediate() && element->get_type()!=ast_expression::ASSIGN){
-            throw std::runtime_error("Non assignment top level expressions should not reach inline constant extraction pass");
+            report(error(error_code::internal_error, "Non assignment top level expressions should not reach inline constant extraction pass"));
+            return ret_val;
         }
 
         if(element->get_type()==ast_expression::ASSIGN){

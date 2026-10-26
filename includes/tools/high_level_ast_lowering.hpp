@@ -19,6 +19,7 @@
 #include <vector>
 #include <utility>
 
+#include "errors/result.hpp"
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "tools/variable_map.hpp"
 #include "data_structures/high_level_ast/high_level_ast.hpp"
@@ -28,16 +29,19 @@ namespace fcore {
     public:
         explicit high_level_ast_lowering();
         void set_input_ast(std::shared_ptr<ast_code_block> i) {input_ast = std::move(i);};
-        instruction_stream translate();
+        [[nodiscard]] result<instruction_stream> translate();
     private:
-        std::optional<instruction_variant> translate_node(const std::shared_ptr<ast_node>& input);
-        std::optional<instruction_variant> translate_node(const std::shared_ptr<ast_expression>& input, const std::shared_ptr<variable>& dest);
-        std::optional<instruction_variant> translate_node(const std::shared_ptr<ast_operand>& input, std::shared_ptr<variable> dest);
-        std::optional<instruction_variant> translate_node(const std::shared_ptr<ast_definition>& input, const std::shared_ptr<variable>& dest);
-        std::optional<instruction_variant> process_unary_expression(std::shared_ptr<ast_expression> input, std::shared_ptr<variable> dest);
-        std::optional<instruction_variant> process_ternary_expression(std::shared_ptr<ast_expression> input, std::shared_ptr<variable> dest);
-        std::optional<instruction_variant> process_immediate_expression(std::shared_ptr<ast_expression> input);
-        std::optional<instruction_variant> process_regular_expression(std::shared_ptr<ast_expression> input, std::shared_ptr<variable> dest);
+        /// no instruction (nullopt) is a valid outcome, for example a definition without initializer
+        typedef result<std::optional<instruction_variant>> lowered_t;
+
+        lowered_t translate_node(const std::shared_ptr<ast_node>& input);
+        lowered_t translate_node(const std::shared_ptr<ast_expression>& input, const std::shared_ptr<variable>& dest);
+        lowered_t translate_node(const std::shared_ptr<ast_operand>& input, std::shared_ptr<variable> dest);
+        lowered_t translate_node(const std::shared_ptr<ast_definition>& input, const std::shared_ptr<variable>& dest);
+        lowered_t process_unary_expression(std::shared_ptr<ast_expression> input, std::shared_ptr<variable> dest);
+        lowered_t process_ternary_expression(std::shared_ptr<ast_expression> input, std::shared_ptr<variable> dest);
+        lowered_t process_immediate_expression(std::shared_ptr<ast_expression> input);
+        lowered_t process_regular_expression(std::shared_ptr<ast_expression> input, std::shared_ptr<variable> dest);
         std::shared_ptr<ast_code_block> input_ast;
 
         std::optional<instruction_variant> create_ast_node(isa_instruction_type t, std::vector<std::shared_ptr<variable>> args, const opcode_table_t& op);

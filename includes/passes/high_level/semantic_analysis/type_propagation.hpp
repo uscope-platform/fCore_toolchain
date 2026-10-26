@@ -27,7 +27,7 @@ namespace fcore {
     class type_propagation :public pass_base{
     public:
         type_propagation();
-        std::shared_ptr<ast_code_block> process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
+        pass_result process_global(std::shared_ptr<ast_code_block> element,const std::vector<std::shared_ptr<ast_definition>> &globals) override;
 
         std::vector<std::shared_ptr<ast_node>> process_definition(const std::shared_ptr<ast_definition> &node);
         std::shared_ptr<ast_node> process_operand(const std::shared_ptr<ast_operand> &node);

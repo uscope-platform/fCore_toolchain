@@ -18,20 +18,22 @@
 
 
 namespace fcore {
-    void hl_observing_visitor::visit(const hl_observing_visitor_operations &operations,
+    result<void> hl_observing_visitor::visit(const hl_observing_visitor_operations &operations,
         const std::shared_ptr<ast_code_block> &node) {
         ops = operations;
+        failure.reset();
 
-
-        auto ret_val = node;
         for(const auto &item:node->get_content()){
             process_node_by_type(item);
+            if(stopped()) break;
         }
+        if(failure) return fail(failure.value());
+        return {};
     }
 
     void hl_observing_visitor::process_node_by_type(const std::shared_ptr<ast_node> &node) {
 
-        if(!node) return;
+        if(!node || stopped()) return;
         switch (node->node_type) {
             case hl_ast_node_type_expr:
                 process_node(std::static_pointer_cast<ast_expression>(node));
@@ -58,7 +60,8 @@ namespace fcore {
                 process_node(std::static_pointer_cast<ast_code_block>(node));
                 break;
             default:
-                throw std::runtime_error("unexpected node encounted during AST visit");
+                failure = error(error_code::internal_error, "unexpected node encountered during AST visit");
+                return;
         }
 
     }
@@ -66,43 +69,55 @@ namespace fcore {
     void hl_observing_visitor::process_nodes_vector(const std::vector<std::shared_ptr<ast_node>> &node) {
         for(const auto &item:node){
             process_node_by_type(item);
+            if(stopped()) return;
         }
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<ast_conditional> &cond) {
         if(ops.pre.visit_conditional) ops.pre.visit_conditional(cond);
+        if(stopped()) return;
         process_node_by_type(cond->get_condition());
         process_nodes_vector(cond->get_if_block());
+        if(stopped()) return;
         if (ops.pre.before_else) ops.pre.before_else();
+        if(stopped()) return;
         process_nodes_vector(cond->get_else_block());
 
+        if(stopped()) return;
         if(ops.post.visit_conditional) ops.post.visit_conditional(cond);
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<ast_loop> &loop) {
         if(ops.pre.visit_loop) ops.pre.visit_loop(loop);
+        if(stopped()) return;
         process_node_by_type(loop->get_init_statement());
         process_node_by_type(loop->get_condition());
         process_node_by_type(loop->get_iteration_expr());
         process_nodes_vector(loop->get_loop_content());
+        if(stopped()) return;
         if(ops.post.visit_loop) ops.post.visit_loop(loop);
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<ast_operand> &op) {
         if(ops.pre.visit_operand) ops.pre.visit_operand(op);
+        if(stopped()) return;
         process_nodes_vector(op->get_array_index());
+        if(stopped()) return;
         if(ops.post.visit_operand) ops.post.visit_operand(op);
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<ast_definition> &def) {
         if(ops.pre.visit_definition) ops.pre.visit_definition(def);
+        if(stopped()) return;
         process_nodes_vector(def->get_array_initializer());
         process_nodes_vector(def->get_array_index());
+        if(stopped()) return;
         if(ops.post.visit_definition) ops.post.visit_definition(def);
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<ast_expression> &exp) {
         if(ops.pre.visit_expression) ops.pre.visit_expression(exp);
+        if(stopped()) return;
         if(const auto lhs = exp->get_lhs()) {
             process_node_by_type(*lhs);
         }
@@ -110,19 +125,24 @@ namespace fcore {
             process_node_by_type(*ths);
         }
         process_node_by_type(exp->get_rhs());
+        if(stopped()) return;
         if(ops.post.visit_expression) ops.post.visit_expression(exp);
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<ast_call> &call) {
         if(ops.pre.visit_function_call) ops.pre.visit_function_call(call);
+        if(stopped()) return;
         process_nodes_vector(call->get_arguments());
+        if(stopped()) return;
         if(ops.post.visit_function_call) ops.post.visit_function_call(call);
     }
 
     void hl_observing_visitor::process_node(const std::shared_ptr<ast_function_def> &f_def) {
         if(ops.pre.visit_function_def) ops.pre.visit_function_def(f_def);
+        if(stopped()) return;
         process_nodes_vector(f_def->get_body());
         process_node_by_type(f_def->get_return());
+        if(stopped()) return;
         if(ops.post.visit_function_def) ops.post.visit_function_def(f_def);
     }
 

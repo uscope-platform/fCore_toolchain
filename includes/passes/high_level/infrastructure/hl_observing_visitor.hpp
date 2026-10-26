@@ -17,7 +17,11 @@
 #ifndef HL_OBSERVING_VISITOR_HPP
 #define HL_OBSERVING_VISITOR_HPP
 
+#include <functional>
 #include <memory>
+#include <optional>
+
+#include "errors/result.hpp"
 
 #include "data_structures/high_level_ast/high_level_ast.hpp"
 
@@ -37,10 +41,13 @@ namespace fcore {
 
         operations pre;
         operations post;
+
+        /// polled after every callback, the visit stops once it returns true
+        std::function<bool()> should_stop;
     };
     class hl_observing_visitor {
     public:
-        void visit(const hl_observing_visitor_operations &operations,const std::shared_ptr<ast_code_block> &node);
+        [[nodiscard]] result<void> visit(const hl_observing_visitor_operations &operations,const std::shared_ptr<ast_code_block> &node);
     private:
         void process_node_by_type(const std::shared_ptr<ast_node> &node);
         void process_nodes_vector(const std::vector<std::shared_ptr<ast_node>> &node);
@@ -52,7 +59,9 @@ namespace fcore {
         void process_node(const std::shared_ptr<ast_call> &cond);
         void process_node(const std::shared_ptr<ast_function_def> &def);
         void process_node(const std::shared_ptr<ast_code_block> &block);
+        [[nodiscard]] bool stopped() const {return failure.has_value() || (ops.should_stop && ops.should_stop());}
         hl_observing_visitor_operations ops;
+        std::optional<error> failure;
 
     };
 
