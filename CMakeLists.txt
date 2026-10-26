@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
+set(CMAKE_CXX_STANDARD 23)
+
 project(fCore_toolchain)
 
 find_package(Python3 REQUIRED)
@@ -33,8 +35,6 @@ if(${INCLUDE_EMULATOR})
     install(FILES third_party/fp_ip_cmodel/lib/libgmp.so.11 DESTINATION lib/x86_64-linux-gnu)
     install(FILES third_party/fp_ip_cmodel/lib/libmpfr.so.4 DESTINATION lib/x86_64-linux-gnu)
 endif(${INCLUDE_EMULATOR})
-
-set(CMAKE_CXX_STANDARD 23)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 

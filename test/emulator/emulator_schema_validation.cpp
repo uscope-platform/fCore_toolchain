@@ -456,3 +456,397 @@ TEST(emulator_schema, waveform_triangle_missing_parameter_fail) {
     std::string correct_message = "Error #1\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Missing required property 'duty'.\nError #2\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against a conditional schema set by if-then-else constraints.\nError #3\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against child schema #4.\nError #4\n  context: <root>[cores][0][inputs][0]\n  desc:    Failed to validate against schema associated with property name 'source'.\nError #5\n  context: <root>[cores][0][inputs]\n  desc:    Failed to validate item #0 in array.\nError #6\n  context: <root>[cores][0]\n  desc:    Failed to validate against schema associated with property name 'inputs'.\nError #7\n  context: <root>[cores]\n  desc:    Failed to validate item #0 in array.\nError #8\n  context: <root>\n  desc:    Failed to validate against schema associated with property name 'cores'.\n";
     EXPECT_EQ(message, correct_message);
 }
+
+
+/// The IO that is outside the cores is not a section of its own: the external input of a core listens at the address that
+/// the outside world gave it, with the data the emulation feeds it, and the external output is pushed to the address of
+/// the outside world. The addresses share the space of the bus
+
+TEST(external_io_schema, validation_success) {
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+        "version": 2,
+        "cores": [
+            {
+                "id": "producer",
+                "order": 1,
+                "inputs": [
+                    {
+                      "name": "input_1",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false,
+                        "io_address": [12]
+                      },
+                      "source": {"type": "external"},
+                      "emulation_source": {"type": "constant", "value": [1.5]}
+                    }
+                ],
+                "outputs": [],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            },
+            {
+                "id": "consumer",
+                "order": 2,
+                "inputs": [],
+                "outputs": [
+                    {
+                      "name": "out_1",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": true,
+                        "common_io": false,
+                        "io_address": [20]
+                      }
+                    }
+                ],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 1,
+        "deployment_mode": false
+    })");
+    schema_validator_base validator(emulator_input);
+    EXPECT_NO_THROW(validator.validate(specs));
+}
+
+TEST(external_io_schema, validation_success_series_emulation_source) {
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+        "version": 2,
+        "cores": [
+            {
+                "id": "producer",
+                "order": 1,
+                "inputs": [
+                    {
+                      "name": "input_1",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false,
+                        "io_address": [12]
+                      },
+                      "source": {"type": "external"},
+                      "emulation_source": {"type": "series", "value": [1.0, 2.0, 3.0]}
+                    }
+                ],
+                "outputs": [],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            },
+            {
+                "id": "consumer",
+                "order": 2,
+                "inputs": [],
+                "outputs": [
+                    {
+                      "name": "out_1",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": true,
+                        "common_io": false,
+                        "io_address": [20]
+                      }
+                    }
+                ],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 1,
+        "deployment_mode": false
+    })");
+    schema_validator_base validator(emulator_input);
+    EXPECT_NO_THROW(validator.validate(specs));
+}
+
+TEST(external_io_schema, validation_fail_input_address_not_integer) {
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+        "version": 2,
+        "cores": [
+            {
+                "id": "producer",
+                "order": 1,
+                "inputs": [
+                    {
+                      "name": "input_1",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false,
+                        "io_address": ["twelve"]
+                      },
+                      "source": {"type": "external"},
+                      "emulation_source": {"type": "constant", "value": [1.5]}
+                    }
+                ],
+                "outputs": [],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            },
+            {
+                "id": "consumer",
+                "order": 2,
+                "inputs": [],
+                "outputs": [
+                    {
+                      "name": "out_1",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": true,
+                        "common_io": false
+                      }
+                    }
+                ],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 1,
+        "deployment_mode": false
+    })");
+    schema_validator_base validator(emulator_input);
+    testing::internal::CaptureStderr();
+    EXPECT_THROW(validator.validate(specs), std::invalid_argument);
+    testing::internal::GetCapturedStderr();
+}
+
+TEST(external_io_schema, validation_fail_output_address_not_integer) {
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+        "version": 2,
+        "cores": [
+            {
+                "id": "producer",
+                "order": 1,
+                "inputs": [
+                    {
+                      "name": "input_1",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false,
+                        "io_address": [12]
+                      },
+                      "source": {"type": "external"},
+                      "emulation_source": {"type": "constant", "value": [1.5]}
+                    }
+                ],
+                "outputs": [],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            },
+            {
+                "id": "consumer",
+                "order": 2,
+                "inputs": [],
+                "outputs": [
+                    {
+                      "name": "out_1",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": true,
+                        "common_io": false,
+                        "io_address": ["twenty"]
+                      }
+                    }
+                ],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 1,
+        "deployment_mode": false
+    })");
+    schema_validator_base validator(emulator_input);
+    testing::internal::CaptureStderr();
+    EXPECT_THROW(validator.validate(specs), std::invalid_argument);
+    testing::internal::GetCapturedStderr();
+}
+
+TEST(external_io_schema, validation_fail_negative_address) {
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+        "version": 2,
+        "cores": [
+            {
+                "id": "producer",
+                "order": 1,
+                "inputs": [
+                    {
+                      "name": "input_1",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false,
+                        "io_address": [-1]
+                      },
+                      "source": {"type": "external"},
+                      "emulation_source": {"type": "constant", "value": [1.5]}
+                    }
+                ],
+                "outputs": [],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            },
+            {
+                "id": "consumer",
+                "order": 2,
+                "inputs": [],
+                "outputs": [
+                    {
+                      "name": "out_1",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": true,
+                        "common_io": false
+                      }
+                    }
+                ],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 1,
+        "deployment_mode": false
+    })");
+    schema_validator_base validator(emulator_input);
+    testing::internal::CaptureStderr();
+    EXPECT_THROW(validator.validate(specs), std::invalid_argument);
+    testing::internal::GetCapturedStderr();
+}
+
+TEST(external_io_schema, validation_fail_emulation_source_without_type) {
+    nlohmann::json specs = nlohmann::json::parse(
+            R"({
+        "version": 2,
+        "cores": [
+            {
+                "id": "producer",
+                "order": 1,
+                "inputs": [
+                    {
+                      "name": "input_1",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": false,
+                        "common_io": false,
+                        "io_address": [12]
+                      },
+                      "source": {"type": "external"},
+                      "emulation_source": {"value": [1.5]}
+                    }
+                ],
+                "outputs": [],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            },
+            {
+                "id": "consumer",
+                "order": 2,
+                "inputs": [],
+                "outputs": [
+                    {
+                      "name": "out_1",
+                      "is_vector": false,
+                      "metadata": {
+                        "type": "float",
+                        "width": 32,
+                        "signed": true,
+                        "common_io": false
+                      }
+                    }
+                ],
+                "memory_init": [],
+                "deployment": {"rom_address": 0,"has_reciprocal": false,"control_address": 0},
+                "channels": 1,
+                "program": {"content": "void main(){\n  float mem, out;\n\n  mem += 1.0;\n  out = mem*2.0;\n}","headers": []},
+                "options": {"comparators": "reducing","efi_implementation": "efi_trig"},
+                "sampling_frequency": 1000
+            }
+        ],
+        "interconnect": [],
+        "emulation_time": 1,
+        "deployment_mode": false
+    })");
+    schema_validator_base validator(emulator_input);
+    testing::internal::CaptureStderr();
+    EXPECT_THROW(validator.validate(specs), std::invalid_argument);
+    testing::internal::GetCapturedStderr();
+}
