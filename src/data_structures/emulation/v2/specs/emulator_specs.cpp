@@ -138,14 +138,14 @@ namespace fcore::emulator_v2 {
             out.vector_size = o["vector_size"];
         }
 
-        if(o["metadata"].contains("io_address")) {
-            if(o["metadata"]["io_address"].is_array()) {
-                out.metadata.io_address = static_cast<std::vector<uint32_t>>(o["metadata"]["io_address"]);
+        if(o["metadata"].contains("suggested_address")) {
+            if(o["metadata"]["suggested_address"].is_array()) {
+                out.metadata.suggested_address = static_cast<std::vector<uint32_t>>(o["metadata"]["suggested_address"]);
             } else {
-                out.metadata.io_address = {o["metadata"]["io_address"]};
+                out.metadata.suggested_address = {o["metadata"]["suggested_address"]};
             }
         } else if(out.is_vector) {
-            out.metadata.io_address = std::vector<uint32_t>(out.vector_size, 0);
+            out.metadata.suggested_address = std::vector<uint32_t>(out.vector_size, 0);
         }
 
         return out;
@@ -165,14 +165,14 @@ namespace fcore::emulator_v2 {
         } else {
             in.vector_size = i["vector_size"];
         }
-        if(i["metadata"].contains("io_address")) {
-            if(i["metadata"]["io_address"].is_array()) {
-                in.metadata.io_address =  static_cast<std::vector<uint32_t>>(i["metadata"]["io_address"]);
+        if(i["metadata"].contains("suggested_address")) {
+            if(i["metadata"]["suggested_address"].is_array()) {
+                in.metadata.suggested_address =  static_cast<std::vector<uint32_t>>(i["metadata"]["suggested_address"]);
             } else {
-                in.metadata.io_address = {i["metadata"]["io_address"]};
+                in.metadata.suggested_address = {i["metadata"]["suggested_address"]};
             }
         }else if(in.is_vector) {
-            in.metadata.io_address =  std::vector<uint32_t>(in.vector_size, 0);;
+            in.metadata.suggested_address =  std::vector<uint32_t>(in.vector_size, 0);;
         }
         in.metadata.is_common_io = i["metadata"]["common_io"];
 
@@ -345,14 +345,14 @@ namespace fcore::emulator_v2 {
             mem.vector_size = m["vector_size"];
         }
 
-        if(m["metadata"].contains("io_address")) {
-            if(m["metadata"]["io_address"].is_array()) {
-                mem.metadata.io_address = static_cast<std::vector<uint32_t>>(m["metadata"]["io_address"]);
+        if(m["metadata"].contains("suggested_address")) {
+            if(m["metadata"]["suggested_address"].is_array()) {
+                mem.metadata.suggested_address = static_cast<std::vector<uint32_t>>(m["metadata"]["suggested_address"]);
             } else {
-                mem.metadata.io_address ={m["metadata"]["io_address"]};
+                mem.metadata.suggested_address ={m["metadata"]["suggested_address"]};
             }
         }else if(mem.is_vector) {
-            mem.metadata.io_address =  std::vector<uint32_t>(mem.vector_size, 0);;
+            mem.metadata.suggested_address =  std::vector<uint32_t>(mem.vector_size, 0);;
         }
 
         mem.is_output = m["is_output"];

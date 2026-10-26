@@ -49,7 +49,7 @@ namespace fcore{
         std::set<io_map_entry> io_mapping;
         std::set<io_map_entry> common_io_mapping;
 
-        std::set<uint16_t, uint16_t> allocated_mapping;
+        std::set<uint16_t> allocated_mapping;
         int progress_counter = 0;
         executable ex;
         static inline uint16_t Reverse16(uint16_t value)

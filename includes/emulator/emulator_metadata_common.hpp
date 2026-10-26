@@ -65,7 +65,7 @@ namespace fcore {
 
     struct iom_metadata {
         friend bool operator==(const iom_metadata &lhs, const iom_metadata &rhs) {
-            return lhs.io_address == rhs.io_address
+            return lhs.suggested_address == rhs.suggested_address
                    && lhs.width == rhs.width
                    && lhs.is_signed == rhs.is_signed
                    && lhs.is_common_io == rhs.is_common_io;
@@ -75,7 +75,7 @@ namespace fcore {
             return !(lhs == rhs);
         }
 
-        std::vector<uint32_t> io_address = {0};
+        std::vector<uint32_t> suggested_address = {0};
         register_data_type type;
         uint16_t width;
         bool is_signed;

@@ -580,7 +580,7 @@ namespace fcore::emulator_v2 {
             in.vector_size = 1;
             in.is_vector = false;
             in.source_type = constant_input;
-            in.metadata.io_address = {addr};
+            in.metadata.suggested_address = {addr};
             in.metadata.type = type_float;
             in.data = {std::vector<float>{val}};
             fuzz_bundle.input.push_back(in);

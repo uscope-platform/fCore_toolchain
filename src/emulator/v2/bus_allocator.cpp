@@ -68,7 +68,7 @@ namespace fcore::emulator_v2 {
                     ep.is_vector = false;
                     ep.vector_size = 1;
                     ep.channels = core.channels;
-                    ep.metadata.io_address = mem.metadata.io_address;
+                    ep.metadata.suggested_address = mem.metadata.suggested_address;
                     ep.metadata = mem.metadata;
 
                     if(mem.is_input) {
@@ -139,15 +139,15 @@ namespace fcore::emulator_v2 {
                 for(auto &ic: interconnects) {
                     if(ic.destination.core_name == core_name && ic.destination.port_name== port_name) {
                         if(ic.destination_shape.size > 1 && ic.source_shape.size == 1){ // gather allocation
-                            dest.bus_addresses = allocate_bus_address(dest.vector_size, {}, dest.metadata.io_address);
+                            dest.bus_addresses = allocate_bus_address(dest.vector_size, {}, dest.metadata.suggested_address);
                             ic.source_addresses = {dest.bus_addresses[0]};
                             ic.destination_addresses = dest.bus_addresses;
                         } else if (ic.source_shape.size > 1 && ic.destination_shape.size == 1) { // scatter allocation
-                            ic.source_addresses = allocate_bus_address(ic.source_shape.size, {}, dest.metadata.io_address);
+                            ic.source_addresses = allocate_bus_address(ic.source_shape.size, {}, dest.metadata.suggested_address);
                             dest.bus_addresses = {ic.source_addresses[0]};
                             ic.destination_addresses = dest.bus_addresses;
                         } else {
-                            dest.bus_addresses = allocate_bus_address(dest.vector_size, {}, dest.metadata.io_address);
+                            dest.bus_addresses = allocate_bus_address(dest.vector_size, {}, dest.metadata.suggested_address);
                             ic.source_addresses = dest.bus_addresses;
                             ic.destination_addresses = dest.bus_addresses;
                         }
@@ -156,7 +156,7 @@ namespace fcore::emulator_v2 {
                     }
                 }
                 if(waveform_inputs.contains({dest.core_name, dest.source_name})) {
-                    dest.bus_addresses = allocate_bus_address(dest.vector_size, {}, dest.metadata.io_address);
+                    dest.bus_addresses = allocate_bus_address(dest.vector_size, {}, dest.metadata.suggested_address);
                     global_forbidden_addresses.insert( dest.bus_addresses.begin(),  dest.bus_addresses.end());
                 }
             }
@@ -176,8 +176,8 @@ namespace fcore::emulator_v2 {
             for(auto &[port_name, src]:sources) {
                 if(src.bus_addresses.empty()) {
 
-                    if(is_register(src.source_name)) src.metadata.io_address = {static_cast<uint32_t>(std::stoul(src.source_name.substr(1)))};
-                    src.bus_addresses = allocate_bus_address(src.vector_size, {}, src.metadata.io_address);
+                    if(is_register(src.source_name)) src.metadata.suggested_address = {static_cast<uint32_t>(std::stoul(src.source_name.substr(1)))};
+                    src.bus_addresses = allocate_bus_address(src.vector_size, {}, src.metadata.suggested_address);
                     global_forbidden_addresses.insert(src.bus_addresses.begin(), src.bus_addresses.end());
                 }
             }
@@ -191,8 +191,8 @@ namespace fcore::emulator_v2 {
             for(auto &dest: destinations | std::views::values) {
                 if(dest.bus_addresses.empty()) {
 
-                    if(is_register(dest.source_name)) dest.metadata.io_address = {static_cast<uint32_t>(std::stoul(dest.source_name.substr(1)))};
-                    dest.bus_addresses = allocate_bus_address(dest.vector_size, local_allocated_addresses, dest.metadata.io_address);
+                    if(is_register(dest.source_name)) dest.metadata.suggested_address = {static_cast<uint32_t>(std::stoul(dest.source_name.substr(1)))};
+                    dest.bus_addresses = allocate_bus_address(dest.vector_size, local_allocated_addresses, dest.metadata.suggested_address);
                     local_allocated_addresses.insert( dest.bus_addresses.begin(),  dest.bus_addresses.end());
 
                 }

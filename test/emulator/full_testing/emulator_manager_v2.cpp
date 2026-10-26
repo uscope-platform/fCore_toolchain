@@ -216,7 +216,7 @@ TEST(emulator_manager_v2, emulator_asm) {
                         "name": "r12",
                         "is_vector": false,
                         "metadata":{
-                            "io_address": 12,
+                            "suggested_address": 12,
                             "type": "float",
                             "width": 12,
                             "signed":true,

@@ -111,7 +111,7 @@ TEST(bus_deployment_interface, single_core) {
     e.metadata.width = 32;
     e.metadata.is_signed = false;
     e.metadata.is_common_io = false;
-    e.metadata.io_address = {0};
+    e.metadata.suggested_address = {0};
     expected_slots.push_back(e);
 
 
@@ -126,7 +126,7 @@ TEST(bus_deployment_interface, single_core) {
     e.metadata.width = 32;
     e.metadata.is_signed = false;
     e.metadata.is_common_io = false;
-    e.metadata.io_address = {0};
+    e.metadata.suggested_address = {0};
     expected_slots.push_back(e);
 
     EXPECT_EQ(slots, expected_slots);
@@ -224,7 +224,7 @@ TEST(bus_deployment_interface, single_core_multichannel) {
     e.metadata.width = 32;
     e.metadata.is_signed = false;
     e.metadata.is_common_io = false;
-    e.metadata.io_address = {0};
+    e.metadata.suggested_address = {0};
     expected_slots.push_back(e);
 
 
@@ -239,7 +239,7 @@ TEST(bus_deployment_interface, single_core_multichannel) {
     e.metadata.width = 32;
     e.metadata.is_signed = false;
     e.metadata.is_common_io = false;
-    e.metadata.io_address = {0};
+    e.metadata.suggested_address = {0};
     expected_slots.push_back(e);
 
 
@@ -254,7 +254,7 @@ TEST(bus_deployment_interface, single_core_multichannel) {
     e.metadata.width = 32;
     e.metadata.is_signed = false;
     e.metadata.is_common_io = false;
-    e.metadata.io_address = {0};
+    e.metadata.suggested_address = {0};
     expected_slots.push_back(e);
 
 
@@ -269,7 +269,7 @@ TEST(bus_deployment_interface, single_core_multichannel) {
     e.metadata.width = 32;
     e.metadata.is_signed = false;
     e.metadata.is_common_io = false;
-    e.metadata.io_address = {0};
+    e.metadata.suggested_address = {0};
     expected_slots.push_back(e);
 
 
@@ -439,7 +439,7 @@ TEST(bus_deployment_interface, scalar_interconnect) {
     e.metadata.width = 32;
     e.metadata.is_signed = true;
     e.metadata.is_common_io = false;
-    e.metadata.io_address = {0};
+    e.metadata.suggested_address = {0};
     expected_slots.push_back(e);
 
     e.source_id = "test";
@@ -455,7 +455,7 @@ TEST(bus_deployment_interface, scalar_interconnect) {
     e.metadata.width = 32;
     e.metadata.is_signed = true;
     e.metadata.is_common_io = false;
-    e.metadata.io_address = {0};
+    e.metadata.suggested_address = {0};
     expected_slots.push_back(e);
 
 
@@ -470,7 +470,7 @@ TEST(bus_deployment_interface, scalar_interconnect) {
     e.metadata.width = 32;
     e.metadata.is_signed = true;
     e.metadata.is_common_io = false;
-    e.metadata.io_address = {0};
+    e.metadata.suggested_address = {0};
     expected_slots.push_back(e);
 
 
@@ -745,7 +745,7 @@ TEST(bus_deployment_interface, scatter_interconnect) {
     e.metadata.width = 32;
     e.metadata.is_signed = true;
     e.metadata.is_common_io = false;
-    e.metadata.io_address = {0, 0};
+    e.metadata.suggested_address = {0, 0};
     expected_slots.push_back(e);
 
     e.source_id = "test_producer";
@@ -761,7 +761,7 @@ TEST(bus_deployment_interface, scatter_interconnect) {
     e.metadata.width = 32;
     e.metadata.is_signed = true;
     e.metadata.is_common_io = false;
-    e.metadata.io_address = {0, 0};
+    e.metadata.suggested_address = {0, 0};
     expected_slots.push_back(e);
 
 
@@ -778,7 +778,7 @@ TEST(bus_deployment_interface, scatter_interconnect) {
     e.metadata.width = 32;
     e.metadata.is_signed = true;
     e.metadata.is_common_io = false;
-    e.metadata.io_address = {0};
+    e.metadata.suggested_address = {0};
     expected_slots.push_back(e);
 
 
@@ -794,7 +794,7 @@ TEST(bus_deployment_interface, scatter_interconnect) {
     e.metadata.width = 32;
     e.metadata.is_signed = true;
     e.metadata.is_common_io = false;
-    e.metadata.io_address = {0};
+    e.metadata.suggested_address = {0};
     expected_slots.push_back(e);
 
 
@@ -926,7 +926,7 @@ TEST(bus_deployment_interface, memory_to_memory_interface) {
     e.metadata.width = 32;
     e.metadata.is_signed = false;
     e.metadata.is_common_io = false;
-    e.metadata.io_address = {0};
+    e.metadata.suggested_address = {0};
     expected_slots.push_back(e);
 
 
@@ -943,7 +943,7 @@ TEST(bus_deployment_interface, memory_to_memory_interface) {
     e.metadata.width = 32;
     e.metadata.is_signed = false;
     e.metadata.is_common_io = false;
-    e.metadata.io_address = {0};
+    e.metadata.suggested_address = {0};
     expected_slots.push_back(e);
 
     EXPECT_EQ(slots, expected_slots);
