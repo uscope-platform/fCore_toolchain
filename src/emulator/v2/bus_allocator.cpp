@@ -22,10 +22,12 @@ namespace fcore::emulator_v2 {
     static constexpr uint32_t max_bus_address = 0xFFF;
 
     /// The ports with an io_address are bound to the address that the outside world gave them: it cannot be moved, so
-    /// the rest of the ports are placed around them. Only the inputs that listen to the same address can share it.
+    /// the rest of the ports are placed around them. Only inputs of different cores can listen to the same address: in a
+    /// core an address maps to one register.
     void bus_allocator::reserve_external_addresses(const emulator_specs &specs) {
         // the port that owns each address, and if it is one that the core writes
         std::map<uint32_t, std::pair<std::string, bool>> owners;
+        std::map<uint32_t, std::set<std::string>> cores_listening;
 
         auto reserve = [&](const std::string &core, const std::string &port, const std::vector<uint32_t> &addresses, bool is_output) {
             auto name = core + "." + port;
@@ -34,9 +36,10 @@ namespace fcore::emulator_v2 {
                     throw std::runtime_error("The io_address " + std::to_string(address) + " of " + name + " is over the maximum of " + std::to_string(max_bus_address));
                 }
                 auto [owner, inserted] = owners.try_emplace(address, name, is_output);
-                if(!inserted && (is_output || owner->second.second || owner->second.first == name)) {
+                if(!inserted && (is_output || owner->second.second || !cores_listening[address].insert(core).second)) {
                     throw std::runtime_error("The io_address " + std::to_string(address) + " of " + name + " is already taken by " + owner->second.first);
                 }
+                if(inserted) cores_listening[address].insert(core);
                 global_forbidden_addresses.insert(address);
             }
         };

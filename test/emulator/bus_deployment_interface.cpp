@@ -1482,3 +1482,80 @@ TEST(bus_deployment_interface, external_input_cannot_be_interconnect_destination
     emulator_dispatcher manager;
     EXPECT_THROW(manager.set_specs(specs), std::runtime_error);
 }
+
+TEST(bus_deployment_interface, external_address_shared_in_a_core) {
+
+    nlohmann::json specs = nlohmann::json::parse( R"({
+      "version": 2,
+      "cores": [
+        {
+          "id": "test",
+          "inputs": [
+            {
+              "name": "input_1",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false,
+                "io_address": [3]
+              },
+              "source": {
+                "type": "series",
+                "value": [15.7,67.4]
+              }
+            },
+            {
+              "name": "input_2",
+              "is_vector": false,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false,
+                "io_address": [3]
+              },
+              "source": {
+                "type": "series",
+                "value": [42.92,-5.8]
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "name": "test_out",
+              "is_vector": true,
+              "vector_size": 2,
+              "metadata": {
+                "type": "float",
+                "width": 32,
+                "signed": false,
+                "common_io": false
+              }
+            }
+          ],
+          "memory_init": [],
+          "program": {"content": "void main(){float test_out[2]; float input_1, input_2; test_out[0] = input_1; test_out[1] = input_2;}","headers": []},
+          "order": 1,
+          "options": {
+            "comparators": "reducing",
+            "efi_implementation": "efi_sort"
+          },
+          "channels": 1,
+          "sampling_frequency": 1,
+          "deployment": {
+            "has_reciprocal": false,
+            "control_address": 18316525568,
+            "rom_address": 17179869184
+          }
+        }
+      ],
+      "interconnect": [],
+      "emulation_time": 2,
+      "deployment_mode": false
+    })");
+
+    emulator_dispatcher manager;
+    EXPECT_THROW(manager.set_specs(specs), std::runtime_error);
+}
