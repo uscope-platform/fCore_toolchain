@@ -71,6 +71,9 @@
               "title": "size of the array port"
             },
             "metadata": {
+              "properties": {
+                "io_address": {"$ref": "#/$defs/io_address"}
+              },
               "allOff": [
                 {
                   "$ref": "#/$defs/metadata"
@@ -95,6 +98,10 @@
             },
             "source": {
               "$ref": "#/$defs/input_source"
+            },
+            "emulation_source": {
+              "$ref": "#/$defs/input_source",
+              "title": "Where the data comes from in an emulation, for an input fed from outside the core"
             }
           },
           "allOf": [
@@ -119,6 +126,9 @@
           ],
           "properties": {
             "metadata": {
+              "properties": {
+                "io_address": {"$ref": "#/$defs/io_address"}
+              },
               "allOff": [
                 {
                   "$ref": "#/$defs/metadata"

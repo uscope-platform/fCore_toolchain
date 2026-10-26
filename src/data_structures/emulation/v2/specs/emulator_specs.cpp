@@ -174,6 +174,10 @@ namespace fcore::emulator_v2 {
         }else if(in.is_vector) {
             in.metadata.suggested_address =  std::vector<uint32_t>(in.vector_size, 0);;
         }
+        if(i["metadata"].contains("io_address")) {
+            in.metadata.io_address = static_cast<std::vector<uint32_t>>(i["metadata"]["io_address"]);
+        }
+
         in.metadata.is_common_io = i["metadata"]["common_io"];
 
         auto source_obj = i["source"];

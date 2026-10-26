@@ -10,6 +10,14 @@
     "deployment_mode"
   ],
   "$defs": {
+    "io_address": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "title": "Address on the bus fixed by the outside world, one for each element of the port. The port is bound to it and it is never reassigned"
+    },
     "metadata": {
     "type": "object",
     "title": "Object describing the raw data format on the wire",
@@ -34,7 +42,8 @@
       "signed": {
         "type": "boolean",
         "title": "flag indicating whether the data is signed"
-      }
+      },
+      "io_address": {"$ref": "#/$defs/io_address"}
     }
 }
   },

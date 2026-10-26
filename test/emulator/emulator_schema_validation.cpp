@@ -481,7 +481,7 @@ TEST(external_io_schema, validation_success) {
                         "common_io": false,
                         "io_address": [12]
                       },
-                      "source": {"type": "external"},
+                      "source": {"type": "external", "value": [0]},
                       "emulation_source": {"type": "constant", "value": [1.5]}
                     }
                 ],
@@ -545,7 +545,7 @@ TEST(external_io_schema, validation_success_series_emulation_source) {
                         "common_io": false,
                         "io_address": [12]
                       },
-                      "source": {"type": "external"},
+                      "source": {"type": "external", "value": [0]},
                       "emulation_source": {"type": "series", "value": [1.0, 2.0, 3.0]}
                     }
                 ],
@@ -609,7 +609,7 @@ TEST(external_io_schema, validation_fail_input_address_not_integer) {
                         "common_io": false,
                         "io_address": ["twelve"]
                       },
-                      "source": {"type": "external"},
+                      "source": {"type": "external", "value": [0]},
                       "emulation_source": {"type": "constant", "value": [1.5]}
                     }
                 ],
@@ -674,7 +674,7 @@ TEST(external_io_schema, validation_fail_output_address_not_integer) {
                         "common_io": false,
                         "io_address": [12]
                       },
-                      "source": {"type": "external"},
+                      "source": {"type": "external", "value": [0]},
                       "emulation_source": {"type": "constant", "value": [1.5]}
                     }
                 ],
@@ -740,7 +740,7 @@ TEST(external_io_schema, validation_fail_negative_address) {
                         "common_io": false,
                         "io_address": [-1]
                       },
-                      "source": {"type": "external"},
+                      "source": {"type": "external", "value": [0]},
                       "emulation_source": {"type": "constant", "value": [1.5]}
                     }
                 ],
@@ -805,7 +805,7 @@ TEST(external_io_schema, validation_fail_emulation_source_without_type) {
                         "common_io": false,
                         "io_address": [12]
                       },
-                      "source": {"type": "external"},
+                      "source": {"type": "external", "value": [0]},
                       "emulation_source": {"value": [1.5]}
                     }
                 ],
