@@ -29,16 +29,22 @@ namespace fcore{
     }
 
 
-    void fcore_has::construct_assembler(
+    result<void> fcore_has::construct_assembler(
         std::istream &input,
         bool print_debug,
         stream_pass_manager::mode opt_mode) {
-        variable_map tmp_map;
-        std::shared_ptr<variable_map> variables_map = std::make_shared<variable_map>(tmp_map);
 
-        try{
-            asm_language_parser target_parser(input, variables_map);
+        last_error.reset();
 
+        asm_language_parser target_parser(std::make_shared<variable_map>());
+        auto parsed = target_parser.parse(input);
+        if(!parsed){
+            last_error = parsed.error();
+            return parsed;
+        }
+
+        // the passes and the writer still report failures by throwing
+        auto assembled = catching([&]{
             std::shared_ptr<instrumentation_core> ic = nullptr;
 
             std::vector<int> io_res;
@@ -54,11 +60,9 @@ namespace fcore{
             }
 
             writer.process_stream(program_stream, dma_map, amap, print_debug);
-
-        } catch(std::runtime_error &e){
-            error_code = e.what();
-        }
-
+        });
+        if(!assembled) last_error = assembled.error();
+        return assembled;
     }
 
 
@@ -94,13 +98,13 @@ namespace fcore{
     }
 
     std::string fcore_has::get_errors() {
-        return  error_code;
+        return last_error ? last_error->what() : "";
     }
 
     void fcore_has::write_json(const std::string &output_file) {
         nlohmann::json j;
-        j["error_code"] = error_code;
-        if(error_code.empty()){
+        j["error_code"] = get_errors();
+        if(!last_error){
             j["compiled_program"] = writer.generate_hex(false);
         } else{
             j["compiled_program"] = {};

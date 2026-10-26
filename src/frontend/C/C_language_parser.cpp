@@ -38,14 +38,16 @@ namespace fcore{
     }
 
 
-    void C_language_parser::pre_process(const std::vector<std::string> &abs_includes) {
+    result<void> C_language_parser::pre_process(const std::vector<std::string> &abs_includes) {
         preproc->set_absolute_includes(abs_includes);
-        preproc->process_file();
+        auto processed = preproc->process_file();
+        if(!processed) return processed;
         preproc->substitute_defines();
         preprocessed_content = preproc->get_preprocessed_file();
+        return {};
     }
 
-    void C_language_parser::parse(std::map<std::string, variable_class_t> dma_specs) {
+    result<void> C_language_parser::parse(std::map<std::string, variable_class_t> dma_specs) {
 
         std::istringstream ss(preprocessed_content);
         ANTLRInputStream input(ss);
@@ -55,11 +57,16 @@ namespace fcore{
 
         tokens.fill();
         C_parser::C_grammarParser parser(&tokens);
-        C_ErrorHandling handler;
+        syntax_error_collector handler;
         parser.addErrorListener(&handler);
         tree::ParseTree *Tree = parser.compilationUnit();
+        if(auto syntax = handler.status(); !syntax) return syntax;
+
         visitor.set_dma_specs(std::move(dma_specs));
-        tree::ParseTreeWalker::DEFAULT.walk(&visitor, Tree);
+        stoppable_tree_walker walker([this]{return visitor.failed();});
+        walker.walk(&visitor, Tree);
+        if(visitor.failed()) return fail(visitor.get_failure().value());
         AST = visitor.get_ast();
+        return {};
     }
 }

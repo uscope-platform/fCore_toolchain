@@ -7,6 +7,7 @@ set(TEST_SOURCES
         passes/semantic_analysis.cpp
         passes/hl_passes.cpp
         errors/error.cpp
+        errors/frontend_errors.cpp
         end_to_end_asm.cpp
         testing_main.cpp
         end_to_end_C.cpp

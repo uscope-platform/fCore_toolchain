@@ -44,7 +44,9 @@ TEST(type_checking, wrong_call_arguments) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto [ast, globals] = compiler.get_hl_ast();
+    auto parsed = compiler.get_hl_ast();
+    ASSERT_TRUE(parsed);
+    auto [ast, globals] = parsed.value();
 
     try {
         engine.run_semantic_analysis(ast, globals);
@@ -70,7 +72,9 @@ TEST(type_checking, int_to_float_assignment) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto [ast, globals] = compiler.get_hl_ast();
+    auto parsed = compiler.get_hl_ast();
+    ASSERT_TRUE(parsed);
+    auto [ast, globals] = parsed.value();
 
     try {
         engine.run_semantic_analysis(ast, globals);
@@ -99,7 +103,9 @@ TEST(type_checking, float_to_int_assignment) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto [ast, globals] = compiler.get_hl_ast();
+    auto parsed = compiler.get_hl_ast();
+    ASSERT_TRUE(parsed);
+    auto [ast, globals] = parsed.value();
 
     try {
         engine.run_semantic_analysis(ast, globals);

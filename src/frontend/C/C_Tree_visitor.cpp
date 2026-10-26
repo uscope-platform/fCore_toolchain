@@ -342,10 +342,12 @@ namespace fcore{
                 operand = std::make_shared<ast_operand>( var);
 
             } else if(ctx->constant()->CharacterConstant() != nullptr){
-                throw std::runtime_error("character literals are not supported by the fCore toolchain");
+                report(error_code::not_supported, "character literals are not supported by the fCore toolchain", ctx);
+                return;
             }
         } else { // string litteral
-            throw std::runtime_error("Strings are not supported by the fCore toolchain");
+            report(error_code::not_supported, "Strings are not supported by the fCore toolchain", ctx);
+            return;
         }
 
         if(in_initializer_list){
@@ -549,7 +551,8 @@ namespace fcore{
                             operator_type = ast_expression::rsh_assignment;
                             break;
                         default:
-                            throw std::runtime_error("ERORR: unknown assignment qualifier.");
+                            report(error_code::parse_error, "unknown assignment qualifier", ctx);
+                            return;
                     }
                 }
             }
@@ -572,8 +575,10 @@ namespace fcore{
                 current_block_item[0] = expressions_stack.top();
                 expressions_stack.pop();
             } else{
-                std::string erorr_line = ctx->getText();
-                throw std::runtime_error("internal error, this condition should never happen, contact development team");
+                report(error_code::internal_error,
+                       "expression statement without an expression, this condition should never happen, contact development team: " + ctx->getText(),
+                       ctx);
+                return;
             }
         } else if (ctx->iterationStatement() != nullptr) {
         } else if(ctx->selectionStatement() != nullptr){
@@ -585,8 +590,18 @@ namespace fcore{
             }
 
         } else {
-            throw std::runtime_error("The following statement is not supported: " + ctx->getText()+"\n");
+            report(error_code::not_supported, "The following statement is not supported: " + ctx->getText(), ctx);
+            return;
         }
+    }
+
+    void C_Tree_visitor::report(error_code code, const std::string &message, const antlr4::ParserRuleContext *ctx) {
+        if (failure) return;
+        error e(code, message);
+        if (ctx != nullptr && ctx->getStart() != nullptr) {
+            e.at(ctx->getStart()->getLine(), ctx->getStart()->getCharPositionInLine() + 1);
+        }
+        failure = std::move(e);
     }
 
     void C_Tree_visitor::exitCompilationUnit(C_parser::C_grammarParser::CompilationUnitContext *) {

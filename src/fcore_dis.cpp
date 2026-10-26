@@ -29,38 +29,40 @@ namespace fcore{
 
 
     fcore_dis::fcore_dis(std::istream &input, bin_loader_input_type_t in_type) {
-        error_code = "";
-        try{
-            binary_loader dis(input, in_type);
-            process_stream(dis.get_program_stream());
-            gen->set_common_io_map(dis.get_common_io_mapping());
-            gen->set_io_map(dis.get_io_mapping());
-        } catch(std::runtime_error &e){
-            error_code = e.what();
-        }
+        binary_loader dis;
+        finish_loading(dis.load_stream(input, in_type), dis);
     }
 
 
     fcore_dis::fcore_dis(const std::vector<uint32_t> &mem) {
-        error_code = "";
-        try{
-            binary_loader dis(mem);
-            process_stream(dis.get_program_stream());
-            gen->set_io_map(dis.get_io_mapping());
-            gen->set_common_io_map(dis.get_common_io_mapping());
-        } catch(std::runtime_error &e){
-            error_code = e.what();
+        binary_loader dis;
+        finish_loading(dis.load_program(mem), dis);
+    }
+
+    void fcore_dis::finish_loading(result<void> loaded, binary_loader &loader) {
+        last_error.reset();
+        if(!loaded){
+            last_error = std::move(loaded).error();
+            return;
         }
+
+        // the stream passes and the generator still report failures by throwing
+        auto disassembled = catching([&]{
+            process_stream(loader.get_program_stream());
+            gen->set_common_io_map(loader.get_common_io_mapping());
+            gen->set_io_map(loader.get_io_mapping());
+        });
+        if(!disassembled) last_error = std::move(disassembled).error();
     }
 
     std::string fcore_dis::get_errors() {
-        return error_code;
+        return last_error ? last_error->what() : "";
     }
 
     void fcore_dis::write_json(const std::string &output_file) {
         nlohmann::json j;
-        j["error_code"] = error_code;
-        if(error_code.empty()){
+        j["error_code"] = get_errors();
+        if(!last_error){
             j["disassembled_program"] = gen->get_program(true);
         } else{
             j["disassembled_program"] = "";

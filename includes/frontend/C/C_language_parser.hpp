@@ -21,7 +21,7 @@
 #include <regex>
 
 #include "C_Tree_visitor.hpp"
-#include "C_ErrorHandling.hpp"
+#include "frontend/antlr_support.hpp"
 #include "C_pre_processor.hpp"
 
 #include "antlr4-runtime.h"
@@ -36,10 +36,9 @@ namespace fcore{
         C_language_parser(std::istream &file, std::shared_ptr<define_map> def_map);
         C_language_parser(const std::string &path, std::shared_ptr<define_map> def_map);
 
-        void pre_process(const std::vector<std::string> &abs_includes);
-        void parse(std::map<std::string, variable_class_t> dma_specs);
+        [[nodiscard]] result<void> pre_process(const std::vector<std::string> &abs_includes);
+        [[nodiscard]] result<void> parse(std::map<std::string, variable_class_t> dma_specs);
         std::shared_ptr<ast_code_block> AST;
-        std::string error;
 
         std::vector<std::shared_ptr<ast_definition>> get_globals(){return visitor.get_globals();}
         std::vector<std::shared_ptr<ast_node>> get_functions(){return visitor.get_functions();}

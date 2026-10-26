@@ -20,7 +20,7 @@
 
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "AsmTree_visitor.hpp"
-#include "AsmErrorHandling.hpp"
+#include "frontend/antlr_support.hpp"
 
 #include "antlr4-runtime.h"
 #include "asm_parser/asm_grammarLexer.h"
@@ -30,9 +30,11 @@ namespace fcore{
 
     class asm_language_parser{
     public:
-        explicit asm_language_parser(std::istream &stream);
-        asm_language_parser(std::istream &stream, std::shared_ptr<variable_map> new_varmap);
-        void construct_parser(std::istream &stream, std::shared_ptr<variable_map> existing_varmap);
+        asm_language_parser() : existing_varmap(std::make_shared<variable_map>()) {}
+        explicit asm_language_parser(std::shared_ptr<variable_map> new_varmap) : existing_varmap(std::move(new_varmap)) {}
+
+        /// Parses the stream into `program`.
+        [[nodiscard]] result<void> parse(std::istream &stream);
 
         unsigned int n_inputs() const {return n_inputs_;};
         unsigned int n_outputs() const {return n_outputs_;};
@@ -41,11 +43,10 @@ namespace fcore{
         instruction_stream program;
         varmap_t var_map;
 
-        std::string error;
-
 
     private:
 
+        std::shared_ptr<variable_map> existing_varmap;
         unsigned int n_inputs_ = 0;
         unsigned int n_outputs_ = 0;
         unsigned int n_variables_ = 0;

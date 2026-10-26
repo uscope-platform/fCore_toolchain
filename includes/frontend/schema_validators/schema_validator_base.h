@@ -18,6 +18,8 @@
 #include <string>
 #include <nlohmann/json.hpp>
 
+#include "errors/result.hpp"
+
 #include <valijson/adapters/nlohmann_json_adapter.hpp>
 #include <valijson/utils/nlohmann_json_utils.hpp>
 #include <valijson/schema.hpp>
@@ -37,11 +39,11 @@ namespace fcore{
     class schema_validator_base {
     public:
         schema_validator_base(const json_type& schema_file);
-        void validate(const nlohmann::json &spec_file);
+
+        /// On failure the error message lists every violation found, one "Error #n" block each.
+        [[nodiscard]] result<void> validate(const nlohmann::json &spec_file);
     private:
         valijson::Schema schema;
-        std::string error;
-        std::string schema_name;
     };
 }
 

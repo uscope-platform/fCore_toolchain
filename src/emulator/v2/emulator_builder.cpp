@@ -188,12 +188,8 @@ namespace fcore::emulator_v2{
         fcore_cc compiler(content, headers);
         compiler.set_profiler(profiler);
         compiler.set_dma_map(dma_io);
-        bool result = compiler.compile(n_channels);
-
-
-        if(!result){
-            throw std::runtime_error(compiler.get_errors());
-        }
+        // the emulator builder still reports failures by throwing
+        value_or_throw(compiler.compile(n_channels));
 
         if(debug_autogen){
 
@@ -230,6 +226,7 @@ namespace fcore::emulator_v2{
 
         std::stringstream iss(contents[0]);
         fcore_has assembler(iss, false, io_map);
+        if(assembler.get_error()) throw error_exception(assembler.get_error().value());
 
         fcore_program ret_val;
         ret_val.binary = assembler.get_executable();

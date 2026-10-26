@@ -24,7 +24,7 @@ TEST(emulator_schema, validation_success) {
     std::ifstream ifs("emu/schemas/valid_emulator_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
     schema_validator_base validator(emulator_input);
-    EXPECT_NO_THROW(validator.validate(spec));
+    EXPECT_TRUE(validator.validate(spec));
 }
 
 TEST(emulator_schema, validation_fail_no_cores) {
@@ -32,10 +32,11 @@ TEST(emulator_schema, validation_fail_no_cores) {
     nlohmann::json spec = nlohmann::json::parse(ifs);
     schema_validator_base validator(emulator_input);
     spec.erase("cores");
-    testing::internal::CaptureStderr();
-    EXPECT_THROW(validator.validate(spec), std::invalid_argument);
+    auto validation = validator.validate(spec);
+    ASSERT_FALSE(validation);
+    EXPECT_EQ(validation.error().code, error_code::schema_validation);
 
-    auto message = testing::internal::GetCapturedStderr();
+    auto message = validation.error().message;
     std::string correct_message = "Error #1\n  context: <root>\n  desc:    Missing required property 'cores'.\n";
     EXPECT_EQ(message, correct_message);
 }
@@ -45,10 +46,11 @@ TEST(emulator_schema, validation_fail_no_program) {
     nlohmann::json spec = nlohmann::json::parse(ifs);
     schema_validator_base validator(emulator_input);
     spec["cores"][0].erase("program");
-    testing::internal::CaptureStderr();
-    EXPECT_THROW(validator.validate(spec), std::invalid_argument);
+    auto validation = validator.validate(spec);
+    ASSERT_FALSE(validation);
+    EXPECT_EQ(validation.error().code, error_code::schema_validation);
 
-    auto message = testing::internal::GetCapturedStderr();
+    auto message = validation.error().message;
     std::string correct_message = "Error #1\n  context: <root>[cores][0]\n  desc:    Missing required property 'program'.\nError #2\n  context: <root>[cores]\n  desc:    Failed to validate item #0 in array.\nError #3\n  context: <root>\n  desc:    Failed to validate against schema associated with property name 'cores'.\n";
     EXPECT_EQ(message, correct_message);
 }
@@ -58,7 +60,7 @@ TEST(compiler_schema, validation_success) {
     std::ifstream ifs("emu/schemas/valid_compiler_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
     schema_validator_base validator(compiler_input);
-    EXPECT_NO_THROW(validator.validate(spec));
+    EXPECT_TRUE(validator.validate(spec));
 
 }
 
@@ -68,10 +70,11 @@ TEST(compiler_schema, validation_fail_no_input) {
     nlohmann::json spec = nlohmann::json::parse(ifs);
     schema_validator_base validator(compiler_input);
     spec.erase("input_file");
-    testing::internal::CaptureStderr();
-    EXPECT_THROW(validator.validate(spec), std::invalid_argument);
+    auto validation = validator.validate(spec);
+    ASSERT_FALSE(validation);
+    EXPECT_EQ(validation.error().code, error_code::schema_validation);
 
-    auto message = testing::internal::GetCapturedStderr();
+    auto message = validation.error().message;
     std::string correct_message = "Error #1\n  context: <root>\n  desc:    Missing required property 'input_file'.\n";
     EXPECT_EQ(message, correct_message);
 }
@@ -80,7 +83,7 @@ TEST(compiler_schema, validation_success_ints_as_floats) {
     std::ifstream ifs("emu/schemas/msgpackd_schema.json");
     nlohmann::json spec = nlohmann::json::parse(ifs);
     schema_validator_base validator(emulator_input);
-    EXPECT_NO_THROW(validator.validate(spec));
+    EXPECT_TRUE(validator.validate(spec));
 
 }
 
@@ -89,7 +92,7 @@ TEST(compiler_schema, validation_fail_ints_as_floats) {
     nlohmann::json spec = nlohmann::json::parse(ifs);
     schema_validator_base validator(emulator_input);
 
-    EXPECT_NO_THROW(validator.validate(spec));
+    EXPECT_TRUE(validator.validate(spec));
 
     try{
         emulator_specs s;
@@ -146,7 +149,7 @@ TEST(emulator_schema, waveform_square_success) {
         "deployment_mode": false
     })");
     schema_validator_base validator(emulator_input);
-    EXPECT_NO_THROW(validator.validate(specs));
+    EXPECT_TRUE(validator.validate(specs));
 }
 
 
@@ -194,10 +197,11 @@ TEST(emulator_schema, waveform_missing_shape_fail) {
         "deployment_mode": false
     })");
     schema_validator_base validator(emulator_input);
-    testing::internal::CaptureStderr();
-    EXPECT_THROW(validator.validate(specs), std::invalid_argument);
+    auto validation = validator.validate(specs);
+    ASSERT_FALSE(validation);
+    EXPECT_EQ(validation.error().code, error_code::schema_validation);
 
-    auto message = testing::internal::GetCapturedStderr();
+    auto message = validation.error().message;
     std::string correct_message = "Error #1\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Missing required property 'shape'.\nError #2\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against a conditional schema set by if-then-else constraints.\nError #3\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against child schema #2.\nError #4\n  context: <root>[cores][0][inputs][0]\n  desc:    Failed to validate against schema associated with property name 'source'.\nError #5\n  context: <root>[cores][0][inputs]\n  desc:    Failed to validate item #0 in array.\nError #6\n  context: <root>[cores][0]\n  desc:    Failed to validate against schema associated with property name 'inputs'.\nError #7\n  context: <root>[cores]\n  desc:    Failed to validate item #0 in array.\nError #8\n  context: <root>\n  desc:    Failed to validate against schema associated with property name 'cores'.\n";
     EXPECT_EQ(message, correct_message);
 }
@@ -247,10 +251,11 @@ TEST(emulator_schema, waveform_missing_square_parameter_fail) {
         "deployment_mode": false
     })");
     schema_validator_base validator(emulator_input);
-    testing::internal::CaptureStderr();
-    EXPECT_THROW(validator.validate(specs), std::invalid_argument);
+    auto validation = validator.validate(specs);
+    ASSERT_FALSE(validation);
+    EXPECT_EQ(validation.error().code, error_code::schema_validation);
 
-    auto message = testing::internal::GetCapturedStderr();
+    auto message = validation.error().message;
     std::string correct_message = "Error #1\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Missing required property 'von'.\nError #2\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against a conditional schema set by if-then-else constraints.\nError #3\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against child schema #3.\nError #4\n  context: <root>[cores][0][inputs][0]\n  desc:    Failed to validate against schema associated with property name 'source'.\nError #5\n  context: <root>[cores][0][inputs]\n  desc:    Failed to validate item #0 in array.\nError #6\n  context: <root>[cores][0]\n  desc:    Failed to validate against schema associated with property name 'inputs'.\nError #7\n  context: <root>[cores]\n  desc:    Failed to validate item #0 in array.\nError #8\n  context: <root>\n  desc:    Failed to validate against schema associated with property name 'cores'.\n";
     EXPECT_EQ(message, correct_message);
 }
@@ -300,7 +305,7 @@ TEST(emulator_schema, waveform_sine) {
         "deployment_mode": false
     })");
     schema_validator_base validator(emulator_input);
-    EXPECT_NO_THROW(validator.validate(specs));
+    EXPECT_TRUE(validator.validate(specs));
 }
 
 
@@ -347,10 +352,11 @@ TEST(emulator_schema, waveform_sine_missing_parameter_fail) {
         "deployment_mode": false
     })");
     schema_validator_base validator(emulator_input);
-    testing::internal::CaptureStderr();
-    EXPECT_THROW(validator.validate(specs), std::invalid_argument);
+    auto validation = validator.validate(specs);
+    ASSERT_FALSE(validation);
+    EXPECT_EQ(validation.error().code, error_code::schema_validation);
 
-    auto message = testing::internal::GetCapturedStderr();
+    auto message = validation.error().message;
     std::string correct_message = "Error #1\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Missing required property 'dc_offset'.\nError #2\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against a conditional schema set by if-then-else constraints.\nError #3\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against child schema #5.\nError #4\n  context: <root>[cores][0][inputs][0]\n  desc:    Failed to validate against schema associated with property name 'source'.\nError #5\n  context: <root>[cores][0][inputs]\n  desc:    Failed to validate item #0 in array.\nError #6\n  context: <root>[cores][0]\n  desc:    Failed to validate against schema associated with property name 'inputs'.\nError #7\n  context: <root>[cores]\n  desc:    Failed to validate item #0 in array.\nError #8\n  context: <root>\n  desc:    Failed to validate against schema associated with property name 'cores'.\n";
     EXPECT_EQ(message, correct_message);
 }
@@ -401,7 +407,7 @@ TEST(emulator_schema, waveform_triangle) {
         "deployment_mode": false
     })");
     schema_validator_base validator(emulator_input);
-    EXPECT_NO_THROW(validator.validate(specs));
+    EXPECT_TRUE(validator.validate(specs));
 }
 
 
@@ -449,10 +455,11 @@ TEST(emulator_schema, waveform_triangle_missing_parameter_fail) {
         "deployment_mode": false
     })");
     schema_validator_base validator(emulator_input);
-    testing::internal::CaptureStderr();
-    EXPECT_THROW(validator.validate(specs), std::invalid_argument);
+    auto validation = validator.validate(specs);
+    ASSERT_FALSE(validation);
+    EXPECT_EQ(validation.error().code, error_code::schema_validation);
 
-    auto message = testing::internal::GetCapturedStderr();
+    auto message = validation.error().message;
     std::string correct_message = "Error #1\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Missing required property 'duty'.\nError #2\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against a conditional schema set by if-then-else constraints.\nError #3\n  context: <root>[cores][0][inputs][0][source]\n  desc:    Failed to validate against child schema #4.\nError #4\n  context: <root>[cores][0][inputs][0]\n  desc:    Failed to validate against schema associated with property name 'source'.\nError #5\n  context: <root>[cores][0][inputs]\n  desc:    Failed to validate item #0 in array.\nError #6\n  context: <root>[cores][0]\n  desc:    Failed to validate against schema associated with property name 'inputs'.\nError #7\n  context: <root>[cores]\n  desc:    Failed to validate item #0 in array.\nError #8\n  context: <root>\n  desc:    Failed to validate against schema associated with property name 'cores'.\n";
     EXPECT_EQ(message, correct_message);
 }
@@ -522,7 +529,7 @@ TEST(external_io_schema, validation_success) {
         "deployment_mode": false
     })");
     schema_validator_base validator(emulator_input);
-    EXPECT_NO_THROW(validator.validate(specs));
+    EXPECT_TRUE(validator.validate(specs));
 }
 
 TEST(external_io_schema, validation_success_series_source) {
@@ -585,7 +592,7 @@ TEST(external_io_schema, validation_success_series_source) {
         "deployment_mode": false
     })");
     schema_validator_base validator(emulator_input);
-    EXPECT_NO_THROW(validator.validate(specs));
+    EXPECT_TRUE(validator.validate(specs));
 }
 
 TEST(external_io_schema, validation_fail_input_address_not_integer) {
@@ -647,9 +654,9 @@ TEST(external_io_schema, validation_fail_input_address_not_integer) {
         "deployment_mode": false
     })");
     schema_validator_base validator(emulator_input);
-    testing::internal::CaptureStderr();
-    EXPECT_THROW(validator.validate(specs), std::invalid_argument);
-    testing::internal::GetCapturedStderr();
+    auto validation = validator.validate(specs);
+    ASSERT_FALSE(validation);
+    EXPECT_EQ(validation.error().code, error_code::schema_validation);
 }
 
 TEST(external_io_schema, validation_fail_output_address_not_integer) {
@@ -712,9 +719,9 @@ TEST(external_io_schema, validation_fail_output_address_not_integer) {
         "deployment_mode": false
     })");
     schema_validator_base validator(emulator_input);
-    testing::internal::CaptureStderr();
-    EXPECT_THROW(validator.validate(specs), std::invalid_argument);
-    testing::internal::GetCapturedStderr();
+    auto validation = validator.validate(specs);
+    ASSERT_FALSE(validation);
+    EXPECT_EQ(validation.error().code, error_code::schema_validation);
 }
 
 TEST(external_io_schema, validation_fail_negative_address) {
@@ -776,7 +783,7 @@ TEST(external_io_schema, validation_fail_negative_address) {
         "deployment_mode": false
     })");
     schema_validator_base validator(emulator_input);
-    testing::internal::CaptureStderr();
-    EXPECT_THROW(validator.validate(specs), std::invalid_argument);
-    testing::internal::GetCapturedStderr();
+    auto validation = validator.validate(specs);
+    ASSERT_FALSE(validation);
+    EXPECT_EQ(validation.error().code, error_code::schema_validation);
 }

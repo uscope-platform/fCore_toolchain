@@ -44,7 +44,6 @@ set(FCORE_COMMON_SRCS_I
 set(FCORE_CC_SRCS
         frontend/C/C_language_parser.cpp
         frontend/C/C_pre_processor.cpp
-        frontend/C/C_ErrorHandling.cpp
         frontend/C/C_Tree_visitor.cpp
         data_structures/high_level_ast/ast_node.cpp
         data_structures/high_level_ast/variant/hl_ast_node_variant.cpp
@@ -95,7 +94,6 @@ set(FCORE_CC_SRCS
 set(FCORE_AS_SRCS
         frontend/asm/AsmTree_visitor.cpp
         frontend/asm/asm_language_parser.cpp
-        frontend/asm/AsmErrorHandling.cpp
         fcore_has.cpp
         )
 

@@ -33,9 +33,9 @@ namespace fcore{
 
         auto result_def = std::make_shared<define_map>();
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
-        parser.parse(std::map<std::string, variable_class_t>());
+        ASSERT_TRUE(parser.parse(std::map<std::string, variable_class_t>()));
         std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
 
         std::shared_ptr<ast_expression> res_1 = std::static_pointer_cast<ast_expression>(
@@ -102,9 +102,9 @@ namespace fcore{
 
         auto result_def = std::make_shared<define_map>();
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
-        parser.parse(std::map<std::string, variable_class_t>());
+        ASSERT_TRUE(parser.parse(std::map<std::string, variable_class_t>()));
         std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
 
         auto res = std::static_pointer_cast<ast_operand>(results[0]->get_scalar_initializer())->get_int_value();
@@ -120,10 +120,10 @@ namespace fcore{
 
         auto result_def = std::make_shared<define_map>();
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         auto results = parser.get_globals();
 
@@ -175,10 +175,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         auto results = parser.get_globals();
 
@@ -220,10 +220,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         std::vector<std::shared_ptr<ast_definition>> results =  parser.get_globals();
 
@@ -265,10 +265,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         std::vector<std::shared_ptr<ast_definition>> results =  parser.get_globals();
 
@@ -322,10 +322,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         std::vector<std::shared_ptr<ast_definition>> results =  parser.get_globals();
 
@@ -369,10 +369,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
 
@@ -406,10 +406,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
 
@@ -445,10 +445,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
 
@@ -483,10 +483,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         std::vector<std::shared_ptr<ast_definition>> results = parser.get_globals();
 
@@ -534,10 +534,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         std::vector<std::shared_ptr<ast_node>> func_body;
 
@@ -610,10 +610,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         std::shared_ptr<ast_function_def> results = std::static_pointer_cast<ast_function_def>(parser.get_functions()[0]);
 
@@ -668,10 +668,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         std::shared_ptr<ast_function_def> result = std::static_pointer_cast<ast_function_def>(parser.get_functions()[0]);
 
@@ -712,10 +712,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         auto var = std::make_shared<variable>("c");
         auto op_1 = std::make_shared<ast_operand>(var);
@@ -751,10 +751,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
 
         auto func_def = std::static_pointer_cast<ast_function_def>(parser.get_functions()[0]);
@@ -802,10 +802,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         auto result = std::static_pointer_cast<ast_conditional>(std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body()[0]);
 
@@ -871,8 +871,8 @@ namespace fcore{
 
         auto result_def = std::make_shared<define_map>();
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.pre_process({}));
+        ASSERT_TRUE(parser.parse(io_spec));
 
         std::shared_ptr<ast_loop> result = std::static_pointer_cast<ast_loop>(std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body()[3]);
 
@@ -968,8 +968,8 @@ namespace fcore{
 
         auto result_def = std::make_shared<define_map>();
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.pre_process({}));
+        ASSERT_TRUE(parser.parse(io_spec));
         std::shared_ptr<ast_loop> result = std::static_pointer_cast<ast_loop>(std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body()[3]);
 
 
@@ -1102,8 +1102,8 @@ namespace fcore{
 
         auto result_def = std::make_shared<define_map>();
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.pre_process({}));
+        ASSERT_TRUE(parser.parse(io_spec));
         std::vector<std::shared_ptr<ast_node>> result = std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body();
 
         std::vector<std::shared_ptr<ast_node>> gold_standard;
@@ -1181,10 +1181,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         std::vector<std::shared_ptr<ast_node>> result = std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body();
 
@@ -1251,10 +1251,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         auto def = std::static_pointer_cast<ast_definition>(std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body()[0]);
         auto result = std::static_pointer_cast<ast_operand>(def->get_scalar_initializer());
@@ -1277,10 +1277,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
         auto fun = parser.AST->get_content()[0];
         auto result = std::static_pointer_cast<ast_function_def>(fun)->get_body()[0];
 
@@ -1328,10 +1328,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
 
         auto fun = parser.AST->get_content()[0];
         auto result = std::static_pointer_cast<ast_function_def>(fun)->get_body()[0];
@@ -1376,10 +1376,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
         auto globals = parser.get_globals();
         ASSERT_EQ(globals.size(), 1);
         auto result = globals[0];
@@ -1410,10 +1410,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
         auto fun = parser.AST->get_content()[0];
         auto result = std::static_pointer_cast<ast_definition>(std::static_pointer_cast<ast_function_def>(fun)->get_body()[0]);
 
@@ -1441,10 +1441,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
         auto fun = parser.AST->get_content()[0];
         auto res_def = std::static_pointer_cast<ast_function_def>(fun)->get_body()[0];
 
@@ -1486,10 +1486,10 @@ namespace fcore{
         auto result_def = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, result_def);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
         auto result = std::static_pointer_cast<ast_function_def>( parser.AST->get_content()[0]);
 
         EXPECT_TRUE(parser.get_globals().empty());
@@ -1543,10 +1543,10 @@ namespace fcore{
         auto def_map = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, def_map);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
         auto fun = parser.AST->get_content()[0];
         auto result = std::static_pointer_cast<ast_function_def>(fun)->get_body();
 
@@ -1597,10 +1597,10 @@ namespace fcore{
         auto def_map = std::make_shared<define_map>();
 
         C_language_parser parser(test_content, def_map);
-        parser.pre_process({});
+        ASSERT_TRUE(parser.pre_process({}));
 
         std::map<std::string, variable_class_t> io_spec;
-        parser.parse(io_spec);
+        ASSERT_TRUE(parser.parse(io_spec));
         auto fun = parser.AST->get_content()[0];
         auto result = std::static_pointer_cast<ast_function_def>(fun)->get_body();
 

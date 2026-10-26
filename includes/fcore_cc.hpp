@@ -19,8 +19,10 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <optional>
 #include <nlohmann/json.hpp>
 
+#include "errors/result.hpp"
 #include "tools/variable_map.hpp"
 #include "data_structures/common/io_map.hpp"
 #include "tools/define_map.hpp"
@@ -43,17 +45,18 @@ namespace fcore {
         void set_profiler(const std::shared_ptr<instrumentation_core> &ic){profiling_core = ic;};
         void enable_logging(){logging = true;};
         void parse_dma_spec();
-        bool compile(uint8_t n_channels);
+        [[nodiscard]] result<void> compile(uint8_t n_channels);
         std::set<io_map_entry>  get_io_map();
         std::vector<uint32_t> get_raw_code();
         std::vector<uint32_t> get_executable();
         std::string get_errors();
+        [[nodiscard]] const std::optional<error> &get_error() const {return last_error;}
         void write_hexfile(const std::string& ouput_file);
         void write_verilog_memfile(const std::string& ouput_file);
         void write_json(const std::string& output_file);
         nlohmann::json get_dump() {return dump;};
 
-        std::pair<std::shared_ptr<ast_code_block>, std::vector<std::shared_ptr<ast_definition>>> get_hl_ast();
+        [[nodiscard]] result<std::pair<std::shared_ptr<ast_code_block>, std::vector<std::shared_ptr<ast_definition>>>> get_hl_ast();
 
         void set_dma_map(std::map<std::string, core_iom> &map){dma_spec = map;};
         void set_core_info(core_info &i) {info = i;};
@@ -63,8 +66,8 @@ namespace fcore {
         static std::map<std::string, core_iom> load_iom_map(const nlohmann::json &raw_map);
     private:
         void merge_includes(const std::vector<std::shared_ptr<ast_code_block>>& i);
-        std::shared_ptr<ast_code_block>  parse_include(std::istream &file, std::shared_ptr<define_map> def_map);
-        void parse(std::map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map);
+        result<std::shared_ptr<ast_code_block>>  parse_include(std::istream &file, std::shared_ptr<define_map> def_map);
+        result<void> parse(std::map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map);
         void optimize(std::map<std::string, std::vector<uint32_t >> &dma_map,uint8_t n_channels);
         void analyze_program_length(std::shared_ptr<instruction_count> c);
         void insert_stop(instruction_stream &program_stream);
@@ -83,7 +86,7 @@ namespace fcore {
 
         binary_generator writer;
         hl_pass_manager  hl_manager;
-        std::string error_code;
+        std::optional<error> last_error;
         nlohmann::json dump;
 
         std::map<std::string, std::vector<uint32_t >> dma_io_map;

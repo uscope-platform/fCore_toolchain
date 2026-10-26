@@ -21,6 +21,7 @@
 #include <sstream>
 #include <regex>
 
+#include "errors/result.hpp"
 #include "tools/define.hpp"
 #include "tools/define_map.hpp"
 namespace fcore{
@@ -31,15 +32,15 @@ namespace fcore{
         explicit C_pre_processor(const std::string &path,  std::shared_ptr<define_map> &defmap);
         std::string get_preprocessed_file();
         void set_absolute_includes(std::vector<std::string> list);
-        void process_file();
+        [[nodiscard]] result<void> process_file();
         void substitute_defines();
         static std::string substitute_defines_in_line(std::string &line, const std::pair<std::string, std::shared_ptr<define>>& item);
     private:
 
         void process_pragmas(const std::string& line);
         bool process_define(const std::string& line);
-        std::string process_rel_includes(const std::string& line);
-        std::string process_abs_includes(const std::string& line);
+        result<std::string> process_rel_includes(const std::string& line);
+        result<std::string> process_abs_includes(const std::string& line);
 
         std::vector<std::string> allowed_absolute_includes = {};
         std::string working_content;

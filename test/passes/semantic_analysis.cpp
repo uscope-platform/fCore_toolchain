@@ -43,7 +43,9 @@ TEST(semantic_analysis, simple_undefined_variable) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto [ast, globals] = compiler.get_hl_ast();
+    auto parsed = compiler.get_hl_ast();
+    ASSERT_TRUE(parsed);
+    auto [ast, globals] = parsed.value();
 
     try {
         engine.run_semantic_analysis(ast, globals);
@@ -76,7 +78,9 @@ TEST(semantic_analysis, undefined_variable_in_else) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto [ast, globals] = compiler.get_hl_ast();
+    auto parsed = compiler.get_hl_ast();
+    ASSERT_TRUE(parsed);
+    auto [ast, globals] = parsed.value();
 
     try {
         engine.run_semantic_analysis(ast, globals);
@@ -103,7 +107,9 @@ TEST(semantic_analysis, for_loop_variable) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto [ast, globals] = compiler.get_hl_ast();
+    auto parsed = compiler.get_hl_ast();
+    ASSERT_TRUE(parsed);
+    auto [ast, globals] = parsed.value();
 
     try {
         engine.run_semantic_analysis(ast, globals);
@@ -129,7 +135,9 @@ TEST(semantic_analysis, undefined_for_loop_variable) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto [ast, globals] = compiler.get_hl_ast();
+    auto parsed = compiler.get_hl_ast();
+    ASSERT_TRUE(parsed);
+    auto [ast, globals] = parsed.value();
 
     try {
         engine.run_semantic_analysis(ast, globals);
@@ -157,7 +165,9 @@ TEST(semantic_analysis, undefined_variable_in_expression) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto [ast, globals] = compiler.get_hl_ast();
+    auto parsed = compiler.get_hl_ast();
+    ASSERT_TRUE(parsed);
+    auto [ast, globals] = parsed.value();
 
     try {
         engine.run_semantic_analysis(ast, globals);
@@ -196,7 +206,9 @@ TEST(semantic_analysis, type_propagation) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto [ast, globals] = compiler.get_hl_ast();
+    auto parsed = compiler.get_hl_ast();
+    ASSERT_TRUE(parsed);
+    auto [ast, globals] = parsed.value();
 
 
     engine.run_semantic_analysis(ast, globals);
@@ -251,7 +263,9 @@ TEST(semantic_analysis, mixed_type_operation_warning) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto [ast, globals] = compiler.get_hl_ast();
+    auto parsed = compiler.get_hl_ast();
+    ASSERT_TRUE(parsed);
+    auto [ast, globals] = parsed.value();
 
     try {
         engine.run_semantic_analysis(ast, globals);
@@ -278,7 +292,9 @@ TEST(semantic_analysis, wrong_argument_for_builtin) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto [ast, globals] = compiler.get_hl_ast();
+    auto parsed = compiler.get_hl_ast();
+    ASSERT_TRUE(parsed);
+    auto [ast, globals] = parsed.value();
 
     try {
         engine.run_semantic_analysis(ast, globals);
@@ -307,7 +323,9 @@ TEST(semantic_analysis, multiple_definitions) {
     auto engine = create_type_checking_engine();
 
     fcore_cc compiler(input, includes);
-    auto [ast, globals] = compiler.get_hl_ast();
+    auto parsed = compiler.get_hl_ast();
+    ASSERT_TRUE(parsed);
+    auto [ast, globals] = parsed.value();
 
 
     try {

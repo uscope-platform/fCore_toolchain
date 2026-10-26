@@ -78,7 +78,7 @@ TEST(result, bridge_result_to_exception) {
 TEST(result, bridge_exception_to_result) {
     auto ok = catching([] { return 5; });
     ASSERT_TRUE(ok);
-    EXPECT_EQ(*ok, 5);
+    EXPECT_EQ(ok.value(), 5);
 
     auto void_ok = catching([] {});
     EXPECT_TRUE(void_ok);

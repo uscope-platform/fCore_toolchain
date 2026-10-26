@@ -17,6 +17,8 @@
 #include "data_structures/emulation/v2/specs/emulator_specs.hpp"
 
 #include "emulator/v2/input_waveform_generator.hpp"
+#include <iostream>
+
 #include "emulator/v2/backend/emulator_backend.hpp"
 
 namespace fcore::emulator_v2 {
@@ -27,10 +29,9 @@ namespace fcore::emulator_v2 {
         interconnects.clear();
         cores.clear();
 
-        try{
-            schema_validator_base validator(emulator_input);
-            validator.validate(spec_obj);
-        } catch(std::invalid_argument &ex){
+        schema_validator_base validator(emulator_input);
+        if(auto validation = validator.validate(spec_obj); !validation){
+            std::cerr << validation.error().message;
             throw std::runtime_error("Failed to validate emulator schema");
         }
 

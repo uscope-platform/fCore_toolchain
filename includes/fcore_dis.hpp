@@ -16,6 +16,7 @@
 #ifndef FCORE_TOOLCHAIN_FCORE_DIS_H
 #define FCORE_TOOLCHAIN_FCORE_DIS_H
 
+#include <optional>
 #include <string>
 #include <vector>
 #include <nlohmann/json.hpp>
@@ -51,6 +52,7 @@ namespace fcore{
         fcore_dis(std::istream &input, bin_loader_input_type_t in_type);
         explicit fcore_dis(const std::vector<uint32_t> &mem);
         std::string get_errors();
+        [[nodiscard]] const std::optional<error> &get_error() const {return last_error;}
         void write_json(const std::string& output_file);
         std::string get_disassembled_program_text();
         disassembled_program get_diassembled_object();
@@ -59,7 +61,8 @@ namespace fcore{
         void process_stream(instruction_stream program_stream);
         std::map<uint16_t, uint16_t> io_map;
         std::unique_ptr<assembly_generator> gen;
-        std::string error_code;
+        void finish_loading(result<void> loaded, binary_loader &loader);
+        std::optional<error> last_error;
     };
 }
 

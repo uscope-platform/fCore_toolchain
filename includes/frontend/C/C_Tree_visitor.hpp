@@ -21,9 +21,11 @@
 #include <string>
 #include <utility>
 #include <stack>
+#include <optional>
 
 #include "C_parser/C_grammarBaseListener.h"
 #include "C_parser/C_grammarParser.h"
+#include "errors/error.hpp"
 #include "data_structures/common/variable.hpp"
 
 
@@ -109,7 +111,14 @@ namespace fcore{
 
         std::vector<std::shared_ptr<ast_definition>> get_globals(){return globals;};
         std::vector<std::shared_ptr<ast_node>> get_functions(){return functions;};
+
+        /// set once a construct that can not be translated is found, the tree walk should stop at that point
+        [[nodiscard]] bool failed() const {return failure.has_value();}
+        [[nodiscard]] const std::optional<error> &get_failure() const {return failure;}
     private:
+
+        void report(error_code code, const std::string &message, const antlr4::ParserRuleContext *ctx);
+        std::optional<error> failure;
 
         template<typename T>
         void processExpression(unsigned int expression_size, const T& operands_array, std::map<std::string, ast_expression::expression_type> &expr_map);

@@ -17,9 +17,11 @@
 #define FCORE_TOOLCHAIN_FCORE_HAS_HPP
 
 #include <string>
+#include <optional>
 #include <vector>
 #include <nlohmann/json.hpp>
 
+#include "errors/result.hpp"
 #include "frontend/asm/asm_language_parser.hpp"
 #include "data_structures/common/program_metadata.hpp"
 #include "backend/binary_generator.hpp"
@@ -36,7 +38,8 @@ namespace fcore{
             stream_pass_manager::mode opt_mode = stream_pass_manager::asm_language
         );
 
-        void construct_assembler(
+        /// Runs the assembler on the input, the outcome is also kept for get_error().
+        result<void> construct_assembler(
             std::istream &input,
             bool print_debug,
             stream_pass_manager::mode opt_mode
@@ -48,6 +51,7 @@ namespace fcore{
         std::vector<uint32_t> get_executable();
         std::vector<uint32_t> get_raw_code();
         std::string get_errors();
+        [[nodiscard]] const std::optional<error> &get_error() const {return last_error;}
         program_info get_program_info() { return length_info;}
         void write_hexfile(const std::string& ouput_file);
         void write_verilog_memfile(const std::string& ouput_file);
@@ -57,7 +61,7 @@ namespace fcore{
     private:
         std::map<std::string, std::vector<uint32_t>> dma_map;
         binary_generator writer;
-        std::string error_code;
+        std::optional<error> last_error;
         program_info length_info;
         nlohmann::json dump;
     };

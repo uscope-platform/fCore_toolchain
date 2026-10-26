@@ -35,7 +35,8 @@ namespace fcore{
         logging = print_debug;
     }
 
-    bool fcore_cc::compile(uint8_t n_channels) {
+    result<void> fcore_cc::compile(uint8_t n_channels) {
+        last_error.reset();
         auto def_map = std::make_shared<define_map>();
 
         if (profiling_core != nullptr) profiling_core->set_phase("parsing");
@@ -44,32 +45,41 @@ namespace fcore{
         if (profiling_core != nullptr) profiling_core->start_event("parse headers", false);
         if(!includes.empty()){
             for(auto &i:includes){
+                result<std::shared_ptr<ast_code_block>> include_ast;
                 if(include_is_paths){
                     std::ifstream ifs(i);
-                    includes_ASTs.push_back(parse_include(ifs, def_map));
+                    include_ast = parse_include(ifs, def_map);
                 } else {
                     std::istringstream ifs(i);
-                    includes_ASTs.push_back(parse_include(ifs, def_map));
+                    include_ast = parse_include(ifs, def_map);
                 }
+                if(!include_ast){
+                    last_error = std::move(include_ast).error().with_context("parsing header");
+                    return fail(last_error.value());
+                }
+                includes_ASTs.push_back(include_ast.value());
             }
         }
         if (profiling_core != nullptr) profiling_core->end_event("parse headers");
-        try{
-            parse_dma_spec();
-            parse(dma_io_spec, def_map);
+
+        parse_dma_spec();
+        if(auto parsed = parse(dma_io_spec, def_map); !parsed){
+            last_error = parsed.error();
+            return parsed;
+        }
+
+        // the optimization and backend stages still report failures by throwing
+        auto compiled = catching([&]{
             merge_includes(includes_ASTs);
             optimize(dma_io_map, n_channels);
-        } catch(std::runtime_error &e){
-            std::string error = e.what();
-            error_code = e.what();
-            return false;
-        }
-        return true;
+        });
+        if(!compiled) last_error = compiled.error();
+        return compiled;
     }
 
 
     std::string fcore_cc::get_errors() {
-        return error_code;
+        return last_error ? last_error->what() : "";
     }
 
     std::vector<uint32_t> fcore_cc::get_raw_code() {
@@ -87,8 +97,8 @@ namespace fcore{
 
     void fcore_cc::write_json(const std::string &output_file) {
         nlohmann::json j;
-        j["error_code"] = error_code;
-        if(error_code.empty()){
+        j["error_code"] = get_errors();
+        if(!last_error){
             j["compiled_program"] = writer.generate_hex(false);
         } else{
             j["compiled_program"] = {};
@@ -99,13 +109,13 @@ namespace fcore{
         ss.close();
     }
 
-    std::pair<std::shared_ptr<ast_code_block>, std::vector<std::shared_ptr<ast_definition>>> fcore_cc::get_hl_ast() {
-        parse(dma_io_spec, std::make_shared<define_map>());
-        return {hl_ast, globals};
+    result<std::pair<std::shared_ptr<ast_code_block>, std::vector<std::shared_ptr<ast_definition>>>> fcore_cc::get_hl_ast() {
+        auto parsed = parse(dma_io_spec, std::make_shared<define_map>());
+        if(!parsed) return fail(std::move(parsed).error());
+        return std::make_pair(hl_ast, globals);
     }
 
-    void fcore_cc::parse(std::map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map) {
-        error_code = "";
+    result<void> fcore_cc::parse(std::map<std::string, variable_class_t> dma_specs, std::shared_ptr<define_map> def_map) {
         C_language_parser target_parser;
         if(type == "string"){
             target_parser = C_language_parser(input_string_stream, def_map);
@@ -114,12 +124,13 @@ namespace fcore{
         }
 
         if (profiling_core != nullptr) profiling_core->start_event("program_parsing", false);
-        target_parser.pre_process({});
-        target_parser.parse(std::move(dma_specs));
+        if(auto processed = target_parser.pre_process({}); !processed) return processed;
+        if(auto parsed = target_parser.parse(std::move(dma_specs)); !parsed) return parsed;
         hl_ast = target_parser.AST;
         globals = target_parser.get_globals();
 
         if (profiling_core != nullptr) profiling_core->end_event("program_parsing");
+        return {};
     }
 
     void fcore_cc::optimize(std::map<std::string, std::vector<uint32_t>> &dma_map, uint8_t n_channels) {
@@ -189,11 +200,11 @@ namespace fcore{
         return writer.get_io_mapping();
     }
 
-    std::shared_ptr<ast_code_block>  fcore_cc::parse_include(std::istream &input, std::shared_ptr<define_map> def_map) {
+    result<std::shared_ptr<ast_code_block>>  fcore_cc::parse_include(std::istream &input, std::shared_ptr<define_map> def_map) {
         std::map<std::string, variable_class_t> dma_specs;
         C_language_parser target_parser(input, def_map);
-        target_parser.pre_process({});
-        target_parser.parse(std::move(dma_specs));
+        if(auto processed = target_parser.pre_process({}); !processed) return fail(std::move(processed).error());
+        if(auto parsed = target_parser.parse(std::move(dma_specs)); !parsed) return fail(std::move(parsed).error());
         return target_parser.AST;
     }
 

@@ -37,7 +37,7 @@ namespace fcore{
         return working_content;
     }
 
-    void C_pre_processor::process_file() {
+    result<void> C_pre_processor::process_file() {
         std::string line;
         std::string decommented_line;
         std::istringstream ss(working_content);
@@ -77,8 +77,12 @@ namespace fcore{
 
             skip_line |= process_define(decommented_line);
 
-            std::string rel_include_text = process_rel_includes(decommented_line);
-            std::string abs_include_text = process_abs_includes(decommented_line);
+            auto rel_include = process_rel_includes(decommented_line);
+            if(!rel_include) return fail(std::move(rel_include).error());
+            auto abs_include = process_abs_includes(decommented_line);
+            if(!abs_include) return fail(std::move(abs_include).error());
+            const std::string rel_include_text = rel_include.value();
+            const std::string abs_include_text = abs_include.value();
 
             if(!rel_include_text.empty()){
                 processed_file_ss << rel_include_text << std::endl;
@@ -92,6 +96,7 @@ namespace fcore{
 
         }
         working_content = processed_file_ss.str();
+        return {};
     }
 
     bool C_pre_processor::process_define(const std::string& line) {
@@ -112,7 +117,7 @@ namespace fcore{
         return line_contains_str;
     }
 
-    std::string C_pre_processor::process_rel_includes(const std::string& line) {
+    result<std::string> C_pre_processor::process_rel_includes(const std::string& line) {
 
         if(line.find('#') != std::string::npos) {
             std::regex rel_include_regex(R"(#include\s*\"(.*)\")");
@@ -120,10 +125,18 @@ namespace fcore{
             if(std::regex_search( line,match,rel_include_regex)){
                 std::string target = match.str(1);
                 if(!target.empty()){
-                    std::string target_path = std::filesystem::canonical("./" + target);
+                    std::error_code ec;
+                    std::string target_path = std::filesystem::canonical("./" + target, ec).string();
+                    if(ec){
+                        return fail(error_code::preprocessor_error,
+                                    "included file: " + target + " could not be resolved: " + ec.message());
+                    }
                     C_pre_processor include_preproc(target_path, dmap);
                     include_preproc.set_absolute_includes(allowed_absolute_includes);
-                    include_preproc.process_file();
+                    auto processed = include_preproc.process_file();
+                    if(!processed){
+                        return fail(std::move(processed).error().with_context("processing included file " + target));
+                    }
                     return include_preproc.get_preprocessed_file();
                 }
             }
@@ -132,7 +145,7 @@ namespace fcore{
         return "";
     }
 
-    std::string C_pre_processor::process_abs_includes(const std::string &line) {
+    result<std::string> C_pre_processor::process_abs_includes(const std::string &line) {
         if(line.find('#') != std::string::npos) {
             std::regex abs_include_regex(R"(#include\s*<(.*)>)");
             std::smatch match;
@@ -143,7 +156,7 @@ namespace fcore{
                         allowed_absolute_includes.end()) {
                         //TODO: implement absolute includes
                     } else {
-                        throw std::runtime_error("included file: " + target + " not supported");
+                        return fail(error_code::preprocessor_error, "included file: " + target + " not supported");
                     }
                 }
             }

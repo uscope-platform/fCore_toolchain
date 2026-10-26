@@ -38,9 +38,9 @@ TEST( cFrontend, preprocessor_define) {
 
     auto dmap = std::make_shared<define_map>();
     C_language_parser parser(test_content, dmap);
-    parser.pre_process({});
+    ASSERT_TRUE(parser.pre_process({}));
 
-    parser.parse(io_spec);
+    ASSERT_TRUE(parser.parse(io_spec));
 
     std::shared_ptr<ast_definition> result = std::static_pointer_cast<ast_definition>(std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body()[0]);
 
@@ -62,8 +62,8 @@ TEST( cFrontend, preprocessor_include) {
 
     auto dmap = std::make_shared<define_map>();
     C_language_parser parser(input_file, dmap);
-    parser.pre_process({});
-    parser.parse(io_spec);
+    ASSERT_TRUE(parser.pre_process({}));
+    ASSERT_TRUE(parser.parse(io_spec));
 
     std::shared_ptr<ast_definition> result = std::static_pointer_cast<ast_definition>(std::static_pointer_cast<ast_function_def>(parser.AST->get_content()[0])->get_body()[0]);
 
@@ -83,6 +83,8 @@ TEST( cFrontend, preprocessor_include_fail) {
 
     auto dmap = std::make_shared<define_map>();
     C_language_parser parser(input_file, dmap);
-    EXPECT_THROW(parser.pre_process({}), std::runtime_error);
+    auto preprocessed = parser.pre_process({});
+    ASSERT_FALSE(preprocessed);
+    EXPECT_EQ(preprocessed.error().code, error_code::preprocessor_error);
 
 }

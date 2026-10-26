@@ -15,6 +15,8 @@
 
 #include "frontend/schema_validators/schema_validator_base.h"
 
+#include <sstream>
+
 namespace fcore{
 
     schema_validator_base::schema_validator_base(const json_type& schema_type) {
@@ -37,28 +39,28 @@ namespace fcore{
     }
 
 
-    void schema_validator_base::validate(const nlohmann::json &spec_file) {
+    result<void> schema_validator_base::validate(const nlohmann::json &spec_file) {
         valijson::Validator validator;
         valijson::ValidationResults results;
         valijson::adapters::NlohmannJsonAdapter myTargetAdapter(spec_file);
-        if (!validator.validate(schema, myTargetAdapter, &results)) {
-            valijson::ValidationResults::Error err;
-            unsigned int errorNum = 1;
-            while (results.popError(err)) {
+        if (validator.validate(schema, myTargetAdapter, &results)) return {};
 
-                std::string context;
-                auto itr = err.context.begin();
-                for (; itr != err.context.end(); itr++) {
-                    context += *itr;
-                }
+        valijson::ValidationResults::Error err;
+        unsigned int errorNum = 1;
+        std::ostringstream message;
+        while (results.popError(err)) {
 
-                std::cerr << "Error #" << errorNum << std::endl
-                          << "  context: " << context << std::endl
-                          << "  desc:    " << err.description << std::endl;
-                ++errorNum;
+            std::string context;
+            for (const auto &c: err.context) {
+                context += c;
             }
-            throw std::invalid_argument("");
+
+            message << "Error #" << errorNum << std::endl
+                    << "  context: " << context << std::endl
+                    << "  desc:    " << err.description << std::endl;
+            ++errorNum;
         }
+        return fail(error_code::schema_validation, message.str());
     }
 
 }

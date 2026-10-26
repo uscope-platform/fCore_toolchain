@@ -18,6 +18,8 @@
 #include <CLI/CLI.hpp>
 #include <spdlog/spdlog.h>
 #include "frontend/schema_validators/schema_validator_base.h"
+#include <iostream>
+
 #include "fcore_cc.hpp"
 
 int main(int argc, char **argv) {
@@ -32,9 +34,10 @@ int main(int argc, char **argv) {
     nlohmann::json spec = nlohmann::json::parse(ifs);
     try{
         fcore::schema_validator_base validator(fcore::compiler_input);
-        validator.validate(spec);
-    } catch(std::invalid_argument &ex){
-        exit(-1);
+        if(auto validation = validator.validate(spec); !validation){
+            std::cerr << validation.error().message;
+            exit(-1);
+        }
     } catch(nlohmann::detail::type_error &err) {
         spdlog::critical("Invalid spec file");
         spdlog::critical(err.what());
@@ -75,10 +78,8 @@ int main(int argc, char **argv) {
         n_channels = spec["channels"];
     }
 
-    bool compilation_result = cc_engine.compile(n_channels);
-
-    if(!compilation_result){
-        spdlog::critical(cc_engine.get_errors());
+    if(auto compilation = cc_engine.compile(n_channels); !compilation){
+        spdlog::critical(compilation.error().what());
         return -1;
     }
 

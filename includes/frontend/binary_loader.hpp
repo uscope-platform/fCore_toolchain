@@ -17,6 +17,7 @@
 #define FCORE_TOOLCHAIN_BINARY_LOADER_HPP
 
 
+#include "errors/result.hpp"
 #include "data_structures/instruction_stream/instruction_stream.hpp"
 #include "data_structures/executable.hpp"
 #include "fCore_isa.hpp"
@@ -29,13 +30,13 @@ namespace fcore{
 
     class binary_loader {
     public:
-        binary_loader(std::istream &stream, bin_loader_input_type_t in_type);
-        explicit binary_loader(const std::vector<uint32_t> &file_content);
-        void load_program(const std::vector<uint32_t> &file_content);
+        binary_loader() = default;
+        [[nodiscard]] result<void> load_stream(std::istream &stream, bin_loader_input_type_t in_type);
+        [[nodiscard]] result<void> load_program(const std::vector<uint32_t> &file_content);
         instruction_stream get_program_stream() {return program_stream;}
 
 
-        void construct_ast(const std::vector<uint32_t> &program);
+        [[nodiscard]] result<void> construct_ast(const std::vector<uint32_t> &program);
         static instruction_variant process_register_instr(uint32_t instruction);
         static instruction_variant process_ternary_instr(uint32_t instruction);
         static instruction_variant process_independent_instruction(uint32_t instruction);

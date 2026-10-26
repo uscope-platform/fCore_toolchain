@@ -14,8 +14,10 @@
 // limitations under the License.
 
 #include "frontend/binary_loader.hpp"
+
+#include <charconv>
 namespace fcore{
-    binary_loader::binary_loader(std::istream &stream, bin_loader_input_type_t in_type) {
+    result<void> binary_loader::load_stream(std::istream &stream, bin_loader_input_type_t in_type) {
         std::string line;
         std::vector<uint32_t> file_content;
 
@@ -25,38 +27,42 @@ namespace fcore{
                 file_content.push_back(to_littleEndian(instr));
             }
         } else if(in_type == bin_loader_mem_input){
+            uint32_t line_number = 0;
             while (std::getline(stream, line)) {
-                uint32_t instr = std::stoul(line, nullptr, 16);
+                ++line_number;
+                uint32_t instr = 0;
+                auto parsed = std::from_chars(line.data(), line.data() + line.size(), instr, 16);
+                if(parsed.ec != std::errc{}){
+                    return fail(error(error_code::binary_format_error,
+                                      "invalid hexadecimal word in memory file: " + line).at(line_number));
+                }
                 file_content.push_back(instr);
             }
         }
 
-        load_program(file_content);
+        return load_program(file_content);
     }
 
-    binary_loader::binary_loader(const std::vector<uint32_t> &file_content) {
-        load_program(file_content);
-    }
-
-    void binary_loader::load_program(const std::vector<uint32_t> &file_content) {
+    result<void> binary_loader::load_program(const std::vector<uint32_t> &file_content) {
         if(file_content.size() == 0) {
-            throw std::runtime_error("Attempted to load empty program.");
+            return fail(error_code::binary_format_error, "Attempted to load empty program.");
         }
         executable exec(file_content);
-        construct_ast(exec.get_code());
+        if(auto ast = construct_ast(exec.get_code()); !ast) return ast;
         io_mapping = exec.get_io_mapping();
         common_io_mapping = exec.get_common_io_mapping();
+        return {};
     }
 
 
-    void binary_loader::construct_ast(const std::vector<uint32_t> &program) {
+    result<void> binary_loader::construct_ast(const std::vector<uint32_t> &program) {
 
 
         for(auto it = std::begin(program); it != std::end(program); it++){
             uint32_t instruction = *it;
             uint32_t opcode = instruction & (1<<fcore_opcode_width)-1;
             if (fcore_opcodes_reverse.count(opcode)==0){
-                throw std::runtime_error("unknown opcode: " + std::to_string(opcode));
+                return fail(error_code::binary_format_error, "unknown opcode: " + std::to_string(opcode));
             }
             switch (fcore_op_types[fcore_opcodes_reverse[opcode]]) {
                 case isa_independent_instruction:
@@ -79,11 +85,11 @@ namespace fcore{
                 }
                     // Pseudo instructions and intercalated constants are either not present in the stream, or dont have an opcode
                 case isa_pseudo_instruction:
-                    throw std::runtime_error("something went wront during binary program loading.");
-                    break;
+                    return fail(error_code::internal_error, "something went wrong during binary program loading.");
             }
 
         }
+        return {};
     }
 
     instruction_variant binary_loader::process_register_instr(uint32_t instruction) {
