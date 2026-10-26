@@ -708,7 +708,7 @@ TEST(emulator_manager_interactive, multichannel_breakpoint) {
 
     emulator_dispatcher manager;
     ASSERT_TRUE(manager.set_specs(spec));
-    manager.set_multichannel_debug(true);
+    ASSERT_TRUE(manager.set_multichannel_debug(true));
     ASSERT_TRUE(manager.process());
     ASSERT_TRUE(manager.add_breakpoint("test_0", 1));
     auto bp = expect_value(manager.emulate());
@@ -757,7 +757,7 @@ TEST(emulator_manager_interactive, disable_multichannel_debug) {
 
     emulator_dispatcher manager;
     ASSERT_TRUE(manager.set_specs(spec));
-    manager.set_multichannel_debug(false);
+    ASSERT_TRUE(manager.set_multichannel_debug(false));
     ASSERT_TRUE(manager.process());
     ASSERT_TRUE(manager.add_breakpoint("test_0", 1));
     auto bp = expect_value(manager.emulate());
