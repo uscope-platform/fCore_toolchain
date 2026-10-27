@@ -37,12 +37,20 @@ namespace fcore {
         if(auto supported = require_v2(); !supported) return supported;
 
         v2 = emulator_v2::emulator_manager();
+        v2.set_output_sink(output);
         return v2.set_specs(spec_file);
     }
 
     result<std::set<uint32_t>> emulator_dispatcher::get_breakpoints(const std::string &id) {
         if(auto supported = require_v2(); !supported) return fail(std::move(supported).error());
         return v2.get_breakpoints(id);
+    }
+
+    result<void> emulator_dispatcher::set_output_sink(const std::shared_ptr<emulator_v2::output_sink> &sink) {
+        output = sink;
+        // before any specification there is no manager to give it to, set_specs does
+        if(version == 2) v2.set_output_sink(sink);
+        return {};
     }
 
     result<void> emulator_dispatcher::process() {

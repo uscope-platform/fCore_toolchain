@@ -28,18 +28,19 @@
 
 #include "emulator/v2/emulator_runner.hpp"
 #include "emulator/v2/bus_allocator.hpp"
+#include "emulator/v2/backend/output_sink.hpp"
 #include "errors/result.hpp"
 
 namespace fcore::emulator_v2{
 
-    class emulation_outputs_manager {
+    class emulation_outputs_manager : public output_sink {
     public:
-        void set_runners(const std::shared_ptr<std::map<std::string, emulator_runner>> &r){runners = r;}
-        void process_specs(const std::shared_ptr<bus_allocator> &bus_engine);
+        void set_runners(const std::shared_ptr<std::map<std::string, emulator_runner>> &r) override {runners = r;}
+        void process_specs(const std::shared_ptr<bus_allocator> &bus_engine) override;
         [[nodiscard]] result<void> process_outputs(
             const std::vector<core_step_metadata> &metadata,
             const std::string &core
-        );
+        ) override;
 
         [[nodiscard]] result<void> process_scalar_output(
                 std::string core_id,
@@ -54,10 +55,10 @@ namespace fcore::emulator_v2{
             std::vector<uint32_t> addresses,
                 uint32_t active_channels
         );
-        void set_initial_values(const std::map<std::string,std::map<std::string, std::vector<uint32_t>>> &ivs){initial_values = ivs;}
-        void set_simulation_frequency(uint32_t freq);
+        void set_initial_values(const std::map<std::string,std::map<std::string, std::vector<uint32_t>>> &ivs) override {initial_values = ivs;}
+        void set_simulation_frequency(uint32_t freq) override;
         [[nodiscard]] result<nlohmann::json> get_emulation_output(const std::string& core_id);
-        void clear();
+        void clear() override;
     private:
         std::shared_ptr<bus_allocator> bus_engine;
         std::shared_ptr<std::map<std::string, emulator_runner>> runners;

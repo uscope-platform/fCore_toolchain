@@ -114,6 +114,7 @@ set(FCORE_EMU_SRCS
         emulator/v2/backend/emulator_backend.cpp
         emulator/v2/backend/execution/executor_base.cpp
         emulator/v2/backend/emulation_outputs_manager.cpp
+        emulator/v2/backend/live_capture_sink.cpp
         emulator/v2/backend/efi_dispatcher.cpp
         emulator/v2/emulator_builder.cpp
         emulator/v2/emulation_sequencer.cpp

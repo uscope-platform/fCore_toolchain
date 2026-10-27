@@ -26,6 +26,7 @@
 #include "data_structures/emulation/v2/hil_bus_map.hpp"
 #include "data_structures/emulation/v2/specs/emulator_specs.hpp"
 #include "emulator/v2/backend/emulation_outputs_manager.hpp"
+#include "emulator/v2/backend/output_sink.hpp"
 #include "data_structures/emulation/v2/emulator_metadata.hpp"
 #include "emulator/v2/interconnect_manager.hpp"
 #include "emulator/v2/emulator_runner.hpp"
@@ -47,6 +48,10 @@ namespace fcore::emulator_v2{
         [[nodiscard]] result<void> set_specs(const nlohmann::json &spec_file);
         std::set<uint32_t> get_breakpoints(const std::string &id);
         [[nodiscard]] result<void> process();
+
+        /// Replaces where the outputs go while the emulation runs, the batch accumulation is the default (a null sink
+        /// restores it). It has to be set before process(), and the results of get_results are the ones of the batch one.
+        void set_output_sink(const std::shared_ptr<output_sink> &sink) {live_sink = sink;}
 
         /// Nothing is returned when the emulation completes, or the checkpoint of the breakpoint that interrupted it
         [[nodiscard]] result<std::optional<debug_checkpoint>> emulate();
@@ -95,6 +100,8 @@ namespace fcore::emulator_v2{
 
         emulation_sequencer sequencer;
         emulation_outputs_manager outputs_manager;
+        std::shared_ptr<output_sink> live_sink;
+        output_sink &active_sink() {return live_sink ? *live_sink : static_cast<output_sink &>(outputs_manager);}
 
         interconnect_manager ic_manager;
 

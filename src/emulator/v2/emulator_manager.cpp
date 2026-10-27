@@ -74,11 +74,11 @@ namespace fcore::emulator_v2 {
             if(auto added = sequencer.add_core(core.id, core.sampling_frequency, core.order, core.channels); !added) return added;
 
         }
-        outputs_manager.process_specs(ic_manager.get_bus_engine());
+        active_sink().process_specs(ic_manager.get_bus_engine());
         sequencer.setup_run(emu_spec.emulation_time);
 
 
-        outputs_manager.set_initial_values(emu_spec.get_outputs_initial_values());
+        active_sink().set_initial_values(emu_spec.get_outputs_initial_values());
 
         for(auto &p:programs){
             auto r = emulator_runner::create(p, ic_manager.get_bus_engine());
@@ -362,11 +362,11 @@ namespace fcore::emulator_v2 {
         interactive_restart_point = 0;
         ic_manager.clear_repeater();
         ic_manager.set_runners(runners);
-        outputs_manager.set_runners(runners);
+        active_sink().set_runners(runners);
 
         sequencer.calculate_sequence();
         auto sim_freq = sequencer.get_simulation_frequency();
-        outputs_manager.set_simulation_frequency(sim_freq);
+        active_sink().set_simulation_frequency(sim_freq);
 
         for (auto &val: *runners | std::views::values) {
             val.set_multichannel_debug(multichannel_debug);
@@ -456,7 +456,7 @@ namespace fcore::emulator_v2 {
                 } else {
                     runners->at(core.id).advance_inputs();
                 }
-                if(auto outputs = outputs_manager.process_outputs(running_cores, core.id); !outputs) return fail(std::move(outputs).error());
+                if(auto outputs = active_sink().process_outputs(running_cores, core.id); !outputs) return fail(std::move(outputs).error());
                 if(auto interconnects = ic_manager.run_interconnect(core.id, sequencer.get_enabled_cores()); !interconnects){
                     return fail(std::move(interconnects).error());
                 }
@@ -489,7 +489,7 @@ namespace fcore::emulator_v2 {
                 if(!last_in_sequence) return fail(std::move(last_in_sequence).error());
                 if(last_in_sequence.value()){
                     sequencer.advance_emulation();
-                    if(auto outputs = outputs_manager.process_outputs(sequencer.get_running_cores(), ""); !outputs){
+                    if(auto outputs = active_sink().process_outputs(sequencer.get_running_cores(), ""); !outputs){
                         return fail(std::move(outputs).error());
                     }
                 }
@@ -607,6 +607,7 @@ namespace fcore::emulator_v2 {
         runners->clear();
         sequencer.clear();
         outputs_manager.clear();
+        if(live_sink) live_sink->clear();
         fcore_program fuzz_program;
         fuzz_program.binary = pkg.binary;
         fuzz_program.program_length = {};
@@ -666,6 +667,7 @@ namespace fcore::emulator_v2 {
         runners->clear();
         sequencer.clear();
         outputs_manager.clear();
+        if(live_sink) live_sink->clear();
         // the json library throws when a value does not have the expected type, the schema should have prevented it
         return catching([&]() -> result<void> {
             if(auto parsed = emu_spec.parse(spec_file); !parsed) return parsed;

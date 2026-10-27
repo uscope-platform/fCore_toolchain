@@ -34,6 +34,10 @@ namespace fcore {
         [[nodiscard]] result<std::set<uint32_t>> get_breakpoints(const std::string &id);
         [[nodiscard]] result<void> process();
 
+        /// Where the outputs go while the emulation runs, the batch accumulation if there is none. It is kept across
+        /// set_specs, and has to be set before process()
+        [[nodiscard]] result<void> set_output_sink(const std::shared_ptr<emulator_v2::output_sink> &sink);
+
         [[nodiscard]] result<std::optional<debug_checkpoint>> emulate();
         [[nodiscard]] result<debug_checkpoint> step_over();
         [[nodiscard]] result<std::optional<debug_checkpoint>> continue_emulation();
@@ -59,6 +63,7 @@ namespace fcore {
         [[nodiscard]] result<void> require_v2() const;
 
         uint32_t version = 0;
+        std::shared_ptr<emulator_v2::output_sink> output;
         emulator_v2::emulator_manager v2;
     };
 
