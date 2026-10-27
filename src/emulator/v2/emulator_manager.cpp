@@ -358,18 +358,20 @@ namespace fcore::emulator_v2 {
         return slots;
     }
 
-    result<std::optional<debug_checkpoint>> emulator_manager::emulate() {
+    result<void> emulator_manager::prepare_run(bool live) {
         interactive_restart_point = 0;
         ic_manager.clear_repeater();
         ic_manager.set_runners(runners);
         active_sink().set_runners(runners);
 
+        sequencer.set_unbounded(live);
         sequencer.calculate_sequence();
         auto sim_freq = sequencer.get_simulation_frequency();
         active_sink().set_simulation_frequency(sim_freq);
 
         for (auto &val: *runners | std::views::values) {
             val.set_multichannel_debug(multichannel_debug);
+            val.set_live_mode(live);
         }
 
 
@@ -387,6 +389,11 @@ namespace fcore::emulator_v2 {
         auto first_core = sequencer.get_core_by_order(1);
         if(!first_core) return fail(std::move(first_core).error());
         currently_active_core = first_core.value();
+        return {};
+    }
+
+    result<std::optional<debug_checkpoint>> emulator_manager::emulate() {
+        if(auto prepared = prepare_run(false); !prepared) return fail(std::move(prepared).error());
 
         auto outcome = run_cores(false);
         if(!outcome) return fail(std::move(outcome).error());
@@ -398,6 +405,18 @@ namespace fcore::emulator_v2 {
         return std::optional<debug_checkpoint>{};
     }
 
+
+    result<void> emulator_manager::start_live() {
+        if(!live_sink) return fail(error_code::invalid_argument, "A live emulation needs an output sink to send the outputs to");
+        return prepare_run(true);
+    }
+
+    result<void> emulator_manager::run_live(std::stop_token stop) {
+        auto outcome = run_cores(false, stop);
+        if(!outcome) return fail(std::move(outcome).error());
+        if(outcome.value().has_value()) return fail(error_code::emulation_error, "A breakpoint interrupted the live emulation");
+        return {};
+    }
 
     result<std::optional<debug_checkpoint>> emulator_manager::continue_emulation() {
         auto outcome = run_cores(true);
@@ -423,7 +442,7 @@ namespace fcore::emulator_v2 {
         return runner->second.dump_memory(channel);
     }
 
-    result<round_outcome_t> emulator_manager::run_cores(bool in_progress) {
+    result<round_outcome_t> emulator_manager::run_cores(bool in_progress, std::stop_token stop) {
         bool is_in_progress = in_progress;
         do{
             auto running_cores = sequencer.get_running_cores();
@@ -462,7 +481,7 @@ namespace fcore::emulator_v2 {
                 }
             }
             sequencer.advance_emulation();
-        } while (!sequencer.sim_complete());
+        } while (!sequencer.sim_complete() && !stop.stop_requested());
         return round_outcome_t{};
     }
 

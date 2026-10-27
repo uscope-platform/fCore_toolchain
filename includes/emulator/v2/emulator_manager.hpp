@@ -15,6 +15,7 @@
 #ifndef FCORE_TOOLCHAIN_EMULATOR_MANAGER_V2_HPP
 #define FCORE_TOOLCHAIN_EMULATOR_MANAGER_V2_HPP
 
+#include <stop_token>
 #include <unordered_map>
 #include <string>
 #include <nlohmann/json.hpp>
@@ -53,6 +54,11 @@ namespace fcore::emulator_v2{
         /// restores it). It has to be set before process(), and the results of get_results are the ones of the batch one.
         void set_output_sink(const std::shared_ptr<output_sink> &sink) {live_sink = sink;}
 
+        /// A live emulation does not end: run_live goes on until it is asked to stop, and a later call resumes it.
+        /// It needs an output sink.
+        [[nodiscard]] result<void> start_live();
+        [[nodiscard]] result<void> run_live(std::stop_token stop);
+
         /// Nothing is returned when the emulation completes, or the checkpoint of the breakpoint that interrupted it
         [[nodiscard]] result<std::optional<debug_checkpoint>> emulate();
         [[nodiscard]] result<debug_checkpoint> step_over();
@@ -83,7 +89,8 @@ namespace fcore::emulator_v2{
         std::map<std::string, std::string> dump_bus() {return ic_manager.get_bus_engine()->dump_bus();}
         [[nodiscard]] result<std::vector<uint32_t>> dump_memory(const std::string &core_id, uint32_t channel);
     private:
-        result<round_outcome_t> run_cores(bool in_progress);
+        result<void> prepare_run(bool live);
+        result<round_outcome_t> run_cores(bool in_progress, std::stop_token stop = {});
 
         debug_checkpoint augment_checkpoint_info(debug_checkpoint &in);
 

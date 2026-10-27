@@ -103,7 +103,33 @@ namespace fcore::emulator_v2 {
     }
 
 
+    result<void> emulator_runner::set_constant_input(const std::string &name, uint32_t channel, double value) {
+        for(auto &in: program.input) {
+            if(in.name != name) continue;
+            if(in.source_type != constant_input || in.is_vector) {
+                return fail(error_code::invalid_argument, "The input " + name + " of core " + core_name + " is not a scalar constant");
+            }
+            if(channel >= active_channels) {
+                return fail(error_code::invalid_argument, "The core " + core_name + " has " + std::to_string(active_channels) + " channels, channel " + std::to_string(channel) + " does not exist");
+            }
+            // a constant that has a single value is the same for every channel, a channel of its own needs its own value
+            if(in.data.size() == 1 && active_channels > 1) in.data.resize(active_channels, in.data[0]);
+            if(in.metadata.type == type_float) {
+                in.data[std::min<size_t>(channel, in.data.size() - 1)] = std::vector<float>{static_cast<float>(value)};
+            } else {
+                const uint32_t raw = in.metadata.is_signed ? static_cast<uint32_t>(static_cast<int32_t>(std::llround(value))) : static_cast<uint32_t>(std::llround(value));
+                in.data[std::min<size_t>(channel, in.data.size() - 1)] = std::vector<uint32_t>{raw};
+            }
+            return {};
+        }
+        return fail(error_code::invalid_argument, "The core " + core_name + " has no input " + name);
+    }
+
     result<void> emulator_runner::inputs_phase(const core_step_metadata &info, uint32_t channel) {
+        // the series start over when they end in a live emulation, that has no end
+        auto sample = [&](const auto &series) {
+            return series[live_mode && !series.empty() ? info.step_n % series.size() : info.step_n];
+        };
 
 
         if(info.running){
@@ -140,11 +166,11 @@ namespace fcore::emulator_v2 {
                         }
                         if(in.is_vector) {
                             for(auto &i:in.data) {
-                                input_val.push_back(emulator_backend::float_to_uint32(std::get<std::vector<float>>(i)[info.step_n]));
+                                input_val.push_back(emulator_backend::float_to_uint32(sample(std::get<std::vector<float>>(i))));
                             }
                         } else {
                             std::vector<float> in_vect = std::get<std::vector<float>>(in.data[channel]);
-                            input_val = {emulator_backend::float_to_uint32(in_vect[info.step_n])};
+                            input_val = {emulator_backend::float_to_uint32(sample(in_vect))};
                         }
                     }
                 } else {
@@ -154,7 +180,7 @@ namespace fcore::emulator_v2 {
                             if(in.source_type == constant_input){
                                 input_val.push_back(in_vect[0]);
                             } else  {
-                                input_val.push_back(in_vect[info.step_n]);
+                                input_val.push_back(sample(in_vect));
                             }
                         }
                     } else {
@@ -162,7 +188,7 @@ namespace fcore::emulator_v2 {
                         if(in.source_type == constant_input){
                             input_val = {in_vect[0]};
                         } else  {
-                            input_val = {in_vect[info.step_n]};
+                            input_val = {sample(in_vect)};
                         }
                     }
 

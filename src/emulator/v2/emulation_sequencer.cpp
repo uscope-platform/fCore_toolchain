@@ -60,6 +60,7 @@ namespace fcore::emulator_v2{
         }
 
         progress =  (uint64_t) std::round(sim_length*(float)simulation_frequency)-1;
+        unbounded_step = 0;
 
         std::sort(cores.begin(), cores.end(), [](core_metadata const& lhs, core_metadata const &rhs)-> bool {return lhs.exec_order<rhs.exec_order;});
 
@@ -99,6 +100,8 @@ namespace fcore::emulator_v2{
 
     void emulation_sequencer::clear() {
         progress = 0;
+        unbounded = false;
+        unbounded_step = 0;
         sim_length = 0;
         simulation_frequency = 0;
         empty_step = false;

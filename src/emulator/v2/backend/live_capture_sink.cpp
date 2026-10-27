@@ -61,6 +61,7 @@ namespace fcore::emulator_v2 {
             chosen.info = live_channel_info{true, out.metadata.type, out.metadata.width, out.metadata.is_signed};
             pending_outputs[capture_channel] = chosen;
             outputs_changed = true;
+            has_pending = true;
             return {};
         }
         return fail(error_code::invalid_argument, "The emulation has no output " + output.core + "." + output.name);
@@ -74,6 +75,7 @@ namespace fcore::emulator_v2 {
         std::lock_guard lock(mutex);
         pending_outputs[capture_channel].reset();
         outputs_changed = true;
+        has_pending = true;
         return {};
     }
 
@@ -81,6 +83,13 @@ namespace fcore::emulator_v2 {
         std::lock_guard lock(mutex);
         for (auto &o : pending_outputs) o.reset();
         outputs_changed = true;
+        has_pending = true;
+    }
+
+    void live_capture_sink::set_input(const std::string &core, const std::string &name, uint32_t channel, double value) {
+        std::lock_guard lock(mutex);
+        pending_inputs.push_back({core, name, channel, value});
+        has_pending = true;
     }
 
     bool live_capture_sink::wait_for_block(std::chrono::milliseconds timeout) {
@@ -114,13 +123,25 @@ namespace fcore::emulator_v2 {
         block_being_written.sampling_frequency = freq;
     }
 
-    void live_capture_sink::apply_pending() {
-        std::lock_guard lock(mutex);
-        if (!outputs_changed) return;
-        outputs = pending_outputs;
-        outputs_changed = false;
-        // a block is made of the samples of one selection only
-        start_new_block();
+    result<void> live_capture_sink::apply_pending() {
+        std::vector<pending_input> inputs;
+        {
+            std::lock_guard lock(mutex);
+            has_pending = false;
+            inputs.swap(pending_inputs);
+            if (outputs_changed) {
+                outputs = pending_outputs;
+                outputs_changed = false;
+                // a block is made of the samples of one selection only
+                start_new_block();
+            }
+        }
+        for (const auto &in : inputs) {
+            const auto runner = runners->find(in.core);
+            if (runner == runners->end()) return fail(error_code::invalid_argument, "Could not find core " + in.core);
+            if (auto set = runner->second.set_constant_input(in.name, in.channel, in.value); !set) return set;
+        }
+        return {};
     }
 
     void live_capture_sink::hand_over_block() {
@@ -142,8 +163,10 @@ namespace fcore::emulator_v2 {
     }
 
     result<void> live_capture_sink::process_outputs(const std::vector<core_step_metadata> &metadata, const std::string &core) {
-        // the selection changes between rounds only, before any core is sampled
-        if (calls_in_round == 0) apply_pending();
+        // the selection and the inputs change between rounds only, before any core is sampled
+        if (calls_in_round == 0 && has_pending) {
+            if (auto applied = apply_pending(); !applied) return applied;
+        }
         for (uint32_t c = 0; c < n_channels; c++) {
             if (!outputs[c].has_value()) continue;
             const auto &chosen = outputs[c].value();
@@ -168,6 +191,8 @@ namespace fcore::emulator_v2 {
         std::fill(outputs.begin(), outputs.end(), std::nullopt);
         std::fill(pending_outputs.begin(), pending_outputs.end(), std::nullopt);
         outputs_changed = false;
+        pending_inputs.clear();
+        has_pending = false;
         has_block_ready = false;
         calls_in_round = 0;
         start_new_block();

@@ -50,10 +50,12 @@ namespace fcore::emulator_v2{
 
         uint32_t get_simulation_frequency() const{ return simulation_frequency;}
         std::vector<double> get_timebase();
-        bool sim_complete() const { return progress < 0; }
+        /// An unbounded emulation never completes: it runs until whoever drives it stops
+        void set_unbounded(bool value) { unbounded = value; }
+        bool sim_complete() const { return !unbounded && progress < 0; }
         bool is_empty_step() const {return empty_step;}
         std::vector<core_step_metadata> get_running_cores();
-        void advance_emulation() { progress--;}
+        void advance_emulation() { if(unbounded) { unbounded_step++; } else { progress--; } }
 
         [[nodiscard]] result<core_step_metadata> get_core_by_id(const std::string &id);
         [[nodiscard]] result<std::string> get_next_core_by_order(uint32_t n_step);
@@ -61,12 +63,14 @@ namespace fcore::emulator_v2{
         [[nodiscard]] result<bool> is_last_in_sequence(const std::string &id);
 
         void clear();
-        uint64_t get_current_step() const { return sim_length*simulation_frequency - progress; };
+        uint64_t get_current_step() const { return unbounded ? unbounded_step + 1 : sim_length*simulation_frequency - progress; };
         std::map<std::string, bool> get_enabled_cores() { return enabled_cores_map; };
     private:
 
         std::vector<core_metadata> cores;
         int64_t progress;
+        bool unbounded = false;
+        uint64_t unbounded_step = 0;
         float sim_length;
         uint32_t simulation_frequency;
         bool empty_step;

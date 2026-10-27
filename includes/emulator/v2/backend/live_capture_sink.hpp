@@ -16,6 +16,7 @@
 #define FCORE_TOOLCHAIN_LIVE_CAPTURE_SINK_V2_HPP
 
 #include <chrono>
+#include <atomic>
 #include <condition_variable>
 #include <cstdint>
 #include <mutex>
@@ -63,8 +64,10 @@ namespace fcore::emulator_v2 {
     /// not taken before the next one is complete is lost.
     ///
     /// The samples are taken at the same point of the round as the batch emulation records its outputs.
-    /// select_output, unselect_output, unselect_all, wait_for_block and take_block can be called from any thread, the
-    /// rest is for the emulation.
+    /// It is also where the constant inputs are changed while the emulation runs: it is the one that is called at the
+    /// boundary of the rounds, with the runners at hand.
+    /// select_output, unselect_output, unselect_all, set_input, wait_for_block and take_block can be called from any
+    /// thread, the rest is for the emulation.
     class live_capture_sink : public output_sink {
     public:
         live_capture_sink(uint32_t n_channels, uint32_t block_samples);
@@ -75,12 +78,17 @@ namespace fcore::emulator_v2 {
         [[nodiscard]] result<void> unselect_output(uint32_t capture_channel);
         void unselect_all();
 
+        /// Changes a constant input of a core. It takes effect after the first core of the next round has run.
+        void set_input(const std::string &core, const std::string &name, uint32_t channel, double value);
+
         /// \return true if a block is waiting to be taken
         bool wait_for_block(std::chrono::milliseconds timeout);
         /// \return the block that is waiting, if any: it is taken, so it is returned once
         std::optional<live_block> take_block();
         /// The blocks that were complete and replaced by the next one before they were taken
         uint64_t dropped_blocks() const;
+        /// Set when the emulation starts, before anything can be taken
+        uint32_t get_sampling_frequency() const { return sampling_frequency; }
 
         void set_runners(const std::shared_ptr<std::map<std::string, emulator_runner>> &r) override;
         void process_specs(const std::shared_ptr<bus_allocator> &engine) override;
@@ -99,7 +107,7 @@ namespace fcore::emulator_v2 {
             live_channel_info info;
         };
 
-        void apply_pending();
+        [[nodiscard]] result<void> apply_pending();
         void finish_round();
         void start_new_block();
         void hand_over_block();
@@ -122,6 +130,15 @@ namespace fcore::emulator_v2 {
         std::condition_variable block_ready;
         std::vector<std::optional<selected_output>> pending_outputs;
         bool outputs_changed = false;
+        struct pending_input {
+            std::string core;
+            std::string name;
+            uint32_t channel;
+            double value;
+        };
+        std::vector<pending_input> pending_inputs;
+        // anything of the above is waiting, so that the rounds do not take the mutex for nothing
+        std::atomic<bool> has_pending = false;
         live_block block_ready_to_take;
         bool has_block_ready = false;
         uint64_t next_sequence = 0;

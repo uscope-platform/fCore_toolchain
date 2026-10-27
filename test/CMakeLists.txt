@@ -22,6 +22,7 @@ set(TEST_SOURCES
         emulator/full_testing/emulator_manager_v2.cpp
         emulator/full_testing/emulator_iom.cpp
         emulator/full_testing/emulator_live_capture.cpp
+        emulator/full_testing/emulator_live_emulation.cpp
         emulator/full_testing/emulator_multirate.cpp
         emulator/full_testing/emulator_multichannel_tests.cpp
         emulator/full_testing/emulator_disassembler.cpp

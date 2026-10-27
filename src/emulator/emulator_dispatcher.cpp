@@ -53,6 +53,16 @@ namespace fcore {
         return {};
     }
 
+    result<void> emulator_dispatcher::start_live() {
+        if(auto supported = require_v2(); !supported) return supported;
+        return v2.start_live();
+    }
+
+    result<void> emulator_dispatcher::run_live(std::stop_token stop) {
+        if(auto supported = require_v2(); !supported) return supported;
+        return v2.run_live(stop);
+    }
+
     result<void> emulator_dispatcher::process() {
         if(auto supported = require_v2(); !supported) return supported;
         return v2.process();

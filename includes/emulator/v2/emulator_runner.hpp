@@ -57,6 +57,11 @@ namespace fcore::emulator_v2 {
 
         void set_multichannel_debug(bool mc_debug){ multichannel_debug = mc_debug; }
 
+        /// In a live emulation the series inputs start over when they end, as the emulation has no end
+        void set_live_mode(bool live){ live_mode = live; }
+        /// Changes the value of a constant input, from the next time the inputs are applied
+        [[nodiscard]] result<void> set_constant_input(const std::string &name, uint32_t channel, double value);
+
         std::map<std::string, uint32_t> get_inputs() {return current_inputs;}
 
         [[nodiscard]] result<std::vector<uint32_t>> dump_memory(uint32_t channel){
@@ -89,6 +94,7 @@ namespace fcore::emulator_v2 {
         std::map<std::string, std::set<std::string>> input_override;
         core_memory_pool_t emulators_memory;
         bool multichannel_debug;
+        bool live_mode = false;
 
         std::shared_ptr<bus_allocator> bus_engine;
         emulator_backend backend;

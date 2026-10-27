@@ -17,6 +17,7 @@
 
 #include <memory>
 #include <set>
+#include <stop_token>
 #include <nlohmann/json.hpp>
 
 #include "errors/result.hpp"
@@ -37,6 +38,10 @@ namespace fcore {
         /// Where the outputs go while the emulation runs, the batch accumulation if there is none. It is kept across
         /// set_specs, and has to be set before process()
         [[nodiscard]] result<void> set_output_sink(const std::shared_ptr<emulator_v2::output_sink> &sink);
+
+        /// The live emulation does not end, it runs in rounds until the caller stops. It needs an output sink
+        [[nodiscard]] result<void> start_live();
+        [[nodiscard]] result<void> run_live(std::stop_token stop);
 
         [[nodiscard]] result<std::optional<debug_checkpoint>> emulate();
         [[nodiscard]] result<debug_checkpoint> step_over();
